@@ -6,20 +6,22 @@ import com.kingdom.util.KingdomUtil;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateModelException;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-@SuppressWarnings({"UnusedDeclaration"})
-public class GameController extends MultiActionController {
+@Controller
+public class GameController {
 
     private CardManager cardManager = new CardManager();
     private UserManager userManager = new UserManager();
     private GameManager gameManager = new GameManager();
 
+    @RequestMapping("/createGame.html")
     public ModelAndView createGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -34,7 +36,7 @@ public class GameController extends MultiActionController {
             return new ModelAndView("redirect:/showGameRooms.html");
         }
 
-		ModelAndView modelAndView = new ModelAndView("selectCards");
+        ModelAndView modelAndView = new ModelAndView("selectCards");
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
         modelAndView.addObject("createGame", true);
         modelAndView.addObject("title", "Create Game");
@@ -51,18 +53,18 @@ public class GameController extends MultiActionController {
             boolean includeTesting = user.isAdmin();
             addSelectCardsObjects(user, modelAndView, includeTesting);
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/selectCards.html")
     public ModelAndView selectCards(HttpServletRequest request, HttpServletResponse response) {
         User user = new User();
 
-		ModelAndView modelAndView = new ModelAndView("selectCards");
+        ModelAndView modelAndView = new ModelAndView("selectCards");
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
         modelAndView.addObject("createGame", false);
         modelAndView.addObject("title", "Select Cards");
@@ -72,8 +74,7 @@ public class GameController extends MultiActionController {
             boolean includeTesting = false;
             addSelectCardsObjects(user, modelAndView, includeTesting);
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             return new ModelAndView("empty");
         }
     }
@@ -98,6 +99,7 @@ public class GameController extends MultiActionController {
         modelAndView.addObject("recommendedSets", gameManager.getRecommendedSets());
     }
 
+    @RequestMapping("/generateCards.html")
     public ModelAndView generateCards(HttpServletRequest request, HttpServletResponse response) throws TemplateModelException {
         User user = new User();
         Game game = new Game(-1);
@@ -126,6 +128,7 @@ public class GameController extends MultiActionController {
         return showRandomConfirmPage(request, user, game);
     }
 
+    @RequestMapping("/saveGame.html")
     public ModelAndView saveGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -181,23 +184,19 @@ public class GameController extends MultiActionController {
 
                     if (request.getParameter("player" + i).equals("human")) {
                         numPlayers++;
-                    }
-                    else if (request.getParameter("player" + i).equals("computer_easy")) {
+                    } else if (request.getParameter("player" + i).equals("computer_easy")) {
                         numPlayers++;
                         numComputerPlayers++;
                         numEasyComputerPlayers++;
-                    }
-                    else if (request.getParameter("player" + i).equals("computer_medium")) {
+                    } else if (request.getParameter("player" + i).equals("computer_medium")) {
                         numPlayers++;
                         numComputerPlayers++;
                         numMediumComputerPlayers++;
-                    }
-                    else if (request.getParameter("player" + i).equals("computer_hard")) {
+                    } else if (request.getParameter("player" + i).equals("computer_hard")) {
                         numPlayers++;
                         numComputerPlayers++;
                         numHardComputerPlayers++;
-                    }
-                    else if (request.getParameter("player" + i).equals("computer_bmu")) {
+                    } else if (request.getParameter("player" + i).equals("computer_bmu")) {
                         numPlayers++;
                         numComputerPlayers++;
                         numBMUComputerPlayers++;
@@ -234,13 +233,11 @@ public class GameController extends MultiActionController {
                         cards = annotatedGame.getCards();
                         includePlatinumAndColony = annotatedGame.isIncludeColonyAndPlatinum();
                         game.setAnnotatedGame(true);
-                    }
-                    else {
+                    } else {
                         if (generateType.equals("recentGame")) {
                             cards = request.getParameter("recentGameCards");
                             game.setRecentGame(true);
-                        }
-                        else {
+                        } else {
                             cards = request.getParameter("recommendedSetCards");
                             game.setRecommendedSet(true);
                         }
@@ -254,8 +251,7 @@ public class GameController extends MultiActionController {
                         Card card;
                         if (generateType.equals("annotatedGame")) {
                             card = cardManager.getCard(Integer.parseInt(cardString));
-                        }
-                        else {
+                        } else {
                             card = cardManager.getCard(cardString);
                         }
                         if (card != null) {
@@ -282,8 +278,7 @@ public class GameController extends MultiActionController {
                 return new ModelAndView("redirect:/confirmCards.html");
             }
             return new ModelAndView("redirect:/showGameRooms.html");
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
@@ -299,32 +294,23 @@ public class GameController extends MultiActionController {
                 int weight = 3;
                 if (deck.equals(Card.DECK_KINGDOM)) {
                     weight = user.getBaseWeight();
-                }
-                else if (deck.equals(Card.DECK_INTRIGUE)) {
+                } else if (deck.equals(Card.DECK_INTRIGUE)) {
                     weight = user.getIntrigueWeight();
-                }
-                else if (deck.equals(Card.DECK_SEASIDE)) {
+                } else if (deck.equals(Card.DECK_SEASIDE)) {
                     weight = user.getSeasideWeight();
-                }
-                else if (deck.equals(Card.DECK_ALCHEMY)) {
+                } else if (deck.equals(Card.DECK_ALCHEMY)) {
                     weight = user.getAlchemyWeight();
-                }
-                else if (deck.equals(Card.DECK_PROSPERITY)) {
+                } else if (deck.equals(Card.DECK_PROSPERITY)) {
                     weight = user.getProsperityWeight();
-                }
-                else if (deck.equals(Card.DECK_CORNUCOPIA)) {
+                } else if (deck.equals(Card.DECK_CORNUCOPIA)) {
                     weight = user.getCornucopiaWeight();
-                }
-                else if (deck.equals(Card.DECK_HINTERLANDS)) {
+                } else if (deck.equals(Card.DECK_HINTERLANDS)) {
                     weight = user.getHinterlandsWeight();
-                }
-                else if (deck.equals(Card.DECK_SALVATION)) {
+                } else if (deck.equals(Card.DECK_SALVATION)) {
                     weight = user.getSalvationWeight();
-                }
-                else if (deck.equals(Card.DECK_FAIRYTALE)) {
+                } else if (deck.equals(Card.DECK_FAIRYTALE)) {
                     weight = user.getFairyTaleWeight();
-                }
-                else if (deck.equals(Card.DECK_PROLETARIAT)) {
+                } else if (deck.equals(Card.DECK_PROLETARIAT)) {
                     weight = user.getProletariatWeight();
                 }
                 if (weight > 5) {
@@ -333,13 +319,11 @@ public class GameController extends MultiActionController {
                 for (int i = 0; i < weight; i++) {
                     decks.add(deck);
                 }
-            }
-            else if (name.startsWith("card_")) {
+            } else if (name.startsWith("card_")) {
                 int cardId = Integer.parseInt(name.substring(5));
                 Card card = cardManager.getCard(cardId);
                 customSelection.add(card);
-            }
-            else if (name.startsWith("excluded_card_")) {
+            } else if (name.startsWith("excluded_card_")) {
                 int cardId = Integer.parseInt(name.substring(14));
                 Card card = cardManager.getCard(cardId);
                 excludedCards.add(card);
@@ -372,8 +356,7 @@ public class GameController extends MultiActionController {
             if (KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")) {
                 game.setAlwaysIncludeColonyAndPlatinum(true);
             }
-        }
-        else {
+        } else {
             options.setThreeToFiveAlchemy(KingdomUtil.getRequestBoolean(request, "threeToFiveAlchemy"));
             options.setOneOfEachCost(KingdomUtil.getRequestBoolean(request, "oneOfEachCost"));
             options.setOneWithBuy(KingdomUtil.getRequestBoolean(request, "oneWithBuy"));
@@ -384,6 +367,7 @@ public class GameController extends MultiActionController {
         game.setRandomizingOptions(options);
     }
 
+    @RequestMapping("/confirmCards.html")
     public ModelAndView confirmCards(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -393,17 +377,14 @@ public class GameController extends MultiActionController {
         try {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
                 return showRandomConfirmPage(request, user, game);
-            }
-            else {
+            } else {
                 if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
                     return new ModelAndView("redirect:/showGame.html");
-                }
-                else {
+                } else {
                     return new ModelAndView("redirect:/showGameRooms.html");
                 }
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
@@ -443,6 +424,7 @@ public class GameController extends MultiActionController {
         }
     }
 
+    @RequestMapping("/changeRandomCards.html")
     public ModelAndView changeRandomCards(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -453,23 +435,21 @@ public class GameController extends MultiActionController {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
                 cardManager.setRandomKingdomCards(game);
                 return confirmCards(request, response);
-            }
-            else{
+            } else {
                 if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
                     return new ModelAndView("redirect:/showGame.html");
-                }
-                else {
+                } else {
                     return new ModelAndView("redirect:/showGameRooms.html");
                 }
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/swapRandomCard.html")
     public ModelAndView swapRandomCard(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -480,23 +460,21 @@ public class GameController extends MultiActionController {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
                 cardManager.swapRandomCard(game, Integer.parseInt(request.getParameter("cardId")));
                 return confirmCards(request, response);
-            }
-            else {
+            } else {
                 if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
                     return new ModelAndView("redirect:/showGame.html");
-                }
-                else {
+                } else {
                     return new ModelAndView("redirect:/showGameRooms.html");
                 }
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/swapForTypeOfCard.html")
     public ModelAndView swapForTypeOfCard(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -507,17 +485,14 @@ public class GameController extends MultiActionController {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
                 cardManager.swapForTypeOfCard(game, Integer.parseInt(request.getParameter("cardId")), request.getParameter("cardType"));
                 return confirmCards(request, response);
-            }
-            else {
+            } else {
                 if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
                     return new ModelAndView("redirect:/showGame.html");
-                }
-                else {
+                } else {
                     return new ModelAndView("redirect:/showGameRooms.html");
                 }
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
@@ -525,6 +500,7 @@ public class GameController extends MultiActionController {
     }
 
 
+    @RequestMapping("/togglePlatinumAndColony.html")
     public ModelAndView togglePlatinumAndColony(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -537,23 +513,21 @@ public class GameController extends MultiActionController {
                 game.setAlwaysIncludeColonyAndPlatinum(include);
                 game.setNeverIncludeColonyAndPlatinum(!include);
                 return confirmCards(request, response);
-            }
-            else {
+            } else {
                 if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
                     return new ModelAndView("redirect:/showGame.html");
-                }
-                else {
+                } else {
                     return new ModelAndView("redirect:/showGameRooms.html");
                 }
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/keepRandomCards.html")
     public ModelAndView keepRandomCards(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -570,8 +544,7 @@ public class GameController extends MultiActionController {
                 for (Card card : game.getKingdomCards()) {
                     if (card.getName().equals("Black Market")) {
                         hasBlackMarket = true;
-                    }
-                    else if (card.getName().equals("Tournament") || card.getName().equals("Museum")) {
+                    } else if (card.getName().equals("Tournament") || card.getName().equals("Museum")) {
                         includePrizes = true;
                     }
                     if (card.isPlayTreasureCards()) {
@@ -597,12 +570,10 @@ public class GameController extends MultiActionController {
             }
             if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
                 return new ModelAndView("redirect:/showGame.html");
-            }
-            else {
+            } else {
                 return new ModelAndView("redirect:/showGameRooms.html");
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
@@ -610,13 +581,14 @@ public class GameController extends MultiActionController {
     }
 
     @SuppressWarnings({"unchecked"})
-    private void setBlackMarketCards(Game game){
+    private void setBlackMarketCards(Game game) {
         List<Card> allCards = cardManager.getAllCards(false);
         List<Card> blackMarketCards = (List<Card>) CollectionUtils.subtract(allCards, game.getKingdomCards());
         Collections.shuffle(blackMarketCards);
         game.setBlackMarketCards(blackMarketCards);
     }
 
+    @RequestMapping("/cancelGame.html")
     public ModelAndView cancelGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         String gameIdParam = request.getParameter("gameId");
@@ -631,6 +603,7 @@ public class GameController extends MultiActionController {
         return new ModelAndView("redirect:/showGameRooms.html");
     }
 
+    @RequestMapping("/cancelCreateGame.html")
     public ModelAndView cancelCreateGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -641,12 +614,12 @@ public class GameController extends MultiActionController {
         return new ModelAndView("redirect:/showGameRooms.html");
     }
 
-	public ModelAndView showGameRooms(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping("/showGameRooms.html")
+    public ModelAndView showGameRooms(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
             return KingdomUtil.getLoginModelAndView(request);
-        }
-        else if (user.isExpired()) {
+        } else if (user.isExpired()) {
             KingdomUtil.logoutUser(user, request);
             return KingdomUtil.getLoginModelAndView(request);
         }
@@ -672,8 +645,7 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("news", GameRoomManager.getInstance().getNews());
 
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             if (game != null) {
                 GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
                 game.logError(error);
@@ -699,6 +671,7 @@ public class GameController extends MultiActionController {
         LoggedInUsers.getInstance().refreshLobbyGameRooms();
     }
 
+    @RequestMapping("/leaveGame.html")
     public ModelAndView leaveGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -710,13 +683,13 @@ public class GameController extends MultiActionController {
         Game game = GameRoomManager.getInstance().getGame(user.getGameId());
         if (game == null || game.getStatus() != Game.STATUS_GAME_WAITING_FOR_PLAYERS) {
             return new ModelAndView("redirect:/showGameRooms.html");
-        }
-        else {
+        } else {
             removePlayerFromGame(game, user);
         }
         return new ModelAndView("redirect:/showGameRooms.html");
     }
 
+    @RequestMapping("/joinGame.html")
     public ModelAndView joinGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -730,8 +703,7 @@ public class GameController extends MultiActionController {
         if (gameIdParam != null) {
             int gameId = Integer.parseInt(gameIdParam);
             game = GameRoomManager.getInstance().getGame(gameId);
-        }
-        else {
+        } else {
             game = getGame(request);
         }
         if (game == null) {
@@ -740,9 +712,8 @@ public class GameController extends MultiActionController {
         try {
             if (game.getPlayers().size() == game.getNumPlayers() || game.isPrivateGame()) {
                 return showGameRooms(request, response);
-            }
-            else{
-                if(!game.getPlayerMap().containsKey(user.getUserId())) {
+            } else {
+                if (!game.getPlayerMap().containsKey(user.getUserId())) {
                     if (gameIdParam != null) {
                         request.getSession().setAttribute("gameId", Integer.parseInt(gameIdParam));
                     }
@@ -750,13 +721,11 @@ public class GameController extends MultiActionController {
                 }
                 if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
                     return new ModelAndView("redirect:/showGame.html");
-                }
-                else {
+                } else {
                     return new ModelAndView("redirect:/showGameRooms.html");
                 }
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
@@ -764,6 +733,7 @@ public class GameController extends MultiActionController {
     }
 
     @SuppressWarnings({"unchecked"})
+    @RequestMapping("/joinPrivateGame.html")
     public ModelAndView joinPrivateGame(HttpServletRequest request, HttpServletResponse response) {
         Map model = new HashMap();
         User user = getUser(request);
@@ -776,8 +746,7 @@ public class GameController extends MultiActionController {
         if (gameIdParam != null) {
             int gameId = Integer.parseInt(gameIdParam);
             game = GameRoomManager.getInstance().getGame(gameId);
-        }
-        else {
+        } else {
             game = getGame(request);
         }
         if (game == null) {
@@ -788,11 +757,9 @@ public class GameController extends MultiActionController {
             String gamePassword = request.getParameter("gamePassword");
             if (gamePassword == null || !gamePassword.equals(game.getPassword())) {
                 message = "Invalid Password";
-            }
-            else if(game.getPlayers().size() == game.getNumPlayers()) {
+            } else if (game.getPlayers().size() == game.getNumPlayers()) {
                 message = "Game Room Full";
-            }
-            else if (!game.getPlayerMap().containsKey(user.getUserId())) {
+            } else if (!game.getPlayerMap().containsKey(user.getUserId())) {
                 if (gameIdParam != null) {
                     request.getSession().setAttribute("gameId", Integer.parseInt(gameIdParam));
                 }
@@ -803,21 +770,20 @@ public class GameController extends MultiActionController {
             model.put("start", game.getStatus() == Game.STATUS_GAME_IN_PROGRESS);
 
             return new ModelAndView("jsonView", model);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/showGame.html")
     public ModelAndView showGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null) {
             return KingdomUtil.getLoginModelAndView(request);
-        }
-        else if (game == null) {
+        } else if (game == null) {
             return new ModelAndView("redirect:/showGameRooms.html");
         }
         try {
@@ -831,8 +797,7 @@ public class GameController extends MultiActionController {
             addGameObjects(game, player, modelAndView, request);
             modelAndView.addObject("user", user);
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
@@ -840,7 +805,8 @@ public class GameController extends MultiActionController {
     }
 
     @SuppressWarnings({"unchecked"})
-    public ModelAndView refreshGame(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping("/refreshGame.html")
+    public ModelAndView refreshGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
         Map model = new HashMap();
@@ -938,12 +904,11 @@ public class GameController extends MultiActionController {
             model.put("refreshCardAction", refresh.isRefreshCardAction());
             if (refresh.isRefreshCardAction()) {
                 Player player = game.getPlayerMap().get(user.getUserId());
-                if(player.getCardAction() == null) {
-                    GameError error = new GameError(GameError.GAME_ERROR, "Card action is null for user: "+player.getUsername()+", show card action: "+player.isShowCardAction());
+                if (player.getCardAction() == null) {
+                    GameError error = new GameError(GameError.GAME_ERROR, "Card action is null for user: " + player.getUsername() + ", show card action: " + player.isShowCardAction());
                     game.logError(error, false);
                     model.put("refreshCardAction", false);
-                }
-                else {
+                } else {
                     model.put("cardActionCardsSize", player.getCardAction().getCards().size());
                     model.put("cardActionNumCards", player.getCardAction().getNumCards());
                     model.put("cardActionType", player.getCardAction().getType());
@@ -974,25 +939,23 @@ public class GameController extends MultiActionController {
                 refresh.setRefreshTitle(false);
                 if (game.getStatus() == Game.STATUS_GAME_FINISHED) {
                     model.put("title", "Game Over");
-                }
-                else if (game.getCurrentPlayerId() == user.getUserId()) {
+                } else if (game.getCurrentPlayerId() == user.getUserId()) {
                     model.put("title", "Your Turn");
-                }
-                else {
+                } else {
                     model.put("title", game.getCurrentPlayer().getUsername() + "'s Turn");
                 }
             }
             model.put("divsToLoad", divsToLoad);
 
             return new ModelAndView("jsonView", model);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/clickCard.html")
     public ModelAndView clickCard(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1010,14 +973,14 @@ public class GameController extends MultiActionController {
                 game.cardClicked(player, clickType, cardId);
                 game.closeLoadingDialog(player);
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
         }
         return refreshGame(request, response);
     }
 
+    @RequestMapping("/playAllTreasureCards.html")
     public ModelAndView playAllTreasureCards(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1031,15 +994,15 @@ public class GameController extends MultiActionController {
         try {
             game.playAllTreasureCards(player);
             game.closeLoadingDialog(player);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
         }
         return refreshGame(request, response);
     }
 
-    public ModelAndView endTurn(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping("/endTurn.html")
+    public ModelAndView endTurn(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
@@ -1048,14 +1011,14 @@ public class GameController extends MultiActionController {
         try {
             Player player = game.getPlayerMap().get(user.getUserId());
             game.endPlayerTurn(player);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
         }
         return refreshGame(request, response);
     }
 
+    @RequestMapping("/submitCardAction.html")
     public ModelAndView submitCardAction(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1068,44 +1031,36 @@ public class GameController extends MultiActionController {
             if (player.getCardAction() != null) {
                 if (player.getCardAction().getType() == CardAction.TYPE_INFO) {
                     game.cardActionSubmitted(player, null, null, null, -1);
-                }
-                else if (player.getCardAction().getType() == CardAction.TYPE_YES_NO) {
+                } else if (player.getCardAction().getType() == CardAction.TYPE_YES_NO) {
                     if (request.getParameter("answer") == null) {
                         GameError error = new GameError(GameError.GAME_ERROR, "Card Action answer was null");
                         game.logError(error, false);
                         //todo
-                    }
-                    else {
+                    } else {
                         game.cardActionSubmitted(player, null, request.getParameter("answer"), null, -1);
                     }
-                }
-                else if (player.getCardAction().getType() == CardAction.TYPE_CHOICES) {
+                } else if (player.getCardAction().getType() == CardAction.TYPE_CHOICES) {
                     if (request.getParameter("choice") == null) {
                         GameError error = new GameError(GameError.GAME_ERROR, "Card Action choice was null");
                         game.logError(error, false);
                         //todo
-                    }
-                    else {
+                    } else {
                         game.cardActionSubmitted(player, null, null, request.getParameter("choice"), -1);
                     }
-                }
-                else if (player.getCardAction().getType() == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || player.getCardAction().getType() == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
+                } else if (player.getCardAction().getType() == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || player.getCardAction().getType() == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
                     if (request.getParameter("numberChosen") == null) {
                         GameError error = new GameError(GameError.GAME_ERROR, "Card Action number chosen was null");
                         game.logError(error, false);
                         //todo
-                    }
-                    else {
+                    } else {
                         game.cardActionSubmitted(player, null, null, null, Integer.parseInt(request.getParameter("numberChosen")));
                     }
-                }
-                else {
+                } else {
                     if (request.getParameter("selectedCards") == null) {
                         GameError error = new GameError(GameError.GAME_ERROR, "Card Action selected cards string was null");
                         game.logError(error, false);
                         //todo
-                    }
-                    else {
+                    } else {
                         String selectedCardsString = request.getParameter("selectedCards");
                         String[] selectedCardsStrings = selectedCardsString.split(",");
                         List<Integer> selectedCardIds = new ArrayList<Integer>();
@@ -1119,14 +1074,14 @@ public class GameController extends MultiActionController {
                 }
             }
             game.closeLoadingDialog(player);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
         }
         return new ModelAndView("empty");
     }
 
+    @RequestMapping("/getPlayersDiv.html")
     public ModelAndView getPlayersDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1135,21 +1090,21 @@ public class GameController extends MultiActionController {
         }
         try {
             String template = "playersDiv";
-            if(KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.isMobile(request)) {
                 template = "playersDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
             modelAndView.addObject("players", game.getPlayers());
             modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints());
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getSupplyDiv.html")
     public ModelAndView getSupplyDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1159,6 +1114,7 @@ public class GameController extends MultiActionController {
         return getSupplyDiv(request, user, game, game.getCurrentPlayerId());
     }
 
+    @RequestMapping("/getSupplyDivOnEndTurn.html")
     public ModelAndView getSupplyDivOnEndTurn(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1171,7 +1127,7 @@ public class GameController extends MultiActionController {
     private ModelAndView getSupplyDiv(HttpServletRequest request, User user, Game game, int currentPlayerId) {
         try {
             String supplyDivTemplate = "supplyDiv";
-            if(KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.isMobile(request)) {
                 supplyDivTemplate = "supplyDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(supplyDivTemplate);
@@ -1190,8 +1146,7 @@ public class GameController extends MultiActionController {
                 if (game.isTrackTradeRouteTokens()) {
                     modelAndView.addObject("tradeRouteTokenMap", bw.wrap(game.getTradeRouteTokenMap()));
                 }
-            }
-            catch (TemplateModelException e) {
+            } catch (TemplateModelException e) {
                 //
             }
             modelAndView.addObject("gameStatus", game.getStatus());
@@ -1204,14 +1159,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("tradeRouteTokensOnMat", game.getTradeRouteTokensOnMat());
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getPreviousPlayerPlayingAreaDiv.html")
     public ModelAndView getPreviousPlayerPlayingAreaDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1241,14 +1196,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getPlayingAreaDiv.html")
     public ModelAndView getPlayingAreaDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1278,14 +1233,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getCardsPlayedDiv.html")
     public ModelAndView getCardsPlayedDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1312,14 +1267,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getCardsBoughtDiv.html")
     public ModelAndView getCardsBoughtDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1328,7 +1283,7 @@ public class GameController extends MultiActionController {
         }
         try {
             String template = "cardsBoughtDiv";
-            if(KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.isMobile(request)) {
                 template = "cardsBoughtDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1348,14 +1303,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getHistoryDiv.html")
     public ModelAndView getHistoryDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1364,20 +1319,20 @@ public class GameController extends MultiActionController {
         }
         try {
             String template = "historyDiv";
-            if(KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.isMobile(request)) {
                 template = "historyDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
             modelAndView.addObject("turnHistory", game.getRecentTurnHistory());
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getHandDiv.html")
     public ModelAndView getHandDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1396,14 +1351,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getHandAreaDiv.html")
     public ModelAndView getHandAreaDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1413,6 +1368,7 @@ public class GameController extends MultiActionController {
         return getHandAreaDiv(request, user, game, game.getCurrentPlayerId());
     }
 
+    @RequestMapping("/getHandAreaDivOnEndTurn.html")
     public ModelAndView getHandAreaDivOnEndTurn(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1425,7 +1381,7 @@ public class GameController extends MultiActionController {
     private ModelAndView getHandAreaDiv(HttpServletRequest request, User user, Game game, int currentPlayerId) {
         try {
             String template = "handAreaDiv";
-            if(KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.isMobile(request)) {
                 template = "handAreaDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1450,14 +1406,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getDurationDiv.html")
     public ModelAndView getDurationDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1476,14 +1432,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getDiscardDiv.html")
     public ModelAndView getDiscardDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1492,7 +1448,7 @@ public class GameController extends MultiActionController {
         }
         try {
             String template = "discardDiv";
-            if(KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.isMobile(request)) {
                 template = "discardDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1506,14 +1462,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getChatDiv.html")
     public ModelAndView getChatDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1523,21 +1479,21 @@ public class GameController extends MultiActionController {
         try {
             List<ChatMessage> chats = game.getChats();
             String template = "chatDiv";
-            if(KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.isMobile(request)) {
                 template = "chatDivMobile";
                 //Collections.reverse(chats);
             }
             ModelAndView modelAndView = new ModelAndView(template);
             modelAndView.addObject("chats", chats);
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getCardActionDiv.html")
     public ModelAndView getCardActionDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1546,7 +1502,7 @@ public class GameController extends MultiActionController {
         }
         try {
             String template = "cardActionDiv";
-            if(KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.isMobile(request)) {
                 template = "cardActionDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1564,14 +1520,14 @@ public class GameController extends MultiActionController {
                 modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards() && game.isIncludePlatinumCards());
             }
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getGameInfoDiv.html")
     public ModelAndView getGameInfoDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1597,14 +1553,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("showPrizeCards", game.isShowPrizeCards());
             modelAndView.addObject("prizeCards", game.getPrizeCardsString());
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/showGameResults.html")
     public ModelAndView showGameResults(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1651,14 +1607,14 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents());
 
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/getInfoDialogDiv.html")
     public ModelAndView getInfoDialogDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1670,15 +1626,15 @@ public class GameController extends MultiActionController {
             Player player = game.getPlayerMap().get(user.getUserId());
             modelAndView.addObject("player", player);
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
-    public ModelAndView exitGame(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping("/exitGame.html")
+    public ModelAndView exitGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
@@ -1694,14 +1650,14 @@ public class GameController extends MultiActionController {
                 return new ModelAndView("redirect:/showGame.html");
             }
             game.playerExitedGame(player);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
         }
         return new ModelAndView("empty");
     }
 
+    @RequestMapping("/quitGame.html")
     public ModelAndView quitGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -1718,8 +1674,7 @@ public class GameController extends MultiActionController {
                 game.playerQuitGame(player);
             }
             return refreshGame(request, response);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
@@ -1732,8 +1687,7 @@ public class GameController extends MultiActionController {
             String remainingString = commandString.substring(command.length() + 2);
             if (command.equalsIgnoreCase("lobby")) {
                 sendLobbyChat(user, remainingString);
-            }
-            else if (command.equalsIgnoreCase("whisper") || command.equalsIgnoreCase("w")) {
+            } else if (command.equalsIgnoreCase("whisper") || command.equalsIgnoreCase("w")) {
                 String username = remainingString.substring(0, remainingString.indexOf(" "));
                 String message = remainingString.substring(username.length() + 1);
                 User receivingUser = userManager.getUser(username);
@@ -1742,8 +1696,7 @@ public class GameController extends MultiActionController {
                 }
             }
             //todo help command
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             //todo display invalid command message    
         }
     }
@@ -1761,8 +1714,7 @@ public class GameController extends MultiActionController {
                 if (receivingUser.getGameId() > 0) {
                     Game game = GameRoomManager.getInstance().getGame(receivingUser.getGameId());
                     game.addPrivateChat(user, receivingUser, message);
-                }
-                else {
+                } else {
                     LobbyChats.getInstance().addPrivateChat(user, receivingUser, message);
                     LoggedInUsers.getInstance().refreshLobbyChat();
                 }
@@ -1770,7 +1722,8 @@ public class GameController extends MultiActionController {
         }
     }
 
-    public ModelAndView sendChat(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping("/sendChat.html")
+    public ModelAndView sendChat(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
@@ -1782,20 +1735,19 @@ public class GameController extends MultiActionController {
             if (message != null && !message.equals("")) {
                 if (message.startsWith("/")) {
                     processChatCommand(user, message);
-                }
-                else {
+                } else {
                     game.addChat(player, message);
                 }
             }
             return refreshGame(request, response);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/sendLobbyChat.html")
     public ModelAndView sendLobbyChat(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -1805,14 +1757,14 @@ public class GameController extends MultiActionController {
         String message = request.getParameter("message");
         if (message != null && message.startsWith("/")) {
             processChatCommand(user, message);
-        }
-        else {
+        } else {
             sendLobbyChat(user, message);
         }
         LoggedInUsers.getInstance().refreshLobbyChat();
         return refreshLobby(request, response);
     }
 
+    @RequestMapping("/sendPrivateChat.html")
     public ModelAndView sendPrivateChat(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -1842,31 +1794,34 @@ public class GameController extends MultiActionController {
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
     }
 
+    @RequestMapping("/loadNativeVillageDialog.html")
     public ModelAndView loadNativeVillageDialog(HttpServletRequest request, HttpServletResponse response) {
         return loadPlayerDialogContainingCards(request, response, "nativeVillageDialog");
     }
 
+    @RequestMapping("/loadIslandCardsDialog.html")
     public ModelAndView loadIslandCardsDialog(HttpServletRequest request, HttpServletResponse response) {
         return loadPlayerDialogContainingCards(request, response, "islandCardsDialog");
     }
 
+    @RequestMapping("/loadMuseumCardsDialog.html")
     public ModelAndView loadMuseumCardsDialog(HttpServletRequest request, HttpServletResponse response) {
         return loadPlayerDialogContainingCards(request, response, "museumCardsDialog");
     }
 
+    @RequestMapping("/loadCityPlannerCardsDialog.html")
     public ModelAndView loadCityPlannerCardsDialog(HttpServletRequest request, HttpServletResponse response) {
         return loadPlayerDialogContainingCards(request, response, "cityPlannerCardsDialog");
     }
 
-    private void addGameObjects(Game game, Player player, ModelAndView modelAndView, HttpServletRequest request){
+    private void addGameObjects(Game game, Player player, ModelAndView modelAndView, HttpServletRequest request) {
         BeansWrapper bw = new BeansWrapper();
         modelAndView.addObject("player", player);
         modelAndView.addObject("kingdomCards", game.getKingdomCards());
@@ -1936,7 +1891,7 @@ public class GameController extends MultiActionController {
         modelAndView.addObject("showGoldenTouch", game.isShowGoldenTouch());
 
         modelAndView.addObject("showPrizeCards", game.isShowPrizeCards());
-        
+
         modelAndView.addObject("gameEndReason", game.getGameEndReason());
         modelAndView.addObject("winnerString", game.getWinnerString());
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
@@ -1956,7 +1911,7 @@ public class GameController extends MultiActionController {
         this.gameManager = gameManager;
     }
 
-    private User getUser(HttpServletRequest request){
+    private User getUser(HttpServletRequest request) {
         return KingdomUtil.getUser(request);
     }
 
@@ -1968,6 +1923,7 @@ public class GameController extends MultiActionController {
         return GameRoomManager.getInstance().getGame((Integer) gameId);
     }
 
+    @RequestMapping("/gameHistory.html")
     public ModelAndView gameHistory(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -1979,6 +1935,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/gamePlayersHistory.html")
     public ModelAndView gamePlayersHistory(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -1992,6 +1949,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/playerGameHistory.html")
     public ModelAndView playerGameHistory(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2004,6 +1962,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/gameErrors.html")
     public ModelAndView gameErrors(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2015,6 +1974,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/deleteGameError.html")
     public ModelAndView deleteGameError(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2025,6 +1985,7 @@ public class GameController extends MultiActionController {
         return gameErrors(request, response);
     }
 
+    @RequestMapping("/showGameLog.html")
     public ModelAndView showGameLog(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView modelAndView = new ModelAndView("gameLog");
         int logId = KingdomUtil.getRequestInt(request, "logId", -1);
@@ -2033,16 +1994,14 @@ public class GameController extends MultiActionController {
         GameLog log = null;
         if (logId > 0) {
             log = gameManager.getGameLog(logId);
-        }
-        else if (gameId > 0) {
+        } else if (gameId > 0) {
             log = gameManager.getGameLogByGameId(gameId);
         }
         boolean logNotFound;
         if (log != null) {
             logNotFound = false;
             logs = log.getLog().split(";");
-        }
-        else {
+        } else {
             logNotFound = true;
         }
         modelAndView.addObject("logs", logs);
@@ -2050,6 +2009,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/changeStatus.html")
     public ModelAndView changeStatus(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -2064,6 +2024,7 @@ public class GameController extends MultiActionController {
         return refreshLobby(request, response);
     }
 
+    @RequestMapping("/showLobbyPlayers.html")
     public ModelAndView showLobbyPlayers(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView modelAndView = new ModelAndView("lobbyPlayers");
         modelAndView.addObject("user", getUser(request));
@@ -2071,6 +2032,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/getPlayerStatsDiv.html")
     public ModelAndView getPlayerStatsDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -2082,6 +2044,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/overallGameStats.html")
     public ModelAndView overallGameStats(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2101,6 +2064,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/userStats.html")
     public ModelAndView userStats(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2112,6 +2076,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/annotatedGames.html")
     public ModelAndView annotatedGames(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2123,6 +2088,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/saveAnnotatedGame.html")
     public ModelAndView saveAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2142,8 +2108,7 @@ public class GameController extends MultiActionController {
         String id = request.getParameter("id");
         if (id.equals("0")) {
             game = new AnnotatedGame();
-        }
-        else {
+        } else {
             game = gameManager.getAnnotatedGame(Integer.parseInt(id));
         }
         game.setTitle(request.getParameter("title"));
@@ -2153,6 +2118,7 @@ public class GameController extends MultiActionController {
         return annotatedGames(request, response);
     }
 
+    @RequestMapping("/deleteAnnotatedGame.html")
     public ModelAndView deleteAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2165,6 +2131,7 @@ public class GameController extends MultiActionController {
     }
 
     @SuppressWarnings({"UnusedAssignment"})
+    @RequestMapping("/showAnnotatedGame.html")
     public ModelAndView showAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2200,6 +2167,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/showModifyHand.html")
     public ModelAndView showModifyHand(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -2218,6 +2186,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/modifyHand.html")
     public ModelAndView modifyHand(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -2229,14 +2198,13 @@ public class GameController extends MultiActionController {
         }
 
         for (Player player : game.getPlayers()) {
-            String currentHandChoice = request.getParameter("currentHandChoice_"+player.getUserId());
+            String currentHandChoice = request.getParameter("currentHandChoice_" + player.getUserId());
             List<Card> currentCards = new ArrayList<Card>(player.getHand());
             if (currentHandChoice.equals("discard")) {
                 for (Card card : currentCards) {
                     player.discardCardFromHand(card);
                 }
-            }
-            else if (currentHandChoice.equals("trash")) {
+            } else if (currentHandChoice.equals("trash")) {
                 for (Card card : currentCards) {
                     player.removeCardFromHand(card);
                 }
@@ -2245,7 +2213,7 @@ public class GameController extends MultiActionController {
             Enumeration parameterNames = request.getParameterNames();
             while (parameterNames.hasMoreElements()) {
                 String name = (String) parameterNames.nextElement();
-                if (name.startsWith("card_") && name.endsWith("_"+player.getUserId())) {
+                if (name.startsWith("card_") && name.endsWith("_" + player.getUserId())) {
                     String ids = name.substring(5);
                     int cardId = Integer.parseInt(ids.substring(0, ids.indexOf("_")));
                     Card card = game.getSupplyMap().get(cardId);
@@ -2265,14 +2233,14 @@ public class GameController extends MultiActionController {
     }
 
     @SuppressWarnings({"unchecked"})
-    public ModelAndView refreshLobby(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping("/refreshLobby.html")
+    public ModelAndView refreshLobby(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         RefreshLobby refresh;
         if (user == null) {
             refresh = new RefreshLobby();
             refresh.setRedirectToLogin(true);
-        }
-        else {
+        } else {
             refresh = user.getRefreshLobby();
             if (user.isExpired()) {
                 KingdomUtil.logoutUser(user, request);
@@ -2313,14 +2281,14 @@ public class GameController extends MultiActionController {
         return new ModelAndView("jsonView", model);
     }
 
+    @RequestMapping("/getLobbyPlayersDiv.html")
     public ModelAndView getLobbyPlayersDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         RefreshLobby refresh;
         if (user == null) {
             refresh = new RefreshLobby();
             refresh.setRedirectToLogin(true);
-        }
-        else {
+        } else {
             refresh = user.getRefreshLobby();
             if (user.isExpired()) {
                 KingdomUtil.logoutUser(user, request);
@@ -2337,14 +2305,14 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/getLobbyChatDiv.html")
     public ModelAndView getLobbyChatDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         RefreshLobby refresh;
         if (user == null) {
             refresh = new RefreshLobby();
             refresh.setRedirectToLogin(true);
-        }
-        else {
+        } else {
             refresh = user.getRefreshLobby();
             if (user.isExpired()) {
                 KingdomUtil.logoutUser(user, request);
@@ -2357,7 +2325,7 @@ public class GameController extends MultiActionController {
         }
         LoggedInUsers.getInstance().refreshLobby(user);
         String template = "lobbyChatDiv";
-        if(KingdomUtil.isMobile(request)) {
+        if (KingdomUtil.isMobile(request)) {
             template = "lobbyChatDivMobile";
         }
         ModelAndView modelAndView = new ModelAndView(template);
@@ -2366,14 +2334,14 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/getLobbyGameRoomsDiv.html")
     public ModelAndView getLobbyGameRoomsDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         RefreshLobby refresh;
         if (user == null) {
             refresh = new RefreshLobby();
             refresh.setRedirectToLogin(true);
-        }
-        else {
+        } else {
             refresh = user.getRefreshLobby();
             if (user.isExpired()) {
                 KingdomUtil.logoutUser(user, request);
@@ -2398,12 +2366,14 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/showGamesInProgress.html")
     public ModelAndView showGamesInProgress(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView modelAndView = new ModelAndView("gamesInProgress");
         modelAndView.addObject("games", GameRoomManager.getInstance().getGamesInProgress());
         return modelAndView;
     }
 
+    @RequestMapping("/toggleSound.html")
     public ModelAndView toggleSound(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         user.toggleSoundDefault();
@@ -2411,6 +2381,7 @@ public class GameController extends MultiActionController {
         return new ModelAndView("empty");
     }
 
+    @RequestMapping("/repeatGame.html")
     public ModelAndView repeatGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -2424,6 +2395,7 @@ public class GameController extends MultiActionController {
         return new ModelAndView("redirect:/showGame.html");
     }
 
+    @RequestMapping("/showGameCards.html")
     public ModelAndView showGameCards(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -2437,6 +2409,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/showLeaders.html")
     public ModelAndView showLeaders(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -2450,6 +2423,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/useFruitTokens.html")
     public ModelAndView useFruitTokens(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -2463,14 +2437,14 @@ public class GameController extends MultiActionController {
             }
             game.showUseFruitTokensCardAction(player);
             game.closeLoadingDialog(player);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
         }
         return refreshGame(request, response);
     }
 
+    @RequestMapping("/useCattleTokens.html")
     public ModelAndView useCattleTokens(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
@@ -2484,14 +2458,14 @@ public class GameController extends MultiActionController {
             }
             game.showUseCattleTokensCardAction(player);
             game.closeLoadingDialog(player);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
         }
         return refreshGame(request, response);
-    }     
+    }
 
+    @RequestMapping("/recommendedSets.html")
     public ModelAndView recommendedSets(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2503,6 +2477,7 @@ public class GameController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/saveRecommendedSet.html")
     public ModelAndView saveRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2513,8 +2488,7 @@ public class GameController extends MultiActionController {
         String id = request.getParameter("id");
         if (id.equals("0")) {
             set = new RecommendedSet();
-        }
-        else {
+        } else {
             set = gameManager.getRecommendedSet(Integer.parseInt(id));
         }
         set.setName(request.getParameter("name"));
@@ -2524,6 +2498,7 @@ public class GameController extends MultiActionController {
         return recommendedSets(request, response);
     }
 
+    @RequestMapping("/deleteRecommendedSet.html")
     public ModelAndView deleteRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2536,6 +2511,7 @@ public class GameController extends MultiActionController {
     }
 
     @SuppressWarnings({"UnusedAssignment"})
+    @RequestMapping("/showRecommendedSet.html")
     public ModelAndView showRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -2548,8 +2524,7 @@ public class GameController extends MultiActionController {
         List<String> selectedCards = new ArrayList<String>();
         if (id.equals("0")) {
             set = new RecommendedSet();
-        }
-        else {
+        } else {
             set = gameManager.getRecommendedSet(Integer.parseInt(id));
         }
 

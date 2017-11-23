@@ -7,8 +7,10 @@ import com.kingdom.service.UserManager;
 import com.kingdom.util.EmailUtil;
 import com.kingdom.util.KingdomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,16 +19,13 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings({"UnusedDeclaration"})
-public class MainController extends MultiActionController {
+@Controller
+public class MainController {
 
     private UserManager manager = new UserManager();
     public static final int MAX_USER_LIMIT = 100;
 
-    public ModelAndView index(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return new ModelAndView("redirect:/login.html");
-    }
-
+    @RequestMapping("/login.html")
 	public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView modelAndView = new ModelAndView("login");
         String username = request.getParameter("username");
@@ -67,12 +66,14 @@ public class MainController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/logout.html")
     public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
         User user = getUser(request);
         KingdomUtil.logoutUser(user, request);
         return KingdomUtil.getLoginModelAndView(request);
     }
 
+    @RequestMapping("/admin.html")
 	public ModelAndView admin(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if(!isAdmin(request)){
             return KingdomUtil.getLoginModelAndView(request);
@@ -92,6 +93,7 @@ public class MainController extends MultiActionController {
         return modelAndView;
 	}
 
+    @RequestMapping("/requestAccount.html")
     public ModelAndView requestAccount(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView modelAndView = new ModelAndView("requestAccount");
         modelAndView.addObject("error", "");
@@ -99,6 +101,7 @@ public class MainController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/submitAccount.html")
     public ModelAndView submitAccountRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String error = null;
         String username = request.getParameter("username");
@@ -153,6 +156,7 @@ public class MainController extends MultiActionController {
         }
     }
 
+    @RequestMapping("/myAccount.html")
     public ModelAndView myAccount(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -165,6 +169,7 @@ public class MainController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/saveMyAccountPassword.html")
     public ModelAndView saveMyAccountPassword(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -186,6 +191,7 @@ public class MainController extends MultiActionController {
         return new ModelAndView("redirect:/showGameRooms.html");
     }
 
+    @RequestMapping("/changeTemporaryPassword.html")
     public ModelAndView changeTemporaryPassword(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -206,6 +212,7 @@ public class MainController extends MultiActionController {
         return new ModelAndView("redirect:/showGameRooms.html");
     }
 
+    @RequestMapping("/saveMyAccount.html")
     public ModelAndView saveMyAccount(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -230,18 +237,21 @@ public class MainController extends MultiActionController {
         return user != null && user.isAdmin();
     }
 
+    @RequestMapping("/showHelp.html")
     public ModelAndView showHelp(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView modelAndView = new ModelAndView("help");
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
         return modelAndView;
     }
 
+    @RequestMapping("/showDisclaimer.html")
     public ModelAndView showDisclaimer(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView modelAndView = new ModelAndView("disclaimer");
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
         return modelAndView;
     }
 
+    @RequestMapping("/getPlayerStatsDivFromAdmin.html")
     public ModelAndView getPlayerStatsDivFromAdmin(HttpServletRequest request, HttpServletResponse response) {
         if (!isAdmin(request)) {
             return new ModelAndView("redirect:/login.html");
@@ -257,8 +267,7 @@ public class MainController extends MultiActionController {
         return modelAndView;
     }
 
-
-
+    @RequestMapping("/forgotLogin.html")
     public ModelAndView forgotLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView modelAndView = new ModelAndView("forgotLogin");
         modelAndView.addObject("error", "");
@@ -266,6 +275,7 @@ public class MainController extends MultiActionController {
         return modelAndView;
     }
 
+    @RequestMapping("/submitForgotLogin.html")
     public ModelAndView submitForgotLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String error = null;
         String email = request.getParameter("email");
@@ -298,6 +308,7 @@ public class MainController extends MultiActionController {
         }
     }
 
+    @RequestMapping("/setUpdatingWebsite.html")
     public ModelAndView setUpdatingWebsite(HttpServletRequest request, HttpServletResponse response) {
         boolean updatingWebsite = KingdomUtil.getRequestBoolean(request, "updatingWebsite");
         GameRoomManager.getInstance().setUpdatingWebsite(updatingWebsite);
@@ -305,6 +316,7 @@ public class MainController extends MultiActionController {
         return new ModelAndView("empty");
     }
 
+    @RequestMapping("/setShowNews.html")
     public ModelAndView setShowNews(HttpServletRequest request, HttpServletResponse response) {
         boolean showNews = KingdomUtil.getRequestBoolean(request, "showNews");
         GameRoomManager.getInstance().setShowNews(showNews);
@@ -312,6 +324,7 @@ public class MainController extends MultiActionController {
         return new ModelAndView("empty");
     }
 
+    @RequestMapping("/switchSite.html")
     public ModelAndView switchSite(HttpServletRequest request, HttpServletResponse response) throws Exception {
         boolean mobile = KingdomUtil.isMobile(request);
         request.getSession().setAttribute("mobile", !mobile);

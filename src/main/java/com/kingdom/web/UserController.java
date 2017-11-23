@@ -3,30 +3,33 @@ package com.kingdom.web;
 import com.kingdom.model.User;
 import com.kingdom.service.UserManager;
 import com.kingdom.util.KingdomUtil;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
-@SuppressWarnings({"UnusedDeclaration"})
-public class UserController extends MultiActionController {
+@Controller
+public class UserController {
 
     private UserManager manager = new UserManager();
 
+    @RequestMapping("/listUsers.html")
     public ModelAndView listUsers(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
-		ModelAndView modelAndView = new ModelAndView("users");
-		List<User> users = manager.getUsers();
-		modelAndView.addObject("users", users);
-		return modelAndView;
+        ModelAndView modelAndView = new ModelAndView("users");
+        List<User> users = manager.getUsers();
+        modelAndView.addObject("users", users);
+        return modelAndView;
     }
 
+    @RequestMapping("/saveUser.html")
     public ModelAndView saveUser(HttpServletRequest request, HttpServletResponse response) {
         User loggedInUser = getUser(request);
         if (loggedInUser == null || !loggedInUser.isAdmin()) {
@@ -37,8 +40,7 @@ public class UserController extends MultiActionController {
         if (id.equals("0")) {
             user = new User();
             user.setCreationDate(new Date());
-        }
-        else {
+        } else {
             user = manager.getUser(Integer.parseInt(id));
         }
         user.setUsername(request.getParameter("username"));
@@ -46,14 +48,14 @@ public class UserController extends MultiActionController {
         user.setEmail(request.getParameter("email"));
         if (request.getParameter("gender").equals(User.FEMALE)) {
             user.setGender(User.FEMALE);
-        }
-        else{
+        } else {
             user.setGender(User.MALE);
         }
         manager.saveUser(user);
         return listUsers(request, response);
     }
 
+    @RequestMapping("/deleteUser.html")
     public ModelAndView deleteUser(HttpServletRequest request, HttpServletResponse response) {
         User loggedInUser = getUser(request);
         if (loggedInUser == null || !loggedInUser.isAdmin()) {
@@ -67,12 +69,13 @@ public class UserController extends MultiActionController {
         return listUsers(request, response);
     }
 
+    @RequestMapping("/showUser.html")
     public ModelAndView showUser(HttpServletRequest request, HttpServletResponse response) {
         User loggedInUser = getUser(request);
         if (loggedInUser == null || !loggedInUser.isAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
-		ModelAndView modelAndView = new ModelAndView("user");
+        ModelAndView modelAndView = new ModelAndView("user");
         String id = request.getParameter("id");
         User user;
         if (id.equals("0")) {
@@ -82,7 +85,7 @@ public class UserController extends MultiActionController {
         }
 
         modelAndView.addObject("user", user);
-		return modelAndView;
+        return modelAndView;
     }
 
     public void setUserManager(UserManager manager) {
@@ -93,6 +96,7 @@ public class UserController extends MultiActionController {
         return KingdomUtil.getUser(request);
     }
 
+    @RequestMapping("/showUsersForStat.html")
     public ModelAndView showUsersForStat(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {

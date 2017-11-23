@@ -7,20 +7,22 @@ import com.kingdom.service.UserManager;
 import com.kingdom.util.KingdomUtil;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateModelException;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings({"UnusedDeclaration"})
-public class CardController extends MultiActionController {
+@Controller
+public class CardController {
 
     private CardManager cardManager = new CardManager();
     private UserManager userManager = new UserManager();
 
+    @RequestMapping("/listCards.html")
     public ModelAndView listCards(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -45,6 +47,7 @@ public class CardController extends MultiActionController {
 		return modelAndView;
     }
 
+    @RequestMapping("/saveCard.html")
     public ModelAndView saveCard(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
@@ -86,6 +89,7 @@ public class CardController extends MultiActionController {
         return listCards(request, response);
     }
 
+    @RequestMapping("/showCard.html")
     public ModelAndView showCard(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.isAdmin()) {
