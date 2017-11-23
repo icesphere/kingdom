@@ -168,7 +168,7 @@ function reloadPage() {
 function refreshGame(){
     if(!refreshingGame){
         refreshingGame = true;
-        $.getJSON("refreshGame.html", function(data) {
+        $.getJSON("refreshGame", function(data) {
             refreshParts(data);
         });
     }
@@ -366,7 +366,7 @@ function clickCard(clickType, cardId, special){
         clickingCard = true;
         refreshingGame = true;
         showLoadingDialog();
-        $.post("clickCard.html", {clickType: clickType, cardId: cardId}, function(data) {
+        $.post("clickCard", {clickType: clickType, cardId: cardId}, function(data) {
             refreshParts(data);
             clickingCard = false;
         });
@@ -376,7 +376,7 @@ function clickCard(clickType, cardId, special){
 function endTurn(){
     if(gameStatus == 3 && currentPlayer == "true"){
         refreshingGame = true;
-        $.get("endTurn.html", function(data) {
+        $.get("endTurn", function(data) {
             refreshParts(data);
         });
     }
@@ -386,7 +386,7 @@ function playAllTreasureCards(){
     if(gameStatus == 3 && currentPlayer){
         refreshingGame = true;
         showLoadingDialog();
-        $.get("playAllTreasureCards.html", function(data) {
+        $.get("playAllTreasureCards", function(data) {
             refreshParts(data);
         });
     }
@@ -606,7 +606,7 @@ function quitGame(){
     if(gameStatus != 4){
         if(confirm("Are you sure you want to quit this game?")){
             refreshingGame = true;
-            $.get("quitGame.html", function(data) {
+            $.get("quitGame", function(data) {
                 if(gameStatus == 2){
                     document.location = "showGameRooms.html";
                 }
@@ -623,7 +623,7 @@ function sendChat(){
     if(message != ""){
         $("#chatMessage").val("");
         refreshingGame = true;
-        $.get("sendChat.html", {message: message}, function(data) {
+        $.get("sendChat", {message: message}, function(data) {
             refreshParts(data);
         });
     }
@@ -674,7 +674,7 @@ function useFruitTokens(){
     if(gameStatus == 3){
         refreshingGame = true;
         showLoadingDialog();
-        $.post("useFruitTokens.html", function(data) {
+        $.post("useFruitTokens", function(data) {
             refreshParts(data);
         });
     }
@@ -684,7 +684,7 @@ function useCattleTokens(){
     if(gameStatus == 3){
         refreshingGame = true;
         showLoadingDialog();
-        $.post("useCattleTokens.html", function(data) {
+        $.post("useCattleTokens", function(data) {
             refreshParts(data);
         });
     }

@@ -6,8 +6,10 @@ import com.kingdom.util.KingdomUtil;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateModelException;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -738,14 +740,14 @@ public class GameController {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    @RequestMapping("/joinPrivateGame.html")
-    public ModelAndView joinPrivateGame(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/joinPrivateGame", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map joinPrivateGame(HttpServletRequest request, HttpServletResponse response) {
         Map model = new HashMap();
         User user = getUser(request);
         if (user == null) {
             model.put("redirectToLogin", true);
-            return new ModelAndView("jsonView", model);
+            return model;
         }
         String gameIdParam = request.getParameter("gameId");
         Game game;
@@ -756,7 +758,8 @@ public class GameController {
             game = getGame(request);
         }
         if (game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            model.put("redirectToLogin", true);
+            return model;
         }
         try {
             String message = "Success";
@@ -775,11 +778,11 @@ public class GameController {
             model.put("message", message);
             model.put("start", game.getStatus() == Game.STATUS_GAME_IN_PROGRESS);
 
-            return new ModelAndView("jsonView", model);
+            return model;
         } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
-            return new ModelAndView("empty");
+            return model;
         }
     }
 
@@ -810,21 +813,21 @@ public class GameController {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    @RequestMapping("/refreshGame.html")
-    public ModelAndView refreshGame(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/refreshGame", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map refreshGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
         Map model = new HashMap();
         if (user == null || game == null) {
             model.put("redirectToLogin", true);
-            return new ModelAndView("jsonView", model);
+            return model;
         }
         try {
             Refresh refresh = game.getNeedsRefresh().get(user.getUserId());
             if (refresh == null) {
                 model.put("redirectToLobby", true);
-                return new ModelAndView("jsonView", model);
+                return model;
             }
             model.put("refreshEndTurn", refresh.isRefreshEndTurn());
             if (refresh.isRefreshEndTurn()) {
@@ -839,7 +842,7 @@ public class GameController {
                 }
                 model.put("refreshPlayersOnEndTurn", refresh.isRefreshPlayers());
                 refresh.setRefreshPlayers(false);
-                return new ModelAndView("jsonView", model);
+                return model;
             }
             model.put("refreshGameStatus", refresh.isRefreshGameStatus());
             if (refresh.isRefreshGameStatus()) {
@@ -953,20 +956,23 @@ public class GameController {
             }
             model.put("divsToLoad", divsToLoad);
 
-            return new ModelAndView("jsonView", model);
+            return model;
         } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
-            return new ModelAndView("empty");
+            return model;
         }
     }
 
-    @RequestMapping("/clickCard.html")
-    public ModelAndView clickCard(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/clickCard", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map clickCard(HttpServletRequest request, HttpServletResponse response) {
+        Map model = new HashMap();
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            model.put("redirectToLogin", true);
+            return model;
         }
         try {
             String clickType = request.getParameter("clickType");
@@ -974,7 +980,8 @@ public class GameController {
                 int cardId = Integer.parseInt(request.getParameter("cardId"));
                 Player player = game.getPlayerMap().get(user.getUserId());
                 if (player == null) {
-                    return showGameRooms(request, response);
+                    model.put("redirectToLobby", true);
+                    return model;
                 }
                 game.cardClicked(player, clickType, cardId);
                 game.closeLoadingDialog(player);
@@ -986,16 +993,21 @@ public class GameController {
         return refreshGame(request, response);
     }
 
-    @RequestMapping("/playAllTreasureCards.html")
-    public ModelAndView playAllTreasureCards(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/playAllTreasureCards", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map playAllTreasureCards(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            Map model = new HashMap();
+            model.put("redirectToLogin", true);
+            return model;
         }
         Player player = game.getPlayerMap().get(user.getUserId());
         if (player == null) {
-            return showGameRooms(request, response);
+            Map model = new HashMap();
+            model.put("redirectToLobby", true);
+            return model;
         }
         try {
             game.playAllTreasureCards(player);
@@ -1007,12 +1019,15 @@ public class GameController {
         return refreshGame(request, response);
     }
 
-    @RequestMapping("/endTurn.html")
-    public ModelAndView endTurn(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/endTurn", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map endTurn(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            Map model = new HashMap();
+            model.put("redirectToLogin", true);
+            return model;
         }
         try {
             Player player = game.getPlayerMap().get(user.getUserId());
@@ -1663,17 +1678,21 @@ public class GameController {
         return new ModelAndView("empty");
     }
 
-    @RequestMapping("/quitGame.html")
-    public ModelAndView quitGame(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/quitGame", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map quitGame(HttpServletRequest request, HttpServletResponse response) {
+        Map model = new HashMap();
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            model.put("redirectToLogin", true);
+            return model;
         }
         try {
             if (game.getStatus() == Game.STATUS_GAME_WAITING_FOR_PLAYERS) {
                 game.reset();
-                return new ModelAndView("redirect:/showGameRooms.html");
+                model.put("redirectToLobby", true);
+                return model;
             }
             if (game.getStatus() != Game.STATUS_GAME_FINISHED) {
                 Player player = game.getPlayerMap().get(user.getUserId());
@@ -1683,7 +1702,7 @@ public class GameController {
         } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
-            return new ModelAndView("empty");
+            return model;
         }
     }
 
@@ -1728,12 +1747,15 @@ public class GameController {
         }
     }
 
-    @RequestMapping("/sendChat.html")
-    public ModelAndView sendChat(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/sendChat", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map sendChat(HttpServletRequest request, HttpServletResponse response) {
+        Map model = new HashMap();
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            model.put("redirectToLogin", true);
+            return model;
         }
         try {
             Player player = game.getPlayerMap().get(user.getUserId());
@@ -1749,15 +1771,18 @@ public class GameController {
         } catch (Throwable t) {
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
-            return new ModelAndView("empty");
+            return model;
         }
     }
 
-    @RequestMapping("/sendLobbyChat.html")
-    public ModelAndView sendLobbyChat(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/sendLobbyChat", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map sendLobbyChat(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
-            return new ModelAndView("redirect:/login.html");
+            Map model = new HashMap();
+            model.put("redirectToLogin", true);
+            return model;
         }
         LoggedInUsers.getInstance().updateUser(user);
         String message = request.getParameter("message");
@@ -1770,11 +1795,14 @@ public class GameController {
         return refreshLobby(request, response);
     }
 
-    @RequestMapping("/sendPrivateChat.html")
-    public ModelAndView sendPrivateChat(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/sendPrivateChat", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map sendPrivateChat(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
-            return new ModelAndView("redirect:/login.html");
+            Map model = new HashMap();
+            model.put("redirectToLogin", true);
+            return model;
         }
         String message = request.getParameter("message");
         int receivingUserId = KingdomUtil.getRequestInt(request, "receivingUserId", 0);
@@ -2015,11 +2043,14 @@ public class GameController {
         return modelAndView;
     }
 
-    @RequestMapping("/changeStatus.html")
-    public ModelAndView changeStatus(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/changeStatus", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map changeStatus(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
-            return new ModelAndView("redirect:/login.html");
+            Map model = new HashMap();
+            model.put("redirectToLogin", true);
+            return model;
         }
         String status = request.getParameter("status");
         if (status != null) {
@@ -2238,9 +2269,9 @@ public class GameController {
         return game != null && game.getStatus() != Game.STATUS_GAME_WAITING_FOR_PLAYERS && game.getStatus() != Game.STATUS_GAME_FINISHED && game.getPlayerMap().containsKey(user.getUserId());
     }
 
-    @SuppressWarnings({"unchecked"})
-    @RequestMapping("/refreshLobby.html")
-    public ModelAndView refreshLobby(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/refreshLobby", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map refreshLobby(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         RefreshLobby refresh;
         if (user == null) {
@@ -2284,7 +2315,7 @@ public class GameController {
         }
         model.put("divsToLoad", divsToLoad);
 
-        return new ModelAndView("jsonView", model);
+        return model;
     }
 
     @RequestMapping("/getLobbyPlayersDiv.html")
@@ -2429,17 +2460,21 @@ public class GameController {
         return modelAndView;
     }
 
-    @RequestMapping("/useFruitTokens.html")
-    public ModelAndView useFruitTokens(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/useFruitTokens", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map useFruitTokens(HttpServletRequest request, HttpServletResponse response) {
+        Map model = new HashMap();
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            model.put("redirectToLogin", true);
+            return model;
         }
         try {
             Player player = game.getPlayerMap().get(user.getUserId());
             if (player == null) {
-                return showGameRooms(request, response);
+                model.put("redirectToLobby", true);
+                return model;
             }
             game.showUseFruitTokensCardAction(player);
             game.closeLoadingDialog(player);
@@ -2450,17 +2485,21 @@ public class GameController {
         return refreshGame(request, response);
     }
 
-    @RequestMapping("/useCattleTokens.html")
-    public ModelAndView useCattleTokens(HttpServletRequest request, HttpServletResponse response) {
+    @ResponseBody
+    @RequestMapping(value = "/useCattleTokens", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map useCattleTokens(HttpServletRequest request, HttpServletResponse response) {
+        Map model = new HashMap();
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            model.put("redirectToLogin", true);
+            return model;
         }
         try {
             Player player = game.getPlayerMap().get(user.getUserId());
             if (player == null) {
-                return showGameRooms(request, response);
+                model.put("redirectToLobby", true);
+                return model;
             }
             game.showUseCattleTokensCardAction(player);
             game.closeLoadingDialog(player);

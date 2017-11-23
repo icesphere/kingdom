@@ -28,7 +28,7 @@
             {
                 if(!refreshingLobby){
                     refreshingLobby = true;
-                    $.getJSON("refreshLobby.html", function(data) {
+                    $.getJSON("refreshLobby", function(data) {
                         refreshParts(data);
                     });
                 }
@@ -95,7 +95,7 @@
                 var message = $("#chatMessage").val();
                 if(message != ""){
                     $("#chatMessage").val("");
-                    $.get("sendLobbyChat.html", {message: message}, function(data) {
+                    $.get("sendLobbyChat", {message: message}, function(data) {
                         refreshParts(data);
                     });
                 }
@@ -105,7 +105,7 @@
                 var message = prompt("Enter your private message");
                 if(message != null && message != ""){
                     $("#chatMessage").val("");
-                    $.get("sendPrivateChat.html", {message: message, receivingUserId: userId}, function(data) {
+                    $.get("sendPrivateChat", {message: message, receivingUserId: userId}, function(data) {
                         refreshParts(data);
                     });
                 }
@@ -122,7 +122,7 @@
 
             function changeStatus() {
                 var status = $("#status").val();
-                $.get("changeStatus.html", {status: status}, function(data) {
+                $.get("changeStatus", {status: status}, function(data) {
                     refreshParts(data);
                 });
             }
@@ -150,7 +150,7 @@
 
             function joinPrivateGame(gameRoomId) {
                 var gamePassword = $("#gamePassword_"+gameRoomId).val();
-                $.getJSON("joinPrivateGame.html", {gameId: gameRoomId, gamePassword: gamePassword}, function(data) {
+                $.getJSON("joinPrivateGame", {gameId: gameRoomId, gamePassword: gamePassword}, function(data) {
                     if(data.redirectToLogin == "true") {
                         document.location = "login.html";
                         return;
