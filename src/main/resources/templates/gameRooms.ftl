@@ -40,11 +40,11 @@
             }
 
             function refreshParts(data){
-                if(data.redirectToLogin == "true") {
+                if(data.redirectToLogin) {
                     document.location = "login.html";
                     return;
                 }
-                if(data.startGame == "true") {
+                if(data.startGame) {
                     document.location = "showGame.html";
                     return;
                 }
@@ -53,24 +53,24 @@
                     refreshFinished();
                     return;
                 }
-                if(data.refreshPlayers == "true"){
-                    $('#lobbyPlayersDiv').load('getLobbyPlayersDiv.html', function() {
+                if(data.refreshPlayers){
+                    $('#lobbyPlayersDiv').load('getLobbyPlayersDiv', function() {
                         divsToLoad--;
                         if(divsToLoad == 0){
                             refreshFinished();
                         }
                     });
                 }
-                if(data.refreshGameRooms == "true"){
-                    $('#lobbyGameRoomsDiv').load('getLobbyGameRoomsDiv.html', function() {
+                if(data.refreshGameRooms){
+                    $('#lobbyGameRoomsDiv').load('getLobbyGameRoomsDiv', function() {
                         divsToLoad--;
                         if(divsToLoad == 0){
                             refreshFinished();
                         }
                     });
                 }
-                if(data.refreshChat == "true"){
-                    $('#lobbyChatDiv').load('getLobbyChatDiv.html', function() {
+                if(data.refreshChat){
+                    $('#lobbyChatDiv').load('getLobbyChatDiv', function() {
                         divsToLoad--;
                         if(divsToLoad == 0){
                             refreshFinished();
@@ -151,12 +151,12 @@
             function joinPrivateGame(gameRoomId) {
                 var gamePassword = $("#gamePassword_"+gameRoomId).val();
                 $.getJSON("joinPrivateGame", {gameId: gameRoomId, gamePassword: gamePassword}, function(data) {
-                    if(data.redirectToLogin == "true") {
+                    if(data.redirectToLogin) {
                         document.location = "login.html";
                         return;
                     }
                     if(data.message == "Success") {
-                        if(data.start == "true") {
+                        if(data.start) {
                             document.location = "showGame.html";
                         }
                     }
@@ -167,7 +167,7 @@
             }
 
             function showPlayerStats() {
-                $('#playerStatsDiv').load('getPlayerStatsDiv.html', function() {
+                $('#playerStatsDiv').load('getPlayerStatsDiv', function() {
                     showPlayerStatsDialog();
                 });
             }

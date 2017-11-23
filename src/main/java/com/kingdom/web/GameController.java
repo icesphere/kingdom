@@ -2069,7 +2069,7 @@ public class GameController {
         return modelAndView;
     }
 
-    @RequestMapping("/getPlayerStatsDiv.html")
+    @RequestMapping("/getPlayerStatsDiv")
     public ModelAndView getPlayerStatsDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
@@ -2318,7 +2318,7 @@ public class GameController {
         return model;
     }
 
-    @RequestMapping("/getLobbyPlayersDiv.html")
+    @RequestMapping("/getLobbyPlayersDiv")
     public ModelAndView getLobbyPlayersDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         RefreshLobby refresh;
@@ -2342,7 +2342,7 @@ public class GameController {
         return modelAndView;
     }
 
-    @RequestMapping("/getLobbyChatDiv.html")
+    @RequestMapping("/getLobbyChatDiv")
     public ModelAndView getLobbyChatDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         RefreshLobby refresh;
@@ -2371,7 +2371,7 @@ public class GameController {
         return modelAndView;
     }
 
-    @RequestMapping("/getLobbyGameRoomsDiv.html")
+    @RequestMapping("/getLobbyGameRoomsDiv")
     public ModelAndView getLobbyGameRoomsDiv(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         RefreshLobby refresh;
