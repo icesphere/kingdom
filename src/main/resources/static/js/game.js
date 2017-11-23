@@ -186,23 +186,23 @@ function endTurnRefreshFinished() {
 }
 
 function refreshParts(data){
-    if(data.redirectToLogin == "true") {
+    if(data.redirectToLogin) {
         document.location = "login.html";
         return;
     }
-    if(data.redirectToLobby == "true") {
+    if(data.redirectToLobby) {
         document.location = "showGameRooms.html";
         return;
     }
 
-    if(data.refreshEndTurn == "true"){
-        if(data.refreshHandOnEndTurn == "true"){
+    if(data.refreshEndTurn){
+        if(data.refreshHandOnEndTurn){
             $('#handAreaDiv').load('getHandAreaDivOnEndTurn.html');
         }
-        if(data.refreshSupplyOnEndTurn == "true"){
+        if(data.refreshSupplyOnEndTurn){
             $('#supplyDiv').load('getSupplyDivOnEndTurn.html');
         }
-        if(data.refreshPlayersOnEndTurn == "true"){
+        if(data.refreshPlayersOnEndTurn){
             $('#playersDiv').load('getPlayersDiv.html');
         }
         $('#playingAreaDiv').load('getPreviousPlayerPlayingAreaDiv.html', function() {
@@ -213,13 +213,13 @@ function refreshParts(data){
         });
     }
 
-    if(data.playBeep == "true") {
+    if(data.playBeep) {
         playBeep();
     }
-    if(data.refreshTitle == "true"){
+    if(data.refreshTitle){
         document.title = data.title;
     }
-    if(data.refreshGameStatus == "true"){
+    if(data.refreshGameStatus){
         gameStatus = data.gameStatus;
         currentPlayer = data.currentPlayer;
         if(gameStatus == "4") {
@@ -229,7 +229,7 @@ function refreshParts(data){
             });
         }
     }
-    if(data.closeCardActionDialog == "true"){
+    if(data.closeCardActionDialog){
         closeCardActionDialog();
     }
     divsToLoad = data.divsToLoad;
@@ -237,7 +237,7 @@ function refreshParts(data){
         refreshFinished();
         return;
     }
-    if(data.refreshPlayers == "true"){
+    if(data.refreshPlayers){
         $('#playersDiv').load('getPlayersDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -245,7 +245,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshSupply == "true"){
+    if(data.refreshSupply){
         $('#supplyDiv').load('getSupplyDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -253,7 +253,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshPlayingArea == "true"){
+    if(data.refreshPlayingArea){
         $('#playingAreaDiv').load('getPlayingAreaDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -261,7 +261,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshCardsPlayed == "true"){
+    if(data.refreshCardsPlayed){
         $('#cardsPlayedDiv').load('getCardsPlayedDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -269,7 +269,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshCardsBought == "true"){
+    if(data.refreshCardsBought){
         $('#cardsBoughtDiv').load('getCardsBoughtDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -277,7 +277,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshHistory == "true"){
+    if(data.refreshHistory){
         $('#historyDiv').load('getHistoryDiv.html', function() {
             divsToLoad--;
             if(!mobile) {
@@ -288,7 +288,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshHandArea == "true"){
+    if(data.refreshHandArea){
         $('#handAreaDiv').load('getHandAreaDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -296,7 +296,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshHand == "true"){
+    if(data.refreshHand){
         $('#handDiv').load('getHandDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -304,7 +304,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshDiscard == "true"){
+    if(data.refreshDiscard){
         $('#discardDiv').load('getDiscardDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -312,7 +312,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshChat == "true"){
+    if(data.refreshChat){
         $('#chatDiv').load('getChatDiv.html', function() {
             divsToLoad--;
             if(!mobile) {
@@ -323,7 +323,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshInfoDialog == "true"){
+    if(data.refreshInfoDialog){
         $('#infoDialogDiv').load('getInfoDialogDiv.html', function() {
             openInfoDialog(data.infoDialogHideMethod, data.infoDialogWidth, data.infoDialogHeight, data.infoDialogTimeout);
             divsToLoad--;
@@ -332,7 +332,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshCardAction == "true"){
+    if(data.refreshCardAction){
         $('#cardActionDiv').load('getCardActionDiv.html', function() {
             cardActionWidth = data.cardActionWidth;
             cardActionCardsSize = data.cardActionCardsSize;
@@ -362,7 +362,7 @@ function closeLoadingDialog() {
 }
 
 function clickCard(clickType, cardId, special){
-    if(!clickingCard && currentPlayer == "true" && gameStatus == 3 && (clickType == "supply" || clickType == "hand" || clickType == "leader")){
+    if(!clickingCard && currentPlayer && gameStatus == 3 && (clickType == "supply" || clickType == "hand" || clickType == "leader")){
         clickingCard = true;
         refreshingGame = true;
         showLoadingDialog();
@@ -374,7 +374,7 @@ function clickCard(clickType, cardId, special){
 }
 
 function endTurn(){
-    if(gameStatus == 3 && currentPlayer == "true"){
+    if(gameStatus == 3 && currentPlayer){
         refreshingGame = true;
         $.get("endTurn", function(data) {
             refreshParts(data);
@@ -404,7 +404,7 @@ function selectCardInOrder(cardId){
 function showCardActionDialog(){
     cardActionDialogOpen = true;
     $(".cardAction").each(function(idx) {
-        if($(this).attr("hideOnSelect") == "true"){
+        if($(this).attr("hideOnSelect")){
             selectedCardNumber = 0;
             $(this).click(function() {
                 var cardId = $(this).attr("cardId");
@@ -413,7 +413,7 @@ function showCardActionDialog(){
             });
         }
         else if($(this).attr("disableSelect") == "false"){
-            if($(this).attr("autoSelect") == "true"){
+            if($(this).attr("autoSelect")){
                 $(this).removeClass("cardAction").addClass("cardActionSelected");
                 selectCard($(this).attr("cardIndex"), $(this).attr("cardId"));
             }
@@ -525,7 +525,7 @@ function submitCardAction(){
         if(cardActionNumCards == 1){
             cardString = "card";
         }
-        if(cardActionSelectExact == "true"){
+        if(cardActionSelectExact){
             if(numSelected != cardActionNumCards && cardActionNumCards >= 0){
                 canSubmit = false;
                 alert("You must select "+cardActionNumCards+" "+cardString);
@@ -537,13 +537,13 @@ function submitCardAction(){
                 alert("You must discard down to exactly "+cardActionNumCards+" "+cardString);
             }
         }
-        else if(cardActionSelectUpTo == "true"){
+        else if(cardActionSelectUpTo){
             if(numSelected > cardActionNumCards){
                 canSubmit = false;
                 alert("You can only select up to "+cardActionNumCards+" "+cardString);
             }
         }
-        else if(cardActionSelectAtLeast == "true"){
+        else if(cardActionSelectAtLeast){
             if(numSelected < cardActionNumCards){
                 canSubmit = false;
                 alert("You must select at least "+cardActionNumCards+" "+cardString);
