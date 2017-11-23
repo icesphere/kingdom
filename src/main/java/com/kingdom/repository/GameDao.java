@@ -1,15 +1,18 @@
 package com.kingdom.repository;
 
 import com.kingdom.model.*;
-import org.hibernate.*;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public class GameDao {
@@ -18,17 +21,6 @@ public class GameDao {
 
     public GameDao(HibernateTemplate hibernateTemplate) {
         this.hibernateTemplate = hibernateTemplate;
-    }
-
-    public User getUser(int userId){
-        return hibernateTemplate.get(User.class, userId);
-    }
-
-    @SuppressWarnings({"unchecked", "JpaQlInspection"})
-    public List<GameHistory> getGameHistoryList() {
-        HibernateTemplate template = hibernateTemplate;
-        template.setMaxResults(80);
-        return (List<GameHistory>) template.find("from GameHistory order by gameId desc");
     }
 
     public List<GameHistory> getGameHistoryList(int userId) {
@@ -72,24 +64,6 @@ public class GameDao {
             players.add(gamePlayer);
         }
         return players;
-    }
-
-    @SuppressWarnings({"unchecked", "JpaQlInspection"})
-    public List<GameError> getGameErrors() {
-        HibernateTemplate template = hibernateTemplate;
-        template.setMaxResults(50);
-        return (List<GameError>) template.find("from GameError order by errorId desc");
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public GameLog getGameLogByGameId(int gameId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(GameLog.class);
-        criteria.add(Restrictions.eq("gameId", gameId));
-        List<GameLog> logs = (List<GameLog>) hibernateTemplate.findByCriteria(criteria);
-        if (logs.size() == 1) {
-            return logs.get(0);
-        }
-        return null;
     }
 
     public OverallStats getOverallStats() {
@@ -169,46 +143,7 @@ public class GameDao {
         return stats;
     }
 
-    public OverallStats getOverallStatsForToday() {
-        Calendar today = GregorianCalendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
-
-        return getOverallStats(today.getTime());
-    }
-
-    public OverallStats getOverallStatsForYesterday() {
-        Calendar today = GregorianCalendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
-
-        Calendar yesterday = (Calendar) today.clone();
-        yesterday.add(Calendar.DAY_OF_MONTH, -1);
-
-        return getOverallStats(yesterday.getTime(), today.getTime());
-    }
-
-    public OverallStats getOverallStatsForPastWeek() {
-        Calendar today = GregorianCalendar.getInstance();
-        today.add(Calendar.WEEK_OF_YEAR, -1);
-
-        return getOverallStats(today.getTime());
-    }
-
-    public OverallStats getOverallStatsForPastMonth() {
-        Calendar today = GregorianCalendar.getInstance();
-        today.add(Calendar.MONTH, -1);
-
-        return getOverallStats(today.getTime());
-    }
-
-    private OverallStats getOverallStats(Date startDate) {
-        return getOverallStats(startDate, null);
-    }
-
-    private OverallStats getOverallStats(Date startDate, Date endDate) {
+    public OverallStats getOverallStats(Date startDate, Date endDate) {
         OverallStats stats = new OverallStats();
 
         Session session = hibernateTemplate.getSessionFactory().openSession();
@@ -407,19 +342,5 @@ public class GameDao {
         session.close();
 
         return stats;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public List<AnnotatedGame> getAnnotatedGames() {
-        DetachedCriteria criteria = DetachedCriteria.forClass(AnnotatedGame.class);
-        criteria.addOrder(Order.desc("gameId"));
-        return (List<AnnotatedGame>) hibernateTemplate.findByCriteria(criteria);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public List<RecommendedSet> getRecommendedSets() {
-        DetachedCriteria criteria = DetachedCriteria.forClass(RecommendedSet.class);
-        criteria.addOrder(Order.asc("id"));
-        return (List<RecommendedSet>) hibernateTemplate.findByCriteria(criteria);
     }
 }

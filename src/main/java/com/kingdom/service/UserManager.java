@@ -19,7 +19,7 @@ public class UserManager {
     }
 
     public List<User> getUsers() {
-        return dao.getUsers();
+        return userRepository.findAllByOrderByLastLogin();
 	}
 
     public List<User> getUsers(String stat, Integer value) {
@@ -27,23 +27,23 @@ public class UserManager {
     }
 
     public User getUser(int userId){
-        return dao.getUser(userId);
+        return userRepository.findOne(userId);
     }
 
     public User getUser(String username, String password){
-        return dao.getUser(username, password);
+        return userRepository.findByUsernameAndPassword(username, password);
     }
 
     public User getUser(String username) {
-        return dao.getUser(username);
+        return userRepository.findByUsername(username);
     }
 
     public User getUserByEmail(String email) {
-        return dao.getUserByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
     public boolean usernameExists(String username) {
-        return dao.usernameExists(username);
+        return userRepository.findByUsername(username) != null;
     }
 
     public void saveUser(User user){

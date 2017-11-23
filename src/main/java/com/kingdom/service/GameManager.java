@@ -4,6 +4,8 @@ import com.kingdom.model.*;
 import com.kingdom.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 @Service
@@ -37,7 +39,7 @@ public class GameManager {
     }
 
     public List<GameHistory> getGameHistoryList() {
-        return dao.getGameHistoryList();
+        return gameHistoryRepository.findTop80ByOrderByGameIdDesc();
     }
 
     public List<GameHistory> getGameHistoryList(int userId) {
@@ -77,7 +79,7 @@ public class GameManager {
     }
 
     public List<GameError> getGameErrors() {
-        return dao.getGameErrors();    
+        return gameErrorRepository.findTop50ByOrderByErrorIdDesc();
     }
 
     public void deleteGameError(int errorId) {
@@ -89,7 +91,7 @@ public class GameManager {
     }
 
     public GameLog getGameLogByGameId(int gameId) {
-        return dao.getGameLogByGameId(gameId);
+        return gameLogRepository.findByGameId(gameId);
     }
 
     public void saveGameLog(GameLog log) {
@@ -101,19 +103,38 @@ public class GameManager {
     }
 
     public OverallStats getOverallStatsForToday() {
-        return dao.getOverallStatsForToday();
+        Calendar today = GregorianCalendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+
+        return dao.getOverallStats(today.getTime(), null);
     }
 
     public OverallStats getOverallStatsForYesterday() {
-        return dao.getOverallStatsForYesterday();
+        Calendar today = GregorianCalendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+
+        Calendar yesterday = (Calendar) today.clone();
+        yesterday.add(Calendar.DAY_OF_MONTH, -1);
+
+        return dao.getOverallStats(yesterday.getTime(), today.getTime());
     }
 
     public OverallStats getOverallStatsForPastWeek() {
-        return dao.getOverallStatsForPastWeek();
+        Calendar today = GregorianCalendar.getInstance();
+        today.add(Calendar.WEEK_OF_YEAR, -1);
+
+        return dao.getOverallStats(today.getTime(), null);
     }
 
     public OverallStats getOverallStatsForPastMonth() {
-        return dao.getOverallStatsForPastMonth();
+        Calendar today = GregorianCalendar.getInstance();
+        today.add(Calendar.MONTH, -1);
+
+        return dao.getOverallStats(today.getTime(), null);
     }
 
     public UserStats getUserStats() {
@@ -133,7 +154,7 @@ public class GameManager {
     }
 
     public List<AnnotatedGame> getAnnotatedGames() {
-        return dao.getAnnotatedGames();
+        return annotatedGameRepository.findAllByOrderByGameIdDesc();
     }
 
     public void saveRecommendedSet(RecommendedSet set) {
@@ -149,6 +170,6 @@ public class GameManager {
     }
 
     public List<RecommendedSet> getRecommendedSets() {
-        return dao.getRecommendedSets();
+        return recommendedSetRepository.findAllByOrderByIdAsc();
     }
 }

@@ -22,12 +22,6 @@ public class UserDao {
         this.hibernateTemplate = hibernateTemplate;
     }
 
-    @SuppressWarnings({"unchecked"})
-    public List<User> getUsers() {
-        DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
-        criteria.addOrder(Order.desc("lastLogin"));
-        return (List<User>) hibernateTemplate.findByCriteria(criteria);
-    }
     public List<User> getUsers(String stat, Integer value) {
         if(stat.equals("playedMobileGame")){
             return getPlayedMobileGameUsers();
@@ -94,48 +88,6 @@ public class UserDao {
         session.close();
 
         return users;
-    }
-
-    public User getUser(int userId){
-        return hibernateTemplate.get(User.class, userId);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public User getUser(String username, String password){
-        DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
-        criteria.add(Restrictions.eq("username", username));
-        criteria.add(Restrictions.eq("password", password));
-        List<User> users = (List<User>) hibernateTemplate.findByCriteria(criteria);
-        if(users.size() == 1){
-            return users.get(0);
-        }
-        return null;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public User getUser(String username) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
-        criteria.add(Restrictions.eq("username", username));
-        List<User> users = (List<User>) hibernateTemplate.findByCriteria(criteria);
-        if (users.size() == 1) {
-            return users.get(0);
-        }
-        return null;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public User getUserByEmail(String email) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
-        criteria.add(Restrictions.eq("email", email));
-        List<User> users = (List<User>) hibernateTemplate.findByCriteria(criteria);
-        if (users.size() >= 1) {
-            return users.get(0);
-        }
-        return null;
-    }
-
-    public boolean usernameExists(String username) {
-        return getUser(username) != null;
     }
 
     public void calculateGameStats(User user) {
