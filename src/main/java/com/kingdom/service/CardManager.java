@@ -3,13 +3,19 @@ package com.kingdom.service;
 import com.kingdom.model.Card;
 import com.kingdom.model.Game;
 import com.kingdom.repository.CardDao;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 
+@Service
 public class CardManager {
 
-    CardDao dao = new CardDao();
+    CardDao dao;
+
+    public CardManager(CardDao dao) {
+        this.dao = dao;
+    }
 
 	public List<Card> getAllCards(boolean includeFanExpansionCards) {
         return dao.getAllCards(includeFanExpansionCards);

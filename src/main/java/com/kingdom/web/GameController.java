@@ -17,9 +17,15 @@ import java.util.*;
 @Controller
 public class GameController {
 
-    private CardManager cardManager = new CardManager();
-    private UserManager userManager = new UserManager();
-    private GameManager gameManager = new GameManager();
+    CardManager cardManager;
+    UserManager userManager;
+    GameManager gameManager;
+
+    public GameController(CardManager cardManager, UserManager userManager, GameManager gameManager) {
+        this.cardManager = cardManager;
+        this.userManager = userManager;
+        this.gameManager = gameManager;
+    }
 
     @RequestMapping("/createGame.html")
     public ModelAndView createGame(HttpServletRequest request, HttpServletResponse response) {

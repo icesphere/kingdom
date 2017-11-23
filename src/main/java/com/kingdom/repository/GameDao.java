@@ -1,42 +1,47 @@
 package com.kingdom.repository;
 
 import com.kingdom.model.*;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
 import java.util.*;
 
-public class GameDao extends HibernateDaoSupport {
+@Repository
+public class GameDao {
+    
+    HibernateTemplate hibernateTemplate;
+
+    public GameDao(HibernateTemplate hibernateTemplate) {
+        this.hibernateTemplate = hibernateTemplate;
+    }
 
     public User getUser(int userId){
-        return getHibernateTemplate().get(User.class, userId);
+        return hibernateTemplate.get(User.class, userId);
     }
 
     public void saveGameHistory(GameHistory history) {
-        getHibernateTemplate().saveOrUpdate(history);
+        hibernateTemplate.saveOrUpdate(history);
     }
 
     public void saveGameUserHistory(int gameId, Player player) {
-        getHibernateTemplate().saveOrUpdate(new GameUserHistory(gameId, player));
+        hibernateTemplate.saveOrUpdate(new GameUserHistory(gameId, player));
         if (!player.isQuit()) {
             User user = getUser(player.getUserId());
             if (!user.isActive()) {
                 user.setActive(true);
-                getHibernateTemplate().saveOrUpdate(user);
+                hibernateTemplate.saveOrUpdate(user);
             }
         }
     }
 
     @SuppressWarnings({"unchecked", "JpaQlInspection"})
     public List<GameHistory> getGameHistoryList() {
-        HibernateTemplate template = getHibernateTemplate();
+        HibernateTemplate template = hibernateTemplate;
         template.setMaxResults(80);
         return (List<GameHistory>) template.find("from GameHistory order by gameId desc");
     }
@@ -49,7 +54,7 @@ public class GameDao extends HibernateDaoSupport {
     public List<GameHistory> getGameHistoryList(int userId, int limit) {
         Session session = null;
         try {
-            session = getHibernateTemplate().getSessionFactory().openSession();
+            session = hibernateTemplate.getSessionFactory().openSession();
             Transaction tx = session.beginTransaction();
 
             SQLQuery query = session.createSQLQuery("select g.* from games g, game_users gu where g.gameid = gu.gameid and gu.userid = :userId order by g.gameid desc limit "+limit);
@@ -72,12 +77,12 @@ public class GameDao extends HibernateDaoSupport {
 
         DetachedCriteria criteria = DetachedCriteria.forClass(GameUserHistory.class);
         criteria.add(Restrictions.eq("gameId", gameId));
-        List<GameUserHistory> gamePlayers = (List<GameUserHistory>) getHibernateTemplate().findByCriteria(criteria);
+        List<GameUserHistory> gamePlayers = (List<GameUserHistory>) hibernateTemplate.findByCriteria(criteria);
         List<GameUserHistory> players = new ArrayList<GameUserHistory>();
         for (GameUserHistory gamePlayer : gamePlayers) {
             DetachedCriteria userCriteria = DetachedCriteria.forClass(User.class);
             userCriteria.add(Restrictions.eq("userId", gamePlayer.getUserId()));
-            List<User> users = (List<User>) getHibernateTemplate().findByCriteria(userCriteria);
+            List<User> users = (List<User>) hibernateTemplate.findByCriteria(userCriteria);
             gamePlayer.setUsername(users.get(0).getUsername());
             players.add(gamePlayer);
         }
@@ -88,33 +93,33 @@ public class GameDao extends HibernateDaoSupport {
         if (error.getError().length() > 20000) {
             error.setError(error.getError().substring(0, 19990)+"...");
         }
-        getHibernateTemplate().saveOrUpdate(error);
+        hibernateTemplate.saveOrUpdate(error);
     }
 
     public GameError getGameError(int errorId) {
-        return getHibernateTemplate().get(GameError.class, errorId);
+        return hibernateTemplate.get(GameError.class, errorId);
     }
 
     @SuppressWarnings({"unchecked", "JpaQlInspection"})
     public List<GameError> getGameErrors() {
-        HibernateTemplate template = getHibernateTemplate();
+        HibernateTemplate template = hibernateTemplate;
         template.setMaxResults(50);
         return (List<GameError>) template.find("from GameError order by errorId desc");
     }
 
     public void deleteGameError(int errorId) {
-        getHibernateTemplate().delete(getGameError(errorId));
+        hibernateTemplate.delete(getGameError(errorId));
     }
 
     public GameLog getGameLog(int logId) {
-        return getHibernateTemplate().get(GameLog.class, logId);
+        return hibernateTemplate.get(GameLog.class, logId);
     }
 
     @SuppressWarnings({"unchecked"})
     public GameLog getGameLogByGameId(int gameId) {
         DetachedCriteria criteria = DetachedCriteria.forClass(GameLog.class);
         criteria.add(Restrictions.eq("gameId", gameId));
-        List<GameLog> logs = (List<GameLog>) getHibernateTemplate().findByCriteria(criteria);
+        List<GameLog> logs = (List<GameLog>) hibernateTemplate.findByCriteria(criteria);
         if (logs.size() == 1) {
             return logs.get(0);
         }
@@ -122,13 +127,13 @@ public class GameDao extends HibernateDaoSupport {
     }
 
     public void saveGameLog(GameLog log) {
-        getHibernateTemplate().saveOrUpdate(log);
+        hibernateTemplate.saveOrUpdate(log);
     }
 
     public OverallStats getOverallStats() {
         OverallStats stats = new OverallStats();
 
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         SQLQuery query = session.createSQLQuery("select count(distinct g.gameid) from game_users gu, games g where gu.gameid = g.gameid and g.game_end_reason not like '%quit%' and g.num_computer_players = g.num_players-1 and g.test_game = 0");
@@ -244,7 +249,7 @@ public class GameDao extends HibernateDaoSupport {
     private OverallStats getOverallStats(Date startDate, Date endDate) {
         OverallStats stats = new OverallStats();
 
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         String query = "select count(distinct g.gameid) from game_users gu, games g where gu.gameid = g.gameid and g.game_end_reason not like '%quit%' and g.num_computer_players = g.num_players-1 and g.test_game = 0 and g.abandoned_game = 0";
@@ -370,7 +375,7 @@ public class GameDao extends HibernateDaoSupport {
     public UserStats getUserStats() {
         UserStats stats = new UserStats();
 
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         SQLQuery query = session.createSQLQuery("select count(*) from users u where u.active = 1 and u.admin = 0");
@@ -443,38 +448,38 @@ public class GameDao extends HibernateDaoSupport {
     }
 
     public void saveAnnotatedGame(AnnotatedGame game) {
-        getHibernateTemplate().saveOrUpdate(game);
+        hibernateTemplate.saveOrUpdate(game);
     }
 
     public void deleteAnnotatedGame(AnnotatedGame game){
-        getHibernateTemplate().delete(game);
+        hibernateTemplate.delete(game);
     }
     @SuppressWarnings({"unchecked"})
     public List<AnnotatedGame> getAnnotatedGames() {
         DetachedCriteria criteria = DetachedCriteria.forClass(AnnotatedGame.class);
         criteria.addOrder(Order.desc("gameId"));
-        return (List<AnnotatedGame>) getHibernateTemplate().findByCriteria(criteria);
+        return (List<AnnotatedGame>) hibernateTemplate.findByCriteria(criteria);
     }
 
     public AnnotatedGame getAnnotatedGame(int id) {
-        return getHibernateTemplate().get(AnnotatedGame.class, id);
+        return hibernateTemplate.get(AnnotatedGame.class, id);
     }
 
     public void saveRecommendedSet(RecommendedSet set) {
-        getHibernateTemplate().saveOrUpdate(set);
+        hibernateTemplate.saveOrUpdate(set);
     }
 
     public void deleteRecommendedSet(RecommendedSet set){
-        getHibernateTemplate().delete(set);
+        hibernateTemplate.delete(set);
     }
     @SuppressWarnings({"unchecked"})
     public List<RecommendedSet> getRecommendedSets() {
         DetachedCriteria criteria = DetachedCriteria.forClass(RecommendedSet.class);
         criteria.addOrder(Order.asc("id"));
-        return (List<RecommendedSet>) getHibernateTemplate().findByCriteria(criteria);
+        return (List<RecommendedSet>) hibernateTemplate.findByCriteria(criteria);
     }
 
     public RecommendedSet getRecommendedSet(int id) {
-        return getHibernateTemplate().get(RecommendedSet.class, id);
+        return hibernateTemplate.get(RecommendedSet.class, id);
     }
 }

@@ -6,11 +6,19 @@ import com.kingdom.util.CardRandomizer;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public class CardDao extends HibernateDaoSupport {
+@Repository
+public class CardDao {
+
+    HibernateTemplate hibernateTemplate;
+
+    public CardDao(HibernateTemplate hibernateTemplate) {
+        this.hibernateTemplate = hibernateTemplate;
+    }
 
     @SuppressWarnings({"unchecked"})
     public List<Card> getAllCards(boolean includeFanExpansionCards) {
@@ -21,7 +29,7 @@ public class CardDao extends HibernateDaoSupport {
         }
         criteria.add(Restrictions.eq("testing", false));
         criteria.add(Restrictions.eq("prizeCard", false));
-        return (List<Card>) getHibernateTemplate().findByCriteria(criteria);
+        return (List<Card>) hibernateTemplate.findByCriteria(criteria);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -34,7 +42,7 @@ public class CardDao extends HibernateDaoSupport {
             criteria.add(Restrictions.eq("disabled", false));
         }
         criteria.add(Restrictions.eq("prizeCard", false));
-        return (List<Card>) getHibernateTemplate().findByCriteria(criteria);
+        return (List<Card>) hibernateTemplate.findByCriteria(criteria);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -42,18 +50,18 @@ public class CardDao extends HibernateDaoSupport {
         DetachedCriteria criteria = DetachedCriteria.forClass(Card.class);
         criteria.addOrder(Order.asc("name"));
         criteria.add(Restrictions.eq("prizeCard", true));
-        return (List<Card>) getHibernateTemplate().findByCriteria(criteria);
+        return (List<Card>) hibernateTemplate.findByCriteria(criteria);
     }
 
     public Card getCard(int cardId){
-        return getHibernateTemplate().get(Card.class, cardId);
+        return hibernateTemplate.get(Card.class, cardId);
     }
 
     @SuppressWarnings({"unchecked"})
     public Card getCard(String cardName) {
         DetachedCriteria criteria = DetachedCriteria.forClass(Card.class);
         criteria.add(Restrictions.eq("name", cardName));
-        List<Card> cards = (List<Card>) getHibernateTemplate().findByCriteria(criteria);
+        List<Card> cards = (List<Card>) hibernateTemplate.findByCriteria(criteria);
         if (cards.size() == 1) {
             return cards.get(0);
         }
@@ -61,7 +69,7 @@ public class CardDao extends HibernateDaoSupport {
     }
 
     public void saveCard(Card card){
-        getHibernateTemplate().saveOrUpdate(card);
+        hibernateTemplate.saveOrUpdate(card);
     }
 
     public void setRandomKingdomCards(Game game) {

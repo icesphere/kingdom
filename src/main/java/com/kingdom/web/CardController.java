@@ -19,8 +19,13 @@ import java.util.Map;
 @Controller
 public class CardController {
 
-    private CardManager cardManager = new CardManager();
-    private UserManager userManager = new UserManager();
+    CardManager cardManager;
+    UserManager userManager;
+
+    public CardController(CardManager cardManager, UserManager userManager) {
+        this.cardManager = cardManager;
+        this.userManager = userManager;
+    }
 
     @RequestMapping("/listCards.html")
     public ModelAndView listCards(HttpServletRequest request, HttpServletResponse response) {

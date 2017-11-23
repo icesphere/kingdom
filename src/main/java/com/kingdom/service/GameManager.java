@@ -2,14 +2,17 @@ package com.kingdom.service;
 
 import com.kingdom.model.*;
 import com.kingdom.repository.GameDao;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class GameManager {
 
-    GameDao dao = new GameDao();
+    GameDao dao;
 
-    public GameManager() {
+    public GameManager(GameDao dao) {
+        this.dao = dao;
     }
 
     public List<GameHistory> getGameHistoryList() {
@@ -102,7 +105,7 @@ public class GameManager {
 
     public List<AnnotatedGame> getAnnotatedGames() {
         return dao.getAnnotatedGames();
-    }  
+    }
 
     public void saveRecommendedSet(RecommendedSet set) {
         dao.saveRecommendedSet(set);

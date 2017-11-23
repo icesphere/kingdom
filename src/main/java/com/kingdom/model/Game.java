@@ -136,7 +136,7 @@ public class Game {
     private Map<Integer, List<Card>> potionCostMap = new HashMap<Integer, List<Card>>();
     private Date creationTime = new Date();
     private RandomizingOptions randomizingOptions;
-    private GameManager gameManager = new GameManager();
+    private GameManager gameManager;
     private boolean custom;
     private Date lastActivity;
     private boolean determinedWinner = false;

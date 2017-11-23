@@ -15,7 +15,11 @@ import java.util.List;
 @Controller
 public class UserController {
 
-    private UserManager manager = new UserManager();
+    UserManager manager;
+
+    public UserController(UserManager manager) {
+        this.manager = manager;
+    }
 
     @RequestMapping("/listUsers.html")
     public ModelAndView listUsers(HttpServletRequest request, HttpServletResponse response) {

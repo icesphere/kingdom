@@ -2,25 +2,31 @@ package com.kingdom.repository;
 
 import com.kingdom.model.PlayerStats;
 import com.kingdom.model.User;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
-public class UserDao extends HibernateDaoSupport {
+@Repository
+public class UserDao {
+
+    HibernateTemplate hibernateTemplate;
+
+    public UserDao(HibernateTemplate hibernateTemplate) {
+        this.hibernateTemplate = hibernateTemplate;
+    }
 
     @SuppressWarnings({"unchecked"})
     public List<User> getUsers() {
         DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
         criteria.addOrder(Order.desc("lastLogin"));
-        return (List<User>) getHibernateTemplate().findByCriteria(criteria);
+        return (List<User>) hibernateTemplate.findByCriteria(criteria);
     }
     public List<User> getUsers(String stat, Integer value) {
         if(stat.equals("playedMobileGame")){
@@ -42,12 +48,12 @@ public class UserDao extends HibernateDaoSupport {
             criteria.add(Restrictions.eq(stat, true));
         }
         criteria.addOrder(Order.desc("lastLogin"));
-        return (List<User>) getHibernateTemplate().findByCriteria(criteria);
+        return (List<User>) hibernateTemplate.findByCriteria(criteria);
     }
 
     private List<User> getPlayedMobileGameUsers() {
 
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         SQLQuery sqlQuery = session.createSQLQuery("select u.* from users u where u.active = 1 and u.admin = 0 and u.userid in (select gu.userid from games g, game_users gu where g.gameid = gu.gameid and g.mobile = 1 and gu.userid > 0) order by u.last_login desc");
@@ -62,7 +68,7 @@ public class UserDao extends HibernateDaoSupport {
 
     private List<User> getUsingDeckFrequencies() {
 
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         SQLQuery sqlQuery = session.createSQLQuery("select u.* from users u where u.active = 1 and u.admin = 0 and (base_weight != 3 or intrigue_weight != 3 or seaside_weight != 3 or alchemy_weight != 3 or prosperity_weight != 3 or cornucopia_weight != 3 or hinterlands_weight != 3 or promo_weight != 3 or salvation_weight != 3 or fairy_tale_weight != 3 or proletariat_weight != 3) order by u.last_login desc");
@@ -77,7 +83,7 @@ public class UserDao extends HibernateDaoSupport {
 
     private List<User> getUsingExcludedCards() {
 
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         SQLQuery sqlQuery = session.createSQLQuery("select u.* from users u where u.active = 1 and u.admin = 0 and u.excluded_cards != '' order by u.last_login desc");
@@ -91,7 +97,7 @@ public class UserDao extends HibernateDaoSupport {
     }
 
     public User getUser(int userId){
-        return getHibernateTemplate().get(User.class, userId);
+        return hibernateTemplate.get(User.class, userId);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -99,7 +105,7 @@ public class UserDao extends HibernateDaoSupport {
         DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
         criteria.add(Restrictions.eq("username", username));
         criteria.add(Restrictions.eq("password", password));
-        List<User> users = (List<User>) getHibernateTemplate().findByCriteria(criteria);
+        List<User> users = (List<User>) hibernateTemplate.findByCriteria(criteria);
         if(users.size() == 1){
             return users.get(0);
         }
@@ -110,7 +116,7 @@ public class UserDao extends HibernateDaoSupport {
     public User getUser(String username) {
         DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
         criteria.add(Restrictions.eq("username", username));
-        List<User> users = (List<User>) getHibernateTemplate().findByCriteria(criteria);
+        List<User> users = (List<User>) hibernateTemplate.findByCriteria(criteria);
         if (users.size() == 1) {
             return users.get(0);
         }
@@ -121,7 +127,7 @@ public class UserDao extends HibernateDaoSupport {
     public User getUserByEmail(String email) {
         DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
         criteria.add(Restrictions.eq("email", email));
-        List<User> users = (List<User>) getHibernateTemplate().findByCriteria(criteria);
+        List<User> users = (List<User>) hibernateTemplate.findByCriteria(criteria);
         if (users.size() >= 1) {
             return users.get(0);
         }
@@ -133,17 +139,17 @@ public class UserDao extends HibernateDaoSupport {
     }
 
     public void saveUser(User user){
-        getHibernateTemplate().saveOrUpdate(user);
+        hibernateTemplate.saveOrUpdate(user);
     }
 
     public void deleteUser(User user){
-        getHibernateTemplate().delete(user);
+        hibernateTemplate.delete(user);
     }
 
     public void calculateGameStats(User user) {
         PlayerStats stats = new PlayerStats();
 
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         //against computer players
@@ -198,7 +204,7 @@ public class UserDao extends HibernateDaoSupport {
     }
 
     public int getErrorCount() {
-        Session session = getHibernateTemplate().getSessionFactory().openSession();
+        Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         SQLQuery query = session.createSQLQuery("select count(*) from errors");

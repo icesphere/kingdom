@@ -8,7 +8,6 @@ import com.kingdom.util.EmailUtil;
 import com.kingdom.util.KingdomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,8 +21,13 @@ import java.util.regex.Pattern;
 @Controller
 public class MainController {
 
-    private UserManager manager = new UserManager();
-    public static final int MAX_USER_LIMIT = 100;
+    private static final int MAX_USER_LIMIT = 100;
+
+    UserManager manager;
+
+    public MainController(UserManager manager) {
+        this.manager = manager;
+    }
 
     @RequestMapping("/login.html")
 	public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {

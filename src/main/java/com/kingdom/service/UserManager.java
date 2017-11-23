@@ -2,14 +2,20 @@ package com.kingdom.service;
 
 import com.kingdom.model.User;
 import com.kingdom.repository.UserDao;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserManager {   
 
-    UserDao dao = new UserDao();
+    UserDao dao;
 
-	public List<User> getUsers() {
+    public UserManager(UserDao dao) {
+        this.dao = dao;
+    }
+
+    public List<User> getUsers() {
         return dao.getUsers();
 	}
 
