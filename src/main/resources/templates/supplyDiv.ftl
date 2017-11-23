@@ -1,0 +1,69 @@
+<div>
+    <a href="showGameCards.html" target="_blank">Card Details</a>
+</div>
+<#if player.usingLeaders>
+    <div>
+        <a href="showLeaders.html" target="_blank">Leader Details</a>
+    </div>
+</#if>
+<table>
+    <tr>
+        <#if !mobile>
+            <td>
+                <img src="images/Supply.png" alt="Supply"/>
+            </td>
+        </#if>
+        <td>
+            <table>
+                <tr>
+                    <#if kingdomCards?size == 11>
+                        <td style="vertical-align:bottom;text-align:center;">(Bane Card)</td>
+                    </#if>
+                    <#list kingdomCards as card>
+                        <#if card_index == 5>
+                            </tr>
+                            <tr>
+                        </#if>
+                        <#assign clickType="supply">
+                        <td>
+                            <table cellpadding="0" cellspacing="0">
+                                <#if gameStatus == 3>
+                                    <tr>
+                                        <td style="font-size:10px;">${supply(card.cardId)}<#if showEmbargoTokens && embargoTokens(card.cardId) != 0> (${embargoTokens(card.cardId)} embargo token<#if embargoTokens(card.cardId) != 1>s</#if>)</#if><#if showTrollTokens && trollTokens(card.cardId) != 0> (${trollTokens(card.cardId)} troll token<#if trollTokens(card.cardId) != 1>s</#if>)</#if><#if showTradeRouteTokens && tradeRouteTokenMap(card.cardId)> (trade route token)</#if></td>
+                                    </tr>
+                                </#if>
+                                <tr><td><#include "gameCard.ftl"></td></tr>
+                            </table>
+                        </td>
+                    </#list>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <#list supplyCards as card>
+                        <#if (card_index == 3 && supplyCards?size == 7) || (card_index == 4 && supplyCards?size == 8) || (card_index == 4 && supplyCards?size == 9) || (card_index == 5 && supplyCards?size == 10)>
+                            </tr>
+                            <tr>
+                        </#if>
+                        <#assign clickType="supply">
+                        <td>
+                            <table cellpadding="0" cellspacing="0">
+                                <#if gameStatus == 3>
+                                    <tr><td style="font-size:10px;">${supply(card.cardId)}<#if showEmbargoTokens && embargoTokens(card.cardId) != 0> (${embargoTokens(card.cardId)} embargo token<#if embargoTokens(card.cardId) != 1>s</#if>)</#if><#if showTrollTokens && trollTokens(card.cardId) != 0> (${trollTokens(card.cardId)} troll token<#if trollTokens(card.cardId) != 1>s</#if>)</#if><#if showTradeRouteTokens && tradeRouteTokenMap(card.cardId)> (trade route token)</#if></td></tr>
+                                </#if>
+                                <tr><td><#include "gameCard.ftl"></td></tr>
+                            </table>
+                        </td>
+                    </#list>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <#if showTradeRouteTokens>
+        <tr>
+            <td colspan="3">Trade Route Mat: ${tradeRouteTokensOnMat} token<#if tradeRouteTokensOnMat != 1>s</#if></td>
+        </tr>
+    </#if>
+</table>

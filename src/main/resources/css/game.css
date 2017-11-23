@@ -1,0 +1,236 @@
+.card
+{
+    background-color:#FFFFFF;
+    width:90px;
+    height:110px;
+    border:black 2px solid;
+    text-align:center;
+    position:relative;
+    border-radius:7px;
+    -moz-border-radius:7px;
+    -webkit-border-radius:7px;
+    font-family:"Times New Roman", Times, serif;
+    cursor: default;
+}
+
+.cardName
+{
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
+    -moz-border-radius-topleft:5px;
+    -moz-border-radius-topright:5px;
+    -webkit-border-top-left-radius:5px;
+    -webkit-border-top-right-radius:5px;
+}
+
+
+.clickableCard
+{
+    background-color:#FFFFFF;
+    cursor: pointer;
+}
+
+.clickableCard:hover
+{
+    background-color:#66AAFF;
+}
+
+.greenClickableCard
+{
+    background-color:#BBFFCC;
+    cursor: pointer;
+}
+
+.greenClickableCard:hover
+{
+    background-color:#66AAFF;
+}
+
+.cardDisabled
+{
+    background-color: #CCCCCC;
+}
+
+.cardAction
+{
+    background-color:#FFFFFF;
+    cursor: pointer;
+}
+
+.cardAction:hover
+{
+    background-color:#66AAFF;
+}
+
+.cardActionSelected
+{
+    background-color: #5C9CCC;
+    cursor: pointer;
+}
+
+.cardRow
+{
+    font-size: 9px;
+    padding-top: 1px;
+}
+
+.specialRow
+{
+    font-size: 9px;
+    padding-top:2px;
+    padding-left:4px;
+    padding-right:4px;
+    text-align:center;
+}
+
+.historyDivColumn
+{
+    height: 400px;
+}
+
+#historyScrollingDiv
+{
+    height:400px;
+    overflow:auto;
+}
+
+#gameDiv
+{
+    width:99%;
+}
+
+#supplyAreaDiv
+{
+    width:100%;
+    overflow:auto;
+    padding:2px;
+}
+
+#playingAreaDiv
+{
+    width:100%;
+    overflow:auto;
+    padding:2px;
+}
+
+#handAreaDiv
+{
+    width:100%;
+    overflow:auto;
+    padding:2px;
+}
+
+.loadingDialog
+{
+    font-family:"Times New Roman", Times, serif;
+}
+
+.infoDialog
+{
+    font-family:"Times New Roman", Times, serif;
+}
+
+.cardActionDialog
+{
+    font-family:"Times New Roman", Times, serif;
+}
+
+.gameResults
+{
+    font-size:14px;
+}
+
+.gameResultsPlayerPointsLabel
+{
+    float:left;
+    padding-right:5px;
+}
+
+.gameResultsPlayerPoints
+{
+    float:left;
+    padding-right:10px;
+}
+
+.drawPileCard
+{
+    float: left;
+    margin-right: 3px;
+    background-color: #222222;
+    width: 3px;
+}
+
+.discardPile
+{
+    background-color: #222222;
+}
+
+.handAreaTopRow
+{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 35px;
+}
+
+.gameInfoDialog
+{
+    font-family:"Times New Roman", Times, serif;
+}
+
+.playerStatsDialog
+{
+    font-family:"Times New Roman", Times, serif;
+}
+
+.gameInfoLabel
+{
+    text-align: right;
+}
+
+.cardColor
+{
+    padding: 0 .6ex 1px .5ex;
+}
+
+.lobby
+{
+    float:left;
+    width:1000px;
+    overflow:auto;
+    padding-bottom:10px;
+}
+
+.lobbyGameRooms
+{
+    clear:left;
+    float:left;
+    vertical-align:top;
+    width:300px;
+}
+
+.lobbyChatOuter
+{
+    float:left;
+    vertical-align:top;
+    width:400px;
+}
+
+.lobbyChatInner
+{
+    margin-right:60px;
+    margin-left:60px;
+}
+
+.lobbyPlayers
+{
+    float:left;
+    vertical-align:top;
+    width:300px;
+}
+
+.customCardsDeck
+{
+    height: 600px;
+    float:left;
+    padding-right:20px;
+}
