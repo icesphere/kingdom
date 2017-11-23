@@ -3,6 +3,7 @@ package com.kingdom.model;
 
 import javax.persistence.*;
 
+@Table(name = "game_log")
 @Entity
 public class GameLog {
 

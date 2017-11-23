@@ -3,11 +3,6 @@ package com.kingdom.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: Apr 18, 2010
- * Time: 11:01:03 PM
- */
 public class CardAction {
     public static final int TYPE_WAITING_FOR_PLAYERS = 1;
     public static final int TYPE_DISCARD_FROM_HAND = 2;

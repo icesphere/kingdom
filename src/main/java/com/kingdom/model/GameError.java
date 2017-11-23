@@ -3,6 +3,7 @@ package com.kingdom.model;
 import javax.persistence.*;
 import java.util.Date;
 
+@Table(name = "errors")
 @Entity
 public class GameError {
 

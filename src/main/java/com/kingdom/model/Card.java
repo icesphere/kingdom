@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Table(name = "cards")
 @Entity
 public class Card {
     public static final int TYPE_ACTION = 1;

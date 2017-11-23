@@ -3,8 +3,10 @@ package com.kingdom.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
+@Table(name = "games")
 @Entity
 public class GameHistory {
 

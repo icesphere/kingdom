@@ -3,7 +3,9 @@ package com.kingdom.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Table(name = "annotated_games")
 @Entity
 public class AnnotatedGame {
 

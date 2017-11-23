@@ -4,6 +4,7 @@ import com.kingdom.util.KingdomUtil;
 
 import javax.persistence.*;
 
+@Table(name = "game_users")
 @Entity
 public class GameUserHistory {
 
