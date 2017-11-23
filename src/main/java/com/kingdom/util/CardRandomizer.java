@@ -3,7 +3,7 @@ package com.kingdom.util;
 import com.kingdom.model.Card;
 import com.kingdom.model.Game;
 import com.kingdom.model.RandomizingOptions;
-import com.kingdom.repository.CardDao;
+import com.kingdom.repository.CardRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,8 +14,6 @@ import java.util.List;
 @Service
 public class CardRandomizer {
 
-    private CardDao dao;
-
     private RandomizingOptions options;
     private RandomCardsSelected rcs;
 
@@ -24,9 +22,10 @@ public class CardRandomizer {
     private boolean cardSwapped;
     private boolean changingBaneCard;
     private boolean replacingCardWithSpecificType;
+    private CardRepository cardRepository;
 
-    public CardRandomizer(CardDao dao) {
-        this.dao = dao;
+    public CardRandomizer(CardRepository cardRepository) {
+        this.cardRepository = cardRepository;
     }
 
     public void setRandomKingdomCards(Game game, RandomizingOptions options) {
@@ -45,7 +44,7 @@ public class CardRandomizer {
 
         //special case where they only selected alchemy deck
         if (decks.size() == 1 && decks.get(0).equals(Card.DECK_ALCHEMY)) {
-            cards = dao.getCards(Card.DECK_ALCHEMY, false);
+            cards = getCardsByDeck(Card.DECK_ALCHEMY);
             Collections.shuffle(cards);
             if (options.isSwappingCard()) {
                 for (Card card : cards) {
@@ -72,14 +71,14 @@ public class CardRandomizer {
 
         for (String deck : decks) {
             if (!options.isThreeToFiveAlchemy() || !deck.equals(Card.DECK_ALCHEMY)) {
-                cards.addAll(dao.getCards(deck, false));
+                cards.addAll(getCardsByDeck(deck));
             }
         }
         Collections.shuffle(cards);
 
         if (includeAlchemy && options.isThreeToFiveAlchemy()) {
             int alchemyCardsToInclude = 3;
-            List<Card> alchemyCards = dao.getCards(Card.DECK_ALCHEMY, false);
+            List<Card> alchemyCards = getCardsByDeck(Card.DECK_ALCHEMY);
             Collections.shuffle(alchemyCards);
             if (alchemyCards.get(0).getCost() > 3) {
                 alchemyCardsToInclude = 5;
@@ -307,6 +306,10 @@ public class CardRandomizer {
         swapOptions.setCustomSelection(cards);
         swapOptions.getExcludedCards().add(cardToReplace);
         setRandomKingdomCards(game, swapOptions);
+    }
+
+    private List<Card> getCardsByDeck(String deck) {
+        return cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false, false);
     }
 
     private class RandomCardsSelected {

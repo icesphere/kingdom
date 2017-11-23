@@ -2,7 +2,6 @@ package com.kingdom.service;
 
 import com.kingdom.model.Card;
 import com.kingdom.model.Game;
-import com.kingdom.repository.CardDao;
 import com.kingdom.repository.CardRepository;
 import com.kingdom.util.CardRandomizer;
 import org.springframework.stereotype.Service;
@@ -13,26 +12,24 @@ import java.util.List;
 @Service
 public class CardManager {
 
-    private CardDao dao;
     private CardRepository cardRepository;
     private CardRandomizer cardRandomizer;
 
-    public CardManager(CardDao dao, CardRepository cardRepository, CardRandomizer cardRandomizer) {
-        this.dao = dao;
+    public CardManager(CardRepository cardRepository, CardRandomizer cardRandomizer) {
         this.cardRepository = cardRepository;
         this.cardRandomizer = cardRandomizer;
     }
 
     public List<Card> getAllCards(boolean includeFanExpansionCards) {
-        return dao.getAllCards(includeFanExpansionCards);
+        return cardRepository.findByFanExpansionCardAndDisabledAndPrizeCardOrderByNameAsc(includeFanExpansionCards, false, false);
     }
 
     public List<Card> getCards(String deck, boolean includeTesting) {
-        return dao.getCards(deck, includeTesting);
+        return getCardsByDeck(deck, includeTesting);
     }
 
     public List<Card> getPrizeCards() {
-        return dao.getPrizeCards();
+        return cardRepository.findByPrizeCardOrderByNameAsc(true);
     }
 
     public Card getCard(int cardId) {
@@ -40,7 +37,7 @@ public class CardManager {
     }
 
     public Card getCard(String cardName) {
-        return dao.getCard(cardName);
+        return cardRepository.findByName(cardName);
     }
 
     public void saveCard(Card card) {
@@ -60,8 +57,12 @@ public class CardManager {
     }
 
     public List<Card> getAvailableLeaderCards() {
-        List<Card> cards = dao.getCards(Card.DECK_LEADERS, false);
+        List<Card> cards = getCardsByDeck(Card.DECK_LEADERS, false);
         Collections.shuffle(cards);
         return cards.subList(0, 7);
+    }
+
+    private List<Card> getCardsByDeck(String deck, boolean includeTesting) {
+        return cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, includeTesting, false, false);
     }
 }
