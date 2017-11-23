@@ -1,8 +1,6 @@
 package com.kingdom.repository;
 
 import com.kingdom.model.Card;
-import com.kingdom.model.Game;
-import com.kingdom.util.CardRandomizer;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -14,7 +12,7 @@ import java.util.List;
 @Repository
 public class CardDao {
 
-    HibernateTemplate hibernateTemplate;
+    private HibernateTemplate hibernateTemplate;
 
     public CardDao(HibernateTemplate hibernateTemplate) {
         this.hibernateTemplate = hibernateTemplate;
@@ -53,10 +51,6 @@ public class CardDao {
         return (List<Card>) hibernateTemplate.findByCriteria(criteria);
     }
 
-    public Card getCard(int cardId){
-        return hibernateTemplate.get(Card.class, cardId);
-    }
-
     @SuppressWarnings({"unchecked"})
     public Card getCard(String cardName) {
         DetachedCriteria criteria = DetachedCriteria.forClass(Card.class);
@@ -66,24 +60,5 @@ public class CardDao {
             return cards.get(0);
         }
         return null;
-    }
-
-    public void saveCard(Card card){
-        hibernateTemplate.saveOrUpdate(card);
-    }
-
-    public void setRandomKingdomCards(Game game) {
-        CardRandomizer randomizer = new CardRandomizer(this);
-        randomizer.setRandomKingdomCards(game, game.getRandomizingOptions());
-    }
-
-    public void swapRandomCard(Game game, int cardId) {
-        CardRandomizer randomizer = new CardRandomizer(this);
-        randomizer.swapRandomCard(game, cardId);
-    }
-
-    public void swapForTypeOfCard(Game game, int cardId, String cardType) {
-        CardRandomizer randomizer = new CardRandomizer(this);
-        randomizer.swapCard(game, cardId, cardType);
     }
 }

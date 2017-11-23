@@ -3,6 +3,8 @@ package com.kingdom.service;
 import com.kingdom.model.Card;
 import com.kingdom.model.Game;
 import com.kingdom.repository.CardDao;
+import com.kingdom.repository.CardRepository;
+import com.kingdom.util.CardRandomizer;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -11,15 +13,19 @@ import java.util.List;
 @Service
 public class CardManager {
 
-    CardDao dao;
+    private CardDao dao;
+    private CardRepository cardRepository;
+    private CardRandomizer cardRandomizer;
 
-    public CardManager(CardDao dao) {
+    public CardManager(CardDao dao, CardRepository cardRepository, CardRandomizer cardRandomizer) {
         this.dao = dao;
+        this.cardRepository = cardRepository;
+        this.cardRandomizer = cardRandomizer;
     }
 
-	public List<Card> getAllCards(boolean includeFanExpansionCards) {
+    public List<Card> getAllCards(boolean includeFanExpansionCards) {
         return dao.getAllCards(includeFanExpansionCards);
-	}
+    }
 
     public List<Card> getCards(String deck, boolean includeTesting) {
         return dao.getCards(deck, includeTesting);
@@ -29,32 +35,28 @@ public class CardManager {
         return dao.getPrizeCards();
     }
 
-    public Card getCard(int cardId){
-        return dao.getCard(cardId);
+    public Card getCard(int cardId) {
+        return cardRepository.findOne(cardId);
     }
 
-    public Card getCard(String cardName){
+    public Card getCard(String cardName) {
         return dao.getCard(cardName);
     }
 
-    public void saveCard(Card card){
-        dao.saveCard(card);
+    public void saveCard(Card card) {
+        cardRepository.save(card);
     }
 
-    public void setCardDao(CardDao cardDao) {
-        this.dao = cardDao;
-    }
-
-    public void setRandomKingdomCards(Game game){
-        dao.setRandomKingdomCards(game);
+    public void setRandomKingdomCards(Game game) {
+        cardRandomizer.setRandomKingdomCards(game, game.getRandomizingOptions());
     }
 
     public void swapRandomCard(Game game, int cardId) {
-        dao.swapRandomCard(game, cardId);
+        cardRandomizer.swapRandomCard(game, cardId);
     }
 
     public void swapForTypeOfCard(Game game, int cardId, String cardType) {
-        dao.swapForTypeOfCard(game, cardId, cardType);
+        cardRandomizer.swapCard(game, cardId, cardType);
     }
 
     public List<Card> getAvailableLeaderCards() {

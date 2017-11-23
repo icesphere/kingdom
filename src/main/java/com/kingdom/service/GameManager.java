@@ -1,7 +1,7 @@
 package com.kingdom.service;
 
 import com.kingdom.model.*;
-import com.kingdom.repository.GameDao;
+import com.kingdom.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,10 +9,31 @@ import java.util.List;
 @Service
 public class GameManager {
 
-    GameDao dao;
+    private GameDao dao;
+    private GameErrorRepository gameErrorRepository;
+    private GameLogRepository gameLogRepository;
+    private AnnotatedGameRepository annotatedGameRepository;
+    private RecommendedSetRepository recommendedSetRepository;
+    private GameHistoryRepository gameHistoryRepository;
+    private GameUserHistoryRepository gameUserHistoryRepository;
+    private UserRepository userRepository;
 
-    public GameManager(GameDao dao) {
+    public GameManager(GameDao dao,
+                       GameErrorRepository gameErrorRepository,
+                       GameLogRepository gameLogRepository,
+                       AnnotatedGameRepository annotatedGameRepository,
+                       RecommendedSetRepository recommendedSetRepository,
+                       GameHistoryRepository gameHistoryRepository,
+                       GameUserHistoryRepository gameUserHistoryRepository,
+                       UserRepository userRepository) {
         this.dao = dao;
+        this.gameErrorRepository = gameErrorRepository;
+        this.gameLogRepository = gameLogRepository;
+        this.annotatedGameRepository = annotatedGameRepository;
+        this.recommendedSetRepository = recommendedSetRepository;
+        this.gameHistoryRepository = gameHistoryRepository;
+        this.gameUserHistoryRepository = gameUserHistoryRepository;
+        this.userRepository = userRepository;
     }
 
     public List<GameHistory> getGameHistoryList() {
@@ -28,11 +49,19 @@ public class GameManager {
     }
 
     public void saveGameHistory(GameHistory history) {
-        dao.saveGameHistory(history);        
+        gameHistoryRepository.save(history);
     }
 
     public void saveGameUserHistory(int gameId, Player player) {
-        dao.saveGameUserHistory(gameId, player);
+        GameUserHistory gameUserHistory = new GameUserHistory(gameId, player);
+        gameUserHistoryRepository.save(gameUserHistory);
+        if (!player.isQuit()) {
+            User user = userRepository.findOne(player.getUserId());
+            if (!user.isActive()) {
+                user.setActive(true);
+                userRepository.save(user);
+            }
+        }
     }
 
     public List<GameUserHistory> getGamePlayersHistory(int gameId) {
@@ -40,11 +69,11 @@ public class GameManager {
     }
 
     public void logError(GameError error) {
-        dao.logError(error);
-    }
+        if (error.getError().length() > 20000) {
+            error.setError(error.getError().substring(0, 19990)+"...");
+        }
 
-    public void setGameDao(GameDao dao) {
-        this.dao = dao;
+        gameErrorRepository.save(error);
     }
 
     public List<GameError> getGameErrors() {
@@ -52,11 +81,11 @@ public class GameManager {
     }
 
     public void deleteGameError(int errorId) {
-        dao.deleteGameError(errorId);
+        gameErrorRepository.delete(errorId);
     }
 
     public GameLog getGameLog(int logId) {
-        return dao.getGameLog(logId);    
+        return gameLogRepository.findOne(logId);
     }
 
     public GameLog getGameLogByGameId(int gameId) {
@@ -64,7 +93,7 @@ public class GameManager {
     }
 
     public void saveGameLog(GameLog log) {
-       dao.saveGameLog(log);
+        gameLogRepository.save(log);
     }
 
     public OverallStats getOverallStats() {
@@ -92,15 +121,15 @@ public class GameManager {
     }
 
     public void saveAnnotatedGame(AnnotatedGame game) {
-        dao.saveAnnotatedGame(game);
+        annotatedGameRepository.save(game);
     }
 
     public void deleteAnnotatedGame(AnnotatedGame game) {
-        dao.deleteAnnotatedGame(game);
+        annotatedGameRepository.delete(game);
     }
 
     public AnnotatedGame getAnnotatedGame(int id) {
-        return dao.getAnnotatedGame(id);
+        return annotatedGameRepository.findOne(id);
     }
 
     public List<AnnotatedGame> getAnnotatedGames() {
@@ -108,15 +137,15 @@ public class GameManager {
     }
 
     public void saveRecommendedSet(RecommendedSet set) {
-        dao.saveRecommendedSet(set);
+        recommendedSetRepository.save(set);
     }
 
     public void deleteRecommendedSet(RecommendedSet set) {
-        dao.deleteRecommendedSet(set);
+        recommendedSetRepository.delete(set);
     }
 
     public RecommendedSet getRecommendedSet(int id) {
-        return dao.getRecommendedSet(id);
+        return recommendedSetRepository.findOne(id);
     }
 
     public List<RecommendedSet> getRecommendedSets() {

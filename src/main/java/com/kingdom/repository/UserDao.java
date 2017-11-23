@@ -138,14 +138,6 @@ public class UserDao {
         return getUser(username) != null;
     }
 
-    public void saveUser(User user){
-        hibernateTemplate.saveOrUpdate(user);
-    }
-
-    public void deleteUser(User user){
-        hibernateTemplate.delete(user);
-    }
-
     public void calculateGameStats(User user) {
         PlayerStats stats = new PlayerStats();
 

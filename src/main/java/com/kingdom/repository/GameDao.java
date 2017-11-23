@@ -24,21 +24,6 @@ public class GameDao {
         return hibernateTemplate.get(User.class, userId);
     }
 
-    public void saveGameHistory(GameHistory history) {
-        hibernateTemplate.saveOrUpdate(history);
-    }
-
-    public void saveGameUserHistory(int gameId, Player player) {
-        hibernateTemplate.saveOrUpdate(new GameUserHistory(gameId, player));
-        if (!player.isQuit()) {
-            User user = getUser(player.getUserId());
-            if (!user.isActive()) {
-                user.setActive(true);
-                hibernateTemplate.saveOrUpdate(user);
-            }
-        }
-    }
-
     @SuppressWarnings({"unchecked", "JpaQlInspection"})
     public List<GameHistory> getGameHistoryList() {
         HibernateTemplate template = hibernateTemplate;
@@ -78,7 +63,7 @@ public class GameDao {
         DetachedCriteria criteria = DetachedCriteria.forClass(GameUserHistory.class);
         criteria.add(Restrictions.eq("gameId", gameId));
         List<GameUserHistory> gamePlayers = (List<GameUserHistory>) hibernateTemplate.findByCriteria(criteria);
-        List<GameUserHistory> players = new ArrayList<GameUserHistory>();
+        List<GameUserHistory> players = new ArrayList<>();
         for (GameUserHistory gamePlayer : gamePlayers) {
             DetachedCriteria userCriteria = DetachedCriteria.forClass(User.class);
             userCriteria.add(Restrictions.eq("userId", gamePlayer.getUserId()));
@@ -89,30 +74,11 @@ public class GameDao {
         return players;
     }
 
-    public void logError(GameError error) {
-        if (error.getError().length() > 20000) {
-            error.setError(error.getError().substring(0, 19990)+"...");
-        }
-        hibernateTemplate.saveOrUpdate(error);
-    }
-
-    public GameError getGameError(int errorId) {
-        return hibernateTemplate.get(GameError.class, errorId);
-    }
-
     @SuppressWarnings({"unchecked", "JpaQlInspection"})
     public List<GameError> getGameErrors() {
         HibernateTemplate template = hibernateTemplate;
         template.setMaxResults(50);
         return (List<GameError>) template.find("from GameError order by errorId desc");
-    }
-
-    public void deleteGameError(int errorId) {
-        hibernateTemplate.delete(getGameError(errorId));
-    }
-
-    public GameLog getGameLog(int logId) {
-        return hibernateTemplate.get(GameLog.class, logId);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -124,10 +90,6 @@ public class GameDao {
             return logs.get(0);
         }
         return null;
-    }
-
-    public void saveGameLog(GameLog log) {
-        hibernateTemplate.saveOrUpdate(log);
     }
 
     public OverallStats getOverallStats() {
@@ -447,13 +409,6 @@ public class GameDao {
         return stats;
     }
 
-    public void saveAnnotatedGame(AnnotatedGame game) {
-        hibernateTemplate.saveOrUpdate(game);
-    }
-
-    public void deleteAnnotatedGame(AnnotatedGame game){
-        hibernateTemplate.delete(game);
-    }
     @SuppressWarnings({"unchecked"})
     public List<AnnotatedGame> getAnnotatedGames() {
         DetachedCriteria criteria = DetachedCriteria.forClass(AnnotatedGame.class);
@@ -461,25 +416,10 @@ public class GameDao {
         return (List<AnnotatedGame>) hibernateTemplate.findByCriteria(criteria);
     }
 
-    public AnnotatedGame getAnnotatedGame(int id) {
-        return hibernateTemplate.get(AnnotatedGame.class, id);
-    }
-
-    public void saveRecommendedSet(RecommendedSet set) {
-        hibernateTemplate.saveOrUpdate(set);
-    }
-
-    public void deleteRecommendedSet(RecommendedSet set){
-        hibernateTemplate.delete(set);
-    }
     @SuppressWarnings({"unchecked"})
     public List<RecommendedSet> getRecommendedSets() {
         DetachedCriteria criteria = DetachedCriteria.forClass(RecommendedSet.class);
         criteria.addOrder(Order.asc("id"));
         return (List<RecommendedSet>) hibernateTemplate.findByCriteria(criteria);
-    }
-
-    public RecommendedSet getRecommendedSet(int id) {
-        return hibernateTemplate.get(RecommendedSet.class, id);
     }
 }

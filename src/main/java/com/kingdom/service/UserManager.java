@@ -2,6 +2,7 @@ package com.kingdom.service;
 
 import com.kingdom.model.User;
 import com.kingdom.repository.UserDao;
+import com.kingdom.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,10 +10,12 @@ import java.util.List;
 @Service
 public class UserManager {   
 
-    UserDao dao;
+    private UserDao dao;
+    private UserRepository userRepository;
 
-    public UserManager(UserDao dao) {
+    public UserManager(UserDao dao, UserRepository userRepository) {
         this.dao = dao;
+        this.userRepository = userRepository;
     }
 
     public List<User> getUsers() {
@@ -44,15 +47,11 @@ public class UserManager {
     }
 
     public void saveUser(User user){
-        dao.saveUser(user);
+        userRepository.save(user);
     }
 
     public void deleteUser(User user){
-        dao.deleteUser(user);
-    }
-
-    public void setUserDao(UserDao userDao) {
-        this.dao = userDao;
+        userRepository.delete(user);
     }
 
     public void calculateGameStats(User user) {
