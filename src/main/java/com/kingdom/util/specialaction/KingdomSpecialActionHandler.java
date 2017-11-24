@@ -19,7 +19,7 @@ public class KingdomSpecialActionHandler {
             case "Adventurer": {
                 Player player = game.getCurrentPlayer();
                 int treasureCardsFound = 0;
-                List<Card> setAsideCards = new ArrayList<Card>();
+                List<Card> setAsideCards = new ArrayList<>();
                 while (treasureCardsFound < 2) {
                     Card revealedCard = player.removeTopDeckCard();
                     if (revealedCard == null) {

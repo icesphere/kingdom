@@ -21,7 +21,16 @@ public class KingdomComputerCardActionHandler {
 
         switch (cardName) {
             case "Artisan":
-                chooseHighestCostCard(cardAction, computer, game, player);
+                if (cardAction.getType() == CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY) {
+                    chooseHighestCostCard(cardAction, computer, game, player);
+                } else {
+                    if (player.getActions() == 0 && !player.getActionCards().isEmpty()) {
+                        Card card = computer.getHighestCostCard(player.getActionCards());
+                        chooseCard(cardAction, game, player, card);
+                    } else {
+                        chooseLowestCostCard(cardAction, computer, game, player);
+                    }
+                }
                 break;
             case "Bureaucrat": {
                 List<Integer> cardIds = computer.getCardsNotNeeded(cardAction.getCards(), 1);
@@ -64,31 +73,16 @@ public class KingdomComputerCardActionHandler {
                 break;
             case "Mine":
                 if (type == CardAction.TYPE_TRASH_CARDS_FROM_HAND) {
-                    Card cardToTrash = computer.getLowestCostCard(cardAction.getCards());
-                    if (cardToTrash != null) {
-                        List<Integer> cardIds = new ArrayList<>();
-                        cardIds.add(cardToTrash.getCardId());
-                        CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-                    }
+                    chooseLowestCostCard(cardAction, computer, game, player);
                 } else {
                     chooseHighestCostCard(cardAction, computer, game, player);
                 }
                 break;
             case "Remodel":
                 if (type == CardAction.TYPE_TRASH_CARDS_FROM_HAND) {
-                    Card cardToTrash = computer.getLowestCostCard(cardAction.getCards());
-                    if (cardToTrash != null) {
-                        List<Integer> cardIds = new ArrayList<>();
-                        cardIds.add(cardToTrash.getCardId());
-                        CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-                    }
+                    chooseLowestCostCard(cardAction, computer, game, player);
                 } else {
-                    Card cardToGain = computer.getHighestCostCard(cardAction.getCards());
-                    if (cardToGain != null) {
-                        List<Integer> cardIds = new ArrayList<>();
-                        cardIds.add(cardToGain.getCardId());
-                        CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-                    }
+                    chooseHighestCostCard(cardAction, computer, game, player);
                 }
                 break;
             case "Spy":
@@ -147,12 +141,7 @@ public class KingdomComputerCardActionHandler {
             }
             case "Throne Room": {
                 Card cardToPlay = computer.getActionToDuplicate(cardAction.getCards(), 2);
-                if (cardToPlay == null) {
-                    cardToPlay = cardAction.getCards().get(0);
-                }
-                List<Integer> cardIds = new ArrayList<>();
-                cardIds.add(cardToPlay.getCardId());
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
+                chooseCard(cardAction, game, player, cardToPlay);
                 break;
             }
             case "Workshop": {
@@ -167,13 +156,22 @@ public class KingdomComputerCardActionHandler {
         }
     }
 
+    private static void chooseLowestCostCard(CardAction cardAction, ComputerPlayer computer, Game game, Player player) {
+        Card card = computer.getLowestCostCard(cardAction.getCards());
+        chooseCard(cardAction, game, player, card);
+    }
+
     private static void chooseHighestCostCard(CardAction cardAction, ComputerPlayer computer, Game game, Player player) {
-        Card cardToGain = computer.getHighestCostCard(cardAction.getCards());
-        if (cardToGain == null) {
-            cardToGain = cardAction.getCards().get(0);
+        Card card = computer.getHighestCostCard(cardAction.getCards());
+        chooseCard(cardAction, game, player, card);
+    }
+
+    private static void chooseCard(CardAction cardAction, Game game, Player player, Card card) {
+        if (card == null) {
+            card = cardAction.getCards().get(0);
         }
         List<Integer> cardIds = new ArrayList<>();
-        cardIds.add(cardToGain.getCardId());
+        cardIds.add(card.getCardId());
         CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
     }
 }
