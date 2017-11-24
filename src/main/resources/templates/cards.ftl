@@ -28,7 +28,7 @@
                                         <#list kingdomCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if>
+                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
                                                 </td>
                                             </tr>
                                         </#list>

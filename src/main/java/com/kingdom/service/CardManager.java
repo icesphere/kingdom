@@ -66,7 +66,7 @@ public class CardManager {
         if (!includeTesting) {
             return cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false, false);
         } else {
-            return cardRepository.findByDeckAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false);
+            return cardRepository.findByDeckAndPrizeCardOrderByNameAsc(deck, false);
         }
     }
 }
