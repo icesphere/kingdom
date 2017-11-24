@@ -11,30 +11,39 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Jul 31, 2010
- * Time: 12:40:51 PM
- */
 public class GainCardsHandler {
-    public static void handleCardAction(Game game, Player player, CardAction cardAction, List<Integer> selectedCardIds){
+    public static void handleCardAction(Game game, Player player, CardAction cardAction, List<Integer> selectedCardIds) {
 
         int type = cardAction.getType();
         Map<Integer, Card> cardMap = game.getCardMap();
 
-        if (!cardAction.getCardName().equals("Tournament") && !cardAction.getCardName().equals("Museum")) {
+        if (!cardAction.getCardName().equals("Tournament") && !cardAction.getCardName().equals("Museum") && !cardAction.getCardName().equals("Artisan")) {
             for (Integer selectedCardId : selectedCardIds) {
                 Card card = cardMap.get(selectedCardId);
                 if (type == CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY) {
                     game.playerGainedCard(player, card);
-                }
-                else {
+                } else {
                     game.playerGainedCard(player, card, false);
                 }
             }
         }
 
+        if (cardAction.getCardName().equals("Artisan")) {
+            Card card = cardMap.get(selectedCardIds.get(0));
+
+            game.playerGainedCardToHand(player, card);
+
+            game.refreshPlayingArea(player);
+
+            CardAction putCardOnTopOfDeckAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
+            putCardOnTopOfDeckAction.setDeck(Card.DECK_KINGDOM);
+            putCardOnTopOfDeckAction.setCardName("Artisan");
+            putCardOnTopOfDeckAction.getCards().addAll(player.getHand());
+            putCardOnTopOfDeckAction.setButtonValue("Done");
+            putCardOnTopOfDeckAction.setNumCards(1);
+            putCardOnTopOfDeckAction.setInstructions("Select a card from your hand to put on top of your deck.");
+            game.setPlayerCardAction(player, putCardOnTopOfDeckAction);
+        }
         if (cardAction.getCardName().equals("Black Market")) {
             Card cardBought = cardMap.get(selectedCardIds.get(0));
             game.boughtBlackMarketCard(cardBought);
@@ -48,8 +57,7 @@ public class GainCardsHandler {
             chooseOrderCardAction.setButtonValue("Done");
             chooseOrderCardAction.setInstructions("Click the cards in the order you want them to be on the bottom of the black market deck, starting with the top card and then click Done. (The last card you click will be the bottom card of the black market deck)");
             game.setPlayerCardAction(player, chooseOrderCardAction);
-        }
-        else if (cardAction.getCardName().equals("Develop")) {
+        } else if (cardAction.getCardName().equals("Develop")) {
             if (cardAction.getPhase() < 3) {
                 CardAction gainCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
                 gainCardAction.setDeck(Card.DECK_HINTERLANDS);
@@ -64,8 +72,7 @@ public class GainCardsHandler {
                 int cost = game.getCardCost(gainCardAction.getAssociatedCard());
                 if (cardAction.getPhase() == 1) {
                     cost = cost - 1;
-                }
-                else if (cardAction.getPhase() == 2) {
+                } else if (cardAction.getPhase() == 2) {
                     cost = cost + 1;
                 }
                 for (Card c : game.getSupplyMap().values()) {
@@ -77,19 +84,17 @@ public class GainCardsHandler {
                 gainCardAction.setCards(cards);
                 game.setPlayerCardAction(player, gainCardAction);
             }
-        }
-        else if (cardAction.getCardName().equals("Horn of Plenty")) {
+        } else if (cardAction.getCardName().equals("Horn of Plenty")) {
             Card card = cardMap.get(selectedCardIds.get(0));
             if (card.isVictory()) {
-                ((LinkedList)game.getCardsPlayed()).removeLastOccurrence(cardAction.getAssociatedCard());
+                ((LinkedList) game.getCardsPlayed()).removeLastOccurrence(cardAction.getAssociatedCard());
                 game.getTreasureCardsPlayed().remove(cardAction.getAssociatedCard());
                 game.getTrashedCards().add(cardAction.getAssociatedCard());
                 game.playerLostCard(player, cardAction.getAssociatedCard());
                 game.addHistory(player.getUsername(), "'s ", KingdomUtil.getCardWithBackgroundColor(cardAction.getAssociatedCard()), " was trashed");
                 game.refreshAllPlayersCardsPlayed();
             }
-        }
-        else if (cardAction.getCardName().equals("Ironworks")) {
+        } else if (cardAction.getCardName().equals("Ironworks")) {
             Card card = cardMap.get(selectedCardIds.get(0));
             if (card.isAction()) {
                 player.addActions(1);
@@ -101,18 +106,15 @@ public class GainCardsHandler {
             if (card.isVictory()) {
                 player.drawCards(1);
             }
-        }
-        else if (cardAction.getCardName().equals("Museum")) {
+        } else if (cardAction.getCardName().equals("Museum")) {
             Card card = cardMap.get(selectedCardIds.get(0));
             game.playerGainedCard(player, card, false);
             game.getPrizeCards().remove(card);
-        }
-        else if (cardAction.getCardName().equals("Tournament")) {
+        } else if (cardAction.getCardName().equals("Tournament")) {
             Card card = cardMap.get(selectedCardIds.get(0));
             game.playerGainedCardToTopOfDeck(player, card, false);
             game.getPrizeCards().remove(card);
-        }
-        else if (cardAction.getCardName().equals("University")) {
+        } else if (cardAction.getCardName().equals("University")) {
             if (selectedCardIds.isEmpty()) {
                 game.addHistory(player.getUsername(), " chose not to gain a card with ", KingdomUtil.getWordWithBackgroundColor("University", Card.ACTION_COLOR));
             }
