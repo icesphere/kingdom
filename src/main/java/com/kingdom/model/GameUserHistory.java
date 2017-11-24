@@ -13,8 +13,10 @@ public class GameUserHistory {
     @Column(name = "gameuserid")
     private int gameUserId;
 
+    @Column(name = "gameid")
     private int gameId;
 
+    @Column(name = "userid")
     private int userId;
 
     private int points;
