@@ -12,6 +12,8 @@ public interface CardRepository extends CrudRepository<Card, Integer> {
 
     List<Card> findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(String deck, boolean testing, boolean disabled, boolean prizeCard);
 
+    List<Card> findByDeckAndDisabledAndPrizeCardOrderByNameAsc(String deck, boolean disabled, boolean prizeCard);
+
     List<Card> findByFanExpansionCardAndDisabledAndPrizeCardOrderByNameAsc(boolean fanExpansionCard, boolean disabled, boolean prizeCard);
 
 }

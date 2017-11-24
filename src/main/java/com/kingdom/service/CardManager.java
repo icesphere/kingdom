@@ -63,6 +63,10 @@ public class CardManager {
     }
 
     private List<Card> getCardsByDeck(String deck, boolean includeTesting) {
-        return cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, includeTesting, false, false);
+        if (!includeTesting) {
+            return cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false, false);
+        } else {
+            return cardRepository.findByDeckAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false);
+        }
     }
 }
