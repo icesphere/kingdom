@@ -32,6 +32,7 @@ public class CardRandomizer {
         game.setRandomizerReplacementCardNotFound(false);
         this.options = options;
         List<String> decks = game.getDecks();
+        cardSwapped = false;
         changingBaneCard = options.isSwappingCard() && options.getCardToReplaceIndex() == 10;
         replacingCardWithSpecificType = options.getCardTypeToReplaceWith() != null;
 
