@@ -404,7 +404,7 @@ function selectCardInOrder(cardId){
 function showCardActionDialog(){
     cardActionDialogOpen = true;
     $(".cardAction").each(function(idx) {
-        if($(this).attr("hideOnSelect")){
+        if($(this).attr("hideOnSelect") == "true"){
             selectedCardNumber = 0;
             $(this).click(function() {
                 var cardId = $(this).attr("cardId");
@@ -413,7 +413,7 @@ function showCardActionDialog(){
             });
         }
         else if($(this).attr("disableSelect") == "false"){
-            if($(this).attr("autoSelect")){
+            if($(this).attr("autoSelect") == "true"){
                 $(this).removeClass("cardAction").addClass("cardActionSelected");
                 selectCard($(this).attr("cardIndex"), $(this).attr("cardId"));
             }

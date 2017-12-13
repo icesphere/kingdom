@@ -5,12 +5,6 @@ import com.kingdom.util.KingdomUtil;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Jul 31, 2010
- * Time: 6:33:06 PM
- */
 public class DiscardCardsHandler {
     public static IncompleteCard handleCardAction(Game game, Player player, CardAction cardAction, List<Integer> selectedCardIds) {
 
