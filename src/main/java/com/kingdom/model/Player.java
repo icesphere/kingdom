@@ -36,6 +36,7 @@ public class Player implements Comparable{
     private int colonies;
     private int curses;
     private int gardens;
+    private int farmlands;
     private int vineyards;
     private int silkRoads;
     private int cathedrals;
@@ -620,6 +621,7 @@ public class Player implements Comparable{
         Card curseCard = null;
         int victoryPoints = 0;
         gardens = 0;
+        farmlands = 0;
         vineyards = 0;
         silkRoads = 0;
         cathedrals = 0;
@@ -656,6 +658,9 @@ public class Player implements Comparable{
                 victoryPoints += card.getVictoryPoints();
                 if (card.getName().equals("Gardens")) {
                     gardens++;
+                }
+                else if (card.getName().equals("Farmland")) {
+                    farmlands++;
                 }
                 else if (card.getName().equals("Vineyard")) {
                     vineyards++;

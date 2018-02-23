@@ -61,6 +61,7 @@ public class Game {
     private int actionCardsInPlay = 0;
     private boolean lighthousePlayed;
     private boolean showGardens;
+    private boolean showFarmlands;
     private boolean showVictoryCoins;
     private boolean showVineyard;
     private boolean showSilkRoads;
@@ -727,6 +728,7 @@ public class Game {
             blackMarketCards.clear();
             showDuke = false;
             showGardens = false;
+            showFarmlands = false;
             showVictoryCoins = false;
             showVineyard = false;
             showSilkRoads = false;
@@ -928,6 +930,9 @@ public class Game {
     private void checkCardName(Card card, boolean boughtFromBlackMarket){
         if (card.getName().equals("Gardens")) {
             showGardens = true;
+        }
+        else if (card.getName().equals("Farmlands")) {
+            showFarmlands = true;
         }
         else if (card.getName().equals("Vineyard")) {
             showVineyard = true;
@@ -1850,7 +1855,7 @@ public class Game {
             logError(error, false);
             return false;
         }
-        return card.isVictory() || card.isCurse() || showGardens || showFairgrounds || (showVineyard && card.isAction()) || (showCathedral && card.isSalvation());
+        return card.isVictory() || card.isCurse() || showGardens || showFarmlands || showFairgrounds || (showVineyard && card.isAction()) || (showCathedral && card.isSalvation());
     }
 
     public void playerGainedCard(Player player, Card card, String destination, boolean takeFromSupply, boolean gainedFromBuy) {
@@ -2874,6 +2879,10 @@ public class Game {
 
     public boolean isShowGardens() {
         return showGardens;
+    }
+
+    public boolean isShowFarmlands() {
+        return showFarmlands;
     }
 
     public boolean isShowVictoryCoins() {

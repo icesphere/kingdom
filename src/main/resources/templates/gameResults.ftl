@@ -47,6 +47,10 @@
                                 <div class="gameResultsPlayerPointsLabel">Gardens:</div>
                                 <div class="gameResultsPlayerPoints">${player.gardens}</div>
                             </#if>
+                            <#if showFarmlands>
+                                <div class="gameResultsPlayerPointsLabel">Farmlands:</div>
+                                <div class="gameResultsPlayerPoints">${player.farmlands}</div>
+                            </#if>
                             <#if showGreatHall>
                                 <div class="gameResultsPlayerPointsLabel">Great Halls:</div>
                                 <div class="gameResultsPlayerPoints">${player.greatHalls}</div>

@@ -1598,6 +1598,7 @@ public class GameController {
             modelAndView.addObject("turnHistory", game.getRecentTurnHistory());
 
             modelAndView.addObject("showGarden", game.isShowGardens());
+            modelAndView.addObject("showFarmlands", game.isShowFarmlands());
             modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins());
             modelAndView.addObject("showVineyard", game.isShowVineyard());
             modelAndView.addObject("showSilkRoads", game.isShowSilkRoads());
@@ -1905,6 +1906,7 @@ public class GameController {
         modelAndView.addObject("prizeCards", game.getPrizeCardsString());
 
         modelAndView.addObject("showGarden", game.isShowGardens());
+        modelAndView.addObject("showFarmlands", game.isShowFarmlands());
         modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins());
         modelAndView.addObject("showSins", game.isShowSins());
         modelAndView.addObject("showVineyard", game.isShowVineyard());
