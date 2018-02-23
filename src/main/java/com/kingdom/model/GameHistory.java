@@ -1,9 +1,6 @@
 package com.kingdom.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Table(name = "games")
@@ -11,6 +8,7 @@ import java.util.Date;
 public class GameHistory {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "gameid")
     private int gameId;
 

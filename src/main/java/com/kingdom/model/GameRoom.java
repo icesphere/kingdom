@@ -1,11 +1,5 @@
 package com.kingdom.model;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Jul 31, 2010
- * Time: 7:21:19 PM
- */
 public class GameRoom {
     private String name;
     private int gameId;
