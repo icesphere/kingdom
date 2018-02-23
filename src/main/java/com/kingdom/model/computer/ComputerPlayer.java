@@ -856,6 +856,9 @@ public abstract class ComputerPlayer {
         else if (card.getName().equals("Rancher")) {
             return true;
         }
+        else if (card.getName().equals("Farmland") && player.getHand().stream().allMatch(Card::isProvince)) {
+            return true;
+        }
 
         return false;
     }
