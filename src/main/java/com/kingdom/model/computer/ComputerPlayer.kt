@@ -82,7 +82,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             if (card.addActions >= 2) {
                 hasExtraActionsCard = true
             }
-            if (card.isTrashingCard && !card.isCostIncludesPotion && card.name != "Remake" && card.name != "Forge") {
+            if (card.isTrashingCard && !card.costIncludesPotion && card.name != "Remake" && card.name != "Forge") {
                 hasTrashingCard = true
                 trashingCards.add(card)
             }
@@ -116,7 +116,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         }
         try {
             var loopIterations = 0
-            while (player.isShowCardAction && player.cardAction.type == CardAction.TYPE_WAITING_FOR_PLAYERS) {
+            while (player.isShowCardAction && player.cardAction!!.type == CardAction.TYPE_WAITING_FOR_PLAYERS) {
                 if (stopped || game.status != Game.STATUS_GAME_IN_PROGRESS) {
                     return
                 }
@@ -144,7 +144,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
                     loopIterations++
                     //if wait is longer than 15 minutes then throw error and continue
                     if (loopIterations > 1200) {
-                        val error = GameError(GameError.GAME_ERROR, "computer-hasIncompleteCard in never ending loop. Incomplete Card: " + game.incompleteCard.cardName)
+                        val error = GameError(GameError.GAME_ERROR, "computer-hasIncompleteCard in never ending loop. Incomplete Card: " + game.incompleteCard!!.cardName)
                         game.logError(error, false)
                         break
                     }
@@ -157,7 +157,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
                 endTurn()
             }
             if (player.isShowCardAction) {
-                handleCardAction(player.cardAction)
+                handleCardAction(player.cardAction!!)
                 doNextAction()
             } else if (playAction && player.actions > 0 && !player.actionCards.isEmpty()) {
                 playAction()
@@ -413,24 +413,24 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return game.cardMap[Card.POTION_ID]
         }
 
-        if (chapelStrategy && cardsGained[kingdomCardMap["Chapel"]!!.cardId] == null && (player.coins == 3 && silversBought > 0 || player.coins == 2) && (!game.isTrackContrabandCards || !game.contrabandCards.contains(kingdomCardMap["Chapel"]))) {
-            return kingdomCardMap["Chapel"]
+        if (chapelStrategy && cardsGained[getKingdomCard("Chapel").cardId] == null && (player.coins == 3 && silversBought > 0 || player.coins == 2) && (!game.isTrackContrabandCards || !game.contrabandCards.contains(getKingdomCard("Chapel")))) {
+            return getKingdomCard("Chapel")
         }
         if (chapelStrategy && player.coins <= 3 && silversBought < 2 && goldsBought == 0 && game.canBuyCard(player, game.silverCard)) {
             return game.silverCard
         }
-        if (chapelStrategy && laboratoryStrategy && player.coins <= 5 && game.canBuyCard(player, kingdomCardMap["Laboratory"])) {
-            return kingdomCardMap["Laboratory"]
+        if (chapelStrategy && laboratoryStrategy && player.coins <= 5 && game.canBuyCard(player, getKingdomCard("Laboratory"))) {
+            return getKingdomCard("Laboratory")
         }
         if (player.coins >= game.getCardCostBuyPhase(game.goldCard) && goldsBought == 0 && (!game.isIncludePlatinumCards || player.coins < game.getCardCostBuyPhase(game.platinumCard)) && game.canBuyCard(player, game.goldCard)) {
             return game.goldCard
         }
         if (isGardensStrategy) {
-            if (player.turns > 4 && game.canBuyCard(player, kingdomCardMap["Gardens"])) {
-                if (onlyBuyVictoryCards() && player.coins >= game.getCardCostBuyPhase(kingdomCardMap["Gardens"])) {
-                    return kingdomCardMap["Gardens"]
-                } else if (player.coins == game.getCardCostBuyPhase(kingdomCardMap["Gardens"])) {
-                    return kingdomCardMap["Gardens"]
+            if (player.turns > 4 && game.canBuyCard(player, getKingdomCard("Gardens"))) {
+                if (onlyBuyVictoryCards() && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Gardens"))) {
+                    return getKingdomCard("Gardens")
+                } else if (player.coins == game.getCardCostBuyPhase(getKingdomCard("Gardens"))) {
+                    return getKingdomCard("Gardens")
                 }
             }
         }
@@ -439,24 +439,24 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             if (duchiesInSupply > 0 && (player.turns > 8 || duchiesInSupply <= 6) && player.coins >= game.getCardCostBuyPhase(game.duchyCard)) {
                 if (duchiesBought < 4 || duchiesBought <= dukesBought && (!game.isTrackContrabandCards || !game.contrabandCards.contains(game.duchyCard))) {
                     return game.duchyCard
-                } else if (duchiesBought >= 3 && game.canBuyCard(player, kingdomCardMap["Duke"])) {
-                    return kingdomCardMap["Duke"]
+                } else if (duchiesBought >= 3 && game.canBuyCard(player, getKingdomCard("Duke"))) {
+                    return getKingdomCard("Duke")
                 }
             }
         }
-        if (checkPeddler && !onlyBuyVictoryCards() && game.canBuyCard(player, kingdomCardMap["Peddler"])) {
+        if (checkPeddler && !onlyBuyVictoryCards() && game.canBuyCard(player, getKingdomCard("Peddler"))) {
             if (player.coins < 6) {
-                return kingdomCardMap["Peddler"]
+                return getKingdomCard("Peddler")
             }
         }
-        if (cityStrategy && !onlyBuyVictoryCards() && player.coins <= 6 && player.turns > 8 && game.canBuyCard(player, kingdomCardMap["City"])) {
-            return kingdomCardMap["City"]
+        if (cityStrategy && !onlyBuyVictoryCards() && player.coins <= 6 && player.turns > 8 && game.canBuyCard(player, getKingdomCard("City"))) {
+            return getKingdomCard("City")
         }
         if (ambassadorStrategy && !onlyBuyVictoryCards() && player.turns < 2) {
-            return kingdomCardMap["Ambassador"]
+            return getKingdomCard("Ambassador")
         }
-        if (pirateShipStrategy && !onlyBuyVictoryCards() && player.coins <= 4 && terminalActionsBought - actionsBought < 2 && game.canBuyCard(player, kingdomCardMap["Pirate Ship"])) {
-            return kingdomCardMap["Pirate Ship"]
+        if (pirateShipStrategy && !onlyBuyVictoryCards() && player.coins <= 4 && terminalActionsBought - actionsBought < 2 && game.canBuyCard(player, getKingdomCard("Pirate Ship"))) {
+            return getKingdomCard("Pirate Ship")
         }
 
         var cardToBuy = getRandomHighestCostCardFromCostMap(player.coins, false)
@@ -472,6 +472,10 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return game.copperCard
         }
         return null
+    }
+    
+    private fun getKingdomCard(name: String): Card {
+        return getKingdomCard(name)
     }
 
     protected fun buyCardHardDifficulty(): Card? {
@@ -489,7 +493,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         if (onlyBuyVictoryCards() && (winning || losingMargin < 6)) {
             for (cardId in game.supply.keys) {
                 val card = game.supplyMap[cardId]!!
-                if (game.buyingCardWillEndGame(cardId!!) && game.canBuyCard(player, card)
+                if (game.buyingCardWillEndGame(cardId) && game.canBuyCard(player, card)
                         && (winning || card.victoryPoints > losingMargin)) {
                     return card
                 }
@@ -508,12 +512,12 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             }
         }
 
-        if (isGardensStrategy && player.turns > 4 && game.canBuyCard(player, kingdomCardMap["Gardens"])) {
-            val gardenCost = game.getCardCostBuyPhase(kingdomCardMap["Gardens"])
+        if (isGardensStrategy && player.turns > 4 && game.canBuyCard(player, getKingdomCard("Gardens"))) {
+            val gardenCost = game.getCardCostBuyPhase(getKingdomCard("Gardens"))
             if (onlyBuyVictoryCards() && player.coins >= gardenCost && (player.coins < game.getCardCostBuyPhase(game.provinceCard) || player.buys > 1)) {
-                return kingdomCardMap["Gardens"]
+                return getKingdomCard("Gardens")
             } else if (player.coins == gardenCost) {
-                return kingdomCardMap["Gardens"]
+                return getKingdomCard("Gardens")
             }
         }
 
@@ -523,15 +527,15 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             }
         }
 
-        if (haremStrategy && goldsBought >= 2 && player.coins >= game.getCardCostBuyPhase(game.goldCard) && game.canBuyCard(player, kingdomCardMap["Harem"])) {
-            if (!game.buyingCardWillEndGame(kingdomCardMap["Harem"]!!.cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
-                return kingdomCardMap["Harem"]
+        if (haremStrategy && goldsBought >= 2 && player.coins >= game.getCardCostBuyPhase(game.goldCard) && game.canBuyCard(player, getKingdomCard("Harem"))) {
+            if (!game.buyingCardWillEndGame(getKingdomCard("Harem").cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
+                return getKingdomCard("Harem")
             }
         }
 
-        if (kingdomCardMap.containsKey("Farmland") && game.supply[Card.PROVINCE_ID]!! <= 5 && player.coins >= game.getCardCostBuyPhase(kingdomCardMap["Farmland"]) && game.canBuyCard(player, kingdomCardMap["Farmland"])) {
-            if (!game.buyingCardWillEndGame(kingdomCardMap["Farmland"]!!.cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
-                return kingdomCardMap["Farmland"]
+        if (kingdomCardMap.containsKey("Farmland") && game.supply[Card.PROVINCE_ID]!! <= 5 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Farmland")) && game.canBuyCard(player, getKingdomCard("Farmland"))) {
+            if (!game.buyingCardWillEndGame(getKingdomCard("Farmland").cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
+                return getKingdomCard("Farmland")
             }
         }
 
@@ -541,21 +545,21 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             }
         }
 
-        if (kingdomCardMap.containsKey("Nobles") && game.supply[Card.PROVINCE_ID]!! <= 3 && player.coins >= game.getCardCostBuyPhase(kingdomCardMap["Nobles"]) && game.canBuyCard(player, kingdomCardMap["Nobles"])) {
-            if (!game.buyingCardWillEndGame(kingdomCardMap["Nobles"]!!.cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
-                return kingdomCardMap["Nobles"]
+        if (kingdomCardMap.containsKey("Nobles") && game.supply[Card.PROVINCE_ID]!! <= 3 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Nobles")) && game.canBuyCard(player, getKingdomCard("Nobles"))) {
+            if (!game.buyingCardWillEndGame(getKingdomCard("Nobles").cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
+                return getKingdomCard("Nobles")
             }
         }
 
-        if (kingdomCardMap.containsKey("Island") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= game.getCardCostBuyPhase(kingdomCardMap["Island"]) && game.canBuyCard(player, kingdomCardMap["Island"])) {
-            if (!game.buyingCardWillEndGame(kingdomCardMap["Island"]!!.cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
-                return kingdomCardMap["Island"]
+        if (kingdomCardMap.containsKey("Island") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Island")) && game.canBuyCard(player, getKingdomCard("Island"))) {
+            if (!game.buyingCardWillEndGame(getKingdomCard("Island").cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
+                return getKingdomCard("Island")
             }
         }
 
-        if (kingdomCardMap.containsKey("Great Hall") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= game.getCardCostBuyPhase(kingdomCardMap["Great Hall"]) && game.canBuyCard(player, kingdomCardMap["Great Hall"])) {
-            if (!game.buyingCardWillEndGame(kingdomCardMap["Great Hall"]!!.cardId) || game.currentlyWinning(player.userId)) {
-                return kingdomCardMap["Great Hall"]
+        if (kingdomCardMap.containsKey("Great Hall") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Great Hall")) && game.canBuyCard(player, getKingdomCard("Great Hall"))) {
+            if (!game.buyingCardWillEndGame(getKingdomCard("Great Hall").cardId) || game.currentlyWinning(player.userId)) {
+                return getKingdomCard("Great Hall")
             }
         }
 
@@ -569,7 +573,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return buyCardBigMoneyUltimate()
         }
 
-        if (trashingStrategy && cardsGained[trashingCard!!.cardId] == null && player.coins == game.getCardCostBuyPhase(trashingCard) && game.canBuyCard(player, trashingCard)) {
+        if (trashingStrategy && cardsGained[trashingCard!!.cardId] == null && player.coins == game.getCardCostBuyPhase(trashingCard!!) && game.canBuyCard(player, trashingCard!!)) {
             return trashingCard
         }
 
@@ -577,7 +581,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             if (terminalActionsBought > 0) {
                 val cardsWithActions = ArrayList<Card>()
                 for (card in game.kingdomCards) {
-                    if (card.addActions > 0 && card.cost == player.coins && !excludeCardDefault(card) && !card.isCostIncludesPotion) {
+                    if (card.addActions > 0 && card.cost == player.coins && !excludeCardDefault(card) && !card.costIncludesPotion) {
                         cardsWithActions.add(card)
                     }
                 }
@@ -613,12 +617,12 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return game.duchyCard
         }
 
-        if (kingdomCardMap.containsKey("Island") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= 4 && game.canBuyCard(player, kingdomCardMap["Island"])) {
-            return kingdomCardMap["Island"]
+        if (kingdomCardMap.containsKey("Island") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= 4 && game.canBuyCard(player, getKingdomCard("Island"))) {
+            return getKingdomCard("Island")
         }
 
-        if (kingdomCardMap.containsKey("Great Hall") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= 3 && game.canBuyCard(player, kingdomCardMap["Great Hall"])) {
-            return kingdomCardMap["Great Hall"]
+        if (kingdomCardMap.containsKey("Great Hall") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= 3 && game.canBuyCard(player, getKingdomCard("Great Hall"))) {
+            return getKingdomCard("Great Hall")
         }
 
         if (game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= 2 && game.canBuyCard(player, game.estateCard)) {
@@ -682,7 +686,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
     }
 
     private fun excludeCardDefault(card: Card): Boolean {
-        if (card.isCostIncludesPotion && player.potions == 0) {
+        if (card.costIncludesPotion && player.potions == 0) {
             return true
         }
 
@@ -796,7 +800,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return true
         } else if (!bigActionsStrategy && card.isAction && !card.isVictory && actionsBought >= 5) {
             return true
-        } else if (card.name == "Expand" && cardsGained[kingdomCardMap["Expand"]!!.cardId] != null) {
+        } else if (card.name == "Expand" && cardsGained[getKingdomCard("Expand").cardId] != null) {
             return true
         } else if (bigMoneyStrategy && card.isExtraActionsCard) {
             return true
@@ -818,12 +822,12 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         Collections.sort(cards, ccc)
         val lowCards = ArrayList<Card>()
         var lowestCost = cards[0].cost
-        if (cards[0].isCostIncludesPotion) {
+        if (cards[0].costIncludesPotion) {
             lowestCost += 2
         }
         for (card in cards) {
             var cost = card.cost
-            if (card.isCostIncludesPotion) {
+            if (card.costIncludesPotion) {
                 cost += 2
             }
             if (cost == lowestCost) {
@@ -842,7 +846,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             }
             return cards[0]
         }
-        lowCards.shuffle()
+        Collections.shuffle(lowCards)
         return lowCards[0]
     }
 
@@ -858,7 +862,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         Collections.sort(cards, Collections.reverseOrder(ccc))
         val topCards = ArrayList<Card>()
         var highestCost = cards[0].cost
-        if (cards[0].isCostIncludesPotion) {
+        if (cards[0].costIncludesPotion) {
             highestCost += 2
         }
         if (includeVictoryOnlyCards && onlyBuyVictoryCards()) {
@@ -870,7 +874,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         }
         for (card in cards) {
             var cost = card.cost
-            if (card.isCostIncludesPotion) {
+            if (card.costIncludesPotion) {
                 cost += 2
             }
             if (cost == highestCost) {

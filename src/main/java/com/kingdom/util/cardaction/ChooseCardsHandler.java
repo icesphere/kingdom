@@ -228,7 +228,7 @@ public class ChooseCardsHandler {
                 Card card = cardAction.getCards().get(0);
                 int cost = card.getCost();
                 for (Card c : game.getSupplyMap().values()) {
-                    if (game.getCardCost(c) == cost && c.isCostIncludesPotion() == card.isCostIncludesPotion() && game.getSupply().get(c.getCardId()) > 0) {
+                    if (game.getCardCost(c) == cost && c.getCostIncludesPotion() == card.getCostIncludesPotion() && game.getSupply().get(c.getCardId()) > 0) {
                         chooseAgainCardAction.getCards().add(c);
                     }
                 }
@@ -321,7 +321,7 @@ public class ChooseCardsHandler {
             gainCardAction.setNumCards(1);
             gainCardAction.setInstructions("Select one of the following cards to gain and then click Done.");
             for (Card c : game.getSupplyMap().values()) {
-                if (c.isAction() && game.getCardCost(c) <= combinedCost && (!c.isCostIncludesPotion() || selectedCard.isCostIncludesPotion() || cardAction.getAssociatedCard().isCostIncludesPotion()) && game.isCardInSupply(c)) {
+                if (c.isAction() && game.getCardCost(c) <= combinedCost && (!c.getCostIncludesPotion() || selectedCard.getCostIncludesPotion() || cardAction.getAssociatedCard().getCostIncludesPotion()) && game.isCardInSupply(c)) {
                     gainCardAction.getCards().add(c);
                 }
             }

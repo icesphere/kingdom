@@ -24,7 +24,7 @@ public class UserController {
     @RequestMapping("/listUsers.html")
     public ModelAndView listUsers(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("users");
@@ -36,7 +36,7 @@ public class UserController {
     @RequestMapping("/saveUser.html")
     public ModelAndView saveUser(HttpServletRequest request, HttpServletResponse response) {
         User loggedInUser = getUser(request);
-        if (loggedInUser == null || !loggedInUser.isAdmin()) {
+        if (loggedInUser == null || !loggedInUser.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         User user;
@@ -62,12 +62,12 @@ public class UserController {
     @RequestMapping("/deleteUser.html")
     public ModelAndView deleteUser(HttpServletRequest request, HttpServletResponse response) {
         User loggedInUser = getUser(request);
-        if (loggedInUser == null || !loggedInUser.isAdmin()) {
+        if (loggedInUser == null || !loggedInUser.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         String id = request.getParameter("id");
         User user = manager.getUser(Integer.parseInt(id));
-        if (!user.isAdmin()) {
+        if (!user.getAdmin()) {
             manager.deleteUser(user);
         }
         return listUsers(request, response);
@@ -76,7 +76,7 @@ public class UserController {
     @RequestMapping("/showUser.html")
     public ModelAndView showUser(HttpServletRequest request, HttpServletResponse response) {
         User loggedInUser = getUser(request);
-        if (loggedInUser == null || !loggedInUser.isAdmin()) {
+        if (loggedInUser == null || !loggedInUser.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("user");
@@ -103,7 +103,7 @@ public class UserController {
     @RequestMapping("/showUsersForStat.html")
     public ModelAndView showUsersForStat(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("users");

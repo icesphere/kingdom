@@ -7,11 +7,11 @@ import java.util.Comparator;
 public class CardCostComparator implements Comparator<Card> {
     public int compare(Card c1, Card c2) {
         int cost1 = c1.getCost();
-        if (c1.isCostIncludesPotion()) {
+        if (c1.getCostIncludesPotion()) {
             cost1 += 2;
         }
         int cost2 = c2.getCost();
-        if (c2.isCostIncludesPotion()) {
+        if (c2.getCostIncludesPotion()) {
             cost2 += 2;
         }
 

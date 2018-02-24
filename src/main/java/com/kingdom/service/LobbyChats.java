@@ -12,7 +12,7 @@ public class LobbyChats {
 
     private static LobbyChats ourInstance = new LobbyChats();
 
-    private LinkedList<LobbyChat> chats = new LinkedList<LobbyChat>();
+    private LinkedList<LobbyChat> chats = new LinkedList<>();
 
     public static LobbyChats getInstance() {
         return ourInstance;
@@ -26,10 +26,7 @@ public class LobbyChats {
         if (chats.size() == MAX_LOBBY_CHATS) {
             chats.removeLast();
         }
-        LobbyChat chat = new LobbyChat();
-        chat.setUsername(user.getUsername());
-        chat.setMessage(message);
-        chat.setTime(new Date());
+        LobbyChat chat = new LobbyChat(user.getUsername(), message, new Date());
         chats.addFirst(chat);
     }
 
@@ -37,10 +34,7 @@ public class LobbyChats {
         if (chats.size() == MAX_LOBBY_CHATS) {
             chats.removeLast();
         }
-        LobbyChat chat = new LobbyChat();
-        chat.setUsername(sender.getUsername());
-        chat.setMessage(message);
-        chat.setTime(new Date());
+        LobbyChat chat = new LobbyChat(sender.getUsername(), message, new Date());
         chat.setUserId(receiver.getUserId());
         chats.addFirst(chat);
     }

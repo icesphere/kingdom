@@ -46,7 +46,7 @@ public class TrashCardsHandler {
         } else if (cardAction.getCardName().equals("Apprentice")) {
             int numCardsToDraw = game.getCardCost(trashedCard);
             player.drawCards(numCardsToDraw);
-            if (trashedCard.isCostIncludesPotion()) {
+            if (trashedCard.getCostIncludesPotion()) {
                 player.drawCards(2);
             }
         } else if (cardAction.getCardName().equals("Assassin")) {
@@ -85,14 +85,14 @@ public class TrashCardsHandler {
             int cost = game.getCardCost(trashedCard);
             cost = cost + 1;
             for (Card c : supplyMap.values()) {
-                if (game.getCardCost(c) == cost && trashedCard.isCostIncludesPotion() == c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) == cost && trashedCard.getCostIncludesPotion() == c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     cardsMore.add(c);
                 }
             }
 
             cost = cost - 2;
             for (Card c : supplyMap.values()) {
-                if (game.getCardCost(c) == cost && trashedCard.isCostIncludesPotion() == c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) == cost && trashedCard.getCostIncludesPotion() == c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     cardsLess.add(c);
                 }
             }
@@ -135,7 +135,7 @@ public class TrashCardsHandler {
             secondCardAction.setInstructions("Select one of the following cards and then click Done.");
             int highestCost = game.getCardCost(trashedCard) + 3;
             for (Card c : supplyMap.values()) {
-                if (game.getCardCost(c) <= highestCost && (trashedCard.isCostIncludesPotion() || !c.isCostIncludesPotion()) && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) <= highestCost && (trashedCard.getCostIncludesPotion() || !c.getCostIncludesPotion()) && game.isCardInSupply(c)) {
                     secondCardAction.getCards().add(c);
                 }
             }
@@ -154,7 +154,7 @@ public class TrashCardsHandler {
             int cost = game.getCardCost(trashedCard);
             cost = cost + 2;
             for (Card c : supplyMap.values()) {
-                if (game.getCardCost(c) == cost && trashedCard.isCostIncludesPotion() == c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) == cost && trashedCard.getCostIncludesPotion() == c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     secondCardAction.getCards().add(c);
                 }
             }
@@ -178,7 +178,7 @@ public class TrashCardsHandler {
                 secondCardAction.setNumCards(1);
                 secondCardAction.setInstructions("Select one of the following cards and then click Done.");
                 for (Card c : supplyMap.values()) {
-                    if (game.getCardCost(c) == cost && !c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                    if (game.getCardCost(c) == cost && !c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                         secondCardAction.getCards().add(c);
                     }
                 }
@@ -204,7 +204,7 @@ public class TrashCardsHandler {
                 cost = cost + 1;
             }
             for (Card c : supplyMap.values()) {
-                if (game.getCardCost(c) == cost && trashedCard.isCostIncludesPotion() == c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) == cost && trashedCard.getCostIncludesPotion() == c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     secondCardAction.getCards().add(c);
                 }
             }
@@ -219,14 +219,14 @@ public class TrashCardsHandler {
             secondCardAction.setNumCards(1);
             secondCardAction.setInstructions("Select one of the following cards to put into your hand and then click Done.");
             for (Card card : game.getAvailableTreasureCardsInSupply()) {
-                if ((game.getCardCost(trashedCard) + 3) >= game.getCardCost(card) && (trashedCard.isCostIncludesPotion() || !card.isCostIncludesPotion())) {
+                if ((game.getCardCost(trashedCard) + 3) >= game.getCardCost(card) && (trashedCard.getCostIncludesPotion() || !card.getCostIncludesPotion())) {
                     secondCardAction.getCards().add(card);
                 }
             }
             if (!secondCardAction.getCards().isEmpty()) {
                 game.setPlayerCardAction(player, secondCardAction);
             } else {
-                game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("There were no treasure cards to gain."));
+                game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("There were no treasure cards to gain."));
             }
         } else if (cardAction.getCardName().equals("Remake")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
@@ -238,7 +238,7 @@ public class TrashCardsHandler {
             int cost = game.getCardCost(trashedCard);
             cost = cost + 1;
             for (Card c : supplyMap.values()) {
-                if (game.getCardCost(c) == cost && trashedCard.isCostIncludesPotion() == c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) == cost && trashedCard.getCostIncludesPotion() == c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     secondCardAction.getCards().add(c);
                 }
             }
@@ -254,7 +254,7 @@ public class TrashCardsHandler {
             secondCardAction.setInstructions("Select one of the following cards and then click Done.");
             int highestCost = game.getCardCost(trashedCard) + 2;
             for (Card c : supplyMap.values()) {
-                if (game.getCardCost(c) <= highestCost && (trashedCard.isCostIncludesPotion() || !c.isCostIncludesPotion()) && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) <= highestCost && (trashedCard.getCostIncludesPotion() || !c.getCostIncludesPotion()) && game.isCardInSupply(c)) {
                     secondCardAction.getCards().add(c);
                 }
             }
@@ -328,7 +328,7 @@ public class TrashCardsHandler {
             int cost = game.getCardCost(trashedCard);
             cost = cost + 1;
             for (Card c : supplyMap.values()) {
-                if (game.getCardCost(c) == cost && trashedCard.isCostIncludesPotion() == c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) == cost && trashedCard.getCostIncludesPotion() == c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     secondCardAction.getCards().add(c);
                 }
             }

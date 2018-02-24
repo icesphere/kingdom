@@ -27,7 +27,7 @@ public class UserManager {
     }
 
     public User getUser(int userId) {
-        return userRepository.findOne(userId);
+        return userRepository.findById(userId).get();
     }
 
     public User getUser(String username, String password) {

@@ -53,7 +53,7 @@ public class TreasureCardsSpecialActionHandler {
                 cardNames.add(c.getName());
             }
             for (Card c : game.getSupplyMap().values()) {
-                if (game.getCardCost(c) <= cardNames.size() && !c.isCostIncludesPotion() && game.getSupply().get(c.getCardId()) > 0) {
+                if (game.getCardCost(c) <= cardNames.size() && !c.getCostIncludesPotion() && game.getSupply().get(c.getCardId()) > 0) {
                     cardAction.getCards().add(c);
                 }
             }

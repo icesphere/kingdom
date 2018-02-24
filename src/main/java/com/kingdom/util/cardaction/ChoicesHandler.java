@@ -98,7 +98,7 @@ public class ChoicesHandler {
                 gainCardAction.setPhase(2);
             }
             for (Card c : game.getSupplyMap().values()) {
-                if (game.getCardCost(c) == cost && cardAction.getAssociatedCard().isCostIncludesPotion() == c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) == cost && cardAction.getAssociatedCard().getCostIncludesPotion() == c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     cards.add(c);
                 }
             }
@@ -275,7 +275,7 @@ public class ChoicesHandler {
                     nextCardAction.getChoices().add(new CardActionChoice("Set Aside", "aside"));
                     game.setPlayerCardAction(player, nextCardAction);
                 } else {
-                    game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("Your deck is empty."));
+                    game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("Your deck is empty."));
                     game.addHistory(player.getUsername(), "'s deck is empty");
                     for (Card setAsideCard : game.getSetAsideCards()) {
                         player.addCardToDiscard(setAsideCard);
@@ -311,7 +311,7 @@ public class ChoicesHandler {
             gainCardAction.setNumCards(1);
             gainCardAction.setInstructions("Select one of the following cards to gain and then click Done.");
             for (Card c : game.getSupplyMap().values()) {
-                if (game.getCardCost(c) <= 3 && !c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) <= 3 && !c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     gainCardAction.getCards().add(c);
                 }
             }

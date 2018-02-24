@@ -24,7 +24,7 @@ public class SalvationSpecialActionHandler {
             if (cardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, cardAction);
             } else {
-                game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("You don't have any treasure cards to trash."));
+                game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("You don't have any treasure cards to trash."));
             }
         } else if (card.getName().equals("Archbishop")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
@@ -92,7 +92,7 @@ public class SalvationSpecialActionHandler {
                 cards.addAll(player.getDiscard().subList(player.getDiscard().size() - 4, player.getDiscard().size()));
             }
             if (cards.isEmpty()) {
-                game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("Your discard pile was empty."));
+                game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("Your discard pile was empty."));
             } else {
                 game.addHistory("Catacombs revealed ", KingdomUtil.groupCards(cards, true));
                 if (cards.size() == 1) {
@@ -238,7 +238,7 @@ public class SalvationSpecialActionHandler {
             if (cardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, cardAction);
             } else {
-                game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("The trash pile is empty."));
+                game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("The trash pile is empty."));
             }
         } else if (card.getName().equals("Scriptorium")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
@@ -251,7 +251,7 @@ public class SalvationSpecialActionHandler {
             if (cardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, cardAction);
             } else {
-                game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("You do not have any action cards in your hand."));
+                game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("You do not have any action cards in your hand."));
             }
         }
 

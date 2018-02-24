@@ -221,7 +221,7 @@ public class AlchemySpecialActionHandler {
             cardAction.setNumCards(1);
             cardAction.setInstructions("Select one of the following cards to gain and then click Done, or just click Done if you don't want to gain a card.");
             for (Card c : supplyMap.values()) {
-                if (c.isAction() && game.getCardCost(c) <= 5 && !c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (c.isAction() && game.getCardCost(c) <= 5 && !c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     cardAction.getCards().add(c);
                 }
             }

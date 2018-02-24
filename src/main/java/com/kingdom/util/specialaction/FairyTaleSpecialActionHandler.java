@@ -24,7 +24,7 @@ public class FairyTaleSpecialActionHandler {
             if (cardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, cardAction);
             } else {
-                game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("There are no piles left to put the troll token on."));
+                game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("There are no piles left to put the troll token on."));
             }
             if (!repeatedAction) {
                 game.removePlayedCard(card);

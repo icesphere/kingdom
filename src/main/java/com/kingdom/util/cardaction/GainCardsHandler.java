@@ -73,7 +73,7 @@ public class GainCardsHandler {
                     cost = cost + 1;
                 }
                 for (Card c : game.getSupplyMap().values()) {
-                    if (game.getCardCost(c) == cost && cardAction.getAssociatedCard().isCostIncludesPotion() == c.isCostIncludesPotion() && game.getSupply().get(c.getCardId()) > 0) {
+                    if (game.getCardCost(c) == cost && cardAction.getAssociatedCard().getCostIncludesPotion() == c.getCostIncludesPotion() && game.getSupply().get(c.getCardId()) > 0) {
                         cards.add(c);
                     }
                 }

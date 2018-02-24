@@ -46,7 +46,7 @@ public class MainController {
                 user.setLocation(KingdomUtil.getLocation(user.getIpAddress()));
                 user.setMobile(mobile);
                 manager.saveUser(user);
-                if (!user.isAdmin() && LoggedInUsers.getInstance().getUsers().size() >= MAX_USER_LIMIT) {
+                if (!user.getAdmin() && LoggedInUsers.getInstance().getUsers().size() >= MAX_USER_LIMIT) {
                     ModelAndView modelAndView1 = new ModelAndView("userLimitReached");
                     modelAndView1.addObject("mobile", KingdomUtil.isMobile(request));
                     return modelAndView1;
@@ -57,7 +57,7 @@ public class MainController {
                     session.setMaxInactiveInterval(60 * 30);
                     session.setAttribute("user", user);
                     session.setAttribute("mobile", mobile);
-                    if (user.isChangePassword()) {
+                    if (user.getChangePassword()) {
                         return new ModelAndView("redirect:/changeTemporaryPassword.html");
                     } else {
                         return new ModelAndView("redirect:/showGameRooms.html");
@@ -230,7 +230,7 @@ public class MainController {
 
     private boolean isAdmin(HttpServletRequest request) {
         User user = getUser(request);
-        return user != null && user.isAdmin();
+        return user != null && user.getAdmin();
     }
 
     @RequestMapping("/showHelp.html")

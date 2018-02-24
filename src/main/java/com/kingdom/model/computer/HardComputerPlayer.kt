@@ -77,7 +77,7 @@ open class HardComputerPlayer(player: Player, game: Game) : ComputerPlayer(playe
                     }
                 }
                 if (trashingCard == null) {
-                    trashingCards.shuffle()
+                    Collections.shuffle(trashingCards)
                     trashingCard = trashingCards[0]
                 }
             }

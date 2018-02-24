@@ -31,7 +31,7 @@ public class CardController {
     @RequestMapping("/listCards.html")
     public ModelAndView listCards(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("cards");
@@ -56,7 +56,7 @@ public class CardController {
     @RequestMapping("/saveCard.html")
     public ModelAndView saveCard(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         Card card;
@@ -98,7 +98,7 @@ public class CardController {
     @RequestMapping("/showCard.html")
     public ModelAndView showCard(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         String id = request.getParameter("id");

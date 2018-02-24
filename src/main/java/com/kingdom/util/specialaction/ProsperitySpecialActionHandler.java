@@ -52,7 +52,7 @@ public class ProsperitySpecialActionHandler {
                 cardAction.setInstructions("Click the number of Coppers you want to add to your hand from your discard pile.");
                 game.setPlayerCardAction(player, cardAction);
             } else {
-                game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("There were no Coppers in your discard pile."));
+                game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("There were no Coppers in your discard pile."));
             }
         } else if (card.getName().equals("Expand")) {
             Player player = game.getCurrentPlayer();

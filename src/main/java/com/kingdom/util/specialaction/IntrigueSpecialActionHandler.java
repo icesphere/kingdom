@@ -78,7 +78,7 @@ public class IntrigueSpecialActionHandler {
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select one of the following cards to gain and then click Done.");
                 for (Card c : supplyMap.values()) {
-                    if (game.getCardCost(c) <= 4 && !c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                    if (game.getCardCost(c) <= 4 && !c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                         cardAction.getCards().add(c);
                     }
                 }
@@ -184,7 +184,7 @@ public class IntrigueSpecialActionHandler {
                                 game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Saboteur", Card.ACTION_COLOR), " trashed ", player.getUsername(), "'s ", c.getName());
                                 int highestCost = game.getCardCost(c) - 2;
                                 for (Card cardToGain : supplyMap.values()) {
-                                    if (game.getCardCost(cardToGain) <= highestCost && (c.isCostIncludesPotion() || !cardToGain.isCostIncludesPotion()) && game.isCardInSupply(cardToGain)) {
+                                    if (game.getCardCost(cardToGain) <= highestCost && (c.getCostIncludesPotion() || !cardToGain.getCostIncludesPotion()) && game.isCardInSupply(cardToGain)) {
                                         cardAction.getCards().add(cardToGain);
                                     }
                                 }
@@ -309,7 +309,7 @@ public class IntrigueSpecialActionHandler {
                             nextCardAction.setPlayerId(nextPlayer.getUserId());
                             int cost = game.getCardCost(topCard);
                             for (Card c : supplyMap.values()) {
-                                if (game.getCardCost(c) == cost && c.isCostIncludesPotion() == topCard.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                                if (game.getCardCost(c) == cost && c.getCostIncludesPotion() == topCard.getCostIncludesPotion() && game.isCardInSupply(c)) {
                                     nextCardAction.getCards().add(c);
                                 }
                             }
@@ -440,7 +440,7 @@ public class IntrigueSpecialActionHandler {
             case "Wishing Well": {
                 Player player = game.getCurrentPlayer();
                 if (player.getDeck().size() + player.getDiscard().size() == 0) {
-                    game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("Your deck and discard piles are empty."));
+                    game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("Your deck and discard piles are empty."));
                 } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
                     cardAction.setDeck(Deck.Intrigue);

@@ -259,16 +259,16 @@ public class CardRandomizer {
         if (card.isDefense()) {
             rcs.hasDefenseCard = true;
         }
-        if (card.getCost() == 2 && !card.isCostIncludesPotion()) {
+        if (card.getCost() == 2 && !card.getCostIncludesPotion()) {
             rcs.hasTwo = true;
         }
-        if (card.getCost() == 3 && !card.isCostIncludesPotion()) {
+        if (card.getCost() == 3 && !card.getCostIncludesPotion()) {
             rcs.hasThree = true;
         }
-        if (card.getCost() == 4 && !card.isCostIncludesPotion()) {
+        if (card.getCost() == 4 && !card.getCostIncludesPotion()) {
             rcs.hasFour = true;
         }
-        if (card.getCost() == 5 && !card.isCostIncludesPotion()) {
+        if (card.getCost() == 5 && !card.getCostIncludesPotion()) {
             rcs.hasFive = true;
         }
     }
@@ -299,7 +299,7 @@ public class CardRandomizer {
     }
 
     private List<Card> getCardsByDeck(Deck deck) {
-        return cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false, false);
+        return cardRepository.findByDeckStringAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck.toString(), false, false, false);
     }
 
     private class RandomCardsSelected {

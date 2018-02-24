@@ -50,7 +50,7 @@ public class KingdomSpecialActionHandler {
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select one of the following cards to gain to your hand and then click Done.");
                 for (Card c : supplyMap.values()) {
-                    if (game.getCardCost(c) <= 5 && !c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                    if (game.getCardCost(c) <= 5 && !c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                         cardAction.getCards().add(c);
                     }
                 }
@@ -154,7 +154,7 @@ public class KingdomSpecialActionHandler {
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select one of the following cards and then click Done.");
                 for (Card c : supplyMap.values()) {
-                    if (game.getCardCost(c) <= 5 && !c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                    if (game.getCardCost(c) <= 5 && !c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                         cardAction.getCards().add(c);
                     }
                 }
@@ -233,7 +233,7 @@ public class KingdomSpecialActionHandler {
                 if (cardAction.getCards().size() > 0) {
                     game.setPlayerCardAction(player, cardAction);
                 } else {
-                    game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("You don't have any treasure cards to trash."));
+                    game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("You don't have any treasure cards to trash."));
                 }
                 break;
             }
@@ -424,7 +424,7 @@ public class KingdomSpecialActionHandler {
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select one of the following cards to gain and then click Done.");
                 for (Card c : supplyMap.values()) {
-                    if (game.getCardCost(c) <= 4 && !c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                    if (game.getCardCost(c) <= 4 && !c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                         cardAction.getCards().add(c);
                     }
                 }

@@ -300,7 +300,7 @@ public class SeasideSpecialActionHandler {
             CardAction cardAction;
             List<Card> cards = new ArrayList<Card>();
             for (Card c : game.getSmugglersCards()) {
-                if (game.isCardInSupply(c) && !c.isCostIncludesPotion()) {
+                if (game.isCardInSupply(c) && !c.getCostIncludesPotion()) {
                     cards.add(c);
                 }
             }

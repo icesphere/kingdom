@@ -71,7 +71,7 @@ public class BuySpecialActionHandler {
             cardAction.setInstructions("Select one of the following cards to gain and then click Done.");
             int maxCost = player.getHand().size() * 2;
             for (Card c : game.getSupplyMap().values()) {
-                if (c.isAction() && game.getCardCost(c) <= maxCost && !c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (c.isAction() && game.getCardCost(c) <= maxCost && !c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     cardAction.getCards().add(c);
                 }
             }
@@ -109,7 +109,7 @@ public class BuySpecialActionHandler {
         cardAction.setInstructions("Select one of the following cards to gain and then click Done.");
         int cost = game.getCardCost(card);
         for (Card c : game.getSupplyMap().values()) {
-            if (!c.isVictory() && game.getCardCost(c) < cost && (!c.isCostIncludesPotion() || card.isCostIncludesPotion()) && game.isCardInSupply(c)) {
+            if (!c.isVictory() && game.getCardCost(c) < cost && (!c.getCostIncludesPotion() || card.getCostIncludesPotion()) && game.isCardInSupply(c)) {
                 cardAction.getCards().add(c);
             }
         }

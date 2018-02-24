@@ -32,7 +32,7 @@ public class PromoSpecialActionHandler {
                     potions += player.getPotionsInHand();
                 }
                 for (Card c : cards) {
-                    if (coins >= game.getCardCostBuyPhase(c) && (!c.isCostIncludesPotion() || potions > 0)) {
+                    if (coins >= game.getCardCostBuyPhase(c) && (!c.getCostIncludesPotion() || potions > 0)) {
                         canAffordAny = true;
                         break;
                     }

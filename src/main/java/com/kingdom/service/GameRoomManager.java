@@ -65,10 +65,7 @@ public class GameRoomManager {
                 addGame = true;
             }
             if (addGame) {
-                GameRoom gameRoom = new GameRoom();
-                gameRoom.setName("Game Room " + game.getGameId());
-                gameRoom.setGameId(game.getGameId());
-                gameRoom.setGame(game);
+                GameRoom gameRoom = new GameRoom("Game Room " + game.getGameId(), game.getGameId(), game);
                 gameRooms.add(gameRoom);
             }
             if (game.getStatus() == Game.STATUS_NO_GAMES) {
@@ -76,7 +73,7 @@ public class GameRoomManager {
             }
         }
         GameRoomComparator grc = new GameRoomComparator();
-        Collections.sort(gameRooms, grc);
+        gameRooms.sort(grc);
         return gameRooms;
     }
 

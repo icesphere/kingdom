@@ -21,7 +21,7 @@ public class GainCardsSpecialActionHandler {
             cardAction.setInstructions("Select one of the following cards to gain and then click Done.");
             int cost = game.getCardCost(card);
             for (Card c : supplyMap.values()) {
-                if (game.getCardCost(c) < cost && !c.isCostIncludesPotion() && game.isCardInSupply(c)) {
+                if (game.getCardCost(c) < cost && !c.getCostIncludesPotion() && game.isCardInSupply(c)) {
                     cardAction.getCards().add(c);
                 }
             }
@@ -76,10 +76,10 @@ public class GainCardsSpecialActionHandler {
                 if (cardAction.getCards().size() > 0) {
                     game.setPlayerCardAction(player, cardAction);
                 } else {
-                    game.setPlayerInfoDialog(player, InfoDialog.getErrorDialog("There were no Action cards in your discard pile."));
+                    game.setPlayerInfoDialog(player, InfoDialog.Companion.getErrorDialog("There were no Action cards in your discard pile."));
                 }
             } else {
-                game.setPlayerInfoDialog(player, InfoDialog.getErrorDialog("Your discard pile is empty."));
+                game.setPlayerInfoDialog(player, InfoDialog.Companion.getErrorDialog("Your discard pile is empty."));
             }
         } else if (card.getName().equals("Ill-Gotten Gains")) {
             int playerIndex = game.calculateNextPlayerIndex(game.getCurrentPlayerIndex());

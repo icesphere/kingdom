@@ -1,31 +1,21 @@
 package com.kingdom.repository;
 
-import com.kingdom.model.PlayerStats;
 import com.kingdom.model.User;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class UserDao {
 
-    HibernateTemplate hibernateTemplate;
-
-    public UserDao(HibernateTemplate hibernateTemplate) {
-        this.hibernateTemplate = hibernateTemplate;
+    public UserDao() {
     }
 
     public List<User> getUsers(String stat, Integer value) {
-        if (stat.equals("playedMobileGame")) {
+        //todo
+        return new ArrayList<>();
+        /*if (stat.equals("playedMobileGame")) {
             return getPlayedMobileGameUsers();
         } else if (stat.equals("usingDeckFrequencies")) {
             return getUsingDeckFrequencies();
@@ -41,10 +31,10 @@ public class UserDao {
             criteria.add(Restrictions.eq(stat, true));
         }
         criteria.addOrder(Order.desc("lastLogin"));
-        return (List<User>) hibernateTemplate.findByCriteria(criteria);
+        return (List<User>) hibernateTemplate.findByCriteria(criteria);*/
     }
 
-    private List<User> getPlayedMobileGameUsers() {
+    /*private List<User> getPlayedMobileGameUsers() {
 
         Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
@@ -87,10 +77,11 @@ public class UserDao {
         session.close();
 
         return users;
-    }
+    }*/
 
     public void calculateGameStats(User user) {
-        PlayerStats stats = new PlayerStats();
+        //todo
+        /*PlayerStats stats = new PlayerStats();
 
         Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
@@ -143,11 +134,13 @@ public class UserDao {
 
         tx.commit();
 
-        session.close();
+        session.close();*/
     }
 
     public int getErrorCount() {
-        Session session = hibernateTemplate.getSessionFactory().openSession();
+        //todo
+        return 0;
+        /*Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
         SQLQuery query = session.createSQLQuery("select count(*) from errors");
@@ -156,6 +149,6 @@ public class UserDao {
         tx.commit();
         session.close();
 
-        return numErrors;
+        return numErrors;*/
     }
 }

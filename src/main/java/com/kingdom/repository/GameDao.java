@@ -1,29 +1,16 @@
 package com.kingdom.repository;
 
-import com.kingdom.model.*;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Repository
 public class GameDao {
 
-    HibernateTemplate hibernateTemplate;
-
-    public GameDao(HibernateTemplate hibernateTemplate) {
-        this.hibernateTemplate = hibernateTemplate;
+    public GameDao() {
     }
 
-    public List<GameHistory> getGameHistoryList(int userId) {
+    //todo
+
+/*    public List<GameHistory> getGameHistoryList(int userId) {
         return getGameHistoryList(userId, 50);
     }
 
@@ -341,5 +328,5 @@ public class GameDao {
         session.close();
 
         return stats;
-    }
+    }*/
 }

@@ -52,16 +52,17 @@ public class GameController {
 
         try {
             request.getSession().setAttribute("gameId", game.getGameId());
-            if (user.isGuest()) {
+            if (user.getGuest()) {
                 return new ModelAndView("redirect:/showGameRooms.html");
             }
             game.setCreatorId(user.getUserId());
             game.setCreatorName(user.getUsername());
             LoggedInUsers.getInstance().refreshLobbyGameRooms();
-            boolean includeTesting = user.isAdmin();
+            boolean includeTesting = user.getAdmin();
             addSelectCardsObjects(user, modelAndView, includeTesting);
             return modelAndView;
         } catch (Throwable t) {
+            t.printStackTrace();
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
@@ -102,7 +103,7 @@ public class GameController {
         modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, includeTesting));
         modelAndView.addObject("fanCards", cardManager.getCards(Deck.Fan, includeTesting));
         modelAndView.addObject("annotatedGames", gameManager.getAnnotatedGames());
-        modelAndView.addObject("recentGames", gameManager.getGameHistoryList(user.getUserId(), 10));
+        modelAndView.addObject("recentGames", gameManager.getGameHistoryList(user.getUserId()));
         modelAndView.addObject("excludedCards", user.getExcludedCardNames());
         modelAndView.addObject("recommendedSets", gameManager.getRecommendedSets());
     }
@@ -239,7 +240,7 @@ public class GameController {
                     if (generateType.equals("annotatedGame")) {
                         AnnotatedGame annotatedGame = gameManager.getAnnotatedGame(Integer.parseInt(request.getParameter("annotatedGameId")));
                         cards = annotatedGame.getCards();
-                        includePlatinumAndColony = annotatedGame.isIncludeColonyAndPlatinum();
+                        includePlatinumAndColony = annotatedGame.getIncludeColonyAndPlatinum();
                         game.setAnnotatedGame(true);
                     } else {
                         if (generateType.equals("recentGame")) {
@@ -393,6 +394,7 @@ public class GameController {
                 }
             }
         } catch (Throwable t) {
+            t.printStackTrace();
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
@@ -403,7 +405,7 @@ public class GameController {
         boolean includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum() || (game.getKingdomCards().get(0).isProsperity() && !game.isNeverIncludeColonyAndPlatinum());
         boolean playTreasureCardsRequired = false;
         for (Card card : game.getKingdomCards()) {
-            if (card.isPlayTreasureCards()) {
+            if (card.getPlayTreasureCards()) {
                 playTreasureCardsRequired = true;
             }
         }
@@ -555,7 +557,7 @@ public class GameController {
                     } else if (card.getName().equals("Tournament") || card.getName().equals("Museum")) {
                         includePrizes = true;
                     }
-                    if (card.isPlayTreasureCards()) {
+                    if (card.getPlayTreasureCards()) {
                         playTreasureCardsRequired = true;
                     }
                 }
@@ -582,6 +584,7 @@ public class GameController {
                 return new ModelAndView("redirect:/showGameRooms.html");
             }
         } catch (Throwable t) {
+            t.printStackTrace();
             GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
@@ -605,7 +608,7 @@ public class GameController {
         }
         int gameId = Integer.parseInt(gameIdParam);
         Game game = GameRoomManager.getInstance().getGame(gameId);
-        if (game != null && (user.isAdmin() || game.getCreatorId() == user.getUserId())) {
+        if (game != null && (user.getAdmin() || game.getCreatorId() == user.getUserId())) {
             game.reset();
         }
         return new ModelAndView("redirect:/showGameRooms.html");
@@ -1962,7 +1965,7 @@ public class GameController {
     @RequestMapping("/gameHistory.html")
     public ModelAndView gameHistory(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("gameHistory");
@@ -1974,7 +1977,7 @@ public class GameController {
     @RequestMapping("/gamePlayersHistory.html")
     public ModelAndView gamePlayersHistory(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         int gameId = Integer.parseInt(request.getParameter("gameId"));
@@ -1988,7 +1991,7 @@ public class GameController {
     @RequestMapping("/playerGameHistory.html")
     public ModelAndView playerGameHistory(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("gameHistory");
@@ -2001,7 +2004,7 @@ public class GameController {
     @RequestMapping("/gameErrors.html")
     public ModelAndView gameErrors(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("gameErrors");
@@ -2013,7 +2016,7 @@ public class GameController {
     @RequestMapping("/deleteGameError.html")
     public ModelAndView deleteGameError(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         int errorId = Integer.parseInt(request.getParameter("errorId"));
@@ -2086,7 +2089,7 @@ public class GameController {
     @RequestMapping("/overallGameStats.html")
     public ModelAndView overallGameStats(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("overallStats");
@@ -2106,7 +2109,7 @@ public class GameController {
     @RequestMapping("/userStats.html")
     public ModelAndView userStats(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("userStats");
@@ -2118,7 +2121,7 @@ public class GameController {
     @RequestMapping("/annotatedGames.html")
     public ModelAndView annotatedGames(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("annotatedGames");
@@ -2130,7 +2133,7 @@ public class GameController {
     @RequestMapping("/saveAnnotatedGame.html")
     public ModelAndView saveAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
 
@@ -2160,7 +2163,7 @@ public class GameController {
     @RequestMapping("/deleteAnnotatedGame.html")
     public ModelAndView deleteAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         String id = request.getParameter("id");
@@ -2173,7 +2176,7 @@ public class GameController {
     @RequestMapping("/showAnnotatedGame.html")
     public ModelAndView showAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("annotatedGame");
@@ -2213,7 +2216,7 @@ public class GameController {
         if (user == null || game == null) {
             return KingdomUtil.getLoginModelAndView(request);
         }
-        if (!game.isTestGame() && !user.isAdmin()) {
+        if (!game.isTestGame() && !user.getAdmin()) {
             return new ModelAndView("redirect:/showGame.html");
         }
         Player player = game.getPlayerMap().get(user.getUserId());
@@ -2232,7 +2235,7 @@ public class GameController {
         if (user == null || game == null) {
             return KingdomUtil.getLoginModelAndView(request);
         }
-        if (!game.isTestGame() && !user.isAdmin()) {
+        if (!game.isTestGame() && !user.getAdmin()) {
             return new ModelAndView("redirect:/showGame.html");
         }
 
@@ -2515,7 +2518,7 @@ public class GameController {
     @RequestMapping("/recommendedSets.html")
     public ModelAndView recommendedSets(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("recommendedSets");
@@ -2527,7 +2530,7 @@ public class GameController {
     @RequestMapping("/saveRecommendedSet.html")
     public ModelAndView saveRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
 
@@ -2548,7 +2551,7 @@ public class GameController {
     @RequestMapping("/deleteRecommendedSet.html")
     public ModelAndView deleteRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         String id = request.getParameter("id");
@@ -2561,7 +2564,7 @@ public class GameController {
     @RequestMapping("/showRecommendedSet.html")
     public ModelAndView showRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
-        if (user == null || !user.isAdmin()) {
+        if (user == null || !user.getAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("recommendedSet");

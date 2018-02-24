@@ -20,7 +20,7 @@ public class LeaderSpecialActionHandler {
             cardAction.setNumCards(1);
             cardAction.setInstructions("Select one of the following cards to gain on top of your deck and then click Done.");
             for (Card c : game.getSupplyMap().values()) {
-                if (game.getCardCost(c) <= 6 && !c.isCostIncludesPotion() && game.getSupply().get(c.getCardId()) > 0) {
+                if (game.getCardCost(c) <= 6 && !c.getCostIncludesPotion() && game.getSupply().get(c.getCardId()) > 0) {
                     cardAction.getCards().add(c);
                 }
             }

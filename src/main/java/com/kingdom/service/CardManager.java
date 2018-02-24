@@ -34,7 +34,7 @@ public class CardManager {
     }
 
     public Card getCard(int cardId) {
-        return cardRepository.findOne(cardId);
+        return cardRepository.findById(cardId).get();
     }
 
     public Card getCard(String cardName) {
@@ -65,9 +65,9 @@ public class CardManager {
 
     private List<Card> getCardsByDeck(Deck deck, boolean includeTesting) {
         if (!includeTesting) {
-            return cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false, false);
+            return cardRepository.findByDeckStringAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck.toString(), false, false, false);
         } else {
-            return cardRepository.findByDeckAndPrizeCardOrderByNameAsc(deck, false);
+            return cardRepository.findByDeckStringAndPrizeCardOrderByNameAsc(deck.toString(), false);
         }
     }
 }
