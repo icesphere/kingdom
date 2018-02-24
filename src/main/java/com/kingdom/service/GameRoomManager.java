@@ -9,7 +9,7 @@ import java.util.*;
 public class GameRoomManager {
 
     private static final int MAX_GAME_ROOMS = 20;
-    
+
     private Map<Integer, Game> games = new HashMap<Integer, Game>();
 
     private boolean updatingWebsite;
@@ -27,7 +27,7 @@ public class GameRoomManager {
     private GameRoomManager() {
     }
 
-    public Game getGame(int gameId){
+    public Game getGame(int gameId) {
         return games.get(gameId);
     }
 
@@ -61,13 +61,12 @@ public class GameRoomManager {
             boolean addGame = false;
             if (lobbyGameRooms && (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED || game.getStatus() == Game.STATUS_GAME_WAITING_FOR_PLAYERS)) {
                 addGame = true;
-            }
-            else if (!lobbyGameRooms && game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
+            } else if (!lobbyGameRooms && game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
                 addGame = true;
             }
             if (addGame) {
                 GameRoom gameRoom = new GameRoom();
-                gameRoom.setName("Game Room "+game.getGameId());
+                gameRoom.setName("Game Room " + game.getGameId());
                 gameRoom.setGameId(game.getGameId());
                 gameRoom.setGame(game);
                 gameRooms.add(gameRoom);
@@ -89,20 +88,17 @@ public class GameRoomManager {
             if (now - (15 * minute) > game.getLastActivity().getTime()) {
                 resetGame = true;
             }
-        }
-        else if (game.getStatus() == Game.STATUS_GAME_WAITING_FOR_PLAYERS) {
+        } else if (game.getStatus() == Game.STATUS_GAME_WAITING_FOR_PLAYERS) {
             if (now - (15 * minute) > game.getLastActivity().getTime()) {
                 game.addGameChat("This game was reset due to inactivity.");
                 resetGame = true;
             }
-        }
-        else if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
+        } else if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
             if (now - (30 * minute) > game.getLastActivity().getTime()) {
                 game.addGameChat("This game was reset due to inactivity.");
                 resetGame = true;
             }
-        }
-        else if (game.getStatus() == Game.STATUS_GAME_FINISHED) {
+        } else if (game.getStatus() == Game.STATUS_GAME_FINISHED) {
             if (now - (2 * minute) > game.getLastActivity().getTime()) {
                 game.addGameChat("This game was reset due to inactivity.");
                 resetGame = true;

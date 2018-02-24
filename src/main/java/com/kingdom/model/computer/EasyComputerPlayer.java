@@ -9,8 +9,7 @@ import com.kingdom.model.Player;
  * Date: 5/21/11
  * Time: 10:35 AM
  */
-public class EasyComputerPlayer extends ComputerPlayer
-{
+public class EasyComputerPlayer extends ComputerPlayer {
     public EasyComputerPlayer(Player player, Game game) {
         super(player, game);
         difficulty = 1;

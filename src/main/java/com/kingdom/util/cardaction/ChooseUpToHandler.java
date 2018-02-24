@@ -36,25 +36,21 @@ public class ChooseUpToHandler {
                 Player nextPlayer = players.get(playerIndex);
                 if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
                     game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-                }
-                else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
+                } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                     if (game.isCardInSupply(selectedCard)) {
                         game.playerGainedCard(nextPlayer, selectedCard);
                         game.refreshDiscard(nextPlayer);
                     }
-                }
-                else {
+                } else {
                     if (nextPlayer.hasLighthouse()) {
                         game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                    }
-                    else {
+                    } else {
                         game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                     }
                 }
                 playerIndex = game.calculateNextPlayerIndex(playerIndex);
             }
-        }
-        else if (cardAction.getCardName().equals("Inn")) {
+        } else if (cardAction.getCardName().equals("Inn")) {
             if (selectedCardIds.size() > 0) {
                 List<Card> cards = new ArrayList<Card>();
                 for (Integer selectedCardId : selectedCardIds) {
@@ -67,16 +63,14 @@ public class ChooseUpToHandler {
                 game.refreshDiscard(player);
                 game.addHistory(player.getUsername(), " shuffled ", KingdomUtil.getPlural(selectedCardIds.size(), " Action card"), " into ", player.getPronoun(), " deck");
             }
-        }
-        else if (cardAction.getCardName().equals("King's Court")) {
+        } else if (cardAction.getCardName().equals("King's Court")) {
             if (selectedCardIds.size() > 0) {
                 Card actionCard = player.getCardFromHandById(selectedCardIds.get(0));
                 Card cardCopy;
                 if (game.isCheckQuest() && actionCard.getName().equals("Quest")) {
                     cardCopy = new Card(actionCard);
                     game.setCopiedPlayedCard(true);
-                }
-                else {
+                } else {
                     cardCopy = actionCard;
                 }
                 RepeatedAction firstAction = new RepeatedAction(cardCopy);
@@ -90,22 +84,18 @@ public class ChooseUpToHandler {
                 }
                 game.addHistory(player.getUsername(), " used ", KingdomUtil.getWordWithBackgroundColor("King's Court", Card.ACTION_COLOR), " on ", KingdomUtil.getArticleWithCardName(actionCard));
                 game.playRepeatedAction(player, true);
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " chose not to play an action with ", KingdomUtil.getWordWithBackgroundColor("King's Court", Card.ACTION_COLOR));
             }
-        }
-        else if (cardAction.getCardName().equals("Mendicant")) {
+        } else if (cardAction.getCardName().equals("Mendicant")) {
             if (selectedCardIds.size() > 0) {
                 Card selectedCard = cardMap.get(selectedCardIds.get(0));
                 game.getTrashedCards().remove(selectedCard);
                 game.playerGainedCard(player, selectedCard, false);
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " chose to not gain a card from the trash pile");
             }
-        }
-        else if (cardAction.getCardName().equals("Museum")) {
+        } else if (cardAction.getCardName().equals("Museum")) {
             if (selectedCardIds.size() > 0) {
                 Card selectedCard = cardMap.get(selectedCardIds.get(0));
                 player.removeCardFromHand(selectedCard);
@@ -118,8 +108,7 @@ public class ChooseUpToHandler {
                 museumCardAction.setInstructions("Do you want to trash 4 cards from your Museum mat to gain a Prize and a Duchy?");
                 game.setPlayerCardAction(player, museumCardAction);
             }
-        }
-        else if (cardAction.getCardName().equals("Rancher")) {
+        } else if (cardAction.getCardName().equals("Rancher")) {
             if (selectedCardIds.size() > 0) {
                 Card selectedCard = cardMap.get(selectedCardIds.get(0));
                 game.addHistory(player.getUsername(), " revealed ", KingdomUtil.getArticleWithCardName(selectedCard));
@@ -131,8 +120,7 @@ public class ChooseUpToHandler {
                 choicesCardAction.getChoices().add(new CardActionChoice("+1 Buy", "buy"));
                 game.setPlayerCardAction(player, choicesCardAction);
             }
-        }
-        else if (cardAction.getCardName().equals("Storybook")) {
+        } else if (cardAction.getCardName().equals("Storybook")) {
             if (selectedCardIds.size() > 0) {
                 for (Integer selectedCardId : selectedCardIds) {
                     Card selectedCard = cardMap.get(selectedCardId);
@@ -142,8 +130,7 @@ public class ChooseUpToHandler {
                 }
                 game.addHistory(player.getUsername(), " added ", KingdomUtil.getPlural(selectedCardIds.size(), "card"), " under ", KingdomUtil.getCardWithBackgroundColor(cardAction.getAssociatedCard()), " and gained ", "+", KingdomUtil.getPlural(selectedCardIds.size(), "coin"));
             }
-        }
-        else if (cardAction.getCardName().equals("Treasury") || cardAction.getCardName().equals("Alchemist") || cardAction.getCardName().equals("Herbalist") || cardAction.getCardName().equals("Walled Village") || cardAction.getCardName().equals("Scheme")) {
+        } else if (cardAction.getCardName().equals("Treasury") || cardAction.getCardName().equals("Alchemist") || cardAction.getCardName().equals("Herbalist") || cardAction.getCardName().equals("Walled Village") || cardAction.getCardName().equals("Scheme")) {
             incompleteCard = new SinglePlayerIncompleteCard(cardAction.getCardName(), game);
             for (Integer selectedCardId : selectedCardIds) {
                 Card card = cardMap.get(selectedCardId);
@@ -159,14 +146,12 @@ public class ChooseUpToHandler {
                 String typeAdded;
                 if (cardAction.getCardName().equals("Herbalist")) {
                     typeAdded = KingdomUtil.getPlural(selectedCardIds.size(), "Treasure Card");
-                }
-                else if (cardAction.getCardName().equals("Scheme")) {
+                } else if (cardAction.getCardName().equals("Scheme")) {
                     typeAdded = KingdomUtil.getPlural(selectedCardIds.size(), "Action Card");
+                } else {
+                    typeAdded = KingdomUtil.getPlural(selectedCardIds.size(), cardAction.getCardName() + " card");
                 }
-                else {
-                    typeAdded = KingdomUtil.getPlural(selectedCardIds.size(), cardAction.getCardName()+" card");
-                }
-                game.addHistory(player.getUsername(), " added ", typeAdded, " to the top of ",player.getPronoun()," deck");
+                game.addHistory(player.getUsername(), " added ", typeAdded, " to the top of ", player.getPronoun(), " deck");
             }
             incompleteCard.setEndTurn(true);
         }

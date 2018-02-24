@@ -53,7 +53,7 @@ public class CardAction {
         this.type = type;
     }
 
-    public static CardAction getWaitingForPlayersCardAction(){
+    public static CardAction getWaitingForPlayersCardAction() {
         CardAction cardAction = new CardAction(TYPE_WAITING_FOR_PLAYERS);
         cardAction.setInstructions("Waiting For Players");
         return cardAction;
@@ -135,16 +135,16 @@ public class CardAction {
     public void setCardName(String cardName) {
         this.cardName = cardName;
     }
-    
-    public int getCardId(){
+
+    public int getCardId() {
         return cardId;
     }
 
-    public void setCardId(int cardId){
+    public void setCardId(int cardId) {
         this.cardId = cardId;
     }
 
-    public boolean isDiscard(){
+    public boolean isDiscard() {
         return type == TYPE_DISCARD_DOWN_TO_FROM_HAND || type == TYPE_DISCARD_FROM_HAND || type == TYPE_DISCARD_UP_TO_FROM_HAND || type == TYPE_DISCARD_AT_LEAST_FROM_HAND || type == TYPE_DISCARD_UP_TO;
     }
 
@@ -160,7 +160,7 @@ public class CardAction {
         this.phase = phase;
     }
 
-    public boolean isSelectExact(){
+    public boolean isSelectExact() {
         return type == TYPE_DISCARD_FROM_HAND || type == TYPE_GAIN_CARDS_FROM_SUPPLY || type == TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY
                 || type == TYPE_TRASH_CARDS_FROM_HAND || type == TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK
                 || type == TYPE_CHOOSE_CARDS || type == TYPE_CHOOSE_IN_ORDER || type == TYPE_GAIN_CARDS || type == TYPE_SETUP_LEADERS;
@@ -183,16 +183,14 @@ public class CardAction {
     }
 
     public int getWidth() {
-        if(width > 0){
+        if (width > 0) {
             return width;
         }
         if (type == TYPE_WAITING_FOR_PLAYERS) {
             return 250;
-        }
-        else if (type == TYPE_YES_NO) {
+        } else if (type == TYPE_YES_NO) {
             return 500;
-        }
-        else{
+        } else {
             return 750;
         }
     }

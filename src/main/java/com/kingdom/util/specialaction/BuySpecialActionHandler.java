@@ -21,8 +21,7 @@ public class BuySpecialActionHandler {
                 cardAction.getChoices().add(new CardActionChoice("6 more coins", "6"));
                 cardAction.getChoices().add(new CardActionChoice("No", "no"));
                 return cardAction;
-            }
-            else if (player.getCoins() >= 3) {
+            } else if (player.getCoins() >= 3) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                 cardAction.setDeck(Card.DECK_PROLETARIAT);
                 cardAction.setCardName(card.getName());
@@ -30,8 +29,7 @@ public class BuySpecialActionHandler {
                 cardAction.setInstructions("Do you want to pay an additional 3 coins to gain another Botanical Gardens?");
                 return cardAction;
             }
-        }
-        else if (card.getName().equals("City Planner")) {
+        } else if (card.getName().equals("City Planner")) {
             if (player.getCoins() >= 2 && !player.getVictoryCards().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                 cardAction.setDeck(Card.DECK_PROLETARIAT);
@@ -40,8 +38,7 @@ public class BuySpecialActionHandler {
                 cardAction.setInstructions("Do you want to pay an additional 2 coins to set aside a victory card from your hand?");
                 return cardAction;
             }
-        }
-        else if (card.getName().equals("Farmland")) {
+        } else if (card.getName().equals("Farmland")) {
             if (!player.getHand().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
                 cardAction.setDeck(Card.DECK_HINTERLANDS);
@@ -52,12 +49,10 @@ public class BuySpecialActionHandler {
                 cardAction.setInstructions("Select a card to trash.");
                 cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
                 return cardAction;
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand");
             }
-        }
-        else if (card.getName().equals("Orchard")) {
+        } else if (card.getName().equals("Orchard")) {
             if (player.getCoins() > 1) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                 cardAction.setDeck(Card.DECK_PROLETARIAT);
@@ -66,8 +61,7 @@ public class BuySpecialActionHandler {
                 cardAction.setInstructions("Do you want to pay an additional 2 coins to gain two fruit tokens?");
                 return cardAction;
             }
-        }
-        else if (card.getName().equals("Rancher")) {
+        } else if (card.getName().equals("Rancher")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
             cardAction.setDeck(Card.DECK_PROLETARIAT);
             cardAction.setCardName(cardAction.getCardName());
@@ -84,16 +78,14 @@ public class BuySpecialActionHandler {
             if (cardAction.getCards().size() > 0) {
                 return cardAction;
             }
-        }
-        else if (card.getName().equals("Squatter")) {
+        } else if (card.getName().equals("Squatter")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
             cardAction.setDeck(Card.DECK_PROLETARIAT);
             cardAction.setCardName(card.getName());
             cardAction.setAssociatedCard(card);
             cardAction.setInstructions("Do you want to return this card to the supply and have each other player gain a Squatter?");
             return cardAction;
-        }
-        else if (card.getName().equals("Shepherd")) {
+        } else if (card.getName().equals("Shepherd")) {
             if (player.getCoins() >= 2) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                 cardAction.setDeck(Card.DECK_PROLETARIAT);
@@ -133,8 +125,7 @@ public class BuySpecialActionHandler {
             Player nextPlayer = game.getPlayers().get(playerIndex);
             if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
                 game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-            }
-            else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
+            } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                 List<Card> cards = new ArrayList<Card>();
                 Card card1 = nextPlayer.removeTopDeckCard();
                 Card card2 = null;
@@ -161,8 +152,7 @@ public class BuySpecialActionHandler {
                         Card applicableCard;
                         if (card1.isSilver() || card1.isGold()) {
                             applicableCard = card1;
-                        }
-                        else {
+                        } else {
                             applicableCard = card2;
                         }
                         game.getTrashedCards().add(applicableCard);
@@ -173,8 +163,7 @@ public class BuySpecialActionHandler {
                         }
                         game.addHistory(player.getUsername(), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.getCardWithBackgroundColor(applicableCard));
                         game.playerGainedCard(player, applicableCard);
-                    }
-                    else if (numApplicableCards == 2) {
+                    } else if (numApplicableCards == 2) {
                         CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
                         nextCardAction.setDeck(Card.DECK_HINTERLANDS);
                         nextCardAction.setPlayerId(nextPlayer.getUserId());
@@ -184,8 +173,7 @@ public class BuySpecialActionHandler {
                         nextCardAction.setInstructions("Do you want to trash " + nextPlayer.getUsername() + "'s Gold or Silver?");
                         nextCardAction.getCards().addAll(cards);
                         game.setPlayerCardAction(player, nextCardAction);
-                    }
-                    else {
+                    } else {
                         for (Card c : cards) {
                             nextPlayer.addCardToDiscard(c);
                             game.playerDiscardedCard(nextPlayer, c);
@@ -196,12 +184,10 @@ public class BuySpecialActionHandler {
                 if (!revealedTreasure) {
                     game.playerGainedCard(nextPlayer, game.getCopperCard());
                 }
-            }
-            else {
+            } else {
                 if (nextPlayer.hasLighthouse()) {
                     game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                }
-                else {
+                } else {
                     game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                 }
             }

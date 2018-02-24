@@ -31,11 +31,10 @@ public class HinterlandsSpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 game.setPlayerCardAction(player, cardAction);
             }
-        }
-        else if (card.getName().equals("Crossroads")) {
+        } else if (card.getName().equals("Crossroads")) {
             if (!player.getHand().isEmpty()) {
                 game.addHistory(player.getUsername(), "'s hand contains ", KingdomUtil.groupCards(player.getHand(), true));
-                if(!player.getVictoryCards().isEmpty()) {
+                if (!player.getVictoryCards().isEmpty()) {
                     game.addHistory(player.getUsername(), " gained +", KingdomUtil.getPlural(player.getVictoryCards().size(), "card"));
                     player.drawCards(player.getVictoryCards().size());
                     game.refreshAllPlayersCardsBought();
@@ -46,8 +45,7 @@ public class HinterlandsSpecialActionHandler {
                     game.refreshAllPlayersCardsPlayed();
                 }
             }
-        }
-        else if (card.getName().equals("Develop")) {
+        } else if (card.getName().equals("Develop")) {
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
                 cardAction.setDeck(Card.DECK_HINTERLANDS);
@@ -57,12 +55,10 @@ public class HinterlandsSpecialActionHandler {
                 cardAction.setInstructions("Select a card to trash.");
                 cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
                 game.setPlayerCardAction(player, cardAction);
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand");
             }
-        }
-        else if (card.getName().equals("Duchess")) {
+        } else if (card.getName().equals("Duchess")) {
             incompleteCard = new MultiPlayerIncompleteCard(card.getName(), game, true);
             for (Player p : game.getPlayers()) {
                 Card topDeckCard = p.removeTopDeckCard();
@@ -76,21 +72,18 @@ public class HinterlandsSpecialActionHandler {
                     cardAction.getChoices().add(new CardActionChoice("Discard", "discard"));
                     cardAction.getChoices().add(new CardActionChoice("Put it back", "back"));
                     game.setPlayerCardAction(p, cardAction);
-                }
-                else {
+                } else {
                     incompleteCard.setPlayerActionCompleted(p.getUserId());
                 }
             }
             incompleteCard.allActionsSet();
-        }
-        else if (card.getName().equals("Embassy")) {
+        } else if (card.getName().equals("Embassy")) {
             if (player.getHand().size() > 0) {
                 if (player.getHand().size() == 1) {
                     game.addHistory(player.getUsername(), " discarded 1 card");
                     game.playerDiscardedCard(player, player.getHand().get(0));
                     player.discardCardFromHand(player.getHand().get(0));
-                }
-                else {
+                } else {
                     int cardsToDiscard = 3;
                     if (player.getHand().size() < 3) {
                         cardsToDiscard = player.getHand().size();
@@ -105,15 +98,13 @@ public class HinterlandsSpecialActionHandler {
                     game.setPlayerCardAction(player, cardAction);
                 }
             }
-        }
-        else if (card.getName().equals("Inn")) {
+        } else if (card.getName().equals("Inn")) {
             if (player.getHand().size() > 0) {
                 if (player.getHand().size() == 1) {
                     game.addHistory(player.getUsername(), " discarded 1 card");
                     game.playerDiscardedCard(player, player.getHand().get(0));
                     player.discardCardFromHand(player.getHand().get(0));
-                }
-                else {
+                } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
                     cardAction.setDeck(Card.DECK_HINTERLANDS);
                     cardAction.setCardName(card.getName());
@@ -124,8 +115,7 @@ public class HinterlandsSpecialActionHandler {
                     game.setPlayerCardAction(player, cardAction);
                 }
             }
-        }
-        else if (card.getName().equals("Jack of all Trades")) {
+        } else if (card.getName().equals("Jack of all Trades")) {
             if (game.isCardInSupply(Card.SILVER_ID)) {
                 game.playerGainedCard(player, game.getSilverCard());
             }
@@ -140,8 +130,7 @@ public class HinterlandsSpecialActionHandler {
                 cardAction.getChoices().add(new CardActionChoice("Discard", "discard"));
                 cardAction.getChoices().add(new CardActionChoice("Put it back", "back"));
                 game.setPlayerCardAction(player, cardAction);
-            }
-            else {
+            } else {
                 while (player.getHand().size() < 5) {
                     Card topCard = player.removeTopDeckCard();
                     if (topCard == null) {
@@ -167,8 +156,7 @@ public class HinterlandsSpecialActionHandler {
                     game.setPlayerCardAction(player, trashCardAction);
                 }
             }
-        }
-        else if (card.getName().equals("Mandarin")) {
+        } else if (card.getName().equals("Mandarin")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
             cardAction.setDeck(Card.DECK_HINTERLANDS);
             cardAction.setCardName(card.getName());
@@ -179,16 +167,14 @@ public class HinterlandsSpecialActionHandler {
             if (!cardAction.getCards().isEmpty()) {
                 game.setPlayerCardAction(player, cardAction);
             }
-        }
-        else if (card.getName().equals("Margrave")) {
+        } else if (card.getName().equals("Margrave")) {
             incompleteCard = new MultiPlayerIncompleteCard(card.getName(), game, false);
             for (Player p : game.getPlayers()) {
                 if (!game.isCurrentPlayer(p)) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(p.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(p.getUserId());
                         game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-                    }
-                    else if (!p.hasMoat() && !p.hasLighthouse()) {
+                    } else if (!p.hasMoat() && !p.hasLighthouse()) {
                         p.drawCards(1);
                         game.addHistory(p.getUsername(), " drew 1 card");
                         game.refreshHand(p);
@@ -201,36 +187,30 @@ public class HinterlandsSpecialActionHandler {
                             cardAction.setInstructions("Discard down to 3 cards. Select the Cards you want to discard and then click Done.");
                             cardAction.setButtonValue("Done");
                             game.setPlayerCardAction(p, cardAction);
-                        }
-                        else {
+                        } else {
                             incompleteCard.setPlayerActionCompleted(p.getUserId());
                             game.addHistory(p.getUsername(), " had 3 or less cards");
                         }
-                    }
-                    else {
+                    } else {
                         incompleteCard.setPlayerActionCompleted(p.getUserId());
                         if (p.hasLighthouse()) {
                             game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                        }
-                        else if (p.hasMoat()) {
+                        } else if (p.hasMoat()) {
                             game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                 }
             }
             incompleteCard.allActionsSet();
-        }
-        else if (card.getName().equals("Noble Brigand")) {
+        } else if (card.getName().equals("Noble Brigand")) {
             BuySpecialActionHandler.setNobleBrigandCardAction(game, player);
-        }
-        else if (card.getName().equals("Oasis")) {
+        } else if (card.getName().equals("Oasis")) {
             if (player.getHand().size() > 0) {
                 if (player.getHand().size() == 1) {
                     game.addHistory(player.getUsername(), " discarded 1 card");
                     game.playerDiscardedCard(player, player.getHand().get(0));
                     player.discardCardFromHand(player.getHand().get(0));
-                }
-                else {
+                } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
                     cardAction.setDeck(Card.DECK_HINTERLANDS);
                     cardAction.setCardName(card.getName());
@@ -241,8 +221,7 @@ public class HinterlandsSpecialActionHandler {
                     game.setPlayerCardAction(player, cardAction);
                 }
             }
-        }
-        else if (card.getName().equals("Oracle")) {
+        } else if (card.getName().equals("Oracle")) {
             incompleteCard = new MultiPlayerIncompleteCard(card.getName(), game, true);
             int playersProcessed = 0;
             int playerIndex = game.getCurrentPlayerIndex();
@@ -265,25 +244,21 @@ public class HinterlandsSpecialActionHandler {
                         game.addHistory(p.getUsername(), " revealed ", KingdomUtil.groupCards(topCards, true));
                         if (game.isCurrentPlayer(p)) {
                             cardAction.setInstructions("Do you want to discard the top two cards of your deck, or put them back?");
-                        }
-                        else {
+                        } else {
                             cardAction.setInstructions("Do you want to discard the top two cards of " + p.getUsername() + "'s deck, or put them back?");
                         }
-                    }
-                    else {
+                    } else {
                         cardAction.getChoices().add(new CardActionChoice("Put it back", "back"));
                         game.addHistory(p.getUsername(), " revealed ", KingdomUtil.getCardWithBackgroundColor(firstTopCard, true));
                         if (game.isCurrentPlayer(p)) {
                             cardAction.setInstructions("Do you want to discard the top card of your deck, or put it back?");
-                        }
-                        else {
+                        } else {
                             cardAction.setInstructions("Do you want to discard the top card of " + p.getUsername() + "'s deck, or put it back?");
                         }
                     }
                     cardAction.getCards().addAll(topCards);
                     incompleteCard.getExtraCardActions().add(cardAction);
-                }
-                else {
+                } else {
                     game.addHistory(p.getUsername(), " did not have any cards to reveal");
                     incompleteCard.setPlayerActionCompleted(p.getUserId());
                 }
@@ -295,14 +270,12 @@ public class HinterlandsSpecialActionHandler {
             if (!incompleteCard.getExtraCardActions().isEmpty()) {
                 CardAction cardAction = incompleteCard.getExtraCardActions().remove();
                 game.setPlayerCardAction(player, cardAction);
-            }
-            else {
+            } else {
                 player.drawCards(2);
             }
 
             incompleteCard.allActionsSet();
-        }
-        else if (card.getName().equals("Spice Merchant")) {
+        } else if (card.getName().equals("Spice Merchant")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
             cardAction.setDeck(Card.DECK_HINTERLANDS);
             cardAction.setCardName(card.getName());
@@ -311,8 +284,7 @@ public class HinterlandsSpecialActionHandler {
             cardAction.setInstructions("Select a treasure card to trash and then click Done, or just click Done if you don't want to trash a card.");
             cardAction.setButtonValue("Done");
             game.setPlayerCardAction(player, cardAction);
-        }
-        else if (card.getName().equals("Stables")) {
+        } else if (card.getName().equals("Stables")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND);
             cardAction.setDeck(Card.DECK_HINTERLANDS);
             cardAction.setCardName(card.getName());
@@ -321,8 +293,7 @@ public class HinterlandsSpecialActionHandler {
             cardAction.setInstructions("Select a treasure card to discard and then click Done, or just click Done if you don't want to discard a card.");
             cardAction.setButtonValue("Done");
             game.setPlayerCardAction(player, cardAction);
-        }
-        else if (card.getName().equals("Trader")) {
+        } else if (card.getName().equals("Trader")) {
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
                 cardAction.setDeck(Card.DECK_HINTERLANDS);
@@ -332,8 +303,7 @@ public class HinterlandsSpecialActionHandler {
                 cardAction.setInstructions("Select a card to trash.");
                 cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
                 game.setPlayerCardAction(player, cardAction);
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards");
             }
         }

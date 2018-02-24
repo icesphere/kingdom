@@ -229,8 +229,7 @@ public class User {
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
             try {
                 lastLogin = sdf.parse("09/09/1999");
-            }
-            catch (ParseException e) {
+            } catch (ParseException e) {
                 //
             }
         }
@@ -296,11 +295,11 @@ public class User {
 
     public String getIdleTime() {
         long timeDifference = System.currentTimeMillis() - lastActivity.getTime();
-        int minutes = (int) (timeDifference/1000/60);
+        int minutes = (int) (timeDifference / 1000 / 60);
         int hours = 0;
         if (minutes > 60) {
-            hours = minutes/60;
-            minutes = minutes - hours*60;
+            hours = minutes / 60;
+            minutes = minutes - hours * 60;
         }
         StringBuilder sb = new StringBuilder();
         if (hours > 0) {
@@ -405,17 +404,13 @@ public class User {
     public void setPlayerDefault(int i, String selection) {
         if (i == 2) {
             player2Default = selection;
-        }
-        else if (i == 3) {
+        } else if (i == 3) {
             player3Default = selection;
-        }
-        else if (i == 4) {
+        } else if (i == 4) {
             player4Default = selection;
-        }
-        else if (i == 5) {
+        } else if (i == 5) {
             player5Default = selection;
-        }
-        else if (i == 6) {
+        } else if (i == 6) {
             player6Default = selection;
         }
     }
@@ -539,8 +534,7 @@ public class User {
     public void toggleSoundDefault() {
         if (soundDefault == SOUND_DEFAULT_ON) {
             soundDefault = SOUND_DEFAULT_OFF;
-        }
-        else {
+        } else {
             soundDefault = SOUND_DEFAULT_ON;
         }
     }

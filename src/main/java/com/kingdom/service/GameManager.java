@@ -72,7 +72,7 @@ public class GameManager {
 
     public void logError(GameError error) {
         if (error.getError().length() > 20000) {
-            error.setError(error.getError().substring(0, 19990)+"...");
+            error.setError(error.getError().substring(0, 19990) + "...");
         }
 
         gameErrorRepository.save(error);

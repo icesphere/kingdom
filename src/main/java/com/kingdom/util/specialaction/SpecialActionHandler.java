@@ -14,41 +14,29 @@ public class SpecialActionHandler {
         IncompleteCard incompleteCard = null;
         if (card.isKingdom()) {
             incompleteCard = KingdomSpecialActionHandler.handleSpecialAction(game, card, repeatedAction);
-        }
-        else if (card.isIntrigue()) {
+        } else if (card.isIntrigue()) {
             incompleteCard = IntrigueSpecialActionHandler.handleSpecialAction(game, card);
-        }
-        else if (card.isSeaside()) {
+        } else if (card.isSeaside()) {
             incompleteCard = SeasideSpecialActionHandler.handleSpecialAction(game, card, repeatedAction);
-        }
-        else if (card.isAlchemy()) {
+        } else if (card.isAlchemy()) {
             incompleteCard = AlchemySpecialActionHandler.handleSpecialAction(game, card);
-        }
-        else if (card.isProsperity()) {
+        } else if (card.isProsperity()) {
             incompleteCard = ProsperitySpecialActionHandler.handleSpecialAction(game, card);
-        }
-        else if (card.isCornucopia()) {
+        } else if (card.isCornucopia()) {
             incompleteCard = CornucopiaSpecialActionHandler.handleSpecialAction(game, card);
-        }
-        else if (card.isHinterlands()) {
+        } else if (card.isHinterlands()) {
             incompleteCard = HinterlandsSpecialActionHandler.handleSpecialAction(game, card);
-        }
-        else if (card.isPromo()) {
+        } else if (card.isPromo()) {
             incompleteCard = PromoSpecialActionHandler.handleSpecialAction(game, card);
-        }
-        else if (card.isSalvation()) {
+        } else if (card.isSalvation()) {
             incompleteCard = SalvationSpecialActionHandler.handleSpecialAction(game, card);
-        }
-        else if (card.isFairyTale()) {
+        } else if (card.isFairyTale()) {
             incompleteCard = FairyTaleSpecialActionHandler.handleSpecialAction(game, card, repeatedAction);
-        }
-        else if (card.isLeader()) {
+        } else if (card.isLeader()) {
             LeaderSpecialActionHandler.handleSpecialAction(game, card);
-        }
-        else if (card.isProletariat()) {
+        } else if (card.isProletariat()) {
             incompleteCard = ProletariatSpecialActionHandler.handleSpecialAction(game, card);
-        }
-        else if (card.isFan()) {
+        } else if (card.isFan()) {
             FanSpecialActionHandler.handleSpecialAction(game, card);
         }
 
@@ -56,11 +44,10 @@ public class SpecialActionHandler {
             incompleteCard.actionFinished(game.getCurrentPlayer());
         }
 
-        if(!game.hasIncompleteCard() && !game.getCurrentPlayer().isShowCardAction()) {
-            if(!game.getRepeatedActions().isEmpty()) {
+        if (!game.hasIncompleteCard() && !game.getCurrentPlayer().isShowCardAction()) {
+            if (!game.getRepeatedActions().isEmpty()) {
                 game.playRepeatedAction(game.getCurrentPlayer(), false);
-            }
-            else if (!game.getGolemActions().isEmpty()) {
+            } else if (!game.getGolemActions().isEmpty()) {
                 game.playGolemActionCard(game.getCurrentPlayer());
             }
         }

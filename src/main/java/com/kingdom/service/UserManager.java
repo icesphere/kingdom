@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserManager {   
+public class UserManager {
 
     private UserDao dao;
     private UserRepository userRepository;
@@ -20,17 +20,17 @@ public class UserManager {
 
     public List<User> getUsers() {
         return userRepository.findAllByOrderByLastLogin();
-	}
+    }
 
     public List<User> getUsers(String stat, Integer value) {
         return dao.getUsers(stat, value);
     }
 
-    public User getUser(int userId){
+    public User getUser(int userId) {
         return userRepository.findOne(userId);
     }
 
-    public User getUser(String username, String password){
+    public User getUser(String username, String password) {
         return userRepository.findByUsernameAndPassword(username, password);
     }
 
@@ -46,11 +46,11 @@ public class UserManager {
         return userRepository.findByUsername(username) != null;
     }
 
-    public void saveUser(User user){
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 
-    public void deleteUser(User user){
+    public void deleteUser(User user) {
         userRepository.delete(user);
     }
 

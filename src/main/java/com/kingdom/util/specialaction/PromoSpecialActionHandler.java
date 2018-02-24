@@ -11,7 +11,7 @@ public class PromoSpecialActionHandler {
 
         List<Player> players = game.getPlayers();
         IncompleteCard incompleteCard = null;
-        
+
         if (card.getName().equals("Black Market")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction;
@@ -47,8 +47,7 @@ public class PromoSpecialActionHandler {
                     }
                     instructions.append(". Do you want to buy one of these cards?");
                     cardAction.setInstructions(instructions.toString());
-                }
-                else {
+                } else {
                     cardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
                     cardAction.setDeck(Card.DECK_PROMO);
                     cardAction.setHideOnSelect(true);
@@ -57,8 +56,7 @@ public class PromoSpecialActionHandler {
                     cardAction.setInstructions("You don't have enough coins to buy any of these black market cards. Click the cards in the order you want them to be on the bottom of the black market deck, starting with the top card and then click Done. (The last card you click will be the bottom card of the black market deck)");
                 }
                 cardAction.setCards(cards);
-            }
-            else {
+            } else {
                 cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
                 cardAction.setDeck(Card.DECK_PROMO);
                 cardAction.setNumCards(0);
@@ -67,8 +65,7 @@ public class PromoSpecialActionHandler {
             }
             cardAction.setCardName(card.getName());
             game.setPlayerCardAction(player, cardAction);
-        }
-        else if (card.getName().equals("Envoy")) {
+        } else if (card.getName().equals("Envoy")) {
             Player player = game.getCurrentPlayer();
             Player playerToLeft = players.get(game.getNextPlayerIndex());
             List<Card> cards = new ArrayList<Card>();
@@ -77,8 +74,7 @@ public class PromoSpecialActionHandler {
                 Card c = player.removeTopDeckCard();
                 if (c == null) {
                     hasMoreCards = false;
-                }
-                else {
+                } else {
                     cards.add(c);
                 }
             }
@@ -94,8 +90,7 @@ public class PromoSpecialActionHandler {
                 game.setPlayerCardAction(playerToLeft, cardAction);
                 incompleteCard.allActionsSet();
             }
-        }
-        else if (card.getName().equals("Governor")) {
+        } else if (card.getName().equals("Governor")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setDeck(Card.DECK_PROMO);

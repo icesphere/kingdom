@@ -1,10 +1,11 @@
 package com.kingdom.model;
+
 import com.kingdom.util.KingdomUtil;
 
 import java.util.*;
 
 @SuppressWarnings({"UnusedDeclaration"})
-public class Player implements Comparable{
+public class Player implements Comparable {
     private int userId;
     private List<Card> deck = new LinkedList<Card>();
     private List<Card> hand = new ArrayList<Card>();
@@ -131,7 +132,7 @@ public class Player implements Comparable{
         baneCardId = game.getBaneCardId();
         usingLeaders = game.isUsingLeaders();
         userId = user.getUserId();
-        gender =  user.getGender();
+        gender = user.getGender();
         username = user.getUsername();
         mobile = user.isMobile();
         if (game.isIdenticalStartingHands() && game.getPlayers().size() > 0) {
@@ -140,16 +141,15 @@ public class Player implements Comparable{
             for (Card card : firstPlayer.getHand()) {
                 addCardToHand(card);
             }
-        }
-        else {
-            for(int i=0; i<7; i++){
+        } else {
+            for (int i = 0; i < 7; i++) {
                 deck.add(game.getCopperCard());
             }
-            for(int i=0; i<3; i++){
+            for (int i = 0; i < 3; i++) {
                 deck.add(game.getEstateCard());
             }
             Collections.shuffle(deck);
-            for(int i=0; i<5; i++){
+            for (int i = 0; i < 5; i++) {
                 drawCardAndAddToHand();
             }
         }
@@ -170,6 +170,7 @@ public class Player implements Comparable{
     public void setDeck(List<Card> deck) {
         this.deck = deck;
     }
+
     public int getTurns() {
         return turns;
     }
@@ -187,7 +188,7 @@ public class Player implements Comparable{
         return discard;
     }
 
-    public void addCardToDiscard(Card card){
+    public void addCardToDiscard(Card card) {
         discard.add(card);
     }
 
@@ -206,13 +207,12 @@ public class Player implements Comparable{
     public int getCoins() {
         if (playTreasureCards) {
             return coins;
-        }
-        else {
+        } else {
             return coins + coinsInHand;
         }
     }
 
-    public void addCoins(int coins){
+    public void addCoins(int coins) {
         this.coins += coins;
     }
 
@@ -235,8 +235,8 @@ public class Player implements Comparable{
     public int getActions() {
         return actions;
     }
-    
-    public void addActions(int actions){
+
+    public void addActions(int actions) {
         this.actions += actions;
     }
 
@@ -244,7 +244,7 @@ public class Player implements Comparable{
         return buys;
     }
 
-    public void addBuys(int buys){
+    public void addBuys(int buys) {
         this.buys += buys;
     }
 
@@ -280,7 +280,7 @@ public class Player implements Comparable{
         return hasLighthouse;
     }
 
-    public void setHasLighthouse(boolean hasLighthouse){
+    public void setHasLighthouse(boolean hasLighthouse) {
         this.hasLighthouse = hasLighthouse;
     }
 
@@ -314,7 +314,7 @@ public class Player implements Comparable{
         Collections.shuffle(deck);
     }
 
-    public void shuffleDiscardIntoDeck(){
+    public void shuffleDiscardIntoDeck() {
         deck.addAll(discard);
         Collections.shuffle(deck);
         discard.clear();
@@ -336,8 +336,7 @@ public class Player implements Comparable{
             Card card = removeTopDeckCard();
             if (card == null) {
                 break;
-            }
-            else {
+            } else {
                 cards.add(card);
             }
         }
@@ -354,12 +353,12 @@ public class Player implements Comparable{
         if (deck.isEmpty()) {
             shuffleDiscardIntoDeck();
         }
-        return deck.get(deck.size()-1);
+        return deck.get(deck.size() - 1);
     }
 
-    public void addCardToHand(Card card){
+    public void addCardToHand(Card card) {
         hand.add(card);
-        if(card.isTreasure()) {
+        if (card.isTreasure()) {
             treasureCards.add(card);
             coinsInHand += card.getAddCoins();
             if (card.getCardId() == Card.COPPER_ID) {
@@ -380,42 +379,33 @@ public class Player implements Comparable{
             victoryCardsInHand++;
             victoryCards.add(card);
         }
-        if(card.getName().equals("Moat")){
+        if (card.getName().equals("Moat")) {
             moatCardsInHand++;
-        }
-        else if (card.getName().equals("Secret Chamber")) {
+        } else if (card.getName().equals("Secret Chamber")) {
             secretChamberCardsInHand++;
-        }
-        else if (card.getName().equals("Watchtower")) {
+        } else if (card.getName().equals("Watchtower")) {
             watchtowerCardsInHand++;
-        }
-        else if (card.getName().equals("Province")) {
+        } else if (card.getName().equals("Province")) {
             provinceCardsInHand++;
-        }
-        else if(card.getCardId() == baneCardId) {
+        } else if (card.getCardId() == baneCardId) {
             baneCardsInHand++;
-        }
-        else if (card.getName().equals("Horse Traders")) {
+        } else if (card.getName().equals("Horse Traders")) {
             horseTradersInHand++;
-        }
-        else if (card.getName().equals("Bell Tower")) {
+        } else if (card.getName().equals("Bell Tower")) {
             bellTowersInHand++;
-        }
-        else if (card.getName().equals("Enchanted Palace")) {
+        } else if (card.getName().equals("Enchanted Palace")) {
             enchantedPalacesInHand++;
-        }
-        else if (card.getName().equals("Fool's Gold")) {
+        } else if (card.getName().equals("Fool's Gold")) {
             foolsGoldInHand++;
-        }
-        else if (card.getName().equals("Trader")) {
+        } else if (card.getName().equals("Trader")) {
             traderCardsInHand++;
         }
-        if(card.getCardId() == Card.POTION_ID){
+        if (card.getCardId() == Card.POTION_ID) {
             potionsInHand++;
         }
     }
 
-    private void cardRemoved(Card card){
+    private void cardRemoved(Card card) {
         if (card.isTreasure()) {
             treasureCards.remove(card);
             if (!card.getName().equals("Philosopher's Stone") && !card.getName().equals("Bank")) {
@@ -439,34 +429,25 @@ public class Player implements Comparable{
             victoryCardsInHand--;
             victoryCards.remove(card);
         }
-        if(card.getName().equals("Moat")){
+        if (card.getName().equals("Moat")) {
             moatCardsInHand--;
-        }
-        else if (card.getName().equals("Secret Chamber")) {
+        } else if (card.getName().equals("Secret Chamber")) {
             secretChamberCardsInHand--;
-        }
-        else if (card.getName().equals("Watchtower")) {
+        } else if (card.getName().equals("Watchtower")) {
             watchtowerCardsInHand--;
-        }
-        else if (card.getName().equals("Province")) {
+        } else if (card.getName().equals("Province")) {
             provinceCardsInHand--;
-        }
-        else if(card.getCardId() == baneCardId) {
+        } else if (card.getCardId() == baneCardId) {
             baneCardsInHand--;
-        }
-        else if (card.getName().equals("Horse Traders")) {
+        } else if (card.getName().equals("Horse Traders")) {
             horseTradersInHand--;
-        }
-        else if (card.getName().equals("Bell Tower")) {
+        } else if (card.getName().equals("Bell Tower")) {
             bellTowersInHand--;
-        }
-        else if (card.getName().equals("Enchanted Palace")) {
+        } else if (card.getName().equals("Enchanted Palace")) {
             enchantedPalacesInHand--;
-        }
-        else if (card.getName().equals("Fool's Gold")) {
+        } else if (card.getName().equals("Fool's Gold")) {
             foolsGoldInHand--;
-        }
-        else if (card.getName().equals("Trader")) {
+        } else if (card.getName().equals("Trader")) {
             traderCardsInHand--;
         }
         if (card.isPotion()) {
@@ -484,15 +465,15 @@ public class Player implements Comparable{
             coins += copperSmithsPlayed;
             playedCopper = true;
         }
-        if(removeFromHand) {
+        if (removeFromHand) {
             cardRemoved(card);
             hand.remove(card);
         }
     }
 
-    public Card getCardFromHandById(int cardId){
+    public Card getCardFromHandById(int cardId) {
         for (Card card : hand) {
-            if(card.getCardId() == cardId){
+            if (card.getCardId() == cardId) {
                 return card;
             }
         }
@@ -505,14 +486,14 @@ public class Player implements Comparable{
         hand.remove(card);
     }
 
-    public void discardCardFromHand(int cardId){
+    public void discardCardFromHand(int cardId) {
         Card card = getCardFromHandById(cardId);
-        if(card != null){
+        if (card != null) {
             discardCardFromHand(card);
         }
     }
 
-    public void discardHand(){
+    public void discardHand() {
         for (Card card : hand) {
             cardRemoved(card);
         }
@@ -520,16 +501,16 @@ public class Player implements Comparable{
         hand.clear();
     }
 
-    public void drawCardAndAddToHand(){
+    public void drawCardAndAddToHand() {
         Card card = removeTopDeckCard();
-        if(card != null){
+        if (card != null) {
             addCardToHand(card);
         }
     }
 
-    public void drawCards(int numCards){
+    public void drawCards(int numCards) {
         int cardsDrawn = 0;
-        while(cardsDrawn < numCards) {
+        while (cardsDrawn < numCards) {
             drawCardAndAddToHand();
             cardsDrawn++;
         }
@@ -577,7 +558,7 @@ public class Player implements Comparable{
         showInfoDialog = false;
         infoDialog = null;
         hasLighthouse = false;
-        if (cardsToDraw ==  5) {
+        if (cardsToDraw == 5) {
             turns++;
         }
     }
@@ -658,62 +639,43 @@ public class Player implements Comparable{
                 victoryPoints += card.getVictoryPoints();
                 if (card.getName().equals("Gardens")) {
                     gardens++;
-                }
-                else if (card.getName().equals("Farmland")) {
+                } else if (card.getName().equals("Farmland")) {
                     farmlands++;
-                }
-                else if (card.getName().equals("Vineyard")) {
+                } else if (card.getName().equals("Vineyard")) {
                     vineyards++;
-                }
-                else if (card.getName().equals("Silk Road")) {
+                } else if (card.getName().equals("Silk Road")) {
                     silkRoads++;
-                }
-                else if (card.getName().equals("Fairgrounds")) {
+                } else if (card.getName().equals("Fairgrounds")) {
                     fairgrounds++;
-                }
-                else if (card.getName().equals("Duke")) {
+                } else if (card.getName().equals("Duke")) {
                     dukes++;
-                }
-                else if (card.getName().equals("Great Hall")) {
+                } else if (card.getName().equals("Great Hall")) {
                     greatHalls++;
-                }
-                else if (card.getName().equals("Harem")) {
+                } else if (card.getName().equals("Harem")) {
                     harems++;
-                }
-                else if (card.getName().equals("Nobles")) {
+                } else if (card.getName().equals("Nobles")) {
                     nobles++;
-                }
-                else if (card.getName().equals("Archbishop")) {
+                } else if (card.getName().equals("Archbishop")) {
                     archbishops++;
-                }
-                else if (card.getName().equals("Island")) {
+                } else if (card.getName().equals("Island")) {
                     islands++;
-                }
-                else if (card.getName().equals("Cathedral")) {
+                } else if (card.getName().equals("Cathedral")) {
                     cathedrals++;
-                }
-                else if (card.getName().equals("Enchanted Palace")) {
+                } else if (card.getName().equals("Enchanted Palace")) {
                     enchantedPalaces++;
-                }
-                else if (card.getName().equals("Hedge Wizard")) {
+                } else if (card.getName().equals("Hedge Wizard")) {
                     hedgeWizards++;
-                }
-                else if (card.getName().equals("Golden Touch")) {
+                } else if (card.getName().equals("Golden Touch")) {
                     goldenTouches++;
-                }
-                else if (card.getCardId() == Card.ESTATE_ID) {
+                } else if (card.getCardId() == Card.ESTATE_ID) {
                     estates++;
-                }
-                else if (card.getCardId() == Card.DUCHY_ID) {
+                } else if (card.getCardId() == Card.DUCHY_ID) {
                     duchies++;
-                }
-                else if (card.getCardId() == Card.PROVINCE_ID) {
+                } else if (card.getCardId() == Card.PROVINCE_ID) {
                     provinces++;
-                }
-                else if (card.getCardId() == Card.COLONY_ID) {
+                } else if (card.getCardId() == Card.COLONY_ID) {
                     colonies++;
-                }
-                else if (card.getCardId() == Card.CURSE_ID) {
+                } else if (card.getCardId() == Card.CURSE_ID) {
                     curses++;
                     if (curseCard == null) {
                         curseCard = card;
@@ -730,11 +692,9 @@ public class Player implements Comparable{
                 numTreasureCards++;
                 if (card.isCopper()) {
                     numCopper++;
-                }
-                else if (card.isSilver()) {
+                } else if (card.isSilver()) {
                     numSilver++;
-                }
-                else if (card.isGold()) {
+                } else if (card.isGold()) {
                     numGold++;
                 }
             }
@@ -754,15 +714,13 @@ public class Player implements Comparable{
                 if (cathedrals > sins) {
                     cathedralsUsed = sins;
                     sinsRemoved = sins;
-                }
-                else {
+                } else {
                     cathedralsUsed = cathedrals;
                     sinsRemoved = cathedrals;
                 }
                 if (gameOver) {
                     sins -= sinsRemoved;
-                }
-                else {
+                } else {
                     victoryPoints += sinsRemoved;
                 }
             }
@@ -814,11 +772,9 @@ public class Player implements Comparable{
             if (numGold == 0) {
                 points += 6;
             }
-        }
-        else if (leader.getName().equals("Hypatia")) {
+        } else if (leader.getName().equals("Hypatia")) {
             points += Math.floor(numVictoryCards / 2);
-        }
-        else if (leader.getName().equals("Justinian")) {
+        } else if (leader.getName().equals("Justinian")) {
             int least = numActions;
             if (numVictoryCards < least) {
                 least = numVictoryCards;
@@ -827,21 +783,17 @@ public class Player implements Comparable{
                 least = numTreasureCards;
             }
             points += least;
-        }
-        else if (leader.getName().equals("Midas")) {
+        } else if (leader.getName().equals("Midas")) {
             points += Math.floor(numTreasureCards / 4);
-        }
-        else if (leader.getName().equals("Pericles")) {
+        } else if (leader.getName().equals("Pericles")) {
             points += Math.floor(numActions / 2);
-        }
-        else if (leader.getName().equals("Solomon")) {
+        } else if (leader.getName().equals("Solomon")) {
             int solomonPoints = (int) Math.floor(100 / numCards);
             if (solomonPoints > 10) {
                 solomonPoints = 10;
             }
             points += solomonPoints;
-        }
-        else if (leader.getName().equals("Varro")) {
+        } else if (leader.getName().equals("Varro")) {
             points += varroPoints;
         }
         return points;
@@ -922,8 +874,7 @@ public class Player implements Comparable{
     public int getPotions() {
         if (playTreasureCards) {
             return potions;
-        }
-        else {
+        } else {
             return potions + potionsInHand;
         }
     }
@@ -944,7 +895,7 @@ public class Player implements Comparable{
         return pirateShipCoins;
     }
 
-    public void addPirateShipCoin(){
+    public void addPirateShipCoin() {
         pirateShipCoins++;
     }
 
@@ -979,8 +930,7 @@ public class Player implements Comparable{
     public void setCardAction(CardAction cardAction) {
         if (showCardAction && cardAction != null && !cardAction.isWaitingForPlayers()) {
             extraCardActions.add(cardAction);
-        }
-        else {
+        } else {
             this.cardAction = cardAction;
         }
     }
@@ -1007,7 +957,7 @@ public class Player implements Comparable{
         this.infoDialog = infoDialog;
     }
 
-    public boolean isInfoDialogSet(){
+    public boolean isInfoDialogSet() {
         return infoDialog != null;
     }
 
@@ -1028,20 +978,18 @@ public class Player implements Comparable{
     }
 
     public int compareTo(Object o) {
-        Player player = (Player)o;
-        if (getVictoryPoints() == player.getVictoryPoints()){
-            if(this.turns == player.getTurns()){
+        Player player = (Player) o;
+        if (getVictoryPoints() == player.getVictoryPoints()) {
+            if (this.turns == player.getTurns()) {
                 return 0;
             } else if (this.turns < player.getTurns()) {
                 return -1;
-            } else{
+            } else {
                 return 1;
             }
-        }
-        else if (getVictoryPoints() > player.getVictoryPoints()){
+        } else if (getVictoryPoints() > player.getVictoryPoints()) {
             return -1;
-        }
-        else{
+        } else {
             return 1;
         }
     }
@@ -1054,7 +1002,7 @@ public class Player implements Comparable{
         this.winner = winner;
     }
 
-    public int getNumCards(){
+    public int getNumCards() {
         return numCards;
     }
 
@@ -1115,7 +1063,7 @@ public class Player implements Comparable{
 
     public String getMuseumCardsString() {
         return KingdomUtil.groupCards(museumCards, true);
-    }   
+    }
 
     public List<Card> getCityPlannerCards() {
         return cityPlannerCards;
@@ -1137,11 +1085,9 @@ public class Player implements Comparable{
     public String getPronoun() {
         if (gender.equals(User.MALE)) {
             return "his";
-        }
-        else if (gender.equals(User.FEMALE)) {
+        } else if (gender.equals(User.FEMALE)) {
             return "her";
-        }
-        else if (gender.equals(User.COMPUTER)) {
+        } else if (gender.equals(User.COMPUTER)) {
             return "its";
         }
         return "his/her";
@@ -1159,8 +1105,7 @@ public class Player implements Comparable{
         this.sins += sins;
         if (this.sins < 0) {
             this.sins = 0;
-        }
-        else if (this.sins > 20) {
+        } else if (this.sins > 20) {
             this.sins = 20;
         }
     }
@@ -1379,8 +1324,7 @@ public class Player implements Comparable{
     public void leaderActivated(Card leader) {
         if (leader.getName().equals("Varro")) {
             varroActivated = true;
-        }
-        else if (varroActivated) {
+        } else if (varroActivated) {
             varroPoints += 2;
         }
     }

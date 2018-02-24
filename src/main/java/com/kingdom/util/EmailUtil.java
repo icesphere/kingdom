@@ -47,8 +47,7 @@ public class EmailUtil {
         try {
             t.connect(host, username, password);
             t.sendMessage(msg, msg.getAllRecipients());
-        }
-        finally {
+        } finally {
             t.close();
         }
 

@@ -24,15 +24,13 @@ public class ProletariatSpecialActionHandler {
                 cardAction.getChoices().add(new CardActionChoice("Put it back", "back"));
                 game.setPlayerCardAction(player, cardAction);
             }
-        }
-        else if (card.getName().equals("City Planner")) {
+        } else if (card.getName().equals("City Planner")) {
             if (player.getHand().size() > 0) {
                 if (player.getHand().size() == 1) {
                     game.addHistory(player.getUsername(), " discarded 1 card");
                     game.playerDiscardedCard(player, player.getHand().get(0));
                     player.discardCardFromHand(player.getHand().get(0));
-                }
-                else {
+                } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
                     cardAction.setDeck(Card.DECK_PROLETARIAT);
                     cardAction.setCardName(card.getName());
@@ -43,8 +41,7 @@ public class ProletariatSpecialActionHandler {
                     game.setPlayerCardAction(player, cardAction);
                 }
             }
-        }
-        else if (card.getName().equals("Fruit Merchant")) {
+        } else if (card.getName().equals("Fruit Merchant")) {
             if (!player.getHand().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND);
                 cardAction.setDeck(Card.DECK_PROLETARIAT);
@@ -55,8 +52,7 @@ public class ProletariatSpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 game.setPlayerCardAction(player, cardAction);
             }
-        }
-        else if (card.getName().equals("Hooligans")) {
+        } else if (card.getName().equals("Hooligans")) {
             incompleteCard = new MultiPlayerIncompleteCard(card.getName(), game, false);
             List<Player> players = game.getPlayers();
             for (Player p : players) {
@@ -64,34 +60,29 @@ public class ProletariatSpecialActionHandler {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(p.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(p.getUserId());
                         game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-                    }
-                    else if (!p.hasMoat() && p.getHand().size() > 3 && !p.hasLighthouse()) {
+                    } else if (!p.hasMoat() && p.getHand().size() > 3 && !p.hasLighthouse()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
                         cardAction.setDeck(Card.DECK_PROLETARIAT);
                         cardAction.setCardName(card.getName());
                         cardAction.getCards().addAll(p.getHand());
                         cardAction.setNumCards(1);
-                        cardAction.setInstructions("Choose a card from your hand. "+player.getUsername() + " will choose to place it on top of your deck or discard it.");
+                        cardAction.setInstructions("Choose a card from your hand. " + player.getUsername() + " will choose to place it on top of your deck or discard it.");
                         cardAction.setButtonValue("Done");
                         game.setPlayerCardAction(p, cardAction);
-                    }
-                    else {
+                    } else {
                         incompleteCard.setPlayerActionCompleted(p.getUserId());
                         if (p.hasLighthouse()) {
                             game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                        }
-                        else if (p.hasMoat()) {
+                        } else if (p.hasMoat()) {
                             game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
-                        }
-                        else {
+                        } else {
                             game.addHistory(p.getUsername(), " had 3 or less cards");
                         }
                     }
                 }
             }
             incompleteCard.allActionsSet();
-        }
-        else if (card.getName().equals("Rancher")) {
+        } else if (card.getName().equals("Rancher")) {
             if (!player.getVictoryCards().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
                 cardAction.setDeck(Card.DECK_PROLETARIAT);
@@ -103,8 +94,7 @@ public class ProletariatSpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 game.setPlayerCardAction(player, cardAction);
             }
-        }
-        else if (card.getName().equals("Refugee Camp")) {
+        } else if (card.getName().equals("Refugee Camp")) {
             while (player.getHand().size() < 5) {
                 Card topCard = player.removeTopDeckCard();
                 if (topCard == null) {
@@ -113,14 +103,12 @@ public class ProletariatSpecialActionHandler {
                 player.addCardToHand(topCard);
             }
             game.refreshHand(player);
-        }
-        else if (card.getName().equals("Squatter")) {
+        } else if (card.getName().equals("Squatter")) {
             game.addHistory(player.getUsername(), " returned ", KingdomUtil.getCardWithBackgroundColor(card), " to the supply");
             game.removePlayedCard(card);
             game.playerLostCard(player, card);
             game.addToSupply(card.getCardId());
-        }
-        else if (card.getName().equals("Trainee")) {
+        } else if (card.getName().equals("Trainee")) {
             if (!player.getHand().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
                 cardAction.setDeck(Card.DECK_PROLETARIAT);

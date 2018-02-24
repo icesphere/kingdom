@@ -12,8 +12,7 @@ import java.util.Random;
  * Date: 5/21/11
  * Time: 10:34 AM
  */
-public class HardComputerPlayer extends ComputerPlayer
-{
+public class HardComputerPlayer extends ComputerPlayer {
     public HardComputerPlayer(Player player, Game game) {
         super(player, game);
         difficulty = 3;
@@ -55,44 +54,38 @@ public class HardComputerPlayer extends ComputerPlayer
 
         Random random = new Random();
 
-        if(hasTrashingCard && (kingdomCardMap.containsKey("Gardens") && hasExtraBuys)) {
+        if (hasTrashingCard && (kingdomCardMap.containsKey("Gardens") && hasExtraBuys)) {
             if (random.nextInt(2) == 0) {
                 trashingStrategy = true;
-            }
-            else {
+            } else {
                 gardensStrategy = true;
             }
-        }
-        else if (hasTrashingCard) {
+        } else if (hasTrashingCard) {
             if (random.nextInt(2) == 0) {
                 trashingStrategy = true;
-            }
-            else {
+            } else {
                 bigMoneyStrategy = true;
             }
-        }
-        else {
+        } else {
             bigMoneyStrategy = true;
         }
 
         if (trashingStrategy) {
             if (trashingCards.size() == 1) {
                 trashingCard = trashingCards.get(0);
-            }
-            else {
+            } else {
                 if (kingdomCardMap.containsKey("Chapel")) {
                     int i = random.nextInt(3);
                     if (i < 2) {
                         trashingCard = kingdomCardMap.get("Chapel");
                     }
-                }
-                else if (kingdomCardMap.containsKey("Ambassador")) {
+                } else if (kingdomCardMap.containsKey("Ambassador")) {
                     int i = random.nextInt(3);
                     if (i < 2) {
                         trashingCard = kingdomCardMap.get("Ambassador");
                     }
                 }
-                if(trashingCard == null) {
+                if (trashingCard == null) {
                     Collections.shuffle(trashingCards);
                     trashingCard = trashingCards.get(0);
                 }
@@ -107,8 +100,7 @@ public class HardComputerPlayer extends ComputerPlayer
             if (i < 3) {
                 if (startingHandCoppers == 4) {
                     firstCard = kingdomCardMap.get("Sea Hag");
-                }
-                else {
+                } else {
                     secondCard = kingdomCardMap.get("Sea Hag");
                 }
             }
@@ -118,8 +110,7 @@ public class HardComputerPlayer extends ComputerPlayer
             chapelStrategy = true;
             if (startingHandCoppers == 2 || startingHandCoppers == 3) {
                 firstCard = trashingCard;
-            }
-            else {
+            } else {
                 secondCard = trashingCard;
             }
             if (fiveTwoSplit && kingdomCardMap.containsKey("Laboratory")) {
@@ -127,22 +118,19 @@ public class HardComputerPlayer extends ComputerPlayer
                 if (i < 2) {
                     if (startingHandCoppers == 5) {
                         firstCard = kingdomCardMap.get("Laboratory");
-                    }
-                    else {
+                    } else {
                         secondCard = kingdomCardMap.get("Laboratory");
                     }
                 }
             }
-        }
-        else if (trashingStrategy && trashingCard.getName().equals("Ambassador")) {
+        } else if (trashingStrategy && trashingCard.getName().equals("Ambassador")) {
             if (!fiveTwoSplit) {
                 if (startingHandCoppers == 3) {
                     firstCard = kingdomCardMap.get("Ambassador");
                     if (random.nextInt(2) == 0) {
                         secondCard = kingdomCardMap.get("Ambassador");
                     }
-                }
-                else {
+                } else {
                     secondCard = kingdomCardMap.get("Ambassador");
                     if (random.nextInt(2) == 0) {
                         firstCard = kingdomCardMap.get("Ambassador");
@@ -156,8 +144,7 @@ public class HardComputerPlayer extends ComputerPlayer
             if (i < 2) {
                 if (startingHandCoppers == 5) {
                     firstCard = kingdomCardMap.get("Witch");
-                }
-                else {
+                } else {
                     secondCard = kingdomCardMap.get("Witch");
                 }
             }

@@ -18,21 +18,17 @@ public class CardActionHandler {
 
         if (cardAction.isDiscard()) {
             incompleteCard = DiscardCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds);
-        }
-        else if (type == CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY || type == CardAction.TYPE_GAIN_CARDS || type == CardAction.TYPE_GAIN_CARDS_UP_TO) {
+        } else if (type == CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY || type == CardAction.TYPE_GAIN_CARDS || type == CardAction.TYPE_GAIN_CARDS_UP_TO) {
             GainCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds);
-        }
-        else if (type == CardAction.TYPE_TRASH_CARDS_FROM_HAND || type == CardAction.TYPE_TRASH_UP_TO_FROM_HAND) {
+        } else if (type == CardAction.TYPE_TRASH_CARDS_FROM_HAND || type == CardAction.TYPE_TRASH_UP_TO_FROM_HAND) {
             incompleteCard = TrashCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds);
-        }
-        else if (type == CardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY) {
+        } else if (type == CardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY) {
             for (Integer selectedCardId : selectedCardIds) {
                 Card card = supplyMap.get(selectedCardId);
                 game.playerGainedCardToHand(player, card);
             }
             game.refreshPlayingArea(player);
-        }
-        else if (type == CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK) {
+        } else if (type == CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK) {
             if (selectedCardIds.size() > 1 && cardAction.getCardName().equals("Ghost Ship")) {
                 CardAction reorderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
                 reorderCardAction.setDeck(Card.DECK_SEASIDE);
@@ -47,36 +43,28 @@ public class CardActionHandler {
                 reorderCardAction.setButtonValue("Done");
                 reorderCardAction.setInstructions("Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)");
                 game.setPlayerCardAction(player, reorderCardAction);
-            }
-            else if (cardAction.getCardName().equals("Bureaucrat")) {
+            } else if (cardAction.getCardName().equals("Bureaucrat")) {
                 Card card = supplyMap.get(selectedCardIds.get(0));
                 game.addHistory(player.getUsername(), " added 1 Victory card on top of ", player.getPronoun(), " deck");
                 player.putCardFromHandOnTopOfDeck(card);
-            }
-            else {
+            } else {
                 for (Integer selectedCardId : selectedCardIds) {
                     Card card = player.getCardFromHandById(selectedCardId);
                     player.putCardFromHandOnTopOfDeck(card);
                 }
                 game.addHistory(player.getUsername(), " added ", KingdomUtil.getPlural(selectedCardIds.size(), "card"), " on top of ", player.getPronoun(), " deck");
             }
-        }
-        else if (type == CardAction.TYPE_CHOOSE_CARDS || type == CardAction.TYPE_SETUP_LEADERS) {
+        } else if (type == CardAction.TYPE_CHOOSE_CARDS || type == CardAction.TYPE_SETUP_LEADERS) {
             incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds);
-        }
-        else if (type == CardAction.TYPE_YES_NO) {
+        } else if (type == CardAction.TYPE_YES_NO) {
             incompleteCard = YesNoHandler.handleCardAction(game, player, cardAction, yesNoAnswer);
-        }
-        else if (type == CardAction.TYPE_CHOICES) {
+        } else if (type == CardAction.TYPE_CHOICES) {
             incompleteCard = ChoicesHandler.handleCardAction(game, player, cardAction, choice);
-        }
-        else if (type == CardAction.TYPE_CHOOSE_IN_ORDER) {
+        } else if (type == CardAction.TYPE_CHOOSE_IN_ORDER) {
             incompleteCard = ChooseInOrderHandler.handleCardAction(game, player, cardAction, selectedCardIds);
-        }
-        else if (type == CardAction.TYPE_CHOOSE_UP_TO) {
+        } else if (type == CardAction.TYPE_CHOOSE_UP_TO) {
             incompleteCard = ChooseUpToHandler.handleCardAction(game, player, cardAction, selectedCardIds);
-        }
-        else if (type == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || type == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
+        } else if (type == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || type == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
             ChooseNumberBetweenHandler.handleCardAction(game, player, cardAction, numberChosen);
         }
 
@@ -94,12 +82,10 @@ public class CardActionHandler {
 
         if (!player.isShowCardAction() && !player.getExtraCardActions().isEmpty()) {
             game.setPlayerCardAction(player, player.getExtraCardActions().remove());
-        }
-        else if (!player.isShowCardAction() && cardAction.isGainCardAction() && game.hasUnfinishedGainCardActions()) {
-            if(!cardAction.getAssociatedCard().getGainCardActions().isEmpty()) {
+        } else if (!player.isShowCardAction() && cardAction.isGainCardAction() && game.hasUnfinishedGainCardActions()) {
+            if (!cardAction.getAssociatedCard().getGainCardActions().isEmpty()) {
                 game.setPlayerGainCardAction(player, cardAction.getAssociatedCard());
-            }
-            else {
+            } else {
                 game.setPlayerGainCardAction(player, game.getCardWithUnfinishedGainCardActions());
             }
         }
@@ -109,11 +95,10 @@ public class CardActionHandler {
         }
 
         //check for throne room/king's court/golem actions
-        if(!game.hasIncompleteCard() && !game.getCurrentPlayer().isShowCardAction()) {
+        if (!game.hasIncompleteCard() && !game.getCurrentPlayer().isShowCardAction()) {
             if (!game.getRepeatedActions().isEmpty()) {
                 game.playRepeatedAction(game.getCurrentPlayer(), false);
-            }
-            else if (!game.getGolemActions().isEmpty()) {
+            } else if (!game.getGolemActions().isEmpty()) {
                 game.playGolemActionCard(game.getCurrentPlayer());
             }
         }
@@ -125,7 +110,7 @@ public class CardActionHandler {
             }
         }
 
-        if(incompleteCard != null && incompleteCard.isEndTurn()){
+        if (incompleteCard != null && incompleteCard.isEndTurn()) {
             game.setEndingTurn(false);
             game.endPlayerTurn(player, false);
         }

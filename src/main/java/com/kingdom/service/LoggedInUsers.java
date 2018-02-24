@@ -26,7 +26,7 @@ public class LoggedInUsers {
     public void userLoggedOut(User user) {
         users.remove(user.getUserId());
     }
-    
+
     public void gameReset(int userId) {
         User user = users.get(userId);
         if (user != null) {
@@ -34,7 +34,7 @@ public class LoggedInUsers {
             user.setLastActivity(new Date());
         }
     }
-    
+
     public List<User> getUsers() {
         return new ArrayList<User>(users.values());
     }

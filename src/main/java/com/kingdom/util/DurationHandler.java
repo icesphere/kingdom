@@ -11,46 +11,38 @@ import com.kingdom.model.Player;
  * Time: 6:56:32 AM
  */
 public class DurationHandler {
-    public static void applyDurationCards(Game game, Player player){
+    public static void applyDurationCards(Game game, Player player) {
         int numTimesCardCopied = 0;
         for (Card card : player.getDurationCards()) {
             DurationAction action = null;
             if (card.getName().equals("Caravan")) {
                 action = new CaravanDurationAction(game, player);
-            }
-            else if (card.getName().equals("Fishing Village")) {
+            } else if (card.getName().equals("Fishing Village")) {
                 action = new FishingVillageDurationAction(game, player);
-            }
-            else if (card.getName().equals("Haven")) {
+            } else if (card.getName().equals("Haven")) {
                 action = new HavenDurationAction(game, player);
-            }
-            else if (card.getName().equals("Hedge Wizard")) {
+            } else if (card.getName().equals("Hedge Wizard")) {
                 action = new HedgeWizardDurationAction(game, player);
-            }
-            else if (card.getName().equals("Lighthouse")) {
+            } else if (card.getName().equals("Lighthouse")) {
                 action = new LighthouseDurationAction(game, player);
-            }
-            else if (card.getName().equals("Merchant Ship")) {
+            } else if (card.getName().equals("Merchant Ship")) {
                 action = new MerchantShipDurationAction(game, player);
-            }
-            else if (card.getName().equals("Quest")) {
+            } else if (card.getName().equals("Quest")) {
                 action = new QuestDurationAction(game, player, card);
-            }
-            else if (card.getName().equals("Tactician") && player.hasTacticianBonus()) {
+            } else if (card.getName().equals("Tactician") && player.hasTacticianBonus()) {
                 player.setTacticianBonus(false);
                 player.drawCards(5);
                 player.addBuys(1);
                 player.addActions(1);
                 game.addHistory(player.getUsername(), " gained +5 Cards, +1 Buy, +1 Action from ", KingdomUtil.getWordWithBackgroundColor("Tactician", Card.ACTION_DURATION_COLOR));
-            }
-            else if (card.getName().equals("Wharf")) {
+            } else if (card.getName().equals("Wharf")) {
                 action = new WharfDurationAction(game, player);
             }
 
-            if(action != null){
+            if (action != null) {
                 action.apply(0);
                 int numTimesCardApplied = 1;
-                while(numTimesCardCopied > 0){
+                while (numTimesCardCopied > 0) {
                     numTimesCardCopied--;
                     action.apply(numTimesCardApplied);
                     numTimesCardApplied++;
@@ -59,11 +51,9 @@ public class DurationHandler {
 
             if (card.getName().equals("Throne Room")) {
                 numTimesCardCopied = 1;
-            }
-            else if (card.getName().equals("King's Court")) {
+            } else if (card.getName().equals("King's Court")) {
                 numTimesCardCopied = 2;
-            }
-            else {
+            } else {
                 numTimesCardCopied = 0;
             }
         }
@@ -73,14 +63,16 @@ public class DurationHandler {
         void apply(int numTimesApplied);
     }
 
-    static class CaravanDurationAction implements DurationAction{
+    static class CaravanDurationAction implements DurationAction {
         private Game game;
         private Player player;
+
         CaravanDurationAction(Game game, Player player) {
             this.game = game;
             this.player = player;
         }
-        public void apply(int numTimesApplied){
+
+        public void apply(int numTimesApplied) {
             player.drawCards(1);
             game.addHistory(player.getUsername(), " gained +1 Card from ", KingdomUtil.getWordWithBackgroundColor("Caravan", Card.ACTION_DURATION_COLOR));
         }
@@ -89,10 +81,12 @@ public class DurationHandler {
     static class FishingVillageDurationAction implements DurationAction {
         private Game game;
         private Player player;
+
         FishingVillageDurationAction(Game game, Player player) {
             this.game = game;
             this.player = player;
         }
+
         public void apply(int numTimesApplied) {
             player.addActions(1);
             player.addCoins(1);
@@ -103,10 +97,12 @@ public class DurationHandler {
     static class HavenDurationAction implements DurationAction {
         private Game game;
         private Player player;
+
         HavenDurationAction(Game game, Player player) {
             this.game = game;
             this.player = player;
         }
+
         public void apply(int numTimesApplied) {
             for (Card c : player.getHavenCards()) {
                 player.addCardToHand(c);
@@ -116,14 +112,16 @@ public class DurationHandler {
         }
     }
 
-    static class HedgeWizardDurationAction implements DurationAction{
+    static class HedgeWizardDurationAction implements DurationAction {
         private Game game;
         private Player player;
+
         HedgeWizardDurationAction(Game game, Player player) {
             this.game = game;
             this.player = player;
         }
-        public void apply(int numTimesApplied){
+
+        public void apply(int numTimesApplied) {
             player.drawCards(1);
             game.addHistory(player.getUsername(), " gained +1 Card from ", KingdomUtil.getWordWithBackgroundColor("Hedge Wizard", Card.DURATION_AND_VICTORY_IMAGE));
         }
@@ -132,10 +130,12 @@ public class DurationHandler {
     static class LighthouseDurationAction implements DurationAction {
         private Game game;
         private Player player;
+
         LighthouseDurationAction(Game game, Player player) {
             this.game = game;
             this.player = player;
         }
+
         public void apply(int numTimesApplied) {
             player.addCoins(1);
             game.addHistory(player.getUsername(), " gained +1 Coin from ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
@@ -145,10 +145,12 @@ public class DurationHandler {
     static class MerchantShipDurationAction implements DurationAction {
         private Game game;
         private Player player;
+
         MerchantShipDurationAction(Game game, Player player) {
             this.game = game;
             this.player = player;
         }
+
         public void apply(int numTimesApplied) {
             player.addCoins(2);
             game.addHistory(player.getUsername(), " gained +2 Coins from ", KingdomUtil.getWordWithBackgroundColor("Merchant Ship", Card.ACTION_DURATION_COLOR));
@@ -165,9 +167,10 @@ public class DurationHandler {
             this.player = player;
             this.card = card;
         }
+
         public void apply(int numTimesApplied) {
             Card questCard = card.getAssociatedCards().get(numTimesApplied);
-            if(numTimesApplied == 0) {
+            if (numTimesApplied == 0) {
                 game.addHistory(player.getUsername(), "'s hand contains ", KingdomUtil.groupCards(player.getHand(), true));
             }
             game.addHistory(player.getUsername(), " was questing for ", KingdomUtil.getCardWithBackgroundColor(questCard));
@@ -183,10 +186,12 @@ public class DurationHandler {
     static class WharfDurationAction implements DurationAction {
         private Game game;
         private Player player;
+
         WharfDurationAction(Game game, Player player) {
             this.game = game;
             this.player = player;
         }
+
         public void apply(int numTimesApplied) {
             player.drawCards(2);
             player.addBuys(1);

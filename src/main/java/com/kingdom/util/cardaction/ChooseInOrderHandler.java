@@ -22,35 +22,30 @@ public class ChooseInOrderHandler {
             player.getDeck().addAll(0, cards);
             if (cardAction.getCardName().equals("Ghost Ship")) {
                 game.addHistory(player.getUsername(), " added ", KingdomUtil.getPlural(selectedCardIds.size(), "card"), " on top of ", player.getPronoun(), " deck");
-            }
-            else if (cardAction.getCardName().equals("Mandarin")) {
+            } else if (cardAction.getCardName().equals("Mandarin")) {
                 game.addHistory(player.getUsername(), " added ", KingdomUtil.getPlural(selectedCardIds.size(), "treasure card"), " from play on top of ", player.getPronoun(), " deck");
                 game.getCardsPlayed().removeAll(game.getTreasureCardsPlayed());
                 game.getTreasureCardsPlayed().clear();
                 game.refreshAllPlayersCardsPlayed();
-            }
-            else if (cardAction.getCardName().equals("Oracle")) {
+            } else if (cardAction.getCardName().equals("Oracle")) {
                 if ((!game.hasIncompleteCard() || game.getIncompleteCard().getExtraCardActions().isEmpty()) && game.isCurrentPlayer(player)) {
                     player.drawCards(2);
                 }
             }
-        }
-        else if (cardAction.getCardName().equals("Black Market")) {
+        } else if (cardAction.getCardName().equals("Black Market")) {
             List<Card> cards = new ArrayList<Card>();
             for (Integer selectedCardId : selectedCardIds) {
                 Card card = cardMap.get(selectedCardId);
                 cards.add(card);
             }
             game.getBlackMarketCards().addAll(cards);
-        }
-        else if (cardAction.getCardName().equals("Black Market Treasure")) {
+        } else if (cardAction.getCardName().equals("Black Market Treasure")) {
             boolean queueTreasureCards = false;
             for (Integer selectedCardId : selectedCardIds) {
                 Card card = cardMap.get(selectedCardId);
                 if (!queueTreasureCards && card.isAutoPlayTreasure()) {
                     game.playTreasureCard(player, card, true, true, false, true, true);
-                }
-                else {
+                } else {
                     game.getBlackMarketTreasureQueue().add(card);
                     queueTreasureCards = true;
                 }
@@ -58,8 +53,7 @@ public class ChooseInOrderHandler {
             incompleteCard = new SinglePlayerIncompleteCard("Black Market", game);
             game.addNextAction("Buy Card");
             incompleteCard.setPlayerActionCompleted(player.getUserId());
-        }
-        else if (cardAction.getCardName().equals("Lookout")) {
+        } else if (cardAction.getCardName().equals("Lookout")) {
             Card cardToTrash = cardMap.get(selectedCardIds.get(0));
             game.getTrashedCards().add(cardToTrash);
             game.playerLostCard(player, cardToTrash);

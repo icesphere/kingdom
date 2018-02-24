@@ -24,12 +24,10 @@ public class CornucopiaSpecialActionHandler {
         if (card.getName().equals("Bag of Gold")) {
             if (game.getSupply().get(Card.GOLD_ID) > 0) {
                 game.playerGainedCardToTopOfDeck(player, game.getGoldCard());
-            }
-            else {
+            } else {
                 game.addHistory("The supply did not have any ", KingdomUtil.getCardWithBackgroundColor(game.getGoldCard()));
             }
-        }
-        else if (card.getName().equals("Farming Village")) {
+        } else if (card.getName().equals("Farming Village")) {
             List<Card> revealedCards = new ArrayList<Card>();
             List<Card> setAsideCards = new ArrayList<Card>();
             Card topDeckCard = null;
@@ -43,8 +41,7 @@ public class CornucopiaSpecialActionHandler {
                 if (topDeckCard.isAction() || topDeckCard.isTreasure()) {
                     foundActionOrTreasure = true;
                     player.addCardToHand(topDeckCard);
-                }
-                else {
+                } else {
                     setAsideCards.add(topDeckCard);
                 }
             }
@@ -57,12 +54,10 @@ public class CornucopiaSpecialActionHandler {
                 if (foundActionOrTreasure) {
                     game.addHistory(player.getUsername(), " added ", KingdomUtil.getArticleWithCardName(topDeckCard), " to ", player.getPronoun(), " hand");
                 }
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards to draw");
             }
-        }
-        else if (card.getName().equals("Followers")) {
+        } else if (card.getName().equals("Followers")) {
             if (game.getSupply().get(Card.ESTATE_ID) > 0) {
                 game.playerGainedCard(player, game.getEstateCard());
             }
@@ -73,14 +68,13 @@ public class CornucopiaSpecialActionHandler {
                 if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
                     incompleteCard.setPlayerActionCompleted(nextPlayer.getUserId());
                     game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-                }
-                else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
+                } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                     int cursesInSupply = game.getSupply().get(Card.CURSE_ID);
                     if (cursesInSupply > 0) {
                         game.playerGainedCard(nextPlayer, game.getCurseCard());
                         game.refreshDiscard(nextPlayer);
                     }
-                    if(nextPlayer.getHand().size() > 3) {
+                    if (nextPlayer.getHand().size() > 3) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND);
                         cardAction.setDeck(Card.DECK_CORNUCOPIA);
                         cardAction.setCardName(card.getName());
@@ -89,32 +83,27 @@ public class CornucopiaSpecialActionHandler {
                         cardAction.setInstructions("Discard down to 3 cards. Select the Cards you want to discard and then click Done.");
                         cardAction.setButtonValue("Done");
                         game.setPlayerCardAction(nextPlayer, cardAction);
-                    }
-                    else {
+                    } else {
                         incompleteCard.setPlayerActionCompleted(nextPlayer.getUserId());
                         game.addHistory(nextPlayer.getUsername(), " had 3 or less cards");
                     }
-                }
-                else {
+                } else {
                     incompleteCard.setPlayerActionCompleted(nextPlayer.getUserId());
                     if (nextPlayer.hasLighthouse()) {
                         game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                    }
-                    else if (nextPlayer.hasMoat()) {
+                    } else if (nextPlayer.hasMoat()) {
                         game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                     }
                 }
                 nextPlayerIndex = game.calculateNextPlayerIndex(nextPlayerIndex);
             }
             incompleteCard.allActionsSet();
-        }
-        else if (card.getName().equals("Fortune Teller")) {
+        } else if (card.getName().equals("Fortune Teller")) {
             for (Player p : players) {
                 if (p.getUserId() != player.getUserId()) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(p.getUserId())) {
                         game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-                    }
-                    else if (!p.hasMoat() && !p.hasLighthouse()) {
+                    } else if (!p.hasMoat() && !p.hasLighthouse()) {
                         List<Card> revealedCards = new ArrayList<Card>();
                         List<Card> setAsideCards = new ArrayList<Card>();
                         boolean foundVictoryOrCurse = false;
@@ -128,8 +117,7 @@ public class CornucopiaSpecialActionHandler {
                             if (topDeckCard.isVictory() || topDeckCard.isCurseOnly()) {
                                 foundVictoryOrCurse = true;
                                 p.addCardToTopOfDeck(topDeckCard);
-                            }
-                            else {
+                            } else {
                                 setAsideCards.add(topDeckCard);
                             }
                         }
@@ -143,35 +131,29 @@ public class CornucopiaSpecialActionHandler {
                             if (foundVictoryOrCurse) {
                                 game.addHistory(KingdomUtil.getCardWithBackgroundColor(card), " added ", KingdomUtil.getArticleWithCardName(topDeckCard), " on top of ", p.getUsername(), "'s deck");
                             }
-                        }
-                        else {
+                        } else {
                             game.addHistory(p.getUsername(), " did not have any cards to draw");
                         }
-                    }
-                    else {
+                    } else {
                         if (p.hasLighthouse()) {
                             game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                        }
-                        else if (p.hasMoat()) {
+                        } else if (p.hasMoat()) {
                             game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                 }
             }
-        }
-        else if (card.getName().equals("Hamlet")) {
+        } else if (card.getName().equals("Hamlet")) {
             if (player.getHand().isEmpty()) {
                 game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand");
-            }
-            else {
+            } else {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                 cardAction.setDeck(Card.DECK_CORNUCOPIA);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("Do you want to discard a card from your hand to gain +1 Action?");
                 game.setPlayerCardAction(player, cardAction);
             }
-        }
-        else if (card.getName().equals("Harvest")) {
+        } else if (card.getName().equals("Harvest")) {
             boolean hasMoreCards = true;
             List<Card> revealedCards = new ArrayList<Card>();
             Set<String> cardNames = new HashSet<String>();
@@ -179,8 +161,7 @@ public class CornucopiaSpecialActionHandler {
                 Card c = player.removeTopDeckCard();
                 if (c == null) {
                     hasMoreCards = false;
-                }
-                else {
+                } else {
                     revealedCards.add(c);
                     cardNames.add(c.getName());
                 }
@@ -194,18 +175,15 @@ public class CornucopiaSpecialActionHandler {
                 player.addCoins(cardNames.size());
                 game.refreshAllPlayersCardsBought();
                 game.addHistory(player.getUsername(), " gained +", KingdomUtil.getPlural(cardNames.size(), "Coin"), " from ", KingdomUtil.getCardWithBackgroundColor(card));
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards to reveal");
             }
-        }
-        else if (card.getName().equals("Horse Traders")) {
+        } else if (card.getName().equals("Horse Traders")) {
             if (player.getHand().size() > 0) {
                 if (player.getHand().size() == 1) {
                     game.addHistory(player.getUsername(), " discarded ", KingdomUtil.getArticleWithCardName(player.getHand().get(0)));
                     player.discardCardFromHand(player.getHand().get(0));
-                }
-                else {
+                } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
                     cardAction.setDeck(Card.DECK_CORNUCOPIA);
                     cardAction.setCardName(card.getName());
@@ -215,20 +193,17 @@ public class CornucopiaSpecialActionHandler {
                     cardAction.setCards(player.getHand());
                     game.setPlayerCardAction(player, cardAction);
                 }
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards to discard");
             }
-        }
-        else if (card.getName().equals("Hunting Party")) {
+        } else if (card.getName().equals("Hunting Party")) {
             Set<String> cardNames = new HashSet<String>();
             if (!player.getHand().isEmpty()) {
                 game.addHistory(player.getUsername(), "'s current hand contains ", KingdomUtil.groupCards(player.getHand(), true));
                 for (Card c : player.getHand()) {
                     cardNames.add(c.getName());
                 }
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand");
             }
             List<Card> revealedCards = new ArrayList<Card>();
@@ -244,8 +219,7 @@ public class CornucopiaSpecialActionHandler {
                 if (!cardNames.contains(topDeckCard.getName())) {
                     foundCard = true;
                     player.addCardToHand(topDeckCard);
-                }
-                else {
+                } else {
                     setAsideCards.add(topDeckCard);
                 }
             }
@@ -257,24 +231,20 @@ public class CornucopiaSpecialActionHandler {
                 }
                 if (foundCard) {
                     game.addHistory(player.getUsername(), " added ", KingdomUtil.getArticleWithCardName(topDeckCard), " to ", player.getPronoun(), " hand");
-                }
-                else {
+                } else {
                     game.addHistory(player.getUsername(), " did not have any cards that weren't duplicates of ones in ", player.getPronoun(), " hand");
                 }
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards to draw");
             }
-        }
-        else if (card.getName().equals("Jester")) {
+        } else if (card.getName().equals("Jester")) {
             incompleteCard = new SinglePlayerIncompleteCard(card.getName(), game);
             int nextPlayerIndex = game.calculateNextPlayerIndex(game.getCurrentPlayerIndex());
             while (nextPlayerIndex != game.getCurrentPlayerIndex()) {
                 Player nextPlayer = players.get(nextPlayerIndex);
                 if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
                     game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-                }
-                else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
+                } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                     Card topDeckCard = nextPlayer.removeTopDeckCard();
                     if (topDeckCard != null) {
                         nextPlayer.addCardToDiscard(topDeckCard);
@@ -285,12 +255,10 @@ public class CornucopiaSpecialActionHandler {
                             if (game.getSupply().get(Card.CURSE_ID) > 0) {
                                 game.playerGainedCard(nextPlayer, game.getCurseCard());
                             }
-                        }
-                        else {
+                        } else {
                             if (game.getSupply().get(topDeckCard.getCardId()) == null || game.getSupply().get(topDeckCard.getCardId()) == 0) {
                                 game.addHistory("The supply did not have ", KingdomUtil.getArticleWithCardName(topDeckCard));
-                            }
-                            else {
+                            } else {
                                 CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
                                 nextCardAction.setDeck(Card.DECK_CORNUCOPIA);
                                 nextCardAction.setCardName(card.getName());
@@ -302,16 +270,13 @@ public class CornucopiaSpecialActionHandler {
                                 incompleteCard.getExtraCardActions().add(nextCardAction);
                             }
                         }
-                    }
-                    else {
+                    } else {
                         game.addHistory(nextPlayer.getUsername(), " did not have a card to draw");
                     }
-                }
-                else {
+                } else {
                     if (nextPlayer.hasLighthouse()) {
                         game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                    }
-                    else {
+                    } else {
                         game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                     }
                 }
@@ -322,8 +287,7 @@ public class CornucopiaSpecialActionHandler {
                 CardAction cardAction = incompleteCard.getExtraCardActions().remove();
                 game.setPlayerCardAction(player, cardAction);
             }
-        }
-        else if (card.getName().equals("Menagerie")) {
+        } else if (card.getName().equals("Menagerie")) {
             Set<String> cardNames = new HashSet<String>();
             if (!player.getHand().isEmpty()) {
                 game.addHistory(player.getUsername(), "'s current hand contains ", KingdomUtil.groupCards(player.getHand(), true));
@@ -334,24 +298,20 @@ public class CornucopiaSpecialActionHandler {
                     game.addHistory(player.getUsername(), "'s hand did not contain any duplicates");
                     game.addHistory(player.getUsername(), " gained +3 Cards");
                     player.drawCards(3);
-                }
-                else {
+                } else {
                     game.addHistory(player.getUsername(), "'s hand contained duplicates");
                     game.addHistory(player.getUsername(), " gained +1 Card");
                     player.drawCards(1);
                 }
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand");
             }
-        }
-        else if (card.getName().equals("Princess")) {
+        } else if (card.getName().equals("Princess")) {
             game.princessCardPlayed();
             game.refreshAllPlayersSupply();
             game.refreshAllPlayersPlayingArea();
             game.refreshAllPlayersHandArea();
-        }
-        else if (card.getName().equals("Remake")) {
+        } else if (card.getName().equals("Remake")) {
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
                 cardAction.setDeck(Card.DECK_CORNUCOPIA);
@@ -372,12 +332,10 @@ public class CornucopiaSpecialActionHandler {
                     secondCardAction.setCards(player.getHand());
                     incompleteCard.getExtraCardActions().add(secondCardAction);
                 }
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand");
             }
-        }
-        else if (card.getName().equals("Tournament")) {
+        } else if (card.getName().equals("Tournament")) {
             incompleteCard = new MultiPlayerIncompleteCard(card.getName(), game, player.hasProvinceInHand());
             game.setGainTournamentBonus(true);
             if (player.hasProvinceInHand()) {
@@ -389,22 +347,20 @@ public class CornucopiaSpecialActionHandler {
             }
             for (Player p : players) {
                 if (p.getUserId() != player.getUserId()) {
-                    if(p.hasProvinceInHand()) {
+                    if (p.hasProvinceInHand()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                         cardAction.setDeck(Card.DECK_CORNUCOPIA);
                         cardAction.setCardName(card.getName());
-                        cardAction.setInstructions("Do you want to reveal a Province to prevent "+player.getUsername()+" from gaining +1 Card, +1 Coin?");
+                        cardAction.setInstructions("Do you want to reveal a Province to prevent " + player.getUsername() + " from gaining +1 Card, +1 Coin?");
                         game.setPlayerCardAction(p, cardAction);
-                    }
-                    else {
+                    } else {
                         incompleteCard.setPlayerActionCompleted(p.getUserId());
                     }
                 }
             }
             game.addNextAction("gain bonuses");
             incompleteCard.allActionsSet();
-        }
-        else if (card.getName().equals("Trusty Steed")) {
+        } else if (card.getName().equals("Trusty Steed")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setDeck(Card.DECK_CORNUCOPIA);
             cardAction.setCardName(card.getName());
@@ -416,16 +372,14 @@ public class CornucopiaSpecialActionHandler {
             cardAction.getChoices().add(new CardActionChoice("+2 Actions, 4 Silvers", "actionsAndSilvers"));
             cardAction.getChoices().add(new CardActionChoice("+2 Coins, 4 Silvers", "coinsAndSilvers"));
             game.setPlayerCardAction(player, cardAction);
-        }
-        else if (card.getName().equals("Young Witch")) {
+        } else if (card.getName().equals("Young Witch")) {
             incompleteCard = new MultiPlayerIncompleteCard(card.getName(), game, player.getHand().size() >= 2);
             if (player.getHand().size() > 0) {
                 if (player.getHand().size() == 1) {
                     game.playerDiscardedCard(player, player.getHand().get(0));
                     player.discardCardFromHand(player.getHand().get(0));
                     game.addHistory(player.getUsername(), " discarded ", KingdomUtil.getArticleWithCardName(player.getHand().get(0)));
-                }
-                else {
+                } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
                     cardAction.setDeck(Card.DECK_CORNUCOPIA);
                     cardAction.setCardName(card.getName());
@@ -435,8 +389,7 @@ public class CornucopiaSpecialActionHandler {
                     cardAction.setCards(player.getHand());
                     game.setPlayerCardAction(player, cardAction);
                 }
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " did not have any cards to discard");
             }
             int nextPlayerIndex = game.calculateNextPlayerIndex(game.getCurrentPlayerIndex());
@@ -445,9 +398,8 @@ public class CornucopiaSpecialActionHandler {
                 if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
                     incompleteCard.setPlayerActionCompleted(nextPlayer.getUserId());
                     game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-                }
-                else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
-                    if(nextPlayer.hasBaneCardInHand()) {
+                } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
+                    if (nextPlayer.hasBaneCardInHand()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
                         cardAction.setDeck(Card.DECK_CORNUCOPIA);
                         cardAction.setCardName(card.getName());
@@ -455,21 +407,18 @@ public class CornucopiaSpecialActionHandler {
                         cardAction.getChoices().add(new CardActionChoice("Reveal Bane Card", "reveal"));
                         cardAction.getChoices().add(new CardActionChoice("Gain a Curse", "curse"));
                         game.setPlayerCardAction(nextPlayer, cardAction);
-                    }
-                    else {
+                    } else {
                         if (game.getSupply().get(Card.CURSE_ID) > 0) {
                             game.playerGainedCard(nextPlayer, game.getCurseCard());
                             game.refreshDiscard(nextPlayer);
                         }
                         incompleteCard.setPlayerActionCompleted(nextPlayer.getUserId());
                     }
-                }
-                else {
+                } else {
                     incompleteCard.setPlayerActionCompleted(nextPlayer.getUserId());
                     if (nextPlayer.hasLighthouse()) {
                         game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                    }
-                    else {
+                    } else {
                         game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                     }
                 }

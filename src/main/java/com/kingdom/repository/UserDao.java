@@ -2,7 +2,9 @@ package com.kingdom.repository;
 
 import com.kingdom.model.PlayerStats;
 import com.kingdom.model.User;
-import org.hibernate.*;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -23,13 +25,11 @@ public class UserDao {
     }
 
     public List<User> getUsers(String stat, Integer value) {
-        if(stat.equals("playedMobileGame")){
+        if (stat.equals("playedMobileGame")) {
             return getPlayedMobileGameUsers();
-        }
-        else if (stat.equals("usingDeckFrequencies")) {
+        } else if (stat.equals("usingDeckFrequencies")) {
             return getUsingDeckFrequencies();
-        }
-        else if (stat.equals("usingExcludedCards")) {
+        } else if (stat.equals("usingExcludedCards")) {
             return getUsingExcludedCards();
         }
         DetachedCriteria criteria = DetachedCriteria.forClass(User.class);
@@ -37,8 +37,7 @@ public class UserDao {
         criteria.add(Restrictions.eq("admin", false));
         if (value != null) {
             criteria.add(Restrictions.eq(stat, value));
-        }
-        else {
+        } else {
             criteria.add(Restrictions.eq(stat, true));
         }
         criteria.addOrder(Order.desc("lastLogin"));

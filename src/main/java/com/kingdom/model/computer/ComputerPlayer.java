@@ -103,23 +103,17 @@ public abstract class ComputerPlayer {
 
             if (card.getName().equals("Harem")) {
                 haremStrategy = true;
-            }
-            else if (card.getName().equals("Counting House")) {
+            } else if (card.getName().equals("Counting House")) {
                 hasCountingHouse = true;
-            }
-            else if (card.getName().equals("Peddler")) {
+            } else if (card.getName().equals("Peddler")) {
                 checkPeddler = true;
-            }
-            else if (card.getName().equals("Goons")) {
+            } else if (card.getName().equals("Goons")) {
                 hasGoons = true;
-            }
-            else if (card.getName().equals("Gardens")) {
+            } else if (card.getName().equals("Gardens")) {
                 hasGardens = true;
-            }
-            else if (card.getName().equals("Duke")) {
+            } else if (card.getName().equals("Duke")) {
                 hasDuke = true;
-            }
-            else if (card.getName().equals("Vineyard")) {
+            } else if (card.getName().equals("Vineyard")) {
                 hasVineyard = true;
             }
         }
@@ -154,8 +148,7 @@ public abstract class ComputerPlayer {
                         game.logError(error, false);
                         break;
                     }
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     //
                 }
             }
@@ -169,12 +162,11 @@ public abstract class ComputerPlayer {
                     loopIterations++;
                     //if wait is longer than 15 minutes then throw error and continue
                     if (loopIterations > 1200) {
-                        GameError error = new GameError(GameError.GAME_ERROR, "computer-hasIncompleteCard in never ending loop. Incomplete Card: "+game.getIncompleteCard().getCardName());
+                        GameError error = new GameError(GameError.GAME_ERROR, "computer-hasIncompleteCard in never ending loop. Incomplete Card: " + game.getIncompleteCard().getCardName());
                         game.logError(error, false);
                         break;
                     }
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     //
                 }
             }
@@ -184,16 +176,13 @@ public abstract class ComputerPlayer {
             if (player.isShowCardAction()) {
                 handleCardAction(player.getCardAction());
                 doNextAction();
-            }
-            else if (playAction && player.getActions() > 0 && !player.getActionCards().isEmpty()) {
+            } else if (playAction && player.getActions() > 0 && !player.getActionCards().isEmpty()) {
                 playAction();
                 doNextAction();
-            }
-            else if (game.isPlayTreasureCards() && !player.getTreasureCards().isEmpty()) {
+            } else if (game.isPlayTreasureCards() && !player.getTreasureCards().isEmpty()) {
                 playTreasure();
                 doNextAction();
-            }
-            else if (player.getBuys() > 0 && player.getCoins() >= 0) {
+            } else if (player.getBuys() > 0 && player.getCoins() >= 0) {
                 int coinsBeforeBuy = player.getCoins();
                 Card cardBought = buyCard();
                 if (cardBought != null) {
@@ -208,27 +197,22 @@ public abstract class ComputerPlayer {
                         GameError error = new GameError(GameError.COMPUTER_ERROR, "Card bought: " + cardBought.getName() + ". Expected coins: " + expectedCoins + ". Actual coins: " + player.getCoins());
                         game.logError(error, false);
                         endTurn();
-                    }
-                    else {
-                        if(buyCardAttempts > 10) {
-                            GameError error = new GameError(GameError.COMPUTER_ERROR, "Computer tried to buy cards more than 10 times. Recent card bought: "+cardBought.getName());
+                    } else {
+                        if (buyCardAttempts > 10) {
+                            GameError error = new GameError(GameError.COMPUTER_ERROR, "Computer tried to buy cards more than 10 times. Recent card bought: " + cardBought.getName());
                             game.logError(error, false);
                             endTurn();
-                        }
-                        else {
+                        } else {
                             doNextAction();
                         }
                     }
-                }
-                else {
+                } else {
                     endTurn();
                 }
-            }
-            else {
+            } else {
                 endTurn();
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             GameError error = new GameError(GameError.COMPUTER_ERROR, KingdomUtil.getStackTrace(t));
             game.logError(error);
         }
@@ -254,8 +238,7 @@ public abstract class ComputerPlayer {
                 terminalActionsBought++;
                 if (card.getName().equals("Throne Room")) {
                     throneRoomsBought++;
-                }
-                else if (card.getName().equals("King's Court")) {
+                } else if (card.getName().equals("King's Court")) {
                     kingsCourtsBought++;
                 }
             }
@@ -263,13 +246,11 @@ public abstract class ComputerPlayer {
 
         if (card.isTreasure() && !card.isPotion()) {
             treasureCardsBought++;
-            if(card.isSilver()) {
+            if (card.isSilver()) {
                 silversBought++;
-            }
-            else if(card.isGold()) {
+            } else if (card.isGold()) {
                 goldsBought++;
-            }
-            else if(card.isPlatinum()) {
+            } else if (card.isPlatinum()) {
                 platinumsBought++;
             }
         }
@@ -277,8 +258,7 @@ public abstract class ComputerPlayer {
         if (dukeStrategy) {
             if (card.getName().equals("Duke")) {
                 dukesBought++;
-            }
-            else if (card.getName().equals("Duchy")) {
+            } else if (card.getName().equals("Duchy")) {
                 duchiesBought++;
             }
         }
@@ -317,8 +297,7 @@ public abstract class ComputerPlayer {
         if (actionToPlay == null) {
             if (difficulty < 2) {
                 actionToPlay = player.getActionCards().get(0);
-            }
-            else {
+            } else {
                 CardCostComparator ccc = new CardCostComparator();
                 Collections.sort(player.getActionCards(), Collections.reverseOrder(ccc));
                 for (Card card : player.getActionCards()) {
@@ -332,8 +311,7 @@ public abstract class ComputerPlayer {
 
         if (actionToPlay != null) {
             game.cardClicked(player, "hand", actionToPlay);
-        }
-        else {
+        } else {
             this.playAction = false;
         }
     }
@@ -342,17 +320,13 @@ public abstract class ComputerPlayer {
         boolean playAction = true;
         if ((action.getName().equals("Apprentice") || action.getName().equals("Chapel") || action.getName().equals("Ambassador") || action.getName().equals("Salvager")) && getNumCardsWorthTrashing(player.getHand()) == 0) {
             playAction = false;
-        }
-        else if (action.getName().equals("Chapel") && ((goldsBought == 0 && silversBought == 0) || (player.getCoins() >= 5 && player.getTurns() < 6))) {
+        } else if (action.getName().equals("Chapel") && ((goldsBought == 0 && silversBought == 0) || (player.getCoins() >= 5 && player.getTurns() < 6))) {
             playAction = false;
-        }
-        else if (action.getName().equals("Tactician") && player.getCoins() >= 6) {
+        } else if (action.getName().equals("Tactician") && player.getCoins() >= 6) {
             playAction = false;
-        }
-        else if (action.getName().equals("Trade Route") && getNumCardsWorthTrashing(player.getHand()) == 0 && game.getTradeRouteTokensOnMat() < 3) {
+        } else if (action.getName().equals("Trade Route") && getNumCardsWorthTrashing(player.getHand()) == 0 && game.getTradeRouteTokensOnMat() < 3) {
             playAction = false;
-        }
-        else if (action.getName().equals("Bishop") && getNumCardsWorthTrashing(player.getHand()) == 0 && !onlyBuyVictoryCards()) {
+        } else if (action.getName().equals("Bishop") && getNumCardsWorthTrashing(player.getHand()) == 0 && !onlyBuyVictoryCards()) {
             playAction = false;
         }
         return playAction;
@@ -396,8 +370,7 @@ public abstract class ComputerPlayer {
         if (playAllTreasureCards) {
             playAllTreasureCards = false;
             game.playAllTreasureCards(player, false);
-        }
-        else {
+        } else {
             Card treasureToPlay = null;
 
             //play Bank cards last
@@ -425,18 +398,15 @@ public abstract class ComputerPlayer {
         }
         if ((game.getNumPlayers() == 2 && game.getSupply().get(Card.PROVINCE_ID) <= 2) || (game.getNumPlayers() > 2 && game.getSupply().get(Card.PROVINCE_ID) <= 3)) {
             onlyBuyVictoryCards = true;
-        }
-        else if (game.isIncludeColonyCards() && ((game.getNumPlayers() == 2 && game.getSupply().get(Card.COLONY_ID) <= 2) || (game.getNumPlayers() > 2 && game.getSupply().get(Card.COLONY_ID) <= 3))) {
+        } else if (game.isIncludeColonyCards() && ((game.getNumPlayers() == 2 && game.getSupply().get(Card.COLONY_ID) <= 2) || (game.getNumPlayers() > 2 && game.getSupply().get(Card.COLONY_ID) <= 3))) {
             onlyBuyVictoryCards = true;
-        }
-        else if(difficulty >= 2) {
+        } else if (difficulty >= 2) {
             int pilesWithOneCard = 0;
             int pilesWithTwoCards = 0;
             for (Integer numInSupply : game.getSupply().values()) {
                 if (numInSupply == 1) {
                     pilesWithOneCard++;
-                }
-                else if (numInSupply == 2) {
+                } else if (numInSupply == 2) {
                     pilesWithTwoCards++;
                 }
             }
@@ -474,15 +444,14 @@ public abstract class ComputerPlayer {
         if (chapelStrategy && laboratoryStrategy && player.getCoins() <= 5 && game.canBuyCard(player, kingdomCardMap.get("Laboratory"))) {
             return kingdomCardMap.get("Laboratory");
         }
-        if(player.getCoins() >= game.getCardCostBuyPhase(game.getGoldCard()) && goldsBought == 0 && (!game.isIncludePlatinumCards() || player.getCoins() < game.getCardCostBuyPhase(game.getPlatinumCard())) && game.canBuyCard(player, game.getGoldCard())) {
+        if (player.getCoins() >= game.getCardCostBuyPhase(game.getGoldCard()) && goldsBought == 0 && (!game.isIncludePlatinumCards() || player.getCoins() < game.getCardCostBuyPhase(game.getPlatinumCard())) && game.canBuyCard(player, game.getGoldCard())) {
             return game.getGoldCard();
         }
         if (gardensStrategy) {
             if (player.getTurns() > 4 && game.canBuyCard(player, kingdomCardMap.get("Gardens"))) {
                 if (onlyBuyVictoryCards() && player.getCoins() >= game.getCardCostBuyPhase(kingdomCardMap.get("Gardens"))) {
                     return kingdomCardMap.get("Gardens");
-                }
-                else if (player.getCoins() == game.getCardCostBuyPhase(kingdomCardMap.get("Gardens"))) {
+                } else if (player.getCoins() == game.getCardCostBuyPhase(kingdomCardMap.get("Gardens"))) {
                     return kingdomCardMap.get("Gardens");
                 }
             }
@@ -492,8 +461,7 @@ public abstract class ComputerPlayer {
             if (duchiesInSupply > 0 && (player.getTurns() > 8 || duchiesInSupply <= 6) && player.getCoins() >= game.getCardCostBuyPhase(game.getDuchyCard())) {
                 if (duchiesBought < 4 || duchiesBought <= dukesBought && (!game.isTrackContrabandCards() || !game.getContrabandCards().contains(game.getDuchyCard()))) {
                     return game.getDuchyCard();
-                }
-                else if (duchiesBought >= 3 && game.canBuyCard(player, kingdomCardMap.get("Duke"))) {
+                } else if (duchiesBought >= 3 && game.canBuyCard(player, kingdomCardMap.get("Duke"))) {
                     return kingdomCardMap.get("Duke");
                 }
             }
@@ -522,8 +490,7 @@ public abstract class ComputerPlayer {
         }
         if (cardToBuy != null) {
             return cardToBuy;
-        }
-        else if (difficulty >= 2 && wantsCoppers()) {
+        } else if (difficulty >= 2 && wantsCoppers()) {
             return game.getCopperCard();
         }
         return null;
@@ -533,8 +500,7 @@ public abstract class ComputerPlayer {
         if (player.getTurns() < 2) {
             if (player.getTurns() == 0 && firstCard != null) {
                 return firstCard;
-            }
-            else if (player.getTurns() == 1 && secondCard != null) {
+            } else if (player.getTurns() == 1 && secondCard != null) {
                 return secondCard;
             }
         }
@@ -568,8 +534,7 @@ public abstract class ComputerPlayer {
             int gardenCost = game.getCardCostBuyPhase(kingdomCardMap.get("Gardens"));
             if (onlyBuyVictoryCards() && player.getCoins() >= gardenCost && (player.getCoins() < game.getCardCostBuyPhase(game.getProvinceCard()) || player.getBuys() > 1)) {
                 return kingdomCardMap.get("Gardens");
-            }
-            else if (player.getCoins() == gardenCost) {
+            } else if (player.getCoins() == gardenCost) {
                 return kingdomCardMap.get("Gardens");
             }
         }
@@ -586,37 +551,37 @@ public abstract class ComputerPlayer {
             }
         }
 
-        if(kingdomCardMap.containsKey("Farmland") && game.getSupply().get(Card.PROVINCE_ID) <= 5 && player.getCoins() >= game.getCardCostBuyPhase(kingdomCardMap.get("Farmland")) && game.canBuyCard(player, kingdomCardMap.get("Farmland"))) {
+        if (kingdomCardMap.containsKey("Farmland") && game.getSupply().get(Card.PROVINCE_ID) <= 5 && player.getCoins() >= game.getCardCostBuyPhase(kingdomCardMap.get("Farmland")) && game.canBuyCard(player, kingdomCardMap.get("Farmland"))) {
             if (!game.buyingCardWillEndGame(kingdomCardMap.get("Farmland").getCardId()) || game.currentlyWinning(player.getUserId()) || losingMargin < 2) {
                 return kingdomCardMap.get("Farmland");
             }
         }
 
-        if(game.getSupply().get(Card.PROVINCE_ID) <= 5 && player.getCoins() >= game.getCardCostBuyPhase(game.getDuchyCard()) && game.canBuyCard(player, game.getDuchyCard())) {
+        if (game.getSupply().get(Card.PROVINCE_ID) <= 5 && player.getCoins() >= game.getCardCostBuyPhase(game.getDuchyCard()) && game.canBuyCard(player, game.getDuchyCard())) {
             if (!game.buyingCardWillEndGame(Card.DUCHY_ID) || game.currentlyWinning(player.getUserId()) || losingMargin < 3) {
                 return game.getDuchyCard();
             }
         }
 
-        if(kingdomCardMap.containsKey("Nobles") && game.getSupply().get(Card.PROVINCE_ID) <= 3 && player.getCoins() >= game.getCardCostBuyPhase(kingdomCardMap.get("Nobles")) && game.canBuyCard(player, kingdomCardMap.get("Nobles"))) {
+        if (kingdomCardMap.containsKey("Nobles") && game.getSupply().get(Card.PROVINCE_ID) <= 3 && player.getCoins() >= game.getCardCostBuyPhase(kingdomCardMap.get("Nobles")) && game.canBuyCard(player, kingdomCardMap.get("Nobles"))) {
             if (!game.buyingCardWillEndGame(kingdomCardMap.get("Nobles").getCardId()) || game.currentlyWinning(player.getUserId()) || losingMargin < 2) {
                 return kingdomCardMap.get("Nobles");
             }
         }
 
-        if(kingdomCardMap.containsKey("Island") && game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= game.getCardCostBuyPhase(kingdomCardMap.get("Island")) && game.canBuyCard(player, kingdomCardMap.get("Island"))) {
+        if (kingdomCardMap.containsKey("Island") && game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= game.getCardCostBuyPhase(kingdomCardMap.get("Island")) && game.canBuyCard(player, kingdomCardMap.get("Island"))) {
             if (!game.buyingCardWillEndGame(kingdomCardMap.get("Island").getCardId()) || game.currentlyWinning(player.getUserId()) || losingMargin < 2) {
                 return kingdomCardMap.get("Island");
             }
         }
 
-        if(kingdomCardMap.containsKey("Great Hall") && game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= game.getCardCostBuyPhase(kingdomCardMap.get("Great Hall")) && game.canBuyCard(player, kingdomCardMap.get("Great Hall"))) {
+        if (kingdomCardMap.containsKey("Great Hall") && game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= game.getCardCostBuyPhase(kingdomCardMap.get("Great Hall")) && game.canBuyCard(player, kingdomCardMap.get("Great Hall"))) {
             if (!game.buyingCardWillEndGame(kingdomCardMap.get("Great Hall").getCardId()) || game.currentlyWinning(player.getUserId())) {
                 return kingdomCardMap.get("Great Hall");
             }
         }
 
-        if(game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= game.getCardCostBuyPhase(game.getEstateCard()) && game.canBuyCard(player, game.getEstateCard())) {
+        if (game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= game.getCardCostBuyPhase(game.getEstateCard()) && game.canBuyCard(player, game.getEstateCard())) {
             if (!game.buyingCardWillEndGame(Card.ESTATE_ID) || game.currentlyWinning(player.getUserId()) || losingMargin < 2) {
                 return game.getEstateCard();
             }
@@ -631,7 +596,7 @@ public abstract class ComputerPlayer {
         }
 
         if (player.getTurns() < 2) {
-            if(terminalActionsBought > 0) {
+            if (terminalActionsBought > 0) {
                 List<Card> cardsWithActions = new ArrayList<Card>();
                 for (Card card : game.getKingdomCards()) {
                     if (card.getAddActions() > 0 && card.getCost() == player.getCoins() && !excludeCardDefault(card) && !card.isCostIncludesPotion()) {
@@ -666,19 +631,19 @@ public abstract class ComputerPlayer {
             return game.getProvinceCard();
         }
 
-        if(game.getSupply().get(Card.PROVINCE_ID) <= 5 && player.getCoins() >= 5 && game.canBuyCard(player, game.getDuchyCard())) {
+        if (game.getSupply().get(Card.PROVINCE_ID) <= 5 && player.getCoins() >= 5 && game.canBuyCard(player, game.getDuchyCard())) {
             return game.getDuchyCard();
         }
 
-        if(kingdomCardMap.containsKey("Island") && game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= 4 && game.canBuyCard(player, kingdomCardMap.get("Island"))) {
+        if (kingdomCardMap.containsKey("Island") && game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= 4 && game.canBuyCard(player, kingdomCardMap.get("Island"))) {
             return kingdomCardMap.get("Island");
         }
 
-        if(kingdomCardMap.containsKey("Great Hall") && game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= 3 && game.canBuyCard(player, kingdomCardMap.get("Great Hall"))) {
+        if (kingdomCardMap.containsKey("Great Hall") && game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= 3 && game.canBuyCard(player, kingdomCardMap.get("Great Hall"))) {
             return kingdomCardMap.get("Great Hall");
         }
 
-        if(game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= 2 && game.canBuyCard(player, game.getEstateCard())) {
+        if (game.getSupply().get(Card.PROVINCE_ID) <= 2 && player.getCoins() >= 2 && game.canBuyCard(player, game.getEstateCard())) {
             return game.getEstateCard();
         }
 
@@ -698,8 +663,7 @@ public abstract class ComputerPlayer {
         Map<Integer, List<Card>> costMap;
         if (costIncludesPotion) {
             costMap = game.getPotionCostMap();
-        }
-        else {
+        } else {
             costMap = game.getCostMap();
         }
         int adjustedCost = cost;
@@ -716,7 +680,7 @@ public abstract class ComputerPlayer {
                 for (Card card : cards) {
                     Integer numInSupply = game.getSupply().get(card.getCardId());
                     if (numInSupply == null) {
-                        GameError error = new GameError(GameError.COMPUTER_ERROR, "Supply was null for "+card.getName());
+                        GameError error = new GameError(GameError.COMPUTER_ERROR, "Supply was null for " + card.getName());
                         game.logError(error, false);
                         continue;
                     }
@@ -727,8 +691,7 @@ public abstract class ComputerPlayer {
                         if (card.isVictory()) {
                             availableCards.add(card);
                         }
-                    }
-                    else if (!excludeCardDefault(card)) {
+                    } else if (!excludeCardDefault(card)) {
                         availableCards.add(card);
                     }
                 }
@@ -763,20 +726,15 @@ public abstract class ComputerPlayer {
     protected boolean excludeCardEasy(Card card) {
         if (card.isCurseOnly()) {
             return true;
-        }
-        else if (card.getName().equals("Chapel")) {
+        } else if (card.getName().equals("Chapel")) {
             return true;
-        }
-        else if (card.getName().equals("Black Market")) {
+        } else if (card.getName().equals("Black Market")) {
             return true;
-        }
-        else if (card.getName().equals("Treasure Map")) {
+        } else if (card.getName().equals("Treasure Map")) {
             return true;
-        }
-        else if (card.getName().equals("Museum")) {
+        } else if (card.getName().equals("Museum")) {
             return true;
-        }
-        else if (card.getName().equals("Archivist")) {
+        } else if (card.getName().equals("Archivist")) {
             return true;
         }
         return false;
@@ -795,68 +753,47 @@ public abstract class ComputerPlayer {
         }
         if (!card.isVictory() && !card.isTreasure() && card.getCost() < 5 && cardsGained.get(card.getCardId()) != null && cardsGained.get(card.getCardId()) >= 3) {
             return true;
-        }
-        else if (chapelStrategy && card.getName().equals("Counting House")) {
+        } else if (chapelStrategy && card.getName().equals("Counting House")) {
             return true;
-        }
-        else if (card.getName().equals("Monk")) {
+        } else if (card.getName().equals("Monk")) {
             return true;
-        }
-        else if (card.getName().equals("Baptistry") && wantsCoppers()) {
+        } else if (card.getName().equals("Baptistry") && wantsCoppers()) {
             return true;
-        }
-        else if (card.isPotion() && potionsBought > 0) {
+        } else if (card.isPotion() && potionsBought > 0) {
             return true;
-        }
-        else if (card.getName().equals("Throne Room") && (player.getTurns() < 3 || throneRoomsBought >= 2)) {
+        } else if (card.getName().equals("Throne Room") && (player.getTurns() < 3 || throneRoomsBought >= 2)) {
             return true;
-        }
-        else if (card.getName().equals("King's Court") && kingsCourtsBought >= 2) {
+        } else if (card.getName().equals("King's Court") && kingsCourtsBought >= 2) {
             return true;
-        }
-        else if (card.isTerminalAction() && ((terminalActionsBought - actionsBought) > 1 || terminalActionsBought == 1 && actionsBought == 1)) {
+        } else if (card.isTerminalAction() && ((terminalActionsBought - actionsBought) > 1 || terminalActionsBought == 1 && actionsBought == 1)) {
             return true;
-        }
-        else if (card.getName().equals("Lookout")) {
+        } else if (card.getName().equals("Lookout")) {
             return true;
-        }
-        else if (card.isVictoryOnly() && !includeVictoryOnlyCards()) {
+        } else if (card.isVictoryOnly() && !includeVictoryOnlyCards()) {
             return true;
-        }
-        else if (player.getTurns() <= 5 && card.getName().equals("Great Hall")) {
+        } else if (player.getTurns() <= 5 && card.getName().equals("Great Hall")) {
             return true;
-        }
-        else if (card.getName().equals("Forge")) {
+        } else if (card.getName().equals("Forge")) {
             return true;
-        }
-        else if (card.getName().equals("Witch") && player.getTurns() >= 8) {
+        } else if (card.getName().equals("Witch") && player.getTurns() >= 8) {
             return true;
-        }
-        else if (card.getName().equals("Mint") && player.getTurns() >= 5) {
+        } else if (card.getName().equals("Mint") && player.getTurns() >= 5) {
             return true;
-        }
-        else if (card.getName().equals("Remake")) {
+        } else if (card.getName().equals("Remake")) {
             return true;
-        }
-        else if (card.getName().equals("Sorceress")) {
+        } else if (card.getName().equals("Sorceress")) {
             return true;
-        }
-        else if (card.getName().equals("Outpost")) {
+        } else if (card.getName().equals("Outpost")) {
             return true;
-        }
-        else if (card.getName().equals("Quest")) {
+        } else if (card.getName().equals("Quest")) {
             return true;
-        }
-        else if (card.isPotion() && kingdomCardMap.containsKey("Black Market")) {
+        } else if (card.isPotion() && kingdomCardMap.containsKey("Black Market")) {
             return true;
-        }
-        else if (card.getFruitTokens() > 0 || card.getCattleTokens() > 0 || card.getName().equals("Goodwill")) {
+        } else if (card.getFruitTokens() > 0 || card.getCattleTokens() > 0 || card.getName().equals("Goodwill")) {
             return true;
-        }
-        else if (card.getName().equals("Rancher")) {
+        } else if (card.getName().equals("Rancher")) {
             return true;
-        }
-        else if (card.getName().equals("Farmland") && player.getHand().stream().allMatch(Card::isProvince)) {
+        } else if (card.getName().equals("Farmland") && player.getHand().stream().allMatch(Card::isProvince)) {
             return true;
         }
 
@@ -870,39 +807,29 @@ public abstract class ComputerPlayer {
 
         if (game.buyingCardWillEndGame(card.getCardId()) && !game.currentlyWinning(player.getUserId())) {
             return true;
-        }
-        else if (card.isVictoryOnly()) {
+        } else if (card.isVictoryOnly()) {
             return true;
-        }
-        else if ((card.getName().equals("Mine") || card.getName().equals("Thief") || card.getName().equals("Chancellor")
+        } else if ((card.getName().equals("Mine") || card.getName().equals("Thief") || card.getName().equals("Chancellor")
                 || card.getName().equals("Wishing Well") || card.getName().equals("Workshop")
                 || card.getName().equals("Horn of Plenty") || card.getName().equals("Quarry")
                 || card.getName().equals("Trader") || card.getName().equals("Navigator")
                 || card.getName().equals("Oracle") || card.getName().equals("Fool's Gold"))) {
             return true;
-        }
-        else if (card.getName().equals("Workshop") && !gardensStrategy) {
+        } else if (card.getName().equals("Workshop") && !gardensStrategy) {
             return true;
-        }
-        else if (player.getTurns() < 2 && card.getName().equals("Village")) {
+        } else if (player.getTurns() < 2 && card.getName().equals("Village")) {
             return true;
-        }
-        else if (bigMoneyStrategy && card.isTerminalAction() && (terminalActionsBought - actionsBought) > 0) {
+        } else if (bigMoneyStrategy && card.isTerminalAction() && (terminalActionsBought - actionsBought) > 0) {
             return true;
-        }
-        else if (bigMoneyStrategy && card.isAction() && !card.isVictory() && actionsBought >= 3) {
+        } else if (bigMoneyStrategy && card.isAction() && !card.isVictory() && actionsBought >= 3) {
             return true;
-        }
-        else if (!bigActionsStrategy && card.isAction() && !card.isVictory() && actionsBought >= 5) {
+        } else if (!bigActionsStrategy && card.isAction() && !card.isVictory() && actionsBought >= 5) {
             return true;
-        }
-        else if (card.getName().equals("Expand") && cardsGained.get(kingdomCardMap.get("Expand").getCardId()) != null) {
+        } else if (card.getName().equals("Expand") && cardsGained.get(kingdomCardMap.get("Expand").getCardId()) != null) {
             return true;
-        }
-        else if (bigMoneyStrategy && card.isExtraActionsCard()) {
+        } else if (bigMoneyStrategy && card.isExtraActionsCard()) {
             return true;
-        }
-        else if (!gardensStrategy && card.getName().equals("Talisman")) {
+        } else if (!gardensStrategy && card.getName().equals("Talisman")) {
             return true;
         }
 
@@ -932,8 +859,7 @@ public abstract class ComputerPlayer {
                 if (!excludeCardDefault(card)) {
                     lowCards.add(card);
                 }
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -983,8 +909,7 @@ public abstract class ComputerPlayer {
                 if (!excludeCardDefault(card) && (includeVictoryOnlyCards || !card.isVictoryOnly())) {
                     topCards.add(card);
                 }
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -1009,15 +934,12 @@ public abstract class ComputerPlayer {
                 Card card = cards.get(0);
                 if (card.getName().equals("Throne Room") || card.getName().equals("King's Court")) {
                     action = card;
-                }
-                else if (card.getName().equals("Apprentice") && getNumCardsWorthTrashing(cards) == 0) {
+                } else if (card.getName().equals("Apprentice") && getNumCardsWorthTrashing(cards) == 0) {
+                    action = card;
+                } else if (card.getName().equals("Bishop") && getNumCardsWorthTrashing(cards) == 0 && !onlyBuyVictoryCards()) {
                     action = card;
                 }
-                else if (card.getName().equals("Bishop") && getNumCardsWorthTrashing(cards) == 0 && !onlyBuyVictoryCards()) {
-                    action = card;
-                }
-            }
-            else {
+            } else {
                 boolean hasCardWithActions = false;
                 for (Card card : cards) {
                     if (card.getName().equals("Throne Room") || card.getName().equals("King's Court") || (card.isAction() && card.getAddActions() > 0)) {
@@ -1257,8 +1179,7 @@ public abstract class ComputerPlayer {
                 if (cardsNotNeeded.size() == numCardsNotNeeded) {
                     break;
                 }
-            }
-            else {
+            } else {
                 remainingCards.add(card);
             }
         }
@@ -1273,8 +1194,7 @@ public abstract class ComputerPlayer {
                     if (cardsNotNeeded.size() == numCardsNotNeeded) {
                         break;
                     }
-                }
-                else {
+                } else {
                     remainingCards.add(card);
                 }
             }
@@ -1302,8 +1222,7 @@ public abstract class ComputerPlayer {
                     if (cardsNotNeeded.size() == numCardsNotNeeded) {
                         break;
                     }
-                }
-                else {
+                } else {
                     remainingCards.add(card);
                 }
             }
@@ -1347,53 +1266,39 @@ public abstract class ComputerPlayer {
     }
 
     public void handleCardAction(CardAction cardAction) {
-        if(cardAction.isWaitingForPlayers()) {
+        if (cardAction.isWaitingForPlayers()) {
             return;
         }
         if (cardAction.getDeck().equals(Card.DECK_KINGDOM)) {
             KingdomComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_INTRIGUE)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_INTRIGUE)) {
             IntrigueComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_SEASIDE)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_SEASIDE)) {
             SeasideComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_ALCHEMY)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_ALCHEMY)) {
             AlchemyComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_PROSPERITY)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_PROSPERITY)) {
             ProsperityComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_CORNUCOPIA)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_CORNUCOPIA)) {
             CornucopiaComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_HINTERLANDS)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_HINTERLANDS)) {
             HinterlandsComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_PROMO)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_PROMO)) {
             PromoComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_SALVATION)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_SALVATION)) {
             SalvationComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_FAIRYTALE)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_FAIRYTALE)) {
             FairyTaleComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_LEADERS)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_LEADERS)) {
             LeaderComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_PROLETARIAT)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_PROLETARIAT)) {
             ProletariatComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_FAN)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_FAN)) {
             FanComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else if (cardAction.getDeck().equals(Card.DECK_REACTION)) {
+        } else if (cardAction.getDeck().equals(Card.DECK_REACTION)) {
             ReactionComputerCardActionHandler.handleCardAction(cardAction, this);
-        }
-        else {
-            throw new RuntimeException("CardAction with card: " + cardAction.getCardName() + " and type: "+cardAction.getType()+" does not have a deck type");
+        } else {
+            throw new RuntimeException("CardAction with card: " + cardAction.getCardName() + " and type: " + cardAction.getType() + " does not have a deck type");
         }
     }
 

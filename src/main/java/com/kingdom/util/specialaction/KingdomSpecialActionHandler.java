@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class KingdomSpecialActionHandler {
-    public static IncompleteCard handleSpecialAction(Game game, Card card, boolean repeatedAction){
+    public static IncompleteCard handleSpecialAction(Game game, Card card, boolean repeatedAction) {
         Map<Integer, Card> supplyMap = game.getSupplyMap();
         List<Player> players = game.getPlayers();
         int currentPlayerId = game.getCurrentPlayerId();

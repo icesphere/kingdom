@@ -8,7 +8,7 @@ import java.util.*;
 public class GainCardsSpecialActionHandler {
 
     public static CardAction getCardAction(Game game, Player player, Card card) {
-        Map<Integer,Card> supplyMap = game.getSupplyMap();
+        Map<Integer, Card> supplyMap = game.getSupplyMap();
 
         if (card.getName().equals("Border Village")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
@@ -28,17 +28,15 @@ public class GainCardsSpecialActionHandler {
             if (cardAction.getCards().size() > 0) {
                 return cardAction;
             }
-        }
-        else if (card.getName().equals("Cache")) {
-            for (int i=0; i<2; i++) {
-                if(game.getSupply().get(Card.COPPER_ID) > 0) {
+        } else if (card.getName().equals("Cache")) {
+            for (int i = 0; i < 2; i++) {
+                if (game.getSupply().get(Card.COPPER_ID) > 0) {
                     game.playerGainedCard(player, game.getCopperCard());
                 }
             }
-        }
-        else if (card.getName().equals("Duchy")) {
+        } else if (card.getName().equals("Duchy")) {
             Card duchessCard = game.getKingdomCardMap().get("Duchess");
-            if(game.isCheckDuchess() && game.isCardInSupply(duchessCard)) {
+            if (game.isCheckDuchess() && game.isCardInSupply(duchessCard)) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                 cardAction.setGainCardAction(true);
                 cardAction.setDeck(Card.DECK_REACTION);
@@ -48,19 +46,17 @@ public class GainCardsSpecialActionHandler {
                 cardAction.setInstructions("Do you want to gain a Duchess?");
                 game.setPlayerCardAction(player, cardAction);
             }
-        }
-        else if (card.getName().equals("Embassy")) {
+        } else if (card.getName().equals("Embassy")) {
             int playerIndex = game.calculateNextPlayerIndex(game.getCurrentPlayerIndex());
             while (playerIndex != game.getCurrentPlayerIndex()) {
                 Player nextPlayer = game.getPlayers().get(playerIndex);
-                if(game.isCardInSupply(Card.SILVER_ID)) {
+                if (game.isCardInSupply(Card.SILVER_ID)) {
                     game.playerGainedCard(nextPlayer, game.getSilverCard());
                     game.refreshDiscard(nextPlayer);
                 }
                 playerIndex = game.calculateNextPlayerIndex(playerIndex);
             }
-        }
-        else if (card.getName().equals("Inn")) {
+        } else if (card.getName().equals("Inn")) {
             if (!player.getDiscard().isEmpty()) {
                 List<Card> cards = new ArrayList<Card>();
                 for (Card c : player.getDiscard()) {
@@ -79,27 +75,23 @@ public class GainCardsSpecialActionHandler {
                 cardAction.setInstructions("Select the Action cards from your discard pile that you want to shuffle into your deck and then click Done.");
                 if (cardAction.getCards().size() > 0) {
                     game.setPlayerCardAction(player, cardAction);
-                }
-                else {
+                } else {
                     game.setPlayerInfoDialog(player, InfoDialog.getErrorDialog("There were no Action cards in your discard pile."));
                 }
-            }
-            else {
+            } else {
                 game.setPlayerInfoDialog(player, InfoDialog.getErrorDialog("Your discard pile is empty."));
             }
-        }
-        else if (card.getName().equals("Ill-Gotten Gains")) {
+        } else if (card.getName().equals("Ill-Gotten Gains")) {
             int playerIndex = game.calculateNextPlayerIndex(game.getCurrentPlayerIndex());
             while (playerIndex != game.getCurrentPlayerIndex()) {
                 Player nextPlayer = game.getPlayers().get(playerIndex);
-                if(game.isCardInSupply(Card.CURSE_ID)) {
+                if (game.isCardInSupply(Card.CURSE_ID)) {
                     game.playerGainedCard(nextPlayer, game.getCurseCard());
                     game.refreshDiscard(nextPlayer);
                 }
                 playerIndex = game.calculateNextPlayerIndex(playerIndex);
             }
-        }
-        else if (card.getName().equals("Mandarin")) {
+        } else if (card.getName().equals("Mandarin")) {
             if (!game.getTreasureCardsPlayed().isEmpty() && player.getUserId() == game.getCurrentPlayerId()) {
                 Set<Card> cards = new HashSet<Card>(game.getTreasureCardsPlayed());
                 if (cards.size() == 1) {
@@ -109,8 +101,7 @@ public class GainCardsSpecialActionHandler {
                     game.getCardsPlayed().removeAll(game.getTreasureCardsPlayed());
                     game.getTreasureCardsPlayed().clear();
                     game.refreshAllPlayersCardsPlayed();
-                }
-                else {
+                } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
                     cardAction.setGainCardAction(true);
                     cardAction.setDeck(Card.DECK_HINTERLANDS);

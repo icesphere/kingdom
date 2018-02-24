@@ -13,19 +13,19 @@ import javax.persistence.EntityManagerFactory;
 @SpringBootApplication
 public class KingdomApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(KingdomApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(KingdomApplication.class, args);
+    }
 
-	@Bean
-	public SessionFactory sessionFactory(EntityManagerFactory entityManagerFactory) {
-		return entityManagerFactory.unwrap(SessionFactory.class);
-	}
+    @Bean
+    public SessionFactory sessionFactory(EntityManagerFactory entityManagerFactory) {
+        return entityManagerFactory.unwrap(SessionFactory.class);
+    }
 
-	@Bean
-	public HibernateTemplate getHibernateTemplate(SessionFactory session) {
-		HibernateTemplate hb = new HibernateTemplate();
-		hb.setSessionFactory(session);
-		return hb;
-	}
+    @Bean
+    public HibernateTemplate getHibernateTemplate(SessionFactory session) {
+        HibernateTemplate hb = new HibernateTemplate();
+        hb.setSessionFactory(session);
+        return hb;
+    }
 }

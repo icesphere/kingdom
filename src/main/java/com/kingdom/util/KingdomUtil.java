@@ -49,8 +49,7 @@ public class KingdomUtil {
     public static String getWordWithBackgroundColor(String word, String color) {
         if (color.equals(Card.ACTION_AND_VICTORY_IMAGE) || color.equals(Card.TREASURE_AND_VICTORY_IMAGE) || color.equals(Card.TREASURE_AND_CURSE_IMAGE) || color.equals(Card.VICTORY_AND_REACTION_IMAGE) || color.equals(Card.DURATION_AND_VICTORY_IMAGE) || color.equals(Card.TREASURE_REACTION_IMAGE)) {
             return "<span class=\"cardColor\" style=\"background-image:url(images/" + color + ");background-repeat:repeat-x;\">" + word + "</span>";
-        }
-        else {
+        } else {
             return "<span class=\"cardColor\" style=\"background-color:" + color + "\">" + word + "</span>";
         }
     }
@@ -63,8 +62,7 @@ public class KingdomUtil {
         String cardName;
         if (addArticle) {
             cardName = KingdomUtil.getArticleWithCardName(card);
-        }
-        else {
+        } else {
             cardName = card.getName();
         }
         return getWordWithBackgroundColor(cardName, card.getBackgroundColor());
@@ -73,22 +71,17 @@ public class KingdomUtil {
     public static String getPlural(int num, String word) {
         if (num == 1 || num == -1 || word.endsWith("s")) {
             return num + " " + word;
-        }
-        else {
+        } else {
             if (word.equals("Envoy")) {
                 return num + " " + "Envoys";
-            }
-            else if (word.endsWith("y")) {
+            } else if (word.endsWith("y")) {
                 word = word.substring(0, word.length() - 1) + "ies";
                 return num + " " + word;
-            }
-            else if (word.equals("Witch")) {
+            } else if (word.equals("Witch")) {
                 return num + " " + "Witches";
-            }
-            else if (word.equals("Golden Touch")) {
+            } else if (word.equals("Golden Touch")) {
                 return num + " " + "Golden Touches";
-            }
-            else {
+            } else {
                 return num + " " + word + "s";
             }
         }
@@ -97,20 +90,17 @@ public class KingdomUtil {
     public static String getPlural(double num, String word) {
         if (num == 1) {
             return "1 " + word;
-        }
-        else {
+        } else {
             StringBuffer sb = new StringBuffer();
             if (num * 10 % 10 == 0) {
                 sb.append((int) num);
-            }
-            else {
+            } else {
                 sb.append(num);
             }
             if (word.endsWith("y")) {
                 word = word.substring(0, word.length() - 1) + "ies";
                 sb.append(" ").append(word);
-            }
-            else {
+            } else {
                 sb.append(" ").append(word);
                 if (!word.endsWith("s")) {
                     sb.append("s");
@@ -131,8 +121,7 @@ public class KingdomUtil {
         if (cards.size() == 1) {
             if (addColor) {
                 return getCardWithBackgroundColor(cards.get(0));
-            }
-            else {
+            } else {
                 return cards.get(0).getName();
             }
         }
@@ -146,8 +135,7 @@ public class KingdomUtil {
             }
             if (addColor) {
                 sb.append(getCardWithBackgroundColor(cards.get(i)));
-            }
-            else {
+            } else {
                 sb.append(cards.get(i).getName());
             }
         }
@@ -172,8 +160,7 @@ public class KingdomUtil {
         if (param != null) {
             try {
                 return Integer.parseInt(param);
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 return defaultValue;
             }
         }
@@ -222,16 +209,13 @@ public class KingdomUtil {
                 if (addColor) {
                     if (addNumbers) {
                         sb.append(getWordWithBackgroundColor(getPlural(numOfEach, currentCard.getName()), currentCard.getBackgroundColor()));
-                    }
-                    else {
+                    } else {
                         sb.append(getCardWithBackgroundColor(currentCard));
                     }
-                }
-                else {
+                } else {
                     if (addNumbers) {
                         sb.append(getPlural(numOfEach, currentCard.getName()));
-                    }
-                    else {
+                    } else {
                         sb.append(currentCard.getName());
                     }
                 }
@@ -246,16 +230,13 @@ public class KingdomUtil {
         if (addColor) {
             if (addNumbers) {
                 sb.append(getWordWithBackgroundColor(getPlural(numOfEach, currentCard.getName()), currentCard.getBackgroundColor()));
-            }
-            else {
+            } else {
                 sb.append(getCardWithBackgroundColor(currentCard));
             }
-        }
-        else {
+        } else {
             if (addNumbers) {
                 sb.append(getPlural(numOfEach, currentCard.getName()));
-            }
-            else {
+            } else {
                 sb.append(currentCard.getName());
             }
         }
@@ -319,23 +300,20 @@ public class KingdomUtil {
         // Get the represented date in milliseconds
         long createTime = date.getTime();
         long currentTime = System.currentTimeMillis();
-        double diff = (currentTime - createTime)*1.0;
+        double diff = (currentTime - createTime) * 1.0;
         double seconds = (diff / 1000);
-        double minutes =  (diff / (60 * 1000));
-        double hours =  (diff / (60 * 60 * 1000));
-        double days =  (diff / (24 * 60 * 60 * 1000));
+        double minutes = (diff / (60 * 1000));
+        double hours = (diff / (60 * 60 * 1000));
+        double days = (diff / (24 * 60 * 60 * 1000));
 
         if (days > 1) {
             gameTime.append(KingdomUtil.getPlural((int) days, "day"));
-        }
-        else if (hours > 1) {
-            gameTime.append(KingdomUtil.getPlural((int)hours, "hour"));
-        }
-        else if (minutes > 1) {
-            gameTime.append(KingdomUtil.getPlural((int)minutes, "minute"));
-        }
-        else {
-            gameTime.append(KingdomUtil.getPlural((int)seconds, "second"));
+        } else if (hours > 1) {
+            gameTime.append(KingdomUtil.getPlural((int) hours, "hour"));
+        } else if (minutes > 1) {
+            gameTime.append(KingdomUtil.getPlural((int) minutes, "minute"));
+        } else {
+            gameTime.append(KingdomUtil.getPlural((int) seconds, "second"));
         }
 
         gameTime.append(" ago");
@@ -347,8 +325,7 @@ public class KingdomUtil {
         return new ArrayList<Card>(set);
     }
 
-    public static String getLocation(String ipAddress)
-    {
+    public static String getLocation(String ipAddress) {
         try {
             Client client = Client.create();
             WebResource webResource = client.resource("http://api.ipinfodb.com/v3/ip-city/");
@@ -360,11 +337,10 @@ public class KingdomUtil {
             String[] locationValues = result.split(";");
 
             String location = "";
-            location += locationValues[6]+", "+locationValues[5]+", "+locationValues[4];
+            location += locationValues[6] + ", " + locationValues[5] + ", " + locationValues[4];
 
             return location;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "Error";
         }
     }

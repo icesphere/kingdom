@@ -30,15 +30,15 @@ public class MainController {
     }
 
     @RequestMapping("/login.html")
-	public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView modelAndView = new ModelAndView("login");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         boolean mobile = KingdomUtil.isMobile(request);
         modelAndView.addObject("mobile", mobile);
-        if(username != null && password != null){
+        if (username != null && password != null) {
             User user = manager.getUser(username, password);
-            if(user != null) {
+            if (user != null) {
                 user.setLastLogin(new Date());
                 user.incrementLogins();
                 user.setUserAgent(request.getHeader("User-Agent"));
@@ -50,8 +50,7 @@ public class MainController {
                     ModelAndView modelAndView1 = new ModelAndView("userLimitReached");
                     modelAndView1.addObject("mobile", KingdomUtil.isMobile(request));
                     return modelAndView1;
-                }
-                else {
+                } else {
                     LoggedInUsers.getInstance().userLoggedIn(user);
                     LoggedInUsers.getInstance().refreshLobbyPlayers();
                     HttpSession session = request.getSession(true);
@@ -60,8 +59,7 @@ public class MainController {
                     session.setAttribute("mobile", mobile);
                     if (user.isChangePassword()) {
                         return new ModelAndView("redirect:/changeTemporaryPassword.html");
-                    }
-                    else {
+                    } else {
                         return new ModelAndView("redirect:/showGameRooms.html");
                     }
                 }
@@ -78,8 +76,8 @@ public class MainController {
     }
 
     @RequestMapping("/admin.html")
-	public ModelAndView admin(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if(!isAdmin(request)){
+    public ModelAndView admin(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (!isAdmin(request)) {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("admin");
@@ -95,7 +93,7 @@ public class MainController {
         modelAndView.addObject("news", GameRoomManager.getInstance().getNews());
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
         return modelAndView;
-	}
+    }
 
     @RequestMapping("/requestAccount.html")
     public ModelAndView requestAccount(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -111,11 +109,9 @@ public class MainController {
         String username = request.getParameter("username");
         if (username == null || username.equals("")) {
             error = "Username required";
-        }
-        else if (manager.usernameExists(username) || username.equalsIgnoreCase("admin")){
+        } else if (manager.usernameExists(username) || username.equalsIgnoreCase("admin")) {
             error = "Username already exists";
-        }
-        else {
+        } else {
             Pattern p = Pattern.compile("[a-zA-Z0-9_]+");
             Matcher m = p.matcher(username);
             boolean matchFound = m.matches();
@@ -126,8 +122,7 @@ public class MainController {
         String email = request.getParameter("email");
         if (email == null || email.equals("")) {
             error = "Email required";
-        }
-        else {
+        } else {
             Pattern p = Pattern.compile(".+@.+\\.[a-zA-Z0-9_]+");
             Matcher m = p.matcher(email);
             boolean matchFound = m.matches();
@@ -151,8 +146,7 @@ public class MainController {
             ModelAndView modelAndView = new ModelAndView("accountRequestSubmitted");
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        else {
+        } else {
             ModelAndView modelAndView = new ModelAndView("requestAccount");
             modelAndView.addObject("error", error);
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
@@ -184,8 +178,7 @@ public class MainController {
             String password = request.getParameter("password");
             user.setPassword(password);
             manager.saveUser(user);
-        }
-        else {
+        } else {
             ModelAndView modelAndView = new ModelAndView("myAccount");
             modelAndView.addObject("user", user);
             modelAndView.addObject("invalidPassword", true);
@@ -206,8 +199,7 @@ public class MainController {
             user.setPassword(password);
             user.setChangePassword(false);
             manager.saveUser(user);
-        }
-        else {
+        } else {
             ModelAndView modelAndView = new ModelAndView("changePassword");
             modelAndView.addObject("user", user);
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
@@ -236,7 +228,7 @@ public class MainController {
         return KingdomUtil.getUser(request);
     }
 
-    private boolean isAdmin(HttpServletRequest request){
+    private boolean isAdmin(HttpServletRequest request) {
         User user = getUser(request);
         return user != null && user.isAdmin();
     }
@@ -285,8 +277,7 @@ public class MainController {
         String email = request.getParameter("email");
         if (email == null || email.equals("")) {
             error = "Email required";
-        }
-        else {
+        } else {
             Pattern p = Pattern.compile(".+@.+\\.[a-zA-Z0-9_]+");
             Matcher m = p.matcher(email);
             boolean matchFound = m.matches();
@@ -303,8 +294,7 @@ public class MainController {
             ModelAndView modelAndView = new ModelAndView("forgotLoginSubmitted");
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
             return modelAndView;
-        }
-        else {
+        } else {
             ModelAndView modelAndView = new ModelAndView("forgotLogin");
             modelAndView.addObject("error", error);
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request));

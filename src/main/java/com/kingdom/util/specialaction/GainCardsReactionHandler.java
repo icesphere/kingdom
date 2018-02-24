@@ -14,15 +14,13 @@ public class GainCardsReactionHandler {
             cardAction.setAssociatedCard(card);
             if (destination.equals("hand")) {
                 cardAction.setInstructions("Do you want to put this card on top of your deck instead of in your hand?");
-            }
-            else {
+            } else {
                 cardAction.setInstructions("Do you want to put this card on top of your deck instead of in your discard pile?");
             }
             cardAction.setDestination(destination);
             cardAction.getCards().add(card);
             return cardAction;
-        }
-        else if (action.equals("Tinker")) {
+        } else if (action.equals("Tinker")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
             cardAction.setGainCardAction(true);
             cardAction.setDeck(Card.DECK_FAIRYTALE);
@@ -32,8 +30,7 @@ public class GainCardsReactionHandler {
             cardAction.setDestination(destination);
             cardAction.getCards().add(card);
             return cardAction;
-        }
-        else if (action.equals("Trader")) {
+        } else if (action.equals("Trader")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setGainCardAction(true);
             cardAction.setDeck(Card.DECK_HINTERLANDS);
@@ -45,8 +42,7 @@ public class GainCardsReactionHandler {
             cardAction.getChoices().add(new CardActionChoice("Don't Reveal", "no_reveal"));
             cardAction.getChoices().add(new CardActionChoice("Gain Silver", "silver"));
             return cardAction;
-        }
-        else if (action.equals("Watchtower")) {
+        } else if (action.equals("Watchtower")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setGainCardAction(true);
             cardAction.setDeck(Card.DECK_PROSPERITY);

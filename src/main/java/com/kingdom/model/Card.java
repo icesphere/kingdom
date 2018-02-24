@@ -70,7 +70,7 @@ public class Card {
     public static final String DECK_FAN = "Fan";
     public static final String DECK_PROLETARIAT = "Proletariat";
 
-    public static final String DECK_REACTION= "Reaction";
+    public static final String DECK_REACTION = "Reaction";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -159,8 +159,8 @@ public class Card {
 
     public Card() {
     }
-    
-    public Card(Card card){
+
+    public Card(Card card) {
         this.cardId = card.getCardId();
         this.name = card.getName();
         this.cost = card.getCost();
@@ -260,8 +260,7 @@ public class Card {
     public String getTruncatedSpecial() {
         if (textSize > 0) {
             return special.substring(0, textSize) + "...";
-        }
-        else {
+        } else {
             return special;
         }
     }
@@ -306,8 +305,7 @@ public class Card {
     private String getAmountSymbol(int amount) {
         if (amount < 0) {
             return "";
-        }
-        else {
+        } else {
             return "+";
         }
     }
@@ -360,7 +358,7 @@ public class Card {
         this.victoryPoints = victoryPoints;
     }
 
-    public String getDeck(){
+    public String getDeck() {
         return deck;
     }
 
@@ -368,7 +366,7 @@ public class Card {
         this.deck = deck;
     }
 
-    public static Card getEstateCard(){
+    public static Card getEstateCard() {
         Card card = new Card();
         card.setCardId(ESTATE_ID);
         card.setType(TYPE_VICTORY);
@@ -378,7 +376,7 @@ public class Card {
         return card;
     }
 
-    public static Card getDuchyCard(){
+    public static Card getDuchyCard() {
         Card card = new Card();
         card.setCardId(DUCHY_ID);
         card.setType(TYPE_VICTORY);
@@ -388,7 +386,7 @@ public class Card {
         return card;
     }
 
-    public static Card getProvinceCard(){
+    public static Card getProvinceCard() {
         Card card = new Card();
         card.setCardId(PROVINCE_ID);
         card.setType(TYPE_VICTORY);
@@ -408,7 +406,7 @@ public class Card {
         return card;
     }
 
-    public static Card getCopperCard(){
+    public static Card getCopperCard() {
         Card card = new Card();
         card.setCardId(COPPER_ID);
         card.setType(TYPE_TREASURE);
@@ -418,7 +416,7 @@ public class Card {
         return card;
     }
 
-    public static Card getSilverCard(){
+    public static Card getSilverCard() {
         Card card = new Card();
         card.setCardId(SILVER_ID);
         card.setType(TYPE_TREASURE);
@@ -428,7 +426,7 @@ public class Card {
         return card;
     }
 
-    public static Card getGoldCard(){
+    public static Card getGoldCard() {
         Card card = new Card();
         card.setCardId(GOLD_ID);
         card.setType(TYPE_TREASURE);
@@ -448,7 +446,7 @@ public class Card {
         return card;
     }
 
-    public static Card getCurseCard(){
+    public static Card getCurseCard() {
         Card card = new Card();
         card.setCardId(CURSE_ID);
         card.setType(TYPE_CURSE);
@@ -471,7 +469,7 @@ public class Card {
         return type == TYPE_VICTORY;
     }
 
-    public boolean isVictory(){
+    public boolean isVictory() {
         return type == TYPE_VICTORY || type == TYPE_ACTION_AND_VICTORY || type == TYPE_TREASURE_AND_VICTORY || type == TYPE_VICTORY_AND_REACTION || type == TYPE_DURATION_AND_VICTORY;
     }
 
@@ -486,8 +484,8 @@ public class Card {
     public boolean isTerminalAction() {
         return isAction() && addActions == 0 && !name.equals("Nobles") && !name.equals("Pawn") && !name.equals("Trusty Steed");
     }
-    
-    public boolean isDuration(){
+
+    public boolean isDuration() {
         return type == TYPE_ACTION_DURATION || type == TYPE_DURATION_AND_VICTORY;
     }
 
@@ -503,7 +501,7 @@ public class Card {
         return type == TYPE_CURSE || type == TYPE_TREASURE_AND_CURSE;
     }
 
-    public boolean isCurseOnly(){
+    public boolean isCurseOnly() {
         return cardId == CURSE_ID;
     }
 
@@ -543,7 +541,7 @@ public class Card {
         return cardId == POTION_ID;
     }
 
-    public boolean isAttack(){
+    public boolean isAttack() {
         return type == TYPE_ACTION_ATTACK;
     }
 
@@ -650,41 +648,29 @@ public class Card {
     public String getBackgroundColor() {
         if (type == TYPE_ACTION_AND_VICTORY) {
             return ACTION_AND_VICTORY_IMAGE;
-        }
-        else if (type == TYPE_TREASURE_AND_VICTORY) {
+        } else if (type == TYPE_TREASURE_AND_VICTORY) {
             return TREASURE_AND_VICTORY_IMAGE;
-        }
-        else if (type == TYPE_TREASURE_AND_CURSE) {
+        } else if (type == TYPE_TREASURE_AND_CURSE) {
             return TREASURE_AND_CURSE_IMAGE;
-        }
-        else if (type == TYPE_VICTORY_AND_REACTION) {
+        } else if (type == TYPE_VICTORY_AND_REACTION) {
             return VICTORY_AND_REACTION_IMAGE;
-        }
-        else if (type == TYPE_DURATION_AND_VICTORY) {
+        } else if (type == TYPE_DURATION_AND_VICTORY) {
             return DURATION_AND_VICTORY_IMAGE;
-        }
-        else if (type == TYPE_TREASURE_REACTION) {
+        } else if (type == TYPE_TREASURE_REACTION) {
             return TREASURE_REACTION_IMAGE;
-        }
-        else if (isTreasure()) {
+        } else if (isTreasure()) {
             return TREASURE_COLOR;
-        }
-        else if (isVictory()) {
+        } else if (isVictory()) {
             return VICTORY_COLOR;
-        }
-        else if (type == TYPE_ACTION_REACTION) {
+        } else if (type == TYPE_ACTION_REACTION) {
             return ACTION_REACTION_COLOR;
-        }
-        else if (type == TYPE_CURSE) {
+        } else if (type == TYPE_CURSE) {
             return CURSE_COLOR;
-        }
-        else if (type == TYPE_ACTION_DURATION) {
+        } else if (type == TYPE_ACTION_DURATION) {
             return ACTION_DURATION_COLOR;
-        }
-        else if (type == TYPE_LEADER) {
+        } else if (type == TYPE_LEADER) {
             return LEADER_COLOR;
-        }
-        else {
+        } else {
             return ACTION_COLOR;
         }
     }
@@ -765,14 +751,11 @@ public class Card {
     public int getActionValue() {
         if (isAction()) {
             return 1;
-        }
-        else if (isTreasure()) {
+        } else if (isTreasure()) {
             return 2;
-        }
-        else if (isVictory()) {
+        } else if (isVictory()) {
             return 3;
-        }
-        else if (isCurseOnly()) {
+        } else if (isCurseOnly()) {
             return 4;
         }
         return 9;

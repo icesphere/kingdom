@@ -54,8 +54,7 @@ public class CardRandomizer {
                         break;
                     }
                 }
-            }
-            else {
+            } else {
                 selectedCards.addAll(cards.subList(0, 10 - options.getCustomSelection().size()));
             }
             game.setKingdomCards(cards.subList(0, 10));
@@ -83,8 +82,7 @@ public class CardRandomizer {
             Collections.shuffle(alchemyCards);
             if (alchemyCards.get(0).getCost() > 3) {
                 alchemyCardsToInclude = 5;
-            }
-            else if (alchemyCards.get(0).getCost() > 2) {
+            } else if (alchemyCards.get(0).getCost() > 2) {
                 alchemyCardsToInclude = 4;
             }
             for (int i = 0; i < alchemyCardsToInclude; i++) {
@@ -114,14 +112,11 @@ public class CardRandomizer {
             for (Card card : cards) {
                 if (!rcs.hasTwo && card.getCost() == 2) {
                     addSelectedCard(card);
-                }
-                else if (!rcs.hasThree && card.getCost() == 3) {
+                } else if (!rcs.hasThree && card.getCost() == 3) {
                     addSelectedCard(card);
-                }
-                else if (!rcs.hasFour && card.getCost() == 4) {
+                } else if (!rcs.hasFour && card.getCost() == 4) {
                     addSelectedCard(card);
-                }
-                else if (!rcs.hasFive && card.getCost() == 5) {
+                } else if (!rcs.hasFive && card.getCost() == 5) {
                     addSelectedCard(card);
                 }
 
@@ -170,7 +165,7 @@ public class CardRandomizer {
             if (selectedCards.size() < 11) {
                 Card baneCard = null;
                 for (Card card : selectedCards) {
-                    if(card.getCost() == 2 || card.getCost() == 3) {
+                    if (card.getCost() == 2 || card.getCost() == 3) {
                         baneCard = card;
                         break;
                     }
@@ -205,8 +200,7 @@ public class CardRandomizer {
     private boolean needMoreCards() {
         if (options.isSwappingCard()) {
             return !cardSwapped;
-        }
-        else {
+        } else {
             return selectedCards.size() < 10;
         }
     }
@@ -219,8 +213,7 @@ public class CardRandomizer {
                 if (options.getCardToReplace().getName().equals("Young Witch") && selectedCards.size() > 10) {
                     selectedCards.remove(10);
                 }
-            }
-            else {
+            } else {
                 selectedCards.add(card);
             }
             randomCardSelected(card);
@@ -238,20 +231,15 @@ public class CardRandomizer {
     private boolean cardMatchesType(Card card, String type) {
         if (type.equals("extraBuy")) {
             return card.getAddBuys() > 0;
-        }
-        else if (type.equals("extraActions")) {
+        } else if (type.equals("extraActions")) {
             return card.getAddActions() >= 2;
-        }
-        else if (type.equals("treasure")) {
+        } else if (type.equals("treasure")) {
             return card.isTreasure();
-        }
-        else if (type.equals("reaction")) {
+        } else if (type.equals("reaction")) {
             return card.isReaction();
-        }
-        else if (type.equals("attack")) {
+        } else if (type.equals("attack")) {
             return card.isAttack();
-        }
-        else if (type.equals("trashingCard")) {
+        } else if (type.equals("trashingCard")) {
             return card.isTrashingCard();
         }
         return false;
@@ -292,7 +280,7 @@ public class CardRandomizer {
         int cardToReplaceIndex = 0;
         Card cardToReplace = null;
         List<Card> cards = game.getKingdomCards();
-        for (int i=0; i<cards.size(); i++) {
+        for (int i = 0; i < cards.size(); i++) {
             if (cards.get(i).getCardId() == cardId) {
                 cardToReplace = cards.get(i);
                 cardToReplaceIndex = i;

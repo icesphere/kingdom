@@ -33,14 +33,12 @@ public class LeaderComputerCardActionHandler {
                 cardIds.add(cards.get(i).getCardId());
             }
             CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-        }
-        else if (cardName.equals("Bilkis")) {
+        } else if (cardName.equals("Bilkis")) {
             Card cardToGain = computer.getHighestCostCard(cardAction.getCards());
             List<Integer> cardIds = new ArrayList<Integer>();
             cardIds.add(cardToGain.getCardId());
             CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-        }
-        else if (cardName.equals("Plato")) {
+        } else if (cardName.equals("Plato")) {
             List<Integer> cardsToTrash = new ArrayList<Integer>();
             for (Card card : cardAction.getCards()) {
                 if (computer.isCardToTrash(card)) {

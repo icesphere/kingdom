@@ -72,7 +72,7 @@ public class MultiPlayerIncompleteCard extends IncompleteCard {
                 NextActionHandler.handleAction(game, cardName);
                 loopIterations++;
                 if (loopIterations > 5) {
-                    GameError error = new GameError(GameError.GAME_ERROR, "setWaitingDialogs-nextAction in never ending loop. Next action: "+game.getNextAction());
+                    GameError error = new GameError(GameError.GAME_ERROR, "setWaitingDialogs-nextAction in never ending loop. Next action: " + game.getNextAction());
                     game.logError(error, false);
                     game.removeNextAction();
                     game.removeIncompleteCard();
@@ -87,16 +87,14 @@ public class MultiPlayerIncompleteCard extends IncompleteCard {
                     game.removeIncompleteCard();
                 }
             }
-        }
-        else if(allActionsSet) {
+        } else if (allActionsSet) {
             if (currentPlayerHasAction) {
                 for (Player player : game.getPlayers()) {
                     if (!player.isShowCardAction()) {
                         game.setPlayerCardAction(player, CardAction.getWaitingForPlayersCardAction());
                     }
                 }
-            }
-            else {
+            } else {
                 if (!game.getCurrentPlayer().isShowCardAction()) {
                     game.setPlayerCardAction(game.getCurrentPlayer(), CardAction.getWaitingForPlayersCardAction());
                 }

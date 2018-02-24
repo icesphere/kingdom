@@ -29,50 +29,42 @@ public class SeasideComputerCardActionHandler {
             List<Integer> cardIds = new ArrayList<Integer>();
             if (type == CardAction.TYPE_CHOOSE_CARDS) {
                 cardIds.add(computer.getCardToPass(cardAction.getCards()));
-            }
-            else {
+            } else {
                 //todo decide when not to add cards back into supply
                 for (Card card : cardAction.getCards()) {
                     cardIds.add(card.getCardId());
                 }
             }
             CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-        }
-        else if (cardName.equals("Embargo")) {
+        } else if (cardName.equals("Embargo")) {
             //todo better algorithm for deciding which card to embargo
             List<Integer> cardIds = new ArrayList<Integer>();
             Card card = computer.getRandomHighestCostCardFromCostMap(5, false);
             if (card != null) {
                 cardIds.add(card.getCardId());
-            }
-            else {
+            } else {
                 cardIds.add(cardAction.getCards().get(0).getCardId());
             }
             CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-        }
-        else if (cardName.equals("Explorer")) {
+        } else if (cardName.equals("Explorer")) {
             CardActionHandler.handleSubmittedCardAction(game, player, null, null, "gold", -1);
-        }
-        else if (cardName.equals("Ghost Ship")) {
-            if(type == CardAction.TYPE_CHOOSE_IN_ORDER) {
+        } else if (cardName.equals("Ghost Ship")) {
+            if (type == CardAction.TYPE_CHOOSE_IN_ORDER) {
                 //todo determine when to reorder
                 List<Integer> cardIds = new ArrayList<Integer>();
                 for (Card card : cardAction.getCards()) {
                     cardIds.add(card.getCardId());
                 }
                 CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-            }
-            else {
+            } else {
                 int numCardsNotNeeded = player.getHand().size() - 3;
                 if (numCardsNotNeeded > 0) {
                     CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsNotNeeded(cardAction.getCards(), numCardsNotNeeded), null, null, -1);
                 }
             }
-        }
-        else if (cardName.equals("Haven")) {
+        } else if (cardName.equals("Haven")) {
             CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsNotNeeded(cardAction.getCards(), 1), null, null, -1);
-        }
-        else if (cardName.equals("Island")) {
+        } else if (cardName.equals("Island")) {
             List<Integer> cardIds = new ArrayList<Integer>();
             Card islandCard = null;
             for (Card card : cardAction.getCards()) {
@@ -86,35 +78,29 @@ public class SeasideComputerCardActionHandler {
             }
             cardIds.add(islandCard.getCardId());
             CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-        }
-        else if (cardName.equals("Lookout")) {
+        } else if (cardName.equals("Lookout")) {
             //todo need better way to determine cards
             CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToTrash(cardAction.getCards(), cardAction.getNumCards()), null, null, -1);
-        }
-        else if (cardName.equals("Native Village")) {
+        } else if (cardName.equals("Native Village")) {
             //todo analyze cards to determine best choice
             String choice;
             if (player.getNativeVillageCards().size() > 2) {
                 choice = "hand";
-            }
-            else {
+            } else {
                 choice = "card";
             }
             CardActionHandler.handleSubmittedCardAction(game, player, null, null, choice, -1);
-        }
-        else if (cardName.equals("Navigator")) {
-            if(type == CardAction.TYPE_CHOICES) {
+        } else if (cardName.equals("Navigator")) {
+            if (type == CardAction.TYPE_CHOICES) {
                 //todo better analysis of cards to determine best choice
                 String choice;
                 if (player.getCoinsInHand() < 3 || player.getVictoryCards().size() > 2) {
                     choice = "discard";
-                }
-                else {
+                } else {
                     choice = "deck";
                 }
                 CardActionHandler.handleSubmittedCardAction(game, player, null, null, choice, -1);
-            }
-            else {
+            } else {
                 //todo determine when to reorder
                 List<Integer> cardIds = new ArrayList<Integer>();
                 for (Card card : cardAction.getCards()) {
@@ -122,70 +108,58 @@ public class SeasideComputerCardActionHandler {
                 }
                 CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
             }
-        }
-        else if (cardName.equals("Pearl Diver")) {
+        } else if (cardName.equals("Pearl Diver")) {
             String yesNoAnswer;
             if (computer.isCardToDiscard(cardAction.getCards().get(0))) {
                 yesNoAnswer = "no";
-            }
-            else {
+            } else {
                 yesNoAnswer = "yes";
             }
             CardActionHandler.handleSubmittedCardAction(game, player, null, yesNoAnswer, null, -1);
-        }
-        else if (cardName.equals("Pirate Ship")) {
-            if(type == CardAction.TYPE_CHOICES) {
+        } else if (cardName.equals("Pirate Ship")) {
+            if (type == CardAction.TYPE_CHOICES) {
                 String choice;
                 if (player.getPirateShipCoins() > 2) {
                     choice = "coins";
-                }
-                else {
+                } else {
                     choice = "attack";
                 }
                 CardActionHandler.handleSubmittedCardAction(game, player, null, null, choice, -1);
-            }
-            else {
+            } else {
                 List<Integer> cardIds = new ArrayList<Integer>();
                 if (cardAction.getNumCards() == 1) {
-                    if(cardAction.getCards().get(0).isTreasure() && cardAction.getCards().get(1).isTreasure()) {
+                    if (cardAction.getCards().get(0).isTreasure() && cardAction.getCards().get(1).isTreasure()) {
                         Card cardToTrash = computer.getHighestCostCard(cardAction.getCards());
                         if (cardToTrash != null) {
                             cardIds.add(cardToTrash.getCardId());
                         }
-                    }
-                    else if(cardAction.getCards().get(0).isTreasure()) {
+                    } else if (cardAction.getCards().get(0).isTreasure()) {
                         cardIds.add(cardAction.getCards().get(0).getCardId());
-                    }
-                    else {
+                    } else {
                         cardIds.add(cardAction.getCards().get(1).getCardId());
                     }
                 }
                 CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
             }
-        }
-        else if (cardName.equals("Salvager")) {
+        } else if (cardName.equals("Salvager")) {
             //todo better logic for determining which card to trash
             CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToTrash(cardAction.getCards(), 1), null, null, -1);
-        }
-        else if (cardName.equals("Smugglers")) {
+        } else if (cardName.equals("Smugglers")) {
             List<Integer> cardIds = new ArrayList<Integer>();
             if (cardAction.getNumCards() > 0) {
                 Card cardToGain = computer.getHighestCostCard(cardAction.getCards());
                 cardIds.add(cardToGain.getCardId());
             }
             CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-        }
-        else if (cardName.equals("Treasury")) {
+        } else if (cardName.equals("Treasury")) {
             List<Integer> cardIds = new ArrayList<Integer>();
             for (Card card : cardAction.getCards()) {
                 cardIds.add(card.getCardId());
             }
             CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
-        }
-        else if (cardName.equals("Warehouse")) {
+        } else if (cardName.equals("Warehouse")) {
             CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToDiscard(cardAction.getCards(), cardAction.getNumCards()), null, null, -1);
-        }
-        else {
+        } else {
             throw new RuntimeException("Seaside Card Action not handled for card: " + cardAction.getCardName() + " and type: " + cardAction.getType());
         }
     }

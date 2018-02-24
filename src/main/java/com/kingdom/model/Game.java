@@ -227,7 +227,7 @@ public class Game {
         colors.add("#EF7C00"); //dark orange
     }
 
-    public void init(){
+    public void init() {
         sortKingdomCards();
         creationTime = new Date();
         updateLastActivity();
@@ -253,8 +253,7 @@ public class Game {
             for (Card card : supplyMap.values()) {
                 if (card.isVictory()) {
                     tradeRouteTokenMap.put(card.getCardId(), true);
-                }
-                else {
+                } else {
                     tradeRouteTokenMap.put(card.getCardId(), false);
                 }
             }
@@ -267,8 +266,7 @@ public class Game {
             if (card.isVictory()) {
                 if (numPlayers == 2) {
                     numEachCard = 8;
-                }
-                else {
+                } else {
                     numEachCard = 12;
                 }
             }
@@ -276,20 +274,17 @@ public class Game {
         }
         if (numPlayers > 4) {
             supply.put(Card.COPPER_ID, 120);
-        }
-        else {
+        } else {
             supply.put(Card.COPPER_ID, 60);
         }
         if (numPlayers > 4) {
             supply.put(Card.SILVER_ID, 80);
-        }
-        else {
+        } else {
             supply.put(Card.SILVER_ID, 40);
         }
         if (numPlayers > 4) {
             supply.put(Card.GOLD_ID, 60);
-        }
-        else {
+        } else {
             supply.put(Card.GOLD_ID, 30);
         }
         if (includePlatinumCards) {
@@ -303,8 +298,7 @@ public class Game {
                 supply.put(Card.COLONY_ID, 8);
             }
             supply.put(Card.CURSE_ID, 10);
-        }
-        else if (numPlayers > 4) {
+        } else if (numPlayers > 4) {
             supply.put(Card.ESTATE_ID, 12);
             supply.put(Card.DUCHY_ID, 12);
             if (includeColonyCards) {
@@ -313,13 +307,11 @@ public class Game {
             if (numPlayers == 5) {
                 supply.put(Card.PROVINCE_ID, 15);
                 supply.put(Card.CURSE_ID, 40);
-            }
-            else {
+            } else {
                 supply.put(Card.PROVINCE_ID, 18);
                 supply.put(Card.CURSE_ID, 50);
             }
-        }
-        else {
+        } else {
             supply.put(Card.ESTATE_ID, 12);
             supply.put(Card.DUCHY_ID, 12);
             supply.put(Card.PROVINCE_ID, 12);
@@ -328,8 +320,7 @@ public class Game {
             }
             if (numPlayers == 3) {
                 supply.put(Card.CURSE_ID, 20);
-            }
-            else {
+            } else {
                 supply.put(Card.CURSE_ID, 30);
             }
         }
@@ -355,8 +346,7 @@ public class Game {
             }
             if (card.getName().equals("Embargo")) {
                 showEmbargoTokens = true;
-            }
-            else if (card.getName().equals("Bridge Troll")) {
+            } else if (card.getName().equals("Bridge Troll")) {
                 showTrollTokens = true;
             }
         }
@@ -374,7 +364,7 @@ public class Game {
         supplyCards.add(Card.getCopperCard());
         supplyCards.add(Card.getSilverCard());
         supplyCards.add(Card.getGoldCard());
-        if(includePlatinumCards) {
+        if (includePlatinumCards) {
             supplyCards.add(Card.getPlatinumCard());
         }
         if (usePotions) {
@@ -394,18 +384,18 @@ public class Game {
     }
 
     private void addComputerPlayers() {
-        allComputerOpponents = (numComputerPlayers == numPlayers-1);
+        allComputerOpponents = (numComputerPlayers == numPlayers - 1);
         int i = 1;
-        for (int j = 1; j <= numEasyComputerPlayers; j++,i++) {
+        for (int j = 1; j <= numEasyComputerPlayers; j++, i++) {
             addComputerPlayer(i, false, 1);
         }
-        for (int j = 1; j <= numMediumComputerPlayers; j++,i++) {
+        for (int j = 1; j <= numMediumComputerPlayers; j++, i++) {
             addComputerPlayer(i, false, 2);
         }
-        for (int j = 1; j <= numHardComputerPlayers; j++,i++) {
+        for (int j = 1; j <= numHardComputerPlayers; j++, i++) {
             addComputerPlayer(i, false, 3);
         }
-        for (int j = 1; j <= numBMUComputerPlayers; j++,i++) {
+        for (int j = 1; j <= numBMUComputerPlayers; j++, i++) {
             addComputerPlayer(i, true, 3);
         }
         for (Card card : supplyMap.values()) {
@@ -416,8 +406,7 @@ public class Game {
                 }
                 cards.add(card);
                 potionCostMap.put(card.getCost(), cards);
-            }
-            else {
+            } else {
                 List<Card> cards = costMap.get(card.getCost());
                 if (cards == null) {
                     cards = new ArrayList<Card>();
@@ -436,34 +425,30 @@ public class Game {
             Collections.sort(otherCards, ccc);
             otherCards.add(5, baneCard);
             kingdomCards = otherCards;
-        }
-        else {
+        } else {
             Collections.sort(kingdomCards, ccc);
         }
     }
 
     public void addComputerPlayer(int i, boolean bigMoneyUltimate, int difficulty) {
-        int userId = i*(-1);
+        int userId = i * (-1);
         User user = new User();
         user.setGender(User.COMPUTER);
         if (bigMoneyUltimate) {
             user.setUserId(userId - 40);
             user.setUsername("C" + i + " (BMU)");
             addPlayer(user, true, true, 3);
-        }
-        else if (difficulty == 1) {
+        } else if (difficulty == 1) {
             user.setUserId(userId - 10);
-            user.setUsername("C"+i+" (easy)");
+            user.setUsername("C" + i + " (easy)");
             addPlayer(user, true, false, 1);
-        }
-        else if (difficulty == 2) {
+        } else if (difficulty == 2) {
             user.setUserId(userId - 20);
-            user.setUsername("C"+i+" (medium)");
+            user.setUsername("C" + i + " (medium)");
             addPlayer(user, true, false, 2);
-        }
-        else if (difficulty == 3) {
+        } else if (difficulty == 3) {
             user.setUserId(userId - 30);
-            user.setUsername("C"+i+" (hard)");
+            user.setUsername("C" + i + " (hard)");
             addPlayer(user, true, false, 3);
         }
     }
@@ -482,14 +467,11 @@ public class Game {
         if (computer) {
             if (bigMoneyUltimate) {
                 computerPlayers.put(player.getUserId(), new BigMoneyComputerPlayer(player, this));
-            }
-            else if (difficulty == 1) {
+            } else if (difficulty == 1) {
                 computerPlayers.put(player.getUserId(), new EasyComputerPlayer(player, this));
-            }
-            else if (difficulty == 2) {
+            } else if (difficulty == 2) {
                 computerPlayers.put(player.getUserId(), new MediumComputerPlayer(player, this));
-            }
-            else {
+            } else {
                 computerPlayers.put(player.getUserId(), new HardComputerPlayer(player, this));
             }
         }
@@ -521,8 +503,7 @@ public class Game {
         if (player.getUserId() == creatorId) {
             if (players.isEmpty()) {
                 creatorId = 0;
-            }
-            else {
+            } else {
                 creatorId = players.get(0).getUserId();
             }
         }
@@ -576,8 +557,7 @@ public class Game {
         this.kingdomCards = kingdomCards;
         if (kingdomCards.size() == 11) {
             baneCardId = kingdomCards.get(10).getCardId();
-        }
-        else {
+        } else {
             baneCardId = 0;
         }
     }
@@ -669,17 +649,13 @@ public class Game {
         }
         if (trackGoons && card.getName().equals("Goons")) {
             goonsCardsPlayed--;
-        }
-        else if (checkHaggler && card.getName().equals("Haggler")) {
+        } else if (checkHaggler && card.getName().equals("Haggler")) {
             hagglerCardsInPlay--;
-        }
-        else if (trackHighway && card.getName().equals("Highway")) {
+        } else if (trackHighway && card.getName().equals("Highway")) {
             highwayCardsInPlay--;
-        }
-        else if (trackLaborer && card.getName().equals("Laborer")) {
+        } else if (trackLaborer && card.getName().equals("Laborer")) {
             laborerCardsInPlay--;
-        }
-        else if (trackGoodwill && card.getName().equals("Goodwill")) {
+        } else if (trackGoodwill && card.getName().equals("Goodwill")) {
             goodwillCardsInPlay--;
         }
         actionCardsInPlay--;
@@ -702,7 +678,7 @@ public class Game {
         reset(false);
     }
 
-    public void reset(boolean repeatingGame){
+    public void reset(boolean repeatingGame) {
         if (!repeatingGame) {
             status = Game.STATUS_NO_GAMES;
             for (Player player : players) {
@@ -887,7 +863,7 @@ public class Game {
         LoggedInUsers.getInstance().refreshLobbyGameRooms();
     }
 
-    private void start(){
+    private void start() {
         Collections.shuffle(players);
         currentPlayerId = players.get(currentPlayerIndex).getUserId();
         status = Game.STATUS_GAME_IN_PROGRESS;
@@ -898,10 +874,9 @@ public class Game {
         refreshAllPlayersHandArea();
         refreshAllPlayersTitle();
 
-        if(mobile) {
+        if (mobile) {
             maxHistoryTurnSize = players.size();
-        }
-        else {
+        } else {
             maxHistoryTurnSize = players.size() * 2;
         }
 
@@ -911,11 +886,10 @@ public class Game {
             new Thread(
                     new Runnable() {
                         public void run() {
-                            if(previousPlayerId != 0) {
+                            if (previousPlayerId != 0) {
                                 try {
                                     Thread.sleep(2200);
-                                }
-                                catch (Exception e) {
+                                } catch (Exception e) {
                                     GameError error = new GameError(GameError.COMPUTER_ERROR, KingdomUtil.getStackTrace(e));
                                     logError(error);
                                 }
@@ -927,166 +901,115 @@ public class Game {
         }
     }
 
-    private void checkCardName(Card card, boolean boughtFromBlackMarket){
+    private void checkCardName(Card card, boolean boughtFromBlackMarket) {
         if (card.getName().equals("Gardens")) {
             showGardens = true;
-        }
-        else if (card.getName().equals("Farmlands")) {
+        } else if (card.getName().equals("Farmlands")) {
             showFarmlands = true;
-        }
-        else if (card.getName().equals("Vineyard")) {
+        } else if (card.getName().equals("Vineyard")) {
             showVineyard = true;
-        }
-        else if (card.getName().equals("Silk Road")) {
+        } else if (card.getName().equals("Silk Road")) {
             showSilkRoads = true;
-        }
-        else if (card.getName().equals("Great Hall")) {
+        } else if (card.getName().equals("Great Hall")) {
             showGreatHall = true;
-        }
-        else if (card.getName().equals("Harem")) {
+        } else if (card.getName().equals("Harem")) {
             showHarem = true;
-        }
-        else if (card.getName().equals("Duke")) {
+        } else if (card.getName().equals("Duke")) {
             showDuke = true;
-        }
-        else if (card.getName().equals("Nobles")) {
+        } else if (card.getName().equals("Nobles")) {
             showNobles = true;
-        }
-        else if (card.getName().equals("Archbishop")) {
+        } else if (card.getName().equals("Archbishop")) {
             showArchbishops = true;
-        }
-        else if (card.getName().equals("Embargo")) {
+        } else if (card.getName().equals("Embargo")) {
             showEmbargoTokens = true;
-        }
-        else if (card.getName().equals("Island")) {
+        } else if (card.getName().equals("Island")) {
             showIslandCards = true;
-        }
-        else if (card.getName().equals("Native Village")) {
+        } else if (card.getName().equals("Native Village")) {
             showNativeVillage = true;
-        }
-        else if (card.getName().equals("Pirate Ship")) {
+        } else if (card.getName().equals("Pirate Ship")) {
             showPirateShipCoins = true;
-        }
-        else if (card.getName().equals("Smugglers")) {
+        } else if (card.getName().equals("Smugglers")) {
             trackSmugglersCards = true;
-        }
-        else if (card.getName().equals("Treasury")) {
+        } else if (card.getName().equals("Treasury")) {
             trackTreasuryCards = true;
-        }
-        else if (card.getName().equals("Secret Chamber")) {
+        } else if (card.getName().equals("Secret Chamber")) {
             checkSecretChamber = true;
-        }
-        else if (card.getName().equals("Throne Room")) {
+        } else if (card.getName().equals("Throne Room")) {
             throneRoomCard = card;
-        }
-        else if (card.getName().equals("King's Court")) {
+        } else if (card.getName().equals("King's Court")) {
             kingsCourtCard = card;
-        }
-        else if (card.getName().equals("Alchemist")) {
+        } else if (card.getName().equals("Alchemist")) {
             trackAlchemistCards = true;
-        }
-        else if (card.getName().equals("Herbalist")) {
+        } else if (card.getName().equals("Herbalist")) {
             trackHerbalistCards = true;
-        }
-        else if (card.getName().equals("Contraband")) {
+        } else if (card.getName().equals("Contraband")) {
             trackContrabandCards = true;
-        }
-        else if (card.getName().equals("Bank")) {
+        } else if (card.getName().equals("Bank")) {
             trackBankCards = true;
-        }
-        else if (card.getName().equals("Peddler")) {
+        } else if (card.getName().equals("Peddler")) {
             refreshPeddler = true;
-        }
-        else if (card.getName().equals("Trade Route")) {
+        } else if (card.getName().equals("Trade Route")) {
             trackTradeRouteTokens = true;
-        }
-        else if (card.getName().equals("Watchtower")) {
+        } else if (card.getName().equals("Watchtower")) {
             checkWatchtower = true;
-        }
-        else if (card.getName().equals("Edict")) {
+        } else if (card.getName().equals("Edict")) {
             trackEdictCards = true;
-        }
-        else if (card.getName().equals("Fairgrounds")) {
+        } else if (card.getName().equals("Fairgrounds")) {
             showFairgrounds = true;
-        }
-        else if (card.getName().equals("Tournament")) {
+        } else if (card.getName().equals("Tournament")) {
             showPrizeCards = true;
-        }
-        else if (card.getName().equals("Museum")) {
+        } else if (card.getName().equals("Museum")) {
             showPrizeCards = true;
             showMuseumCards = true;
-        }
-        else if (card.getName().equals("City Planner")) {
+        } else if (card.getName().equals("City Planner")) {
             showCityPlannerCards = true;
-        }
-        else if (card.getName().equals("Horse Traders")) {
+        } else if (card.getName().equals("Horse Traders")) {
             checkHorseTraders = true;
             horseTradersCard = card;
-        }
-        else if (card.getName().equals("Bell Tower")) {
+        } else if (card.getName().equals("Bell Tower")) {
             checkBellTower = true;
-        }
-        else if (card.getName().equals("Cathedral")) {
+        } else if (card.getName().equals("Cathedral")) {
             showCathedral = true;
-        }
-        else if (card.getName().equals("Enchanted Palace")) {
+        } else if (card.getName().equals("Enchanted Palace")) {
             checkEnchantedPalace = true;
-        }
-        else if (card.getName().equals("Hedge Wizard")) {
+        } else if (card.getName().equals("Hedge Wizard")) {
             showHedgeWizard = true;
-        }
-        else if (card.getName().equals("Golden Touch")) {
+        } else if (card.getName().equals("Golden Touch")) {
             showGoldenTouch = true;
-        }
-        else if (card.getName().equals("Tinker")) {
+        } else if (card.getName().equals("Tinker")) {
             checkTinker = true;
-        }
-        else if (card.getName().equals("Bridge Troll")) {
+        } else if (card.getName().equals("Bridge Troll")) {
             showTrollTokens = true;
-        }
-        else if (card.getName().equals("Walled Village")) {
+        } else if (card.getName().equals("Walled Village")) {
             checkWalledVillage = true;
             trackActionCardsPlayed = true;
-        }
-        else if (card.getName().equals("Quest")) {
+        } else if (card.getName().equals("Quest")) {
             checkQuest = true;
-        }
-        else if (card.getName().equals("Trader")) {
+        } else if (card.getName().equals("Trader")) {
             checkTrader = true;
-        }
-        else if (card.getName().equals("Highway")) {
+        } else if (card.getName().equals("Highway")) {
             trackHighway = true;
-        }
-        else if (card.getName().equals("Goons")) {
+        } else if (card.getName().equals("Goons")) {
             trackGoons = true;
-        }
-        else if (card.getName().equals("Duchess") && !boughtFromBlackMarket) {
+        } else if (card.getName().equals("Duchess") && !boughtFromBlackMarket) {
             checkDuchess = true;
-        }
-        else if (card.getName().equals("Scheme")) {
+        } else if (card.getName().equals("Scheme")) {
             checkScheme = true;
             trackActionCardsPlayed = true;
-        }
-        else if (card.getName().equals("Tunnel")) {
+        } else if (card.getName().equals("Tunnel")) {
             checkTunnel = true;
-        }
-        else if (card.getName().equals("Haggler")) {
+        } else if (card.getName().equals("Haggler")) {
             checkHaggler = true;
-        }
-        else if (card.getName().equals("Fool's Gold")) {
+        } else if (card.getName().equals("Fool's Gold")) {
             checkFoolsGold = true;
             foolsGoldCard = card;
-        }
-        else if (card.getName().equals("Noble Brigand")) {
+        } else if (card.getName().equals("Noble Brigand")) {
             checkNobleBrigand = true;
-        }
-        else if (card.getName().equals("Laborer")) {
+        } else if (card.getName().equals("Laborer")) {
             trackLaborer = true;
-        }
-        else if (card.getName().equals("Goodwill")) {
+        } else if (card.getName().equals("Goodwill")) {
             trackGoodwill = true;
-        }
-        else if (card.getName().equals("Plantation")) {
+        } else if (card.getName().equals("Plantation")) {
             checkPlantation = true;
         }
         if (card.isDuration()) {
@@ -1132,39 +1055,31 @@ public class Game {
                     if (card.isAction()) {
                         if (player.hasBoughtCard()) {
                             setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You can't play an action after you have bought a card."));
-                        }
-                        else if (playTreasureCards && treasureCardsPlayed.size() > 0) {
+                        } else if (playTreasureCards && treasureCardsPlayed.size() > 0) {
                             setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You can't play an action after you have played a treasure card."));
-                        }
-                        else if (player.getActions() > 0) {
+                        } else if (player.getActions() > 0) {
                             actionPlayed = true;
                             playActionCard(player, card);
-                        }
-                        else {
+                        } else {
                             setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have any actions left."));
                         }
-                    }
-                    else if (playTreasureCards && card.isTreasure()) {
+                    } else if (playTreasureCards && card.isTreasure()) {
                         if (player.hasBoughtCard()) {
                             setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You can't play a treasure card after you have bought a card."));
-                        }
-                        else {
+                        } else {
                             treasurePlayed = true;
                             playTreasureCard(player, card, true, true, confirm, true, false);
                         }
                     }
-                }
-                else if (clickType.equals("supply")) {
+                } else if (clickType.equals("supply")) {
                     cardBought = buyCard(player, card, confirm);
-                }
-                else if (clickType.equals("leader")) {
+                } else if (clickType.equals("leader")) {
                     leaderActivated = activateLeader(player, card.getCardId());
                 }
 
                 if ((cardBought || leaderActivated) && !player.isComputer() && player.getBuys() == 0 && !player.isShowCardAction() && player.getExtraCardActions().isEmpty() && !hasUnfinishedGainCardActions()) {
                     endPlayerTurn(player, false);
-                }
-                else {
+                } else {
                     if (actionPlayed || cardBought || treasurePlayed || leaderActivated) {
                         refreshAllPlayersPlayingArea();
                         refreshHandArea(player);
@@ -1173,8 +1088,7 @@ public class Game {
                         refreshSupply(player);
                     }
                 }
-            }
-            finally {
+            } finally {
                 processingClick.remove(player.getUserId());
             }
         }
@@ -1202,55 +1116,46 @@ public class Game {
             SpecialActionHandler.handleSpecialAction(this, card);
             refreshAllPlayersPlayers();
             return true;
-        }
-        else {
+        } else {
             if (player.getBuys() == 0) {
                 setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have any more buys."));
-            }
-            else if (player.getTurns() < 2) {
+            } else if (player.getTurns() < 2) {
                 setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You can't activate a leader until your third turn."));
-            }
-            else if (player.getCoins() < cost) {
+            } else if (player.getCoins() < cost) {
                 if (player.isComputer()) {
                     setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have enough coins. Card: " + card.getName() + " Coins: " + player.getCoins()));
-                }
-                else {
+                } else {
                     setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have enough coins to activate the leader."));
                 }
-            }
-            else if (card.isActivated()) {
+            } else if (card.isActivated()) {
                 setPlayerInfoDialog(player, InfoDialog.getErrorDialog("Leader has already been activated."));
             }
         }
         return false;
     }
 
-    private boolean buyCard(Player player, Card card, boolean confirm){
+    private boolean buyCard(Player player, Card card, boolean confirm) {
         boolean cardBought = false;
         if (trackContrabandCards && contrabandCards.contains(card)) {
             setPlayerInfoDialog(player, InfoDialog.getErrorDialog("This card was banned by Contraband this turn."));
             return false;
-        }
-        else if (!getRepeatedActions().isEmpty()) {
+        } else if (!getRepeatedActions().isEmpty()) {
             GameError error = new GameError(GameError.COMPUTER_ERROR, player.getUsername() + " could not buy a card because a repeated action was not completed for: " + getRepeatedActions().getFirst().getCard().getName());
             logError(error, false);
             //todo return false instead of clearing
             getRepeatedActions().clear();
-        }
-        else if (hasIncompleteCard()) {
+        } else if (hasIncompleteCard()) {
             GameError error = new GameError(GameError.COMPUTER_ERROR, player.getUsername() + " could not buy a card because there was an incomplete action for: " + getIncompleteCard().getCardName());
             logError(error, false);
             //todo return false instead of removing
             removeIncompleteCard();
         }
         int cost = getCardCostBuyPhase(card);
-        if(supply == null) {
+        if (supply == null) {
             System.out.println("supply null");
-        }
-        else if (card == null) {
+        } else if (card == null) {
             System.out.println("card null");
-        }
-        else if (supply.get(card.getCardId()) == null) {
+        } else if (supply.get(card.getCardId()) == null) {
             System.out.println("supply card null");
         }
         int numInSupply = getNumInSupply(card);
@@ -1267,8 +1172,7 @@ public class Game {
                     confirmBuyCardAction.setInstructions("You haven't played any treasure cards, are you sure you want to buy this card?");
                     setPlayerCardAction(player, confirmBuyCardAction);
                     return false;
-                }
-                else if (player.getActions() > 0 && player.getActionCards().size() > 0) {
+                } else if (player.getActions() > 0 && player.getActionCards().size() > 0) {
                     boolean confirmBuy = true;
                     if (player.getActionCards().size() == 1) {
                         Card actionCard = player.getActionCards().get(0);
@@ -1367,30 +1271,24 @@ public class Game {
                     }
                 }
             }
-        }
-        else {
+        } else {
             if (player.getBuys() == 0) {
                 setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have any more buys."));
-            }
-            else if(player.getCoins() < cost) {
+            } else if (player.getCoins() < cost) {
                 if (playTreasureCards && player.getCoinsInHand() > 0) {
                     setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You need to play your treasure cards."));
-                }
-                else {
+                } else {
                     if (player.isComputer()) {
-                        setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have enough coins. Card: "+card.getName()+" Coins: "+player.getCoins()));
-                    }
-                    else {
+                        setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have enough coins. Card: " + card.getName() + " Coins: " + player.getCoins()));
+                    } else {
                         setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have enough coins."));
                     }
                 }
-            }
-            else if (missingPotion) {
+            } else if (missingPotion) {
                 if (player.isComputer()) {
-                    GameError error = new GameError(GameError.COMPUTER_ERROR, player.getUsername()+" needs a potion to buy "+card.getName());
+                    GameError error = new GameError(GameError.COMPUTER_ERROR, player.getUsername() + " needs a potion to buy " + card.getName());
                     logError(error, false);
-                }
-                else {
+                } else {
                     setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You need a potion to buy this card."));
                 }
             }
@@ -1398,7 +1296,7 @@ public class Game {
         return cardBought;
     }
 
-    public void boughtBlackMarketCard(Card card){
+    public void boughtBlackMarketCard(Card card) {
         checkCardName(card, true);
         int cost = getCardCost(card);
         getCurrentPlayer().addCoins(cost * (-1));
@@ -1441,28 +1339,22 @@ public class Game {
         actionCardPlayed(player, card, false);
     }
 
-    private void actionCardPlayed(Player player, Card card, boolean repeatedAction){
+    private void actionCardPlayed(Player player, Card card, boolean repeatedAction) {
         addCardBonuses(player, card);
         if (card.getName().equals("Coppersmith")) {
             player.copperSmithPlayed();
-        }
-        else if (trackGoons && card.getName().equals("Goons") && !repeatedAction) {
+        } else if (trackGoons && card.getName().equals("Goons") && !repeatedAction) {
             goonsCardsPlayed++;
-        }
-        else if (checkHaggler && card.getName().equals("Haggler") && !repeatedAction) {
+        } else if (checkHaggler && card.getName().equals("Haggler") && !repeatedAction) {
             hagglerCardsInPlay++;
-        }
-        else if (checkScheme && card.getName().equals("Scheme")) {
+        } else if (checkScheme && card.getName().equals("Scheme")) {
             schemeCardsPlayed++;
-        }
-        else if (card.getName().equals("Crossroads")) {
+        } else if (card.getName().equals("Crossroads")) {
             crossroadsPlayed++;
-        }
-        else if (trackHighway && card.getName().equals("Highway") && !repeatedAction) {
+        } else if (trackHighway && card.getName().equals("Highway") && !repeatedAction) {
             highwayCardsInPlay++;
             refreshAllPlayersSupply();
-        }
-        else if (trackLaborer && card.getName().equals("Laborer") && !repeatedAction) {
+        } else if (trackLaborer && card.getName().equals("Laborer") && !repeatedAction) {
             laborerCardsInPlay++;
             if (laborerCardsInPlay >= 2) {
                 player.drawCards(1);
@@ -1477,7 +1369,7 @@ public class Game {
             addHistory(player.getUsername(), " gained 1 sin from an ", KingdomUtil.getWordWithBackgroundColor("Edict", Card.ACTION_DURATION_COLOR));
         }
         if (trackTreasuryCards && card.getName().equals("Treasury")) {
-            playedTreasuryCard = true;    
+            playedTreasuryCard = true;
         }
         if (trackAlchemistCards && card.getName().equals("Alchemist")) {
             playedAlchemistCard = true;
@@ -1491,8 +1383,7 @@ public class Game {
         if (card.isDuration()) {
             if (card.getName().equals("Lighthouse")) {
                 lighthousePlayed = true;
-            }
-            else if (card.getName().equals("Outpost")) {
+            } else if (card.getName().equals("Outpost")) {
                 outpostCardPlayed = true;
             }
         }
@@ -1517,19 +1408,17 @@ public class Game {
             if (hasIncompleteCard()) {
                 incompleteCard.actionFinished(player);
             }
-        }
-        else if (card.isSpecialCard()) {
+        } else if (card.isSpecialCard()) {
             SpecialActionHandler.handleSpecialAction(this, card, repeatedAction);
         }
     }
 
-    private void playActionCard(Player player, Card card){
+    private void playActionCard(Player player, Card card) {
         Card cardCopy;
         if (checkQuest && !card.isCopied() && card.getName().equals("Quest")) {
             cardCopy = new Card(card);
             copiedPlayedCard = true;
-        }
-        else {
+        } else {
             cardCopy = card;
         }
         numActionsCardsPlayed++;
@@ -1577,35 +1466,28 @@ public class Game {
             cardCopy = new Card(card);
             copiedPlayedCard = true;
             cardCopy.setAddCoins(player.getPhilosophersStoneCoins());
-        }
-        else if(card.getName().equals("Bank")) {
+        } else if (card.getName().equals("Bank")) {
             cardCopy = new Card(card);
             copiedPlayedCard = true;
-            cardCopy.setAddCoins(treasureCardsPlayed.size()+1);
-        }
-        else if(card.getName().equals("Storybook")) {
+            cardCopy.setAddCoins(treasureCardsPlayed.size() + 1);
+        } else if (card.getName().equals("Storybook")) {
             cardCopy = new Card(card);
             copiedPlayedCard = true;
-        }
-        else {
+        } else {
             cardCopy = card;
         }
         if (card.getName().equals("Hoard")) {
             hoardCardsPlayed++;
-        }
-        else if (card.getName().equals("Talisman")) {
+        } else if (card.getName().equals("Talisman")) {
             talismanCardsPlayed++;
-        }
-        else if (card.getName().equals("Royal Seal")) {
+        } else if (card.getName().equals("Royal Seal")) {
             royalSealCardPlayed = true;
-        }
-        else if (card.getName().equals("Goodwill")) {
+        } else if (card.getName().equals("Goodwill")) {
             goodwillCardsInPlay++;
         }
         if (blackMarketTreasure) {
             blackMarketTreasureCardsPlayed.add(cardCopy);
-        }
-        else {
+        } else {
             treasureCardsPlayed.add(cardCopy);
         }
         cardsPlayed.add(cardCopy);
@@ -1614,7 +1496,7 @@ public class Game {
         }
         addCardBonuses(player, cardCopy);
         player.treasureCardPlayed(cardCopy, removeFromHand);
-        if(showHistory) {
+        if (showHistory) {
             addHistory(player.getUsername(), " played ", KingdomUtil.getArticleWithCardName(cardCopy));
         }
         if (playSpecialAction && !cardCopy.getSpecial().equals("")) {
@@ -1635,8 +1517,7 @@ public class Game {
         updateLastActivity();
         if (player.hasBoughtCard()) {
             setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You can't play a treasure card after you have bought a card."));
-        }
-        else {
+        } else {
             if (!confirm || allowClick(player)) {
                 try {
                     if (confirm && !player.isComputer() && player.getActions() > 0 && player.getActionCards().size() > 0 && !isBuyPhase()) {
@@ -1671,8 +1552,7 @@ public class Game {
                         refreshHandArea(player);
                         refreshSupply(player);
                     }
-                }
-                finally {
+                } finally {
                     processingClick.remove(player.getUserId());
                 }
             }
@@ -1692,7 +1572,7 @@ public class Game {
             }
         }
         actionCardPlayed(player, card, !firstAction);
-        if(!card.hasSpecial() && !repeatedActions.isEmpty()){
+        if (!card.hasSpecial() && !repeatedActions.isEmpty()) {
             playRepeatedAction(player, false);
         }
         refreshAllPlayersPlayingArea();
@@ -1720,14 +1600,14 @@ public class Game {
         refreshAllPlayersPlayingArea();
     }
 
-    public boolean takeFromSupply(int cardId){
+    public boolean takeFromSupply(int cardId) {
         if (supply.get(cardId) != null) {
             int numInSupply = getNumInSupply(cardId) - 1;
             if (numInSupply < 0) {
                 return false;
             }
             supply.put(cardId, numInSupply);
-            if(numInSupply == 0) {
+            if (numInSupply == 0) {
                 Card card = supplyMap.get(cardId);
                 emptyPiles.add(card);
                 if (card.getCost() == 2 && kingdomCards.contains(card)) {
@@ -1737,12 +1617,10 @@ public class Game {
                     finishGameOnNextEndTurn = true;
                     if (cardId == Card.PROVINCE_ID) {
                         gameEndReason = "Province pile gone";
-                    }
-                    else if (cardId == Card.COLONY_ID) {
+                    } else if (cardId == Card.COLONY_ID) {
                         gameEndReason = "Colony pile gone";
-                    }
-                    else {
-                        gameEndReason = emptyPiles.size()+" piles empty ("+ KingdomUtil.getCardNames(emptyPiles)+")";
+                    } else {
+                        gameEndReason = emptyPiles.size() + " piles empty (" + KingdomUtil.getCardNames(emptyPiles) + ")";
                     }
                 }
             }
@@ -1758,8 +1636,8 @@ public class Game {
             if (numInSupply < 0) {
                 return false;
             }
-            if(numInSupply == 0) {
-                int numEmptyPiles = emptyPiles.size()+1;
+            if (numInSupply == 0) {
+                int numEmptyPiles = emptyPiles.size() + 1;
                 if ((numPlayers < 5 && numEmptyPiles == 3) || numEmptyPiles == 4 || cardId == Card.PROVINCE_ID || cardId == Card.COLONY_ID) {
                     return true;
                 }
@@ -1782,7 +1660,7 @@ public class Game {
 
     public void addToSupply(int cardId) {
         if (supply.get(cardId) == null) {
-            GameError error = new GameError(GameError.COMPUTER_ERROR, "Supply does not have an entry for cardId: "+cardId);
+            GameError error = new GameError(GameError.COMPUTER_ERROR, "Supply does not have an entry for cardId: " + cardId);
             logError(error, false);
         }
         int numInSupply = getNumInSupply(cardId) + 1;
@@ -1802,7 +1680,7 @@ public class Game {
             smugglersCardsGained.add(card);
         }
     }
-    
+
     private void checkTradeRouteToken(Card card) {
         Boolean hasTradeRouteToken = tradeRouteTokenMap.get(card.getCardId());
         if (hasTradeRouteToken != null && hasTradeRouteToken) {
@@ -1863,17 +1741,14 @@ public class Game {
             if (!card.getGainCardActions().isEmpty()) {
                 waitIfNotCurrentPlayer(player);
                 setPlayerGainCardAction(player, card);
-            }
-            else {
+            } else {
                 gainCardFinished(player, cardMap.get(card.getCardId()));
             }
-        }
-        else {
+        } else {
             Card cardCopy;
-            if(card.isCopied()) {
+            if (card.isCopied()) {
                 cardCopy = card;
-            }
-            else {
+            } else {
                 cardCopy = new Card(card);
             }
             if (gainedFromBuy) {
@@ -1893,8 +1768,7 @@ public class Game {
                         if (hagglerCardAction != null) {
                             numTimesToGainHagglerBonus--;
                             buyCardActions.add(hagglerCardAction);
-                        }
-                        else {
+                        } else {
                             break;
                         }
                     }
@@ -1948,8 +1822,7 @@ public class Game {
             if (!cardCopy.getGainCardActions().isEmpty()) {
                 waitIfNotCurrentPlayer(player);
                 setPlayerGainCardAction(player, cardCopy);
-            }
-            else {
+            } else {
                 gainCardFinished(player, card);
             }
             if (checkFoolsGold && card.isProvince()) {
@@ -1969,11 +1842,9 @@ public class Game {
     private void addGainedCardToDestinationHistory(Player player, Card card, String destination) {
         if (destination.equals("hand")) {
             addHistory(player.getUsername(), " gained ", KingdomUtil.getArticleWithCardName(card), " into ", player.getPronoun(), " hand");
-        }
-        else if (destination.equals("deck")) {
+        } else if (destination.equals("deck")) {
             addHistory(player.getUsername(), " gained ", KingdomUtil.getArticleWithCardName(card), " on top of ", player.getPronoun(), " deck");
-        }
-        else if (destination.equals("discard")) {
+        } else if (destination.equals("discard")) {
             addHistory(player.getUsername(), " gained ", KingdomUtil.getArticleWithCardName(card));
         }
     }
@@ -1984,21 +1855,18 @@ public class Game {
                 refreshAllPlayersCardsBought();
             }
             player.addCardToHand(card);
-        }
-        else if (destination.equals("deck")) {
+        } else if (destination.equals("deck")) {
             player.addCardToTopOfDeck(card);
-        }
-        else if (destination.equals("discard")) {
+        } else if (destination.equals("discard")) {
             player.addCardToDiscard(card);
         }
     }
 
     public void gainCardFinished(Player player, Card card) {
         if (!player.isShowCardAction() && hasUnfinishedGainCardActions()) {
-            if(!card.getGainCardActions().isEmpty()) {
+            if (!card.getGainCardActions().isEmpty()) {
                 setPlayerGainCardAction(player, card);
-            }
-            else {
+            } else {
                 setPlayerGainCardAction(player, getCardWithUnfinishedGainCardActions());
             }
         }
@@ -2013,14 +1881,11 @@ public class Game {
     private void removeGainedCard(Player player, Card gainedCard) {
         if (gainedCard.getDestination().equals("discard")) {
             player.getDiscard().removeLastOccurrence(gainedCard);
-        }
-        else if (gainedCard.getDestination().equals("deck")) {
+        } else if (gainedCard.getDestination().equals("deck")) {
             player.getDeck().remove(gainedCard);
-        }
-        else if (gainedCard.getDestination().equals("tinker")) {
+        } else if (gainedCard.getDestination().equals("tinker")) {
             player.getTinkerCards().remove(gainedCard);
-        }
-        else if (gainedCard.getDestination().equals("hand")) {
+        } else if (gainedCard.getDestination().equals("hand")) {
             player.getHand().remove(gainedCard);
         }
     }
@@ -2040,8 +1905,7 @@ public class Game {
             card.getGainCardActions().clear();
             cardsWithGainCardActions.remove(card.getCardId());
             setPlayerCardAction(player, firstReaction);
-        }
-        else {
+        } else {
             cardsWithGainCardActions.put(card.getCardId(), card);
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setDeck(Card.DECK_REACTION);
@@ -2143,8 +2007,7 @@ public class Game {
                     cardAction.getCards().addAll(walledVillagesPlayed);
                     setPlayerCardAction(player, cardAction);
                     return;
-                }
-                else if (walledVillagesPlayed.size() > 1) {
+                } else if (walledVillagesPlayed.size() > 1) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
                     cardAction.setDeck(Card.DECK_PROMO);
                     cardAction.setCardName("Walled Village");
@@ -2183,8 +2046,7 @@ public class Game {
                 boolean hasPotion;
                 if (playTreasureCards) {
                     hasPotion = potionsPlayed > 0;
-                }
-                else {
+                } else {
                     hasPotion = player.getPotions() > 0 || potionsPlayed > 0;
                 }
                 if (hasPotion) {
@@ -2262,16 +2124,14 @@ public class Game {
                 for (Card card : cardsPlayed) {
                     if (card.isCopied()) {
                         player.addCardToDiscard(cardMap.get(card.getCardId()));
-                        if(card.getName().equals("Storybook")) {
+                        if (card.getName().equals("Storybook")) {
                             player.getDiscard().addAll(card.getAssociatedCards());
                         }
-                    }
-                    else {
+                    } else {
                         player.addCardToDiscard(card);
                     }
                 }
-            }
-            else {
+            } else {
                 player.getDiscard().addAll(cardsPlayed);
             }
             player.getDiscard().addAll(player.getDurationCards());
@@ -2285,8 +2145,7 @@ public class Game {
             player.getDurationCards().addAll(durationCardsPlayed);
             if (takeOutpostTurn) {
                 player.endTurn(3);
-            }
-            else {
+            } else {
                 player.endTurn(5);
             }
             if (lighthousePlayed) {
@@ -2425,40 +2284,35 @@ public class Game {
             addHistory(nextPlayer.getUsername(), " is taking an extra turn from the ", KingdomUtil.getWordWithBackgroundColor("Outpost", Card.ACTION_DURATION_COLOR), " Card");
             outpostCardPlayed = false;
             outpostTurn = true;
-        }
-        else {
+        } else {
             outpostCardPlayed = false;
             outpostTurn = false;
         }
 
         final int nextPlayerUserId = nextPlayer.getUserId();
         if (nextPlayer.isComputer()) {
-            if(takeOutpostTurn) {
-                if(previousPlayerId != 0) {
+            if (takeOutpostTurn) {
+                if (previousPlayerId != 0) {
                     try {
                         Thread.sleep(2500);
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         GameError error = new GameError(GameError.COMPUTER_ERROR, KingdomUtil.getStackTrace(e));
                         logError(error);
                     }
                 }
                 computerPlayers.get(nextPlayerUserId).doNextAction();
-            }
-            else {
+            } else {
                 new Thread(
                         new Runnable() {
                             public void run() {
-                                if(previousPlayerId != 0) {
+                                if (previousPlayerId != 0) {
                                     try {
-                                        if(getPreviousPlayer().isComputer() || !allComputerOpponents) {
+                                        if (getPreviousPlayer().isComputer() || !allComputerOpponents) {
                                             Thread.sleep(2700);
-                                        }
-                                        else {
+                                        } else {
                                             Thread.sleep(2200);
                                         }
-                                    }
-                                    catch (Exception e) {
+                                    } catch (Exception e) {
                                         GameError error = new GameError(GameError.COMPUTER_ERROR, KingdomUtil.getStackTrace(e));
                                         logError(error);
                                     }
@@ -2485,8 +2339,7 @@ public class Game {
                 if (player.getUserId() == userId) {
                     return true;
                 }
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -2497,7 +2350,7 @@ public class Game {
         List<Player> playersCopy = new ArrayList<Player>(players);
         Collections.sort(playersCopy);
         if (playersCopy.isEmpty()) {
-            GameError error = new GameError(GameError.COMPUTER_ERROR, "Players Copy Empty, players size: "+players.size());
+            GameError error = new GameError(GameError.COMPUTER_ERROR, "Players Copy Empty, players size: " + players.size());
             logError(error, false);
             return 0;
         }
@@ -2527,16 +2380,14 @@ public class Game {
                     player.setWinner(true);
                     player.setMarginOfVictory(marginOfVictory);
                     winners.add(player.getUsername());
-                }
-                else {
+                } else {
                     break;
                 }
             }
 
             if (winners.size() == 1) {
                 winnerString = winners.get(0) + " wins!";
-            }
-            else {
+            } else {
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < winners.size(); i++) {
                     if (i != 0) {
@@ -2610,13 +2461,13 @@ public class Game {
         }
     }
 
-    public void playerExitedGame(Player player){
+    public void playerExitedGame(Player player) {
         updateLastActivity();
         if (!player.isComputer()) {
-            addGameChat(player.getUsername()+ " exited the game");
+            addGameChat(player.getUsername() + " exited the game");
         }
         playersExited.add(player.getUserId());
-        if(playersExited.size() == players.size()){
+        if (playersExited.size() == players.size()) {
             reset();
         }
     }
@@ -2637,10 +2488,10 @@ public class Game {
         if (currentPlayerIndex == players.size() - 1) {
             return 0;
         }
-        return currentPlayerIndex+1;
+        return currentPlayerIndex + 1;
     }
 
-    public int calculateNextPlayerIndex(int playerIndex){
+    public int calculateNextPlayerIndex(int playerIndex) {
         if (playerIndex == players.size() - 1) {
             return 0;
         }
@@ -2722,10 +2573,10 @@ public class Game {
         refresh.setCloseLoadingDialog(true);
     }
 
-    public void refreshAll(Player player){
+    public void refreshAll(Player player) {
         Refresh refresh = needsRefresh.get(player.getUserId());
         refresh.setRefreshGameStatus(true);
-        if(player.isShowCardAction() && player.getCardAction() != null){
+        if (player.isShowCardAction() && player.getCardAction() != null) {
             refresh.setRefreshCardAction(true);
         }
         refresh.setRefreshHandArea(true);
@@ -2733,17 +2584,16 @@ public class Game {
         refresh.setRefreshPlayingArea(true);
         refresh.setRefreshSupply(true);
 
-        if(status == STATUS_GAME_IN_PROGRESS && !hasIncompleteCard() && !getCurrentPlayer().isShowCardAction()) {
-            if(!getRepeatedActions().isEmpty()) {
+        if (status == STATUS_GAME_IN_PROGRESS && !hasIncompleteCard() && !getCurrentPlayer().isShowCardAction()) {
+            if (!getRepeatedActions().isEmpty()) {
                 playRepeatedAction(getCurrentPlayer(), false);
-            }
-            else if (!getGolemActions().isEmpty()) {
+            } else if (!getGolemActions().isEmpty()) {
                 playGolemActionCard(getCurrentPlayer());
             }
         }
     }
 
-    public void refreshAllPlayersPlayingArea(){
+    public void refreshAllPlayersPlayingArea() {
         for (Refresh refresh : needsRefresh.values()) {
             refresh.setRefreshPlayingArea(true);
         }
@@ -2862,16 +2712,16 @@ public class Game {
         refreshChat(receiver.getUserId());
     }
 
-    public void addGameChat(String message){
+    public void addGameChat(String message) {
         chats.add(new ChatMessage(message, "black"));
         refreshAllPlayersChat();
     }
 
-    public String getNextColor(){
+    public String getNextColor() {
         String color = colors.get(currentColorIndex);
-        if(currentColorIndex == colors.size()-1){
+        if (currentColorIndex == colors.size() - 1) {
             currentColorIndex = 0;
-        } else{
+        } else {
             currentColorIndex++;
         }
         return color;
@@ -3202,8 +3052,7 @@ public class Game {
         }
         if (processingClick.containsKey(player.getUserId())) {
             return false;
-        }
-        else {
+        } else {
             processingClick.put(player.getUserId(), true);
             return true;
         }
@@ -3215,10 +3064,9 @@ public class Game {
 
     public void setPlayerCardAction(Player player, CardAction cardAction) {
         if (cardAction == null) {
-            GameError error = new GameError(GameError.GAME_ERROR, "setPlayerCardAction, cardAction is null for user: "+player.getUsername());
+            GameError error = new GameError(GameError.GAME_ERROR, "setPlayerCardAction, cardAction is null for user: " + player.getUsername());
             logError(error, false);
-        }
-        else {
+        } else {
             if (player.isShowCardAction() && player.getCardAction().isWaitingForPlayers()) {
                 closeCardActionDialog(player);
                 closeLoadingDialog(player);
@@ -3227,20 +3075,18 @@ public class Game {
             player.setShowCardAction(true);
             if (player.isComputer() && status == STATUS_GAME_IN_PROGRESS) {
                 computerPlayers.get(player.getUserId()).handleCardAction(cardAction);
-            }
-            else {
+            } else {
                 refreshCardAction(player);
             }
         }
     }
 
     public void setPlayerInfoDialog(Player player, InfoDialog infoDialog) {
-        if(!player.isComputer()) {
+        if (!player.isComputer()) {
             player.setShowInfoDialog(true);
             player.setInfoDialog(infoDialog);
             refreshInfoDialog(player);
-        }
-        else if (infoDialog.isError()) {
+        } else if (infoDialog.isError()) {
             GameError error = new GameError(GameError.COMPUTER_ERROR, infoDialog.getMessage());
             logError(error);
             computerPlayers.get(player.getUserId()).setError(true);
@@ -3287,7 +3133,7 @@ public class Game {
         this.gameManager = gameManager;
     }
 
-    public void cardActionSubmitted(Player player, List<Integer> selectedCardIds, String yesNoAnswer, String choice, int numberChosen){
+    public void cardActionSubmitted(Player player, List<Integer> selectedCardIds, String yesNoAnswer, String choice, int numberChosen) {
         if (allowClick(player)) {
             updateLastActivity();
             try {
@@ -3296,8 +3142,7 @@ public class Game {
                 if (coinsBefore != player.getCoins() && player.getUserId() == currentPlayerId) {
                     refreshSupply(player);
                 }
-            }
-            finally {
+            } finally {
                 processingClick.remove(player.getUserId());
             }
         }
@@ -3319,7 +3164,7 @@ public class Game {
     }
 
     public void logError(GameError error) {
-        logError(error, true);    
+        logError(error, true);
     }
 
     public void logError(GameError error, boolean showInChat) {
@@ -3359,8 +3204,7 @@ public class Game {
         if (showInChat) {
             if (error.isComputerError()) {
                 addGameChat("The computer encountered an error. This error has been reported and will be fixed as soon as possible. If you would like to keep playing you can quit this game and start a new one with different cards.");
-            }
-            else {
+            } else {
                 addGameChat("The game encountered an error. Try refreshing the page.");
             }
         }
@@ -3542,8 +3386,7 @@ public class Game {
     public String getPrizeCardsString() {
         if (prizeCards.isEmpty()) {
             return "None";
-        }
-        else {
+        } else {
             return KingdomUtil.getCardNames(prizeCards);
         }
     }
@@ -3679,8 +3522,7 @@ public class Game {
             if (player.isComputer()) {
                 ComputerPlayer computerPlayer = computerPlayerMapCopy.get(player.getUserId());
                 addPlayer(user, true, computerPlayer.isBigMoneyUltimate(), computerPlayer.getDifficulty());
-            }
-            else {
+            } else {
                 addPlayer(user);
             }
         }
@@ -3743,7 +3585,7 @@ public class Game {
     public void setCopiedPlayedCard(boolean copiedPlayedCard) {
         this.copiedPlayedCard = copiedPlayedCard;
     }
-    
+
     public void finishedGainCardAction(Player player, CardAction cardAction) {
         Card card = cardAction.getAssociatedCard();
         if (card.getGainCardActions().isEmpty()) {

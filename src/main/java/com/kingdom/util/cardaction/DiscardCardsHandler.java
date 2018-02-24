@@ -12,8 +12,7 @@ public class DiscardCardsHandler {
 
         if (selectedCardIds.isEmpty()) {
             game.addHistory(player.getUsername(), " did not discard a card");
-        }
-        else {
+        } else {
             game.addHistory(player.getUsername(), " discarded ", KingdomUtil.getPlural(selectedCardIds.size(), "card"));
         }
 
@@ -21,8 +20,7 @@ public class DiscardCardsHandler {
             if (cardAction.getType() == CardAction.TYPE_DISCARD_UP_TO) {
                 player.addCardToDiscard(game.getCardMap().get(selectedCardId));
                 game.playerDiscardedCard(player, game.getCardMap().get(selectedCardId));
-            }
-            else {
+            } else {
                 player.discardCardFromHand(selectedCardId);
                 game.playerDiscardedCard(player, game.getCardMap().get(selectedCardId));
             }
@@ -36,8 +34,7 @@ public class DiscardCardsHandler {
             if (!cards.isEmpty()) {
                 if (cards.size() == 1) {
                     player.addCardToTopOfDeck(cards.get(0));
-                }
-                else {
+                } else {
                     CardAction chooseOrderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
                     chooseOrderCardAction.setDeck(Card.DECK_HINTERLANDS);
                     chooseOrderCardAction.setHideOnSelect(true);
@@ -49,52 +46,42 @@ public class DiscardCardsHandler {
                     game.setPlayerCardAction(player, chooseOrderCardAction);
                 }
             }
-        }
-        else if (cardAction.getCardName().equals("Cellar")) {
+        } else if (cardAction.getCardName().equals("Cellar")) {
             player.drawCards(selectedCardIds.size());
-        }
-        else if (cardAction.getCardName().equals("Druid")) {
-            player.addCoins(2*selectedCardIds.size());
-        }
-        else if (cardAction.getCardName().equals("Fruit Merchant")) {
+        } else if (cardAction.getCardName().equals("Druid")) {
+            player.addCoins(2 * selectedCardIds.size());
+        } else if (cardAction.getCardName().equals("Fruit Merchant")) {
             if (!selectedCardIds.isEmpty()) {
                 player.addFruitTokens(selectedCardIds.size());
                 game.addHistory(player.getUsername(), " gained ", KingdomUtil.getPlural(selectedCardIds.size(), "fruit token"));
             }
-        }
-        else if (cardAction.getCardName().equals("Hamlet")) {
+        } else if (cardAction.getCardName().equals("Hamlet")) {
             player.addActions(1);
             game.refreshAllPlayersCardsPlayed();
             game.addHistory(player.getUsername(), " gained +1 Action");
             if (player.getHand().isEmpty()) {
                 game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand to discard for +1 Buy");
-            }
-            else {
+            } else {
                 incompleteCard = new SinglePlayerIncompleteCard(cardAction.getCardName(), game);
                 game.addNextAction("discard for buy");
             }
-        }
-        else if (cardAction.getCardName().equals("Hamlet2")) {
+        } else if (cardAction.getCardName().equals("Hamlet2")) {
             player.addBuys(1);
             game.refreshAllPlayersCardsBought();
             game.addHistory(player.getUsername(), " gained +1 Buy");
-        }
-        else if (cardAction.getCardName().equals("Scriptorium")) {
+        } else if (cardAction.getCardName().equals("Scriptorium")) {
             Card selectedCard = game.getCardMap().get(selectedCardIds.get(0));
             game.playerGainedCard(player, selectedCard);
-        }
-        else if (cardAction.getCardName().equals("Secret Chamber")) {
+        } else if (cardAction.getCardName().equals("Secret Chamber")) {
             player.addCoins(selectedCardIds.size());
-        }
-        else if (cardAction.getCardName().equals("Stables")) {
+        } else if (cardAction.getCardName().equals("Stables")) {
             if (!selectedCardIds.isEmpty()) {
                 game.addHistory(player.getUsername(), " gained +3 Cards and +1 Action");
                 player.drawCards(3);
                 player.addActions(1);
                 game.refreshAllPlayersCardsPlayed();
             }
-        }
-        else if (cardAction.getCardName().equals("Vault")) {
+        } else if (cardAction.getCardName().equals("Vault")) {
             incompleteCard = new MultiPlayerIncompleteCard(cardAction.getCardName(), game, false);
             player.addCoins(selectedCardIds.size());
             game.addHistory(player.getUsername(), " gained +", KingdomUtil.getPlural(selectedCardIds.size(), "Coin"), " from playing ", KingdomUtil.getWordWithBackgroundColor("Vault", Card.ACTION_COLOR), "");
@@ -108,21 +95,18 @@ public class DiscardCardsHandler {
                         if (otherPlayer.getHand().size() == 1) {
                             yesNoCardAction.setNumCards(1);
                             yesNoCardAction.setInstructions("Do you want to discard the card in your hand?");
-                        }
-                        else {
+                        } else {
                             yesNoCardAction.setNumCards(2);
                             yesNoCardAction.setInstructions("Do you want to discard two cards and draw one card?");
                         }
                         game.setPlayerCardAction(otherPlayer, yesNoCardAction);
-                    }
-                    else {
+                    } else {
                         incompleteCard.setPlayerActionCompleted(otherPlayer.getUserId());
                     }
                 }
             }
             incompleteCard.allActionsSet();
-        }
-        else if (cardAction.getCardName().equals("Vault2")) {
+        } else if (cardAction.getCardName().equals("Vault2")) {
             player.drawCards(1);
         }
 

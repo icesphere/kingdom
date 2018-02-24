@@ -16,7 +16,7 @@ import java.util.List;
 
 @Repository
 public class GameDao {
-    
+
     HibernateTemplate hibernateTemplate;
 
     public GameDao(HibernateTemplate hibernateTemplate) {
@@ -34,15 +34,14 @@ public class GameDao {
             session = hibernateTemplate.getSessionFactory().openSession();
             Transaction tx = session.beginTransaction();
 
-            SQLQuery query = session.createSQLQuery("select g.* from games g, game_users gu where g.gameid = gu.gameid and gu.userid = :userId order by g.gameid desc limit "+limit);
+            SQLQuery query = session.createSQLQuery("select g.* from games g, game_users gu where g.gameid = gu.gameid and gu.userid = :userId order by g.gameid desc limit " + limit);
             query.addEntity(GameHistory.class);
             query.setInteger("userId", userId);
 
             tx.commit();
 
             return query.list();
-        }
-        finally {
+        } finally {
             if (session != null) {
                 session.close();
             }
@@ -278,8 +277,8 @@ public class GameDao {
         SQLQuery query = session.createSQLQuery("select count(*) from users u where u.active = 1 and u.admin = 0");
         stats.setActiveUsers(((BigInteger) query.uniqueResult()).intValue());
 
-         query = session.createSQLQuery("select count(*) from users u where u.base_checked = 1 and u.active = 1 and u.admin = 0");
-         stats.setBaseDeck(((BigInteger) query.uniqueResult()).intValue());
+        query = session.createSQLQuery("select count(*) from users u where u.base_checked = 1 and u.active = 1 and u.admin = 0");
+        stats.setBaseDeck(((BigInteger) query.uniqueResult()).intValue());
 
         query = session.createSQLQuery("select count(*) from users u where u.intrigue_checked = 1 and u.active = 1 and u.admin = 0");
         stats.setIntrigueDeck(((BigInteger) query.uniqueResult()).intValue());
@@ -309,7 +308,7 @@ public class GameDao {
         stats.setFairyTaleDeck(((BigInteger) query.uniqueResult()).intValue());
 
         query = session.createSQLQuery("select count(*) from users u where u.leaders_checked = 1 and u.active = 1 and u.admin = 0");
-        stats.setLeadersDeck(((BigInteger) query.uniqueResult()).intValue());  
+        stats.setLeadersDeck(((BigInteger) query.uniqueResult()).intValue());
 
         query = session.createSQLQuery("select count(*) from users u where u.proletariat_checked = 1 and u.active = 1 and u.admin = 0");
         stats.setProletariatDeck(((BigInteger) query.uniqueResult()).intValue());

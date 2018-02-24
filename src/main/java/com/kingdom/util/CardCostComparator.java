@@ -23,11 +23,9 @@ public class CardCostComparator implements Comparator<Card> {
 
         if (cost1 > cost2) {
             return +1;
-        }
-        else if (cost1 < cost2) {
+        } else if (cost1 < cost2) {
             return -1;
-        }
-        else {
+        } else {
             return 0;
         }
     }

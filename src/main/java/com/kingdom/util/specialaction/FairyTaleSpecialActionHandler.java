@@ -28,8 +28,7 @@ public class FairyTaleSpecialActionHandler {
             }
             if (cardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, cardAction);
-            }
-            else {
+            } else {
                 game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("There are no piles left to put the troll token on."));
             }
             if (!repeatedAction) {
@@ -37,8 +36,7 @@ public class FairyTaleSpecialActionHandler {
                 game.getTrashedCards().add(card);
                 game.playerLostCard(player, card);
             }
-        }
-        else if (card.getName().equals("Druid")) {
+        } else if (card.getName().equals("Druid")) {
             if (!player.getVictoryCards().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND);
                 cardAction.setDeck(Card.DECK_FAIRYTALE);
@@ -48,13 +46,11 @@ public class FairyTaleSpecialActionHandler {
                 cardAction.setInstructions("Discard up to 2 victory cards. +2 Coins per card discarded. Select the Cards you want to discard and then click Done.");
                 cardAction.setButtonValue("Done");
                 game.setPlayerCardAction(player, cardAction);
-            }
-            else {
+            } else {
                 player.drawCards(2);
                 game.addHistory(player.getUsername(), " did not have any victory cards and got +2 cards.");
             }
-        }
-        else if (card.getName().equals("Lost Village")) {
+        } else if (card.getName().equals("Lost Village")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setDeck(Card.DECK_FAIRYTALE);
             cardAction.setCardName("Lost Village 1");
@@ -62,8 +58,7 @@ public class FairyTaleSpecialActionHandler {
             cardAction.getChoices().add(new CardActionChoice("+2 Actions", "actions"));
             cardAction.getChoices().add(new CardActionChoice("+1 Action and draw", "draw"));
             game.setPlayerCardAction(player, cardAction);
-        }
-        else if (card.getName().equals("Magic Beans")) {
+        } else if (card.getName().equals("Magic Beans")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setDeck(Card.DECK_FAIRYTALE);
             cardAction.setCardName(card.getName());
@@ -72,16 +67,14 @@ public class FairyTaleSpecialActionHandler {
             cardAction.getChoices().add(new CardActionChoice("Trash", "trash"));
             cardAction.getChoices().add(new CardActionChoice("Return to Supply", "supply"));
             game.setPlayerCardAction(player, cardAction);
-        }
-        else if (card.getName().equals("Master Huntsman")) {
+        } else if (card.getName().equals("Master Huntsman")) {
             incompleteCard = new MultiPlayerIncompleteCard(card.getName(), game, false);
             for (Player otherPlayer : game.getPlayers()) {
                 if (otherPlayer.getUserId() != game.getCurrentPlayerId()) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(otherPlayer.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(otherPlayer.getUserId());
                         game.addHistory(otherPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-                    }
-                    else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse() && otherPlayer.getHand().size() >= 4 && !otherPlayer.getActionCards().isEmpty()) {
+                    } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse() && otherPlayer.getHand().size() >= 4 && !otherPlayer.getActionCards().isEmpty()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
                         cardAction.setDeck(Card.DECK_FAIRYTALE);
                         cardAction.setCardName(card.getName());
@@ -90,27 +83,22 @@ public class FairyTaleSpecialActionHandler {
                         cardAction.setInstructions("Select an action card to discard.");
                         cardAction.getCards().addAll(otherPlayer.getActionCards());
                         game.setPlayerCardAction(otherPlayer, cardAction);
-                    }
-                    else {
+                    } else {
                         incompleteCard.setPlayerActionCompleted(otherPlayer.getUserId());
                         if (otherPlayer.hasLighthouse()) {
                             game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                        }
-                        else if(otherPlayer.hasMoat()) {
+                        } else if (otherPlayer.hasMoat()) {
                             game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
-                        }
-                        else if(otherPlayer.getHand().size() < 4) {
+                        } else if (otherPlayer.getHand().size() < 4) {
                             game.addHistory(otherPlayer.getUsername(), " had less than 4 cards");
-                        }
-                        else {
+                        } else {
                             game.addHistory(otherPlayer.getUsername(), " did not have any action cards");
                         }
                     }
                 }
             }
             incompleteCard.allActionsSet();
-        }
-        else if (card.getName().equals("Quest")) {
+        } else if (card.getName().equals("Quest")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
             cardAction.setDeck(Card.DECK_FAIRYTALE);
             cardAction.setCardName(card.getName());
@@ -124,8 +112,7 @@ public class FairyTaleSpecialActionHandler {
             }
             cardAction.setAssociatedCard(card);
             game.setPlayerCardAction(player, cardAction);
-        }
-        else if (card.getName().equals("Sorceress")) {
+        } else if (card.getName().equals("Sorceress")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setDeck(Card.DECK_FAIRYTALE);
             cardAction.setCardName(card.getName());
@@ -137,8 +124,7 @@ public class FairyTaleSpecialActionHandler {
             cardAction.getChoices().add(new CardActionChoice("Trash 2 Cards", "trash"));
             cardAction.setPhase(1);
             game.setPlayerCardAction(player, cardAction);
-        }
-        else if (card.getName().equals("Tinker")) {
+        } else if (card.getName().equals("Tinker")) {
             player.setPlayedTinker(true);
         }
 

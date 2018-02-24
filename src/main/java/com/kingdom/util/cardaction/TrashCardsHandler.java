@@ -43,23 +43,20 @@ public class TrashCardsHandler {
                     game.refreshHand(otherPlayer);
                 }
             }
-        }
-        else if (cardAction.getCardName().equals("Apprentice")) {
+        } else if (cardAction.getCardName().equals("Apprentice")) {
             int numCardsToDraw = game.getCardCost(trashedCard);
             player.drawCards(numCardsToDraw);
             if (trashedCard.isCostIncludesPotion()) {
                 player.drawCards(2);
             }
-        }
-        else if (cardAction.getCardName().equals("Assassin")) {
+        } else if (cardAction.getCardName().equals("Assassin")) {
             game.getCurrentPlayer().addSins(2);
             game.refreshAllPlayersPlayers();
             game.refreshHandArea(game.getCurrentPlayer());
             game.addHistory(game.getCurrentPlayer().getUsername(), " gained 2 sins");
-        }
-        else if (cardAction.getCardName().equals("Bishop")) {
+        } else if (cardAction.getCardName().equals("Bishop")) {
             int victoryCoinsGained = (int) Math.floor(game.getCardCost(trashedCard) / 2);
-            game.addHistory(player.getUsername(), " gained ", KingdomUtil.getPlural(victoryCoinsGained, "Victory Coin")," from the ", KingdomUtil.getWordWithBackgroundColor("Bishop", Card.ACTION_COLOR), " card");
+            game.addHistory(player.getUsername(), " gained ", KingdomUtil.getPlural(victoryCoinsGained, "Victory Coin"), " from the ", KingdomUtil.getWordWithBackgroundColor("Bishop", Card.ACTION_COLOR), " card");
             player.addVictoryCoins(victoryCoinsGained);
             game.refreshAllPlayersPlayers();
 
@@ -75,15 +72,13 @@ public class TrashCardsHandler {
                         trashCardAction.setInstructions("Select a card to trash and then click Done, or just click Done if you don't want to trash a card.");
                         trashCardAction.setButtonValue("Done");
                         game.setPlayerCardAction(otherPlayer, trashCardAction);
-                    }
-                    else {
+                    } else {
                         incompleteCard.setPlayerActionCompleted(otherPlayer.getUserId());
                     }
                 }
             }
             incompleteCard.allActionsSet();
-        }
-        else if (cardAction.getCardName().equals("Develop")) {
+        } else if (cardAction.getCardName().equals("Develop")) {
             List<Card> cardsMore = new ArrayList<Card>();
             List<Card> cardsLess = new ArrayList<Card>();
 
@@ -112,8 +107,7 @@ public class TrashCardsHandler {
                 chooseWhichCardAction.getCards().add(trashedCard);
                 chooseWhichCardAction.setAssociatedCard(trashedCard);
                 game.setPlayerCardAction(player, chooseWhichCardAction);
-            }
-            else {
+            } else {
                 CardAction gainCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
                 gainCardAction.setDeck(Card.DECK_HINTERLANDS);
                 gainCardAction.setCardName(cardAction.getCardName());
@@ -125,17 +119,14 @@ public class TrashCardsHandler {
                 if (!cardsLess.isEmpty()) {
                     gainCardAction.setCards(cardsLess);
                     game.setPlayerCardAction(player, gainCardAction);
-                }
-                else if (!cardsMore.isEmpty()) {
+                } else if (!cardsMore.isEmpty()) {
                     gainCardAction.setCards(cardsMore);
                     game.setPlayerCardAction(player, gainCardAction);
-                }
-                else {
+                } else {
                     game.addHistory("There were no cards that cost $1 more and no cards that cost $1 less than ", KingdomUtil.getCardWithBackgroundColor(trashedCard));
                 }
             }
-        }
-        else if (cardAction.getCardName().equals("Expand")) {
+        } else if (cardAction.getCardName().equals("Expand")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
             secondCardAction.setDeck(Card.DECK_PROSPERITY);
             secondCardAction.setCardName("Expand");
@@ -151,8 +142,7 @@ public class TrashCardsHandler {
             if (secondCardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, secondCardAction);
             }
-        }
-        else if (cardAction.getCardName().equals("Farmland")) {
+        } else if (cardAction.getCardName().equals("Farmland")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
             secondCardAction.setDeck(Card.DECK_HINTERLANDS);
             secondCardAction.setCardName(cardAction.getCardName());
@@ -170,14 +160,12 @@ public class TrashCardsHandler {
             }
             if (secondCardAction.getCards().size() == 1) {
                 game.playerGainedCard(player, secondCardAction.getCards().get(0));
-            }
-            else if (!secondCardAction.getCards().isEmpty()) {
+            } else if (!secondCardAction.getCards().isEmpty()) {
                 cardAction.setGainCardAfterBuyAction(false);
                 game.setPlayerCardAction(player, secondCardAction);
             }
-        }
-        else if (cardAction.getCardName().equals("Forge")) {
-            if(selectedCardIds.size() > 0) {
+        } else if (cardAction.getCardName().equals("Forge")) {
+            if (selectedCardIds.size() > 0) {
                 int cost = 0;
                 for (Integer selectedCardId : selectedCardIds) {
                     Card card = cardMap.get(selectedCardId);
@@ -196,16 +184,13 @@ public class TrashCardsHandler {
                 }
                 if (secondCardAction.getCards().size() > 0) {
                     game.setPlayerCardAction(player, secondCardAction);
-                }
-                else {
+                } else {
                     game.addHistory("There were no cards that had a cost equal to the cost of the cards trashed");
                 }
-            }
-            else {
+            } else {
                 game.addHistory(player.getUsername(), " chose to not trash any cards");
             }
-        }
-        else if (cardAction.getCardName().equals("Governor")) {
+        } else if (cardAction.getCardName().equals("Governor")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
             secondCardAction.setDeck(Card.DECK_PROMO);
             secondCardAction.setCardName(cardAction.getCardName());
@@ -215,8 +200,7 @@ public class TrashCardsHandler {
             int cost = game.getCardCost(trashedCard);
             if (game.isCurrentPlayer(player)) {
                 cost = cost + 2;
-            }
-            else {
+            } else {
                 cost = cost + 1;
             }
             for (Card c : supplyMap.values()) {
@@ -227,8 +211,7 @@ public class TrashCardsHandler {
             if (secondCardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, secondCardAction);
             }
-        }
-        else if (cardAction.getCardName().equals("Mine")) {
+        } else if (cardAction.getCardName().equals("Mine")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY);
             secondCardAction.setDeck(Card.DECK_KINGDOM);
             secondCardAction.setCardName("Mine");
@@ -242,12 +225,10 @@ public class TrashCardsHandler {
             }
             if (!secondCardAction.getCards().isEmpty()) {
                 game.setPlayerCardAction(player, secondCardAction);
-            }
-            else {
+            } else {
                 game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("There were no treasure cards to gain."));
             }
-        }
-        else if (cardAction.getCardName().equals("Remake")) {
+        } else if (cardAction.getCardName().equals("Remake")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
             secondCardAction.setDeck(Card.DECK_CORNUCOPIA);
             secondCardAction.setCardName(cardAction.getCardName());
@@ -264,8 +245,7 @@ public class TrashCardsHandler {
             if (secondCardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, secondCardAction);
             }
-        }
-        else if (cardAction.getCardName().equals("Remodel")) {
+        } else if (cardAction.getCardName().equals("Remodel")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
             secondCardAction.setDeck(Card.DECK_KINGDOM);
             secondCardAction.setCardName("Remodel");
@@ -281,11 +261,9 @@ public class TrashCardsHandler {
             if (secondCardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, secondCardAction);
             }
-        }
-        else if (cardAction.getCardName().equals("Salvager")) {
+        } else if (cardAction.getCardName().equals("Salvager")) {
             player.addCoins(game.getCardCost(trashedCard));
-        }
-        else if (cardAction.getCardName().equals("Sorceress")) {
+        } else if (cardAction.getCardName().equals("Sorceress")) {
             int cursesRemaining = game.getSupply().get(Card.CURSE_ID);
             if (cursesRemaining > 0 || cardAction.getPhase() == 1 && cardAction.getChoices().size() > 1) {
                 CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
@@ -294,17 +272,15 @@ public class TrashCardsHandler {
 
                 if (cursesRemaining == 0) {
                     nextCardAction.setInstructions("There are no curses remaining so you may only choose one more effect.");
-                }
-                else {
+                } else {
                     nextCardAction.setInstructions("Choose another effect to apply (you will gain a curse), or click None if you don't want to apply any more effects.");
                 }
 
                 nextCardAction.getChoices().addAll(cardAction.getChoices());
-                nextCardAction.setPhase(cardAction.getPhase()+1);
+                nextCardAction.setPhase(cardAction.getPhase() + 1);
                 game.setPlayerCardAction(player, nextCardAction);
             }
-        }
-        else if (cardAction.getCardName().equals("Spice Merchant")) {
+        } else if (cardAction.getCardName().equals("Spice Merchant")) {
             if (!selectedCardIds.isEmpty()) {
                 CardAction choicesAction = new CardAction(CardAction.TYPE_CHOICES);
                 choicesAction.setDeck(Card.DECK_HINTERLANDS);
@@ -314,23 +290,19 @@ public class TrashCardsHandler {
                 choicesAction.getChoices().add(new CardActionChoice("+$2 and +1 Buy", "money"));
                 game.setPlayerCardAction(player, choicesAction);
             }
-        }
-        else if (cardAction.getCardName().equals("Trader")) {
+        } else if (cardAction.getCardName().equals("Trader")) {
             int numSilversToGain = game.getCardCost(trashedCard);
             while (game.isCardInSupply(Card.SILVER_ID) && numSilversToGain > 0) {
                 game.playerGainedCard(player, game.getSilverCard());
                 numSilversToGain--;
             }
-        }
-        else if (cardAction.getCardName().equals("Trading Post")) {
+        } else if (cardAction.getCardName().equals("Trading Post")) {
             if (game.isCardInSupply(Card.SILVER_ID)) {
                 game.playerGainedCardToHand(player, game.getSilverCard());
-            }
-            else {
+            } else {
                 game.addHistory("There were no more ", KingdomUtil.getCardWithBackgroundColor(game.getSilverCard()), " cards in the supply");
             }
-        }
-        else if (cardAction.getCardName().equals("Transmute")) {
+        } else if (cardAction.getCardName().equals("Transmute")) {
             if (trashedCard.isAction()) {
                 if (game.isCardInSupply(Card.DUCHY_ID)) {
                     game.playerGainedCard(player, game.getDuchyCard());
@@ -346,8 +318,7 @@ public class TrashCardsHandler {
                     game.playerGainedCard(player, game.getGoldCard());
                 }
             }
-        }
-        else if (cardAction.getCardName().equals("Upgrade")) {
+        } else if (cardAction.getCardName().equals("Upgrade")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
             secondCardAction.setDeck(Card.DECK_INTRIGUE);
             secondCardAction.setCardName("Upgrade");
@@ -363,8 +334,7 @@ public class TrashCardsHandler {
             }
             if (secondCardAction.getCards().size() == 1) {
                 game.playerGainedCard(player, secondCardAction.getCards().get(0));
-            }
-            else if (!secondCardAction.getCards().isEmpty()) {
+            } else if (!secondCardAction.getCards().isEmpty()) {
                 game.setPlayerCardAction(player, secondCardAction);
             }
         }

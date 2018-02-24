@@ -18,11 +18,9 @@ public class LeaderSpecialActionHandler {
         if (card.getName().equals("Archimedes")) {
             player.setBuyBonusTurns(2);
             player.setEnableVictoryCardDiscount(true);
-        }
-        else if (card.getName().equals("Aristotle")) {
+        } else if (card.getName().equals("Aristotle")) {
             player.setCardBonusTurns(2);
-        }
-        else if (card.getName().equals("Bilkis")) {
+        } else if (card.getName().equals("Bilkis")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
             cardAction.setDeck(Card.DECK_LEADERS);
             cardAction.setCardName(card.getName());
@@ -37,19 +35,15 @@ public class LeaderSpecialActionHandler {
             if (cardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, cardAction);
             }
-        }
-        else if (card.getName().equals("Imhotep")) {
+        } else if (card.getName().equals("Imhotep")) {
             player.setBuyBonusTurns(2);
             player.setEnableTreasureCardDiscount(true);
-        }
-        else if (card.getName().equals("Leonidas")) {
+        } else if (card.getName().equals("Leonidas")) {
             player.setBuyBonusTurns(2);
             player.setEnableActionCardDiscount(true);
-        }
-        else if (card.getName().equals("Maecenas")) {
+        } else if (card.getName().equals("Maecenas")) {
             player.setLeaderDiscount(3);
-        }
-        else if (card.getName().equals("Plato")) {
+        } else if (card.getName().equals("Plato")) {
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
                 cardAction.setDeck(Card.DECK_LEADERS);
@@ -60,8 +54,7 @@ public class LeaderSpecialActionHandler {
                 cardAction.setCards(player.getHand());
                 game.setPlayerCardAction(player, cardAction);
             }
-        }
-        else if (card.getName().equals("Tomyris")) {
+        } else if (card.getName().equals("Tomyris")) {
             int nextPlayerIndex = game.calculateNextPlayerIndex(game.getCurrentPlayerIndex());
             while (nextPlayerIndex != game.getCurrentPlayerIndex()) {
                 Player nextPlayer = game.getPlayers().get(nextPlayerIndex);
@@ -72,8 +65,7 @@ public class LeaderSpecialActionHandler {
                 }
                 nextPlayerIndex = game.calculateNextPlayerIndex(nextPlayerIndex);
             }
-        }
-        else if (card.getName().equals("Xenophon")) {
+        } else if (card.getName().equals("Xenophon")) {
             player.addCoins(2);
             player.addBuys(1);
             game.refreshAllPlayersPlayingArea();

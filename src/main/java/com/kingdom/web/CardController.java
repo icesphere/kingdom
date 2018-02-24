@@ -33,7 +33,7 @@ public class CardController {
         if (user == null || !user.isAdmin()) {
             return KingdomUtil.getLoginModelAndView(request);
         }
-		ModelAndView modelAndView = new ModelAndView("cards");
+        ModelAndView modelAndView = new ModelAndView("cards");
         modelAndView.addObject("kingdomCards", cardManager.getCards(Card.DECK_KINGDOM, true));
         modelAndView.addObject("intrigueCards", cardManager.getCards(Card.DECK_INTRIGUE, true));
         modelAndView.addObject("seasideCards", cardManager.getCards(Card.DECK_SEASIDE, true));
@@ -49,7 +49,7 @@ public class CardController {
         modelAndView.addObject("proletariatCards", cardManager.getCards(Card.DECK_PROLETARIAT, true));
         modelAndView.addObject("fanCards", cardManager.getCards(Card.DECK_FAN, true));
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
-		return modelAndView;
+        return modelAndView;
     }
 
     @RequestMapping("/saveCard.html")
@@ -112,20 +112,18 @@ public class CardController {
         Map<Integer, Integer> supply = new HashMap<Integer, Integer>();
         if (card.isVictory()) {
             supply.put(Integer.parseInt(id), 12);
-        }
-        else {
+        } else {
             supply.put(Integer.parseInt(id), 10);
         }
         try {
             modelAndView.addObject("supply", bw.wrap(supply));
-        }
-        catch (TemplateModelException e) {
+        } catch (TemplateModelException e) {
             e.printStackTrace();
         }
 
         modelAndView.addObject("card", card);
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
-		return modelAndView;
+        return modelAndView;
     }
 
     public void setCardManager(CardManager manager) {

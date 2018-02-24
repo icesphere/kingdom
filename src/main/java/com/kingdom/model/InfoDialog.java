@@ -46,7 +46,7 @@ public class InfoDialog {
     }
 
     public int getWidth() {
-        if(width == 0){
+        if (width == 0) {
             return 300;
         }
         return width;
@@ -96,7 +96,7 @@ public class InfoDialog {
         this.error = error;
     }
 
-    public static InfoDialog getYourTurnInfoDialog(){
+    public static InfoDialog getYourTurnInfoDialog() {
         InfoDialog dialog = new InfoDialog();
         dialog.setMessage("Your Turn");
         dialog.setHideMethod("puff");
@@ -108,7 +108,7 @@ public class InfoDialog {
         return dialog;
     }
 
-    public static InfoDialog getErrorDialog(String message){
+    public static InfoDialog getErrorDialog(String message) {
         return getInfoDialog(message, true);
     }
 

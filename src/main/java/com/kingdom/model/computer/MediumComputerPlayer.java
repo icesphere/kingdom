@@ -9,8 +9,7 @@ import com.kingdom.model.Player;
  * Date: 5/21/11
  * Time: 10:35 AM
  */
-public class MediumComputerPlayer extends ComputerPlayer
-{
+public class MediumComputerPlayer extends ComputerPlayer {
     public MediumComputerPlayer(Player player, Game game) {
         super(player, game);
         difficulty = 2;
@@ -20,11 +19,9 @@ public class MediumComputerPlayer extends ComputerPlayer
     protected void setupStartingStrategies() {
         if (hasGardens && hasExtraBuys) {
             gardensStrategy = true;
-        }
-        else if (kingdomCardMap.containsKey("Chapel")) {
+        } else if (kingdomCardMap.containsKey("Chapel")) {
             chapelStrategy = true;
-        }
-        else if (hasDuke) {
+        } else if (hasDuke) {
             dukeStrategy = true;
         }
     }
