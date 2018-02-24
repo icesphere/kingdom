@@ -8,12 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Aug 7, 2010
- * Time: 11:48:12 AM
- */
 public class TreasureCardsSpecialActionHandler {
     public static IncompleteCard handleSpecialAction(Game game, Card card) {
 

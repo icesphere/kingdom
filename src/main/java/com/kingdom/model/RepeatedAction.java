@@ -1,10 +1,5 @@
 package com.kingdom.model;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: Apr 24, 2010
- * Time: 9:39:16 AM
- */
 public class RepeatedAction {
     private Card card;
     private boolean firstAction;

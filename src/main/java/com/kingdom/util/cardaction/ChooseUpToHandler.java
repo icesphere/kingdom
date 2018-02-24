@@ -7,12 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Jul 31, 2010
- * Time: 6:30:54 PM
- */
 public class ChooseUpToHandler {
     public static IncompleteCard handleCardAction(Game game, Player player, CardAction cardAction, List<Integer> selectedCardIds) {
 

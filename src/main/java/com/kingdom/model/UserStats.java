@@ -1,10 +1,5 @@
 package com.kingdom.model;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 5/30/11
- * Time: 2:13 PM
- */
 public class UserStats {
     private int activeUsers;
 

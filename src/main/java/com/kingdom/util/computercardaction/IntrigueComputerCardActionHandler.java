@@ -11,12 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Aug 17, 2010
- * Time: 8:41:38 PM
- */
 public class IntrigueComputerCardActionHandler {
     public static void handleCardAction(CardAction cardAction, ComputerPlayer computer) {
 

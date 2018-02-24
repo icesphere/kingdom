@@ -3,11 +3,6 @@ package com.kingdom.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 5/3/11
- * Time: 8:16 PM
- */
 public class PlayerTurn {
     private int userId;
     private String username = "";

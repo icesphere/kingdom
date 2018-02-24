@@ -10,11 +10,6 @@ import com.kingdom.util.cardaction.CardActionHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 6/7/11
- * Time: 8:05 PM
- */
 public class FairyTaleComputerCardActionHandler {
     public static void handleCardAction(CardAction cardAction, ComputerPlayer computer) {
 

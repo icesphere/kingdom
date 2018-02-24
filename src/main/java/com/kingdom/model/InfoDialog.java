@@ -3,13 +3,6 @@ package com.kingdom.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: May 12, 2010
- * Time: 6:52:12 PM
- * To change this template use File | Settings | File Templates.
- */
 public class InfoDialog {
     private String message;
     private List<Card> cards = new ArrayList<Card>();

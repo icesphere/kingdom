@@ -7,12 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Nov 29, 2010
- * Time: 6:58:25 AM
- */
 public class SalvationSpecialActionHandler {
     public static IncompleteCard handleSpecialAction(Game game, Card card) {
 

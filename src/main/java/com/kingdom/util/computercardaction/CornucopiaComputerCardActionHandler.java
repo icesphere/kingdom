@@ -10,12 +10,6 @@ import com.kingdom.util.cardaction.CardActionHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Aug 20, 2010
- * Time: 7:05:59 AM
- */
 public class CornucopiaComputerCardActionHandler {
     public static void handleCardAction(CardAction cardAction, ComputerPlayer computer) {
 

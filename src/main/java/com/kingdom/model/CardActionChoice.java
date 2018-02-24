@@ -1,11 +1,5 @@
 package com.kingdom.model;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: May 26, 2010
- * Time: 9:43:07 PM
- */
 public class CardActionChoice {
     private String button;
     private String value;

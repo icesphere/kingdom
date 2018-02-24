@@ -4,12 +4,6 @@ import com.kingdom.model.Card;
 import com.kingdom.model.Game;
 import com.kingdom.model.Player;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Jun 9, 2010
- * Time: 6:56:32 AM
- */
 public class DurationHandler {
     public static void applyDurationCards(Game game, Player player) {
         int numTimesCardCopied = 0;

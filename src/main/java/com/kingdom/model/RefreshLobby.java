@@ -1,10 +1,5 @@
 package com.kingdom.model;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 4/14/11
- * Time: 6:31 AM
- */
 public class RefreshLobby {
     private boolean refreshPlayers;
     private boolean refreshGameRooms;

@@ -7,11 +7,6 @@ import com.kingdom.model.Player;
 import java.util.Collections;
 import java.util.Random;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 5/21/11
- * Time: 10:34 AM
- */
 public class HardComputerPlayer extends ComputerPlayer {
     public HardComputerPlayer(Player player, Game game) {
         super(player, game);

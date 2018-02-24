@@ -9,11 +9,6 @@ import com.kingdom.util.cardaction.CardActionHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 9/21/11
- * Time: 9:19 PM
- */
 public class FanComputerCardActionHandler {
     public static void handleCardAction(CardAction cardAction, ComputerPlayer computer) {
 

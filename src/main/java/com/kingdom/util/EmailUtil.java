@@ -14,12 +14,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Nov 22, 2010
- * Time: 7:02:55 AM
- */
 public class EmailUtil {
 
     public static final String ADMIN_EMAIL = "icesphere12@gmail.com";

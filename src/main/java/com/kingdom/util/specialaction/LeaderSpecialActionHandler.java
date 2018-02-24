@@ -5,11 +5,6 @@ import com.kingdom.model.CardAction;
 import com.kingdom.model.Game;
 import com.kingdom.model.Player;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 8/29/11
- * Time: 8:09 PM
- */
 public class LeaderSpecialActionHandler {
 
     public static void handleSpecialAction(Game game, Card card) {

@@ -4,12 +4,6 @@ import com.kingdom.model.User;
 
 import java.util.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Oct 20, 2010
- * Time: 9:33:40 PM
- */
 public class LoggedInUsers {
     private static Map<Integer, User> users = new HashMap<Integer, User>();
 

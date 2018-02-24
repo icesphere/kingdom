@@ -1,11 +1,5 @@
 package com.kingdom.model;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: 2/16/11
- * Time: 6:51 AM
- */
 public class OverallStats {
     private int gamesAgainstComputersPlayed;
     private int gamesAgainstHumansPlayed;

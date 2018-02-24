@@ -6,12 +6,6 @@ import com.kingdom.model.User;
 import java.util.Date;
 import java.util.LinkedList;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Oct 21, 2010
- * Time: 8:20:33 PM
- */
 public class LobbyChats {
 
     public static final int MAX_LOBBY_CHATS = 50;

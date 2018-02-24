@@ -3,11 +3,6 @@ package com.kingdom.util.specialaction;
 import com.kingdom.model.*;
 import com.kingdom.util.KingdomUtil;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 6/7/11
- * Time: 8:07 PM
- */
 public class FairyTaleSpecialActionHandler {
     public static IncompleteCard handleSpecialAction(Game game, Card card, boolean repeatedAction) {
 

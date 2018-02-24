@@ -2,12 +2,6 @@ package com.kingdom.model;
 
 import com.kingdom.util.cardaction.NextActionHandler;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: 3/31/11
- * Time: 6:41 AM
- */
 public class SinglePlayerIncompleteCard extends IncompleteCard {
 
     private boolean completed;

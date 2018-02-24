@@ -3,12 +3,6 @@ package com.kingdom.model;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: 3/31/11
- * Time: 6:37 AM
- */
 public abstract class IncompleteCard {
 
     protected String cardName;

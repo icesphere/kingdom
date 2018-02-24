@@ -3,12 +3,6 @@ package com.kingdom.model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Oct 23, 2010
- * Time: 10:01:11 AM
- */
 public class LobbyChat {
     private String username;
     private String message;

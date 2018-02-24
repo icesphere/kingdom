@@ -7,12 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Jun 10, 2010
- * Time: 9:08:54 PM
- */
 public class SeasideSpecialActionHandler {
     public static IncompleteCard handleSpecialAction(Game game, Card card, boolean repeatedAction) {
 

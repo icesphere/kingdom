@@ -6,11 +6,6 @@ import com.kingdom.util.specialaction.SpecialActionHandler;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 4/2/11
- * Time: 7:07 AM
- */
 public class NextActionHandler {
     public static void handleAction(Game game, String cardName) {
 

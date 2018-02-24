@@ -5,11 +5,6 @@ import com.kingdom.model.*;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 9/21/11
- * Time: 9:20 PM
- */
 public class FanSpecialActionHandler {
 
     public static void handleSpecialAction(Game game, Card card) {

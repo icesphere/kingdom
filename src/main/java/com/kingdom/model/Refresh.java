@@ -1,11 +1,5 @@
 package com.kingdom.model;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: May 15, 2010
- * Time: 7:39:25 AM
- */
 public class Refresh {
     private boolean refreshPlayers;
     private boolean refreshSupply;

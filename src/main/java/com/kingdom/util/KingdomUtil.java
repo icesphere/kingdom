@@ -17,12 +17,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: John
- * Date: Jun 10, 2010
- * Time: 8:39:17 PM
- */
 public class KingdomUtil {
     public static String getArticleWithWord(String word) {
         if (word.toUpperCase().startsWith("A") || word.toUpperCase().startsWith("E") || word.toUpperCase().startsWith("I") || word.toUpperCase().startsWith("O") || word.toUpperCase().startsWith("U")) {
