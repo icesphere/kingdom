@@ -43,7 +43,7 @@ public class CardAction {
     private String destination;
     private int startNumber;
     private int endNumber;
-    private String deck;
+    private Deck deck;
     private Card associatedCard;
     private String action;
     private boolean gainCardAction;
@@ -231,11 +231,11 @@ public class CardAction {
         this.endNumber = endNumber;
     }
 
-    public String getDeck() {
+    public Deck getDeck() {
         return deck;
     }
 
-    public void setDeck(String deck) {
+    public void setDeck(Deck deck) {
         this.deck = deck;
     }
 

@@ -1,6 +1,7 @@
 package com.kingdom.web;
 
 import com.kingdom.model.Card;
+import com.kingdom.model.Deck;
 import com.kingdom.model.User;
 import com.kingdom.service.CardManager;
 import com.kingdom.service.UserManager;
@@ -34,20 +35,20 @@ public class CardController {
             return KingdomUtil.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("cards");
-        modelAndView.addObject("kingdomCards", cardManager.getCards(Card.DECK_KINGDOM, true));
-        modelAndView.addObject("intrigueCards", cardManager.getCards(Card.DECK_INTRIGUE, true));
-        modelAndView.addObject("seasideCards", cardManager.getCards(Card.DECK_SEASIDE, true));
-        modelAndView.addObject("alchemyCards", cardManager.getCards(Card.DECK_ALCHEMY, true));
-        modelAndView.addObject("prosperityCards", cardManager.getCards(Card.DECK_PROSPERITY, true));
-        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Card.DECK_CORNUCOPIA, true));
-        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Card.DECK_HINTERLANDS, true));
+        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, true));
+        modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, true));
+        modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, true));
+        modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, true));
+        modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, true));
+        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, true));
+        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, true));
         modelAndView.addObject("prizeCards", cardManager.getPrizeCards());
-        modelAndView.addObject("promoCards", cardManager.getCards(Card.DECK_PROMO, true));
-        modelAndView.addObject("salvationCards", cardManager.getCards(Card.DECK_SALVATION, true));
-        modelAndView.addObject("fairyTaleCards", cardManager.getCards(Card.DECK_FAIRYTALE, true));
-        modelAndView.addObject("leadersCards", cardManager.getCards(Card.DECK_LEADERS, true));
-        modelAndView.addObject("proletariatCards", cardManager.getCards(Card.DECK_PROLETARIAT, true));
-        modelAndView.addObject("fanCards", cardManager.getCards(Card.DECK_FAN, true));
+        modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, true));
+        modelAndView.addObject("salvationCards", cardManager.getCards(Deck.Salvation, true));
+        modelAndView.addObject("fairyTaleCards", cardManager.getCards(Deck.FairyTale, true));
+        modelAndView.addObject("leadersCards", cardManager.getCards(Deck.Leaders, true));
+        modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, true));
+        modelAndView.addObject("fanCards", cardManager.getCards(Deck.Fan, true));
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
         return modelAndView;
     }
@@ -66,7 +67,7 @@ public class CardController {
             card = cardManager.getCard(Integer.parseInt(id));
         }
         card.setName(request.getParameter("name"));
-        card.setDeck(request.getParameter("deck"));
+        card.setDeck(Deck.valueOf(request.getParameter("deck")));
         card.setType(Integer.parseInt(request.getParameter("type")));
         card.setCost(Integer.parseInt(request.getParameter("cost")));
         card.setCostIncludesPotion(KingdomUtil.getRequestBoolean(request, "costIncludesPotion"));
@@ -87,7 +88,7 @@ public class CardController {
         card.setFontSize(Integer.parseInt(request.getParameter("fontSize")));
         card.setNameLines(Integer.parseInt(request.getParameter("nameLines")));
         card.setTextSize(Integer.parseInt(request.getParameter("textSize")));
-        if (card.getDeck().equals(Card.DECK_SALVATION) || card.getDeck().equals(Card.DECK_FAIRYTALE) || card.getDeck().equals(Card.DECK_LEADERS) || card.getDeck().equals(Card.DECK_PROLETARIAT)) {
+        if (card.getDeck().equals(Deck.Salvation) || card.getDeck().equals(Deck.FairyTale) || card.getDeck().equals(Deck.Leaders) || card.getDeck().equals(Deck.Proletariat)) {
             card.setFanExpansionCard(true);
         }
         cardManager.saveCard(card);

@@ -39,7 +39,7 @@ public class PromoSpecialActionHandler {
                 }
                 if (canAffordAny) {
                     cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                    cardAction.setDeck(Card.DECK_PROMO);
+                    cardAction.setDeck(Deck.Promo);
                     StringBuffer instructions = new StringBuffer("You have ");
                     instructions.append(KingdomUtil.getPlural(coins, "coin"));
                     if (game.isUsePotions()) {
@@ -49,7 +49,7 @@ public class PromoSpecialActionHandler {
                     cardAction.setInstructions(instructions.toString());
                 } else {
                     cardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                    cardAction.setDeck(Card.DECK_PROMO);
+                    cardAction.setDeck(Deck.Promo);
                     cardAction.setHideOnSelect(true);
                     cardAction.setNumCards(cards.size());
                     cardAction.setButtonValue("Done");
@@ -58,7 +58,7 @@ public class PromoSpecialActionHandler {
                 cardAction.setCards(cards);
             } else {
                 cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                cardAction.setDeck(Card.DECK_PROMO);
+                cardAction.setDeck(Deck.Promo);
                 cardAction.setNumCards(0);
                 cardAction.setButtonValue("Continue");
                 cardAction.setInstructions("There are no more black market cards to buy. Click Continue.");
@@ -81,7 +81,7 @@ public class PromoSpecialActionHandler {
             if (cards.size() > 0) {
                 incompleteCard = new MultiPlayerIncompleteCard(card.getName(), game, playerToLeft.getUserId());
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                cardAction.setDeck(Card.DECK_PROMO);
+                cardAction.setDeck(Deck.Promo);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -93,7 +93,7 @@ public class PromoSpecialActionHandler {
         } else if (card.getName().equals("Governor")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-            cardAction.setDeck(Card.DECK_PROMO);
+            cardAction.setDeck(Deck.Promo);
             cardAction.setCardName(card.getName());
             cardAction.setInstructions("Choose one: you get the version in parentheses. Each player gets +1 (+3) cards; or each player gains a Silver (Gold); or each player may trash a card from his hand and gain a card costing exactly 1 (2) more.");
             cardAction.getChoices().add(new CardActionChoice("Cards", "cards"));

@@ -89,18 +89,18 @@ public class GameController {
 
     private void addSelectCardsObjects(User user, ModelAndView modelAndView, boolean includeTesting) {
         modelAndView.addObject("user", user);
-        modelAndView.addObject("kingdomCards", cardManager.getCards(Card.DECK_KINGDOM, includeTesting));
-        modelAndView.addObject("intrigueCards", cardManager.getCards(Card.DECK_INTRIGUE, includeTesting));
-        modelAndView.addObject("seasideCards", cardManager.getCards(Card.DECK_SEASIDE, includeTesting));
-        modelAndView.addObject("alchemyCards", cardManager.getCards(Card.DECK_ALCHEMY, includeTesting));
-        modelAndView.addObject("prosperityCards", cardManager.getCards(Card.DECK_PROSPERITY, includeTesting));
-        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Card.DECK_CORNUCOPIA, includeTesting));
-        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Card.DECK_HINTERLANDS, includeTesting));
-        modelAndView.addObject("promoCards", cardManager.getCards(Card.DECK_PROMO, includeTesting));
-        modelAndView.addObject("salvationCards", cardManager.getCards(Card.DECK_SALVATION, includeTesting));
-        modelAndView.addObject("fairyTaleCards", cardManager.getCards(Card.DECK_FAIRYTALE, includeTesting));
-        modelAndView.addObject("proletariatCards", cardManager.getCards(Card.DECK_PROLETARIAT, includeTesting));
-        modelAndView.addObject("fanCards", cardManager.getCards(Card.DECK_FAN, includeTesting));
+        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, includeTesting));
+        modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, includeTesting));
+        modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, includeTesting));
+        modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, includeTesting));
+        modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, includeTesting));
+        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, includeTesting));
+        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, includeTesting));
+        modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, includeTesting));
+        modelAndView.addObject("salvationCards", cardManager.getCards(Deck.Salvation, includeTesting));
+        modelAndView.addObject("fairyTaleCards", cardManager.getCards(Deck.FairyTale, includeTesting));
+        modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, includeTesting));
+        modelAndView.addObject("fanCards", cardManager.getCards(Deck.Fan, includeTesting));
         modelAndView.addObject("annotatedGames", gameManager.getAnnotatedGames());
         modelAndView.addObject("recentGames", gameManager.getGameHistoryList(user.getUserId(), 10));
         modelAndView.addObject("excludedCards", user.getExcludedCardNames());
@@ -120,9 +120,9 @@ public class GameController {
             game.setAvailableLeaders(cardManager.getAvailableLeaderCards());
         }
 
-        List<String> decks = new ArrayList<String>();
-        List<Card> customSelection = new ArrayList<Card>();
-        List<Card> excludedCards = new ArrayList<Card>(0);
+        List<Deck> decks = new ArrayList<>();
+        List<Card> customSelection = new ArrayList<>();
+        List<Card> excludedCards = new ArrayList<>(0);
         parseCardSelectionRequest(request, user, game, decks, customSelection, excludedCards, generateType);
 
         setRandomizingOptions(request, game, customSelection, excludedCards, generateType);
@@ -228,7 +228,7 @@ public class GameController {
                 }
                 game.setMobile(KingdomUtil.isMobile(request));
 
-                List<String> decks = new ArrayList<String>();
+                List<Deck> decks = new ArrayList<>();
                 List<Card> customSelection = new ArrayList<Card>();
                 List<Card> excludedCards = new ArrayList<Card>(0);
                 parseCardSelectionRequest(request, user, game, decks, customSelection, excludedCards, generateType);
@@ -254,7 +254,7 @@ public class GameController {
                             includePlatinumAndColony = true;
                         }
                     }
-                    List<Card> kingdomCards = new ArrayList<Card>();
+                    List<Card> kingdomCards = new ArrayList<>();
                     for (String cardString : cards.split(",")) {
                         Card card;
                         if (generateType.equals("annotatedGame")) {
@@ -293,32 +293,32 @@ public class GameController {
         }
     }
 
-    private void parseCardSelectionRequest(HttpServletRequest request, User user, Game game, List<String> decks, List<Card> customSelection, List<Card> excludedCards, String generateType) {
+    private void parseCardSelectionRequest(HttpServletRequest request, User user, Game game, List<Deck> decks, List<Card> customSelection, List<Card> excludedCards, String generateType) {
         Enumeration parameterNames = request.getParameterNames();
         while (parameterNames.hasMoreElements()) {
             String name = (String) parameterNames.nextElement();
             if (name.startsWith("deck_") && !name.startsWith("deck_weight_")) {
-                String deck = request.getParameter(name);
+                Deck deck = Deck.valueOf(request.getParameter(name));
                 int weight = 3;
-                if (deck.equals(Card.DECK_KINGDOM)) {
+                if (deck == Deck.Kingdom) {
                     weight = user.getBaseWeight();
-                } else if (deck.equals(Card.DECK_INTRIGUE)) {
+                } else if (deck == Deck.Intrigue) {
                     weight = user.getIntrigueWeight();
-                } else if (deck.equals(Card.DECK_SEASIDE)) {
+                } else if (deck == Deck.Seaside) {
                     weight = user.getSeasideWeight();
-                } else if (deck.equals(Card.DECK_ALCHEMY)) {
+                } else if (deck == Deck.Alchemy) {
                     weight = user.getAlchemyWeight();
-                } else if (deck.equals(Card.DECK_PROSPERITY)) {
+                } else if (deck == Deck.Prosperity) {
                     weight = user.getProsperityWeight();
-                } else if (deck.equals(Card.DECK_CORNUCOPIA)) {
+                } else if (deck == Deck.Cornucopia) {
                     weight = user.getCornucopiaWeight();
-                } else if (deck.equals(Card.DECK_HINTERLANDS)) {
+                } else if (deck == Deck.Hinterlands) {
                     weight = user.getHinterlandsWeight();
-                } else if (deck.equals(Card.DECK_SALVATION)) {
+                } else if (deck == Deck.Salvation) {
                     weight = user.getSalvationWeight();
-                } else if (deck.equals(Card.DECK_FAIRYTALE)) {
+                } else if (deck == Deck.FairyTale) {
                     weight = user.getFairyTaleWeight();
-                } else if (deck.equals(Card.DECK_PROLETARIAT)) {
+                } else if (deck == Deck.Proletariat) {
                     weight = user.getProletariatWeight();
                 }
                 if (weight > 5) {
@@ -341,13 +341,13 @@ public class GameController {
         String promoCards = request.getParameter("promo_cards");
         if (promoCards != null && promoCards.equals("true")) {
             for (int i = 0; i < user.getPromoWeight(); i++) {
-                decks.add(Card.DECK_PROMO);
+                decks.add(Deck.Promo);
             }
         }
         String otherFanCards = request.getParameter("other_fan_cards");
         if (otherFanCards != null && otherFanCards.equals("true")) {
             for (int i = 0; i < user.getFanWeight(); i++) {
-                decks.add(Card.DECK_FAN);
+                decks.add(Deck.Fan);
             }
         }
     }
@@ -2193,15 +2193,15 @@ public class GameController {
 
         modelAndView.addObject("user", user);
         modelAndView.addObject("selectedCards", selectedCards);
-        modelAndView.addObject("kingdomCards", cardManager.getCards(Card.DECK_KINGDOM, true));
-        modelAndView.addObject("intrigueCards", cardManager.getCards(Card.DECK_INTRIGUE, true));
-        modelAndView.addObject("seasideCards", cardManager.getCards(Card.DECK_SEASIDE, true));
-        modelAndView.addObject("alchemyCards", cardManager.getCards(Card.DECK_ALCHEMY, true));
-        modelAndView.addObject("prosperityCards", cardManager.getCards(Card.DECK_PROSPERITY, true));
-        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Card.DECK_CORNUCOPIA, true));
-        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Card.DECK_HINTERLANDS, true));
-        modelAndView.addObject("proletariatCards", cardManager.getCards(Card.DECK_PROLETARIAT, true));
-        modelAndView.addObject("promoCards", cardManager.getCards(Card.DECK_PROMO, true));
+        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, true));
+        modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, true));
+        modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, true));
+        modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, true));
+        modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, true));
+        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, true));
+        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, true));
+        modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, true));
+        modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, true));
         modelAndView.addObject("game", game);
         return modelAndView;
     }

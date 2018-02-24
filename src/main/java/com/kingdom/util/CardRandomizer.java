@@ -1,6 +1,7 @@
 package com.kingdom.util;
 
 import com.kingdom.model.Card;
+import com.kingdom.model.Deck;
 import com.kingdom.model.Game;
 import com.kingdom.model.RandomizingOptions;
 import com.kingdom.repository.CardRepository;
@@ -31,7 +32,7 @@ public class CardRandomizer {
     public void setRandomKingdomCards(Game game, RandomizingOptions options) {
         game.setRandomizerReplacementCardNotFound(false);
         this.options = options;
-        List<String> decks = game.getDecks();
+        List<Deck> decks = game.getDecks();
         cardSwapped = false;
         changingBaneCard = options.isSwappingCard() && options.getCardToReplaceIndex() == 10;
         replacingCardWithSpecificType = options.getCardTypeToReplaceWith() != null;
@@ -44,8 +45,8 @@ public class CardRandomizer {
         List<Card> cards = new ArrayList<Card>();
 
         //special case where they only selected alchemy deck
-        if (decks.size() == 1 && decks.get(0).equals(Card.DECK_ALCHEMY)) {
-            cards = getCardsByDeck(Card.DECK_ALCHEMY);
+        if (decks.size() == 1 && decks.get(0).equals(Deck.Alchemy)) {
+            cards = getCardsByDeck(Deck.Alchemy);
             Collections.shuffle(cards);
             if (options.isSwappingCard()) {
                 for (Card card : cards) {
@@ -62,15 +63,15 @@ public class CardRandomizer {
         }
 
         boolean includeAlchemy = !options.isThreeToFiveAlchemy();
-        if (options.isThreeToFiveAlchemy() && decks.contains(Card.DECK_ALCHEMY) && selectedCards.size() <= 5) {
+        if (options.isThreeToFiveAlchemy() && decks.contains(Deck.Alchemy) && selectedCards.size() <= 5) {
             int rand = 1 + (int) (Math.random() * ((decks.size() - 1) + 1));
             if (rand == 1) {
                 includeAlchemy = true;
             }
         }
 
-        for (String deck : decks) {
-            if (!options.isThreeToFiveAlchemy() || !deck.equals(Card.DECK_ALCHEMY)) {
+        for (Deck deck : decks) {
+            if (!options.isThreeToFiveAlchemy() || !deck.equals(Deck.Alchemy)) {
                 cards.addAll(getCardsByDeck(deck));
             }
         }
@@ -78,7 +79,7 @@ public class CardRandomizer {
 
         if (includeAlchemy && options.isThreeToFiveAlchemy()) {
             int alchemyCardsToInclude = 3;
-            List<Card> alchemyCards = getCardsByDeck(Card.DECK_ALCHEMY);
+            List<Card> alchemyCards = getCardsByDeck(Deck.Alchemy);
             Collections.shuffle(alchemyCards);
             if (alchemyCards.get(0).getCost() > 3) {
                 alchemyCardsToInclude = 5;
@@ -297,7 +298,7 @@ public class CardRandomizer {
         setRandomKingdomCards(game, swapOptions);
     }
 
-    private List<Card> getCardsByDeck(String deck) {
+    private List<Card> getCardsByDeck(Deck deck) {
         return cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false, false);
     }
 

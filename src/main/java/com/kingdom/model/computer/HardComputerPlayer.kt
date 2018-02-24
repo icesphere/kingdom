@@ -1,20 +1,16 @@
-package com.kingdom.model.computer;
+package com.kingdom.model.computer
 
-import com.kingdom.model.Card;
-import com.kingdom.model.Game;
-import com.kingdom.model.Player;
+import com.kingdom.model.Card
+import com.kingdom.model.Game
+import com.kingdom.model.Player
+import java.util.*
 
-import java.util.Collections;
-import java.util.Random;
-
-public class HardComputerPlayer extends ComputerPlayer {
-    public HardComputerPlayer(Player player, Game game) {
-        super(player, game);
-        difficulty = 3;
+open class HardComputerPlayer(player: Player, game: Game) : ComputerPlayer(player, game) {
+    init {
+        difficulty = 3
     }
 
-    @Override
-    protected void setupStartingStrategies() {
+    override fun setupStartingStrategies() {
         /*if(!chapelStrategy && !ambassadorStrategy) {
             if (fiveTwoSplit) {
                 if (card.getName().equals("Witch")) {
@@ -47,42 +43,42 @@ public class HardComputerPlayer extends ComputerPlayer {
 
         //todo when to buy vineyard, fairgrounds, silk road
 
-        Random random = new Random();
+        val random = Random()
 
-        if (hasTrashingCard && (kingdomCardMap.containsKey("Gardens") && hasExtraBuys)) {
+        if (hasTrashingCard && kingdomCardMap.containsKey("Gardens") && hasExtraBuys) {
             if (random.nextInt(2) == 0) {
-                trashingStrategy = true;
+                trashingStrategy = true
             } else {
-                gardensStrategy = true;
+                isGardensStrategy = true
             }
         } else if (hasTrashingCard) {
             if (random.nextInt(2) == 0) {
-                trashingStrategy = true;
+                trashingStrategy = true
             } else {
-                bigMoneyStrategy = true;
+                bigMoneyStrategy = true
             }
         } else {
-            bigMoneyStrategy = true;
+            bigMoneyStrategy = true
         }
 
         if (trashingStrategy) {
-            if (trashingCards.size() == 1) {
-                trashingCard = trashingCards.get(0);
+            if (trashingCards.size == 1) {
+                trashingCard = trashingCards[0]
             } else {
                 if (kingdomCardMap.containsKey("Chapel")) {
-                    int i = random.nextInt(3);
+                    val i = random.nextInt(3)
                     if (i < 2) {
-                        trashingCard = kingdomCardMap.get("Chapel");
+                        trashingCard = kingdomCardMap["Chapel"]
                     }
                 } else if (kingdomCardMap.containsKey("Ambassador")) {
-                    int i = random.nextInt(3);
+                    val i = random.nextInt(3)
                     if (i < 2) {
-                        trashingCard = kingdomCardMap.get("Ambassador");
+                        trashingCard = kingdomCardMap["Ambassador"]
                     }
                 }
                 if (trashingCard == null) {
-                    Collections.shuffle(trashingCards);
-                    trashingCard = trashingCards.get(0);
+                    trashingCards.shuffle()
+                    trashingCard = trashingCards[0]
                 }
             }
         }
@@ -91,56 +87,56 @@ public class HardComputerPlayer extends ComputerPlayer {
 
         //todo starting-action strategies
         if (!trashingStrategy && kingdomCardMap.containsKey("Sea Hag") && !fiveTwoSplit) {
-            int i = random.nextInt(4);
+            val i = random.nextInt(4)
             if (i < 3) {
                 if (startingHandCoppers == 4) {
-                    firstCard = kingdomCardMap.get("Sea Hag");
+                    firstCard = kingdomCardMap["Sea Hag"]
                 } else {
-                    secondCard = kingdomCardMap.get("Sea Hag");
+                    secondCard = kingdomCardMap["Sea Hag"]
                 }
             }
         }
 
-        if (trashingStrategy && trashingCard.getName().equals("Chapel")) {
-            chapelStrategy = true;
+        if (trashingStrategy && trashingCard!!.name == "Chapel") {
+            chapelStrategy = true
             if (startingHandCoppers == 2 || startingHandCoppers == 3) {
-                firstCard = trashingCard;
+                firstCard = trashingCard
             } else {
-                secondCard = trashingCard;
+                secondCard = trashingCard
             }
             if (fiveTwoSplit && kingdomCardMap.containsKey("Laboratory")) {
-                int i = random.nextInt(3);
+                val i = random.nextInt(3)
                 if (i < 2) {
                     if (startingHandCoppers == 5) {
-                        firstCard = kingdomCardMap.get("Laboratory");
+                        firstCard = kingdomCardMap["Laboratory"]
                     } else {
-                        secondCard = kingdomCardMap.get("Laboratory");
+                        secondCard = kingdomCardMap["Laboratory"]
                     }
                 }
             }
-        } else if (trashingStrategy && trashingCard.getName().equals("Ambassador")) {
+        } else if (trashingStrategy && trashingCard!!.name == "Ambassador") {
             if (!fiveTwoSplit) {
                 if (startingHandCoppers == 3) {
-                    firstCard = kingdomCardMap.get("Ambassador");
+                    firstCard = kingdomCardMap["Ambassador"]
                     if (random.nextInt(2) == 0) {
-                        secondCard = kingdomCardMap.get("Ambassador");
+                        secondCard = kingdomCardMap["Ambassador"]
                     }
                 } else {
-                    secondCard = kingdomCardMap.get("Ambassador");
+                    secondCard = kingdomCardMap["Ambassador"]
                     if (random.nextInt(2) == 0) {
-                        firstCard = kingdomCardMap.get("Ambassador");
+                        firstCard = kingdomCardMap["Ambassador"]
                     }
                 }
             }
         }
 
         if (fiveTwoSplit && kingdomCardMap.containsKey("Witch")) {
-            int i = random.nextInt(3);
+            val i = random.nextInt(3)
             if (i < 2) {
                 if (startingHandCoppers == 5) {
-                    firstCard = kingdomCardMap.get("Witch");
+                    firstCard = kingdomCardMap["Witch"]
                 } else {
-                    secondCard = kingdomCardMap.get("Witch");
+                    secondCard = kingdomCardMap["Witch"]
                 }
             }
         }
@@ -151,18 +147,13 @@ public class HardComputerPlayer extends ComputerPlayer {
         //todo combo-based strategies
     }
 
-    @Override
-    public Card buyCard() {
-        Card card = buyCardHardDifficulty();
-        if (card != null) {
-            return card;
-        }
+    public override fun buyCard(): Card? {
+        val card = buyCardHardDifficulty()
+        return card ?: super.buyCard()
 
-        return super.buyCard();
     }
 
-    @Override
-    protected boolean excludeCard(Card card) {
-        return excludeCardHard(card);
+    override fun excludeCard(card: Card): Boolean {
+        return excludeCardHard(card)
     }
 }

@@ -47,7 +47,7 @@ public class AlchemySpecialActionHandler {
             } else if (cards.size() > 0) {
                 game.refreshHand(player);
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                cardAction.setDeck(Card.DECK_ALCHEMY);
+                cardAction.setDeck(Deck.Alchemy);
                 cardAction.setHideOnSelect(true);
                 cardAction.setNumCards(cards.size());
                 cardAction.setCardName(card.getName());
@@ -60,7 +60,7 @@ public class AlchemySpecialActionHandler {
             Player player = game.getCurrentPlayer();
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_ALCHEMY);
+                cardAction.setDeck(Deck.Alchemy);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -126,7 +126,7 @@ public class AlchemySpecialActionHandler {
                 game.getGolemActions().push(cards.get(0));
             } else if (cards.size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                cardAction.setDeck(Card.DECK_ALCHEMY);
+                cardAction.setDeck(Deck.Alchemy);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -141,7 +141,7 @@ public class AlchemySpecialActionHandler {
             Player currentPlayer = game.getCurrentPlayer();
             if (currentPlayer.lookAtTopDeckCard() != null) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                cardAction.setDeck(Card.DECK_ALCHEMY);
+                cardAction.setDeck(Deck.Alchemy);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("You are looking at the top card of your deck. Do you want to discard it?");
                 cardAction.getCards().add(currentPlayer.lookAtTopDeckCard());
@@ -158,7 +158,7 @@ public class AlchemySpecialActionHandler {
                 } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                     if (nextPlayer.lookAtTopDeckCard() != null) {
                         CardAction nextCardAction = new CardAction(CardAction.TYPE_YES_NO);
-                        nextCardAction.setDeck(Card.DECK_ALCHEMY);
+                        nextCardAction.setDeck(Deck.Alchemy);
                         nextCardAction.setCardName(card.getName());
                         nextCardAction.setInstructions("You are looking at the top card of " + nextPlayer.getUsername() + "'s deck. Do you want to discard it?");
                         nextCardAction.getCards().add(nextPlayer.lookAtTopDeckCard());
@@ -201,7 +201,7 @@ public class AlchemySpecialActionHandler {
             Player player = game.getCurrentPlayer();
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_ALCHEMY);
+                cardAction.setDeck(Deck.Alchemy);
                 cardAction.setCardName(card.getName());
                 cardAction.setCardId(card.getCardId());
                 cardAction.setButtonValue("Done");
@@ -215,7 +215,7 @@ public class AlchemySpecialActionHandler {
         } else if (card.getName().equals("University")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY);
-            cardAction.setDeck(Card.DECK_ALCHEMY);
+            cardAction.setDeck(Deck.Alchemy);
             cardAction.setCardName(card.getName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);

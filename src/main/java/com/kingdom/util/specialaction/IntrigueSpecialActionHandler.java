@@ -29,7 +29,7 @@ public class IntrigueSpecialActionHandler {
                 }
                 if (hasEstate) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                    cardAction.setDeck(Card.DECK_INTRIGUE);
+                    cardAction.setDeck(Deck.Intrigue);
                     cardAction.setCardName(card.getName());
                     cardAction.setInstructions("Do you want to discard an Estate card from your hand? If you do then you get +4 coins, otherwise you gain an Estate card.");
                     game.setPlayerCardAction(player, cardAction);
@@ -58,7 +58,7 @@ public class IntrigueSpecialActionHandler {
             case "Courtyard": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
-                cardAction.setDeck(Card.DECK_INTRIGUE);
+                cardAction.setDeck(Deck.Intrigue);
                 cardAction.setCardName(card.getName());
                 cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
                 cardAction.setButtonValue("Done");
@@ -72,7 +72,7 @@ public class IntrigueSpecialActionHandler {
             case "Ironworks": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-                cardAction.setDeck(Card.DECK_INTRIGUE);
+                cardAction.setDeck(Deck.Intrigue);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -94,7 +94,7 @@ public class IntrigueSpecialActionHandler {
                 for (Player player : players) {
                     if (player.getHand().size() > 0) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                        cardAction.setDeck(Card.DECK_INTRIGUE);
+                        cardAction.setDeck(Deck.Intrigue);
                         cardAction.setCardName(card.getName());
                         cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
                         cardAction.setNumCards(1);
@@ -110,7 +110,7 @@ public class IntrigueSpecialActionHandler {
             case "Mining Village": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                cardAction.setDeck(Card.DECK_INTRIGUE);
+                cardAction.setDeck(Deck.Intrigue);
                 cardAction.setCardName(card.getName());
                 cardAction.getCards().add(card);
                 cardAction.setInstructions("Do you want to trash this card to gain 2 coins?");
@@ -120,7 +120,7 @@ public class IntrigueSpecialActionHandler {
             case "Minion": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                cardAction.setDeck(Card.DECK_INTRIGUE);
+                cardAction.setDeck(Deck.Intrigue);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("Choose one: +2 coins OR Discard your hand and draw 4 cards, and each other player with at least 5 cards in hand discards their hand and draws 4 cards.");
                 cardAction.getChoices().add(new CardActionChoice("+2 Coins", "coins"));
@@ -131,7 +131,7 @@ public class IntrigueSpecialActionHandler {
             case "Nobles": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                cardAction.setDeck(Card.DECK_INTRIGUE);
+                cardAction.setDeck(Deck.Intrigue);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("Choose one: +3 Cards OR +2 Actions.");
                 cardAction.getChoices().add(new CardActionChoice("+3 Cards", "cards"));
@@ -142,7 +142,7 @@ public class IntrigueSpecialActionHandler {
             case "Pawn": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                cardAction.setDeck(Card.DECK_INTRIGUE);
+                cardAction.setDeck(Deck.Intrigue);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("Choose a combination.");
                 cardAction.getChoices().add(new CardActionChoice("+1 Card, +1 Action", "cardAndAction"));
@@ -176,7 +176,7 @@ public class IntrigueSpecialActionHandler {
                                 game.getTrashedCards().add(c);
                                 game.playerLostCard(player, c);
                                 CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY);
-                                cardAction.setDeck(Card.DECK_INTRIGUE);
+                                cardAction.setDeck(Deck.Intrigue);
                                 cardAction.setCardName(card.getName());
                                 cardAction.setButtonValue("Done");
                                 cardAction.setNumCards(1);
@@ -237,7 +237,7 @@ public class IntrigueSpecialActionHandler {
                 } else if (cards.size() > 0) {
                     game.refreshHand(player);
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                    cardAction.setDeck(Card.DECK_INTRIGUE);
+                    cardAction.setDeck(Deck.Intrigue);
                     cardAction.setHideOnSelect(true);
                     cardAction.setNumCards(cards.size());
                     cardAction.setCardName(card.getName());
@@ -251,7 +251,7 @@ public class IntrigueSpecialActionHandler {
             case "Secret Chamber": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND);
-                cardAction.setDeck(Card.DECK_INTRIGUE);
+                cardAction.setDeck(Deck.Intrigue);
                 cardAction.setCardName(card.getName());
                 cardAction.getCards().addAll(player.getHand());
                 cardAction.setNumCards(player.getHand().size());
@@ -277,7 +277,7 @@ public class IntrigueSpecialActionHandler {
             case "Steward": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                cardAction.setDeck(Card.DECK_INTRIGUE);
+                cardAction.setDeck(Deck.Intrigue);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("Choose one:");
                 cardAction.getChoices().add(new CardActionChoice("+2 Cards", "cards"));
@@ -301,7 +301,7 @@ public class IntrigueSpecialActionHandler {
                             game.playerLostCard(nextPlayer, topCard);
                             game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Swindler", Card.ACTION_COLOR), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.getCardWithBackgroundColor(topCard));
                             CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                            nextCardAction.setDeck(Card.DECK_INTRIGUE);
+                            nextCardAction.setDeck(Deck.Intrigue);
                             nextCardAction.setNumCards(1);
                             nextCardAction.setButtonValue("Done");
                             nextCardAction.setCardName(card.getName());
@@ -336,7 +336,7 @@ public class IntrigueSpecialActionHandler {
                 }
                 if (!incompleteCard.getExtraCardActions().isEmpty()) {
                     CardAction cardAction = incompleteCard.getExtraCardActions().remove();
-                    cardAction.setDeck(Card.DECK_INTRIGUE);
+                    cardAction.setDeck(Deck.Intrigue);
                     game.setPlayerCardAction(currentPlayer, cardAction);
                 }
                 break;
@@ -349,7 +349,7 @@ public class IntrigueSpecialActionHandler {
                             game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                         } else if (!player.hasMoat() && !player.hasLighthouse()) {
                             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                            cardAction.setDeck(Card.DECK_INTRIGUE);
+                            cardAction.setDeck(Deck.Intrigue);
                             cardAction.setCardName(card.getName());
                             cardAction.setInstructions("Choose one: Discard 2 cards OR Gain a Curse card into your hand.");
                             cardAction.getChoices().add(new CardActionChoice("Discard", "discard"));
@@ -376,7 +376,7 @@ public class IntrigueSpecialActionHandler {
                     game.addHistory("Trading Post trashed the last card in ", player.getUsername(), "'s hand");
                 } else if (player.getHand().size() > 1) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_INTRIGUE);
+                    cardAction.setDeck(Deck.Intrigue);
                     cardAction.setCardName(card.getName());
                     cardAction.setButtonValue("Done");
                     cardAction.setNumCards(2);
@@ -425,7 +425,7 @@ public class IntrigueSpecialActionHandler {
                 Player player = game.getCurrentPlayer();
                 if (player.getHand().size() > 0) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_INTRIGUE);
+                    cardAction.setDeck(Deck.Intrigue);
                     cardAction.setCardName(card.getName());
                     cardAction.setButtonValue("Done");
                     cardAction.setNumCards(1);
@@ -443,7 +443,7 @@ public class IntrigueSpecialActionHandler {
                     game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("Your deck and discard piles are empty."));
                 } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                    cardAction.setDeck(Card.DECK_INTRIGUE);
+                    cardAction.setDeck(Deck.Intrigue);
                     cardAction.setCardName(card.getName());
                     cardAction.setButtonValue("Done");
                     cardAction.setNumCards(1);

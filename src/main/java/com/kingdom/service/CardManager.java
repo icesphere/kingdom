@@ -1,6 +1,7 @@
 package com.kingdom.service;
 
 import com.kingdom.model.Card;
+import com.kingdom.model.Deck;
 import com.kingdom.model.Game;
 import com.kingdom.repository.CardRepository;
 import com.kingdom.util.CardRandomizer;
@@ -24,7 +25,7 @@ public class CardManager {
         return cardRepository.findByFanExpansionCardAndDisabledAndPrizeCardOrderByNameAsc(includeFanExpansionCards, false, false);
     }
 
-    public List<Card> getCards(String deck, boolean includeTesting) {
+    public List<Card> getCards(Deck deck, boolean includeTesting) {
         return getCardsByDeck(deck, includeTesting);
     }
 
@@ -57,12 +58,12 @@ public class CardManager {
     }
 
     public List<Card> getAvailableLeaderCards() {
-        List<Card> cards = getCardsByDeck(Card.DECK_LEADERS, false);
+        List<Card> cards = getCardsByDeck(Deck.Leaders, false);
         Collections.shuffle(cards);
         return cards.subList(0, 7);
     }
 
-    private List<Card> getCardsByDeck(String deck, boolean includeTesting) {
+    private List<Card> getCardsByDeck(Deck deck, boolean includeTesting) {
         if (!includeTesting) {
             return cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false, false);
         } else {

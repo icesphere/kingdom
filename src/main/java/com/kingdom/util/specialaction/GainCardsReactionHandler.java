@@ -9,7 +9,7 @@ public class GainCardsReactionHandler {
         if (action.equals("Royal Seal")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
             cardAction.setGainCardAction(true);
-            cardAction.setDeck(Card.DECK_PROSPERITY);
+            cardAction.setDeck(Deck.Prosperity);
             cardAction.setCardName("Royal Seal");
             cardAction.setAssociatedCard(card);
             if (destination.equals("hand")) {
@@ -23,7 +23,7 @@ public class GainCardsReactionHandler {
         } else if (action.equals("Tinker")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
             cardAction.setGainCardAction(true);
-            cardAction.setDeck(Card.DECK_FAIRYTALE);
+            cardAction.setDeck(Deck.FairyTale);
             cardAction.setCardName("Tinker");
             cardAction.setAssociatedCard(card);
             cardAction.setInstructions("Do you want to add this card under your Tinker?");
@@ -33,7 +33,7 @@ public class GainCardsReactionHandler {
         } else if (action.equals("Trader")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setGainCardAction(true);
-            cardAction.setDeck(Card.DECK_HINTERLANDS);
+            cardAction.setDeck(Deck.Hinterlands);
             cardAction.setCardName("Trader");
             cardAction.setAssociatedCard(card);
             cardAction.setInstructions("Do you want to reveal your Trader to gain a Silver instead?");
@@ -45,7 +45,7 @@ public class GainCardsReactionHandler {
         } else if (action.equals("Watchtower")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setGainCardAction(true);
-            cardAction.setDeck(Card.DECK_PROSPERITY);
+            cardAction.setDeck(Deck.Prosperity);
             cardAction.setCardName("Watchtower");
             cardAction.setAssociatedCard(card);
             cardAction.setInstructions("Do you want to reveal your Watchtower to trash this card, or put this card on top of your deck?");

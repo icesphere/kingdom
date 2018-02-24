@@ -13,7 +13,7 @@ public class BuySpecialActionHandler {
         if (card.getName().equals("Botanical Gardens")) {
             if (player.getCoins() >= 6) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                cardAction.setDeck(Card.DECK_PROLETARIAT);
+                cardAction.setDeck(Deck.Proletariat);
                 cardAction.setCardName(card.getName());
                 cardAction.setAssociatedCard(card);
                 cardAction.setInstructions("Do you want to pay an additional 3 coins to gain another Botanical Gardens or an additional 6 coins to gain two more Botanical Gardens?");
@@ -23,7 +23,7 @@ public class BuySpecialActionHandler {
                 return cardAction;
             } else if (player.getCoins() >= 3) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                cardAction.setDeck(Card.DECK_PROLETARIAT);
+                cardAction.setDeck(Deck.Proletariat);
                 cardAction.setCardName(card.getName());
                 cardAction.setAssociatedCard(card);
                 cardAction.setInstructions("Do you want to pay an additional 3 coins to gain another Botanical Gardens?");
@@ -32,7 +32,7 @@ public class BuySpecialActionHandler {
         } else if (card.getName().equals("City Planner")) {
             if (player.getCoins() >= 2 && !player.getVictoryCards().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                cardAction.setDeck(Card.DECK_PROLETARIAT);
+                cardAction.setDeck(Deck.Proletariat);
                 cardAction.setCardName(card.getName());
                 cardAction.setAssociatedCard(card);
                 cardAction.setInstructions("Do you want to pay an additional 2 coins to set aside a victory card from your hand?");
@@ -41,7 +41,7 @@ public class BuySpecialActionHandler {
         } else if (card.getName().equals("Farmland")) {
             if (!player.getHand().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_HINTERLANDS);
+                cardAction.setDeck(Deck.Hinterlands);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -55,7 +55,7 @@ public class BuySpecialActionHandler {
         } else if (card.getName().equals("Orchard")) {
             if (player.getCoins() > 1) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                cardAction.setDeck(Card.DECK_PROLETARIAT);
+                cardAction.setDeck(Deck.Proletariat);
                 cardAction.setCardName(card.getName());
                 cardAction.setAssociatedCard(card);
                 cardAction.setInstructions("Do you want to pay an additional 2 coins to gain two fruit tokens?");
@@ -63,7 +63,7 @@ public class BuySpecialActionHandler {
             }
         } else if (card.getName().equals("Rancher")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            cardAction.setDeck(Card.DECK_PROLETARIAT);
+            cardAction.setDeck(Deck.Proletariat);
             cardAction.setCardName(cardAction.getCardName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
@@ -80,7 +80,7 @@ public class BuySpecialActionHandler {
             }
         } else if (card.getName().equals("Squatter")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-            cardAction.setDeck(Card.DECK_PROLETARIAT);
+            cardAction.setDeck(Deck.Proletariat);
             cardAction.setCardName(card.getName());
             cardAction.setAssociatedCard(card);
             cardAction.setInstructions("Do you want to return this card to the supply and have each other player gain a Squatter?");
@@ -88,7 +88,7 @@ public class BuySpecialActionHandler {
         } else if (card.getName().equals("Shepherd")) {
             if (player.getCoins() >= 2) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                cardAction.setDeck(Card.DECK_PROLETARIAT);
+                cardAction.setDeck(Deck.Proletariat);
                 cardAction.setCardName(card.getName());
                 cardAction.setAssociatedCard(card);
                 cardAction.setInstructions("Do you want to pay an additional 2 coins to gain 2 cattle tokens?");
@@ -101,7 +101,7 @@ public class BuySpecialActionHandler {
 
     public static CardAction getHagglerCardAction(Game game, Card card) {
         CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-        cardAction.setDeck(Card.DECK_HINTERLANDS);
+        cardAction.setDeck(Deck.Hinterlands);
         cardAction.setCardName("Haggler");
         cardAction.setButtonValue("Done");
         cardAction.setNumCards(1);
@@ -165,7 +165,7 @@ public class BuySpecialActionHandler {
                         game.playerGainedCard(player, applicableCard);
                     } else if (numApplicableCards == 2) {
                         CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                        nextCardAction.setDeck(Card.DECK_HINTERLANDS);
+                        nextCardAction.setDeck(Deck.Hinterlands);
                         nextCardAction.setPlayerId(nextPlayer.getUserId());
                         nextCardAction.setCardName("Noble Brigand");
                         nextCardAction.getChoices().add(new CardActionChoice("Gold", "gold"));

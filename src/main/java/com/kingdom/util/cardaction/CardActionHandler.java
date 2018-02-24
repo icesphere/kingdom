@@ -31,7 +31,7 @@ public class CardActionHandler {
         } else if (type == CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK) {
             if (selectedCardIds.size() > 1 && cardAction.getCardName().equals("Ghost Ship")) {
                 CardAction reorderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                reorderCardAction.setDeck(Card.DECK_SEASIDE);
+                reorderCardAction.setDeck(Deck.Seaside);
                 reorderCardAction.setHideOnSelect(true);
                 reorderCardAction.setNumCards(selectedCardIds.size());
                 reorderCardAction.setCardName(cardAction.getCardName());

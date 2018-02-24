@@ -10,7 +10,7 @@ public class FairyTaleSpecialActionHandler {
         Player player = game.getCurrentPlayer();
         if (card.getName().equals("Bridge Troll")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-            cardAction.setDeck(Card.DECK_FAIRYTALE);
+            cardAction.setDeck(Deck.FairyTale);
             cardAction.setCardName(card.getName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
@@ -34,7 +34,7 @@ public class FairyTaleSpecialActionHandler {
         } else if (card.getName().equals("Druid")) {
             if (!player.getVictoryCards().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND);
-                cardAction.setDeck(Card.DECK_FAIRYTALE);
+                cardAction.setDeck(Deck.FairyTale);
                 cardAction.setCardName(card.getName());
                 cardAction.getCards().addAll(player.getVictoryCards());
                 cardAction.setNumCards(2);
@@ -47,7 +47,7 @@ public class FairyTaleSpecialActionHandler {
             }
         } else if (card.getName().equals("Lost Village")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-            cardAction.setDeck(Card.DECK_FAIRYTALE);
+            cardAction.setDeck(Deck.FairyTale);
             cardAction.setCardName("Lost Village 1");
             cardAction.setInstructions("Choose one: +2 Actions, or +1 Action and set aside cards until you choose to draw one.");
             cardAction.getChoices().add(new CardActionChoice("+2 Actions", "actions"));
@@ -55,7 +55,7 @@ public class FairyTaleSpecialActionHandler {
             game.setPlayerCardAction(player, cardAction);
         } else if (card.getName().equals("Magic Beans")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-            cardAction.setDeck(Card.DECK_FAIRYTALE);
+            cardAction.setDeck(Deck.FairyTale);
             cardAction.setCardName(card.getName());
             cardAction.getCards().add(card);
             cardAction.setInstructions("Do you want to trash your Magic Beans, or return it to the supply?");
@@ -71,7 +71,7 @@ public class FairyTaleSpecialActionHandler {
                         game.addHistory(otherPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse() && otherPlayer.getHand().size() >= 4 && !otherPlayer.getActionCards().isEmpty()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                        cardAction.setDeck(Card.DECK_FAIRYTALE);
+                        cardAction.setDeck(Deck.FairyTale);
                         cardAction.setCardName(card.getName());
                         cardAction.setButtonValue("Done");
                         cardAction.setNumCards(1);
@@ -95,7 +95,7 @@ public class FairyTaleSpecialActionHandler {
             incompleteCard.allActionsSet();
         } else if (card.getName().equals("Quest")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-            cardAction.setDeck(Card.DECK_FAIRYTALE);
+            cardAction.setDeck(Deck.FairyTale);
             cardAction.setCardName(card.getName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
@@ -109,7 +109,7 @@ public class FairyTaleSpecialActionHandler {
             game.setPlayerCardAction(player, cardAction);
         } else if (card.getName().equals("Sorceress")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-            cardAction.setDeck(Card.DECK_FAIRYTALE);
+            cardAction.setDeck(Deck.FairyTale);
             cardAction.setCardName(card.getName());
             cardAction.setInstructions("Choose first effect to apply.");
             cardAction.getChoices().add(new CardActionChoice("+2 Cards", "cards"));

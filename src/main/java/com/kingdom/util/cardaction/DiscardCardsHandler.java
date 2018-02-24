@@ -36,7 +36,7 @@ public class DiscardCardsHandler {
                     player.addCardToTopOfDeck(cards.get(0));
                 } else {
                     CardAction chooseOrderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                    chooseOrderCardAction.setDeck(Card.DECK_HINTERLANDS);
+                    chooseOrderCardAction.setDeck(Deck.Hinterlands);
                     chooseOrderCardAction.setHideOnSelect(true);
                     chooseOrderCardAction.setNumCards(cards.size());
                     chooseOrderCardAction.setCardName(cardAction.getCardName());
@@ -90,7 +90,7 @@ public class DiscardCardsHandler {
                 if (otherPlayer.getUserId() != game.getCurrentPlayerId()) {
                     if (otherPlayer.getHand().size() >= 1) {
                         CardAction yesNoCardAction = new CardAction(CardAction.TYPE_YES_NO);
-                        yesNoCardAction.setDeck(Card.DECK_PROSPERITY);
+                        yesNoCardAction.setDeck(Deck.Prosperity);
                         yesNoCardAction.setCardName("Vault");
                         if (otherPlayer.getHand().size() == 1) {
                             yesNoCardAction.setNumCards(1);

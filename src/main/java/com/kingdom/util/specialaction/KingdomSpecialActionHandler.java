@@ -44,7 +44,7 @@ public class KingdomSpecialActionHandler {
             case "Artisan": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-                cardAction.setDeck(Card.DECK_KINGDOM);
+                cardAction.setDeck(Deck.Kingdom);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -75,7 +75,7 @@ public class KingdomSpecialActionHandler {
                                 game.addHistory(player.getUsername(), " added 1 Victory card on top of ", player.getPronoun(), " deck");
                             } else {
                                 CardAction cardAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
-                                cardAction.setDeck(Card.DECK_KINGDOM);
+                                cardAction.setDeck(Deck.Kingdom);
                                 cardAction.setCardName(card.getName());
                                 cardAction.setCards(victoryCards);
                                 cardAction.setNumCards(1);
@@ -104,7 +104,7 @@ public class KingdomSpecialActionHandler {
                 Player player = game.getCurrentPlayer();
                 if (player.getHand().size() > 0) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_KINGDOM);
+                    cardAction.setDeck(Deck.Kingdom);
                     cardAction.setCardName(card.getName());
                     cardAction.getCards().addAll(player.getHand());
                     cardAction.setNumCards(player.getHand().size());
@@ -117,7 +117,7 @@ public class KingdomSpecialActionHandler {
             case "Chancellor": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                cardAction.setDeck(Card.DECK_KINGDOM);
+                cardAction.setDeck(Deck.Kingdom);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("Would you like to put your deck into your discard pile?");
                 game.setPlayerCardAction(player, cardAction);
@@ -127,7 +127,7 @@ public class KingdomSpecialActionHandler {
                 Player player = game.getCurrentPlayer();
                 if (player.getHand().size() > 0) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_KINGDOM);
+                    cardAction.setDeck(Deck.Kingdom);
                     cardAction.setCardName(card.getName());
                     cardAction.setButtonValue("Done");
                     cardAction.setNumCards(4);
@@ -148,7 +148,7 @@ public class KingdomSpecialActionHandler {
             case "Feast": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-                cardAction.setDeck(Card.DECK_KINGDOM);
+                cardAction.setDeck(Deck.Kingdom);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -178,7 +178,7 @@ public class KingdomSpecialActionHandler {
                     }
                     if (topCard.isAction()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                        cardAction.setDeck(Card.DECK_KINGDOM);
+                        cardAction.setDeck(Deck.Kingdom);
                         cardAction.setCardName(card.getName());
                         cardAction.getCards().add(topCard);
                         cardAction.setInstructions("Do you want to set aside this action card?");
@@ -200,7 +200,7 @@ public class KingdomSpecialActionHandler {
                             game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                         } else if (!player.hasMoat() && player.getHand().size() > 3 && !player.hasLighthouse()) {
                             CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND);
-                            cardAction.setDeck(Card.DECK_KINGDOM);
+                            cardAction.setDeck(Deck.Kingdom);
                             cardAction.setCardName(card.getName());
                             cardAction.getCards().addAll(player.getHand());
                             cardAction.setNumCards(3);
@@ -224,7 +224,7 @@ public class KingdomSpecialActionHandler {
             case "Mine": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_KINGDOM);
+                cardAction.setDeck(Deck.Kingdom);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -258,7 +258,7 @@ public class KingdomSpecialActionHandler {
                 Player player = game.getCurrentPlayer();
                 if (player.getHand().size() > 0) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_KINGDOM);
+                    cardAction.setDeck(Deck.Kingdom);
                     cardAction.setCardName(card.getName());
                     cardAction.setButtonValue("Done");
                     cardAction.setNumCards(1);
@@ -273,7 +273,7 @@ public class KingdomSpecialActionHandler {
                 Player currentPlayer = game.getCurrentPlayer();
                 if (currentPlayer.lookAtTopDeckCard() != null) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                    cardAction.setDeck(Card.DECK_KINGDOM);
+                    cardAction.setDeck(Deck.Kingdom);
                     cardAction.setCardName(card.getName());
                     cardAction.setInstructions("You are spying the top card of your deck. Do you want to discard it?");
                     cardAction.getCards().add(currentPlayer.lookAtTopDeckCard());
@@ -290,7 +290,7 @@ public class KingdomSpecialActionHandler {
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         if (nextPlayer.lookAtTopDeckCard() != null) {
                             CardAction nextCardAction = new CardAction(CardAction.TYPE_YES_NO);
-                            nextCardAction.setDeck(Card.DECK_KINGDOM);
+                            nextCardAction.setDeck(Deck.Kingdom);
                             nextCardAction.setCardName(card.getName());
                             nextCardAction.setInstructions("You are spying the top card of " + nextPlayer.getUsername() + "'s deck. Do you want to discard it?");
                             nextCardAction.getCards().add(nextPlayer.lookAtTopDeckCard());
@@ -328,7 +328,7 @@ public class KingdomSpecialActionHandler {
                         game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                        nextCardAction.setDeck(Card.DECK_KINGDOM);
+                        nextCardAction.setDeck(Deck.Kingdom);
                         nextCardAction.setPlayerId(nextPlayer.getUserId());
                         nextCardAction.setCardName(card.getName());
                         Card card1 = nextPlayer.removeTopDeckCard();
@@ -382,7 +382,7 @@ public class KingdomSpecialActionHandler {
             case "Throne Room": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                cardAction.setDeck(Card.DECK_KINGDOM);
+                cardAction.setDeck(Deck.Kingdom);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -418,7 +418,7 @@ public class KingdomSpecialActionHandler {
             case "Workshop": {
                 Player player = game.getCurrentPlayer();
                 CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-                cardAction.setDeck(Card.DECK_KINGDOM);
+                cardAction.setDeck(Deck.Kingdom);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);

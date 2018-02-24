@@ -17,7 +17,7 @@ public class ProsperitySpecialActionHandler {
             Player player = game.getCurrentPlayer();
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_PROSPERITY);
+                cardAction.setDeck(Deck.Prosperity);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -44,7 +44,7 @@ public class ProsperitySpecialActionHandler {
             }
             if (numCoppersInDiscard > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_NUMBER_BETWEEN);
-                cardAction.setDeck(Card.DECK_PROSPERITY);
+                cardAction.setDeck(Deck.Prosperity);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setStartNumber(0);
@@ -58,7 +58,7 @@ public class ProsperitySpecialActionHandler {
             Player player = game.getCurrentPlayer();
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_PROSPERITY);
+                cardAction.setDeck(Deck.Prosperity);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -70,7 +70,7 @@ public class ProsperitySpecialActionHandler {
             Player player = game.getCurrentPlayer();
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-                cardAction.setDeck(Card.DECK_PROSPERITY);
+                cardAction.setDeck(Deck.Prosperity);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(player.getHand().size());
@@ -87,7 +87,7 @@ public class ProsperitySpecialActionHandler {
                         game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!player.hasMoat() && player.getHand().size() > 3 && !player.hasLighthouse()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND);
-                        cardAction.setDeck(Card.DECK_PROSPERITY);
+                        cardAction.setDeck(Deck.Prosperity);
                         cardAction.setCardName(card.getName());
                         cardAction.getCards().addAll(player.getHand());
                         cardAction.setNumCards(3);
@@ -110,7 +110,7 @@ public class ProsperitySpecialActionHandler {
         } else if (card.getName().equals("King's Court")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
-            cardAction.setDeck(Card.DECK_PROSPERITY);
+            cardAction.setDeck(Deck.Prosperity);
             cardAction.setCardName(card.getName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
@@ -122,7 +122,7 @@ public class ProsperitySpecialActionHandler {
         } else if (card.getName().equals("Mint")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-            cardAction.setDeck(Card.DECK_PROSPERITY);
+            cardAction.setDeck(Deck.Prosperity);
             cardAction.setCardName(card.getName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
@@ -147,7 +147,7 @@ public class ProsperitySpecialActionHandler {
                     } else if (!player.hasMoat() && !player.hasLighthouse()) {
                         if (player.getCurseCardsInHand() > 0) {
                             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                            cardAction.setDeck(Card.DECK_PROSPERITY);
+                            cardAction.setDeck(Deck.Prosperity);
                             cardAction.setCardName(card.getName());
                             cardAction.setInstructions("Choose one: Discard a curse OR gain a Curse and a Copper.");
                             cardAction.getChoices().add(new CardActionChoice("Discard Curse", "discard"));
@@ -193,7 +193,7 @@ public class ProsperitySpecialActionHandler {
                         if (cardsRevealed.size() > 0) {
                             game.addHistory("The top cards from ", player.getUsername(), "'s deck were ", KingdomUtil.getCardNames(cardsRevealed));
                             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                            cardAction.setDeck(Card.DECK_PROSPERITY);
+                            cardAction.setDeck(Deck.Prosperity);
                             for (Card c : cardsRevealed) {
                                 if (c.isTreasure() || c.isAction()) {
                                     player.addCardToDiscard(c);
@@ -239,7 +239,7 @@ public class ProsperitySpecialActionHandler {
             }
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_PROSPERITY);
+                cardAction.setDeck(Deck.Prosperity);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -250,7 +250,7 @@ public class ProsperitySpecialActionHandler {
         } else if (card.getName().equals("Vault")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND);
-            cardAction.setDeck(Card.DECK_PROSPERITY);
+            cardAction.setDeck(Deck.Prosperity);
             cardAction.setCardName(card.getName());
             cardAction.getCards().addAll(player.getHand());
             cardAction.setNumCards(player.getHand().size());

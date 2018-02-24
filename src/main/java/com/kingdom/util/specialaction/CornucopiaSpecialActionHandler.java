@@ -70,7 +70,7 @@ public class CornucopiaSpecialActionHandler {
                     }
                     if (nextPlayer.getHand().size() > 3) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND);
-                        cardAction.setDeck(Card.DECK_CORNUCOPIA);
+                        cardAction.setDeck(Deck.Cornucopia);
                         cardAction.setCardName(card.getName());
                         cardAction.getCards().addAll(nextPlayer.getHand());
                         cardAction.setNumCards(3);
@@ -142,7 +142,7 @@ public class CornucopiaSpecialActionHandler {
                 game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand");
             } else {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                cardAction.setDeck(Card.DECK_CORNUCOPIA);
+                cardAction.setDeck(Deck.Cornucopia);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("Do you want to discard a card from your hand to gain +1 Action?");
                 game.setPlayerCardAction(player, cardAction);
@@ -179,7 +179,7 @@ public class CornucopiaSpecialActionHandler {
                     player.discardCardFromHand(player.getHand().get(0));
                 } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_CORNUCOPIA);
+                    cardAction.setDeck(Deck.Cornucopia);
                     cardAction.setCardName(card.getName());
                     cardAction.setButtonValue("Done");
                     cardAction.setNumCards(2);
@@ -254,7 +254,7 @@ public class CornucopiaSpecialActionHandler {
                                 game.addHistory("The supply did not have ", KingdomUtil.getArticleWithCardName(topDeckCard));
                             } else {
                                 CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                                nextCardAction.setDeck(Card.DECK_CORNUCOPIA);
+                                nextCardAction.setDeck(Deck.Cornucopia);
                                 nextCardAction.setCardName(card.getName());
                                 nextCardAction.setInstructions("Your Jester discarded " + nextPlayer.getUsername() + "'s " + topDeckCard.getName() + ". Do you want to gain a copy of this card, or do you want " + nextPlayer.getUsername() + " to gain a copy of this card?");
                                 nextCardAction.getCards().add(topDeckCard);
@@ -308,7 +308,7 @@ public class CornucopiaSpecialActionHandler {
         } else if (card.getName().equals("Remake")) {
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_CORNUCOPIA);
+                cardAction.setDeck(Deck.Cornucopia);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -318,7 +318,7 @@ public class CornucopiaSpecialActionHandler {
                 if (player.getHand().size() > 1) {
                     incompleteCard = new SinglePlayerIncompleteCard(card.getName(), game);
                     CardAction secondCardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                    secondCardAction.setDeck(Card.DECK_CORNUCOPIA);
+                    secondCardAction.setDeck(Deck.Cornucopia);
                     secondCardAction.setCardName(card.getName());
                     secondCardAction.setButtonValue("Done");
                     secondCardAction.setNumCards(1);
@@ -334,7 +334,7 @@ public class CornucopiaSpecialActionHandler {
             game.setGainTournamentBonus(true);
             if (player.hasProvinceInHand()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                cardAction.setDeck(Card.DECK_CORNUCOPIA);
+                cardAction.setDeck(Deck.Cornucopia);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("Do you want to reveal and discard a Province to gain a Prize or a Duchy?");
                 game.setPlayerCardAction(player, cardAction);
@@ -343,7 +343,7 @@ public class CornucopiaSpecialActionHandler {
                 if (p.getUserId() != player.getUserId()) {
                     if (p.hasProvinceInHand()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                        cardAction.setDeck(Card.DECK_CORNUCOPIA);
+                        cardAction.setDeck(Deck.Cornucopia);
                         cardAction.setCardName(card.getName());
                         cardAction.setInstructions("Do you want to reveal a Province to prevent " + player.getUsername() + " from gaining +1 Card, +1 Coin?");
                         game.setPlayerCardAction(p, cardAction);
@@ -356,7 +356,7 @@ public class CornucopiaSpecialActionHandler {
             incompleteCard.allActionsSet();
         } else if (card.getName().equals("Trusty Steed")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-            cardAction.setDeck(Card.DECK_CORNUCOPIA);
+            cardAction.setDeck(Deck.Cornucopia);
             cardAction.setCardName(card.getName());
             cardAction.setInstructions("Choose a combination.");
             cardAction.getChoices().add(new CardActionChoice("+2 Cards, +2 Actions", "cardsAndActions"));
@@ -375,7 +375,7 @@ public class CornucopiaSpecialActionHandler {
                     game.addHistory(player.getUsername(), " discarded ", KingdomUtil.getArticleWithCardName(player.getHand().get(0)));
                 } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_CORNUCOPIA);
+                    cardAction.setDeck(Deck.Cornucopia);
                     cardAction.setCardName(card.getName());
                     cardAction.setButtonValue("Done");
                     cardAction.setNumCards(2);
@@ -395,7 +395,7 @@ public class CornucopiaSpecialActionHandler {
                 } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                     if (nextPlayer.hasBaneCardInHand()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                        cardAction.setDeck(Card.DECK_CORNUCOPIA);
+                        cardAction.setDeck(Deck.Cornucopia);
                         cardAction.setCardName(card.getName());
                         cardAction.setInstructions("Do you want to reveal your Bane card, or do you want to gain a Curse?");
                         cardAction.getChoices().add(new CardActionChoice("Reveal Bane Card", "reveal"));

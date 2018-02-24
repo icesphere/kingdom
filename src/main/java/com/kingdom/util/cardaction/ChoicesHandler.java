@@ -48,7 +48,7 @@ public class ChoicesHandler {
                 game.addHistory(player.getUsername(), " chose +$1 and discard");
                 if (!player.getHand().isEmpty()) {
                     CardAction discardCardAction = new CardAction(CardAction.TYPE_DISCARD_AT_LEAST_FROM_HAND);
-                    discardCardAction.setDeck(Card.DECK_FAN);
+                    discardCardAction.setDeck(Deck.Fan);
                     discardCardAction.setCardName(cardAction.getCardName());
                     discardCardAction.setCards(player.getHand());
                     discardCardAction.setNumCards(1);
@@ -81,7 +81,7 @@ public class ChoicesHandler {
             }
         } else if (cardAction.getCardName().equals("Develop")) {
             CardAction gainCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            gainCardAction.setDeck(Card.DECK_HINTERLANDS);
+            gainCardAction.setDeck(Deck.Hinterlands);
             gainCardAction.setCardName(cardAction.getCardName());
             gainCardAction.setButtonValue("Done");
             gainCardAction.setNumCards(1);
@@ -162,7 +162,7 @@ public class ChoicesHandler {
                             addToCost = 2;
                         }
                         CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-                        trashCardAction.setDeck(Card.DECK_PROMO);
+                        trashCardAction.setDeck(Deck.Promo);
                         trashCardAction.setCardName(cardAction.getCardName());
                         trashCardAction.setCards(KingdomUtil.uniqueCardList(p.getHand()));
                         trashCardAction.setNumCards(1);
@@ -210,7 +210,7 @@ public class ChoicesHandler {
             }
             if (!cards.isEmpty()) {
                 CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-                trashCardAction.setDeck(Card.DECK_HINTERLANDS);
+                trashCardAction.setDeck(Deck.Hinterlands);
                 trashCardAction.setCardName(cardAction.getCardName());
                 trashCardAction.setNumCards(1);
                 trashCardAction.getCards().addAll(KingdomUtil.uniqueCardList(cards));
@@ -253,7 +253,7 @@ public class ChoicesHandler {
                 player.addActions(1);
                 game.addHistory(player.getUsername(), " chose +1 Action and set aside cards until you choose to draw one.");
                 CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                nextCardAction.setDeck(Card.DECK_FAIRYTALE);
+                nextCardAction.setDeck(Deck.FairyTale);
                 nextCardAction.setCardName("Lost Village");
                 nextCardAction.setInstructions("Draw or set aside top card?");
                 nextCardAction.getChoices().add(new CardActionChoice("Draw", "draw"));
@@ -268,7 +268,7 @@ public class ChoicesHandler {
                     game.addHistory(player.getUsername(), " set aside ", KingdomUtil.getArticleWithCardName(card));
                     game.getSetAsideCards().add(card);
                     CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                    nextCardAction.setDeck(Card.DECK_FAIRYTALE);
+                    nextCardAction.setDeck(Deck.FairyTale);
                     nextCardAction.setCardName(cardAction.getCardName());
                     nextCardAction.setInstructions("Draw or set aside top card?");
                     nextCardAction.getChoices().add(new CardActionChoice("Draw", "draw"));
@@ -305,7 +305,7 @@ public class ChoicesHandler {
             }
 
             CardAction gainCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            gainCardAction.setDeck(Card.DECK_FAIRYTALE);
+            gainCardAction.setDeck(Deck.FairyTale);
             gainCardAction.setCardName(card.getName());
             gainCardAction.setButtonValue("Done");
             gainCardAction.setNumCards(1);
@@ -393,7 +393,7 @@ public class ChoicesHandler {
                 game.addHistory(player.getUsername(), " chose to discard the cards");
             } else if (choice.equals("deck")) {
                 CardAction sortCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                sortCardAction.setDeck(Card.DECK_SEASIDE);
+                sortCardAction.setDeck(Deck.Seaside);
                 sortCardAction.setHideOnSelect(true);
                 sortCardAction.setNumCards(cardAction.getCards().size());
                 sortCardAction.setCardName("Navigator");
@@ -456,7 +456,7 @@ public class ChoicesHandler {
                     }
                 } else {
                     CardAction reorderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                    reorderCardAction.setDeck(Card.DECK_HINTERLANDS);
+                    reorderCardAction.setDeck(Deck.Hinterlands);
                     reorderCardAction.setHideOnSelect(true);
                     reorderCardAction.setNumCards(2);
                     reorderCardAction.setCardName(cardAction.getCardName());
@@ -506,7 +506,7 @@ public class ChoicesHandler {
                         game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                        nextCardAction.setDeck(Card.DECK_SEASIDE);
+                        nextCardAction.setDeck(Deck.Seaside);
                         nextCardAction.setPlayerId(nextPlayer.getUserId());
                         nextCardAction.setCardName("Pirate Ship");
                         Card card1 = nextPlayer.removeTopDeckCard();
@@ -602,7 +602,7 @@ public class ChoicesHandler {
                     } else if (player.getHand().size() >= 2) {
                         showTrashCardAction = true;
                         CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                        trashCardAction.setDeck(Card.DECK_FAIRYTALE);
+                        trashCardAction.setDeck(Deck.FairyTale);
                         trashCardAction.setCardName(cardAction.getCardName());
                         trashCardAction.setButtonValue("Done");
                         trashCardAction.setNumCards(2);
@@ -628,7 +628,7 @@ public class ChoicesHandler {
                 if (!showTrashCardAction && (cursesRemaining > 0 || cardAction.getPhase() == 1)) {
 
                     CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                    nextCardAction.setDeck(Card.DECK_FAIRYTALE);
+                    nextCardAction.setDeck(Deck.FairyTale);
                     nextCardAction.setCardName(cardAction.getCardName());
 
                     if (cursesRemaining == 0) {
@@ -680,7 +680,7 @@ public class ChoicesHandler {
                         }
                     } else {
                         CardAction trashCardsCardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                        trashCardsCardAction.setDeck(Card.DECK_INTRIGUE);
+                        trashCardsCardAction.setDeck(Deck.Intrigue);
                         trashCardsCardAction.setCardName("Steward");
                         trashCardsCardAction.setButtonValue("Done");
                         trashCardsCardAction.setNumCards(2);
@@ -740,7 +740,7 @@ public class ChoicesHandler {
                 }
                 if (player.getHand().size() > 0) {
                     CardAction discardCardsAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                    discardCardsAction.setDeck(Card.DECK_INTRIGUE);
+                    discardCardsAction.setDeck(Deck.Intrigue);
                     discardCardsAction.setCardName("Torturer");
                     discardCardsAction.setButtonValue("Done");
                     discardCardsAction.setNumCards(cardsToDiscard);
@@ -765,7 +765,7 @@ public class ChoicesHandler {
                     game.getPrizeCards().clear();
                 } else {
                     CardAction choosePrizeCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS);
-                    choosePrizeCardAction.setDeck(Card.DECK_CORNUCOPIA);
+                    choosePrizeCardAction.setDeck(Deck.Cornucopia);
                     choosePrizeCardAction.setCardName(cardAction.getCardName());
                     choosePrizeCardAction.setNumCards(1);
                     choosePrizeCardAction.setButtonValue("Done");

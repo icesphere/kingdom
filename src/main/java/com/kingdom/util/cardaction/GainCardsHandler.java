@@ -1,9 +1,6 @@
 package com.kingdom.util.cardaction;
 
-import com.kingdom.model.Card;
-import com.kingdom.model.CardAction;
-import com.kingdom.model.Game;
-import com.kingdom.model.Player;
+import com.kingdom.model.*;
 import com.kingdom.util.KingdomUtil;
 
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ public class GainCardsHandler {
             game.refreshPlayingArea(player);
 
             CardAction putCardOnTopOfDeckAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
-            putCardOnTopOfDeckAction.setDeck(Card.DECK_KINGDOM);
+            putCardOnTopOfDeckAction.setDeck(Deck.Kingdom);
             putCardOnTopOfDeckAction.setCardName("Artisan");
             putCardOnTopOfDeckAction.getCards().addAll(player.getHand());
             putCardOnTopOfDeckAction.setButtonValue("Done");
@@ -49,7 +46,7 @@ public class GainCardsHandler {
             game.boughtBlackMarketCard(cardBought);
             game.getBlackMarketCardsToBuy().remove(cardBought);
             CardAction chooseOrderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-            chooseOrderCardAction.setDeck(Card.DECK_PROMO);
+            chooseOrderCardAction.setDeck(Deck.Promo);
             chooseOrderCardAction.setHideOnSelect(true);
             chooseOrderCardAction.setNumCards(game.getBlackMarketCardsToBuy().size());
             chooseOrderCardAction.setCardName("Black Market");
@@ -60,7 +57,7 @@ public class GainCardsHandler {
         } else if (cardAction.getCardName().equals("Develop")) {
             if (cardAction.getPhase() < 3) {
                 CardAction gainCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-                gainCardAction.setDeck(Card.DECK_HINTERLANDS);
+                gainCardAction.setDeck(Deck.Hinterlands);
                 gainCardAction.setCardName(cardAction.getCardName());
                 gainCardAction.setButtonValue("Done");
                 gainCardAction.setNumCards(1);

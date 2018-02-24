@@ -18,7 +18,7 @@ public class TreasureCardsSpecialActionHandler {
             Player nextPlayer = game.getPlayers().get(game.getNextPlayerIndex());
             incompleteCard = new MultiPlayerIncompleteCard(card.getName(), game, nextPlayer.getUserId());
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-            cardAction.setDeck(Card.DECK_PROSPERITY);
+            cardAction.setDeck(Deck.Prosperity);
             cardAction.setCardName(card.getName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
@@ -42,7 +42,7 @@ public class TreasureCardsSpecialActionHandler {
             }
         } else if (card.getName().equals("Horn of Plenty")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            cardAction.setDeck(Card.DECK_CORNUCOPIA);
+            cardAction.setDeck(Deck.Cornucopia);
             cardAction.setCardName(card.getName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
@@ -62,7 +62,7 @@ public class TreasureCardsSpecialActionHandler {
             }
         } else if (card.getName().equals("Ill-Gotten Gains")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-            cardAction.setDeck(Card.DECK_HINTERLANDS);
+            cardAction.setDeck(Deck.Hinterlands);
             cardAction.setCardName("Ill-Gotten Gains");
             cardAction.setInstructions("Do you want to gain a Copper card into your hand?");
             game.setPlayerCardAction(player, cardAction);
@@ -95,7 +95,7 @@ public class TreasureCardsSpecialActionHandler {
             }
             if (treasureCard != null) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                cardAction.setDeck(Card.DECK_PROSPERITY);
+                cardAction.setDeck(Deck.Prosperity);
                 cardAction.setCardName(card.getName());
                 cardAction.getCards().add(treasureCard);
                 cardAction.setInstructions("Do you want to discard or trash this card?");
@@ -111,7 +111,7 @@ public class TreasureCardsSpecialActionHandler {
         } else if (card.getName().equals("Storybook")) {
             if (!player.getVictoryCards().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
-                cardAction.setDeck(Card.DECK_FAIRYTALE);
+                cardAction.setDeck(Deck.FairyTale);
                 cardAction.setCardName(card.getName());
                 cardAction.getCards().addAll(player.getVictoryCards());
                 cardAction.setNumCards(player.getVictoryCards().size());

@@ -17,7 +17,7 @@ public class ChooseCardsHandler {
         if (cardAction.getCardName().equals("Ambassador")) {
             Card selectedCard = cardMap.get(selectedCardIds.get(0));
             CardAction addToSupplyCardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
-            addToSupplyCardAction.setDeck(Card.DECK_SEASIDE);
+            addToSupplyCardAction.setDeck(Deck.Seaside);
             addToSupplyCardAction.setInstructions("Select the cards that you want to return to the supply and then click Done.");
             addToSupplyCardAction.setButtonValue("Done");
             addToSupplyCardAction.setCardName("Ambassador");
@@ -130,7 +130,7 @@ public class ChooseCardsHandler {
             Card selectedCard = cardMap.get(selectedCardIds.get(0));
             player.removeCardFromHand(selectedCard);
             CardAction chooseDestinationCardAction = new CardAction(CardAction.TYPE_CHOICES);
-            chooseDestinationCardAction.setDeck(Card.DECK_PROLETARIAT);
+            chooseDestinationCardAction.setDeck(Deck.Proletariat);
             chooseDestinationCardAction.setCardName(cardAction.getCardName());
             chooseDestinationCardAction.setAssociatedCard(selectedCard);
             chooseDestinationCardAction.setPlayerId(player.getUserId());
@@ -167,7 +167,7 @@ public class ChooseCardsHandler {
                 game.getPrizeCards().clear();
             } else {
                 CardAction choosePrizeCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS);
-                choosePrizeCardAction.setDeck(Card.DECK_FAN);
+                choosePrizeCardAction.setDeck(Deck.Fan);
                 choosePrizeCardAction.setCardName("Museum");
                 choosePrizeCardAction.setNumCards(1);
                 choosePrizeCardAction.setButtonValue("Done");
@@ -219,7 +219,7 @@ public class ChooseCardsHandler {
             Card selectedCard = cardMap.get(selectedCardIds.get(0));
             if (game.getSupply().get(selectedCard.getCardId()) == 0) {
                 CardAction chooseAgainCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                chooseAgainCardAction.setDeck(Card.DECK_INTRIGUE);
+                chooseAgainCardAction.setDeck(Deck.Intrigue);
                 chooseAgainCardAction.setNumCards(1);
                 chooseAgainCardAction.setButtonValue("Done");
                 chooseAgainCardAction.setCardName("Swindler");
@@ -272,7 +272,7 @@ public class ChooseCardsHandler {
             }
             if (game.getIncompleteCard().getExtraCardActions().isEmpty()) {
                 CardAction selectFromTrashedCardsAction = new CardAction(CardAction.TYPE_GAIN_CARDS_UP_TO);
-                selectFromTrashedCardsAction.setDeck(Card.DECK_KINGDOM);
+                selectFromTrashedCardsAction.setDeck(Deck.Kingdom);
                 selectFromTrashedCardsAction.setCardName("Thief");
                 selectFromTrashedCardsAction.getCards().addAll(game.getTrashedTreasureCards());
                 selectFromTrashedCardsAction.setNumCards(game.getTrashedTreasureCards().size());
@@ -315,7 +315,7 @@ public class ChooseCardsHandler {
             game.refreshAllPlayersSupply();
             game.addHistory(player.getUsername(), " returned ", KingdomUtil.getCardWithBackgroundColor(cardAction.getAssociatedCard()), " and ", KingdomUtil.getCardWithBackgroundColor(selectedCard), " to the supply");
             CardAction gainCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            gainCardAction.setDeck(Card.DECK_PROLETARIAT);
+            gainCardAction.setDeck(Deck.Proletariat);
             gainCardAction.setCardName(cardAction.getCardName());
             gainCardAction.setButtonValue("Done");
             gainCardAction.setNumCards(1);

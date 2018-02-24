@@ -12,7 +12,7 @@ public class FanSpecialActionHandler {
 
         if (card.getName().equals("Archivist")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-            cardAction.setDeck(Card.DECK_FAN);
+            cardAction.setDeck(Deck.Fan);
             cardAction.setCardName(card.getName());
             cardAction.setInstructions("Choose one: Draw until you have 6 cards in hand; or +$1 and discard 1 or more cards.");
             cardAction.getChoices().add(new CardActionChoice("Draw", "draw"));
@@ -27,7 +27,7 @@ public class FanSpecialActionHandler {
             }
             if (!cards.isEmpty()) {
                 CardAction museumCardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
-                museumCardAction.setDeck(Card.DECK_FAN);
+                museumCardAction.setDeck(Deck.Fan);
                 museumCardAction.setCardName(card.getName());
                 museumCardAction.getCards().addAll(cards);
                 museumCardAction.setNumCards(1);
@@ -36,7 +36,7 @@ public class FanSpecialActionHandler {
                 game.setPlayerCardAction(player, museumCardAction);
             } else if (player.getMuseumCards().size() >= 4) {
                 CardAction museumCardAction = new CardAction(CardAction.TYPE_YES_NO);
-                museumCardAction.setDeck(Card.DECK_FAN);
+                museumCardAction.setDeck(Deck.Fan);
                 museumCardAction.setCardName("Museum Trash Cards");
                 museumCardAction.setInstructions("Do you want to trash 4 cards from your Museum mat to gain a Prize and a Duchy?");
                 game.setPlayerCardAction(player, museumCardAction);

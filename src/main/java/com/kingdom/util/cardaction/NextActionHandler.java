@@ -24,7 +24,7 @@ public class NextActionHandler {
                     if (player.hasBellTowerInHand()) {
                         needBonusCheck = true;
                         CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                        cardAction.setDeck(Card.DECK_SALVATION);
+                        cardAction.setDeck(Deck.Salvation);
                         cardAction.setCardName("Bell Tower");
                         cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.getArticleWithCardName(game.getAttackCard()) + ". You may reveal your Bell Tower to gain +2 cards before or after the attack.");
                         cardAction.getChoices().add(new CardActionChoice("Before", "before"));
@@ -61,7 +61,7 @@ public class NextActionHandler {
                     if (player.hasEnchantedPalaceInHand()) {
                         hasReaction = true;
                         CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                        cardAction.setDeck(Card.DECK_FAIRYTALE);
+                        cardAction.setDeck(Deck.FairyTale);
                         cardAction.setCardName("Enchanted Palace");
                         cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.getArticleWithCardName(game.getAttackCard()) + ". Do you want to reveal your Enchanted Palace?");
                         int numTimesSet = 0;
@@ -88,7 +88,7 @@ public class NextActionHandler {
                     if (player.hasHorseTradersInHand()) {
                         hasReaction = true;
                         CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                        cardAction.setDeck(Card.DECK_CORNUCOPIA);
+                        cardAction.setDeck(Deck.Cornucopia);
                         cardAction.setCardName("Horse Traders");
                         cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.getArticleWithCardName(game.getAttackCard()) + ". Do you want to set aside your Horse Traders?");
                         game.setPlayerCardAction(player, cardAction);
@@ -111,7 +111,7 @@ public class NextActionHandler {
                     if (player.hasSecretChamber()) {
                         hasReaction = true;
                         CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                        cardAction.setDeck(Card.DECK_INTRIGUE);
+                        cardAction.setDeck(Deck.Intrigue);
                         cardAction.setCardName("Secret Chamber");
                         cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.getArticleWithCardName(game.getAttackCard()) + ", do you want to use your Secret Chamber?");
                         game.setPlayerCardAction(player, cardAction);
@@ -133,7 +133,7 @@ public class NextActionHandler {
             if (game.getBlackMarketTreasureQueue().isEmpty()) {
                 game.removeNextAction();
                 CardAction buyCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS);
-                buyCardAction.setDeck(Card.DECK_PROMO);
+                buyCardAction.setDeck(Deck.Promo);
                 for (Card card : game.getBlackMarketCardsToBuy()) {
                     if (card.getName().equals("Grand Market")) {
                         boolean addCard = true;
@@ -158,7 +158,7 @@ public class NextActionHandler {
                     game.setPlayerCardAction(player, buyCardAction);
                 } else {
                     CardAction sortCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                    sortCardAction.setDeck(Card.DECK_PROMO);
+                    sortCardAction.setDeck(Deck.Promo);
                     sortCardAction.setHideOnSelect(true);
                     sortCardAction.setNumCards(game.getBlackMarketCardsToBuy().size());
                     sortCardAction.setCards(game.getBlackMarketCardsToBuy());
@@ -185,7 +185,7 @@ public class NextActionHandler {
         } else if (cardName.equals("Hamlet")) {
             game.removeNextAction();
             CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-            cardAction.setDeck(Card.DECK_CORNUCOPIA);
+            cardAction.setDeck(Deck.Cornucopia);
             cardAction.setCardName("Hamlet2");
             cardAction.setInstructions("Do you want to discard a card from your hand to gain +1 Buy?");
             game.setPlayerCardAction(game.getCurrentPlayer(), cardAction);
@@ -206,7 +206,7 @@ public class NextActionHandler {
             }
             Player currentPlayer = game.getCurrentPlayer();
             CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-            trashCardAction.setDeck(Card.DECK_INTRIGUE);
+            trashCardAction.setDeck(Deck.Intrigue);
             trashCardAction.getCards().addAll(currentPlayer.getHand());
             trashCardAction.setNumCards(1);
             trashCardAction.setCardName("Masquerade");

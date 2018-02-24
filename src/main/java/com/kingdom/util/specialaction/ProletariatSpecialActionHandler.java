@@ -15,7 +15,7 @@ public class ProletariatSpecialActionHandler {
             Card topDeckCard = player.removeTopDeckCard();
             if (topDeckCard != null) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                cardAction.setDeck(Card.DECK_PROLETARIAT);
+                cardAction.setDeck(Deck.Proletariat);
                 cardAction.setCardName(card.getName());
                 cardAction.setAssociatedCard(topDeckCard);
                 cardAction.getCards().add(topDeckCard);
@@ -32,7 +32,7 @@ public class ProletariatSpecialActionHandler {
                     player.discardCardFromHand(player.getHand().get(0));
                 } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_PROLETARIAT);
+                    cardAction.setDeck(Deck.Proletariat);
                     cardAction.setCardName(card.getName());
                     cardAction.getCards().addAll(player.getHand());
                     cardAction.setNumCards(1);
@@ -44,7 +44,7 @@ public class ProletariatSpecialActionHandler {
         } else if (card.getName().equals("Fruit Merchant")) {
             if (!player.getHand().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND);
-                cardAction.setDeck(Card.DECK_PROLETARIAT);
+                cardAction.setDeck(Deck.Proletariat);
                 cardAction.setCardName(card.getName());
                 cardAction.getCards().addAll(player.getHand());
                 cardAction.setNumCards(2);
@@ -62,7 +62,7 @@ public class ProletariatSpecialActionHandler {
                         game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!p.hasMoat() && p.getHand().size() > 3 && !p.hasLighthouse()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                        cardAction.setDeck(Card.DECK_PROLETARIAT);
+                        cardAction.setDeck(Deck.Proletariat);
                         cardAction.setCardName(card.getName());
                         cardAction.getCards().addAll(p.getHand());
                         cardAction.setNumCards(1);
@@ -85,7 +85,7 @@ public class ProletariatSpecialActionHandler {
         } else if (card.getName().equals("Rancher")) {
             if (!player.getVictoryCards().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
-                cardAction.setDeck(Card.DECK_PROLETARIAT);
+                cardAction.setDeck(Deck.Proletariat);
                 cardAction.setCardName(card.getName());
                 cardAction.getCards().addAll(player.getVictoryCards());
                 cardAction.setNumCards(1);
@@ -111,7 +111,7 @@ public class ProletariatSpecialActionHandler {
         } else if (card.getName().equals("Trainee")) {
             if (!player.getHand().isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                cardAction.setDeck(Card.DECK_PROLETARIAT);
+                cardAction.setDeck(Deck.Proletariat);
                 cardAction.setCardName(card.getName());
                 cardAction.getCards().addAll(player.getHand());
                 cardAction.setNumCards(1);

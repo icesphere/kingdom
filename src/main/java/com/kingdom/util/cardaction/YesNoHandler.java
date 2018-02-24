@@ -29,7 +29,7 @@ public class YesNoHandler {
             if (yesNoAnswer.equals("yes")) {
                 if (!player.getTreasureCards().isEmpty()) {
                     CardAction playTreasureCardsAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                    playTreasureCardsAction.setDeck(Card.DECK_PROMO);
+                    playTreasureCardsAction.setDeck(Deck.Promo);
                     playTreasureCardsAction.setHideOnSelect(true);
                     playTreasureCardsAction.setNumCards(-1);
                     playTreasureCardsAction.setCardName("Black Market Treasure");
@@ -45,7 +45,7 @@ public class YesNoHandler {
             } else {
                 game.addHistory(player.getUsername(), " chose to not buy a card from the black market deck");
                 CardAction chooseOrderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                chooseOrderCardAction.setDeck(Card.DECK_PROMO);
+                chooseOrderCardAction.setDeck(Deck.Promo);
                 chooseOrderCardAction.setHideOnSelect(true);
                 chooseOrderCardAction.setNumCards(cardAction.getCards().size());
                 chooseOrderCardAction.setCardName("Black Market");
@@ -72,7 +72,7 @@ public class YesNoHandler {
                     game.addHistory(player.getUsername(), " paid an extra $2 to set aside ", KingdomUtil.getArticleWithCardName(victoryCard));
                 } else {
                     CardAction chooseVictoryCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                    chooseVictoryCardAction.setDeck(Card.DECK_PROLETARIAT);
+                    chooseVictoryCardAction.setDeck(Deck.Proletariat);
                     chooseVictoryCardAction.setCardName(cardAction.getCardName());
                     chooseVictoryCardAction.getCards().addAll(player.getVictoryCards());
                     chooseVictoryCardAction.setNumCards(1);
@@ -150,7 +150,7 @@ public class YesNoHandler {
         } else if (cardAction.getCardName().equals("Hamlet")) {
             if (yesNoAnswer.equals("yes")) {
                 CardAction discardCardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                discardCardAction.setDeck(Card.DECK_CORNUCOPIA);
+                discardCardAction.setDeck(Deck.Cornucopia);
                 discardCardAction.setCardName(cardAction.getCardName());
                 discardCardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
                 discardCardAction.setNumCards(1);
@@ -165,7 +165,7 @@ public class YesNoHandler {
         } else if (cardAction.getCardName().equals("Hamlet2")) {
             if (yesNoAnswer.equals("yes")) {
                 CardAction discardCardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                discardCardAction.setDeck(Card.DECK_CORNUCOPIA);
+                discardCardAction.setDeck(Deck.Cornucopia);
                 discardCardAction.setCardName(cardAction.getCardName());
                 discardCardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
                 discardCardAction.setNumCards(1);
@@ -203,7 +203,7 @@ public class YesNoHandler {
                 }
                 if (topCard.isAction()) {
                     CardAction libraryCardAction = new CardAction(CardAction.TYPE_YES_NO);
-                    libraryCardAction.setDeck(Card.DECK_KINGDOM);
+                    libraryCardAction.setDeck(Deck.Kingdom);
                     libraryCardAction.setCardName("Library");
                     libraryCardAction.getCards().add(topCard);
                     libraryCardAction.setInstructions("Do you want to set aside this action card?");
@@ -244,7 +244,7 @@ public class YesNoHandler {
                         game.getPrizeCards().clear();
                     } else {
                         CardAction choosePrizeCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS);
-                        choosePrizeCardAction.setDeck(Card.DECK_FAN);
+                        choosePrizeCardAction.setDeck(Deck.Fan);
                         choosePrizeCardAction.setCardName("Museum");
                         choosePrizeCardAction.setNumCards(1);
                         choosePrizeCardAction.setButtonValue("Done");
@@ -254,7 +254,7 @@ public class YesNoHandler {
                     }
                 } else {
                     CardAction museumCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                    museumCardAction.setDeck(Card.DECK_FAN);
+                    museumCardAction.setDeck(Deck.Fan);
                     museumCardAction.setCardName("Museum Trash Cards");
                     museumCardAction.getCards().addAll(player.getMuseumCards());
                     museumCardAction.setNumCards(4);
@@ -335,7 +335,7 @@ public class YesNoHandler {
                 game.addHistory(player.getUsername(), " is using a ", KingdomUtil.getWordWithBackgroundColor("Secret Chamber", Card.ACTION_REACTION_COLOR));
                 player.drawCards(2);
                 CardAction secretChamberAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
-                secretChamberAction.setDeck(Card.DECK_INTRIGUE);
+                secretChamberAction.setDeck(Deck.Intrigue);
                 secretChamberAction.setCardName("Secret Chamber");
                 secretChamberAction.getCards().addAll(player.getHand());
                 secretChamberAction.setButtonValue("Done");
@@ -404,7 +404,7 @@ public class YesNoHandler {
                     player.discardCardFromHand(game.getProvinceCard());
                     game.addHistory(player.getUsername(), " revealed and discarded a ", KingdomUtil.getCardWithBackgroundColor(game.getProvinceCard()));
                     CardAction chooseType = new CardAction(CardAction.TYPE_CHOICES);
-                    chooseType.setDeck(Card.DECK_CORNUCOPIA);
+                    chooseType.setDeck(Deck.Cornucopia);
                     chooseType.setCardName(cardAction.getCardName());
                     chooseType.setInstructions("Available Prizes: " + game.getPrizeCardsString() + ". Do you want to gain a Prize or a Duchy?");
                     chooseType.getChoices().add(new CardActionChoice("Prize", "prize"));
@@ -435,7 +435,7 @@ public class YesNoHandler {
                     game.addHistory(player.getUsername(), " discarded the last card from ", player.getPronoun(), " hand");
                 } else {
                     CardAction discardCardsAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                    discardCardsAction.setDeck(Card.DECK_PROSPERITY);
+                    discardCardsAction.setDeck(Deck.Prosperity);
                     discardCardsAction.setCardName("Vault2");
                     discardCardsAction.getCards().addAll(player.getHand());
                     discardCardsAction.setButtonValue("Done");

@@ -23,7 +23,7 @@ public class HinterlandsSpecialActionHandler {
             }
             if (!cards.isEmpty()) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO);
-                cardAction.setDeck(Card.DECK_HINTERLANDS);
+                cardAction.setDeck(Deck.Hinterlands);
                 cardAction.setCardName(card.getName());
                 cardAction.setCards(cards);
                 cardAction.setNumCards(cards.size());
@@ -48,7 +48,7 @@ public class HinterlandsSpecialActionHandler {
         } else if (card.getName().equals("Develop")) {
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_HINTERLANDS);
+                cardAction.setDeck(Deck.Hinterlands);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -64,7 +64,7 @@ public class HinterlandsSpecialActionHandler {
                 Card topDeckCard = p.removeTopDeckCard();
                 if (topDeckCard != null) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                    cardAction.setDeck(Card.DECK_HINTERLANDS);
+                    cardAction.setDeck(Deck.Hinterlands);
                     cardAction.setCardName(card.getName());
                     cardAction.setAssociatedCard(topDeckCard);
                     cardAction.getCards().add(topDeckCard);
@@ -89,7 +89,7 @@ public class HinterlandsSpecialActionHandler {
                         cardsToDiscard = player.getHand().size();
                     }
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_HINTERLANDS);
+                    cardAction.setDeck(Deck.Hinterlands);
                     cardAction.setCardName(card.getName());
                     cardAction.getCards().addAll(player.getHand());
                     cardAction.setNumCards(cardsToDiscard);
@@ -106,7 +106,7 @@ public class HinterlandsSpecialActionHandler {
                     player.discardCardFromHand(player.getHand().get(0));
                 } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_HINTERLANDS);
+                    cardAction.setDeck(Deck.Hinterlands);
                     cardAction.setCardName(card.getName());
                     cardAction.getCards().addAll(player.getHand());
                     cardAction.setNumCards(2);
@@ -122,7 +122,7 @@ public class HinterlandsSpecialActionHandler {
             Card topDeckCard = player.removeTopDeckCard();
             if (topDeckCard != null) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                cardAction.setDeck(Card.DECK_HINTERLANDS);
+                cardAction.setDeck(Deck.Hinterlands);
                 cardAction.setCardName(card.getName());
                 cardAction.setAssociatedCard(topDeckCard);
                 cardAction.getCards().add(topDeckCard);
@@ -147,7 +147,7 @@ public class HinterlandsSpecialActionHandler {
                 }
                 if (!cards.isEmpty()) {
                     CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-                    trashCardAction.setDeck(Card.DECK_HINTERLANDS);
+                    trashCardAction.setDeck(Deck.Hinterlands);
                     trashCardAction.setCardName(card.getName());
                     trashCardAction.setNumCards(1);
                     trashCardAction.getCards().addAll(KingdomUtil.uniqueCardList(cards));
@@ -158,7 +158,7 @@ public class HinterlandsSpecialActionHandler {
             }
         } else if (card.getName().equals("Mandarin")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
-            cardAction.setDeck(Card.DECK_HINTERLANDS);
+            cardAction.setDeck(Deck.Hinterlands);
             cardAction.setCardName(card.getName());
             cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
             cardAction.setButtonValue("Done");
@@ -180,7 +180,7 @@ public class HinterlandsSpecialActionHandler {
                         game.refreshHand(p);
                         if (p.getHand().size() > 3) {
                             CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND);
-                            cardAction.setDeck(Card.DECK_HINTERLANDS);
+                            cardAction.setDeck(Deck.Hinterlands);
                             cardAction.setCardName(card.getName());
                             cardAction.getCards().addAll(p.getHand());
                             cardAction.setNumCards(3);
@@ -212,7 +212,7 @@ public class HinterlandsSpecialActionHandler {
                     player.discardCardFromHand(player.getHand().get(0));
                 } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_HINTERLANDS);
+                    cardAction.setDeck(Deck.Hinterlands);
                     cardAction.setCardName(card.getName());
                     cardAction.getCards().addAll(player.getHand());
                     cardAction.setNumCards(1);
@@ -231,7 +231,7 @@ public class HinterlandsSpecialActionHandler {
                 Card firstTopCard = p.removeTopDeckCard();
                 if (firstTopCard != null) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                    cardAction.setDeck(Card.DECK_HINTERLANDS);
+                    cardAction.setDeck(Deck.Hinterlands);
                     cardAction.setCardName(card.getName());
                     cardAction.getChoices().add(new CardActionChoice("Discard", "discard"));
                     cardAction.setPlayerId(p.getUserId());
@@ -277,7 +277,7 @@ public class HinterlandsSpecialActionHandler {
             incompleteCard.allActionsSet();
         } else if (card.getName().equals("Spice Merchant")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-            cardAction.setDeck(Card.DECK_HINTERLANDS);
+            cardAction.setDeck(Deck.Hinterlands);
             cardAction.setCardName(card.getName());
             cardAction.setCards(KingdomUtil.uniqueCardList(player.getTreasureCards()));
             cardAction.setNumCards(1);
@@ -286,7 +286,7 @@ public class HinterlandsSpecialActionHandler {
             game.setPlayerCardAction(player, cardAction);
         } else if (card.getName().equals("Stables")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND);
-            cardAction.setDeck(Card.DECK_HINTERLANDS);
+            cardAction.setDeck(Deck.Hinterlands);
             cardAction.setCardName(card.getName());
             cardAction.setCards(KingdomUtil.uniqueCardList(player.getTreasureCards()));
             cardAction.setNumCards(1);
@@ -296,7 +296,7 @@ public class HinterlandsSpecialActionHandler {
         } else if (card.getName().equals("Trader")) {
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_HINTERLANDS);
+                cardAction.setDeck(Deck.Hinterlands);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);

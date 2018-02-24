@@ -65,7 +65,7 @@ public class TrashCardsHandler {
                 if (otherPlayer.getUserId() != game.getCurrentPlayerId()) {
                     if (otherPlayer.getHand().size() > 0) {
                         CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-                        trashCardAction.setDeck(Card.DECK_PROSPERITY);
+                        trashCardAction.setDeck(Deck.Prosperity);
                         trashCardAction.setCardName("Bishop 2");
                         trashCardAction.setCards(KingdomUtil.uniqueCardList(otherPlayer.getHand()));
                         trashCardAction.setNumCards(1);
@@ -99,7 +99,7 @@ public class TrashCardsHandler {
 
             if (!cardsLess.isEmpty() && !cardsMore.isEmpty()) {
                 CardAction chooseWhichCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                chooseWhichCardAction.setDeck(Card.DECK_HINTERLANDS);
+                chooseWhichCardAction.setDeck(Deck.Hinterlands);
                 chooseWhichCardAction.setCardName(cardAction.getCardName());
                 chooseWhichCardAction.setInstructions("Which do you want to do first: Gain a card costing $1 more than the trashed card, or Gain a card costing $1 less than the trashed card?");
                 chooseWhichCardAction.getChoices().add(new CardActionChoice("$1 More", "more"));
@@ -109,7 +109,7 @@ public class TrashCardsHandler {
                 game.setPlayerCardAction(player, chooseWhichCardAction);
             } else {
                 CardAction gainCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-                gainCardAction.setDeck(Card.DECK_HINTERLANDS);
+                gainCardAction.setDeck(Deck.Hinterlands);
                 gainCardAction.setCardName(cardAction.getCardName());
                 gainCardAction.setButtonValue("Done");
                 gainCardAction.setNumCards(1);
@@ -128,7 +128,7 @@ public class TrashCardsHandler {
             }
         } else if (cardAction.getCardName().equals("Expand")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            secondCardAction.setDeck(Card.DECK_PROSPERITY);
+            secondCardAction.setDeck(Deck.Prosperity);
             secondCardAction.setCardName("Expand");
             secondCardAction.setButtonValue("Done");
             secondCardAction.setNumCards(1);
@@ -144,7 +144,7 @@ public class TrashCardsHandler {
             }
         } else if (cardAction.getCardName().equals("Farmland")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            secondCardAction.setDeck(Card.DECK_HINTERLANDS);
+            secondCardAction.setDeck(Deck.Hinterlands);
             secondCardAction.setCardName(cardAction.getCardName());
             secondCardAction.setButtonValue("Done");
             secondCardAction.setNumCards(1);
@@ -172,7 +172,7 @@ public class TrashCardsHandler {
                     cost += game.getCardCost(card);
                 }
                 CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-                secondCardAction.setDeck(Card.DECK_PROSPERITY);
+                secondCardAction.setDeck(Deck.Prosperity);
                 secondCardAction.setCardName("Forge");
                 secondCardAction.setButtonValue("Done");
                 secondCardAction.setNumCards(1);
@@ -192,7 +192,7 @@ public class TrashCardsHandler {
             }
         } else if (cardAction.getCardName().equals("Governor")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            secondCardAction.setDeck(Card.DECK_PROMO);
+            secondCardAction.setDeck(Deck.Promo);
             secondCardAction.setCardName(cardAction.getCardName());
             secondCardAction.setButtonValue("Done");
             secondCardAction.setNumCards(1);
@@ -213,7 +213,7 @@ public class TrashCardsHandler {
             }
         } else if (cardAction.getCardName().equals("Mine")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY);
-            secondCardAction.setDeck(Card.DECK_KINGDOM);
+            secondCardAction.setDeck(Deck.Kingdom);
             secondCardAction.setCardName("Mine");
             secondCardAction.setButtonValue("Done");
             secondCardAction.setNumCards(1);
@@ -230,7 +230,7 @@ public class TrashCardsHandler {
             }
         } else if (cardAction.getCardName().equals("Remake")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            secondCardAction.setDeck(Card.DECK_CORNUCOPIA);
+            secondCardAction.setDeck(Deck.Cornucopia);
             secondCardAction.setCardName(cardAction.getCardName());
             secondCardAction.setButtonValue("Done");
             secondCardAction.setNumCards(1);
@@ -247,7 +247,7 @@ public class TrashCardsHandler {
             }
         } else if (cardAction.getCardName().equals("Remodel")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            secondCardAction.setDeck(Card.DECK_KINGDOM);
+            secondCardAction.setDeck(Deck.Kingdom);
             secondCardAction.setCardName("Remodel");
             secondCardAction.setButtonValue("Done");
             secondCardAction.setNumCards(1);
@@ -267,7 +267,7 @@ public class TrashCardsHandler {
             int cursesRemaining = game.getSupply().get(Card.CURSE_ID);
             if (cursesRemaining > 0 || cardAction.getPhase() == 1 && cardAction.getChoices().size() > 1) {
                 CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                nextCardAction.setDeck(Card.DECK_FAIRYTALE);
+                nextCardAction.setDeck(Deck.FairyTale);
                 nextCardAction.setCardName(cardAction.getCardName());
 
                 if (cursesRemaining == 0) {
@@ -283,7 +283,7 @@ public class TrashCardsHandler {
         } else if (cardAction.getCardName().equals("Spice Merchant")) {
             if (!selectedCardIds.isEmpty()) {
                 CardAction choicesAction = new CardAction(CardAction.TYPE_CHOICES);
-                choicesAction.setDeck(Card.DECK_HINTERLANDS);
+                choicesAction.setDeck(Deck.Hinterlands);
                 choicesAction.setCardName(cardAction.getCardName());
                 choicesAction.setInstructions("Choose one: +2 Cards and +1 Action; or +$2 and +1 Buy.");
                 choicesAction.getChoices().add(new CardActionChoice("+2 Cards and +1 Action", "cards"));
@@ -320,7 +320,7 @@ public class TrashCardsHandler {
             }
         } else if (cardAction.getCardName().equals("Upgrade")) {
             CardAction secondCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            secondCardAction.setDeck(Card.DECK_INTRIGUE);
+            secondCardAction.setDeck(Deck.Intrigue);
             secondCardAction.setCardName("Upgrade");
             secondCardAction.setButtonValue("Done");
             secondCardAction.setNumCards(1);

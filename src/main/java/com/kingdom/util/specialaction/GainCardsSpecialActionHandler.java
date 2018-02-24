@@ -13,7 +13,7 @@ public class GainCardsSpecialActionHandler {
         if (card.getName().equals("Border Village")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
             cardAction.setGainCardAction(true);
-            cardAction.setDeck(Card.DECK_HINTERLANDS);
+            cardAction.setDeck(Deck.Hinterlands);
             cardAction.setCardName(card.getName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
@@ -39,7 +39,7 @@ public class GainCardsSpecialActionHandler {
             if (game.isCheckDuchess() && game.isCardInSupply(duchessCard)) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                 cardAction.setGainCardAction(true);
-                cardAction.setDeck(Card.DECK_REACTION);
+                cardAction.setDeck(Deck.Reaction);
                 cardAction.setCardName("Duchess for Duchy");
                 cardAction.setAssociatedCard(card);
                 cardAction.getCards().add(duchessCard);
@@ -66,7 +66,7 @@ public class GainCardsSpecialActionHandler {
                 }
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
                 cardAction.setGainCardAction(true);
-                cardAction.setDeck(Card.DECK_HINTERLANDS);
+                cardAction.setDeck(Deck.Hinterlands);
                 cardAction.setCardName(card.getName());
                 cardAction.setAssociatedCard(card);
                 cardAction.setButtonValue("Done");
@@ -104,7 +104,7 @@ public class GainCardsSpecialActionHandler {
                 } else {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
                     cardAction.setGainCardAction(true);
-                    cardAction.setDeck(Card.DECK_HINTERLANDS);
+                    cardAction.setDeck(Deck.Hinterlands);
                     cardAction.setHideOnSelect(true);
                     cardAction.setNumCards(game.getTreasureCardsPlayed().size());
                     cardAction.setCardName(card.getName());
@@ -122,7 +122,7 @@ public class GainCardsSpecialActionHandler {
 
     public static CardAction getFoolsGoldCardAction() {
         CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-        cardAction.setDeck(Card.DECK_HINTERLANDS);
+        cardAction.setDeck(Deck.Hinterlands);
         cardAction.setCardName("Fool's Gold");
         cardAction.setInstructions("Do you want to trash your Fool's Gold to gain a Gold on top of your deck?");
 

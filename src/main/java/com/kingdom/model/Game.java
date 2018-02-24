@@ -106,7 +106,7 @@ public class Game {
     private Card throneRoomCard;
     private Card kingsCourtCard;
     private List<Card> blackMarketCards = new ArrayList<Card>(0);
-    private List<String> decks = new ArrayList<String>(5);
+    private List<Deck> decks = new ArrayList<>(5);
     private boolean usePotions;
     private int potionsPlayed;
     private List<Card> treasureCardsPlayed = new ArrayList<Card>(5);
@@ -487,7 +487,7 @@ public class Game {
         CardAction cardAction = new CardAction(CardAction.TYPE_SETUP_LEADERS);
         cardAction.setNumCards(3);
         cardAction.setCards(availableLeaders);
-        cardAction.setDeck(Card.DECK_LEADERS);
+        cardAction.setDeck(Deck.Leaders);
         cardAction.setButtonValue("Done");
         cardAction.setCardName("Setup Leaders");
         String instructions = "Choose 3 Leader cards and then click Done";
@@ -1908,7 +1908,7 @@ public class Game {
         } else {
             cardsWithGainCardActions.put(card.getCardId(), card);
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-            cardAction.setDeck(Card.DECK_REACTION);
+            cardAction.setDeck(Deck.Reaction);
             cardAction.setCardName("Choose Reaction");
             cardAction.setAssociatedCard(firstReaction.getAssociatedCard());
             cardAction.getCards().add(firstReaction.getAssociatedCard());
@@ -2001,7 +2001,7 @@ public class Game {
                 }
                 if (walledVillagesPlayed.size() == 1) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                    cardAction.setDeck(Card.DECK_PROMO);
+                    cardAction.setDeck(Deck.Promo);
                     cardAction.setCardName("Walled Village");
                     cardAction.setInstructions("Do you want your Walled Village to go on top of your deck?");
                     cardAction.getCards().addAll(walledVillagesPlayed);
@@ -2009,7 +2009,7 @@ public class Game {
                     return;
                 } else if (walledVillagesPlayed.size() > 1) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
-                    cardAction.setDeck(Card.DECK_PROMO);
+                    cardAction.setDeck(Deck.Promo);
                     cardAction.setCardName("Walled Village");
                     for (Card card : walledVillagesPlayed) {
                         card.setAutoSelect(true);
@@ -2026,7 +2026,7 @@ public class Game {
                 playedTreasuryCard = false;
                 if (!boughtVictoryCard) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
-                    cardAction.setDeck(Card.DECK_SEASIDE);
+                    cardAction.setDeck(Deck.Seaside);
                     cardAction.setCardName("Treasury");
                     for (Card card : cardsPlayed) {
                         if (card.getName().equals("Treasury")) {
@@ -2051,7 +2051,7 @@ public class Game {
                 }
                 if (hasPotion) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
-                    cardAction.setDeck(Card.DECK_ALCHEMY);
+                    cardAction.setDeck(Deck.Alchemy);
                     cardAction.setCardName("Alchemist");
                     for (Card card : cardsPlayed) {
                         if (card.getName().equals("Alchemist")) {
@@ -2071,7 +2071,7 @@ public class Game {
                 Set<Card> treasureCards = new HashSet<Card>(treasureCardsPlayed);
                 if (treasureCards.size() > 0) {
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
-                    cardAction.setDeck(Card.DECK_ALCHEMY);
+                    cardAction.setDeck(Deck.Alchemy);
                     cardAction.setCardName("Herbalist");
                     int herbalistCardsPlayed = 0;
                     for (Card card : cardsPlayed) {
@@ -2099,7 +2099,7 @@ public class Game {
                     }
                     schemeCardsPlayed = 0;
                     CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_UP_TO);
-                    cardAction.setDeck(Card.DECK_HINTERLANDS);
+                    cardAction.setDeck(Deck.Hinterlands);
                     cardAction.setCardName("Scheme");
                     cardAction.setNumCards(numCards);
                     cardAction.getCards().addAll(actionCardsPlayed);
@@ -2918,11 +2918,11 @@ public class Game {
         this.blackMarketCards = blackMarketCards;
     }
 
-    public List<String> getDecks() {
+    public List<Deck> getDecks() {
         return decks;
     }
 
-    public void setDecks(List<String> decks) {
+    public void setDecks(List<Deck> decks) {
         this.decks = decks;
     }
 
@@ -3645,7 +3645,7 @@ public class Game {
         if (checkTunnel && card.getName().equals("Tunnel") && isCardInSupply(getGoldCard())) {
             waitIfNotCurrentPlayer(player);
             CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-            cardAction.setDeck(Card.DECK_HINTERLANDS);
+            cardAction.setDeck(Deck.Hinterlands);
             cardAction.setCardName("Tunnel");
             cardAction.setInstructions("Do you want to reveal your Tunnel to gain a Gold?");
             cardAction.getCards().add(getGoldCard());
@@ -3661,7 +3661,7 @@ public class Game {
     public void showUseFruitTokensCardAction(Player player) {
         if (isCurrentPlayer(player)) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_NUMBER_BETWEEN);
-            cardAction.setDeck(Card.DECK_PROLETARIAT);
+            cardAction.setDeck(Deck.Proletariat);
             cardAction.setCardName("Use Fruit Tokens");
             cardAction.setButtonValue("Done");
             cardAction.setStartNumber(0);
@@ -3674,7 +3674,7 @@ public class Game {
     public void showUseCattleTokensCardAction(Player player) {
         if (isCurrentPlayer(player)) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN);
-            cardAction.setDeck(Card.DECK_PROLETARIAT);
+            cardAction.setDeck(Deck.Proletariat);
             cardAction.setCardName("Use Cattle Tokens");
             cardAction.setButtonValue("Done");
             cardAction.setStartNumber(0);

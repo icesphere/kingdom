@@ -1,9 +1,6 @@
 package com.kingdom.util.specialaction;
 
-import com.kingdom.model.Card;
-import com.kingdom.model.CardAction;
-import com.kingdom.model.Game;
-import com.kingdom.model.Player;
+import com.kingdom.model.*;
 
 public class LeaderSpecialActionHandler {
 
@@ -17,7 +14,7 @@ public class LeaderSpecialActionHandler {
             player.setCardBonusTurns(2);
         } else if (card.getName().equals("Bilkis")) {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-            cardAction.setDeck(Card.DECK_LEADERS);
+            cardAction.setDeck(Deck.Leaders);
             cardAction.setCardName(card.getName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
@@ -41,7 +38,7 @@ public class LeaderSpecialActionHandler {
         } else if (card.getName().equals("Plato")) {
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-                cardAction.setDeck(Card.DECK_LEADERS);
+                cardAction.setDeck(Deck.Leaders);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(2);

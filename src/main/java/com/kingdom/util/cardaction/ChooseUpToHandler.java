@@ -97,7 +97,7 @@ public class ChooseUpToHandler {
             }
             if (player.getMuseumCards().size() >= 4) {
                 CardAction museumCardAction = new CardAction(CardAction.TYPE_YES_NO);
-                museumCardAction.setDeck(Card.DECK_FAN);
+                museumCardAction.setDeck(Deck.Fan);
                 museumCardAction.setCardName("Museum Trash Cards");
                 museumCardAction.setInstructions("Do you want to trash 4 cards from your Museum mat to gain a Prize and a Duchy?");
                 game.setPlayerCardAction(player, museumCardAction);
@@ -107,7 +107,7 @@ public class ChooseUpToHandler {
                 Card selectedCard = cardMap.get(selectedCardIds.get(0));
                 game.addHistory(player.getUsername(), " revealed ", KingdomUtil.getArticleWithCardName(selectedCard));
                 CardAction choicesCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                choicesCardAction.setDeck(Card.DECK_PROLETARIAT);
+                choicesCardAction.setDeck(Deck.Proletariat);
                 choicesCardAction.setCardName(cardAction.getCardName());
                 choicesCardAction.setInstructions("Choose one: +1 cattle token or +1 Buy.");
                 choicesCardAction.getChoices().add(new CardActionChoice("cattle token", "cattle"));

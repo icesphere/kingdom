@@ -20,7 +20,7 @@ public class SeasideSpecialActionHandler {
             Player player = game.getCurrentPlayer();
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                cardAction.setDeck(Card.DECK_SEASIDE);
+                cardAction.setDeck(Deck.Seaside);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -74,7 +74,7 @@ public class SeasideSpecialActionHandler {
         } else if (card.getName().equals("Embargo")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-            cardAction.setDeck(Card.DECK_SEASIDE);
+            cardAction.setDeck(Deck.Seaside);
             cardAction.setCardName(card.getName());
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
@@ -103,7 +103,7 @@ public class SeasideSpecialActionHandler {
             }
             if (hasProvince) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-                cardAction.setDeck(Card.DECK_SEASIDE);
+                cardAction.setDeck(Deck.Seaside);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("Do you want to reveal a Province and gain a Gold into your hand, or do you want to gain a silver into your hand?");
                 cardAction.getChoices().add(new CardActionChoice("Gold", "gold"));
@@ -124,7 +124,7 @@ public class SeasideSpecialActionHandler {
                         game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!player.hasMoat() && player.getHand().size() >= 4 && !player.hasLighthouse()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
-                        cardAction.setDeck(Card.DECK_SEASIDE);
+                        cardAction.setDeck(Deck.Seaside);
                         cardAction.setCardName(card.getName());
                         cardAction.getCards().addAll(player.getHand());
                         cardAction.setNumCards(player.getHand().size() - 3);
@@ -147,7 +147,7 @@ public class SeasideSpecialActionHandler {
         } else if (card.getName().equals("Haven")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-            cardAction.setDeck(Card.DECK_SEASIDE);
+            cardAction.setDeck(Deck.Seaside);
             cardAction.setCardName(card.getName());
             cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
             cardAction.setButtonValue("Done");
@@ -161,7 +161,7 @@ public class SeasideSpecialActionHandler {
                 player.getIslandCards().add(card);
             }
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-            cardAction.setDeck(Card.DECK_SEASIDE);
+            cardAction.setDeck(Deck.Seaside);
             cardAction.setCardName(card.getName());
             cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
             cardAction.setNumCards(1);
@@ -191,7 +191,7 @@ public class SeasideSpecialActionHandler {
             } else if (cards.size() > 0) {
                 game.refreshHand(player);
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                cardAction.setDeck(Card.DECK_SEASIDE);
+                cardAction.setDeck(Deck.Seaside);
                 cardAction.setHideOnSelect(true);
                 cardAction.setNumCards(cards.size());
                 cardAction.setCardName(card.getName());
@@ -210,7 +210,7 @@ public class SeasideSpecialActionHandler {
         } else if (card.getName().equals("Native Village")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-            cardAction.setDeck(Card.DECK_SEASIDE);
+            cardAction.setDeck(Deck.Seaside);
             cardAction.setCardName(card.getName());
             cardAction.setInstructions("Do you want to put your top deck card on your Native Village, or put all the cards from your Native Village into your hand?");
             cardAction.getChoices().add(new CardActionChoice("Top Deck Card", "card"));
@@ -219,7 +219,7 @@ public class SeasideSpecialActionHandler {
         } else if (card.getName().equals("Navigator")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-            cardAction.setDeck(Card.DECK_SEASIDE);
+            cardAction.setDeck(Deck.Seaside);
             cardAction.setCardName(card.getName());
             cardAction.setInstructions("Do you want to discard these cards, or put them back on top of your deck?");
             cardAction.getChoices().add(new CardActionChoice("Discard", "discard"));
@@ -243,7 +243,7 @@ public class SeasideSpecialActionHandler {
             Card bottomCard = player.lookAtBottomDeckCard();
             if (bottomCard != null) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
-                cardAction.setDeck(Card.DECK_SEASIDE);
+                cardAction.setDeck(Deck.Seaside);
                 cardAction.getCards().add(bottomCard);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("This is the bottom card from your deck, do you want to put it on top of your deck?");
@@ -254,7 +254,7 @@ public class SeasideSpecialActionHandler {
         } else if (card.getName().equals("Pirate Ship")) {
             Player player = game.getCurrentPlayer();
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
-            cardAction.setDeck(Card.DECK_SEASIDE);
+            cardAction.setDeck(Deck.Seaside);
             cardAction.setCardName(card.getName());
             cardAction.setInstructions("Do you want to attack other players and try to get a Pirate Ship Coin, or do you want to get " + KingdomUtil.getPlural(player.getPirateShipCoins(), "Coin") + " from your Pirate Ship Coins?");
             cardAction.getChoices().add(new CardActionChoice("Attack", "attack"));
@@ -264,7 +264,7 @@ public class SeasideSpecialActionHandler {
             Player player = game.getCurrentPlayer();
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                cardAction.setDeck(Card.DECK_SEASIDE);
+                cardAction.setDeck(Deck.Seaside);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
@@ -306,7 +306,7 @@ public class SeasideSpecialActionHandler {
             }
             if (cards.size() > 0) {
                 cardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-                cardAction.setDeck(Card.DECK_SEASIDE);
+                cardAction.setDeck(Deck.Seaside);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
                 cardAction.setCards(KingdomUtil.uniqueCardList(cards));
@@ -314,7 +314,7 @@ public class SeasideSpecialActionHandler {
                 cardAction.setInstructions("Select one of the following cards to gain and then click Done.");
             } else {
                 cardAction = new CardAction(CardAction.TYPE_INFO);
-                cardAction.setDeck(Card.DECK_SEASIDE);
+                cardAction.setDeck(Deck.Seaside);
                 cardAction.setCardName(card.getName());
                 cardAction.setInstructions("The player to your right did not gain any cards costing 6 or less that are still in the supply.");
                 cardAction.setButtonValue("Close");
@@ -372,7 +372,7 @@ public class SeasideSpecialActionHandler {
                         cardsToDiscard = player.getHand().size();
                     }
                     CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                    cardAction.setDeck(Card.DECK_SEASIDE);
+                    cardAction.setDeck(Deck.Seaside);
                     cardAction.setCardName(card.getName());
                     cardAction.getCards().addAll(player.getHand());
                     cardAction.setNumCards(cardsToDiscard);

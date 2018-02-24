@@ -56,22 +56,6 @@ public class Card {
     public static final String DURATION_AND_VICTORY_IMAGE = "orange_green.gif";
     public static final String TREASURE_REACTION_IMAGE = "gold_blue.gif";
 
-    public static final String DECK_KINGDOM = "Kingdom";
-    public static final String DECK_INTRIGUE = "Intrigue";
-    public static final String DECK_SEASIDE = "Seaside";
-    public static final String DECK_PROMO = "Promo";
-    public static final String DECK_ALCHEMY = "Alchemy";
-    public static final String DECK_PROSPERITY = "Prosperity";
-    public static final String DECK_SALVATION = "Salvation";
-    public static final String DECK_CORNUCOPIA = "Cornucopia";
-    public static final String DECK_HINTERLANDS = "Hinterlands";
-    public static final String DECK_FAIRYTALE = "FairyTale";
-    public static final String DECK_LEADERS = "Leaders";
-    public static final String DECK_FAN = "Fan";
-    public static final String DECK_PROLETARIAT = "Proletariat";
-
-    public static final String DECK_REACTION = "Reaction";
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "cardid")
@@ -100,7 +84,7 @@ public class Card {
     @Column(name = "victory_points")
     private int victoryPoints;
 
-    private String deck = "";
+    private Deck deck;
 
     private boolean testing;
 
@@ -358,11 +342,11 @@ public class Card {
         this.victoryPoints = victoryPoints;
     }
 
-    public String getDeck() {
+    public Deck getDeck() {
         return deck;
     }
 
-    public void setDeck(String deck) {
+    public void setDeck(Deck deck) {
         this.deck = deck;
     }
 
@@ -594,55 +578,55 @@ public class Card {
     }
 
     public boolean isKingdom() {
-        return deck.equals(DECK_KINGDOM);
+        return deck == Deck.Kingdom;
     }
 
     public boolean isIntrigue() {
-        return deck.equals(DECK_INTRIGUE);
+        return deck == Deck.Intrigue;
     }
 
     public boolean isSeaside() {
-        return deck.equals(DECK_SEASIDE);
+        return deck == Deck.Seaside;
     }
 
     public boolean isAlchemy() {
-        return deck.equals(DECK_ALCHEMY);
+        return deck == Deck.Alchemy;
     }
 
     public boolean isPromo() {
-        return deck.equals(DECK_PROMO);
+        return deck == Deck.Promo;
     }
 
     public boolean isProsperity() {
-        return deck.equals(DECK_PROSPERITY);
+        return deck == Deck.Prosperity;
     }
 
     public boolean isSalvation() {
-        return deck.equals(DECK_SALVATION);
+        return deck == Deck.Salvation;
     }
 
     public boolean isFairyTale() {
-        return deck.equals(DECK_FAIRYTALE);
+        return deck == Deck.FairyTale;
     }
 
     public boolean isCornucopia() {
-        return deck.equals(DECK_CORNUCOPIA);
+        return deck == Deck.Cornucopia;
     }
 
     public boolean isHinterlands() {
-        return deck.equals(DECK_HINTERLANDS);
+        return deck == Deck.Hinterlands;
     }
 
     public boolean isLeader() {
-        return deck.equals(DECK_LEADERS);
+        return deck == Deck.Leaders;
     }
 
     public boolean isProletariat() {
-        return deck.equals(DECK_PROLETARIAT);
+        return deck == Deck.Proletariat;
     }
 
     public boolean isFan() {
-        return deck.equals(DECK_FAN);
+        return deck == Deck.Fan;
     }
 
     public String getBackgroundColor() {
