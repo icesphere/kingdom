@@ -27,6 +27,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
         } else {
             field + coinsInHand
         }
+        private set
     var coinsInHand: Int = 0
         private set
     var actions: Int = 0
@@ -315,11 +316,16 @@ class Player(user: User, game: Game) : Comparable<Player> {
     }
 
     fun addCoins(coins: Int) {
-        this.coins += coins
+        if (playTreasureCards) {
+            this.coins += coins
+        } else {
+            //compensate for getter
+            this.coins += coins - coinsInHand
+        }
     }
 
     fun subtractCoins(coins: Int) {
-        this.coins -= coins
+        addCoins(coins * -1)
     }
 
     fun addActions(actions: Int) {
@@ -532,7 +538,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
 
     fun treasureCardPlayed(card: Card, removeFromHand: Boolean) {
         if (card.cardId == Card.COPPER_ID) {
-            coins += copperSmithsPlayed
+            addCoins(copperSmithsPlayed)
             isPlayedCopper = true
         }
         if (removeFromHand) {

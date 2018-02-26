@@ -42,7 +42,8 @@ class Card {
     var deckString: String? = null
 
     @Transient
-    var deck: Deck? = deckString?.let { Deck.valueOf(deckString!!) }
+    var deck: Deck? = null
+        get() = deckString?.let { Deck.valueOf(deckString!!) }
 
     var testing: Boolean = false
 

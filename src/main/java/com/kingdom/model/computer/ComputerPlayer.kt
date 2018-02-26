@@ -475,7 +475,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
     }
     
     private fun getKingdomCard(name: String): Card {
-        return getKingdomCard(name)
+        return kingdomCardMap[name]!!
     }
 
     protected fun buyCardHardDifficulty(): Card? {
@@ -720,10 +720,12 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return true
         }
 
-        val embargoTokens = game.embargoTokens[card.cardId]!!
-        if (game.isShowEmbargoTokens && embargoTokens > 0) {
-            if (embargoTokens > 2 || !card.isProvince && !card.isColony) {
-                return true
+        if (game.isShowEmbargoTokens ) {
+            val embargoTokens = game.embargoTokens[card.cardId]!!
+            if (embargoTokens > 0) {
+                if (embargoTokens > 2 || !card.isProvince && !card.isColony) {
+                    return true
+                }
             }
         }
         if (!card.isVictory && !card.isTreasure && card.cost < 5 && cardsGained[card.cardId] != null && cardsGained[card.cardId]!! >= 3) {
