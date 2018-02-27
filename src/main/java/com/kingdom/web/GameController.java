@@ -22,11 +22,19 @@ public class GameController {
     CardManager cardManager;
     UserManager userManager;
     GameManager gameManager;
+    GameRoomManager gameRoomManager;
+    LobbyChats lobbyChats;
 
-    public GameController(CardManager cardManager, UserManager userManager, GameManager gameManager) {
+    public GameController(CardManager cardManager,
+                          UserManager userManager,
+                          GameManager gameManager,
+                          GameRoomManager gameRoomManager,
+                          LobbyChats lobbyChats) {
         this.cardManager = cardManager;
         this.userManager = userManager;
         this.gameManager = gameManager;
+        this.gameRoomManager = gameRoomManager;
+        this.lobbyChats = lobbyChats;
     }
 
     @RequestMapping("/createGame.html")
@@ -38,9 +46,9 @@ public class GameController {
 
         Game game = getGame(request);
         if (game == null) {
-            game = GameRoomManager.Companion.getInstance().getNextAvailableGame();
+            game = gameRoomManager.getNextAvailableGame();
         }
-        if (game == null || GameRoomManager.Companion.getInstance().isUpdatingWebsite()) {
+        if (game == null || gameRoomManager.isUpdatingWebsite()) {
             return new ModelAndView("redirect:/showGameRooms.html");
         }
 
@@ -607,7 +615,7 @@ public class GameController {
             return KingdomUtil.getLoginModelAndView(request);
         }
         int gameId = Integer.parseInt(gameIdParam);
-        Game game = GameRoomManager.Companion.getInstance().getGame(gameId);
+        Game game = gameRoomManager.getGame(gameId);
         if (game != null && (user.getAdmin() || game.getCreatorId() == user.getUserId())) {
             game.reset();
         }
@@ -646,14 +654,14 @@ public class GameController {
             ModelAndView modelAndView = new ModelAndView("gameRooms");
             modelAndView.addObject("user", user);
             modelAndView.addObject("players", LoggedInUsers.Companion.getInstance().getUsers());
-            modelAndView.addObject("gameRooms", GameRoomManager.Companion.getInstance().getLobbyGameRooms());
-            modelAndView.addObject("chats", LobbyChats.Companion.getInstance().getChats());
-            modelAndView.addObject("maxGameRoomLimitReached", GameRoomManager.Companion.getInstance().maxGameRoomLimitReached());
-            modelAndView.addObject("numGamesInProgress", GameRoomManager.Companion.getInstance().getGamesInProgress().size());
-            modelAndView.addObject("updatingWebsite", GameRoomManager.Companion.getInstance().isUpdatingWebsite());
-            modelAndView.addObject("updatingMessage", GameRoomManager.Companion.getInstance().getUpdatingMessage());
-            modelAndView.addObject("showNews", GameRoomManager.Companion.getInstance().isShowNews());
-            modelAndView.addObject("news", GameRoomManager.Companion.getInstance().getNews());
+            modelAndView.addObject("gameRooms", gameRoomManager.getLobbyGameRooms());
+            modelAndView.addObject("chats", lobbyChats.getChats());
+            modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached());
+            modelAndView.addObject("numGamesInProgress", gameRoomManager.getGamesInProgress().size());
+            modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite());
+            modelAndView.addObject("updatingMessage", gameRoomManager.getUpdatingMessage());
+            modelAndView.addObject("showNews", gameRoomManager.isShowNews());
+            modelAndView.addObject("news", gameRoomManager.getNews());
 
             return modelAndView;
         } catch (Throwable t) {
@@ -691,7 +699,7 @@ public class GameController {
         if (user.getGameId() == 0) {
             return new ModelAndView("redirect:/showGameRooms.html");
         }
-        Game game = GameRoomManager.Companion.getInstance().getGame(user.getGameId());
+        Game game = gameRoomManager.getGame(user.getGameId());
         if (game == null || game.getStatus() != Game.STATUS_GAME_WAITING_FOR_PLAYERS) {
             return new ModelAndView("redirect:/showGameRooms.html");
         } else {
@@ -713,7 +721,7 @@ public class GameController {
         Game game;
         if (gameIdParam != null) {
             int gameId = Integer.parseInt(gameIdParam);
-            game = GameRoomManager.Companion.getInstance().getGame(gameId);
+            game = gameRoomManager.getGame(gameId);
         } else {
             game = getGame(request);
         }
@@ -756,7 +764,7 @@ public class GameController {
         Game game;
         if (gameIdParam != null) {
             int gameId = Integer.parseInt(gameIdParam);
-            game = GameRoomManager.Companion.getInstance().getGame(gameId);
+            game = gameRoomManager.getGame(gameId);
         } else {
             game = getGame(request);
         }
@@ -1732,7 +1740,7 @@ public class GameController {
 
     private void sendLobbyChat(User user, String message) {
         if (message != null && !message.equals("")) {
-            LobbyChats.Companion.getInstance().addChat(user, message);
+            lobbyChats.addChat(user, message);
         }
     }
 
@@ -1741,10 +1749,10 @@ public class GameController {
             User receivingUser = LoggedInUsers.Companion.getInstance().getUser(receivingUserId);
             if (receivingUser != null) {
                 if (receivingUser.getGameId() > 0) {
-                    Game game = GameRoomManager.Companion.getInstance().getGame(receivingUser.getGameId());
+                    Game game = gameRoomManager.getGame(receivingUser.getGameId());
                     game.addPrivateChat(user, receivingUser, message);
                 } else {
-                    LobbyChats.Companion.getInstance().addPrivateChat(user, receivingUser, message);
+                    lobbyChats.addPrivateChat(user, receivingUser, message);
                     LoggedInUsers.Companion.getInstance().refreshLobbyChat();
                 }
             }
@@ -1959,7 +1967,7 @@ public class GameController {
         if (gameId == null) {
             return null;
         }
-        return GameRoomManager.Companion.getInstance().getGame((Integer) gameId);
+        return gameRoomManager.getGame((Integer) gameId);
     }
 
     @RequestMapping("/gameHistory.html")
@@ -2372,7 +2380,7 @@ public class GameController {
         }
         ModelAndView modelAndView = new ModelAndView(template);
         modelAndView.addObject("user", user);
-        modelAndView.addObject("chats", LobbyChats.Companion.getInstance().getChats());
+        modelAndView.addObject("chats", lobbyChats.getChats());
         return modelAndView;
     }
 
@@ -2397,13 +2405,13 @@ public class GameController {
         LoggedInUsers.Companion.getInstance().refreshLobby(user);
         ModelAndView modelAndView = new ModelAndView("lobbyGameRoomsDiv");
         modelAndView.addObject("user", user);
-        modelAndView.addObject("gameRooms", GameRoomManager.Companion.getInstance().getLobbyGameRooms());
-        modelAndView.addObject("maxGameRoomLimitReached", GameRoomManager.Companion.getInstance().maxGameRoomLimitReached());
-        modelAndView.addObject("numGamesInProgress", GameRoomManager.Companion.getInstance().getGamesInProgress().size());
-        modelAndView.addObject("updatingWebsite", GameRoomManager.Companion.getInstance().isUpdatingWebsite());
-        modelAndView.addObject("updatingMessage", GameRoomManager.Companion.getInstance().getUpdatingMessage());
-        modelAndView.addObject("showNews", GameRoomManager.Companion.getInstance().isShowNews());
-        modelAndView.addObject("news", GameRoomManager.Companion.getInstance().getNews());
+        modelAndView.addObject("gameRooms", gameRoomManager.getLobbyGameRooms());
+        modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached());
+        modelAndView.addObject("numGamesInProgress", gameRoomManager.getGamesInProgress().size());
+        modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite());
+        modelAndView.addObject("updatingMessage", gameRoomManager.getUpdatingMessage());
+        modelAndView.addObject("showNews", gameRoomManager.isShowNews());
+        modelAndView.addObject("news", gameRoomManager.getNews());
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
         return modelAndView;
     }
@@ -2411,7 +2419,7 @@ public class GameController {
     @RequestMapping("/showGamesInProgress.html")
     public ModelAndView showGamesInProgress(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView modelAndView = new ModelAndView("gamesInProgress");
-        modelAndView.addObject("games", GameRoomManager.Companion.getInstance().getGamesInProgress());
+        modelAndView.addObject("games", gameRoomManager.getGamesInProgress());
         return modelAndView;
     }
 
@@ -2430,7 +2438,7 @@ public class GameController {
         if (user == null || game == null) {
             return new ModelAndView("redirect:/login.html");
         }
-        if (GameRoomManager.Companion.getInstance().isUpdatingWebsite()) {
+        if (gameRoomManager.isUpdatingWebsite()) {
             return new ModelAndView("redirect:/showGameRooms.html");
         }
         game.repeat();

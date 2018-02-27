@@ -23,10 +23,13 @@ public class MainController {
 
     private static final int MAX_USER_LIMIT = 100;
 
-    UserManager manager;
+    private UserManager manager;
+    private GameRoomManager gameRoomManager;
 
-    public MainController(UserManager manager) {
+    public MainController(UserManager manager,
+                          GameRoomManager gameRoomManager) {
         this.manager = manager;
+        this.gameRoomManager = gameRoomManager;
     }
 
     @RequestMapping("/login.html")
@@ -87,10 +90,10 @@ public class MainController {
         modelAndView.addObject("showCancelGame", showCancelGame);
         modelAndView.addObject("numErrors", manager.getErrorCount());
         modelAndView.addObject("loggedInUsersCount", LoggedInUsers.Companion.getInstance().getUsers().size());
-        modelAndView.addObject("updatingWebsite", GameRoomManager.Companion.getInstance().isUpdatingWebsite());
-        modelAndView.addObject("updatingMessage", GameRoomManager.Companion.getInstance().getUpdatingMessage());
-        modelAndView.addObject("showNews", GameRoomManager.Companion.getInstance().isShowNews());
-        modelAndView.addObject("news", GameRoomManager.Companion.getInstance().getNews());
+        modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite());
+        modelAndView.addObject("updatingMessage", gameRoomManager.getUpdatingMessage());
+        modelAndView.addObject("showNews", gameRoomManager.isShowNews());
+        modelAndView.addObject("news", gameRoomManager.getNews());
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
         return modelAndView;
     }
@@ -305,16 +308,16 @@ public class MainController {
     @RequestMapping("/setUpdatingWebsite.html")
     public ModelAndView setUpdatingWebsite(HttpServletRequest request, HttpServletResponse response) {
         boolean updatingWebsite = KingdomUtil.getRequestBoolean(request, "updatingWebsite");
-        GameRoomManager.Companion.getInstance().setUpdatingWebsite(updatingWebsite);
-        GameRoomManager.Companion.getInstance().setUpdatingMessage(request.getParameter("updatingMessage"));
+        gameRoomManager.setUpdatingWebsite(updatingWebsite);
+        gameRoomManager.setUpdatingMessage(request.getParameter("updatingMessage"));
         return new ModelAndView("empty");
     }
 
     @RequestMapping("/setShowNews.html")
     public ModelAndView setShowNews(HttpServletRequest request, HttpServletResponse response) {
         boolean showNews = KingdomUtil.getRequestBoolean(request, "showNews");
-        GameRoomManager.Companion.getInstance().setShowNews(showNews);
-        GameRoomManager.Companion.getInstance().setNews(request.getParameter("news"));
+        gameRoomManager.setShowNews(showNews);
+        gameRoomManager.setNews(request.getParameter("news"));
         return new ModelAndView("empty");
     }
 

@@ -3,10 +3,12 @@ package com.kingdom.service
 import com.kingdom.model.Game
 import com.kingdom.model.GameRoom
 import com.kingdom.util.GameRoomComparator
+import org.springframework.stereotype.Service
 
 import java.util.*
 
-class GameRoomManager private constructor() {
+@Service
+class GameRoomManager {
 
     private val games = HashMap<Int, Game>()
 
@@ -115,7 +117,5 @@ class GameRoomManager private constructor() {
     companion object {
 
         private const val MAX_GAME_ROOMS = 20
-
-        val instance = GameRoomManager()
     }
 }

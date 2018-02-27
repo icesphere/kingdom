@@ -2,10 +2,12 @@ package com.kingdom.service
 
 import com.kingdom.model.LobbyChat
 import com.kingdom.model.User
+import org.springframework.stereotype.Service
 
 import java.util.Date
 import java.util.LinkedList
 
+@Service
 class LobbyChats {
 
     val chats = LinkedList<LobbyChat>()
@@ -30,7 +32,5 @@ class LobbyChats {
     companion object {
 
         const val MAX_LOBBY_CHATS = 50
-
-        val instance = LobbyChats()
     }
 }
