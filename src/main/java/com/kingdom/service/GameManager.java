@@ -1,182 +1,157 @@
-package com.kingdom.service;
+package com.kingdom.service
 
-import com.kingdom.model.*;
-import com.kingdom.repository.*;
-import org.springframework.stereotype.Service;
+import com.kingdom.model.*
+import com.kingdom.repository.*
+import org.springframework.stereotype.Service
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.ArrayList
+import java.util.Calendar
+import java.util.GregorianCalendar
 
 @Service
-public class GameManager {
+class GameManager(private val gameErrorRepository: GameErrorRepository,
+                  private val gameLogRepository: GameLogRepository,
+                  private val annotatedGameRepository: AnnotatedGameRepository,
+                  private val recommendedSetRepository: RecommendedSetRepository,
+                  private val gameHistoryRepository: GameHistoryRepository,
+                  private val gameUserHistoryRepository: GameUserHistoryRepository,
+                  private val userRepository: UserRepository) {
 
-    private GameErrorRepository gameErrorRepository;
-    private GameLogRepository gameLogRepository;
-    private AnnotatedGameRepository annotatedGameRepository;
-    private RecommendedSetRepository recommendedSetRepository;
-    private GameHistoryRepository gameHistoryRepository;
-    private GameUserHistoryRepository gameUserHistoryRepository;
-    private UserRepository userRepository;
+    val gameHistoryList: List<GameHistory>
+        get() = gameHistoryRepository.findTop80ByOrderByGameIdDesc()
 
-    public GameManager(GameErrorRepository gameErrorRepository,
-                       GameLogRepository gameLogRepository,
-                       AnnotatedGameRepository annotatedGameRepository,
-                       RecommendedSetRepository recommendedSetRepository,
-                       GameHistoryRepository gameHistoryRepository,
-                       GameUserHistoryRepository gameUserHistoryRepository,
-                       UserRepository userRepository) {
-        this.gameErrorRepository = gameErrorRepository;
-        this.gameLogRepository = gameLogRepository;
-        this.annotatedGameRepository = annotatedGameRepository;
-        this.recommendedSetRepository = recommendedSetRepository;
-        this.gameHistoryRepository = gameHistoryRepository;
-        this.gameUserHistoryRepository = gameUserHistoryRepository;
-        this.userRepository = userRepository;
-    }
+    val gameErrors: List<GameError>
+        get() = gameErrorRepository.findTop50ByOrderByErrorIdDesc()
 
-    public List<GameHistory> getGameHistoryList() {
-        return gameHistoryRepository.findTop80ByOrderByGameIdDesc();
-    }
+    //todo
+    //return dao.getOverallStats();
+    val overallStats: OverallStats
+        get() = OverallStats()
 
-    public List<GameHistory> getGameHistoryList(int userId) {
+    //todo
+    //return dao.getOverallStats(today.getTime(), null);
+    val overallStatsForToday: OverallStats
+        get() {
+            val today = GregorianCalendar.getInstance()
+            today.set(Calendar.HOUR_OF_DAY, 0)
+            today.set(Calendar.MINUTE, 0)
+            today.set(Calendar.SECOND, 0)
+            return OverallStats()
+        }
+
+    //todo
+    //return dao.getOverallStats(yesterday.getTime(), today.getTime());
+    val overallStatsForYesterday: OverallStats
+        get() {
+            val today = GregorianCalendar.getInstance()
+            today.set(Calendar.HOUR_OF_DAY, 0)
+            today.set(Calendar.MINUTE, 0)
+            today.set(Calendar.SECOND, 0)
+
+            val yesterday = today.clone() as Calendar
+            yesterday.add(Calendar.DAY_OF_MONTH, -1)
+            return OverallStats()
+        }
+
+    //todo
+    //return dao.getOverallStats(today.getTime(), null);
+    val overallStatsForPastWeek: OverallStats
+        get() {
+            val today = GregorianCalendar.getInstance()
+            today.add(Calendar.WEEK_OF_YEAR, -1)
+            return OverallStats()
+        }
+
+    //todo
+    //return dao.getOverallStats(today.getTime(), null);
+    val overallStatsForPastMonth: OverallStats
+        get() {
+            val today = GregorianCalendar.getInstance()
+            today.add(Calendar.MONTH, -1)
+            return OverallStats()
+        }
+
+    //todo
+    val userStats: UserStats
+        get() = UserStats()
+
+    val annotatedGames: List<AnnotatedGame>
+        get() = annotatedGameRepository.findAllByOrderByGameIdDesc()
+
+    val recommendedSets: List<RecommendedSet>
+        get() = recommendedSetRepository.findAllByOrderByIdAsc()
+
+    fun getGameHistoryList(userId: Int): List<GameHistory> {
         //todo
-        return new ArrayList<>();
+        return ArrayList()
         //return gameHistoryRepository.getTopGameHistoriesByUserId(userId);
     }
 
-    public void saveGameHistory(GameHistory history) {
-        gameHistoryRepository.save(history);
+    fun saveGameHistory(history: GameHistory) {
+        gameHistoryRepository.save(history)
     }
 
-    public void saveGameUserHistory(int gameId, Player player) {
-        GameUserHistory gameUserHistory = new GameUserHistory(gameId, player);
-        gameUserHistoryRepository.save(gameUserHistory);
-        if (!player.isQuit()) {
-            User user = userRepository.findById(player.getUserId()).get();
-            if (!user.getActive()) {
-                user.setActive(true);
-                userRepository.save(user);
+    fun saveGameUserHistory(gameId: Int, player: Player) {
+        val gameUserHistory = GameUserHistory(gameId, player)
+        gameUserHistoryRepository.save(gameUserHistory)
+        if (!player.isQuit) {
+            val user = userRepository.findById(player.userId).get()
+            if (!user.active) {
+                user.active = true
+                userRepository.save(user)
             }
         }
     }
 
-    public List<GameUserHistory> getGamePlayersHistory(int gameId) {
-        return gameUserHistoryRepository.findByGameId(gameId);
+    fun getGamePlayersHistory(gameId: Int): List<GameUserHistory> {
+        return gameUserHistoryRepository.findByGameId(gameId)
     }
 
-    public void logError(GameError error) {
-        if (error.getError().length() > 20000) {
-            error.setError(error.getError().substring(0, 19990) + "...");
+    fun logError(error: GameError) {
+        if (error.error!!.length > 20000) {
+            error.error = error.error!!.substring(0, 19990) + "..."
         }
 
-        gameErrorRepository.save(error);
+        gameErrorRepository.save(error)
     }
 
-    public List<GameError> getGameErrors() {
-        return gameErrorRepository.findTop50ByOrderByErrorIdDesc();
+    fun deleteGameError(errorId: Int) {
+        gameErrorRepository.deleteById(errorId)
     }
 
-    public void deleteGameError(int errorId) {
-        gameErrorRepository.deleteById(errorId);
+    fun getGameLog(logId: Int): GameLog {
+        return gameLogRepository.findById(logId).get()
     }
 
-    public GameLog getGameLog(int logId) {
-        return gameLogRepository.findById(logId).get();
+    fun getGameLogByGameId(gameId: Int): GameLog {
+        return gameLogRepository.findByGameId(gameId)
     }
 
-    public GameLog getGameLogByGameId(int gameId) {
-        return gameLogRepository.findByGameId(gameId);
+    fun saveGameLog(log: GameLog) {
+        gameLogRepository.save(log)
     }
 
-    public void saveGameLog(GameLog log) {
-        gameLogRepository.save(log);
+    fun saveAnnotatedGame(game: AnnotatedGame) {
+        annotatedGameRepository.save(game)
     }
 
-    public OverallStats getOverallStats() {
-        //todo
-        return new OverallStats();
-        //return dao.getOverallStats();
+    fun deleteAnnotatedGame(game: AnnotatedGame) {
+        annotatedGameRepository.delete(game)
     }
 
-    public OverallStats getOverallStatsForToday() {
-        Calendar today = GregorianCalendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
-
-        //todo
-        return new OverallStats();
-        //return dao.getOverallStats(today.getTime(), null);
+    fun getAnnotatedGame(id: Int): AnnotatedGame {
+        return annotatedGameRepository.findById(id).get()
     }
 
-    public OverallStats getOverallStatsForYesterday() {
-        Calendar today = GregorianCalendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
-
-        Calendar yesterday = (Calendar) today.clone();
-        yesterday.add(Calendar.DAY_OF_MONTH, -1);
-
-        //todo
-        return new OverallStats();
-        //return dao.getOverallStats(yesterday.getTime(), today.getTime());
+    fun saveRecommendedSet(set: RecommendedSet) {
+        recommendedSetRepository.save(set)
     }
 
-    public OverallStats getOverallStatsForPastWeek() {
-        Calendar today = GregorianCalendar.getInstance();
-        today.add(Calendar.WEEK_OF_YEAR, -1);
-
-        //todo
-        return new OverallStats();
-        //return dao.getOverallStats(today.getTime(), null);
+    fun deleteRecommendedSet(set: RecommendedSet) {
+        recommendedSetRepository.delete(set)
     }
 
-    public OverallStats getOverallStatsForPastMonth() {
-        Calendar today = GregorianCalendar.getInstance();
-        today.add(Calendar.MONTH, -1);
-
-        //todo
-        return new OverallStats();
-        //return dao.getOverallStats(today.getTime(), null);
-    }
-
-    public UserStats getUserStats() {
-        //todo
-        return new UserStats();
-    }
-
-    public void saveAnnotatedGame(AnnotatedGame game) {
-        annotatedGameRepository.save(game);
-    }
-
-    public void deleteAnnotatedGame(AnnotatedGame game) {
-        annotatedGameRepository.delete(game);
-    }
-
-    public AnnotatedGame getAnnotatedGame(int id) {
-        return annotatedGameRepository.findById(id).get();
-    }
-
-    public List<AnnotatedGame> getAnnotatedGames() {
-        return annotatedGameRepository.findAllByOrderByGameIdDesc();
-    }
-
-    public void saveRecommendedSet(RecommendedSet set) {
-        recommendedSetRepository.save(set);
-    }
-
-    public void deleteRecommendedSet(RecommendedSet set) {
-        recommendedSetRepository.delete(set);
-    }
-
-    public RecommendedSet getRecommendedSet(int id) {
-        return recommendedSetRepository.findById(id).get();
-    }
-
-    public List<RecommendedSet> getRecommendedSets() {
-        return recommendedSetRepository.findAllByOrderByIdAsc();
+    fun getRecommendedSet(id: Int): RecommendedSet {
+        return recommendedSetRepository.findById(id).get()
     }
 }
