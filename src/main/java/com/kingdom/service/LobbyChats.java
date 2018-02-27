@@ -1,41 +1,36 @@
-package com.kingdom.service;
+package com.kingdom.service
 
-import com.kingdom.model.LobbyChat;
-import com.kingdom.model.User;
+import com.kingdom.model.LobbyChat
+import com.kingdom.model.User
 
-import java.util.Date;
-import java.util.LinkedList;
+import java.util.Date
+import java.util.LinkedList
 
-public class LobbyChats {
+class LobbyChats {
 
-    public static final int MAX_LOBBY_CHATS = 50;
+    val chats = LinkedList<LobbyChat>()
 
-    private static LobbyChats ourInstance = new LobbyChats();
-
-    private LinkedList<LobbyChat> chats = new LinkedList<>();
-
-    public static LobbyChats getInstance() {
-        return ourInstance;
-    }
-
-    public LinkedList<LobbyChat> getChats() {
-        return chats;
-    }
-
-    public void addChat(User user, String message) {
-        if (chats.size() == MAX_LOBBY_CHATS) {
-            chats.removeLast();
+    fun addChat(user: User, message: String) {
+        if (chats.size == MAX_LOBBY_CHATS) {
+            chats.removeLast()
         }
-        LobbyChat chat = new LobbyChat(user.getUsername(), message, new Date());
-        chats.addFirst(chat);
+        val chat = LobbyChat(user.username, message, Date())
+        chats.addFirst(chat)
     }
 
-    public void addPrivateChat(User sender, User receiver, String message) {
-        if (chats.size() == MAX_LOBBY_CHATS) {
-            chats.removeLast();
+    fun addPrivateChat(sender: User, receiver: User, message: String) {
+        if (chats.size == MAX_LOBBY_CHATS) {
+            chats.removeLast()
         }
-        LobbyChat chat = new LobbyChat(sender.getUsername(), message, new Date());
-        chat.setUserId(receiver.getUserId());
-        chats.addFirst(chat);
+        val chat = LobbyChat(sender.username, message, Date())
+        chat.userId = receiver.userId
+        chats.addFirst(chat)
+    }
+
+    companion object {
+
+        const val MAX_LOBBY_CHATS = 50
+
+        val instance = LobbyChats()
     }
 }

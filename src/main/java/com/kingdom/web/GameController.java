@@ -647,7 +647,7 @@ public class GameController {
             modelAndView.addObject("user", user);
             modelAndView.addObject("players", LoggedInUsers.getInstance().getUsers());
             modelAndView.addObject("gameRooms", GameRoomManager.Companion.getInstance().getLobbyGameRooms());
-            modelAndView.addObject("chats", LobbyChats.getInstance().getChats());
+            modelAndView.addObject("chats", LobbyChats.Companion.getInstance().getChats());
             modelAndView.addObject("maxGameRoomLimitReached", GameRoomManager.Companion.getInstance().maxGameRoomLimitReached());
             modelAndView.addObject("numGamesInProgress", GameRoomManager.Companion.getInstance().getGamesInProgress().size());
             modelAndView.addObject("updatingWebsite", GameRoomManager.Companion.getInstance().isUpdatingWebsite());
@@ -1732,7 +1732,7 @@ public class GameController {
 
     private void sendLobbyChat(User user, String message) {
         if (message != null && !message.equals("")) {
-            LobbyChats.getInstance().addChat(user, message);
+            LobbyChats.Companion.getInstance().addChat(user, message);
         }
     }
 
@@ -1744,7 +1744,7 @@ public class GameController {
                     Game game = GameRoomManager.Companion.getInstance().getGame(receivingUser.getGameId());
                     game.addPrivateChat(user, receivingUser, message);
                 } else {
-                    LobbyChats.getInstance().addPrivateChat(user, receivingUser, message);
+                    LobbyChats.Companion.getInstance().addPrivateChat(user, receivingUser, message);
                     LoggedInUsers.getInstance().refreshLobbyChat();
                 }
             }
@@ -2372,7 +2372,7 @@ public class GameController {
         }
         ModelAndView modelAndView = new ModelAndView(template);
         modelAndView.addObject("user", user);
-        modelAndView.addObject("chats", LobbyChats.getInstance().getChats());
+        modelAndView.addObject("chats", LobbyChats.Companion.getInstance().getChats());
         return modelAndView;
     }
 
