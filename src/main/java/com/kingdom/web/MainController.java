@@ -87,10 +87,10 @@ public class MainController {
         modelAndView.addObject("showCancelGame", showCancelGame);
         modelAndView.addObject("numErrors", manager.getErrorCount());
         modelAndView.addObject("loggedInUsersCount", LoggedInUsers.getInstance().getUsers().size());
-        modelAndView.addObject("updatingWebsite", GameRoomManager.getInstance().isUpdatingWebsite());
-        modelAndView.addObject("updatingMessage", GameRoomManager.getInstance().getUpdatingMessage());
-        modelAndView.addObject("showNews", GameRoomManager.getInstance().isShowNews());
-        modelAndView.addObject("news", GameRoomManager.getInstance().getNews());
+        modelAndView.addObject("updatingWebsite", GameRoomManager.Companion.getInstance().isUpdatingWebsite());
+        modelAndView.addObject("updatingMessage", GameRoomManager.Companion.getInstance().getUpdatingMessage());
+        modelAndView.addObject("showNews", GameRoomManager.Companion.getInstance().isShowNews());
+        modelAndView.addObject("news", GameRoomManager.Companion.getInstance().getNews());
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
         return modelAndView;
     }
@@ -305,16 +305,16 @@ public class MainController {
     @RequestMapping("/setUpdatingWebsite.html")
     public ModelAndView setUpdatingWebsite(HttpServletRequest request, HttpServletResponse response) {
         boolean updatingWebsite = KingdomUtil.getRequestBoolean(request, "updatingWebsite");
-        GameRoomManager.getInstance().setUpdatingWebsite(updatingWebsite);
-        GameRoomManager.getInstance().setUpdatingMessage(request.getParameter("updatingMessage"));
+        GameRoomManager.Companion.getInstance().setUpdatingWebsite(updatingWebsite);
+        GameRoomManager.Companion.getInstance().setUpdatingMessage(request.getParameter("updatingMessage"));
         return new ModelAndView("empty");
     }
 
     @RequestMapping("/setShowNews.html")
     public ModelAndView setShowNews(HttpServletRequest request, HttpServletResponse response) {
         boolean showNews = KingdomUtil.getRequestBoolean(request, "showNews");
-        GameRoomManager.getInstance().setShowNews(showNews);
-        GameRoomManager.getInstance().setNews(request.getParameter("news"));
+        GameRoomManager.Companion.getInstance().setShowNews(showNews);
+        GameRoomManager.Companion.getInstance().setNews(request.getParameter("news"));
         return new ModelAndView("empty");
     }
 
