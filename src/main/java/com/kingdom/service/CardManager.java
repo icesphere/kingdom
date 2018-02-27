@@ -1,73 +1,65 @@
-package com.kingdom.service;
+package com.kingdom.service
 
-import com.kingdom.model.Card;
-import com.kingdom.model.Deck;
-import com.kingdom.model.Game;
-import com.kingdom.repository.CardRepository;
-import com.kingdom.util.CardRandomizer;
-import org.springframework.stereotype.Service;
+import com.kingdom.model.Card
+import com.kingdom.model.Deck
+import com.kingdom.model.Game
+import com.kingdom.repository.CardRepository
+import com.kingdom.util.CardRandomizer
+import org.springframework.stereotype.Service
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Collections
 
 @Service
-public class CardManager {
+class CardManager(private val cardRepository: CardRepository,
+                  private val cardRandomizer: CardRandomizer) {
 
-    private CardRepository cardRepository;
-    private CardRandomizer cardRandomizer;
+    val prizeCards: List<Card>
+        get() = cardRepository.findByPrizeCardOrderByNameAsc(true)
 
-    public CardManager(CardRepository cardRepository, CardRandomizer cardRandomizer) {
-        this.cardRepository = cardRepository;
-        this.cardRandomizer = cardRandomizer;
+    val availableLeaderCards: List<Card>
+        get() {
+            val cards = getCardsByDeck(Deck.Leaders, false)
+            Collections.shuffle(cards)
+            return cards.subList(0, 7)
+        }
+
+    fun getAllCards(includeFanExpansionCards: Boolean): List<Card> {
+        return cardRepository.findByFanExpansionCardAndDisabledAndPrizeCardOrderByNameAsc(includeFanExpansionCards, false, false)
     }
 
-    public List<Card> getAllCards(boolean includeFanExpansionCards) {
-        return cardRepository.findByFanExpansionCardAndDisabledAndPrizeCardOrderByNameAsc(includeFanExpansionCards, false, false);
+    fun getCards(deck: Deck, includeTesting: Boolean): List<Card> {
+        return getCardsByDeck(deck, includeTesting)
     }
 
-    public List<Card> getCards(Deck deck, boolean includeTesting) {
-        return getCardsByDeck(deck, includeTesting);
+    fun getCard(cardId: Int): Card {
+        return cardRepository.findById(cardId).get()
     }
 
-    public List<Card> getPrizeCards() {
-        return cardRepository.findByPrizeCardOrderByNameAsc(true);
+    fun getCard(cardName: String): Card {
+        return cardRepository.findByName(cardName)
     }
 
-    public Card getCard(int cardId) {
-        return cardRepository.findById(cardId).get();
+    fun saveCard(card: Card) {
+        cardRepository.save(card)
     }
 
-    public Card getCard(String cardName) {
-        return cardRepository.findByName(cardName);
+    fun setRandomKingdomCards(game: Game) {
+        cardRandomizer.setRandomKingdomCards(game, game.randomizingOptions)
     }
 
-    public void saveCard(Card card) {
-        cardRepository.save(card);
+    fun swapRandomCard(game: Game, cardId: Int) {
+        cardRandomizer.swapRandomCard(game, cardId)
     }
 
-    public void setRandomKingdomCards(Game game) {
-        cardRandomizer.setRandomKingdomCards(game, game.getRandomizingOptions());
+    fun swapForTypeOfCard(game: Game, cardId: Int, cardType: String) {
+        cardRandomizer.swapCard(game, cardId, cardType)
     }
 
-    public void swapRandomCard(Game game, int cardId) {
-        cardRandomizer.swapRandomCard(game, cardId);
-    }
-
-    public void swapForTypeOfCard(Game game, int cardId, String cardType) {
-        cardRandomizer.swapCard(game, cardId, cardType);
-    }
-
-    public List<Card> getAvailableLeaderCards() {
-        List<Card> cards = getCardsByDeck(Deck.Leaders, false);
-        Collections.shuffle(cards);
-        return cards.subList(0, 7);
-    }
-
-    private List<Card> getCardsByDeck(Deck deck, boolean includeTesting) {
-        if (!includeTesting) {
-            return cardRepository.findByDeckStringAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck.toString(), false, false, false);
+    private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {
+        return if (!includeTesting) {
+            cardRepository.findByDeckStringAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck.toString(), false, false, false)
         } else {
-            return cardRepository.findByDeckStringAndPrizeCardOrderByNameAsc(deck.toString(), false);
+            cardRepository.findByDeckStringAndPrizeCardOrderByNameAsc(deck.toString(), false)
         }
     }
 }
