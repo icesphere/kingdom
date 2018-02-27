@@ -1,66 +1,55 @@
-package com.kingdom.service;
+package com.kingdom.service
 
-import com.kingdom.model.User;
-import com.kingdom.repository.UserDao;
-import com.kingdom.repository.UserRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.kingdom.model.User
+import com.kingdom.repository.UserDao
+import com.kingdom.repository.UserRepository
+import org.springframework.stereotype.Service
 
 @Service
-public class UserManager {
+class UserManager(private val dao: UserDao,
+                  private val userRepository: UserRepository) {
 
-    private UserDao dao;
-    private UserRepository userRepository;
+    val users: List<User>
+        get() = userRepository.findAllByOrderByLastLogin()
 
-    public UserManager(UserDao dao, UserRepository userRepository) {
-        this.dao = dao;
-        this.userRepository = userRepository;
+    val errorCount: Int
+        get() = dao.errorCount
+
+    fun getUsers(stat: String, value: Int?): List<User> {
+        return dao.getUsers(stat, value)
     }
 
-    public List<User> getUsers() {
-        return userRepository.findAllByOrderByLastLogin();
+    fun getUser(userId: Int): User {
+        return userRepository.findById(userId).get()
     }
 
-    public List<User> getUsers(String stat, Integer value) {
-        return dao.getUsers(stat, value);
+    fun getUser(username: String, password: String): User? {
+        return userRepository.findByUsernameAndPassword(username, password)
     }
 
-    public User getUser(int userId) {
-        return userRepository.findById(userId).get();
+    fun getUser(username: String): User? {
+        return userRepository.findByUsername(username)
     }
 
-    public User getUser(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, password);
+    fun getUserByEmail(email: String): User? {
+        return userRepository.findByEmail(email)
     }
 
-    public User getUser(String username) {
-        return userRepository.findByUsername(username);
+    fun usernameExists(username: String): Boolean {
+        return userRepository.findByUsername(username) != null
     }
 
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    fun saveUser(user: User) {
+        userRepository.save(user)
     }
 
-    public boolean usernameExists(String username) {
-        return userRepository.findByUsername(username) != null;
+    fun deleteUser(user: User) {
+        userRepository.delete(user)
     }
 
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
-
-    public void deleteUser(User user) {
-        userRepository.delete(user);
-    }
-
-    public void calculateGameStats(User user) {
-        if (user.getStats() == null) {
-            dao.calculateGameStats(user);
+    fun calculateGameStats(user: User) {
+        if (user.stats == null) {
+            dao.calculateGameStats(user)
         }
-    }
-
-    public int getErrorCount() {
-        return dao.getErrorCount();
     }
 }
