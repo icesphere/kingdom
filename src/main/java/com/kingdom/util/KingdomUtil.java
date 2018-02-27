@@ -279,8 +279,8 @@ public class KingdomUtil {
 
     public static void logoutUser(User user, HttpServletRequest request) {
         if (user != null) {
-            LoggedInUsers.getInstance().userLoggedOut(user);
-            LoggedInUsers.getInstance().refreshLobbyPlayers();
+            LoggedInUsers.Companion.getInstance().userLoggedOut(user);
+            LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
         }
         HttpSession session = request.getSession(false);
         if (session != null) {

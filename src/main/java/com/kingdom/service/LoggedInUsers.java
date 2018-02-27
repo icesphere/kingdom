@@ -1,85 +1,84 @@
-package com.kingdom.service;
+package com.kingdom.service
 
-import com.kingdom.model.User;
+import com.kingdom.model.User
 
-import java.util.*;
+import java.util.*
 
-public class LoggedInUsers {
-    private static Map<Integer, User> users = new HashMap<Integer, User>();
+class LoggedInUsers {
 
-    private static LoggedInUsers ourInstance = new LoggedInUsers();
-
-    public static LoggedInUsers getInstance() {
-        return ourInstance;
+    fun userLoggedIn(user: User) {
+        updateUser(user, true, true)
     }
 
-    public void userLoggedIn(User user) {
-        updateUser(user, true, true);
+    fun userLoggedOut(user: User) {
+        users.remove(user.userId)
     }
 
-    public void userLoggedOut(User user) {
-        users.remove(user.getUserId());
-    }
-
-    public void gameReset(int userId) {
-        User user = users.get(userId);
+    fun gameReset(userId: Int) {
+        val user = users[userId]
         if (user != null) {
-            user.setGameId(0);
-            user.setLastActivity(new Date());
+            user.gameId = 0
+            user.lastActivity = Date()
         }
     }
 
-    public List<User> getUsers() {
-        return new ArrayList<User>(users.values());
+    fun getUsers(): List<User> {
+        return ArrayList(users.values)
     }
 
-    public User getUser(int userId) {
-        return users.get(userId);
+    fun getUser(userId: Int): User {
+        return users[userId]!!
     }
 
-    public void updateUser(User user) {
-        updateUser(user, true, false);
+    fun updateUser(user: User) {
+        updateUser(user, true, false)
     }
 
-    public void refreshLobby(User user) {
-        updateUser(user, false, false);
+    fun refreshLobby(user: User) {
+        updateUser(user, false, false)
     }
 
-    public void updateUserStatus(User user) {
-        updateUser(user, true, true);
+    fun updateUserStatus(user: User) {
+        updateUser(user, true, true)
     }
 
-    private void updateUser(User user, boolean refreshLastActivity, boolean updateStatus) {
-        User loggedInUser = users.get(user.getUserId());
+    private fun updateUser(user: User, refreshLastActivity: Boolean, updateStatus: Boolean) {
+        var loggedInUser: User? = users[user.userId]
         if (loggedInUser == null) {
-            loggedInUser = user;
+            loggedInUser = user
         }
-        loggedInUser.setGameId(user.getGameId());
+        loggedInUser.gameId = user.gameId
         if (updateStatus) {
-            loggedInUser.setStatus(user.getStatus());
+            loggedInUser.status = user.status
         }
         if (refreshLastActivity) {
-            loggedInUser.setLastActivity(new Date());
+            loggedInUser.lastActivity = Date()
         }
-        loggedInUser.setLastRefresh(new Date());
-        users.put(loggedInUser.getUserId(), loggedInUser);
+        loggedInUser.lastRefresh = Date()
+        users[loggedInUser.userId] = loggedInUser
     }
 
-    public void refreshLobbyPlayers() {
-        for (User user : users.values()) {
-            user.getRefreshLobby().setRefreshPlayers(true);
-        }
-    }
-
-    public void refreshLobbyGameRooms() {
-        for (User user : users.values()) {
-            user.getRefreshLobby().setRefreshGameRooms(true);
+    fun refreshLobbyPlayers() {
+        for (user in users.values) {
+            user.refreshLobby.isRefreshPlayers = true
         }
     }
 
-    public void refreshLobbyChat() {
-        for (User user : users.values()) {
-            user.getRefreshLobby().setRefreshChat(true);
+    fun refreshLobbyGameRooms() {
+        for (user in users.values) {
+            user.refreshLobby.isRefreshGameRooms = true
         }
+    }
+
+    fun refreshLobbyChat() {
+        for (user in users.values) {
+            user.refreshLobby.isRefreshChat = true
+        }
+    }
+
+    companion object {
+        private val users = HashMap<Int, User>()
+
+        val instance = LoggedInUsers()
     }
 }

@@ -46,13 +46,13 @@ public class MainController {
                 user.setLocation(KingdomUtil.getLocation(user.getIpAddress()));
                 user.setMobile(mobile);
                 manager.saveUser(user);
-                if (!user.getAdmin() && LoggedInUsers.getInstance().getUsers().size() >= MAX_USER_LIMIT) {
+                if (!user.getAdmin() && LoggedInUsers.Companion.getInstance().getUsers().size() >= MAX_USER_LIMIT) {
                     ModelAndView modelAndView1 = new ModelAndView("userLimitReached");
                     modelAndView1.addObject("mobile", KingdomUtil.isMobile(request));
                     return modelAndView1;
                 } else {
-                    LoggedInUsers.getInstance().userLoggedIn(user);
-                    LoggedInUsers.getInstance().refreshLobbyPlayers();
+                    LoggedInUsers.Companion.getInstance().userLoggedIn(user);
+                    LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
                     HttpSession session = request.getSession(true);
                     session.setMaxInactiveInterval(60 * 30);
                     session.setAttribute("user", user);
@@ -82,11 +82,11 @@ public class MainController {
         }
         ModelAndView modelAndView = new ModelAndView("admin");
         User user = getUser(request);
-        User loggedInUser = LoggedInUsers.getInstance().getUser(user.getUserId());
+        User loggedInUser = LoggedInUsers.Companion.getInstance().getUser(user.getUserId());
         boolean showCancelGame = loggedInUser != null && loggedInUser.getGameId() > 0;
         modelAndView.addObject("showCancelGame", showCancelGame);
         modelAndView.addObject("numErrors", manager.getErrorCount());
-        modelAndView.addObject("loggedInUsersCount", LoggedInUsers.getInstance().getUsers().size());
+        modelAndView.addObject("loggedInUsersCount", LoggedInUsers.Companion.getInstance().getUsers().size());
         modelAndView.addObject("updatingWebsite", GameRoomManager.Companion.getInstance().isUpdatingWebsite());
         modelAndView.addObject("updatingMessage", GameRoomManager.Companion.getInstance().getUpdatingMessage());
         modelAndView.addObject("showNews", GameRoomManager.Companion.getInstance().isShowNews());

@@ -57,7 +57,7 @@ public class GameController {
             }
             game.setCreatorId(user.getUserId());
             game.setCreatorName(user.getUsername());
-            LoggedInUsers.getInstance().refreshLobbyGameRooms();
+            LoggedInUsers.Companion.getInstance().refreshLobbyGameRooms();
             boolean includeTesting = user.getAdmin();
             addSelectCardsObjects(user, modelAndView, includeTesting);
             return modelAndView;
@@ -547,7 +547,7 @@ public class GameController {
         try {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
                 game.setStatus(Game.STATUS_GAME_WAITING_FOR_PLAYERS);
-                LoggedInUsers.getInstance().refreshLobbyGameRooms();
+                LoggedInUsers.Companion.getInstance().refreshLobbyGameRooms();
                 boolean hasBlackMarket = false;
                 boolean playTreasureCardsRequired = false;
                 boolean includePrizes = false;
@@ -642,10 +642,10 @@ public class GameController {
             user.getRefreshLobby().setRefreshPlayers(false);
             user.getRefreshLobby().setRefreshGameRooms(false);
             user.getRefreshLobby().setRefreshChat(false);
-            LoggedInUsers.getInstance().refreshLobby(user);
+            LoggedInUsers.Companion.getInstance().refreshLobby(user);
             ModelAndView modelAndView = new ModelAndView("gameRooms");
             modelAndView.addObject("user", user);
-            modelAndView.addObject("players", LoggedInUsers.getInstance().getUsers());
+            modelAndView.addObject("players", LoggedInUsers.Companion.getInstance().getUsers());
             modelAndView.addObject("gameRooms", GameRoomManager.Companion.getInstance().getLobbyGameRooms());
             modelAndView.addObject("chats", LobbyChats.Companion.getInstance().getChats());
             modelAndView.addObject("maxGameRoomLimitReached", GameRoomManager.Companion.getInstance().maxGameRoomLimitReached());
@@ -669,17 +669,17 @@ public class GameController {
         user.setGameId(game.getGameId());
         user.setStatus("");
         game.addPlayer(user);
-        LoggedInUsers.getInstance().updateUserStatus(user);
-        LoggedInUsers.getInstance().refreshLobbyPlayers();
-        LoggedInUsers.getInstance().refreshLobbyGameRooms();
+        LoggedInUsers.Companion.getInstance().updateUserStatus(user);
+        LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
+        LoggedInUsers.Companion.getInstance().refreshLobbyGameRooms();
     }
 
     private void removePlayerFromGame(Game game, User user) {
         user.setGameId(0);
         game.removePlayer(user);
-        LoggedInUsers.getInstance().updateUser(user);
-        LoggedInUsers.getInstance().refreshLobbyPlayers();
-        LoggedInUsers.getInstance().refreshLobbyGameRooms();
+        LoggedInUsers.Companion.getInstance().updateUser(user);
+        LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
+        LoggedInUsers.Companion.getInstance().refreshLobbyGameRooms();
     }
 
     @RequestMapping("/leaveGame.html")
@@ -1668,8 +1668,8 @@ public class GameController {
         try {
             user.setGameId(0);
             user.setStats(null);
-            LoggedInUsers.getInstance().updateUser(user);
-            LoggedInUsers.getInstance().refreshLobbyPlayers();
+            LoggedInUsers.Companion.getInstance().updateUser(user);
+            LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
             Player player = game.getPlayerMap().get(user.getUserId());
             if (player == null) {
                 return new ModelAndView("redirect:/showGame.html");
@@ -1738,14 +1738,14 @@ public class GameController {
 
     private void sendPrivateChat(User user, String message, int receivingUserId) {
         if (message != null && !message.equals("") && receivingUserId > 0) {
-            User receivingUser = LoggedInUsers.getInstance().getUser(receivingUserId);
+            User receivingUser = LoggedInUsers.Companion.getInstance().getUser(receivingUserId);
             if (receivingUser != null) {
                 if (receivingUser.getGameId() > 0) {
                     Game game = GameRoomManager.Companion.getInstance().getGame(receivingUser.getGameId());
                     game.addPrivateChat(user, receivingUser, message);
                 } else {
                     LobbyChats.Companion.getInstance().addPrivateChat(user, receivingUser, message);
-                    LoggedInUsers.getInstance().refreshLobbyChat();
+                    LoggedInUsers.Companion.getInstance().refreshLobbyChat();
                 }
             }
         }
@@ -1788,14 +1788,14 @@ public class GameController {
             model.put("redirectToLogin", true);
             return model;
         }
-        LoggedInUsers.getInstance().updateUser(user);
+        LoggedInUsers.Companion.getInstance().updateUser(user);
         String message = request.getParameter("message");
         if (message != null && message.startsWith("/")) {
             processChatCommand(user, message);
         } else {
             sendLobbyChat(user, message);
         }
-        LoggedInUsers.getInstance().refreshLobbyChat();
+        LoggedInUsers.Companion.getInstance().refreshLobbyChat();
         return refreshLobby(request, response);
     }
 
@@ -2061,8 +2061,8 @@ public class GameController {
         if (status != null) {
             user.setStatus(status);
         }
-        LoggedInUsers.getInstance().updateUserStatus(user);
-        LoggedInUsers.getInstance().refreshLobbyPlayers();
+        LoggedInUsers.Companion.getInstance().updateUserStatus(user);
+        LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
         return refreshLobby(request, response);
     }
 
@@ -2070,7 +2070,7 @@ public class GameController {
     public ModelAndView showLobbyPlayers(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView modelAndView = new ModelAndView("lobbyPlayers");
         modelAndView.addObject("user", getUser(request));
-        modelAndView.addObject("players", LoggedInUsers.getInstance().getUsers());
+        modelAndView.addObject("players", LoggedInUsers.Companion.getInstance().getUsers());
         return modelAndView;
     }
 
@@ -2341,9 +2341,9 @@ public class GameController {
         if (showGame(game, user)) {
             refresh.setStartGame(true);
         }
-        LoggedInUsers.getInstance().refreshLobby(user);
+        LoggedInUsers.Companion.getInstance().refreshLobby(user);
         ModelAndView modelAndView = new ModelAndView("lobbyPlayersDiv");
-        modelAndView.addObject("players", LoggedInUsers.getInstance().getUsers());
+        modelAndView.addObject("players", LoggedInUsers.Companion.getInstance().getUsers());
         return modelAndView;
     }
 
@@ -2365,7 +2365,7 @@ public class GameController {
         if (showGame(game, user)) {
             refresh.setStartGame(true);
         }
-        LoggedInUsers.getInstance().refreshLobby(user);
+        LoggedInUsers.Companion.getInstance().refreshLobby(user);
         String template = "lobbyChatDiv";
         if (KingdomUtil.isMobile(request)) {
             template = "lobbyChatDivMobile";
@@ -2394,7 +2394,7 @@ public class GameController {
         if (showGame(game, user)) {
             refresh.setStartGame(true);
         }
-        LoggedInUsers.getInstance().refreshLobby(user);
+        LoggedInUsers.Companion.getInstance().refreshLobby(user);
         ModelAndView modelAndView = new ModelAndView("lobbyGameRoomsDiv");
         modelAndView.addObject("user", user);
         modelAndView.addObject("gameRooms", GameRoomManager.Companion.getInstance().getLobbyGameRooms());
