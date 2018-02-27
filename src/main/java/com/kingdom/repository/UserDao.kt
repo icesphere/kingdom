@@ -1,20 +1,30 @@
-package com.kingdom.repository;
+package com.kingdom.repository
 
-import com.kingdom.model.User;
-import org.springframework.stereotype.Repository;
+import com.kingdom.model.User
+import org.springframework.stereotype.Repository
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList
 
 @Repository
-public class UserDao {
+class UserDao {
 
-    public UserDao() {
-    }
+    //todo
+    /*Session session = hibernateTemplate.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction();
 
-    public List<User> getUsers(String stat, Integer value) {
+        SQLQuery query = session.createSQLQuery("select count(*) from errors");
+        int numErrors = ((BigInteger) query.uniqueResult()).intValue();
+
+        tx.commit();
+        session.close();
+
+        return numErrors;*/
+
+    val errorCount: Int = 0
+
+    fun getUsers(stat: String, value: Int?): List<User> {
         //todo
-        return new ArrayList<>();
+        return ArrayList()
         /*if (stat.equals("playedMobileGame")) {
             return getPlayedMobileGameUsers();
         } else if (stat.equals("usingDeckFrequencies")) {
@@ -79,7 +89,7 @@ public class UserDao {
         return users;
     }*/
 
-    public void calculateGameStats(User user) {
+    fun calculateGameStats(user: User) {
         //todo
         /*PlayerStats stats = new PlayerStats();
 
@@ -135,20 +145,5 @@ public class UserDao {
         tx.commit();
 
         session.close();*/
-    }
-
-    public int getErrorCount() {
-        //todo
-        return 0;
-        /*Session session = hibernateTemplate.getSessionFactory().openSession();
-        Transaction tx = session.beginTransaction();
-
-        SQLQuery query = session.createSQLQuery("select count(*) from errors");
-        int numErrors = ((BigInteger) query.uniqueResult()).intValue();
-
-        tx.commit();
-        session.close();
-
-        return numErrors;*/
     }
 }

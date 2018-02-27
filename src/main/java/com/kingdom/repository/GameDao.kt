@@ -1,15 +1,9 @@
-package com.kingdom.repository;
+package com.kingdom.repository
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Repository
 
 @Repository
-public class GameDao {
-
-    public GameDao() {
-    }
-
-    //todo
-
+class GameDao//todo
 /*    public List<GameHistory> getGameHistoryList(int userId) {
         return getGameHistoryList(userId, 50);
     }
@@ -329,4 +323,3 @@ public class GameDao {
 
         return stats;
     }*/
-}
