@@ -41,7 +41,7 @@ public class GameController {
     public ModelAndView createGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
 
         Game game = getGame(request);
@@ -53,7 +53,7 @@ public class GameController {
         }
 
         ModelAndView modelAndView = new ModelAndView("selectCards");
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
         modelAndView.addObject("createGame", true);
         modelAndView.addObject("title", "Create Game");
         modelAndView.addObject("action", "saveGame.html");
@@ -71,7 +71,7 @@ public class GameController {
             return modelAndView;
         } catch (Throwable t) {
             t.printStackTrace();
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -82,7 +82,7 @@ public class GameController {
         User user = new User();
 
         ModelAndView modelAndView = new ModelAndView("selectCards");
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
         modelAndView.addObject("createGame", false);
         modelAndView.addObject("title", "Select Cards");
         modelAndView.addObject("action", "generateCards.html");
@@ -122,7 +122,7 @@ public class GameController {
         Game game = new Game(-1);
 
         String generateType = request.getParameter("generateType");
-        boolean includeLeaders = KingdomUtil.getRequestBoolean(request, "include_leaders");
+        boolean includeLeaders = KingdomUtil.INSTANCE.getRequestBoolean(request, "include_leaders");
 
         if (includeLeaders) {
             game.setUsingLeaders(true);
@@ -139,7 +139,7 @@ public class GameController {
         game.setDecks(decks);
         cardManager.setRandomKingdomCards(game);
 
-        user.setExcludedCards(KingdomUtil.getCommaSeparatedCardNames(excludedCards));
+        user.setExcludedCards(KingdomUtil.INSTANCE.getCommaSeparatedCardNames(excludedCards));
         userManager.saveUser(user);
 
         return showRandomConfirmPage(request, user, game);
@@ -150,7 +150,7 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         try {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
@@ -164,7 +164,7 @@ public class GameController {
                 int numHardComputerPlayers = 0;
                 int numBMUComputerPlayers = 0;
 
-                boolean includeLeaders = KingdomUtil.getRequestBoolean(request, "include_leaders");
+                boolean includeLeaders = KingdomUtil.INSTANCE.getRequestBoolean(request, "include_leaders");
 
                 user.setBaseChecked(request.getParameter("deck_kingdom") != null);
                 user.setIntrigueChecked(request.getParameter("deck_intrigue") != null);
@@ -179,22 +179,22 @@ public class GameController {
                 user.setProletariatChecked(request.getParameter("deck_proletariat") != null);
                 user.setOtherFanCardsChecked(request.getParameter("other_fan_cards") != null);
                 user.setLeadersChecked(includeLeaders);
-                user.setAlwaysPlayTreasureCards(KingdomUtil.getRequestBoolean(request, "playTreasureCards"));
-                user.setShowVictoryPoints(KingdomUtil.getRequestBoolean(request, "showVictoryPoints"));
-                user.setIdenticalStartingHands(KingdomUtil.getRequestBoolean(request, "identicalStartingHands"));
+                user.setAlwaysPlayTreasureCards(KingdomUtil.INSTANCE.getRequestBoolean(request, "playTreasureCards"));
+                user.setShowVictoryPoints(KingdomUtil.INSTANCE.getRequestBoolean(request, "showVictoryPoints"));
+                user.setIdenticalStartingHands(KingdomUtil.INSTANCE.getRequestBoolean(request, "identicalStartingHands"));
 
-                user.setBaseWeight(KingdomUtil.getRequestInt(request, "deck_weight_kingdom", 3));
-                user.setIntrigueWeight(KingdomUtil.getRequestInt(request, "deck_weight_intrigue", 3));
-                user.setSeasideWeight(KingdomUtil.getRequestInt(request, "deck_weight_seaside", 3));
-                user.setAlchemyWeight(KingdomUtil.getRequestInt(request, "deck_weight_alchemy", 3));
-                user.setProsperityWeight(KingdomUtil.getRequestInt(request, "deck_weight_prosperity", 3));
-                user.setCornucopiaWeight(KingdomUtil.getRequestInt(request, "deck_weight_cornucopia", 3));
-                user.setHinterlandsWeight(KingdomUtil.getRequestInt(request, "deck_weight_hinterlands", 3));
-                user.setPromoWeight(KingdomUtil.getRequestInt(request, "deck_weight_promo", 3));
-                user.setSalvationWeight(KingdomUtil.getRequestInt(request, "deck_weight_salvation", 3));
-                user.setFairyTaleWeight(KingdomUtil.getRequestInt(request, "deck_weight_fairytale", 3));
-                user.setProletariatWeight(KingdomUtil.getRequestInt(request, "deck_weight_proletariat", 3));
-                user.setFanWeight(KingdomUtil.getRequestInt(request, "deck_weight_fan", 3));
+                user.setBaseWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_kingdom", 3));
+                user.setIntrigueWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_intrigue", 3));
+                user.setSeasideWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_seaside", 3));
+                user.setAlchemyWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_alchemy", 3));
+                user.setProsperityWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_prosperity", 3));
+                user.setCornucopiaWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_cornucopia", 3));
+                user.setHinterlandsWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_hinterlands", 3));
+                user.setPromoWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_promo", 3));
+                user.setSalvationWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_salvation", 3));
+                user.setFairyTaleWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_fairytale", 3));
+                user.setProletariatWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_proletariat", 3));
+                user.setFanWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_fan", 3));
 
                 for (int i = 2; i <= 6; i++) {
                     user.setPlayerDefault(i, request.getParameter("player" + i));
@@ -226,16 +226,16 @@ public class GameController {
                 game.setNumHardComputerPlayers(numHardComputerPlayers);
                 game.setNumBMUComputerPlayers(numBMUComputerPlayers);
 
-                game.setShowVictoryPoints(KingdomUtil.getRequestBoolean(request, "showVictoryPoints"));
-                game.setIdenticalStartingHands(KingdomUtil.getRequestBoolean(request, "identicalStartingHands"));
+                game.setShowVictoryPoints(KingdomUtil.INSTANCE.getRequestBoolean(request, "showVictoryPoints"));
+                game.setIdenticalStartingHands(KingdomUtil.INSTANCE.getRequestBoolean(request, "identicalStartingHands"));
 
-                game.setPlayTreasureCards(KingdomUtil.getRequestBoolean(request, "playTreasureCards"));
+                game.setPlayTreasureCards(KingdomUtil.INSTANCE.getRequestBoolean(request, "playTreasureCards"));
                 game.setTitle(request.getParameter("title"));
-                game.setPrivateGame(KingdomUtil.getRequestBoolean(request, "privateGame"));
+                game.setPrivateGame(KingdomUtil.INSTANCE.getRequestBoolean(request, "privateGame"));
                 if (game.isPrivateGame()) {
                     game.setPassword(request.getParameter("gamePassword"));
                 }
-                game.setMobile(KingdomUtil.isMobile(request));
+                game.setMobile(KingdomUtil.INSTANCE.isMobile(request));
 
                 List<Deck> decks = new ArrayList<>();
                 List<Card> customSelection = new ArrayList<Card>();
@@ -289,14 +289,14 @@ public class GameController {
                 game.setDecks(decks);
                 cardManager.setRandomKingdomCards(game);
 
-                user.setExcludedCards(KingdomUtil.getCommaSeparatedCardNames(excludedCards));
+                user.setExcludedCards(KingdomUtil.INSTANCE.getCommaSeparatedCardNames(excludedCards));
                 userManager.saveUser(user);
 
                 return new ModelAndView("redirect:/confirmCards.html");
             }
             return new ModelAndView("redirect:/showGameRooms.html");
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -370,16 +370,16 @@ public class GameController {
             game.setCustom(true);
             options.setThreeToFiveAlchemy(true);
             options.setCustomSelection(customSelection);
-            if (KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")) {
+            if (KingdomUtil.INSTANCE.getRequestBoolean(request, "includeColonyAndPlatinumCards")) {
                 game.setAlwaysIncludeColonyAndPlatinum(true);
             }
         } else {
-            options.setThreeToFiveAlchemy(KingdomUtil.getRequestBoolean(request, "threeToFiveAlchemy"));
-            options.setOneOfEachCost(KingdomUtil.getRequestBoolean(request, "oneOfEachCost"));
-            options.setOneWithBuy(KingdomUtil.getRequestBoolean(request, "oneWithBuy"));
-            options.setOneWithActions(KingdomUtil.getRequestBoolean(request, "oneWithActions"));
-            options.setDefenseForAttack(KingdomUtil.getRequestBoolean(request, "defenseForAttack"));
-            game.setAlwaysIncludeColonyAndPlatinum(KingdomUtil.getRequestBoolean(request, "alwaysIncludeColonyAndPlatinum"));
+            options.setThreeToFiveAlchemy(KingdomUtil.INSTANCE.getRequestBoolean(request, "threeToFiveAlchemy"));
+            options.setOneOfEachCost(KingdomUtil.INSTANCE.getRequestBoolean(request, "oneOfEachCost"));
+            options.setOneWithBuy(KingdomUtil.INSTANCE.getRequestBoolean(request, "oneWithBuy"));
+            options.setOneWithActions(KingdomUtil.INSTANCE.getRequestBoolean(request, "oneWithActions"));
+            options.setDefenseForAttack(KingdomUtil.INSTANCE.getRequestBoolean(request, "defenseForAttack"));
+            game.setAlwaysIncludeColonyAndPlatinum(KingdomUtil.INSTANCE.getRequestBoolean(request, "alwaysIncludeColonyAndPlatinum"));
         }
         game.setRandomizingOptions(options);
     }
@@ -389,7 +389,7 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         try {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
@@ -403,7 +403,7 @@ public class GameController {
             }
         } catch (Throwable t) {
             t.printStackTrace();
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -418,7 +418,7 @@ public class GameController {
             }
         }
         ModelAndView modelAndView = new ModelAndView("randomConfirm");
-        modelAndView.addObject("createGame", KingdomUtil.getRequestBoolean(request, "createGame"));
+        modelAndView.addObject("createGame", KingdomUtil.INSTANCE.getRequestBoolean(request, "createGame"));
         modelAndView.addObject("player", new Player(user, game));
         modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
         modelAndView.addObject("costDiscount", game.getCostDiscount());
@@ -429,7 +429,7 @@ public class GameController {
         modelAndView.addObject("cards", game.getKingdomCards());
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum);
         modelAndView.addObject("playTreasureCardsRequired", playTreasureCardsRequired);
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
         modelAndView.addObject("randomizerReplacementCardNotFound", game.isRandomizerReplacementCardNotFound());
         return modelAndView;
     }
@@ -447,7 +447,7 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         try {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
@@ -461,7 +461,7 @@ public class GameController {
                 }
             }
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -472,7 +472,7 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         try {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
@@ -486,7 +486,7 @@ public class GameController {
                 }
             }
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -497,7 +497,7 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         try {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
@@ -511,7 +511,7 @@ public class GameController {
                 }
             }
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -523,11 +523,11 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         try {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
-                boolean include = KingdomUtil.getRequestBoolean(request, "include");
+                boolean include = KingdomUtil.INSTANCE.getRequestBoolean(request, "include");
                 game.setAlwaysIncludeColonyAndPlatinum(include);
                 game.setNeverIncludeColonyAndPlatinum(!include);
                 return confirmCards(request, response);
@@ -539,7 +539,7 @@ public class GameController {
                 }
             }
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -550,7 +550,7 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         try {
             if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
@@ -593,7 +593,7 @@ public class GameController {
             }
         } catch (Throwable t) {
             t.printStackTrace();
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -612,7 +612,7 @@ public class GameController {
         User user = getUser(request);
         String gameIdParam = request.getParameter("gameId");
         if (user == null || gameIdParam == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         int gameId = Integer.parseInt(gameIdParam);
         Game game = gameRoomManager.getGame(gameId);
@@ -627,7 +627,7 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         game.reset();
         return new ModelAndView("redirect:/showGameRooms.html");
@@ -637,10 +637,10 @@ public class GameController {
     public ModelAndView showGameRooms(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         } else if (user.isExpired()) {
-            KingdomUtil.logoutUser(user, request);
-            return KingdomUtil.getLoginModelAndView(request);
+            KingdomUtil.INSTANCE.logoutUser(user, request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         Game game = getGame(request);
         try {
@@ -666,7 +666,7 @@ public class GameController {
             return modelAndView;
         } catch (Throwable t) {
             if (game != null) {
-                GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+                GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
                 game.logError(error);
             }
             return new ModelAndView("empty");
@@ -694,7 +694,7 @@ public class GameController {
     public ModelAndView leaveGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         if (user.getGameId() == 0) {
             return new ModelAndView("redirect:/showGameRooms.html");
@@ -712,7 +712,7 @@ public class GameController {
     public ModelAndView joinGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         if (user.getGameId() != 0) {
             return new ModelAndView("redirect:/showGameRooms.html");
@@ -726,7 +726,7 @@ public class GameController {
             game = getGame(request);
         }
         if (game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         try {
             if (game.getPlayers().size() == game.getNumPlayers() || game.isPrivateGame()) {
@@ -745,7 +745,7 @@ public class GameController {
                 }
             }
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -791,7 +791,7 @@ public class GameController {
 
             return model;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return model;
         }
@@ -802,7 +802,7 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         } else if (game == null) {
             return new ModelAndView("redirect:/showGameRooms.html");
         }
@@ -818,7 +818,7 @@ public class GameController {
             modelAndView.addObject("user", user);
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -969,7 +969,7 @@ public class GameController {
 
             return model;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return model;
         }
@@ -998,7 +998,7 @@ public class GameController {
                 game.closeLoadingDialog(player);
             }
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
         }
         return refreshGame(request, response);
@@ -1024,7 +1024,7 @@ public class GameController {
             game.playAllTreasureCards(player);
             game.closeLoadingDialog(player);
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
         }
         return refreshGame(request, response);
@@ -1044,7 +1044,7 @@ public class GameController {
             Player player = game.getPlayerMap().get(user.getUserId());
             game.endPlayerTurn(player);
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
         }
         return refreshGame(request, response);
@@ -1107,7 +1107,7 @@ public class GameController {
             }
             game.closeLoadingDialog(player);
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
         }
         return new ModelAndView("empty");
@@ -1122,7 +1122,7 @@ public class GameController {
         }
         try {
             String template = "playersDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 template = "playersDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1130,7 +1130,7 @@ public class GameController {
             modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints());
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1159,7 +1159,7 @@ public class GameController {
     private ModelAndView getSupplyDiv(HttpServletRequest request, User user, Game game, int currentPlayerId) {
         try {
             String supplyDivTemplate = "supplyDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 supplyDivTemplate = "supplyDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(supplyDivTemplate);
@@ -1189,10 +1189,10 @@ public class GameController {
             modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens());
             modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens());
             modelAndView.addObject("tradeRouteTokensOnMat", game.getTradeRouteTokensOnMat());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1207,7 +1207,7 @@ public class GameController {
         }
         try {
             String template = "playingAreaDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 template = "playingAreaDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1226,10 +1226,10 @@ public class GameController {
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
             modelAndView.addObject("showPotions", game.isUsePotions());
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1244,7 +1244,7 @@ public class GameController {
         }
         try {
             String template = "playingAreaDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 template = "playingAreaDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1263,10 +1263,10 @@ public class GameController {
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
             modelAndView.addObject("showPotions", game.isUsePotions());
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1281,7 +1281,7 @@ public class GameController {
         }
         try {
             String template = "cardsPlayedDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 template = "cardsPlayedDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1297,10 +1297,10 @@ public class GameController {
             modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
             addTrollTokenObjects(game, modelAndView);
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1315,7 +1315,7 @@ public class GameController {
         }
         try {
             String template = "cardsBoughtDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 template = "cardsBoughtDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1333,10 +1333,10 @@ public class GameController {
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
             modelAndView.addObject("showPotions", game.isUsePotions());
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1351,14 +1351,14 @@ public class GameController {
         }
         try {
             String template = "historyDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 template = "historyDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
             modelAndView.addObject("turnHistory", game.getRecentTurnHistory());
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1381,10 +1381,10 @@ public class GameController {
             modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
             addTrollTokenObjects(game, modelAndView);
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1413,7 +1413,7 @@ public class GameController {
     private ModelAndView getHandAreaDiv(HttpServletRequest request, User user, Game game, int currentPlayerId) {
         try {
             String template = "handAreaDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 template = "handAreaDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1436,10 +1436,10 @@ public class GameController {
             modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins());
             modelAndView.addObject("currentPlayerId", currentPlayerId);
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1462,10 +1462,10 @@ public class GameController {
             modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
             addTrollTokenObjects(game, modelAndView);
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1480,7 +1480,7 @@ public class GameController {
         }
         try {
             String template = "discardDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 template = "discardDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1492,10 +1492,10 @@ public class GameController {
             modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
             addTrollTokenObjects(game, modelAndView);
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1511,7 +1511,7 @@ public class GameController {
         try {
             List<ChatMessage> chats = game.getChats();
             String template = "chatDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 template = "chatDivMobile";
                 //Collections.reverse(chats);
             }
@@ -1519,7 +1519,7 @@ public class GameController {
             modelAndView.addObject("chats", chats);
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1534,7 +1534,7 @@ public class GameController {
         }
         try {
             String template = "cardActionDiv";
-            if (KingdomUtil.isMobile(request)) {
+            if (KingdomUtil.INSTANCE.isMobile(request)) {
                 template = "cardActionDivMobile";
             }
             ModelAndView modelAndView = new ModelAndView(template);
@@ -1546,14 +1546,14 @@ public class GameController {
             modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
             addTrollTokenObjects(game, modelAndView);
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             if (player.getCardAction().getType() == CardAction.TYPE_SETUP_LEADERS) {
                 modelAndView.addObject("kingdomCards", game.getKingdomCards());
                 modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards() && game.isIncludePlatinumCards());
             }
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1571,7 +1571,7 @@ public class GameController {
             Player player = game.getPlayerMap().get(user.getUserId());
             modelAndView.addObject("player", player);
             modelAndView.addObject("players", game.getPlayers());
-            modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.getTrashedCards(), true));
+            modelAndView.addObject("trashedCards", KingdomUtil.INSTANCE.groupCards(game.getTrashedCards(), true));
             modelAndView.addObject("showIslandCards", game.isShowIslandCards());
             modelAndView.addObject("showMuseumCards", game.isShowMuseumCards());
             modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards());
@@ -1586,7 +1586,7 @@ public class GameController {
             modelAndView.addObject("prizeCards", game.getPrizeCardsString());
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1633,7 +1633,7 @@ public class GameController {
             modelAndView.addObject("chats", game.getChats());
             modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents());
 
-            modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.getTrashedCards(), true));
+            modelAndView.addObject("trashedCards", KingdomUtil.INSTANCE.groupCards(game.getTrashedCards(), true));
 
             modelAndView.addObject("logId", game.getLogId());
 
@@ -1641,7 +1641,7 @@ public class GameController {
 
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1660,7 +1660,7 @@ public class GameController {
             modelAndView.addObject("player", player);
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1684,7 +1684,7 @@ public class GameController {
             }
             game.playerExitedGame(player);
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
         }
         return new ModelAndView("empty");
@@ -1712,7 +1712,7 @@ public class GameController {
             }
             return refreshGame(request, response);
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return model;
         }
@@ -1781,7 +1781,7 @@ public class GameController {
             }
             return refreshGame(request, response);
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return model;
         }
@@ -1817,7 +1817,7 @@ public class GameController {
             return model;
         }
         String message = request.getParameter("message");
-        int receivingUserId = KingdomUtil.getRequestInt(request, "receivingUserId", 0);
+        int receivingUserId = KingdomUtil.INSTANCE.getRequestInt(request, "receivingUserId", 0);
         sendPrivateChat(user, message, receivingUserId);
         return refreshLobby(request, response);
     }
@@ -1838,10 +1838,10 @@ public class GameController {
             modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
             addTrollTokenObjects(game, modelAndView);
             modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
             return modelAndView;
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
             return new ModelAndView("empty");
         }
@@ -1913,7 +1913,7 @@ public class GameController {
         modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints());
         modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens());
         modelAndView.addObject("tradeRouteTokensOnMat", game.getTradeRouteTokensOnMat());
-        modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.getTrashedCards(), true));
+        modelAndView.addObject("trashedCards", KingdomUtil.INSTANCE.groupCards(game.getTrashedCards(), true));
         modelAndView.addObject("prizeCards", game.getPrizeCardsString());
 
         modelAndView.addObject("showGarden", game.isShowGardens());
@@ -1941,7 +1941,7 @@ public class GameController {
 
         modelAndView.addObject("gameEndReason", game.getGameEndReason());
         modelAndView.addObject("winnerString", game.getWinnerString());
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
         modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents());
         modelAndView.addObject("logId", game.getLogId());
     }
@@ -1959,7 +1959,7 @@ public class GameController {
     }
 
     private User getUser(HttpServletRequest request) {
-        return KingdomUtil.getUser(request);
+        return KingdomUtil.INSTANCE.getUser(request);
     }
 
     private Game getGame(HttpServletRequest request) {
@@ -1974,7 +1974,7 @@ public class GameController {
     public ModelAndView gameHistory(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("gameHistory");
         modelAndView.addObject("user", user);
@@ -1986,7 +1986,7 @@ public class GameController {
     public ModelAndView gamePlayersHistory(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         int gameId = Integer.parseInt(request.getParameter("gameId"));
         ModelAndView modelAndView = new ModelAndView("gamePlayersHistory");
@@ -2000,7 +2000,7 @@ public class GameController {
     public ModelAndView playerGameHistory(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("gameHistory");
         modelAndView.addObject("user", user);
@@ -2013,7 +2013,7 @@ public class GameController {
     public ModelAndView gameErrors(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("gameErrors");
         modelAndView.addObject("user", user);
@@ -2025,7 +2025,7 @@ public class GameController {
     public ModelAndView deleteGameError(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         int errorId = Integer.parseInt(request.getParameter("errorId"));
         gameManager.deleteGameError(errorId);
@@ -2035,8 +2035,8 @@ public class GameController {
     @RequestMapping("/showGameLog.html")
     public ModelAndView showGameLog(HttpServletRequest request, HttpServletResponse response) {
         ModelAndView modelAndView = new ModelAndView("gameLog");
-        int logId = KingdomUtil.getRequestInt(request, "logId", -1);
-        int gameId = KingdomUtil.getRequestInt(request, "gameId", -1);
+        int logId = KingdomUtil.INSTANCE.getRequestInt(request, "logId", -1);
+        int gameId = KingdomUtil.INSTANCE.getRequestInt(request, "gameId", -1);
         String[] logs = new String[0];
         GameLog log = null;
         if (logId > 0) {
@@ -2098,7 +2098,7 @@ public class GameController {
     public ModelAndView overallGameStats(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("overallStats");
         OverallStats stats = gameManager.getOverallStats();
@@ -2118,7 +2118,7 @@ public class GameController {
     public ModelAndView userStats(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("userStats");
         UserStats stats = gameManager.getUserStats();
@@ -2130,7 +2130,7 @@ public class GameController {
     public ModelAndView annotatedGames(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("annotatedGames");
         List<AnnotatedGame> games = gameManager.getAnnotatedGames();
@@ -2142,7 +2142,7 @@ public class GameController {
     public ModelAndView saveAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
 
         List<String> cardsIds = new ArrayList<String>();
@@ -2162,8 +2162,8 @@ public class GameController {
             game = gameManager.getAnnotatedGame(Integer.parseInt(id));
         }
         game.setTitle(request.getParameter("title"));
-        game.setCards(KingdomUtil.implode(cardsIds, ","));
-        game.setIncludeColonyAndPlatinum(KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards"));
+        game.setCards(KingdomUtil.INSTANCE.implode(cardsIds, ","));
+        game.setIncludeColonyAndPlatinum(KingdomUtil.INSTANCE.getRequestBoolean(request, "includeColonyAndPlatinumCards"));
         gameManager.saveAnnotatedGame(game);
         return annotatedGames(request, response);
     }
@@ -2172,7 +2172,7 @@ public class GameController {
     public ModelAndView deleteAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         String id = request.getParameter("id");
         AnnotatedGame game = gameManager.getAnnotatedGame(Integer.parseInt(id));
@@ -2185,7 +2185,7 @@ public class GameController {
     public ModelAndView showAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("annotatedGame");
         String id = request.getParameter("id");
@@ -2222,7 +2222,7 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         if (!game.isTestGame() && !user.getAdmin()) {
             return new ModelAndView("redirect:/showGame.html");
@@ -2241,7 +2241,7 @@ public class GameController {
         User user = getUser(request);
         Game game = getGame(request);
         if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         if (!game.isTestGame() && !user.getAdmin()) {
             return new ModelAndView("redirect:/showGame.html");
@@ -2267,7 +2267,7 @@ public class GameController {
                     String ids = name.substring(5);
                     int cardId = Integer.parseInt(ids.substring(0, ids.indexOf("_")));
                     Card card = game.getSupplyMap().get(cardId);
-                    int numCards = KingdomUtil.getRequestInt(request, name, 0);
+                    int numCards = KingdomUtil.INSTANCE.getRequestInt(request, name, 0);
                     for (int i = 0; i < numCards; i++) {
                         player.addCardToHand(card);
                     }
@@ -2293,7 +2293,7 @@ public class GameController {
         } else {
             refresh = user.getRefreshLobby();
             if (user.isExpired()) {
-                KingdomUtil.logoutUser(user, request);
+                KingdomUtil.INSTANCE.logoutUser(user, request);
                 refresh.setRedirectToLogin(true);
             }
         }
@@ -2341,7 +2341,7 @@ public class GameController {
         } else {
             refresh = user.getRefreshLobby();
             if (user.isExpired()) {
-                KingdomUtil.logoutUser(user, request);
+                KingdomUtil.INSTANCE.logoutUser(user, request);
                 refresh.setRedirectToLogin(true);
             }
         }
@@ -2365,7 +2365,7 @@ public class GameController {
         } else {
             refresh = user.getRefreshLobby();
             if (user.isExpired()) {
-                KingdomUtil.logoutUser(user, request);
+                KingdomUtil.INSTANCE.logoutUser(user, request);
                 refresh.setRedirectToLogin(true);
             }
         }
@@ -2375,7 +2375,7 @@ public class GameController {
         }
         LoggedInUsers.Companion.getInstance().refreshLobby(user);
         String template = "lobbyChatDiv";
-        if (KingdomUtil.isMobile(request)) {
+        if (KingdomUtil.INSTANCE.isMobile(request)) {
             template = "lobbyChatDivMobile";
         }
         ModelAndView modelAndView = new ModelAndView(template);
@@ -2394,7 +2394,7 @@ public class GameController {
         } else {
             refresh = user.getRefreshLobby();
             if (user.isExpired()) {
-                KingdomUtil.logoutUser(user, request);
+                KingdomUtil.INSTANCE.logoutUser(user, request);
                 refresh.setRedirectToLogin(true);
             }
         }
@@ -2412,7 +2412,7 @@ public class GameController {
         modelAndView.addObject("updatingMessage", gameRoomManager.getUpdatingMessage());
         modelAndView.addObject("showNews", gameRoomManager.isShowNews());
         modelAndView.addObject("news", gameRoomManager.getNews());
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
         return modelAndView;
     }
 
@@ -2492,7 +2492,7 @@ public class GameController {
             game.showUseFruitTokensCardAction(player);
             game.closeLoadingDialog(player);
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
         }
         return refreshGame(request, response);
@@ -2517,7 +2517,7 @@ public class GameController {
             game.showUseCattleTokensCardAction(player);
             game.closeLoadingDialog(player);
         } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t));
+            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
             game.logError(error);
         }
         return refreshGame(request, response);
@@ -2527,7 +2527,7 @@ public class GameController {
     public ModelAndView recommendedSets(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("recommendedSets");
         List<RecommendedSet> recommendedSets = gameManager.getRecommendedSets();
@@ -2539,7 +2539,7 @@ public class GameController {
     public ModelAndView saveRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
 
         RecommendedSet set;
@@ -2560,7 +2560,7 @@ public class GameController {
     public ModelAndView deleteRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         String id = request.getParameter("id");
         RecommendedSet set = gameManager.getRecommendedSet(Integer.parseInt(id));
@@ -2573,7 +2573,7 @@ public class GameController {
     public ModelAndView showRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("recommendedSet");
         String id = request.getParameter("id");

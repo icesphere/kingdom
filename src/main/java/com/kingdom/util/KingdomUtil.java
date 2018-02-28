@@ -1,341 +1,330 @@
-package com.kingdom.util;
+package com.kingdom.util
 
-import com.kingdom.model.Card;
-import com.kingdom.model.User;
-import com.kingdom.service.LoggedInUsers;
-import com.kingdom.service.UAgentInfo;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-import org.springframework.web.servlet.ModelAndView;
+import com.kingdom.model.Card
+import com.kingdom.model.User
+import com.kingdom.service.LoggedInUsers
+import com.kingdom.service.UAgentInfo
+import com.sun.jersey.api.client.Client
+import com.sun.jersey.api.client.WebResource
+import com.sun.jersey.core.util.MultivaluedMapImpl
+import org.springframework.web.servlet.ModelAndView
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.MultivaluedMap;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.*;
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpSession
+import javax.ws.rs.core.MultivaluedMap
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.io.Writer
+import java.util.*
 
-public class KingdomUtil {
-    public static String getArticleWithWord(String word) {
-        if (word.toUpperCase().startsWith("A") || word.toUpperCase().startsWith("E") || word.toUpperCase().startsWith("I") || word.toUpperCase().startsWith("O") || word.toUpperCase().startsWith("U")) {
-            return "an " + word;
-        }
-        return "a " + word;
+object KingdomUtil {
+    fun getArticleWithWord(word: String): String {
+        return if (word.toUpperCase().startsWith("A") || word.toUpperCase().startsWith("E") || word.toUpperCase().startsWith("I") || word.toUpperCase().startsWith("O") || word.toUpperCase().startsWith("U")) {
+            "an " + word
+        } else "a " + word
     }
 
-    public static String getArticleWithCardName(Card card) {
-        String cardName = card.getName();
-        String cardNameString = getCardWithBackgroundColor(card);
-        if (cardName.equals("Goons") || cardName.equals("Nobles")) {
-            return cardNameString;
+    fun getArticleWithCardName(card: Card): String {
+        val cardName = card.name
+        val cardNameString = getCardWithBackgroundColor(card)
+        if (cardName == "Goons" || cardName == "Nobles") {
+            return cardNameString
         }
-        if (cardName.equals("University")) {
-            return "a " + cardNameString;
+        if (cardName == "University") {
+            return "a " + cardNameString
         }
-        if (cardName.toUpperCase().startsWith("A") || cardName.toUpperCase().startsWith("E") || cardName.toUpperCase().startsWith("I") || cardName.toUpperCase().startsWith("O") || cardName.toUpperCase().startsWith("U") || cardName.equals("Herbalist")) {
-            return "an " + cardNameString;
-        }
-        return "a " + cardNameString;
+        return if (cardName.toUpperCase().startsWith("A") || cardName.toUpperCase().startsWith("E") || cardName.toUpperCase().startsWith("I") || cardName.toUpperCase().startsWith("O") || cardName.toUpperCase().startsWith("U") || cardName == "Herbalist") {
+            "an " + cardNameString
+        } else "a " + cardNameString
     }
 
-    public static String getWordWithBackgroundColor(String word, String color) {
-        if (color.equals(Card.ACTION_AND_VICTORY_IMAGE) || color.equals(Card.TREASURE_AND_VICTORY_IMAGE) || color.equals(Card.TREASURE_AND_CURSE_IMAGE) || color.equals(Card.VICTORY_AND_REACTION_IMAGE) || color.equals(Card.DURATION_AND_VICTORY_IMAGE) || color.equals(Card.TREASURE_REACTION_IMAGE)) {
-            return "<span class=\"cardColor\" style=\"background-image:url(images/" + color + ");background-repeat:repeat-x;\">" + word + "</span>";
+    fun getWordWithBackgroundColor(word: String, color: String): String {
+        return if (color == Card.ACTION_AND_VICTORY_IMAGE || color == Card.TREASURE_AND_VICTORY_IMAGE || color == Card.TREASURE_AND_CURSE_IMAGE || color == Card.VICTORY_AND_REACTION_IMAGE || color == Card.DURATION_AND_VICTORY_IMAGE || color == Card.TREASURE_REACTION_IMAGE) {
+            "<span class=\"cardColor\" style=\"background-image:url(images/$color);background-repeat:repeat-x;\">$word</span>"
         } else {
-            return "<span class=\"cardColor\" style=\"background-color:" + color + "\">" + word + "</span>";
+            "<span class=\"cardColor\" style=\"background-color:$color\">$word</span>"
         }
     }
 
-    public static String getCardWithBackgroundColor(Card card) {
-        return getCardWithBackgroundColor(card, false);
-    }
-
-    public static String getCardWithBackgroundColor(Card card, boolean addArticle) {
-        String cardName;
+    @JvmOverloads
+    fun getCardWithBackgroundColor(card: Card, addArticle: Boolean = false): String {
+        val cardName: String
         if (addArticle) {
-            cardName = KingdomUtil.getArticleWithCardName(card);
+            cardName = KingdomUtil.getArticleWithCardName(card)
         } else {
-            cardName = card.getName();
+            cardName = card.name
         }
-        return getWordWithBackgroundColor(cardName, card.getBackgroundColor());
+        return getWordWithBackgroundColor(cardName, card.backgroundColor)
     }
 
-    public static String getPlural(int num, String word) {
-        if (num == 1 || num == -1 || word.endsWith("s")) {
-            return num + " " + word;
+    fun getPlural(num: Int, word: String): String {
+        var wordCopy = word
+        if (num == 1 || num == -1 || wordCopy.endsWith("s")) {
+            return num.toString() + " " + wordCopy
         } else {
-            if (word.equals("Envoy")) {
-                return num + " " + "Envoys";
-            } else if (word.endsWith("y")) {
-                word = word.substring(0, word.length() - 1) + "ies";
-                return num + " " + word;
-            } else if (word.equals("Witch")) {
-                return num + " " + "Witches";
-            } else if (word.equals("Golden Touch")) {
-                return num + " " + "Golden Touches";
+            if (wordCopy == "Envoy") {
+                return num.toString() + " " + "Envoys"
+            } else if (wordCopy.endsWith("y")) {
+                wordCopy = wordCopy.substring(0, wordCopy.length - 1) + "ies"
+                return num.toString() + " " + wordCopy
+            } else return if (wordCopy == "Witch") {
+                num.toString() + " " + "Witches"
+            } else if (wordCopy == "Golden Touch") {
+                num.toString() + " " + "Golden Touches"
             } else {
-                return num + " " + word + "s";
+                num.toString() + " " + wordCopy + "s"
             }
         }
     }
 
-    public static String getPlural(double num, String word) {
-        if (num == 1) {
-            return "1 " + word;
+    fun getPlural(num: Double, word: String): String {
+        var wordCopy = word
+        if (num == 1.0) {
+            return "1 " + wordCopy
         } else {
-            StringBuffer sb = new StringBuffer();
-            if (num * 10 % 10 == 0) {
-                sb.append((int) num);
+            val sb = StringBuffer()
+            if (num * 10 % 10 == 0.0) {
+                sb.append(num.toInt())
             } else {
-                sb.append(num);
+                sb.append(num)
             }
-            if (word.endsWith("y")) {
-                word = word.substring(0, word.length() - 1) + "ies";
-                sb.append(" ").append(word);
+            if (wordCopy.endsWith("y")) {
+                wordCopy = wordCopy.substring(0, wordCopy.length - 1) + "ies"
+                sb.append(" ").append(wordCopy)
             } else {
-                sb.append(" ").append(word);
-                if (!word.endsWith("s")) {
-                    sb.append("s");
+                sb.append(" ").append(wordCopy)
+                if (!wordCopy.endsWith("s")) {
+                    sb.append("s")
                 }
             }
-            return sb.toString();
+            return sb.toString()
         }
     }
 
-    public static String getCardNames(List<Card> cards) {
-        return getCardNames(cards, true);
-    }
-
-    public static String getCardNames(List<Card> cards, boolean addColor) {
+    @JvmOverloads
+    fun getCardNames(cards: List<Card>?, addColor: Boolean = true): String {
         if (cards == null || cards.isEmpty()) {
-            return "";
+            return ""
         }
-        if (cards.size() == 1) {
-            if (addColor) {
-                return getCardWithBackgroundColor(cards.get(0));
+        if (cards.size == 1) {
+            return if (addColor) {
+                getCardWithBackgroundColor(cards[0])
             } else {
-                return cards.get(0).getName();
+                cards[0].name
             }
         }
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < cards.size(); i++) {
+        val sb = StringBuffer()
+        for (i in cards.indices) {
             if (i != 0) {
-                sb.append(", ");
+                sb.append(", ")
             }
-            if (i == cards.size() - 1) {
-                sb.append("and ");
+            if (i == cards.size - 1) {
+                sb.append("and ")
             }
             if (addColor) {
-                sb.append(getCardWithBackgroundColor(cards.get(i)));
+                sb.append(getCardWithBackgroundColor(cards[i]))
             } else {
-                sb.append(cards.get(i).getName());
+                sb.append(cards[i].name)
             }
         }
-        return sb.toString();
+        return sb.toString()
     }
 
-    public static String getCommaSeparatedCardNames(List<Card> cards) {
-        List<String> cardNames = new ArrayList<String>(cards.size());
-        for (Card card : cards) {
-            cardNames.add(card.getName());
+    fun getCommaSeparatedCardNames(cards: List<Card>): String {
+        val cardNames = ArrayList<String>(cards.size)
+        for (card in cards) {
+            cardNames.add(card.name)
         }
-        return KingdomUtil.implode(cardNames, ",");
+        return KingdomUtil.implode(cardNames, ",")
     }
 
-    public static boolean getRequestBoolean(HttpServletRequest request, String name) {
-        String param = request.getParameter(name);
-        return param != null && param.equals("true");
+    fun getRequestBoolean(request: HttpServletRequest, name: String): Boolean {
+        val param = request.getParameter(name)
+        return param != null && param == "true"
     }
 
-    public static int getRequestInt(HttpServletRequest request, String name, int defaultValue) {
-        String param = request.getParameter(name);
+    fun getRequestInt(request: HttpServletRequest, name: String, defaultValue: Int): Int {
+        val param = request.getParameter(name)
         if (param != null) {
-            try {
-                return Integer.parseInt(param);
-            } catch (NumberFormatException e) {
-                return defaultValue;
+            return try {
+                Integer.parseInt(param)
+            } catch (e: NumberFormatException) {
+                defaultValue
             }
+
         }
-        return defaultValue;
+        return defaultValue
     }
 
-    public static String implode(List<String> strings, String separator) {
+    fun implode(strings: List<String>?, separator: String): String {
         if (strings == null || strings.isEmpty()) {
-            return "";
+            return ""
         }
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < strings.size(); i++) {
-            String s = strings.get(i);
+        val sb = StringBuffer()
+        for (i in strings.indices) {
+            val s = strings[i]
             if (i != 0) {
-                sb.append(separator);
+                sb.append(separator)
             }
-            sb.append(s);
+            sb.append(s)
         }
-        return sb.toString();
+        return sb.toString()
     }
 
-    public static List<Card> groupCards(List<Card> cards) {
-        CardNameComparator cnc = new CardNameComparator();
-        Collections.sort(cards, cnc);
-        return cards;
+    fun groupCards(cards: List<Card>): List<Card> {
+        val cnc = CardNameComparator()
+        Collections.sort(cards, cnc)
+        return cards
     }
 
-    public static String groupCards(List<Card> cards, boolean addColor) {
-        return groupCards(cards, addColor, true);
-    }
-
-    public static String groupCards(List<Card> cards, boolean addColor, boolean addNumbers) {
+    @JvmOverloads
+    fun groupCards(cards: List<Card>?, addColor: Boolean, addNumbers: Boolean = true): String {
         if (cards == null || cards.isEmpty()) {
-            return "";
+            return ""
         }
-        CardNameComparator cnc = new CardNameComparator();
-        Collections.sort(cards, cnc);
-        StringBuffer sb = new StringBuffer();
-        int numOfEach = 0;
-        Card currentCard = cards.get(0);
-        for (Card card : cards) {
-            if (!card.getName().equals(currentCard.getName())) {
-                if (sb.length() > 0) {
-                    sb.append(", ");
+        val cnc = CardNameComparator()
+        Collections.sort(cards, cnc)
+        val sb = StringBuffer()
+        var numOfEach = 0
+        var currentCard = cards[0]
+        for (card in cards) {
+            if (card.name != currentCard.name) {
+                if (sb.isNotEmpty()) {
+                    sb.append(", ")
                 }
                 if (addColor) {
                     if (addNumbers) {
-                        sb.append(getWordWithBackgroundColor(getPlural(numOfEach, currentCard.getName()), currentCard.getBackgroundColor()));
+                        sb.append(getWordWithBackgroundColor(getPlural(numOfEach, currentCard.name), currentCard.backgroundColor))
                     } else {
-                        sb.append(getCardWithBackgroundColor(currentCard));
+                        sb.append(getCardWithBackgroundColor(currentCard))
                     }
                 } else {
                     if (addNumbers) {
-                        sb.append(getPlural(numOfEach, currentCard.getName()));
+                        sb.append(getPlural(numOfEach, currentCard.name))
                     } else {
-                        sb.append(currentCard.getName());
+                        sb.append(currentCard.name)
                     }
                 }
-                numOfEach = 0;
-                currentCard = card;
+                numOfEach = 0
+                currentCard = card
             }
-            numOfEach++;
+            numOfEach++
         }
-        if (sb.length() > 0) {
-            sb.append(", and ");
+        if (sb.isNotEmpty()) {
+            sb.append(", and ")
         }
         if (addColor) {
             if (addNumbers) {
-                sb.append(getWordWithBackgroundColor(getPlural(numOfEach, currentCard.getName()), currentCard.getBackgroundColor()));
+                sb.append(getWordWithBackgroundColor(getPlural(numOfEach, currentCard.name), currentCard.backgroundColor))
             } else {
-                sb.append(getCardWithBackgroundColor(currentCard));
+                sb.append(getCardWithBackgroundColor(currentCard))
             }
         } else {
             if (addNumbers) {
-                sb.append(getPlural(numOfEach, currentCard.getName()));
+                sb.append(getPlural(numOfEach, currentCard.name))
             } else {
-                sb.append(currentCard.getName());
+                sb.append(currentCard.name)
             }
         }
-        return sb.toString();
+        return sb.toString()
     }
 
-    public static String getStackTrace(Throwable throwable) {
-        final Writer result = new StringWriter();
-        final PrintWriter printWriter = new PrintWriter(result);
-        throwable.printStackTrace(printWriter);
-        return result.toString();
+    fun getStackTrace(throwable: Throwable): String {
+        val result = StringWriter()
+        val printWriter = PrintWriter(result)
+        throwable.printStackTrace(printWriter)
+        return result.toString()
     }
 
-    public static User getUser(HttpServletRequest request) {
-        if (request.getSession() == null) {
-            return null;
+    fun getUser(request: HttpServletRequest): User? {
+        return if (request.session == null) {
+            null
+        } else request.session.getAttribute("user") as User
+    }
+
+    fun isMobile(request: HttpServletRequest): Boolean {
+        if (request.session == null || request.session.getAttribute("mobile") == null) {
+            val agentInfo = UAgentInfo(request.getHeader("User-Agent"), request.getHeader("Accept"))
+            return agentInfo.detectSmartphone()
         }
-        return (User) request.getSession().getAttribute("user");
+        return request.session.getAttribute("mobile") as Boolean
     }
 
-    public static boolean isMobile(HttpServletRequest request) {
-        if (request.getSession() == null || request.getSession().getAttribute("mobile") == null) {
-            UAgentInfo agentInfo = new UAgentInfo(request.getHeader("User-Agent"), request.getHeader("Accept"));
-            return agentInfo.detectSmartphone();
+    fun isTablet(request: HttpServletRequest): Boolean {
+        if (request.session == null || request.session.getAttribute("tablet") == null) {
+            val agentInfo = UAgentInfo(request.getHeader("User-Agent"), request.getHeader("Accept"))
+            return agentInfo.detectTierTablet()
         }
-        return (Boolean) request.getSession().getAttribute("mobile");
+        return request.session.getAttribute("tablet") as Boolean
     }
 
-    public static boolean isTablet(HttpServletRequest request) {
-        if (request.getSession() == null || request.getSession().getAttribute("tablet") == null) {
-            UAgentInfo agentInfo = new UAgentInfo(request.getHeader("User-Agent"), request.getHeader("Accept"));
-            return agentInfo.detectTierTablet();
-        }
-        return (Boolean) request.getSession().getAttribute("tablet");
+    fun getLoginModelAndView(request: HttpServletRequest): ModelAndView {
+        val modelAndView = ModelAndView("login")
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
     }
 
-    public static ModelAndView getLoginModelAndView(HttpServletRequest request) {
-        ModelAndView modelAndView = new ModelAndView("login");
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
-        return modelAndView;
+    fun getRandomNumber(min: Int, max: Int): Int {
+        return min + (Math.random() * (max - min + 1)).toInt()
     }
 
-    public static int getRandomNumber(int min, int max) {
-        return min + (int) (Math.random() * ((max - min) + 1));
-    }
-
-    public static void logoutUser(User user, HttpServletRequest request) {
+    fun logoutUser(user: User?, request: HttpServletRequest) {
         if (user != null) {
-            LoggedInUsers.Companion.getInstance().userLoggedOut(user);
-            LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
+            LoggedInUsers.instance.userLoggedOut(user)
+            LoggedInUsers.instance.refreshLobbyPlayers()
         }
-        HttpSession session = request.getSession(false);
+        val session = request.getSession(false)
         if (session != null) {
-            session.removeAttribute("user");
-            session.invalidate();
+            session.removeAttribute("user")
+            session.invalidate()
         }
     }
 
-    public static String getTimeAgo(Date date) {
-        StringBuffer gameTime = new StringBuffer("");
+    fun getTimeAgo(date: Date): String {
+        val gameTime = StringBuffer("")
         // Get the represented date in milliseconds
-        long createTime = date.getTime();
-        long currentTime = System.currentTimeMillis();
-        double diff = (currentTime - createTime) * 1.0;
-        double seconds = (diff / 1000);
-        double minutes = (diff / (60 * 1000));
-        double hours = (diff / (60 * 60 * 1000));
-        double days = (diff / (24 * 60 * 60 * 1000));
+        val createTime = date.time
+        val currentTime = System.currentTimeMillis()
+        val diff = (currentTime - createTime) * 1.0
+        val seconds = diff / 1000
+        val minutes = diff / (60 * 1000)
+        val hours = diff / (60 * 60 * 1000)
+        val days = diff / (24 * 60 * 60 * 1000)
 
-        if (days > 1) {
-            gameTime.append(KingdomUtil.getPlural((int) days, "day"));
-        } else if (hours > 1) {
-            gameTime.append(KingdomUtil.getPlural((int) hours, "hour"));
-        } else if (minutes > 1) {
-            gameTime.append(KingdomUtil.getPlural((int) minutes, "minute"));
-        } else {
-            gameTime.append(KingdomUtil.getPlural((int) seconds, "second"));
+        when {
+            days > 1 -> gameTime.append(KingdomUtil.getPlural(days.toInt(), "day"))
+            hours > 1 -> gameTime.append(KingdomUtil.getPlural(hours.toInt(), "hour"))
+            minutes > 1 -> gameTime.append(KingdomUtil.getPlural(minutes.toInt(), "minute"))
+            else -> gameTime.append(KingdomUtil.getPlural(seconds.toInt(), "second"))
         }
 
-        gameTime.append(" ago");
-        return gameTime.toString();
+        gameTime.append(" ago")
+        return gameTime.toString()
     }
 
-    public static List<Card> uniqueCardList(List<Card> list) {
-        Set<Card> set = new HashSet<Card>(list);
-        return new ArrayList<Card>(set);
+    fun uniqueCardList(list: List<Card>): List<Card> {
+        val set = HashSet(list)
+        return ArrayList(set)
     }
 
-    public static String getLocation(String ipAddress) {
+    fun getLocation(ipAddress: String): String {
         try {
-            Client client = Client.create();
-            WebResource webResource = client.resource("http://api.ipinfodb.com/v3/ip-city/");
-            MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-            queryParams.add("key", "d2453b713dc82cdc1fddbb28550ef197f8666017107cecfc65ab56311bb69a96");
-            queryParams.add("ip", ipAddress);
-            String result = webResource.queryParams(queryParams).get(String.class);
+            val client = Client.create()
+            val webResource = client.resource("http://api.ipinfodb.com/v3/ip-city/")
+            val queryParams = MultivaluedMapImpl()
+            queryParams.add("key", "d2453b713dc82cdc1fddbb28550ef197f8666017107cecfc65ab56311bb69a96")
+            queryParams.add("ip", ipAddress)
+            val result = webResource.queryParams(queryParams).get(String::class.java)
 
-            String[] locationValues = result.split(";");
+            val locationValues = result.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-            String location = "";
-            location += locationValues[6] + ", " + locationValues[5] + ", " + locationValues[4];
+            var location = ""
+            location += locationValues[6] + ", " + locationValues[5] + ", " + locationValues[4]
 
-            return location;
-        } catch (Exception e) {
-            return "Error";
+            return location
+        } catch (e: Exception) {
+            return "Error"
         }
+
     }
 }

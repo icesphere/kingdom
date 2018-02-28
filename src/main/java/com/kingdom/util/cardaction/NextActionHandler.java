@@ -26,7 +26,7 @@ public class NextActionHandler {
                         CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
                         cardAction.setDeck(Deck.Salvation);
                         cardAction.setCardName("Bell Tower");
-                        cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.getArticleWithCardName(game.getAttackCard()) + ". You may reveal your Bell Tower to gain +2 cards before or after the attack.");
+                        cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.INSTANCE.getArticleWithCardName(game.getAttackCard()) + ". You may reveal your Bell Tower to gain +2 cards before or after the attack.");
                         cardAction.getChoices().add(new CardActionChoice("Before", "before"));
                         cardAction.getChoices().add(new CardActionChoice("After", "after"));
                         cardAction.getChoices().add(new CardActionChoice("Don't Reveal", "none"));
@@ -47,7 +47,7 @@ public class NextActionHandler {
             if (!game.getPlayersWaitingForBellTowerBonus().isEmpty()) {
                 for (Player player : game.getPlayersWaitingForBellTowerBonus()) {
                     player.drawCards(2);
-                    game.addHistory(player.getUsername(), " revealed " + player.getPronoun() + " " + KingdomUtil.getWordWithBackgroundColor("Bell Tower", Card.ACTION_REACTION_COLOR) + " to gain +2 Cards after the attack");
+                    game.addHistory(player.getUsername(), " revealed " + player.getPronoun() + " " + KingdomUtil.INSTANCE.getWordWithBackgroundColor("Bell Tower", Card.ACTION_REACTION_COLOR) + " to gain +2 Cards after the attack");
                 }
                 game.getPlayersWaitingForBellTowerBonus().clear();
             }
@@ -63,7 +63,7 @@ public class NextActionHandler {
                         CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                         cardAction.setDeck(Deck.FairyTale);
                         cardAction.setCardName("Enchanted Palace");
-                        cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.getArticleWithCardName(game.getAttackCard()) + ". Do you want to reveal your Enchanted Palace?");
+                        cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.INSTANCE.getArticleWithCardName(game.getAttackCard()) + ". Do you want to reveal your Enchanted Palace?");
                         int numTimesSet = 0;
                         while (numTimesSet < player.getEnchantedPalacesInHand()) {
                             game.setPlayerCardAction(player, cardAction);
@@ -90,7 +90,7 @@ public class NextActionHandler {
                         CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                         cardAction.setDeck(Deck.Cornucopia);
                         cardAction.setCardName("Horse Traders");
-                        cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.getArticleWithCardName(game.getAttackCard()) + ". Do you want to set aside your Horse Traders?");
+                        cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.INSTANCE.getArticleWithCardName(game.getAttackCard()) + ". Do you want to set aside your Horse Traders?");
                         game.setPlayerCardAction(player, cardAction);
                     } else {
                         incompleteCard.setPlayerActionCompleted(player.getUserId());
@@ -113,7 +113,7 @@ public class NextActionHandler {
                         CardAction cardAction = new CardAction(CardAction.TYPE_YES_NO);
                         cardAction.setDeck(Deck.Intrigue);
                         cardAction.setCardName("Secret Chamber");
-                        cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.getArticleWithCardName(game.getAttackCard()) + ", do you want to use your Secret Chamber?");
+                        cardAction.setInstructions(currentPlayer.getUsername() + " played " + KingdomUtil.INSTANCE.getArticleWithCardName(game.getAttackCard()) + ", do you want to use your Secret Chamber?");
                         game.setPlayerCardAction(player, cardAction);
                     } else {
                         incompleteCard.setPlayerActionCompleted(player.getUserId());
@@ -222,7 +222,7 @@ public class NextActionHandler {
                 game.getCurrentPlayer().drawCards(1);
                 game.getCurrentPlayer().addCoins(1);
                 game.refreshAllPlayersCardsBought();
-                game.addHistory(game.getCurrentPlayer().getUsername(), " gained +1 Card, +1 Coin from the ", KingdomUtil.getWordWithBackgroundColor("Tournament", Card.ACTION_COLOR));
+                game.addHistory(game.getCurrentPlayer().getUsername(), " gained +1 Card, +1 Coin from the ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Tournament", Card.ACTION_COLOR));
             }
         } else {
             GameError error = new GameError(GameError.GAME_ERROR, "unknown next action - card: " + cardName + " next action: " + nextAction);

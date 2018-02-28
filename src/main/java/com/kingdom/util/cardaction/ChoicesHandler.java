@@ -60,7 +60,7 @@ public class ChoicesHandler {
         } else if (cardAction.getCardName().equals("Bell Tower")) {
             if (choice.equals("before")) {
                 player.drawCards(2);
-                game.addHistory(player.getUsername(), " revealed " + player.getPronoun() + " " + KingdomUtil.getWordWithBackgroundColor("Bell Tower", Card.ACTION_REACTION_COLOR) + " to gain +2 Cards before the attack");
+                game.addHistory(player.getUsername(), " revealed " + player.getPronoun() + " " + KingdomUtil.INSTANCE.getWordWithBackgroundColor("Bell Tower", Card.ACTION_REACTION_COLOR) + " to gain +2 Cards before the attack");
             } else if (choice.equals("after")) {
                 game.getPlayersWaitingForBellTowerBonus().add(player);
             }
@@ -164,9 +164,9 @@ public class ChoicesHandler {
                         CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
                         trashCardAction.setDeck(Deck.Promo);
                         trashCardAction.setCardName(cardAction.getCardName());
-                        trashCardAction.setCards(KingdomUtil.uniqueCardList(p.getHand()));
+                        trashCardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(p.getHand()));
                         trashCardAction.setNumCards(1);
-                        trashCardAction.setInstructions("Select a card to trash in order to gain a card costing exactly " + KingdomUtil.getPlural(addToCost, "coin") + "  more and then click Done, or just click Done if you don't want to trash a card.");
+                        trashCardAction.setInstructions("Select a card to trash in order to gain a card costing exactly " + KingdomUtil.INSTANCE.getPlural(addToCost, "coin") + "  more and then click Done, or just click Done if you don't want to trash a card.");
                         trashCardAction.setButtonValue("Done");
                         game.setPlayerCardAction(p, trashCardAction);
                     } else {
@@ -178,7 +178,7 @@ public class ChoicesHandler {
         } else if (cardAction.getCardName().equals("Hooligans")) {
             Player affectedPlayer = game.getPlayerMap().get(cardAction.getPlayerId());
             if (choice.equals("discard")) {
-                game.addHistory(player.getUsername(), " discarded ", affectedPlayer.getUsername(), "'s ", KingdomUtil.getCardWithBackgroundColor(cardAction.getAssociatedCard()));
+                game.addHistory(player.getUsername(), " discarded ", affectedPlayer.getUsername(), "'s ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(cardAction.getAssociatedCard()));
                 affectedPlayer.addCardToDiscard(cardAction.getAssociatedCard());
                 game.playerDiscardedCard(affectedPlayer, cardAction.getAssociatedCard());
             } else if (choice.equals("deck")) {
@@ -213,7 +213,7 @@ public class ChoicesHandler {
                 trashCardAction.setDeck(Deck.Hinterlands);
                 trashCardAction.setCardName(cardAction.getCardName());
                 trashCardAction.setNumCards(1);
-                trashCardAction.getCards().addAll(KingdomUtil.uniqueCardList(cards));
+                trashCardAction.getCards().addAll(KingdomUtil.INSTANCE.uniqueCardList(cards));
                 trashCardAction.setInstructions("Select a card to trash from your hand and then click Done, or just click Done if you don't want to trash a card.");
                 trashCardAction.setButtonValue("Done");
                 game.setPlayerCardAction(player, trashCardAction);
@@ -224,7 +224,7 @@ public class ChoicesHandler {
                 if (game.isCardInSupply(cardToGain)) {
                     game.playerGainedCard(player, cardToGain);
                 } else {
-                    game.addHistory("The supply did not have ", KingdomUtil.getArticleWithCardName(cardToGain));
+                    game.addHistory("The supply did not have ", KingdomUtil.INSTANCE.getArticleWithCardName(cardToGain));
                 }
             } else if (choice.equals("them")) {
                 Player affectedPlayer = game.getPlayerMap().get(cardAction.getPlayerId());
@@ -232,17 +232,17 @@ public class ChoicesHandler {
                     game.playerGainedCard(affectedPlayer, cardToGain);
                     game.refreshDiscard(affectedPlayer);
                 } else {
-                    game.addHistory("The supply did not have ", KingdomUtil.getArticleWithCardName(cardToGain));
+                    game.addHistory("The supply did not have ", KingdomUtil.INSTANCE.getArticleWithCardName(cardToGain));
                 }
             }
         } else if (cardAction.getCardName().equals("Loan")) {
             Card treasureCard = cardAction.getCards().get(0);
             if (choice.equals("discard")) {
                 player.addCardToDiscard(treasureCard);
-                game.addHistory(player.getUsername(), " discarded ", KingdomUtil.getArticleWithCardName(treasureCard));
+                game.addHistory(player.getUsername(), " discarded ", KingdomUtil.INSTANCE.getArticleWithCardName(treasureCard));
             } else if (choice.equals("trash")) {
                 game.getTrashedCards().add(treasureCard);
-                game.addHistory(player.getUsername(), " trashed ", KingdomUtil.getArticleWithCardName(treasureCard));
+                game.addHistory(player.getUsername(), " trashed ", KingdomUtil.INSTANCE.getArticleWithCardName(treasureCard));
                 game.playerLostCard(player, treasureCard);
             }
         } else if (cardAction.getCardName().equals("Lost Village 1")) {
@@ -265,7 +265,7 @@ public class ChoicesHandler {
             if (choice.equals("aside")) {
                 Card card = player.removeTopDeckCard();
                 if (card != null) {
-                    game.addHistory(player.getUsername(), " set aside ", KingdomUtil.getArticleWithCardName(card));
+                    game.addHistory(player.getUsername(), " set aside ", KingdomUtil.INSTANCE.getArticleWithCardName(card));
                     game.getSetAsideCards().add(card);
                     CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
                     nextCardAction.setDeck(Deck.FairyTale);
@@ -293,12 +293,12 @@ public class ChoicesHandler {
         } else if (cardAction.getCardName().equals("Magic Beans")) {
             Card card = cardAction.getCards().get(0);
             if (choice.equals("trash")) {
-                game.addHistory(player.getUsername(), " chose to trash ", KingdomUtil.getCardWithBackgroundColor(card));
+                game.addHistory(player.getUsername(), " chose to trash ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(card));
                 game.removePlayedCard(card);
                 game.getTrashedCards().add(card);
                 game.playerLostCard(player, card);
             } else if (choice.equals("supply")) {
-                game.addHistory(player.getUsername(), " chose to return ", KingdomUtil.getCardWithBackgroundColor(card), " to the supply");
+                game.addHistory(player.getUsername(), " chose to return ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(card), " to the supply");
                 game.removePlayedCard(card);
                 game.playerLostCard(player, card);
                 game.addToSupply(card.getCardId());
@@ -332,7 +332,7 @@ public class ChoicesHandler {
                 for (Player p : players) {
                     if (p.getUserId() != player.getUserId()) {
                         if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(p.getUserId())) {
-                            game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                            game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                         } else if (!p.hasMoat() && !p.hasLighthouse() && p.getHand().size() >= 5) {
                             for (Card c : p.getHand()) {
                                 game.playerDiscardedCard(p, c);
@@ -341,9 +341,9 @@ public class ChoicesHandler {
                             p.drawCards(4);
                         } else {
                             if (p.hasLighthouse()) {
-                                game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                                game.addHistory(p.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                             } else if (p.hasMoat()) {
-                                game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                                game.addHistory(p.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                             } else {
                                 game.addHistory(p.getUsername(), " had less than 5 cards");
                             }
@@ -357,7 +357,7 @@ public class ChoicesHandler {
         } else if (cardAction.getCardName().equals("Mountebank")) {
             if (choice.equals("discard")) {
                 player.discardCardFromHand(Card.CURSE_ID);
-                game.addHistory(player.getUsername(), " discarded a ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " card");
+                game.addHistory(player.getUsername(), " discarded a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " card");
                 game.refreshHandArea(player);
             } else if (choice.equals("gain")) {
                 if (game.isCardInSupply(Card.CURSE_ID)) {
@@ -373,7 +373,7 @@ public class ChoicesHandler {
                 Card topDeckCard = player.removeTopDeckCard();
                 if (topDeckCard != null) {
                     player.getNativeVillageCards().add(topDeckCard);
-                    game.addHistory(player.getUsername(), " added ", player.getPronoun(), " top deck card to ", player.getPronoun(), " ", KingdomUtil.getWordWithBackgroundColor("Native Village", Card.ACTION_COLOR));
+                    game.addHistory(player.getUsername(), " added ", player.getPronoun(), " top deck card to ", player.getPronoun(), " ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Native Village", Card.ACTION_COLOR));
                 } else {
                     game.addHistory(player.getUsername(), " did not have any cards to draw");
                 }
@@ -382,7 +382,7 @@ public class ChoicesHandler {
                     player.addCardToHand(card);
                 }
                 player.getNativeVillageCards().clear();
-                game.addHistory(player.getUsername(), " added ", KingdomUtil.getWordWithBackgroundColor("Native Village", Card.ACTION_COLOR), " cards to ", player.getPronoun(), " hand");
+                game.addHistory(player.getUsername(), " added ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Native Village", Card.ACTION_COLOR), " cards to ", player.getPronoun(), " hand");
             }
         } else if (cardAction.getCardName().equals("Navigator")) {
             if (choice.equals("discard")) {
@@ -414,7 +414,7 @@ public class ChoicesHandler {
                 cardToTrash = game.getGoldCard();
                 cardToDiscard = game.getSilverCard();
             }
-            game.addHistory(player.getUsername(), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.getCardWithBackgroundColor(cardToTrash));
+            game.addHistory(player.getUsername(), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(cardToTrash));
             game.playerGainedCard(player, cardToTrash);
 
             player.addCardToDiscard(cardToDiscard);
@@ -449,7 +449,7 @@ public class ChoicesHandler {
                 } else {
                     game.addHistory(player.getUsername(), " chose to put back the top cards of ", affectedPlayer.getUsername(), "'s deck");
                 }
-                if (cardAction.getCards().size() == 1 || KingdomUtil.uniqueCardList(cardAction.getCards()).size() == 1) {
+                if (cardAction.getCards().size() == 1 || KingdomUtil.INSTANCE.uniqueCardList(cardAction.getCards()).size() == 1) {
                     game.getIncompleteCard().setPlayerActionCompleted(affectedPlayer.getUserId());
                     for (Card card : cardAction.getCards()) {
                         affectedPlayer.addCardToTopOfDeck(card);
@@ -503,7 +503,7 @@ public class ChoicesHandler {
                 while (nextPlayerIndex != game.getCurrentPlayerIndex()) {
                     Player nextPlayer = players.get(nextPlayerIndex);
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
-                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
                         nextCardAction.setDeck(Deck.Seaside);
@@ -534,9 +534,9 @@ public class ChoicesHandler {
                                 nextCardAction.setInstructions(instructions);
                                 incompleteCard.getExtraCardActions().add(nextCardAction);
                             } else {
-                                game.addHistory("The top card from ", nextPlayer.getUsername(), "'s deck was ", KingdomUtil.getArticleWithCardName(card1));
+                                game.addHistory("The top card from ", nextPlayer.getUsername(), "'s deck was ", KingdomUtil.INSTANCE.getArticleWithCardName(card1));
                                 if (card1.isTreasure()) {
-                                    game.addHistory(player.getUsername(), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.getWordWithBackgroundColor(card1.getName(), Card.TREASURE_COLOR));
+                                    game.addHistory(player.getUsername(), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.INSTANCE.getWordWithBackgroundColor(card1.getName(), Card.TREASURE_COLOR));
                                     game.getTrashedCards().add(card1);
                                     game.playerLostCard(player, card1);
                                 }
@@ -546,9 +546,9 @@ public class ChoicesHandler {
                         }
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                     if (nextPlayerIndex == players.size() - 1) {
@@ -563,7 +563,7 @@ public class ChoicesHandler {
                 }
             } else if (choice.equals("coins")) {
                 player.addCoins(player.getPirateShipCoins());
-                game.addHistory(player.getUsername(), " used ", KingdomUtil.getPlural(player.getPirateShipCoins(), "Pirate Ship Coin"));
+                game.addHistory(player.getUsername(), " used ", KingdomUtil.INSTANCE.getPlural(player.getPirateShipCoins(), "Pirate Ship Coin"));
             }
         } else if (cardAction.getCardName().equals("Rancher")) {
             if (choice.equals("cattle")) {
@@ -676,7 +676,7 @@ public class ChoicesHandler {
                         List<Card> cards = new ArrayList<Card>(player.getHand());
                         for (Card card : cards) {
                             player.removeCardFromHand(card);
-                            game.addHistory(player.getUsername(), " trashed ", KingdomUtil.getArticleWithCardName(card));
+                            game.addHistory(player.getUsername(), " trashed ", KingdomUtil.INSTANCE.getArticleWithCardName(card));
                         }
                     } else {
                         CardAction trashCardsCardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
@@ -749,7 +749,7 @@ public class ChoicesHandler {
                     game.setPlayerCardAction(player, discardCardsAction);
                 }
             } else if (choice.equals("curse")) {
-                game.addHistory(player.getUsername(), " chose to gain a ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR));
+                game.addHistory(player.getUsername(), " chose to gain a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR));
                 if (game.isCardInSupply(Card.CURSE_ID)) {
                     game.playerGainedCardToHand(player, game.getCurseCard());
                     player.addCardToHand(game.getCurseCard());
@@ -776,15 +776,15 @@ public class ChoicesHandler {
             } else if (choice.equals("duchy")) {
                 if (game.isCardInSupply(Card.DUCHY_ID)) {
                     game.playerGainedCardToTopOfDeck(player, game.getDuchyCard());
-                    game.addHistory(player.getUsername(), " chose to gain a ", KingdomUtil.getCardWithBackgroundColor(game.getDuchyCard()));
+                    game.addHistory(player.getUsername(), " chose to gain a ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(game.getDuchyCard()));
                 } else {
-                    game.addHistory(player.getUsername(), " chose to gain a ", KingdomUtil.getCardWithBackgroundColor(game.getDuchyCard()), " but there were no more in the supply");
+                    game.addHistory(player.getUsername(), " chose to gain a ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(game.getDuchyCard()), " but there were no more in the supply");
                 }
             }
         } else if (cardAction.getCardName().equals("Trader")) {
             Card cardToGain = cardAction.getAssociatedCard();
             if (choice.equals("silver")) {
-                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.getWordWithBackgroundColor("Trader", Card.ACTION_REACTION_COLOR), " to gain ", KingdomUtil.getArticleWithCardName(game.getSilverCard()), " instead");
+                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Trader", Card.ACTION_REACTION_COLOR), " to gain ", KingdomUtil.INSTANCE.getArticleWithCardName(game.getSilverCard()), " instead");
                 if (game.getSupply().get(Card.SILVER_ID) > 0) {
                     game.playerGainedCard(player, game.getSilverCard());
                 }
@@ -800,10 +800,10 @@ public class ChoicesHandler {
         } else if (cardAction.getCardName().equals("Watchtower")) {
             Card cardToGain = cardAction.getCards().get(0);
             if (choice.equals("trash")) {
-                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to trash ", KingdomUtil.getArticleWithCardName(cardToGain));
+                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to trash ", KingdomUtil.INSTANCE.getArticleWithCardName(cardToGain));
                 game.moveGainedCard(player, cardToGain, "trash");
             } else if (choice.equals("deck")) {
-                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to put ", KingdomUtil.getArticleWithCardName(cardToGain), " on top of ", player.getPronoun(), " deck");
+                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to put ", KingdomUtil.INSTANCE.getArticleWithCardName(cardToGain), " on top of ", player.getPronoun(), " deck");
                 game.moveGainedCard(player, cardToGain, "deck");
             } else {
                 if (cardAction.getDestination().equals("hand")) {

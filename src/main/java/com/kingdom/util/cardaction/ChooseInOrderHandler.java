@@ -21,9 +21,9 @@ public class ChooseInOrderHandler {
             }
             player.getDeck().addAll(0, cards);
             if (cardAction.getCardName().equals("Ghost Ship")) {
-                game.addHistory(player.getUsername(), " added ", KingdomUtil.getPlural(selectedCardIds.size(), "card"), " on top of ", player.getPronoun(), " deck");
+                game.addHistory(player.getUsername(), " added ", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "card"), " on top of ", player.getPronoun(), " deck");
             } else if (cardAction.getCardName().equals("Mandarin")) {
-                game.addHistory(player.getUsername(), " added ", KingdomUtil.getPlural(selectedCardIds.size(), "treasure card"), " from play on top of ", player.getPronoun(), " deck");
+                game.addHistory(player.getUsername(), " added ", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "treasure card"), " from play on top of ", player.getPronoun(), " deck");
                 game.getCardsPlayed().removeAll(game.getTreasureCardsPlayed());
                 game.getTreasureCardsPlayed().clear();
                 game.refreshAllPlayersCardsPlayed();
@@ -57,11 +57,11 @@ public class ChooseInOrderHandler {
             Card cardToTrash = cardMap.get(selectedCardIds.get(0));
             game.getTrashedCards().add(cardToTrash);
             game.playerLostCard(player, cardToTrash);
-            game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " trashed ", player.getUsername(), "'s ", cardToTrash.getName());
+            game.addHistory("The ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " trashed ", player.getUsername(), "'s ", cardToTrash.getName());
             Card cardToDiscard = cardMap.get(selectedCardIds.get(1));
             player.addCardToDiscard(cardToDiscard);
             game.playerDiscardedCard(player, cardToDiscard);
-            game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " discarded ", player.getUsername(), "'s ", cardToDiscard.getName());
+            game.addHistory("The ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " discarded ", player.getUsername(), "'s ", cardToDiscard.getName());
             if (selectedCardIds.size() == 3) {
                 Card cardToPutBack = cardMap.get(selectedCardIds.get(2));
                 player.addCardToTopOfDeck(cardToPutBack);

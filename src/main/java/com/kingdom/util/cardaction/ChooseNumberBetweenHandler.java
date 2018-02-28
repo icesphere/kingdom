@@ -10,7 +10,7 @@ public class ChooseNumberBetweenHandler {
     public static void handleCardAction(Game game, Player player, CardAction cardAction, int numberChosen) {
         if (cardAction.getCardName().equals("Counting House")) {
             if (numberChosen > 0) {
-                game.addHistory(KingdomUtil.getWordWithBackgroundColor("Counting House", Card.ACTION_COLOR), " added ", KingdomUtil.getPlural(numberChosen, "Copper"), " to ", player.getUsername(), "'s hand");
+                game.addHistory(KingdomUtil.INSTANCE.getWordWithBackgroundColor("Counting House", Card.ACTION_COLOR), " added ", KingdomUtil.INSTANCE.getPlural(numberChosen, "Copper"), " to ", player.getUsername(), "'s hand");
                 for (int i = 0; i < numberChosen; i++) {
                     player.getDiscard().remove(game.getCopperCard());
                     player.addCardToHand(game.getCopperCard());
@@ -24,7 +24,7 @@ public class ChooseNumberBetweenHandler {
                 player.addActions(timesToApplyBonus);
                 game.refreshHandArea(player);
                 game.refreshAllPlayersCardsPlayed();
-                game.addHistory(player.getUsername(), " used ", KingdomUtil.getPlural(numberChosen, "Cattle Token"));
+                game.addHistory(player.getUsername(), " used ", KingdomUtil.INSTANCE.getPlural(numberChosen, "Cattle Token"));
             }
         } else if (cardAction.getCardName().equals("Use Fruit Tokens")) {
             if (numberChosen > 0 && player.getFruitTokens() >= numberChosen) {
@@ -32,7 +32,7 @@ public class ChooseNumberBetweenHandler {
                 player.addCoins(numberChosen);
                 game.addFruitTokensPlayed(numberChosen);
                 game.refreshAllPlayersCardsBought();
-                game.addHistory(player.getUsername(), " used ", KingdomUtil.getPlural(numberChosen, "Fruit Token"));
+                game.addHistory(player.getUsername(), " used ", KingdomUtil.INSTANCE.getPlural(numberChosen, "Fruit Token"));
             }
         }
     }

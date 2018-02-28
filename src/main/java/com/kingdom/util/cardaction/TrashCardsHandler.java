@@ -30,7 +30,7 @@ public class TrashCardsHandler {
             cardsTrashed.add(cardToTrash);
         }
         if (!cardsTrashed.isEmpty()) {
-            game.addHistory(player.getUsername(), " trashed ", KingdomUtil.groupCards(cardsTrashed, true));
+            game.addHistory(player.getUsername(), " trashed ", KingdomUtil.INSTANCE.groupCards(cardsTrashed, true));
         }
 
         Card trashedCard = cardMap.get(selectedCardIds.get(0));
@@ -56,7 +56,7 @@ public class TrashCardsHandler {
             game.addHistory(game.getCurrentPlayer().getUsername(), " gained 2 sins");
         } else if (cardAction.getCardName().equals("Bishop")) {
             int victoryCoinsGained = (int) Math.floor(game.getCardCost(trashedCard) / 2);
-            game.addHistory(player.getUsername(), " gained ", KingdomUtil.getPlural(victoryCoinsGained, "Victory Coin"), " from the ", KingdomUtil.getWordWithBackgroundColor("Bishop", Card.ACTION_COLOR), " card");
+            game.addHistory(player.getUsername(), " gained ", KingdomUtil.INSTANCE.getPlural(victoryCoinsGained, "Victory Coin"), " from the ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Bishop", Card.ACTION_COLOR), " card");
             player.addVictoryCoins(victoryCoinsGained);
             game.refreshAllPlayersPlayers();
 
@@ -67,7 +67,7 @@ public class TrashCardsHandler {
                         CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
                         trashCardAction.setDeck(Deck.Prosperity);
                         trashCardAction.setCardName("Bishop 2");
-                        trashCardAction.setCards(KingdomUtil.uniqueCardList(otherPlayer.getHand()));
+                        trashCardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(otherPlayer.getHand()));
                         trashCardAction.setNumCards(1);
                         trashCardAction.setInstructions("Select a card to trash and then click Done, or just click Done if you don't want to trash a card.");
                         trashCardAction.setButtonValue("Done");
@@ -123,7 +123,7 @@ public class TrashCardsHandler {
                     gainCardAction.setCards(cardsMore);
                     game.setPlayerCardAction(player, gainCardAction);
                 } else {
-                    game.addHistory("There were no cards that cost $1 more and no cards that cost $1 less than ", KingdomUtil.getCardWithBackgroundColor(trashedCard));
+                    game.addHistory("There were no cards that cost $1 more and no cards that cost $1 less than ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(trashedCard));
                 }
             }
         } else if (cardAction.getCardName().equals("Expand")) {
@@ -300,7 +300,7 @@ public class TrashCardsHandler {
             if (game.isCardInSupply(Card.SILVER_ID)) {
                 game.playerGainedCardToHand(player, game.getSilverCard());
             } else {
-                game.addHistory("There were no more ", KingdomUtil.getCardWithBackgroundColor(game.getSilverCard()), " cards in the supply");
+                game.addHistory("There were no more ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(game.getSilverCard()), " cards in the supply");
             }
         } else if (cardAction.getCardName().equals("Transmute")) {
             if (trashedCard.isAction()) {

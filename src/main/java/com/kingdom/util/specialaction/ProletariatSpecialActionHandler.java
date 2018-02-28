@@ -59,7 +59,7 @@ public class ProletariatSpecialActionHandler {
                 if (!game.isCurrentPlayer(p)) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(p.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(p.getUserId());
-                        game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!p.hasMoat() && p.getHand().size() > 3 && !p.hasLighthouse()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
                         cardAction.setDeck(Deck.Proletariat);
@@ -72,9 +72,9 @@ public class ProletariatSpecialActionHandler {
                     } else {
                         incompleteCard.setPlayerActionCompleted(p.getUserId());
                         if (p.hasLighthouse()) {
-                            game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(p.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else if (p.hasMoat()) {
-                            game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(p.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         } else {
                             game.addHistory(p.getUsername(), " had 3 or less cards");
                         }
@@ -104,7 +104,7 @@ public class ProletariatSpecialActionHandler {
             }
             game.refreshHand(player);
         } else if (card.getName().equals("Squatter")) {
-            game.addHistory(player.getUsername(), " returned ", KingdomUtil.getCardWithBackgroundColor(card), " to the supply");
+            game.addHistory(player.getUsername(), " returned ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(card), " to the supply");
             game.removePlayedCard(card);
             game.playerLostCard(player, card);
             game.addToSupply(card.getCardId());

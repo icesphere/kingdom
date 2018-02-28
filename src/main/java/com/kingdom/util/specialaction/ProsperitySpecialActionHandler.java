@@ -22,7 +22,7 @@ public class ProsperitySpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select a card to trash.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 game.setPlayerCardAction(player, cardAction);
             }
         } else if (card.getName().equals("City")) {
@@ -63,7 +63,7 @@ public class ProsperitySpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select a card to trash.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 game.setPlayerCardAction(player, cardAction);
             }
         } else if (card.getName().equals("Forge")) {
@@ -84,7 +84,7 @@ public class ProsperitySpecialActionHandler {
                 if (player.getUserId() != currentPlayerId) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(player.getUserId());
-                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!player.hasMoat() && player.getHand().size() > 3 && !player.hasLighthouse()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND);
                         cardAction.setDeck(Deck.Prosperity);
@@ -97,9 +97,9 @@ public class ProsperitySpecialActionHandler {
                     } else {
                         incompleteCard.setPlayerActionCompleted(player.getUserId());
                         if (player.hasLighthouse()) {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else if (player.hasMoat()) {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         } else {
                             game.addHistory(player.getUsername(), " had 3 or less cards");
                         }
@@ -115,7 +115,7 @@ public class ProsperitySpecialActionHandler {
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
             cardAction.setInstructions("Select one of the following actions to play three times and then click Done, or just click Done if you don't want to select an action.");
-            cardAction.setCards(KingdomUtil.uniqueCardList(player.getActionCards()));
+            cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getActionCards()));
             if (cardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, cardAction);
             }
@@ -143,7 +143,7 @@ public class ProsperitySpecialActionHandler {
                 if (player.getUserId() != currentPlayerId) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(player.getUserId());
-                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!player.hasMoat() && !player.hasLighthouse()) {
                         if (player.getCurseCardsInHand() > 0) {
                             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
@@ -166,9 +166,9 @@ public class ProsperitySpecialActionHandler {
                     } else {
                         incompleteCard.setPlayerActionCompleted(player.getUserId());
                         if (player.hasLighthouse()) {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                 }
@@ -180,7 +180,7 @@ public class ProsperitySpecialActionHandler {
                 if (player.getUserId() != currentPlayerId) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(player.getUserId());
-                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!player.hasMoat() && !player.hasLighthouse()) {
                         List<Card> cardsRevealed = new ArrayList<Card>();
                         while (cardsRevealed.size() < 3) {
@@ -191,7 +191,7 @@ public class ProsperitySpecialActionHandler {
                             cardsRevealed.add(topDeckCard);
                         }
                         if (cardsRevealed.size() > 0) {
-                            game.addHistory("The top cards from ", player.getUsername(), "'s deck were ", KingdomUtil.getCardNames(cardsRevealed));
+                            game.addHistory("The top cards from ", player.getUsername(), "'s deck were ", KingdomUtil.INSTANCE.getCardNames(cardsRevealed));
                             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
                             cardAction.setDeck(Deck.Prosperity);
                             for (Card c : cardsRevealed) {
@@ -223,9 +223,9 @@ public class ProsperitySpecialActionHandler {
                     } else {
                         incompleteCard.setPlayerActionCompleted(player.getUserId());
                         if (player.hasLighthouse()) {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else if (player.hasMoat()) {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                 }
@@ -235,7 +235,7 @@ public class ProsperitySpecialActionHandler {
             Player player = game.getCurrentPlayer();
             if (game.getTradeRouteTokensOnMat() > 0) {
                 player.addCoins(game.getTradeRouteTokensOnMat());
-                game.addHistory(player.getUsername(), " gained +", KingdomUtil.getPlural(game.getTradeRouteTokensOnMat(), "Coin"), " from playing Trade Route");
+                game.addHistory(player.getUsername(), " gained +", KingdomUtil.INSTANCE.getPlural(game.getTradeRouteTokensOnMat(), "Coin"), " from playing Trade Route");
             }
             if (player.getHand().size() > 0) {
                 CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
@@ -244,7 +244,7 @@ public class ProsperitySpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select a card to trash.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 game.setPlayerCardAction(player, cardAction);
             }
         } else if (card.getName().equals("Vault")) {

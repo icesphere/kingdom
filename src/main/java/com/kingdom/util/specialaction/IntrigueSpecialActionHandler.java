@@ -52,7 +52,7 @@ public class IntrigueSpecialActionHandler {
                     Player player = game.getCurrentPlayer();
                     player.drawCards(1);
                     player.addActions(1);
-                    game.addHistory(player.getUsername(), " gained +1 Card, +1 Action from ", KingdomUtil.getWordWithBackgroundColor("Conspirator", Card.ACTION_COLOR));
+                    game.addHistory(player.getUsername(), " gained +1 Card, +1 Action from ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Conspirator", Card.ACTION_COLOR));
                 }
                 break;
             case "Courtyard": {
@@ -60,7 +60,7 @@ public class IntrigueSpecialActionHandler {
                 CardAction cardAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
                 cardAction.setDeck(Deck.Intrigue);
                 cardAction.setCardName(card.getName());
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select a card from your hand to put on top of your deck.");
@@ -96,7 +96,7 @@ public class IntrigueSpecialActionHandler {
                         CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
                         cardAction.setDeck(Deck.Intrigue);
                         cardAction.setCardName(card.getName());
-                        cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                        cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                         cardAction.setNumCards(1);
                         cardAction.setInstructions("Choose a card to pass to the next player and then click Done.");
                         cardAction.setButtonValue("Done");
@@ -160,7 +160,7 @@ public class IntrigueSpecialActionHandler {
                     if (player.getUserId() != currentPlayerId) {
                         if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
                             incompleteCard.setPlayerActionCompleted(player.getUserId());
-                            game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                            game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                         } else if (!player.hasMoat() && !player.hasLighthouse()) {
                             List<Card> setAsideCards = new ArrayList<Card>();
                             Card c = player.removeTopDeckCard();
@@ -181,7 +181,7 @@ public class IntrigueSpecialActionHandler {
                                 cardAction.setButtonValue("Done");
                                 cardAction.setNumCards(1);
                                 cardAction.setInstructions("The Saboteur trashed your " + c.getName() + ". Select one of the following cards to gain and then click Done. If you don't want to gain a card just click Done.");
-                                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Saboteur", Card.ACTION_COLOR), " trashed ", player.getUsername(), "'s ", c.getName());
+                                game.addHistory("The ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Saboteur", Card.ACTION_COLOR), " trashed ", player.getUsername(), "'s ", c.getName());
                                 int highestCost = game.getCardCost(c) - 2;
                                 for (Card cardToGain : supplyMap.values()) {
                                     if (game.getCardCost(cardToGain) <= highestCost && (c.getCostIncludesPotion() || !cardToGain.getCostIncludesPotion()) && game.isCardInSupply(cardToGain)) {
@@ -200,9 +200,9 @@ public class IntrigueSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.getUserId());
                             if (player.hasLighthouse()) {
-                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                             } else {
-                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                             }
                         }
                     }
@@ -228,7 +228,7 @@ public class IntrigueSpecialActionHandler {
                     }
                 }
                 if (!cards.isEmpty()) {
-                    game.addHistory(KingdomUtil.getCardWithBackgroundColor(card), " revealed ", KingdomUtil.groupCards(revealedCards, true));
+                    game.addHistory(KingdomUtil.INSTANCE.getCardWithBackgroundColor(card), " revealed ", KingdomUtil.INSTANCE.groupCards(revealedCards, true));
                 } else {
                     game.addHistory(player.getUsername(), " did not have any cards to reveal");
                 }
@@ -293,13 +293,13 @@ public class IntrigueSpecialActionHandler {
                 while (nextPlayerIndex != currentPlayerIndex) {
                     Player nextPlayer = players.get(nextPlayerIndex);
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
-                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         Card topCard = nextPlayer.removeTopDeckCard();
                         if (topCard != null) {
                             game.getTrashedCards().add(topCard);
                             game.playerLostCard(nextPlayer, topCard);
-                            game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Swindler", Card.ACTION_COLOR), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.getCardWithBackgroundColor(topCard));
+                            game.addHistory("The ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Swindler", Card.ACTION_COLOR), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(topCard));
                             CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
                             nextCardAction.setDeck(Deck.Intrigue);
                             nextCardAction.setNumCards(1);
@@ -323,9 +323,9 @@ public class IntrigueSpecialActionHandler {
                         }
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                     if (nextPlayerIndex == players.size() - 1) {
@@ -346,7 +346,7 @@ public class IntrigueSpecialActionHandler {
                     if (player.getUserId() != currentPlayerId) {
                         if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
                             incompleteCard.setPlayerActionCompleted(player.getUserId());
-                            game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                            game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                         } else if (!player.hasMoat() && !player.hasLighthouse()) {
                             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
                             cardAction.setDeck(Deck.Intrigue);
@@ -358,9 +358,9 @@ public class IntrigueSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.getUserId());
                             if (player.hasLighthouse()) {
-                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                             } else {
-                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                             }
                         }
                     }
@@ -416,7 +416,7 @@ public class IntrigueSpecialActionHandler {
                 }
 
                 if (firstCard != null && secondCard != null) {
-                    game.addHistory("The top two cards of ", nextPlayer.getUsername(), "'s deck for tribute were ", KingdomUtil.getArticleWithCardName(firstCard), " and ", KingdomUtil.getArticleWithCardName(secondCard));
+                    game.addHistory("The top two cards of ", nextPlayer.getUsername(), "'s deck for tribute were ", KingdomUtil.INSTANCE.getArticleWithCardName(firstCard), " and ", KingdomUtil.INSTANCE.getArticleWithCardName(secondCard));
                     game.refreshDiscard(nextPlayer);
                 }
                 break;
@@ -430,7 +430,7 @@ public class IntrigueSpecialActionHandler {
                     cardAction.setButtonValue("Done");
                     cardAction.setNumCards(1);
                     cardAction.setInstructions("Select a card to trash.");
-                    cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                    cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                     game.setPlayerCardAction(player, cardAction);
                 } else {
                     game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand");

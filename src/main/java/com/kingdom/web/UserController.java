@@ -25,7 +25,7 @@ public class UserController {
     public ModelAndView listUsers(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("users");
         List<User> users = manager.getUsers();
@@ -37,7 +37,7 @@ public class UserController {
     public ModelAndView saveUser(HttpServletRequest request, HttpServletResponse response) {
         User loggedInUser = getUser(request);
         if (loggedInUser == null || !loggedInUser.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         User user;
         String id = request.getParameter("id");
@@ -63,7 +63,7 @@ public class UserController {
     public ModelAndView deleteUser(HttpServletRequest request, HttpServletResponse response) {
         User loggedInUser = getUser(request);
         if (loggedInUser == null || !loggedInUser.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         String id = request.getParameter("id");
         User user = manager.getUser(Integer.parseInt(id));
@@ -77,7 +77,7 @@ public class UserController {
     public ModelAndView showUser(HttpServletRequest request, HttpServletResponse response) {
         User loggedInUser = getUser(request);
         if (loggedInUser == null || !loggedInUser.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("user");
         String id = request.getParameter("id");
@@ -97,14 +97,14 @@ public class UserController {
     }
 
     private User getUser(HttpServletRequest request) {
-        return KingdomUtil.getUser(request);
+        return KingdomUtil.INSTANCE.getUser(request);
     }
 
     @RequestMapping("/showUsersForStat.html")
     public ModelAndView showUsersForStat(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("users");
         String stat = request.getParameter("stat");

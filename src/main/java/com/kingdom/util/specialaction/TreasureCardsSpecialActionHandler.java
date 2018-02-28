@@ -29,7 +29,7 @@ public class TreasureCardsSpecialActionHandler {
         } else if (card.getName().equals("Diadem")) {
             if (player.getActions() > 0) {
                 player.addCoins(player.getActions());
-                game.addHistory(player.getUsername(), " gained ", KingdomUtil.getPlural(player.getActions(), "Coin"), " from ", KingdomUtil.getCardWithBackgroundColor(card));
+                game.addHistory(player.getUsername(), " gained ", KingdomUtil.INSTANCE.getPlural(player.getActions(), "Coin"), " from ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(card));
             } else {
                 game.addHistory(player.getUsername(), " did not have any unused actions");
             }
@@ -85,7 +85,7 @@ public class TreasureCardsSpecialActionHandler {
                 }
             }
             if (!revealedCards.isEmpty()) {
-                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.groupCards(revealedCards, true));
+                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.INSTANCE.groupCards(revealedCards, true));
             } else {
                 game.addHistory(player.getUsername(), " did not have any cards");
             }
@@ -138,7 +138,7 @@ public class TreasureCardsSpecialActionHandler {
                 }
             }
             if (!revealedCards.isEmpty()) {
-                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.groupCards(revealedCards, true));
+                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.INSTANCE.groupCards(revealedCards, true));
             } else {
                 game.addHistory(player.getUsername(), " did not have any cards");
             }

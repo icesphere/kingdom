@@ -47,7 +47,7 @@ public class BuySpecialActionHandler {
                 cardAction.setNumCards(1);
                 cardAction.setAssociatedCard(card);
                 cardAction.setInstructions("Select a card to trash.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 return cardAction;
             } else {
                 game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand");
@@ -124,7 +124,7 @@ public class BuySpecialActionHandler {
         while (playerIndex != game.getCurrentPlayerIndex()) {
             Player nextPlayer = game.getPlayers().get(playerIndex);
             if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
-                game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
             } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                 List<Card> cards = new ArrayList<Card>();
                 Card card1 = nextPlayer.removeTopDeckCard();
@@ -147,7 +147,7 @@ public class BuySpecialActionHandler {
                             }
                         }
                     }
-                    game.addHistory(nextPlayer.getUsername(), " revealed ", KingdomUtil.groupCards(cards, true));
+                    game.addHistory(nextPlayer.getUsername(), " revealed ", KingdomUtil.INSTANCE.groupCards(cards, true));
                     if (numApplicableCards == 1 || (numApplicableCards == 2 && (card1.getCardId() == card2.getCardId()))) {
                         Card applicableCard;
                         if (card1.isSilver() || card1.isGold()) {
@@ -161,7 +161,7 @@ public class BuySpecialActionHandler {
                             game.playerDiscardedCard(nextPlayer, applicableCard);
                             game.refreshDiscard(nextPlayer);
                         }
-                        game.addHistory(player.getUsername(), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.getCardWithBackgroundColor(applicableCard));
+                        game.addHistory(player.getUsername(), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(applicableCard));
                         game.playerGainedCard(player, applicableCard);
                     } else if (numApplicableCards == 2) {
                         CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
@@ -186,9 +186,9 @@ public class BuySpecialActionHandler {
                 }
             } else {
                 if (nextPlayer.hasLighthouse()) {
-                    game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                    game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                 } else {
-                    game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                    game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                 }
             }
             playerIndex = game.calculateNextPlayerIndex(playerIndex);

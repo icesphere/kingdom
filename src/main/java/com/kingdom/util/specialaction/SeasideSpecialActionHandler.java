@@ -26,9 +26,9 @@ public class SeasideSpecialActionHandler {
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select the card that you want other players to receive and then click Done.");
                 if (!game.getBlackMarketCards().isEmpty()) {
-                    cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                    cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 } else {
-                    for (Card c : KingdomUtil.uniqueCardList(player.getHand())) {
+                    for (Card c : KingdomUtil.INSTANCE.uniqueCardList(player.getHand())) {
                         if (supply.get(c.getCardId()) != null) {
                             cardAction.getCards().add(c);
                         }
@@ -46,27 +46,27 @@ public class SeasideSpecialActionHandler {
             for (Player player : players) {
                 if (player.getUserId() != currentPlayerId) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
-                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!player.hasMoat() && !player.hasLighthouse()) {
                         boolean hasCopper = false;
                         for (Card handCard : player.getHand()) {
                             if (handCard.getName().equals("Copper")) {
                                 hasCopper = true;
                                 player.discardCardFromHand(handCard);
-                                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Cutpurse", Card.ACTION_COLOR), " discarded ", player.getUsername(), "'s ", KingdomUtil.getWordWithBackgroundColor("Copper", Card.TREASURE_COLOR));
+                                game.addHistory("The ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Cutpurse", Card.ACTION_COLOR), " discarded ", player.getUsername(), "'s ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Copper", Card.TREASURE_COLOR));
                                 game.refreshHand(player);
                                 game.refreshDiscard(player);
                                 break;
                             }
                         }
                         if (!hasCopper) {
-                            game.addHistory(player.getUsername(), " did not have a ", KingdomUtil.getWordWithBackgroundColor("Copper", Card.TREASURE_COLOR));
+                            game.addHistory(player.getUsername(), " did not have a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Copper", Card.TREASURE_COLOR));
                         }
                     } else {
                         if (player.hasLighthouse()) {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                 }
@@ -121,7 +121,7 @@ public class SeasideSpecialActionHandler {
                 if (player.getUserId() != currentPlayerId) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(player.getUserId());
-                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!player.hasMoat() && player.getHand().size() >= 4 && !player.hasLighthouse()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
                         cardAction.setDeck(Deck.Seaside);
@@ -134,9 +134,9 @@ public class SeasideSpecialActionHandler {
                     } else {
                         incompleteCard.setPlayerActionCompleted(player.getUserId());
                         if (player.hasLighthouse()) {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else if (player.hasMoat()) {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         } else {
                             game.addHistory(player.getUsername(), " had 3 or less cards");
                         }
@@ -149,7 +149,7 @@ public class SeasideSpecialActionHandler {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
             cardAction.setDeck(Deck.Seaside);
             cardAction.setCardName(card.getName());
-            cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+            cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
             cardAction.setInstructions("Select a card to set aside until your next turn.");
@@ -163,7 +163,7 @@ public class SeasideSpecialActionHandler {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
             cardAction.setDeck(Deck.Seaside);
             cardAction.setCardName(card.getName());
-            cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+            cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
             cardAction.setNumCards(1);
             cardAction.setInstructions("Select a card to be added to your island and then click Done.");
             cardAction.setButtonValue("Done");
@@ -187,7 +187,7 @@ public class SeasideSpecialActionHandler {
             if (cards.size() == 1) {
                 game.getTrashedCards().add(cards.get(0));
                 game.playerLostCard(player, cards.get(0));
-                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " trashed ", player.getUsername(), "'s ", cards.get(0).getName());
+                game.addHistory("The ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " trashed ", player.getUsername(), "'s ", cards.get(0).getName());
             } else if (cards.size() > 0) {
                 game.refreshHand(player);
                 CardAction cardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
@@ -256,7 +256,7 @@ public class SeasideSpecialActionHandler {
             CardAction cardAction = new CardAction(CardAction.TYPE_CHOICES);
             cardAction.setDeck(Deck.Seaside);
             cardAction.setCardName(card.getName());
-            cardAction.setInstructions("Do you want to attack other players and try to get a Pirate Ship Coin, or do you want to get " + KingdomUtil.getPlural(player.getPirateShipCoins(), "Coin") + " from your Pirate Ship Coins?");
+            cardAction.setInstructions("Do you want to attack other players and try to get a Pirate Ship Coin, or do you want to get " + KingdomUtil.INSTANCE.getPlural(player.getPirateShipCoins(), "Coin") + " from your Pirate Ship Coins?");
             cardAction.getChoices().add(new CardActionChoice("Attack", "attack"));
             cardAction.getChoices().add(new CardActionChoice("Use Coins", "coins"));
             game.setPlayerCardAction(player, cardAction);
@@ -269,14 +269,14 @@ public class SeasideSpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select a card to trash.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 game.setPlayerCardAction(player, cardAction);
             }
         } else if (card.getName().equals("Sea Hag")) {
             for (Player player : players) {
                 if (player.getUserId() != currentPlayerId) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
-                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!player.hasMoat() && !player.hasLighthouse()) {
                         Card topCard = player.removeTopDeckCard();
                         if (topCard != null) {
@@ -288,9 +288,9 @@ public class SeasideSpecialActionHandler {
                         }
                     } else {
                         if (player.hasLighthouse()) {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                 }
@@ -309,7 +309,7 @@ public class SeasideSpecialActionHandler {
                 cardAction.setDeck(Deck.Seaside);
                 cardAction.setCardName(card.getName());
                 cardAction.setButtonValue("Done");
-                cardAction.setCards(KingdomUtil.uniqueCardList(cards));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(cards));
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select one of the following cards to gain and then click Done.");
             } else {
@@ -354,9 +354,9 @@ public class SeasideSpecialActionHandler {
                         break;
                     }
                 }
-                game.addHistory(player.getUsername(), " trashed two ", KingdomUtil.getWordWithBackgroundColor("Treasure Maps", Card.ACTION_COLOR), " and gained " + goldCardsGained + " " + KingdomUtil.getCardWithBackgroundColor(game.getGoldCard()) + " cards on top of ", player.getPronoun(), " deck");
+                game.addHistory(player.getUsername(), " trashed two ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Treasure Maps", Card.ACTION_COLOR), " and gained " + goldCardsGained + " " + KingdomUtil.INSTANCE.getCardWithBackgroundColor(game.getGoldCard()) + " cards on top of ", player.getPronoun(), " deck");
             } else {
-                game.addHistory(player.getUsername(), " trashed a ", KingdomUtil.getWordWithBackgroundColor("Treasure Map", Card.ACTION_COLOR));
+                game.addHistory(player.getUsername(), " trashed a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Treasure Map", Card.ACTION_COLOR));
             }
         } else if (card.getName().equals("Warehouse")) {
             Player player = game.getCurrentPlayer();
@@ -376,7 +376,7 @@ public class SeasideSpecialActionHandler {
                     cardAction.setCardName(card.getName());
                     cardAction.getCards().addAll(player.getHand());
                     cardAction.setNumCards(cardsToDiscard);
-                    cardAction.setInstructions("Select " + KingdomUtil.getPlural(cardsToDiscard, "card") + " to discard and then click Done.");
+                    cardAction.setInstructions("Select " + KingdomUtil.INSTANCE.getPlural(cardsToDiscard, "card") + " to discard and then click Done.");
                     cardAction.setButtonValue("Done");
                     game.setPlayerCardAction(player, cardAction);
                 }

@@ -25,10 +25,10 @@ public class KingdomSpecialActionHandler {
                     if (revealedCard == null) {
                         break;
                     }
-                    game.addHistory(player.getUsername(), " revealed ", KingdomUtil.getArticleWithCardName(revealedCard));
+                    game.addHistory(player.getUsername(), " revealed ", KingdomUtil.INSTANCE.getArticleWithCardName(revealedCard));
                     if (revealedCard.isTreasure()) {
                         player.addCardToHand(revealedCard);
-                        game.addHistory(player.getUsername(), " got a ", revealedCard.getName(), " from the ", KingdomUtil.getWordWithBackgroundColor("Adventurer", Card.ACTION_COLOR), " action");
+                        game.addHistory(player.getUsername(), " got a ", revealedCard.getName(), " from the ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Adventurer", Card.ACTION_COLOR), " action");
                         treasureCardsFound++;
                     } else {
                         setAsideCards.add(revealedCard);
@@ -65,9 +65,9 @@ public class KingdomSpecialActionHandler {
                     if (player.getUserId() != currentPlayerId) {
                         if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
                             incompleteCard.setPlayerActionCompleted(player.getUserId());
-                            game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                            game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                         } else if (!player.hasMoat() && player.hasVictoryCard() && !player.hasLighthouse()) {
-                            List<Card> victoryCards = KingdomUtil.uniqueCardList(player.getVictoryCards());
+                            List<Card> victoryCards = KingdomUtil.INSTANCE.uniqueCardList(player.getVictoryCards());
                             if (victoryCards.size() == 1) {
                                 incompleteCard.setPlayerActionCompleted(player.getUserId());
                                 player.putCardFromHandOnTopOfDeck(player.getVictoryCards().get(0));
@@ -86,9 +86,9 @@ public class KingdomSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.getUserId());
                             if (player.hasLighthouse()) {
-                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                             } else if (player.hasMoat()) {
-                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                             } else {
                                 game.addHistory(player.getUsername(), " did not have a Victory card");
                             }
@@ -162,7 +162,7 @@ public class KingdomSpecialActionHandler {
                     game.removePlayedCard(card);
                     game.getTrashedCards().add(card);
                     game.playerLostCard(player, card);
-                    game.addHistory(KingdomUtil.getCardWithBackgroundColor(card), " was trashed");
+                    game.addHistory(KingdomUtil.INSTANCE.getCardWithBackgroundColor(card), " was trashed");
                 }
                 if (cardAction.getCards().size() > 0) {
                     game.setPlayerCardAction(player, cardAction);
@@ -197,7 +197,7 @@ public class KingdomSpecialActionHandler {
                     if (player.getUserId() != currentPlayerId) {
                         if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
                             incompleteCard.setPlayerActionCompleted(player.getUserId());
-                            game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                            game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                         } else if (!player.hasMoat() && player.getHand().size() > 3 && !player.hasLighthouse()) {
                             CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND);
                             cardAction.setDeck(Deck.Kingdom);
@@ -210,9 +210,9 @@ public class KingdomSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.getUserId());
                             if (player.hasLighthouse()) {
-                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                             } else if (player.hasMoat()) {
-                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                                game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                             } else {
                                 game.addHistory(player.getUsername(), " had 3 or less cards");
                             }
@@ -229,7 +229,7 @@ public class KingdomSpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select a treasure card to trash.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getTreasureCards()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getTreasureCards()));
                 if (cardAction.getCards().size() > 0) {
                     game.setPlayerCardAction(player, cardAction);
                 } else {
@@ -245,7 +245,7 @@ public class KingdomSpecialActionHandler {
                         game.getTrashedCards().add(handCard);
                         game.playerLostCard(player, handCard);
                         player.addCoins(3);
-                        game.addHistory(player.getUsername(), " trashed ", KingdomUtil.getArticleWithCardName(handCard), " and gained 3 coins");
+                        game.addHistory(player.getUsername(), " trashed ", KingdomUtil.INSTANCE.getArticleWithCardName(handCard), " and gained 3 coins");
                         game.refreshHand(player);
                         game.refreshDiscard(player);
                         game.refreshCardsBought(player);
@@ -263,7 +263,7 @@ public class KingdomSpecialActionHandler {
                     cardAction.setButtonValue("Done");
                     cardAction.setNumCards(1);
                     cardAction.setInstructions("Select a card to trash.");
-                    cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                    cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                     game.setPlayerCardAction(player, cardAction);
                 }
                 break;
@@ -286,7 +286,7 @@ public class KingdomSpecialActionHandler {
                 while (nextPlayerIndex != currentPlayerIndex) {
                     Player nextPlayer = players.get(nextPlayerIndex);
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
-                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         if (nextPlayer.lookAtTopDeckCard() != null) {
                             CardAction nextCardAction = new CardAction(CardAction.TYPE_YES_NO);
@@ -301,9 +301,9 @@ public class KingdomSpecialActionHandler {
                         }
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                     if (nextPlayerIndex == players.size() - 1) {
@@ -325,7 +325,7 @@ public class KingdomSpecialActionHandler {
                 while (nextPlayerIndex != currentPlayerIndex) {
                     Player nextPlayer = players.get(nextPlayerIndex);
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
-                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
                         nextCardAction.setDeck(Deck.Kingdom);
@@ -362,9 +362,9 @@ public class KingdomSpecialActionHandler {
                         incompleteCard.getExtraCardActions().add(nextCardAction);
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                     if (nextPlayerIndex == players.size() - 1) {
@@ -387,7 +387,7 @@ public class KingdomSpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select one of the following actions to play twice and then click Done.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getActionCards()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getActionCards()));
                 if (cardAction.getCards().size() > 0) {
                     game.setPlayerCardAction(player, cardAction);
                 }
@@ -398,7 +398,7 @@ public class KingdomSpecialActionHandler {
                 while (nextPlayerIndex != game.getCurrentPlayerIndex()) {
                     Player nextPlayer = players.get(nextPlayerIndex);
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
-                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         if (game.isCardInSupply(Card.CURSE_ID)) {
                             game.playerGainedCard(nextPlayer, game.getCurseCard());
@@ -406,9 +406,9 @@ public class KingdomSpecialActionHandler {
                         }
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                     nextPlayerIndex = game.calculateNextPlayerIndex(nextPlayerIndex);

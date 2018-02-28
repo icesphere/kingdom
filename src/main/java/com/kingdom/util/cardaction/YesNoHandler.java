@@ -18,7 +18,7 @@ public class YesNoHandler {
             if (yesNoAnswer.equals("yes")) {
                 player.discardCardFromHand(Card.ESTATE_ID);
                 player.addCoins(4);
-                game.addHistory(player.getUsername(), " discarded an ", KingdomUtil.getWordWithBackgroundColor("Estate", Card.VICTORY_COLOR), " and got +4 coins");
+                game.addHistory(player.getUsername(), " discarded an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Estate", Card.VICTORY_COLOR), " and got +4 coins");
             } else {
                 if (game.isCardInSupply(Card.ESTATE_ID)) {
                     game.playerGainedCard(player, game.getEstateCard());
@@ -65,11 +65,11 @@ public class YesNoHandler {
                 player.subtractCoins(2);
                 game.refreshAllPlayersCardsBought();
 
-                if (KingdomUtil.uniqueCardList(player.getVictoryCards()).size() == 1) {
+                if (KingdomUtil.INSTANCE.uniqueCardList(player.getVictoryCards()).size() == 1) {
                     Card victoryCard = player.getVictoryCards().get(0);
                     player.removeCardFromHand(victoryCard);
                     player.getCityPlannerCards().add(victoryCard);
-                    game.addHistory(player.getUsername(), " paid an extra $2 to set aside ", KingdomUtil.getArticleWithCardName(victoryCard));
+                    game.addHistory(player.getUsername(), " paid an extra $2 to set aside ", KingdomUtil.INSTANCE.getArticleWithCardName(victoryCard));
                 } else {
                     CardAction chooseVictoryCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
                     chooseVictoryCardAction.setDeck(Deck.Proletariat);
@@ -113,7 +113,7 @@ public class YesNoHandler {
         } else if (cardAction.getCardName().equals("Fool's Gold")) {
             if (yesNoAnswer.equals("yes")) {
                 Card foolsGoldCard = game.getFoolsGoldCard();
-                game.addHistory(player.getUsername(), " revealed and trashed ", KingdomUtil.getCardWithBackgroundColor(foolsGoldCard));
+                game.addHistory(player.getUsername(), " revealed and trashed ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(foolsGoldCard));
                 player.removeCardFromHand(foolsGoldCard);
                 game.getTrashedCards().add(foolsGoldCard);
                 if (game.isCardInSupply(game.getGoldCard())) {
@@ -127,7 +127,7 @@ public class YesNoHandler {
             }
         } else if (cardAction.getCardName().equals("Graverobber")) {
             Player affectedPlayer = playerMap.get(cardAction.getPlayerId());
-            game.addHistory("The Graverobber revealed ", KingdomUtil.getArticleWithCardName(cardAction.getCards().get(0)), " from ", affectedPlayer.getUsername(), "'s discard pile");
+            game.addHistory("The Graverobber revealed ", KingdomUtil.INSTANCE.getArticleWithCardName(cardAction.getCards().get(0)), " from ", affectedPlayer.getUsername(), "'s discard pile");
             if (yesNoAnswer.equals("yes")) {
                 game.addHistory(player.getUsername(), " chose to gain the revealed treasure card");
                 if (affectedPlayer.getDiscard().get(cardAction.getCardId()).getCardId() == cardAction.getCards().get(0).getCardId()) {
@@ -152,7 +152,7 @@ public class YesNoHandler {
                 CardAction discardCardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
                 discardCardAction.setDeck(Deck.Cornucopia);
                 discardCardAction.setCardName(cardAction.getCardName());
-                discardCardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                discardCardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 discardCardAction.setNumCards(1);
                 discardCardAction.setInstructions("Select the card you want to discard and then click Done.");
                 discardCardAction.setButtonValue("Done");
@@ -167,7 +167,7 @@ public class YesNoHandler {
                 CardAction discardCardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
                 discardCardAction.setDeck(Deck.Cornucopia);
                 discardCardAction.setCardName(cardAction.getCardName());
-                discardCardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                discardCardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 discardCardAction.setNumCards(1);
                 discardCardAction.setInstructions("Select the card you want to discard and then click Done.");
                 discardCardAction.setButtonValue("Done");
@@ -177,7 +177,7 @@ public class YesNoHandler {
             }
         } else if (cardAction.getCardName().equals("Horse Traders")) {
             if (yesNoAnswer.equals("yes")) {
-                game.addHistory(player.getUsername(), " set aside ", KingdomUtil.getWordWithBackgroundColor("Horse Traders", Card.ACTION_REACTION_COLOR));
+                game.addHistory(player.getUsername(), " set aside ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Horse Traders", Card.ACTION_REACTION_COLOR));
                 player.setAsideCardFromHand(game.getHorseTradersCard());
             }
         } else if (cardAction.getCardName().equals("Ill-Gotten Gains")) {
@@ -190,7 +190,7 @@ public class YesNoHandler {
             Card card = cardAction.getCards().get(0);
             if (yesNoAnswer.equals("yes")) {
                 game.getSetAsideCards().add(card);
-                game.addHistory(player.getUsername(), " set aside ", KingdomUtil.getArticleWithCardName(card));
+                game.addHistory(player.getUsername(), " set aside ", KingdomUtil.INSTANCE.getArticleWithCardName(card));
             } else {
                 player.addCardToHand(card);
             }
@@ -227,7 +227,7 @@ public class YesNoHandler {
                 game.getTrashedCards().add(miningVillageCard);
                 game.playerLostCard(player, miningVillageCard);
                 player.addCoins(2);
-                game.addHistory(player.getUsername(), " trashed a ", KingdomUtil.getWordWithBackgroundColor("Mining Village", Card.ACTION_COLOR), " to get +2 coins");
+                game.addHistory(player.getUsername(), " trashed a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Mining Village", Card.ACTION_COLOR), " to get +2 coins");
                 game.refreshAllPlayersCardsPlayed();
             }
         } else if (cardAction.getCardName().equals("Museum Trash Cards")) {
@@ -282,7 +282,7 @@ public class YesNoHandler {
             incompleteCard = new SinglePlayerIncompleteCard(cardAction.getCardName(), game);
             Card cardToGain = cardAction.getCards().get(0);
             if (yesNoAnswer.equals("yes")) {
-                game.addHistory(player.getUsername(), " used ", KingdomUtil.getWordWithBackgroundColor("Royal Seal", Card.TREASURE_COLOR), " to add the gained card to the top of ", player.getPronoun(), " deck");
+                game.addHistory(player.getUsername(), " used ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Royal Seal", Card.TREASURE_COLOR), " to add the gained card to the top of ", player.getPronoun(), " deck");
                 game.moveGainedCard(player, cardToGain, "deck");
             } else {
                 if (cardAction.getDestination().equals("hand")) {
@@ -298,7 +298,7 @@ public class YesNoHandler {
             Player cardActionPlayer = playerMap.get(cardAction.getPlayerId());
             Card topDeckCard = cardActionPlayer.lookAtTopDeckCard();
             if (topDeckCard != null) {
-                game.addHistory("The top card of ", cardActionPlayer.getUsername(), "'s deck was ", KingdomUtil.getArticleWithCardName(topDeckCard));
+                game.addHistory("The top card of ", cardActionPlayer.getUsername(), "'s deck was ", KingdomUtil.INSTANCE.getArticleWithCardName(topDeckCard));
                 if (yesNoAnswer.equals("yes")) {
                     cardActionPlayer.getDeck().remove(0);
                     cardActionPlayer.addCardToDiscard(topDeckCard);
@@ -327,12 +327,12 @@ public class YesNoHandler {
                     currentPlayer.addCardToHand(topDeckCard);
                 }
                 if (!revealedCards.isEmpty()) {
-                    game.addHistory(currentPlayer.getUsername(), " revealed ", KingdomUtil.groupCards(revealedCards, true));
+                    game.addHistory(currentPlayer.getUsername(), " revealed ", KingdomUtil.INSTANCE.groupCards(revealedCards, true));
                 }
             }
         } else if (cardAction.getCardName().equals("Secret Chamber")) {
             if (yesNoAnswer.equals("yes")) {
-                game.addHistory(player.getUsername(), " is using a ", KingdomUtil.getWordWithBackgroundColor("Secret Chamber", Card.ACTION_REACTION_COLOR));
+                game.addHistory(player.getUsername(), " is using a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Secret Chamber", Card.ACTION_REACTION_COLOR));
                 player.drawCards(2);
                 CardAction secretChamberAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
                 secretChamberAction.setDeck(Deck.Intrigue);
@@ -354,7 +354,7 @@ public class YesNoHandler {
             Player cardActionPlayer = playerMap.get(cardAction.getPlayerId());
             Card topDeckCard = cardActionPlayer.lookAtTopDeckCard();
             if (topDeckCard != null) {
-                game.addHistory("The top card of ", cardActionPlayer.getUsername(), "'s deck was ", KingdomUtil.getArticleWithCardName(topDeckCard));
+                game.addHistory("The top card of ", cardActionPlayer.getUsername(), "'s deck was ", KingdomUtil.INSTANCE.getArticleWithCardName(topDeckCard));
                 if (yesNoAnswer.equals("yes")) {
                     cardActionPlayer.getDeck().remove(0);
                     cardActionPlayer.addCardToDiscard(topDeckCard);
@@ -370,7 +370,7 @@ public class YesNoHandler {
         } else if (cardAction.getCardName().equals("Squatter")) {
             Card squatterCard = cardAction.getAssociatedCard();
             if (yesNoAnswer.equals("yes")) {
-                game.addHistory(player.getUsername(), " returned ", KingdomUtil.getCardWithBackgroundColor(squatterCard), " to the supply");
+                game.addHistory(player.getUsername(), " returned ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(squatterCard), " to the supply");
                 cardAction.setGainCardAfterBuyAction(false);
 
                 int playerIndex = game.calculateNextPlayerIndex(game.getCurrentPlayerIndex());
@@ -386,7 +386,7 @@ public class YesNoHandler {
         } else if (cardAction.getCardName().equals("Tinker")) {
             Card cardToGain = cardAction.getCards().get(0);
             if (yesNoAnswer.equals("yes")) {
-                game.addHistory(player.getUsername(), " put ", KingdomUtil.getArticleWithCardName(cardToGain), " under ", player.getPronoun(), " ", KingdomUtil.getWordWithBackgroundColor("Tinker", Card.ACTION_DURATION_COLOR));
+                game.addHistory(player.getUsername(), " put ", KingdomUtil.INSTANCE.getArticleWithCardName(cardToGain), " under ", player.getPronoun(), " ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Tinker", Card.ACTION_DURATION_COLOR));
                 player.getTinkerCards().add(cardToGain);
                 game.moveGainedCard(player, cardToGain, "tinker");
             } else {
@@ -402,7 +402,7 @@ public class YesNoHandler {
             if (yesNoAnswer.equals("yes")) {
                 if (player.getUserId() == game.getCurrentPlayerId()) {
                     player.discardCardFromHand(game.getProvinceCard());
-                    game.addHistory(player.getUsername(), " revealed and discarded a ", KingdomUtil.getCardWithBackgroundColor(game.getProvinceCard()));
+                    game.addHistory(player.getUsername(), " revealed and discarded a ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(game.getProvinceCard()));
                     CardAction chooseType = new CardAction(CardAction.TYPE_CHOICES);
                     chooseType.setDeck(Deck.Cornucopia);
                     chooseType.setCardName(cardAction.getCardName());
@@ -412,12 +412,12 @@ public class YesNoHandler {
                     game.setPlayerCardAction(player, chooseType);
                 } else {
                     game.setGainTournamentBonus(false);
-                    game.addHistory(player.getUsername(), " revealed a ", KingdomUtil.getCardWithBackgroundColor(game.getProvinceCard()));
+                    game.addHistory(player.getUsername(), " revealed a ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(game.getProvinceCard()));
                 }
             }
         } else if (cardAction.getCardName().equals("Tunnel")) {
             if (yesNoAnswer.equals("yes")) {
-                game.addHistory(player.getUsername(), " revealed a ", KingdomUtil.getCardWithBackgroundColor(cardAction.getAssociatedCard()));
+                game.addHistory(player.getUsername(), " revealed a ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(cardAction.getAssociatedCard()));
                 if (game.isCardInSupply(game.getGoldCard())) {
                     game.playerGainedCard(player, game.getGoldCard());
                 } else {
@@ -452,7 +452,7 @@ public class YesNoHandler {
                 Card walledVillage = cardAction.getCards().get(0);
                 game.removePlayedCard(walledVillage);
                 player.addCardToTopOfDeck(walledVillage);
-                game.addHistory(player.getUsername(), " added ", KingdomUtil.getCardWithBackgroundColor(walledVillage), " to the top of ", player.getPronoun(), " deck");
+                game.addHistory(player.getUsername(), " added ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(walledVillage), " to the top of ", player.getPronoun(), " deck");
             }
             incompleteCard.setEndTurn(true);
         }

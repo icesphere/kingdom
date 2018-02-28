@@ -32,7 +32,7 @@ public class CardController {
     public ModelAndView listCards(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         ModelAndView modelAndView = new ModelAndView("cards");
         modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, true));
@@ -49,7 +49,7 @@ public class CardController {
         modelAndView.addObject("leadersCards", cardManager.getCards(Deck.Leaders, true));
         modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, true));
         modelAndView.addObject("fanCards", cardManager.getCards(Deck.Fan, true));
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
         return modelAndView;
     }
 
@@ -57,7 +57,7 @@ public class CardController {
     public ModelAndView saveCard(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         Card card;
         String id = request.getParameter("id");
@@ -70,7 +70,7 @@ public class CardController {
         card.setDeck(Deck.valueOf(request.getParameter("deck")));
         card.setType(Integer.parseInt(request.getParameter("type")));
         card.setCost(Integer.parseInt(request.getParameter("cost")));
-        card.setCostIncludesPotion(KingdomUtil.getRequestBoolean(request, "costIncludesPotion"));
+        card.setCostIncludesPotion(KingdomUtil.INSTANCE.getRequestBoolean(request, "costIncludesPotion"));
         card.setSpecial(request.getParameter("special"));
         card.setAddActions(Integer.parseInt(request.getParameter("addActions")));
         card.setAddCoins(Integer.parseInt(request.getParameter("addCoins")));
@@ -81,10 +81,10 @@ public class CardController {
         card.setSins(Integer.parseInt(request.getParameter("sins")));
         card.setFruitTokens(Integer.parseInt(request.getParameter("fruitTokens")));
         card.setCattleTokens(Integer.parseInt(request.getParameter("cattleTokens")));
-        card.setTesting(KingdomUtil.getRequestBoolean(request, "testing"));
-        card.setDisabled(KingdomUtil.getRequestBoolean(request, "disabled"));
-        card.setPlayTreasureCards(KingdomUtil.getRequestBoolean(request, "playTreasureCards"));
-        card.setPrizeCard(KingdomUtil.getRequestBoolean(request, "prizeCard"));
+        card.setTesting(KingdomUtil.INSTANCE.getRequestBoolean(request, "testing"));
+        card.setDisabled(KingdomUtil.INSTANCE.getRequestBoolean(request, "disabled"));
+        card.setPlayTreasureCards(KingdomUtil.INSTANCE.getRequestBoolean(request, "playTreasureCards"));
+        card.setPrizeCard(KingdomUtil.INSTANCE.getRequestBoolean(request, "prizeCard"));
         card.setFontSize(Integer.parseInt(request.getParameter("fontSize")));
         card.setNameLines(Integer.parseInt(request.getParameter("nameLines")));
         card.setTextSize(Integer.parseInt(request.getParameter("textSize")));
@@ -99,7 +99,7 @@ public class CardController {
     public ModelAndView showCard(HttpServletRequest request, HttpServletResponse response) {
         User user = getUser(request);
         if (user == null || !user.getAdmin()) {
-            return KingdomUtil.getLoginModelAndView(request);
+            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
         }
         String id = request.getParameter("id");
         Card card;
@@ -123,7 +123,7 @@ public class CardController {
         }
 
         modelAndView.addObject("card", card);
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request));
+        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
         return modelAndView;
     }
 
@@ -136,6 +136,6 @@ public class CardController {
     }
 
     private User getUser(HttpServletRequest request) {
-        return KingdomUtil.getUser(request);
+        return KingdomUtil.INSTANCE.getUser(request);
     }
 }

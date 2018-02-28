@@ -96,7 +96,7 @@ public class GainCardsSpecialActionHandler {
                 Set<Card> cards = new HashSet<Card>(game.getTreasureCardsPlayed());
                 if (cards.size() == 1) {
                     //put all cards on top of deck since they are all the same
-                    game.addHistory(player.getUsername(), " added ", KingdomUtil.getPlural(game.getTreasureCardsPlayed().size(), "treasure card"), " from play on top of ", player.getPronoun(), " deck");
+                    game.addHistory(player.getUsername(), " added ", KingdomUtil.INSTANCE.getPlural(game.getTreasureCardsPlayed().size(), "treasure card"), " from play on top of ", player.getPronoun(), " deck");
                     player.getDeck().addAll(0, game.getTreasureCardsPlayed());
                     game.getCardsPlayed().removeAll(game.getTreasureCardsPlayed());
                     game.getTreasureCardsPlayed().clear();

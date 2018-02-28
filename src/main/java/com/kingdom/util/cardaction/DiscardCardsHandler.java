@@ -13,7 +13,7 @@ public class DiscardCardsHandler {
         if (selectedCardIds.isEmpty()) {
             game.addHistory(player.getUsername(), " did not discard a card");
         } else {
-            game.addHistory(player.getUsername(), " discarded ", KingdomUtil.getPlural(selectedCardIds.size(), "card"));
+            game.addHistory(player.getUsername(), " discarded ", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "card"));
         }
 
         for (Integer selectedCardId : selectedCardIds) {
@@ -53,7 +53,7 @@ public class DiscardCardsHandler {
         } else if (cardAction.getCardName().equals("Fruit Merchant")) {
             if (!selectedCardIds.isEmpty()) {
                 player.addFruitTokens(selectedCardIds.size());
-                game.addHistory(player.getUsername(), " gained ", KingdomUtil.getPlural(selectedCardIds.size(), "fruit token"));
+                game.addHistory(player.getUsername(), " gained ", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "fruit token"));
             }
         } else if (cardAction.getCardName().equals("Hamlet")) {
             player.addActions(1);
@@ -84,7 +84,7 @@ public class DiscardCardsHandler {
         } else if (cardAction.getCardName().equals("Vault")) {
             incompleteCard = new MultiPlayerIncompleteCard(cardAction.getCardName(), game, false);
             player.addCoins(selectedCardIds.size());
-            game.addHistory(player.getUsername(), " gained +", KingdomUtil.getPlural(selectedCardIds.size(), "Coin"), " from playing ", KingdomUtil.getWordWithBackgroundColor("Vault", Card.ACTION_COLOR), "");
+            game.addHistory(player.getUsername(), " gained +", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "Coin"), " from playing ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Vault", Card.ACTION_COLOR), "");
 
             for (Player otherPlayer : game.getPlayers()) {
                 if (otherPlayer.getUserId() != game.getCurrentPlayerId()) {

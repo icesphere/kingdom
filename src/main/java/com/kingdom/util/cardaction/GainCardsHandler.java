@@ -88,7 +88,7 @@ public class GainCardsHandler {
                 game.getTreasureCardsPlayed().remove(cardAction.getAssociatedCard());
                 game.getTrashedCards().add(cardAction.getAssociatedCard());
                 game.playerLostCard(player, cardAction.getAssociatedCard());
-                game.addHistory(player.getUsername(), "'s ", KingdomUtil.getCardWithBackgroundColor(cardAction.getAssociatedCard()), " was trashed");
+                game.addHistory(player.getUsername(), "'s ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(cardAction.getAssociatedCard()), " was trashed");
                 game.refreshAllPlayersCardsPlayed();
             }
         } else if (cardAction.getCardName().equals("Ironworks")) {
@@ -113,7 +113,7 @@ public class GainCardsHandler {
             game.getPrizeCards().remove(card);
         } else if (cardAction.getCardName().equals("University")) {
             if (selectedCardIds.isEmpty()) {
-                game.addHistory(player.getUsername(), " chose not to gain a card with ", KingdomUtil.getWordWithBackgroundColor("University", Card.ACTION_COLOR));
+                game.addHistory(player.getUsername(), " chose not to gain a card with ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("University", Card.ACTION_COLOR));
             }
         }
     }

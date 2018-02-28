@@ -20,7 +20,7 @@ public class SalvationSpecialActionHandler {
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
             cardAction.setInstructions("Select a treasure card to trash.");
-            cardAction.setCards(KingdomUtil.uniqueCardList(player.getTreasureCards()));
+            cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getTreasureCards()));
             if (cardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, cardAction);
             } else {
@@ -41,7 +41,7 @@ public class SalvationSpecialActionHandler {
                 if (otherPlayer.getUserId() != game.getCurrentPlayerId()) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(otherPlayer.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(otherPlayer.getUserId());
-                        game.addHistory(otherPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(otherPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
                         cardAction.setDeck(Deck.Salvation);
@@ -63,9 +63,9 @@ public class SalvationSpecialActionHandler {
                     } else {
                         incompleteCard.setPlayerActionCompleted(otherPlayer.getUserId());
                         if (otherPlayer.hasLighthouse()) {
-                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                 }
@@ -94,7 +94,7 @@ public class SalvationSpecialActionHandler {
             if (cards.isEmpty()) {
                 game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("Your discard pile was empty."));
             } else {
-                game.addHistory("Catacombs revealed ", KingdomUtil.groupCards(cards, true));
+                game.addHistory("Catacombs revealed ", KingdomUtil.INSTANCE.groupCards(cards, true));
                 if (cards.size() == 1) {
                     game.playerGainedCardToHand(player, cards.get(0), false);
                     player.getDiscard().removeLastOccurrence(cards.get(0));
@@ -104,7 +104,7 @@ public class SalvationSpecialActionHandler {
                     cardAction.setCardName(card.getName());
                     cardAction.setButtonValue("Done");
                     cardAction.setNumCards(1);
-                    cardAction.setCards(KingdomUtil.uniqueCardList(cards));
+                    cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(cards));
                     cardAction.setInstructions("Select a card to gain from your discard pile.");
                     game.setPlayerCardAction(player, cardAction);
                 }
@@ -127,15 +127,15 @@ public class SalvationSpecialActionHandler {
             for (Player otherPlayer : game.getPlayers()) {
                 if (otherPlayer.getUserId() != game.getCurrentPlayerId()) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(otherPlayer.getUserId())) {
-                        game.addHistory(otherPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(otherPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse() && !otherPlayer.getDiscard().isEmpty()) {
                         int randomIndex1 = 0;
                         int randomIndex2 = -1;
                         if (otherPlayer.getDiscard().size() > 1) {
-                            randomIndex1 = KingdomUtil.getRandomNumber(0, otherPlayer.getDiscard().size() - 1);
-                            randomIndex2 = KingdomUtil.getRandomNumber(0, otherPlayer.getDiscard().size() - 1);
+                            randomIndex1 = KingdomUtil.INSTANCE.getRandomNumber(0, otherPlayer.getDiscard().size() - 1);
+                            randomIndex2 = KingdomUtil.INSTANCE.getRandomNumber(0, otherPlayer.getDiscard().size() - 1);
                             while (randomIndex2 == randomIndex1) {
-                                randomIndex2 = KingdomUtil.getRandomNumber(0, otherPlayer.getDiscard().size() - 1);
+                                randomIndex2 = KingdomUtil.INSTANCE.getRandomNumber(0, otherPlayer.getDiscard().size() - 1);
                             }
                         }
                         for (int i = 1; i <= 2; i++) {
@@ -169,9 +169,9 @@ public class SalvationSpecialActionHandler {
                         }
                     } else {
                         if (otherPlayer.hasLighthouse()) {
-                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else if (otherPlayer.hasMoat()) {
-                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         } else {
                             game.addHistory(otherPlayer.getUsername(), "'s discard pile was empty");
                         }
@@ -195,18 +195,18 @@ public class SalvationSpecialActionHandler {
             for (Player otherPlayer : game.getPlayers()) {
                 if (otherPlayer.getUserId() != game.getCurrentPlayerId()) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(otherPlayer.getUserId())) {
-                        game.addHistory(otherPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(otherPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse()) {
                         if (otherPlayer.getSins() >= 2) {
                             int cursesInSupply = game.getSupply().get(Card.CURSE_ID);
                             if (cursesInSupply >= 2) {
                                 otherPlayer.addSins(-2);
-                                game.addHistory(otherPlayer.getUsername(), " removed 2 sins and gained 2 ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " cards from the Inquisitor");
+                                game.addHistory(otherPlayer.getUsername(), " removed 2 sins and gained 2 ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " cards from the Inquisitor");
                                 game.playerGainedCard(otherPlayer, game.getCurseCard());
                                 game.playerGainedCard(otherPlayer, game.getCurseCard());
                             } else if (cursesInSupply == 1) {
                                 otherPlayer.addSins(-1);
-                                game.addHistory(otherPlayer.getUsername(), " removed 1 sin and gained 1 ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " card from the Inquisitor");
+                                game.addHistory(otherPlayer.getUsername(), " removed 1 sin and gained 1 ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " card from the Inquisitor");
                                 game.playerGainedCard(otherPlayer, game.getCurseCard());
                             } else {
                                 otherPlayer.addSins(1);
@@ -219,9 +219,9 @@ public class SalvationSpecialActionHandler {
                         game.refreshHandArea(otherPlayer);
                     } else {
                         if (otherPlayer.hasLighthouse()) {
-                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                 }
@@ -234,7 +234,7 @@ public class SalvationSpecialActionHandler {
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
             cardAction.setInstructions("Select a card to gain from the trash pile and then click Done, or just click Done if you do not want to gain a card.");
-            cardAction.setCards(KingdomUtil.uniqueCardList(game.getTrashedCards()));
+            cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(game.getTrashedCards()));
             if (cardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, cardAction);
             } else {
@@ -247,7 +247,7 @@ public class SalvationSpecialActionHandler {
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
             cardAction.setInstructions("Chose an action card to discard from your hand.");
-            cardAction.setCards(KingdomUtil.uniqueCardList(player.getActionCards()));
+            cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getActionCards()));
             if (cardAction.getCards().size() > 0) {
                 game.setPlayerCardAction(player, cardAction);
             } else {

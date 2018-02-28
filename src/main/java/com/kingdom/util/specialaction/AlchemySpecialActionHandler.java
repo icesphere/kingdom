@@ -38,7 +38,7 @@ public class AlchemySpecialActionHandler {
                 }
             }
             if (revealedCards.size() > 0) {
-                game.addHistory("Apothecary revealed ", KingdomUtil.groupCards(revealedCards, true));
+                game.addHistory("Apothecary revealed ", KingdomUtil.INSTANCE.groupCards(revealedCards, true));
             } else {
                 game.addHistory(player.getUsername(), " did not have any cards to reveal");
             }
@@ -65,7 +65,7 @@ public class AlchemySpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select a card to trash.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 game.setPlayerCardAction(player, cardAction);
             } else {
                 game.addHistory(player.getUsername(), " did not have any cards");
@@ -74,7 +74,7 @@ public class AlchemySpecialActionHandler {
             for (Player player : players) {
                 if (player.getUserId() != currentPlayerId) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(player.getUserId())) {
-                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(player.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!player.hasMoat() && !player.hasLighthouse()) {
                         Card topCard = player.removeTopDeckCard();
                         if (topCard != null) {
@@ -87,9 +87,9 @@ public class AlchemySpecialActionHandler {
                         }
                     } else {
                         if (player.hasLighthouse()) {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else {
-                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(player.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                 }
@@ -116,7 +116,7 @@ public class AlchemySpecialActionHandler {
                 }
             }
             if (revealedCards.size() > 0) {
-                game.addHistory(player.getUsername(), "'s ", KingdomUtil.getCardWithBackgroundColor(card), " revealed ", KingdomUtil.groupCards(revealedCards, true));
+                game.addHistory(player.getUsername(), "'s ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(card), " revealed ", KingdomUtil.INSTANCE.groupCards(revealedCards, true));
                 player.getDiscard().addAll(setAsideCards);
                 for (Card c : setAsideCards) {
                     game.playerDiscardedCard(player, c);
@@ -134,7 +134,7 @@ public class AlchemySpecialActionHandler {
                 cardAction.setInstructions("Select which action you would like to play first and then click Done.");
                 game.setPlayerCardAction(player, cardAction);
             } else {
-                game.addHistory("No actions were found for the ", KingdomUtil.getCardWithBackgroundColor(card), " to play.");
+                game.addHistory("No actions were found for the ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(card), " to play.");
             }
         } else if (card.getName().equals("Scrying Pool")) {
             incompleteCard = new SinglePlayerIncompleteCard(card.getName(), game);
@@ -154,7 +154,7 @@ public class AlchemySpecialActionHandler {
             while (nextPlayerIndex != currentPlayerIndex) {
                 Player nextPlayer = players.get(nextPlayerIndex);
                 if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
-                    game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                    game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                 } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                     if (nextPlayer.lookAtTopDeckCard() != null) {
                         CardAction nextCardAction = new CardAction(CardAction.TYPE_YES_NO);
@@ -169,9 +169,9 @@ public class AlchemySpecialActionHandler {
                     }
                 } else {
                     if (nextPlayer.hasLighthouse()) {
-                        game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                        game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                     } else {
-                        game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                        game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                     }
                 }
                 if (nextPlayerIndex == players.size() - 1) {
@@ -190,7 +190,7 @@ public class AlchemySpecialActionHandler {
                     if (topDeckCard == null) {
                         break;
                     }
-                    game.addHistory(currentPlayer.getUsername(), " revealed ", KingdomUtil.getArticleWithCardName(topDeckCard));
+                    game.addHistory(currentPlayer.getUsername(), " revealed ", KingdomUtil.INSTANCE.getArticleWithCardName(topDeckCard));
                     if (!topDeckCard.isAction()) {
                         foundNonActionCard = true;
                     }
@@ -207,7 +207,7 @@ public class AlchemySpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select a card to trash.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 game.setPlayerCardAction(player, cardAction);
             } else {
                 game.addHistory(player.getUsername(), " did not have any cards");

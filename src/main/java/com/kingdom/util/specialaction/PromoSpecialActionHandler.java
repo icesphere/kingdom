@@ -23,7 +23,7 @@ public class PromoSpecialActionHandler {
             }
             boolean canAffordAny = false;
             if (cards.size() > 0) {
-                game.addHistory("Black Market cards: " + KingdomUtil.getCardNames(cards));
+                game.addHistory("Black Market cards: " + KingdomUtil.INSTANCE.getCardNames(cards));
                 game.setBlackMarketCardsToBuy(cards);
                 int coins = player.getCoins();
                 int potions = player.getPotions();
@@ -41,9 +41,9 @@ public class PromoSpecialActionHandler {
                     cardAction = new CardAction(CardAction.TYPE_YES_NO);
                     cardAction.setDeck(Deck.Promo);
                     StringBuffer instructions = new StringBuffer("You have ");
-                    instructions.append(KingdomUtil.getPlural(coins, "coin"));
+                    instructions.append(KingdomUtil.INSTANCE.getPlural(coins, "coin"));
                     if (game.isUsePotions()) {
-                        instructions.append(" and ").append(KingdomUtil.getPlural(potions, "potion"));
+                        instructions.append(" and ").append(KingdomUtil.INSTANCE.getPlural(potions, "potion"));
                     }
                     instructions.append(". Do you want to buy one of these cards?");
                     cardAction.setInstructions(instructions.toString());

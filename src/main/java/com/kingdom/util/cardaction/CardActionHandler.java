@@ -52,7 +52,7 @@ public class CardActionHandler {
                     Card card = player.getCardFromHandById(selectedCardId);
                     player.putCardFromHandOnTopOfDeck(card);
                 }
-                game.addHistory(player.getUsername(), " added ", KingdomUtil.getPlural(selectedCardIds.size(), "card"), " on top of ", player.getPronoun(), " deck");
+                game.addHistory(player.getUsername(), " added ", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "card"), " on top of ", player.getPronoun(), " deck");
             }
         } else if (type == CardAction.TYPE_CHOOSE_CARDS || type == CardAction.TYPE_SETUP_LEADERS) {
             incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds);

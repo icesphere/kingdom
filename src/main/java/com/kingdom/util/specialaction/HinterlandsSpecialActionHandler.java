@@ -33,9 +33,9 @@ public class HinterlandsSpecialActionHandler {
             }
         } else if (card.getName().equals("Crossroads")) {
             if (!player.getHand().isEmpty()) {
-                game.addHistory(player.getUsername(), "'s hand contains ", KingdomUtil.groupCards(player.getHand(), true));
+                game.addHistory(player.getUsername(), "'s hand contains ", KingdomUtil.INSTANCE.groupCards(player.getHand(), true));
                 if (!player.getVictoryCards().isEmpty()) {
-                    game.addHistory(player.getUsername(), " gained +", KingdomUtil.getPlural(player.getVictoryCards().size(), "card"));
+                    game.addHistory(player.getUsername(), " gained +", KingdomUtil.INSTANCE.getPlural(player.getVictoryCards().size(), "card"));
                     player.drawCards(player.getVictoryCards().size());
                     game.refreshAllPlayersCardsBought();
                 }
@@ -53,7 +53,7 @@ public class HinterlandsSpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select a card to trash.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 game.setPlayerCardAction(player, cardAction);
             } else {
                 game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand");
@@ -93,7 +93,7 @@ public class HinterlandsSpecialActionHandler {
                     cardAction.setCardName(card.getName());
                     cardAction.getCards().addAll(player.getHand());
                     cardAction.setNumCards(cardsToDiscard);
-                    cardAction.setInstructions("Select " + KingdomUtil.getPlural(cardsToDiscard, "card") + " to discard and then click Done.");
+                    cardAction.setInstructions("Select " + KingdomUtil.INSTANCE.getPlural(cardsToDiscard, "card") + " to discard and then click Done.");
                     cardAction.setButtonValue("Done");
                     game.setPlayerCardAction(player, cardAction);
                 }
@@ -150,7 +150,7 @@ public class HinterlandsSpecialActionHandler {
                     trashCardAction.setDeck(Deck.Hinterlands);
                     trashCardAction.setCardName(card.getName());
                     trashCardAction.setNumCards(1);
-                    trashCardAction.getCards().addAll(KingdomUtil.uniqueCardList(cards));
+                    trashCardAction.getCards().addAll(KingdomUtil.INSTANCE.uniqueCardList(cards));
                     trashCardAction.setInstructions("Select a card to trash from your hand and then click Done, or just click Done if you don't want to trash a card.");
                     trashCardAction.setButtonValue("Done");
                     game.setPlayerCardAction(player, trashCardAction);
@@ -160,7 +160,7 @@ public class HinterlandsSpecialActionHandler {
             CardAction cardAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
             cardAction.setDeck(Deck.Hinterlands);
             cardAction.setCardName(card.getName());
-            cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+            cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
             cardAction.setButtonValue("Done");
             cardAction.setNumCards(1);
             cardAction.setInstructions("Select a card from your hand to put on top of your deck.");
@@ -173,7 +173,7 @@ public class HinterlandsSpecialActionHandler {
                 if (!game.isCurrentPlayer(p)) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(p.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(p.getUserId());
-                        game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!p.hasMoat() && !p.hasLighthouse()) {
                         p.drawCards(1);
                         game.addHistory(p.getUsername(), " drew 1 card");
@@ -194,9 +194,9 @@ public class HinterlandsSpecialActionHandler {
                     } else {
                         incompleteCard.setPlayerActionCompleted(p.getUserId());
                         if (p.hasLighthouse()) {
-                            game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(p.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else if (p.hasMoat()) {
-                            game.addHistory(p.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(p.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         }
                     }
                 }
@@ -241,7 +241,7 @@ public class HinterlandsSpecialActionHandler {
                     if (secondTopCard != null) {
                         cardAction.getChoices().add(new CardActionChoice("Put them back", "back"));
                         topCards.add(secondTopCard);
-                        game.addHistory(p.getUsername(), " revealed ", KingdomUtil.groupCards(topCards, true));
+                        game.addHistory(p.getUsername(), " revealed ", KingdomUtil.INSTANCE.groupCards(topCards, true));
                         if (game.isCurrentPlayer(p)) {
                             cardAction.setInstructions("Do you want to discard the top two cards of your deck, or put them back?");
                         } else {
@@ -249,7 +249,7 @@ public class HinterlandsSpecialActionHandler {
                         }
                     } else {
                         cardAction.getChoices().add(new CardActionChoice("Put it back", "back"));
-                        game.addHistory(p.getUsername(), " revealed ", KingdomUtil.getCardWithBackgroundColor(firstTopCard, true));
+                        game.addHistory(p.getUsername(), " revealed ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(firstTopCard, true));
                         if (game.isCurrentPlayer(p)) {
                             cardAction.setInstructions("Do you want to discard the top card of your deck, or put it back?");
                         } else {
@@ -279,7 +279,7 @@ public class HinterlandsSpecialActionHandler {
             CardAction cardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
             cardAction.setDeck(Deck.Hinterlands);
             cardAction.setCardName(card.getName());
-            cardAction.setCards(KingdomUtil.uniqueCardList(player.getTreasureCards()));
+            cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getTreasureCards()));
             cardAction.setNumCards(1);
             cardAction.setInstructions("Select a treasure card to trash and then click Done, or just click Done if you don't want to trash a card.");
             cardAction.setButtonValue("Done");
@@ -288,7 +288,7 @@ public class HinterlandsSpecialActionHandler {
             CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND);
             cardAction.setDeck(Deck.Hinterlands);
             cardAction.setCardName(card.getName());
-            cardAction.setCards(KingdomUtil.uniqueCardList(player.getTreasureCards()));
+            cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getTreasureCards()));
             cardAction.setNumCards(1);
             cardAction.setInstructions("Select a treasure card to discard and then click Done, or just click Done if you don't want to discard a card.");
             cardAction.setButtonValue("Done");
@@ -301,7 +301,7 @@ public class HinterlandsSpecialActionHandler {
                 cardAction.setButtonValue("Done");
                 cardAction.setNumCards(1);
                 cardAction.setInstructions("Select a card to trash.");
-                cardAction.setCards(KingdomUtil.uniqueCardList(player.getHand()));
+                cardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(player.getHand()));
                 game.setPlayerCardAction(player, cardAction);
             } else {
                 game.addHistory(player.getUsername(), " did not have any cards");

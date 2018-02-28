@@ -68,7 +68,7 @@ public class FairyTaleSpecialActionHandler {
                 if (otherPlayer.getUserId() != game.getCurrentPlayerId()) {
                     if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(otherPlayer.getUserId())) {
                         incompleteCard.setPlayerActionCompleted(otherPlayer.getUserId());
-                        game.addHistory(otherPlayer.getUsername(), " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
+                        game.addHistory(otherPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
                     } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse() && otherPlayer.getHand().size() >= 4 && !otherPlayer.getActionCards().isEmpty()) {
                         CardAction cardAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
                         cardAction.setDeck(Deck.FairyTale);
@@ -81,9 +81,9 @@ public class FairyTaleSpecialActionHandler {
                     } else {
                         incompleteCard.setPlayerActionCompleted(otherPlayer.getUserId());
                         if (otherPlayer.hasLighthouse()) {
-                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
+                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
                         } else if (otherPlayer.hasMoat()) {
-                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
+                            game.addHistory(otherPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
                         } else if (otherPlayer.getHand().size() < 4) {
                             game.addHistory(otherPlayer.getUsername(), " had less than 4 cards");
                         } else {

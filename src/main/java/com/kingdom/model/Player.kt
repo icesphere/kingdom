@@ -11,7 +11,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
     val hand = ArrayList<Card>()
     val discard = LinkedList<Card>()
     val durationCards: MutableList<Card> = ArrayList(0)
-    val havenCards: List<Card> = ArrayList(0)
+    val havenCards: MutableList<Card> = ArrayList(0)
     val islandCards: List<Card> = ArrayList(0)
     val nativeVillageCards: List<Card> = ArrayList(0)
     val treasureCards = ArrayList<Card>(0)
