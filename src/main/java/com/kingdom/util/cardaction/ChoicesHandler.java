@@ -1,828 +1,917 @@
-package com.kingdom.util.cardaction;
+package com.kingdom.util.cardaction
 
-import com.kingdom.model.*;
-import com.kingdom.util.KingdomUtil;
+import com.kingdom.model.*
+import com.kingdom.util.KingdomUtil
+import java.util.*
 
-import java.util.ArrayList;
-import java.util.List;
+object ChoicesHandler {
+    fun handleCardAction(game: Game, player: Player, cardAction: CardAction, choice: String): IncompleteCard? {
 
-public class ChoicesHandler {
-    public static IncompleteCard handleCardAction(Game game, Player player, CardAction cardAction, String choice) {
+        val players = game.players
+        var incompleteCard: IncompleteCard? = null
 
-        List<Player> players = game.getPlayers();
-        IncompleteCard incompleteCard = null;
-
-        if (cardAction.getCardName().equals("Archbishop")) {
-            if (choice.equals("actions")) {
-                player.addActions(2);
-                game.addHistory(player.getUsername(), " chose +2 Actions");
-                game.refreshAllPlayersCardsPlayed();
-            } else if (choice.equals("remove")) {
-                player.addSins(-1);
-                game.refreshAllPlayersPlayers();
-                game.addHistory(player.getUsername(), " chose to remove 1 sin");
-                game.refreshAllPlayersCardsPlayed();
-            } else if (choice.equals("sins")) {
-                game.addHistory(player.getUsername(), " chose for all other players to gain 1 sin");
-                for (Player otherPlayer : game.getPlayers()) {
-                    if (otherPlayer.getUserId() != game.getCurrentPlayerId()) {
-                        otherPlayer.addSins(1);
-                        game.refreshHandArea(otherPlayer);
-                    }
+        when (cardAction.cardName) {
+            "Archbishop" -> when (choice) {
+                "actions" -> {
+                    player.addActions(2)
+                    game.addHistory(player.username, " chose +2 Actions")
+                    game.refreshAllPlayersCardsPlayed()
                 }
-                game.refreshAllPlayersPlayers();
-            }
-        } else if (cardAction.getCardName().equals("Archivist")) {
-            if (choice.equals("draw")) {
-                while (player.getHand().size() < 6) {
-                    Card topCard = player.removeTopDeckCard();
-                    if (topCard == null) {
-                        break;
-                    }
-                    player.addCardToHand(topCard);
+                "remove" -> {
+                    player.addSins(-1)
+                    game.refreshAllPlayersPlayers()
+                    game.addHistory(player.username, " chose to remove 1 sin")
+                    game.refreshAllPlayersCardsPlayed()
                 }
-                game.refreshHand(player);
-                game.addHistory(player.getUsername(), " chose to draw until 6 cards in hand");
-            } else if (choice.equals("discard")) {
-                player.addCoins(1);
-                game.addHistory(player.getUsername(), " chose +$1 and discard");
-                if (!player.getHand().isEmpty()) {
-                    CardAction discardCardAction = new CardAction(CardAction.TYPE_DISCARD_AT_LEAST_FROM_HAND);
-                    discardCardAction.setDeck(Deck.Fan);
-                    discardCardAction.setCardName(cardAction.getCardName());
-                    discardCardAction.setCards(player.getHand());
-                    discardCardAction.setNumCards(1);
-                    discardCardAction.setInstructions("Select 1 or more cards to discard from your hand and then click Done.");
-                    discardCardAction.setButtonValue("Done");
-                    game.setPlayerCardAction(player, discardCardAction);
-                }
-            }
-        } else if (cardAction.getCardName().equals("Bell Tower")) {
-            if (choice.equals("before")) {
-                player.drawCards(2);
-                game.addHistory(player.getUsername(), " revealed " + player.getPronoun() + " " + KingdomUtil.INSTANCE.getWordWithBackgroundColor("Bell Tower", Card.ACTION_REACTION_COLOR) + " to gain +2 Cards before the attack");
-            } else if (choice.equals("after")) {
-                game.getPlayersWaitingForBellTowerBonus().add(player);
-            }
-        } else if (cardAction.getCardName().equals("Cattle Farm")) {
-            if (choice.equals("discard")) {
-                game.addHistory(player.getUsername(), " discarded the top card of ", player.getPronoun(), " deck");
-                player.addCardToDiscard(cardAction.getAssociatedCard());
-                game.playerDiscardedCard(player, cardAction.getAssociatedCard());
-            } else if (choice.equals("back")) {
-                game.addHistory(player.getUsername(), " put back the top card of ", player.getPronoun(), " deck");
-                player.addCardToTopOfDeck(cardAction.getAssociatedCard());
-            }
-        } else if (cardAction.getCardName().equals("Choose Reaction")) {
-            Card cardToGain = cardAction.getAssociatedCard();
-            CardAction reaction = cardToGain.getGainCardActions().remove(choice);
-            if (reaction != null) {
-                game.setPlayerCardAction(player, reaction);
-            }
-        } else if (cardAction.getCardName().equals("Develop")) {
-            CardAction gainCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            gainCardAction.setDeck(Deck.Hinterlands);
-            gainCardAction.setCardName(cardAction.getCardName());
-            gainCardAction.setButtonValue("Done");
-            gainCardAction.setNumCards(1);
-            gainCardAction.setAssociatedCard(cardAction.getAssociatedCard());
-            gainCardAction.setInstructions("Select one of the following cards to gain and then click Done.");
-
-            List<Card> cards = new ArrayList<Card>();
-            int cost = game.getCardCost(gainCardAction.getAssociatedCard());
-            if (choice.equals("more")) {
-                cost = cost + 1;
-                gainCardAction.setPhase(1);
-            } else if (choice.equals("less")) {
-                cost = cost - 1;
-                gainCardAction.setPhase(2);
-            }
-            for (Card c : game.getSupplyMap().values()) {
-                if (game.getCardCost(c) == cost && cardAction.getAssociatedCard().getCostIncludesPotion() == c.getCostIncludesPotion() && game.isCardInSupply(c)) {
-                    cards.add(c);
-                }
-            }
-
-            gainCardAction.setCards(cards);
-            game.setPlayerCardAction(player, gainCardAction);
-        } else if (cardAction.getCardName().equals("Duchess")) {
-            if (choice.equals("discard")) {
-                game.addHistory(player.getUsername(), " discarded the top card of ", player.getPronoun(), " deck");
-                player.addCardToDiscard(cardAction.getAssociatedCard());
-                game.playerDiscardedCard(player, cardAction.getAssociatedCard());
-            } else if (choice.equals("back")) {
-                game.addHistory(player.getUsername(), " put back the top card of ", player.getPronoun(), " deck");
-                player.addCardToTopOfDeck(cardAction.getAssociatedCard());
-            }
-        } else if (cardAction.getCardName().equals("Explorer")) {
-            if (choice.equals("gold")) {
-                if (game.isCardInSupply(Card.GOLD_ID)) {
-                    game.playerGainedCardToHand(player, game.getGoldCard());
-                    game.refreshHand(player);
-                }
-            } else if (choice.equals("silver")) {
-                if (game.isCardInSupply(Card.SILVER_ID)) {
-                    game.playerGainedCardToHand(player, game.getSilverCard());
-                    game.refreshHand(player);
-                }
-            }
-        } else if (cardAction.getCardName().equals("Governor")) {
-            if (choice.equals("cards")) {
-                game.addHistory(player.getUsername(), " chose to gain cards");
-                for (Player p : game.getPlayers()) {
-                    if (game.isCurrentPlayer(p)) {
-                        p.drawCards(3);
-                    } else {
-                        p.drawCards(1);
-                    }
-                }
-                game.refreshAllPlayersHand();
-            } else if (choice.equals("money")) {
-                game.addHistory(player.getUsername(), " chose Silver and Gold");
-                if (game.getSupply().get(Card.GOLD_ID) > 0) {
-                    game.playerGainedCard(player, game.getGoldCard());
-                }
-                int playerIndex = game.calculateNextPlayerIndex(game.getCurrentPlayerIndex());
-                while (playerIndex != game.getCurrentPlayerIndex()) {
-                    Player nextPlayer = players.get(playerIndex);
-                    if (game.getSupply().get(Card.SILVER_ID) > 0) {
-                        game.playerGainedCard(nextPlayer, game.getSilverCard());
-                    }
-                    playerIndex = game.calculateNextPlayerIndex(playerIndex);
-                }
-                game.refreshAllPlayersDiscard();
-            } else if (choice.equals("trash")) {
-                game.addHistory(player.getUsername(), " chose to trash and gain cards");
-                //todo do in player order
-                incompleteCard = new MultiPlayerIncompleteCard(cardAction.getCardName(), game, true);
-                for (Player p : game.getPlayers()) {
-                    if (!p.getHand().isEmpty()) {
-                        int addToCost = 1;
-                        if (game.isCurrentPlayer(p)) {
-                            addToCost = 2;
+                "sins" -> {
+                    game.addHistory(player.username, " chose for all other players to gain 1 sin")
+                    for (otherPlayer in game.players) {
+                        if (otherPlayer.userId != game.currentPlayerId) {
+                            otherPlayer.addSins(1)
+                            game.refreshHandArea(otherPlayer)
                         }
-                        CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-                        trashCardAction.setDeck(Deck.Promo);
-                        trashCardAction.setCardName(cardAction.getCardName());
-                        trashCardAction.setCards(KingdomUtil.INSTANCE.uniqueCardList(p.getHand()));
-                        trashCardAction.setNumCards(1);
-                        trashCardAction.setInstructions("Select a card to trash in order to gain a card costing exactly " + KingdomUtil.INSTANCE.getPlural(addToCost, "coin") + "  more and then click Done, or just click Done if you don't want to trash a card.");
-                        trashCardAction.setButtonValue("Done");
-                        game.setPlayerCardAction(p, trashCardAction);
-                    } else {
-                        incompleteCard.setPlayerActionCompleted(p.getUserId());
+                    }
+                    game.refreshAllPlayersPlayers()
+                }
+            }
+            "Archivist" -> when (choice) {
+                "draw" -> {
+                    while (player.hand.size < 6) {
+                        val topCard = player.removeTopDeckCard() ?: break
+                        player.addCardToHand(topCard)
+                    }
+                    game.refreshHand(player)
+                    game.addHistory(player.username, " chose to draw until 6 cards in hand")
+                }
+                "discard" -> {
+                    player.addCoins(1)
+                    game.addHistory(player.username, " chose +$1 and discard")
+                    if (!player.hand.isEmpty()) {
+                        val discardCardAction = CardAction(CardAction.TYPE_DISCARD_AT_LEAST_FROM_HAND)
+                        discardCardAction.deck = Deck.Fan
+                        discardCardAction.cardName = cardAction.cardName
+                        discardCardAction.cards = player.hand
+                        discardCardAction.numCards = 1
+                        discardCardAction.instructions = "Select 1 or more cards to discard from your hand and then click Done."
+                        discardCardAction.buttonValue = "Done"
+                        game.setPlayerCardAction(player, discardCardAction)
                     }
                 }
-                incompleteCard.allActionsSet();
             }
-        } else if (cardAction.getCardName().equals("Hooligans")) {
-            Player affectedPlayer = game.getPlayerMap().get(cardAction.getPlayerId());
-            if (choice.equals("discard")) {
-                game.addHistory(player.getUsername(), " discarded ", affectedPlayer.getUsername(), "'s ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(cardAction.getAssociatedCard()));
-                affectedPlayer.addCardToDiscard(cardAction.getAssociatedCard());
-                game.playerDiscardedCard(affectedPlayer, cardAction.getAssociatedCard());
-            } else if (choice.equals("deck")) {
-                game.addHistory(player.getUsername(), " put the selected card on top of ", affectedPlayer.getUsername(), "'s deck");
-                affectedPlayer.addCardToTopOfDeck(cardAction.getAssociatedCard());
-            }
-        } else if (cardAction.getCardName().equals("Jack of all Trades")) {
-            if (choice.equals("discard")) {
-                game.addHistory(player.getUsername(), " discarded the top card of ", player.getPronoun(), " deck");
-                player.addCardToDiscard(cardAction.getAssociatedCard());
-                game.playerDiscardedCard(player, cardAction.getAssociatedCard());
-            } else if (choice.equals("back")) {
-                game.addHistory(player.getUsername(), " put back the top card of ", player.getPronoun(), " deck");
-                player.addCardToTopOfDeck(cardAction.getAssociatedCard());
-            }
-            while (player.getHand().size() < 5) {
-                Card topCard = player.removeTopDeckCard();
-                if (topCard == null) {
-                    break;
+            "Bell Tower" -> when (choice) {
+                "before" -> {
+                    player.drawCards(2)
+                    game.addHistory(player.username, " revealed " + player.pronoun + " " + KingdomUtil.getWordWithBackgroundColor("Bell Tower", Card.ACTION_REACTION_COLOR) + " to gain +2 Cards before the attack")
                 }
-                player.addCardToHand(topCard);
+                "after" -> game.playersWaitingForBellTowerBonus.add(player)
             }
-            game.refreshHand(player);
-            List<Card> cards = new ArrayList<Card>();
-            for (Card c : player.getHand()) {
-                if (!c.isTreasure()) {
-                    cards.add(c);
+            "Cattle Farm" -> when (choice) {
+                "discard" -> {
+                    game.addHistory(player.username, " discarded the top card of ", player.pronoun, " deck")
+                    player.addCardToDiscard(cardAction.associatedCard!!)
+                    game.playerDiscardedCard(player, cardAction.associatedCard!!)
+                }
+                "back" -> {
+                    game.addHistory(player.username, " put back the top card of ", player.pronoun, " deck")
+                    player.addCardToTopOfDeck(cardAction.associatedCard!!)
                 }
             }
-            if (!cards.isEmpty()) {
-                CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND);
-                trashCardAction.setDeck(Deck.Hinterlands);
-                trashCardAction.setCardName(cardAction.getCardName());
-                trashCardAction.setNumCards(1);
-                trashCardAction.getCards().addAll(KingdomUtil.INSTANCE.uniqueCardList(cards));
-                trashCardAction.setInstructions("Select a card to trash from your hand and then click Done, or just click Done if you don't want to trash a card.");
-                trashCardAction.setButtonValue("Done");
-                game.setPlayerCardAction(player, trashCardAction);
-            }
-        } else if (cardAction.getCardName().equals("Jester")) {
-            Card cardToGain = cardAction.getCards().get(0);
-            if (choice.equals("me")) {
-                if (game.isCardInSupply(cardToGain)) {
-                    game.playerGainedCard(player, cardToGain);
-                } else {
-                    game.addHistory("The supply did not have ", KingdomUtil.INSTANCE.getArticleWithCardName(cardToGain));
-                }
-            } else if (choice.equals("them")) {
-                Player affectedPlayer = game.getPlayerMap().get(cardAction.getPlayerId());
-                if (game.isCardInSupply(cardToGain)) {
-                    game.playerGainedCard(affectedPlayer, cardToGain);
-                    game.refreshDiscard(affectedPlayer);
-                } else {
-                    game.addHistory("The supply did not have ", KingdomUtil.INSTANCE.getArticleWithCardName(cardToGain));
+            "Choose Reaction" -> {
+                val cardToGain = cardAction.associatedCard
+                val reaction = cardToGain!!.gainCardActions.remove(choice)
+                if (reaction != null) {
+                    game.setPlayerCardAction(player, reaction)
                 }
             }
-        } else if (cardAction.getCardName().equals("Loan")) {
-            Card treasureCard = cardAction.getCards().get(0);
-            if (choice.equals("discard")) {
-                player.addCardToDiscard(treasureCard);
-                game.addHistory(player.getUsername(), " discarded ", KingdomUtil.INSTANCE.getArticleWithCardName(treasureCard));
-            } else if (choice.equals("trash")) {
-                game.getTrashedCards().add(treasureCard);
-                game.addHistory(player.getUsername(), " trashed ", KingdomUtil.INSTANCE.getArticleWithCardName(treasureCard));
-                game.playerLostCard(player, treasureCard);
-            }
-        } else if (cardAction.getCardName().equals("Lost Village 1")) {
-            if (choice.equals("actions")) {
-                player.addActions(2);
-                game.addHistory(player.getUsername(), " chose +2 Actions");
-            } else if (choice.equals("draw")) {
-                player.addActions(1);
-                game.addHistory(player.getUsername(), " chose +1 Action and set aside cards until you choose to draw one.");
-                CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                nextCardAction.setDeck(Deck.FairyTale);
-                nextCardAction.setCardName("Lost Village");
-                nextCardAction.setInstructions("Draw or set aside top card?");
-                nextCardAction.getChoices().add(new CardActionChoice("Draw", "draw"));
-                nextCardAction.getChoices().add(new CardActionChoice("Set Aside", "aside"));
-                game.setPlayerCardAction(player, nextCardAction);
-            }
-            game.refreshAllPlayersCardsPlayed();
-        } else if (cardAction.getCardName().equals("Lost Village")) {
-            if (choice.equals("aside")) {
-                Card card = player.removeTopDeckCard();
-                if (card != null) {
-                    game.addHistory(player.getUsername(), " set aside ", KingdomUtil.INSTANCE.getArticleWithCardName(card));
-                    game.getSetAsideCards().add(card);
-                    CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                    nextCardAction.setDeck(Deck.FairyTale);
-                    nextCardAction.setCardName(cardAction.getCardName());
-                    nextCardAction.setInstructions("Draw or set aside top card?");
-                    nextCardAction.getChoices().add(new CardActionChoice("Draw", "draw"));
-                    nextCardAction.getChoices().add(new CardActionChoice("Set Aside", "aside"));
-                    game.setPlayerCardAction(player, nextCardAction);
-                } else {
-                    game.setPlayerInfoDialog(player, InfoDialog.Companion.getInfoDialog("Your deck is empty."));
-                    game.addHistory(player.getUsername(), "'s deck is empty");
-                    for (Card setAsideCard : game.getSetAsideCards()) {
-                        player.addCardToDiscard(setAsideCard);
-                    }
-                    game.getSetAsideCards().clear();
-                }
-            } else if (choice.equals("draw")) {
-                player.drawCards(1);
-                game.addHistory(player.getUsername(), " drew the top card of ", player.getPronoun(), " deck");
-                for (Card setAsideCard : game.getSetAsideCards()) {
-                    player.addCardToDiscard(setAsideCard);
-                }
-                game.getSetAsideCards().clear();
-            }
-        } else if (cardAction.getCardName().equals("Magic Beans")) {
-            Card card = cardAction.getCards().get(0);
-            if (choice.equals("trash")) {
-                game.addHistory(player.getUsername(), " chose to trash ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(card));
-                game.removePlayedCard(card);
-                game.getTrashedCards().add(card);
-                game.playerLostCard(player, card);
-            } else if (choice.equals("supply")) {
-                game.addHistory(player.getUsername(), " chose to return ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(card), " to the supply");
-                game.removePlayedCard(card);
-                game.playerLostCard(player, card);
-                game.addToSupply(card.getCardId());
-            }
+            "Develop" -> {
+                val gainCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+                gainCardAction.deck = Deck.Hinterlands
+                gainCardAction.cardName = cardAction.cardName
+                gainCardAction.buttonValue = "Done"
+                gainCardAction.numCards = 1
+                gainCardAction.associatedCard = cardAction.associatedCard
+                gainCardAction.instructions = "Select one of the following cards to gain and then click Done."
 
-            CardAction gainCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-            gainCardAction.setDeck(Deck.FairyTale);
-            gainCardAction.setCardName(card.getName());
-            gainCardAction.setButtonValue("Done");
-            gainCardAction.setNumCards(1);
-            gainCardAction.setInstructions("Select one of the following cards to gain and then click Done.");
-            for (Card c : game.getSupplyMap().values()) {
-                if (game.getCardCost(c) <= 3 && !c.getCostIncludesPotion() && game.isCardInSupply(c)) {
-                    gainCardAction.getCards().add(c);
+                val cards = ArrayList<Card>()
+                var cost = game.getCardCost(gainCardAction.associatedCard!!)
+                when (choice) {
+                    "more" -> {
+                        cost += 1
+                        gainCardAction.phase = 1
+                    }
+                    "less" -> {
+                        cost -= 1
+                        gainCardAction.phase = 2
+                    }
+                }
+                for (c in game.supplyMap.values) {
+                    if (game.getCardCost(c) == cost && cardAction.associatedCard!!.costIncludesPotion == c.costIncludesPotion && game.isCardInSupply(c)) {
+                        cards.add(c)
+                    }
+                }
+
+                gainCardAction.cards = cards
+                game.setPlayerCardAction(player, gainCardAction)
+            }
+            "Duchess" -> when (choice) {
+                "discard" -> {
+                    game.addHistory(player.username, " discarded the top card of ", player.pronoun, " deck")
+                    player.addCardToDiscard(cardAction.associatedCard!!)
+                    game.playerDiscardedCard(player, cardAction.associatedCard!!)
+                }
+                "back" -> {
+                    game.addHistory(player.username, " put back the top card of ", player.pronoun, " deck")
+                    player.addCardToTopOfDeck(cardAction.associatedCard!!)
                 }
             }
-            if (gainCardAction.getCards().size() > 0) {
-                game.setPlayerCardAction(player, gainCardAction);
-            }
-        } else if (cardAction.getCardName().equals("Minion")) {
-            if (choice.equals("coins")) {
-                player.addCoins(2);
-                game.addHistory(player.getUsername(), " chose +2 Coins");
-            } else if (choice.equals("discard")) {
-                game.addHistory(player.getUsername(), " chose to discard all players hands and have them draw 4 cards");
-                for (Card c : player.getHand()) {
-                    game.playerDiscardedCard(player, c);
+            "Explorer" -> when (choice) {
+                "gold" -> if (game.isCardInSupply(Card.GOLD_ID)) {
+                    game.playerGainedCardToHand(player, game.goldCard)
+                    game.refreshHand(player)
                 }
-                player.discardHand();
-                player.drawCards(4);
-                for (Player p : players) {
-                    if (p.getUserId() != player.getUserId()) {
-                        if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(p.getUserId())) {
-                            game.addHistory(p.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-                        } else if (!p.hasMoat() && !p.hasLighthouse() && p.getHand().size() >= 5) {
-                            for (Card c : p.getHand()) {
-                                game.playerDiscardedCard(p, c);
+                "silver" -> if (game.isCardInSupply(Card.SILVER_ID)) {
+                    game.playerGainedCardToHand(player, game.silverCard)
+                    game.refreshHand(player)
+                }
+            }
+            "Governor" -> when (choice) {
+                "cards" -> {
+                    game.addHistory(player.username, " chose to gain cards")
+                    for (p in game.players) {
+                        when {
+                            game.isCurrentPlayer(p) -> p.drawCards(3)
+                            else -> p.drawCards(1)
+                        }
+                    }
+                    game.refreshAllPlayersHand()
+                }
+                "money" -> {
+                    game.addHistory(player.username, " chose Silver and Gold")
+                    if (game.supply[Card.GOLD_ID]!! > 0) {
+                        game.playerGainedCard(player, game.goldCard)
+                    }
+                    var playerIndex = game.calculateNextPlayerIndex(game.currentPlayerIndex)
+                    while (playerIndex != game.currentPlayerIndex) {
+                        val nextPlayer = players[playerIndex]
+                        if (game.supply[Card.SILVER_ID]!! > 0) {
+                            game.playerGainedCard(nextPlayer, game.silverCard)
+                        }
+                        playerIndex = game.calculateNextPlayerIndex(playerIndex)
+                    }
+                    game.refreshAllPlayersDiscard()
+                }
+                "trash" -> {
+                    game.addHistory(player.username, " chose to trash and gain cards")
+                    //todo do in player order
+                    incompleteCard = MultiPlayerIncompleteCard(cardAction.cardName, game, true)
+                    for (p in game.players) {
+                        if (!p.hand.isEmpty()) {
+                            var addToCost = 1
+                            if (game.isCurrentPlayer(p)) {
+                                addToCost = 2
                             }
-                            p.discardHand();
-                            p.drawCards(4);
+                            val trashCardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND).apply {
+                                deck = Deck.Promo
+                                cardName = cardAction.cardName
+                                cards = KingdomUtil.uniqueCardList(p.hand)
+                                numCards = 1
+                                instructions = "Select a card to trash in order to gain a card costing exactly " + KingdomUtil.getPlural(addToCost, "coin") + "  more and then click Done, or just click Done if you don't want to trash a card."
+                                buttonValue = "Done"
+                            }
+                            game.setPlayerCardAction(p, trashCardAction)
                         } else {
-                            if (p.hasLighthouse()) {
-                                game.addHistory(p.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                            } else if (p.hasMoat()) {
-                                game.addHistory(p.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
-                            } else {
-                                game.addHistory(p.getUsername(), " had less than 5 cards");
-                            }
+                            incompleteCard.setPlayerActionCompleted(p.userId)
+                        }
+                    }
+                    incompleteCard.allActionsSet()
+                }
+            }
+            "Hooligans" -> {
+                val affectedPlayer = game.playerMap[cardAction.playerId]!!
+                when (choice) {
+                    "discard" -> {
+                        game.addHistory(player.username, " discarded ", affectedPlayer.username, "'s ", KingdomUtil.getCardWithBackgroundColor(cardAction.associatedCard!!))
+                        affectedPlayer.addCardToDiscard(cardAction.associatedCard!!)
+                        game.playerDiscardedCard(affectedPlayer, cardAction.associatedCard!!)
+                    }
+                    "deck" -> {
+                        game.addHistory(player.username, " put the selected card on top of ", affectedPlayer.username, "'s deck")
+                        affectedPlayer.addCardToTopOfDeck(cardAction.associatedCard!!)
+                    }
+                }
+            }
+            "Jack of all Trades" -> {
+                when (choice) {
+                    "discard" -> {
+                        game.addHistory(player.username, " discarded the top card of ", player.pronoun, " deck")
+                        player.addCardToDiscard(cardAction.associatedCard!!)
+                        game.playerDiscardedCard(player, cardAction.associatedCard!!)
+                    }
+                    "back" -> {
+                        game.addHistory(player.username, " put back the top card of ", player.pronoun, " deck")
+                        player.addCardToTopOfDeck(cardAction.associatedCard!!)
+                    }
+                }
+                while (player.hand.size < 5) {
+                    val topCard = player.removeTopDeckCard() ?: break
+                    player.addCardToHand(topCard)
+                }
+
+                game.refreshHand(player)
+
+                val cards = player.hand.filterNot { it.isTreasure }.toMutableList()
+                if (!cards.isEmpty()) {
+                    val trashCardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND).apply {
+                        deck = Deck.Hinterlands
+                        cardName = cardAction.cardName
+                        numCards = 1
+                        cards.addAll(KingdomUtil.uniqueCardList(cards))
+                        instructions = "Select a card to trash from your hand and then click Done, or just click Done if you don't want to trash a card."
+                        buttonValue = "Done"
+                    }
+                    game.setPlayerCardAction(player, trashCardAction)
+                }
+            }
+            "Jester" -> {
+                val cardToGain = cardAction.cards[0]
+                when (choice) {
+                    "me" -> when {
+                        game.isCardInSupply(cardToGain) -> game.playerGainedCard(player, cardToGain)
+                        else -> game.addHistory("The supply did not have ", KingdomUtil.getArticleWithCardName(cardToGain))
+                    }
+                    "them" -> {
+                        val affectedPlayer = game.playerMap[cardAction.playerId]!!
+                        if (game.isCardInSupply(cardToGain)) {
+                            game.playerGainedCard(affectedPlayer, cardToGain)
+                            game.refreshDiscard(affectedPlayer)
+                        } else {
+                            game.addHistory("The supply did not have ", KingdomUtil.getArticleWithCardName(cardToGain))
                         }
                     }
                 }
-                game.refreshAllPlayersHand();
-                game.refreshAllPlayersDiscard();
-                game.refreshAllPlayersCardsBought();
             }
-        } else if (cardAction.getCardName().equals("Mountebank")) {
-            if (choice.equals("discard")) {
-                player.discardCardFromHand(Card.CURSE_ID);
-                game.addHistory(player.getUsername(), " discarded a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " card");
-                game.refreshHandArea(player);
-            } else if (choice.equals("gain")) {
-                if (game.isCardInSupply(Card.CURSE_ID)) {
-                    game.playerGainedCard(player, game.getCurseCard());
-                }
-                if (game.isCardInSupply(Card.COPPER_ID)) {
-                    game.playerGainedCard(player, game.getCopperCard());
-                }
-                game.refreshDiscard(player);
-            }
-        } else if (cardAction.getCardName().equals("Native Village")) {
-            if (choice.equals("card")) {
-                Card topDeckCard = player.removeTopDeckCard();
-                if (topDeckCard != null) {
-                    player.getNativeVillageCards().add(topDeckCard);
-                    game.addHistory(player.getUsername(), " added ", player.getPronoun(), " top deck card to ", player.getPronoun(), " ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Native Village", Card.ACTION_COLOR));
-                } else {
-                    game.addHistory(player.getUsername(), " did not have any cards to draw");
-                }
-            } else if (choice.equals("hand")) {
-                for (Card card : player.getNativeVillageCards()) {
-                    player.addCardToHand(card);
-                }
-                player.getNativeVillageCards().clear();
-                game.addHistory(player.getUsername(), " added ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Native Village", Card.ACTION_COLOR), " cards to ", player.getPronoun(), " hand");
-            }
-        } else if (cardAction.getCardName().equals("Navigator")) {
-            if (choice.equals("discard")) {
-                player.getDiscard().addAll(cardAction.getCards());
-                for (Card card : cardAction.getCards()) {
-                    game.playerDiscardedCard(player, card);
-                }
-                game.addHistory(player.getUsername(), " chose to discard the cards");
-            } else if (choice.equals("deck")) {
-                CardAction sortCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                sortCardAction.setDeck(Deck.Seaside);
-                sortCardAction.setHideOnSelect(true);
-                sortCardAction.setNumCards(cardAction.getCards().size());
-                sortCardAction.setCardName("Navigator");
-                sortCardAction.setCards(cardAction.getCards());
-                sortCardAction.setButtonValue("Done");
-                sortCardAction.setInstructions("Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)");
-                game.setPlayerCardAction(player, sortCardAction);
-                game.addHistory(player.getUsername(), " chose to put the cards back on ", player.getPronoun(), " deck");
-            }
-        } else if (cardAction.getCardName().equals("Noble Brigand")) {
-            Player nextPlayer = game.getPlayerMap().get(cardAction.getPlayerId());
-            Card cardToTrash;
-            Card cardToDiscard;
-            if (choice.equals("silver")) {
-                cardToTrash = game.getSilverCard();
-                cardToDiscard = game.getGoldCard();
-            } else {
-                cardToTrash = game.getGoldCard();
-                cardToDiscard = game.getSilverCard();
-            }
-            game.addHistory(player.getUsername(), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(cardToTrash));
-            game.playerGainedCard(player, cardToTrash);
-
-            player.addCardToDiscard(cardToDiscard);
-            game.playerDiscardedCard(nextPlayer, cardToDiscard);
-            game.refreshDiscard(nextPlayer);
-        } else if (cardAction.getCardName().equals("Nobles")) {
-            if (choice.equals("cards")) {
-                player.drawCards(3);
-                game.addHistory(player.getUsername(), " chose +3 Cards");
-            } else if (choice.equals("actions")) {
-                player.addActions(2);
-                game.addHistory(player.getUsername(), " chose +2 Actions");
-                game.refreshAllPlayersCardsPlayed();
-            }
-        } else if (cardAction.getCardName().equals("Oracle")) {
-            Player affectedPlayer = game.getPlayerMap().get(cardAction.getPlayerId());
-            if (choice.equals("discard")) {
-                game.getIncompleteCard().setPlayerActionCompleted(affectedPlayer.getUserId());
-                if (game.isCurrentPlayer(affectedPlayer)) {
-                    game.addHistory(player.getUsername(), " chose to discard the top cards of ", affectedPlayer.getPronoun(), " deck");
-                } else {
-                    game.addHistory(player.getUsername(), " chose to discard the top cards of ", affectedPlayer.getUsername(), "'s deck");
-                }
-                for (Card card : cardAction.getCards()) {
-                    affectedPlayer.addCardToDiscard(card);
-                    game.playerDiscardedCard(affectedPlayer, card);
-                }
-                game.refreshDiscard(affectedPlayer);
-            } else if (choice.equals("back")) {
-                if (game.isCurrentPlayer(affectedPlayer)) {
-                    game.addHistory(player.getUsername(), " chose to put back the top cards of ", affectedPlayer.getPronoun(), " deck");
-                } else {
-                    game.addHistory(player.getUsername(), " chose to put back the top cards of ", affectedPlayer.getUsername(), "'s deck");
-                }
-                if (cardAction.getCards().size() == 1 || KingdomUtil.INSTANCE.uniqueCardList(cardAction.getCards()).size() == 1) {
-                    game.getIncompleteCard().setPlayerActionCompleted(affectedPlayer.getUserId());
-                    for (Card card : cardAction.getCards()) {
-                        affectedPlayer.addCardToTopOfDeck(card);
+            "Loan" -> {
+                val treasureCard = cardAction.cards[0]
+                when (choice) {
+                    "discard" -> {
+                        player.addCardToDiscard(treasureCard)
+                        game.addHistory(player.username, " discarded ", KingdomUtil.getArticleWithCardName(treasureCard))
                     }
-                } else {
-                    CardAction reorderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                    reorderCardAction.setDeck(Deck.Hinterlands);
-                    reorderCardAction.setHideOnSelect(true);
-                    reorderCardAction.setNumCards(2);
-                    reorderCardAction.setCardName(cardAction.getCardName());
-                    reorderCardAction.getCards().addAll(cardAction.getCards());
-                    reorderCardAction.setButtonValue("Done");
-                    reorderCardAction.setInstructions("Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)");
-                    game.setPlayerCardAction(affectedPlayer, reorderCardAction);
+                    "trash" -> {
+                        game.trashedCards.add(treasureCard)
+                        game.addHistory(player.username, " trashed ", KingdomUtil.getArticleWithCardName(treasureCard))
+                        game.playerLostCard(player, treasureCard)
+                    }
                 }
             }
-            if (!player.isShowCardAction() && (!game.hasIncompleteCard() || game.getIncompleteCard().getExtraCardActions().isEmpty())) {
-                player.drawCards(2);
+            "Lost Village 1" -> {
+                when (choice) {
+                    "actions" -> {
+                        player.addActions(2)
+                        game.addHistory(player.username, " chose +2 Actions")
+                    }
+                    "draw" -> {
+                        player.addActions(1)
+                        game.addHistory(player.username, " chose +1 Action and set aside cards until you choose to draw one.")
+                        val nextCardAction = CardAction(CardAction.TYPE_CHOICES).apply {
+                            deck = Deck.FairyTale
+                            cardName = "Lost Village"
+                            instructions = "Draw or set aside top card?"
+                            choices.add(CardActionChoice("Draw", "draw"))
+                            choices.add(CardActionChoice("Set Aside", "aside"))
+                        }
+                        game.setPlayerCardAction(player, nextCardAction)
+                    }
+                }
+                game.refreshAllPlayersCardsPlayed()
             }
-        } else if (cardAction.getCardName().equals("Pawn")) {
-            if (choice.equals("cardAndAction")) {
-                player.drawCards(1);
-                player.addActions(1);
-                game.addHistory(player.getUsername(), " chose +1 Card, +1 Action");
-            } else if (choice.equals("cardAndBuy")) {
-                player.drawCards(1);
-                player.addBuys(1);
-                game.addHistory(player.getUsername(), " chose +1 Card, +1 Buy");
-            } else if (choice.equals("cardAndCoin")) {
-                player.drawCards(1);
-                player.addCoins(1);
-                game.addHistory(player.getUsername(), " chose +1 Card, +1 Coin");
-            } else if (choice.equals("actionAndBuy")) {
-                player.addActions(1);
-                player.addBuys(1);
-                game.addHistory(player.getUsername(), " chose +1 Action, +1 Buy");
-            } else if (choice.equals("actionAndCoin")) {
-                player.addActions(1);
-                player.addCoins(1);
-                game.addHistory(player.getUsername(), " chose +1 Action, +1 Coin");
-            } else if (choice.equals("buyAndCoin")) {
-                player.addBuys(1);
-                player.addCoins(1);
-                game.addHistory(player.getUsername(), " chose +1 Buy, +1 Coin");
+            "Lost Village" -> if (choice == "aside") {
+                val card = player.removeTopDeckCard()
+                when {
+                    card != null -> {
+                        game.addHistory(player.username, " set aside ", KingdomUtil.getArticleWithCardName(card))
+                        game.setAsideCards.add(card)
+                        val nextCardAction = CardAction(CardAction.TYPE_CHOICES).apply {
+                            deck = Deck.FairyTale
+                            cardName = cardAction.cardName
+                            instructions = "Draw or set aside top card?"
+                            choices.add(CardActionChoice("Draw", "draw"))
+                            choices.add(CardActionChoice("Set Aside", "aside"))
+                        }
+                        game.setPlayerCardAction(player, nextCardAction)
+                    }
+                    else -> {
+                        game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("Your deck is empty."))
+                        game.addHistory(player.username, "'s deck is empty")
+                        for (setAsideCard in game.setAsideCards) {
+                            player.addCardToDiscard(setAsideCard)
+                        }
+                        game.setAsideCards.clear()
+                    }
+                }
+            } else if (choice == "draw") {
+                player.drawCards(1)
+                game.addHistory(player.username, " drew the top card of ", player.pronoun, " deck")
+                for (setAsideCard in game.setAsideCards) {
+                    player.addCardToDiscard(setAsideCard)
+                }
+                game.setAsideCards.clear()
             }
-            game.refreshAllPlayersPlayingArea();
-        } else if (cardAction.getCardName().equals("Pirate Ship")) {
-            if (choice.equals("attack")) {
-                incompleteCard = new SinglePlayerIncompleteCard(cardAction.getCardName(), game);
-                int nextPlayerIndex = game.getNextPlayerIndex();
-                while (nextPlayerIndex != game.getCurrentPlayerIndex()) {
-                    Player nextPlayer = players.get(nextPlayerIndex);
-                    if (game.isCheckEnchantedPalace() && game.revealedEnchantedPalace(nextPlayer.getUserId())) {
-                        game.addHistory(nextPlayer.getUsername(), " revealed an ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE));
-                    } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
-                        CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOOSE_CARDS);
-                        nextCardAction.setDeck(Deck.Seaside);
-                        nextCardAction.setPlayerId(nextPlayer.getUserId());
-                        nextCardAction.setCardName("Pirate Ship");
-                        Card card1 = nextPlayer.removeTopDeckCard();
-                        if (card1 != null) {
-                            if (!card1.isTreasure()) {
-                                card1.setDisableSelect(true);
-                            }
-                            nextCardAction.getCards().add(card1);
-                            Card card2 = nextPlayer.removeTopDeckCard();
-                            if (card2 != null) {
-                                if (!card2.isTreasure()) {
-                                    card2.setDisableSelect(true);
+            "Magic Beans" -> {
+                val card = cardAction.cards[0]
+                when (choice) {
+                    "trash" -> {
+                        game.addHistory(player.username, " chose to trash ", KingdomUtil.getCardWithBackgroundColor(card))
+                        game.removePlayedCard(card)
+                        game.trashedCards.add(card)
+                        game.playerLostCard(player, card)
+                    }
+                    "supply" -> {
+                        game.addHistory(player.username, " chose to return ", KingdomUtil.getCardWithBackgroundColor(card), " to the supply")
+                        game.removePlayedCard(card)
+                        game.playerLostCard(player, card)
+                        game.addToSupply(card.cardId)
+                    }
+                }
+
+                val gainCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                    deck = Deck.FairyTale
+                    cardName = card.name
+                    buttonValue = "Done"
+                    numCards = 1
+                    instructions = "Select one of the following cards to gain and then click Done."
+                }
+
+                for (c in game.supplyMap.values) {
+                    if (game.getCardCost(c) <= 3 && !c.costIncludesPotion && game.isCardInSupply(c)) {
+                        gainCardAction.cards.add(c)
+                    }
+                }
+
+                if (gainCardAction.cards.size > 0) {
+                    game.setPlayerCardAction(player, gainCardAction)
+                }
+            }
+            "Minion" -> when (choice) {
+                "coins" -> {
+                    player.addCoins(2)
+                    game.addHistory(player.username, " chose +2 Coins")
+                }
+                "discard" -> {
+                    game.addHistory(player.username, " chose to discard all players hands and have them draw 4 cards")
+                    for (c in player.hand) {
+                        game.playerDiscardedCard(player, c)
+                    }
+                    player.discardHand()
+                    player.drawCards(4)
+                    for (p in players) {
+                        if (p.userId != player.userId) {
+                            if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(p.userId)) {
+                                game.addHistory(p.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            } else if (!p.hasMoat() && !p.hasLighthouse() && p.hand.size >= 5) {
+                                for (c in p.hand) {
+                                    game.playerDiscardedCard(p, c)
                                 }
-                                nextCardAction.getCards().add(card2);
-                                String instructions = "These are the top two cards from " + nextPlayer.getUsername() + "'s deck.";
-                                if ((card1 != null && card1.isTreasure()) || (card2 != null && card2.isTreasure())) {
-                                    instructions += " Select a treasure card to trash and then click Done.";
-                                    nextCardAction.setButtonValue("Done");
-                                    nextCardAction.setNumCards(1);
+                                p.discardHand()
+                                p.drawCards(4)
+                            } else {
+                                if (p.hasLighthouse()) {
+                                    game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                } else if (p.hasMoat()) {
+                                    game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
                                 } else {
-                                    instructions += " There are no treasure cards to trash. Click Continue.";
-                                    nextCardAction.setButtonValue("Continue");
-                                    nextCardAction.setNumCards(0);
+                                    game.addHistory(p.username, " had less than 5 cards")
                                 }
-                                nextCardAction.setInstructions(instructions);
-                                incompleteCard.getExtraCardActions().add(nextCardAction);
+                            }
+                        }
+                    }
+                    game.refreshAllPlayersHand()
+                    game.refreshAllPlayersDiscard()
+                    game.refreshAllPlayersCardsBought()
+                }
+            }
+            "Mountebank" -> when (choice) {
+                "discard" -> {
+                    player.discardCardFromHand(Card.CURSE_ID)
+                    game.addHistory(player.username, " discarded a ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " card")
+                    game.refreshHandArea(player)
+                }
+                "gain" -> {
+                    if (game.isCardInSupply(Card.CURSE_ID)) {
+                        game.playerGainedCard(player, game.curseCard)
+                    }
+                    if (game.isCardInSupply(Card.COPPER_ID)) {
+                        game.playerGainedCard(player, game.copperCard)
+                    }
+                    game.refreshDiscard(player)
+                }
+            }
+            "Native Village" -> if (choice == "card") {
+                val topDeckCard = player.removeTopDeckCard()
+                when {
+                    topDeckCard != null -> {
+                        player.nativeVillageCards.add(topDeckCard)
+                        game.addHistory(player.username, " added ", player.pronoun, " top deck card to ", player.pronoun, " ", KingdomUtil.getWordWithBackgroundColor("Native Village", Card.ACTION_COLOR))
+                    }
+                    else -> game.addHistory(player.username, " did not have any cards to draw")
+                }
+            } else if (choice == "hand") {
+                for (card in player.nativeVillageCards) {
+                    player.addCardToHand(card)
+                }
+                player.nativeVillageCards.clear()
+                game.addHistory(player.username, " added ", KingdomUtil.getWordWithBackgroundColor("Native Village", Card.ACTION_COLOR), " cards to ", player.pronoun, " hand")
+            }
+            "Navigator" -> when (choice) {
+                "discard" -> {
+                    player.discard.addAll(cardAction.cards)
+                    for (card in cardAction.cards) {
+                        game.playerDiscardedCard(player, card)
+                    }
+                    game.addHistory(player.username, " chose to discard the cards")
+                }
+                "deck" -> {
+                    val sortCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER).apply {
+                        deck = Deck.Seaside
+                        isHideOnSelect = true
+                        numCards = cardAction.cards.size
+                        cardName = "Navigator"
+                        cards = cardAction.cards
+                        buttonValue = "Done"
+                        instructions = "Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)"
+                    }
+                    game.setPlayerCardAction(player, sortCardAction)
+                    game.addHistory(player.username, " chose to put the cards back on ", player.pronoun, " deck")
+                }
+            }
+            "Noble Brigand" -> {
+                val nextPlayer = game.playerMap[cardAction.playerId]!!
+                val cardToTrash: Card
+                val cardToDiscard: Card
+                when (choice) {
+                    "silver" -> {
+                        cardToTrash = game.silverCard
+                        cardToDiscard = game.goldCard
+                    }
+                    else -> {
+                        cardToTrash = game.goldCard
+                        cardToDiscard = game.silverCard
+                    }
+                }
+                game.addHistory(player.username, " trashed ", nextPlayer.username, "'s ", KingdomUtil.getCardWithBackgroundColor(cardToTrash))
+                game.playerGainedCard(player, cardToTrash)
+
+                player.addCardToDiscard(cardToDiscard)
+                game.playerDiscardedCard(nextPlayer, cardToDiscard)
+                game.refreshDiscard(nextPlayer)
+            }
+            "Nobles" -> when (choice) {
+                "cards" -> {
+                    player.drawCards(3)
+                    game.addHistory(player.username, " chose +3 Cards")
+                }
+                "actions" -> {
+                    player.addActions(2)
+                    game.addHistory(player.username, " chose +2 Actions")
+                    game.refreshAllPlayersCardsPlayed()
+                }
+            }
+            "Oracle" -> {
+                val affectedPlayer = game.playerMap[cardAction.playerId]!!
+                when (choice) {
+                    "discard" -> {
+                        game.incompleteCard!!.setPlayerActionCompleted(affectedPlayer.userId)
+                        if (game.isCurrentPlayer(affectedPlayer)) {
+                            game.addHistory(player.username, " chose to discard the top cards of ", affectedPlayer.pronoun, " deck")
+                        } else {
+                            game.addHistory(player.username, " chose to discard the top cards of ", affectedPlayer.username, "'s deck")
+                        }
+                        for (card in cardAction.cards) {
+                            affectedPlayer.addCardToDiscard(card)
+                            game.playerDiscardedCard(affectedPlayer, card)
+                        }
+                        game.refreshDiscard(affectedPlayer)
+                    }
+                    "back" -> {
+                        if (game.isCurrentPlayer(affectedPlayer)) {
+                            game.addHistory(player.username, " chose to put back the top cards of ", affectedPlayer.pronoun, " deck")
+                        } else {
+                            game.addHistory(player.username, " chose to put back the top cards of ", affectedPlayer.username, "'s deck")
+                        }
+                        if (cardAction.cards.size == 1 || KingdomUtil.uniqueCardList(cardAction.cards).size == 1) {
+                            game.incompleteCard!!.setPlayerActionCompleted(affectedPlayer.userId)
+                            for (card in cardAction.cards) {
+                                affectedPlayer.addCardToTopOfDeck(card)
+                            }
+                        } else {
+                            val reorderCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER).apply {
+                                deck = Deck.Hinterlands
+                                isHideOnSelect = true
+                                numCards = 2
+                                cardName = cardAction.cardName
+                                cards.addAll(cardAction.cards)
+                                buttonValue = "Done"
+                                instructions = "Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)"
+                            }
+                            game.setPlayerCardAction(affectedPlayer, reorderCardAction)
+                        }
+                    }
+                }
+                if (!player.isShowCardAction && (!game.hasIncompleteCard() || game.incompleteCard!!.extraCardActions.isEmpty())) {
+                    player.drawCards(2)
+                }
+            }
+            "Pawn" -> {
+                when (choice) {
+                    "cardAndAction" -> {
+                        player.drawCards(1)
+                        player.addActions(1)
+                        game.addHistory(player.username, " chose +1 Card, +1 Action")
+                    }
+                    "cardAndBuy" -> {
+                        player.drawCards(1)
+                        player.addBuys(1)
+                        game.addHistory(player.username, " chose +1 Card, +1 Buy")
+                    }
+                    "cardAndCoin" -> {
+                        player.drawCards(1)
+                        player.addCoins(1)
+                        game.addHistory(player.username, " chose +1 Card, +1 Coin")
+                    }
+                    "actionAndBuy" -> {
+                        player.addActions(1)
+                        player.addBuys(1)
+                        game.addHistory(player.username, " chose +1 Action, +1 Buy")
+                    }
+                    "actionAndCoin" -> {
+                        player.addActions(1)
+                        player.addCoins(1)
+                        game.addHistory(player.username, " chose +1 Action, +1 Coin")
+                    }
+                    "buyAndCoin" -> {
+                        player.addBuys(1)
+                        player.addCoins(1)
+                        game.addHistory(player.username, " chose +1 Buy, +1 Coin")
+                    }
+                }
+                game.refreshAllPlayersPlayingArea()
+            }
+            "Pirate Ship" -> when (choice) {
+                "attack" -> {
+                    incompleteCard = SinglePlayerIncompleteCard(cardAction.cardName, game)
+                    var nextPlayerIndex = game.nextPlayerIndex
+                    while (nextPlayerIndex != game.currentPlayerIndex) {
+                        val nextPlayer = players[nextPlayerIndex]
+                        if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
+                            game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
+                            val nextCardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                            nextCardAction.deck = Deck.Seaside
+                            nextCardAction.playerId = nextPlayer.userId
+                            nextCardAction.cardName = "Pirate Ship"
+                            val card1 = nextPlayer.removeTopDeckCard()
+                            if (card1 != null) {
+                                if (!card1.isTreasure) {
+                                    card1.isDisableSelect = true
+                                }
+                                nextCardAction.cards.add(card1)
+                                val card2 = nextPlayer.removeTopDeckCard()
+                                if (card2 != null) {
+                                    if (!card2.isTreasure) {
+                                        card2.isDisableSelect = true
+                                    }
+                                    nextCardAction.cards.add(card2)
+                                    var instructions = "These are the top two cards from " + nextPlayer.username + "'s deck."
+                                    if (card1.isTreasure || card2.isTreasure) {
+                                        instructions += " Select a treasure card to trash and then click Done."
+                                        nextCardAction.buttonValue = "Done"
+                                        nextCardAction.numCards = 1
+                                    } else {
+                                        instructions += " There are no treasure cards to trash. Click Continue."
+                                        nextCardAction.buttonValue = "Continue"
+                                        nextCardAction.numCards = 0
+                                    }
+                                    nextCardAction.instructions = instructions
+                                    incompleteCard.extraCardActions.add(nextCardAction)
+                                } else {
+                                    game.addHistory("The top card from ", nextPlayer.username, "'s deck was ", KingdomUtil.getArticleWithCardName(card1))
+                                    if (card1.isTreasure) {
+                                        game.addHistory(player.username, " trashed ", nextPlayer.username, "'s ", KingdomUtil.getWordWithBackgroundColor(card1.name, Card.TREASURE_COLOR))
+                                        game.trashedCards.add(card1)
+                                        game.playerLostCard(player, card1)
+                                    }
+                                }
                             } else {
-                                game.addHistory("The top card from ", nextPlayer.getUsername(), "'s deck was ", KingdomUtil.INSTANCE.getArticleWithCardName(card1));
-                                if (card1.isTreasure()) {
-                                    game.addHistory(player.getUsername(), " trashed ", nextPlayer.getUsername(), "'s ", KingdomUtil.INSTANCE.getWordWithBackgroundColor(card1.getName(), Card.TREASURE_COLOR));
-                                    game.getTrashedCards().add(card1);
-                                    game.playerLostCard(player, card1);
+                                game.addHistory(nextPlayer.username, " did not have any cards to draw")
+                            }
+                        } else {
+                            if (nextPlayer.hasLighthouse()) {
+                                game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            } else {
+                                game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            }
+                        }
+                        if (nextPlayerIndex == players.size - 1) {
+                            nextPlayerIndex = 0
+                        } else {
+                            nextPlayerIndex++
+                        }
+                    }
+                    if (!incompleteCard.extraCardActions.isEmpty()) {
+                        val pirateAttackAction = incompleteCard.extraCardActions.remove()
+                        game.setPlayerCardAction(player, pirateAttackAction)
+                    }
+                }
+                "coins" -> {
+                    player.addCoins(player.pirateShipCoins)
+                    game.addHistory(player.username, " used ", KingdomUtil.getPlural(player.pirateShipCoins, "Pirate Ship Coin"))
+                }
+            }
+            "Rancher" -> when (choice) {
+                "cattle" -> {
+                    player.addCattleTokens(1)
+                    game.addHistory(player.username, " chose +1 cattle token")
+                }
+                "buy" -> {
+                    player.addBuys(1)
+                    game.addHistory(player.username, " chose +1 Buy")
+                    game.refreshAllPlayersCardsBought()
+                }
+            }
+            "Sorceress" -> if (choice != "none") {
+                var showTrashCardAction = false
+                when (choice) {
+                    "cards" -> {
+                        player.drawCards(2)
+                        game.addHistory(player.username, " chose to get +2 Cards")
+                    }
+                    "actions" -> {
+                        player.addActions(2)
+                        game.refreshAllPlayersCardsPlayed()
+                        game.addHistory(player.username, " chose to get +2 Actions")
+                    }
+                    "coins" -> {
+                        player.addCoins(2)
+                        game.refreshAllPlayersCardsPlayed()
+                        game.addHistory(player.username, " chose to get +2 Coins")
+                    }
+                    "buys" -> {
+                        player.addBuys(2)
+                        game.refreshAllPlayersCardsBought()
+                        game.addHistory(player.username, " chose to get +2 Buys")
+                    }
+                    "trash" -> {
+                        game.addHistory(player.username, " chose to trash 2 Cards")
+                        if (player.hand.size == 1) {
+                            game.trashedCards.add(player.hand[0])
+                            game.playerLostCard(player, player.hand[0])
+                            player.removeCardFromHand(player.hand[0])
+                            game.addHistory(player.username, " trashed the last card in ", player.pronoun, " hand")
+                        } else if (player.hand.size >= 2) {
+                            showTrashCardAction = true
+                            val trashCardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND).apply {
+                                deck = Deck.FairyTale
+                                cardName = cardAction.cardName
+                                buttonValue = "Done"
+                                numCards = 2
+                                instructions = "Select two cards to trash."
+                                cards = player.hand
+                                phase = cardAction.phase
+                            }
+                            for (cardActionChoice in cardAction.choices) {
+                                if (cardActionChoice.value != choice) {
+                                    trashCardAction.choices.add(cardActionChoice)
                                 }
                             }
-                        } else {
-                            game.addHistory(nextPlayer.getUsername(), " did not have any cards to draw");
-                        }
-                    } else {
-                        if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR));
-                        } else {
-                            game.addHistory(nextPlayer.getUsername(), " had a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR));
-                        }
-                    }
-                    if (nextPlayerIndex == players.size() - 1) {
-                        nextPlayerIndex = 0;
-                    } else {
-                        nextPlayerIndex++;
-                    }
-                }
-                if (!incompleteCard.getExtraCardActions().isEmpty()) {
-                    CardAction pirateAttackAction = incompleteCard.getExtraCardActions().remove();
-                    game.setPlayerCardAction(player, pirateAttackAction);
-                }
-            } else if (choice.equals("coins")) {
-                player.addCoins(player.getPirateShipCoins());
-                game.addHistory(player.getUsername(), " used ", KingdomUtil.INSTANCE.getPlural(player.getPirateShipCoins(), "Pirate Ship Coin"));
-            }
-        } else if (cardAction.getCardName().equals("Rancher")) {
-            if (choice.equals("cattle")) {
-                player.addCattleTokens(1);
-                game.addHistory(player.getUsername(), " chose +1 cattle token");
-            } else if (choice.equals("buy")) {
-                player.addBuys(1);
-                game.addHistory(player.getUsername(), " chose +1 Buy");
-                game.refreshAllPlayersCardsBought();
-            }
-        } else if (cardAction.getCardName().equals("Sorceress")) {
-            if (!choice.equals("none")) {
-                boolean showTrashCardAction = false;
-                if (choice.equals("cards")) {
-                    player.drawCards(2);
-                    game.addHistory(player.getUsername(), " chose to get +2 Cards");
-                } else if (choice.equals("actions")) {
-                    player.addActions(2);
-                    game.refreshAllPlayersCardsPlayed();
-                    game.addHistory(player.getUsername(), " chose to get +2 Actions");
-                } else if (choice.equals("coins")) {
-                    player.addCoins(2);
-                    game.refreshAllPlayersCardsPlayed();
-                    game.addHistory(player.getUsername(), " chose to get +2 Coins");
-                } else if (choice.equals("buys")) {
-                    player.addBuys(2);
-                    game.refreshAllPlayersCardsBought();
-                    game.addHistory(player.getUsername(), " chose to get +2 Buys");
-                } else if (choice.equals("trash")) {
-                    game.addHistory(player.getUsername(), " chose to trash 2 Cards");
-                    if (player.getHand().size() == 1) {
-                        game.getTrashedCards().add(player.getHand().get(0));
-                        game.playerLostCard(player, player.getHand().get(0));
-                        player.removeCardFromHand(player.getHand().get(0));
-                        game.addHistory(player.getUsername(), " trashed the last card in ", player.getPronoun(), " hand");
-                    } else if (player.getHand().size() >= 2) {
-                        showTrashCardAction = true;
-                        CardAction trashCardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                        trashCardAction.setDeck(Deck.FairyTale);
-                        trashCardAction.setCardName(cardAction.getCardName());
-                        trashCardAction.setButtonValue("Done");
-                        trashCardAction.setNumCards(2);
-                        trashCardAction.setInstructions("Select two cards to trash.");
-                        trashCardAction.setCards(player.getHand());
-                        trashCardAction.setPhase(cardAction.getPhase());
-                        for (CardActionChoice cardActionChoice : cardAction.getChoices()) {
-                            if (!cardActionChoice.getValue().equals(choice)) {
-                                trashCardAction.getChoices().add(cardActionChoice);
+                            if (cardAction.phase == 1) {
+                                trashCardAction.choices.add(CardActionChoice("None", "none"))
                             }
+                            game.setPlayerCardAction(player, trashCardAction)
                         }
-                        if (cardAction.getPhase() == 1) {
-                            trashCardAction.getChoices().add(new CardActionChoice("None", "none"));
-                        }
-                        game.setPlayerCardAction(player, trashCardAction);
                     }
                 }
 
-                int cursesRemaining = game.getSupply().get(Card.CURSE_ID);
-                if (cursesRemaining > 0 && cardAction.getPhase() > 1) {
-                    game.playerGainedCard(player, game.getCurseCard());
+                val cursesRemaining = game.supply[Card.CURSE_ID]!!
+                if (cursesRemaining > 0 && cardAction.phase > 1) {
+                    game.playerGainedCard(player, game.curseCard)
                 }
-                if (!showTrashCardAction && (cursesRemaining > 0 || cardAction.getPhase() == 1)) {
 
-                    CardAction nextCardAction = new CardAction(CardAction.TYPE_CHOICES);
-                    nextCardAction.setDeck(Deck.FairyTale);
-                    nextCardAction.setCardName(cardAction.getCardName());
+                if (!showTrashCardAction && (cursesRemaining > 0 || cardAction.phase == 1)) {
+
+                    val nextCardAction = CardAction(CardAction.TYPE_CHOICES)
+                    nextCardAction.deck = Deck.FairyTale
+                    nextCardAction.cardName = cardAction.cardName
 
                     if (cursesRemaining == 0) {
-                        nextCardAction.setInstructions("There are no curses remaining so you may only choose one more effect.");
+                        nextCardAction.instructions = "There are no curses remaining so you may only choose one more effect."
                     } else {
-                        nextCardAction.setInstructions("Choose another effect to apply (you will gain a curse), or click None if you don't want to apply any more effects.");
+                        nextCardAction.instructions = "Choose another effect to apply (you will gain a curse), or click None if you don't want to apply any more effects."
                     }
 
-                    for (CardActionChoice cardActionChoice : cardAction.getChoices()) {
-                        if (!cardActionChoice.getValue().equals(choice)) {
-                            nextCardAction.getChoices().add(cardActionChoice);
+                    for (cardActionChoice in cardAction.choices) {
+                        if (cardActionChoice.value != choice) {
+                            nextCardAction.choices.add(cardActionChoice)
                         }
                     }
-                    if (cardAction.getPhase() == 1) {
-                        nextCardAction.getChoices().add(new CardActionChoice("None", "none"));
+
+                    if (cardAction.phase == 1) {
+                        nextCardAction.choices.add(CardActionChoice("None", "none"))
                     }
-                    if (cardAction.getChoices().size() > 1) {
-                        nextCardAction.setPhase(cardAction.getPhase() + 1);
-                        game.setPlayerCardAction(player, nextCardAction);
+
+                    if (cardAction.choices.size > 1) {
+                        nextCardAction.phase = cardAction.phase + 1
+                        game.setPlayerCardAction(player, nextCardAction)
                     }
                 }
             }
-        } else if (cardAction.getCardName().equals("Spice Merchant")) {
-            if (choice.equals("cards")) {
-                player.drawCards(2);
-                player.addActions(1);
-                game.refreshAllPlayersCardsPlayed();
-                game.addHistory(player.getUsername(), " chose +2 Cards and +1 Action");
-            } else if (choice.equals("money")) {
-                player.addCoins(2);
-                player.addBuys(1);
-                game.refreshAllPlayersCardsBought();
-                game.addHistory(player.getUsername(), " chose +$2 and +1 Buy");
+            "Spice Merchant" -> when (choice) {
+                "cards" -> {
+                    player.drawCards(2)
+                    player.addActions(1)
+                    game.refreshAllPlayersCardsPlayed()
+                    game.addHistory(player.username, " chose +2 Cards and +1 Action")
+                }
+                "money" -> {
+                    player.addCoins(2)
+                    player.addBuys(1)
+                    game.refreshAllPlayersCardsBought()
+                    game.addHistory(player.username, " chose +$2 and +1 Buy")
+                }
             }
-        } else if (cardAction.getCardName().equals("Steward")) {
-            if (choice.equals("cards")) {
-                player.drawCards(2);
-                game.addHistory(player.getUsername(), " chose +2 Cards");
-            } else if (choice.equals("coins")) {
-                player.addCoins(2);
-                game.addHistory(player.getUsername(), " chose +2 Coins");
-            } else if (choice.equals("trash")) {
-                if (player.getHand().size() > 0) {
-                    if (player.getHand().size() <= 2) {
-                        List<Card> cards = new ArrayList<Card>(player.getHand());
-                        for (Card card : cards) {
-                            player.removeCardFromHand(card);
-                            game.addHistory(player.getUsername(), " trashed ", KingdomUtil.INSTANCE.getArticleWithCardName(card));
+            "Steward" -> when (choice) {
+                "cards" -> {
+                    player.drawCards(2)
+                    game.addHistory(player.username, " chose +2 Cards")
+                }
+                "coins" -> {
+                    player.addCoins(2)
+                    game.addHistory(player.username, " chose +2 Coins")
+                }
+                "trash" -> if (player.hand.size > 0) {
+                    if (player.hand.size <= 2) {
+                        val cards = ArrayList(player.hand)
+                        for (card in cards) {
+                            player.removeCardFromHand(card)
+                            game.addHistory(player.username, " trashed ", KingdomUtil.getArticleWithCardName(card))
                         }
                     } else {
-                        CardAction trashCardsCardAction = new CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND);
-                        trashCardsCardAction.setDeck(Deck.Intrigue);
-                        trashCardsCardAction.setCardName("Steward");
-                        trashCardsCardAction.setButtonValue("Done");
-                        trashCardsCardAction.setNumCards(2);
-                        trashCardsCardAction.setInstructions("Select two cards to trash.");
-                        trashCardsCardAction.setCards(player.getHand());
-                        game.setPlayerCardAction(player, trashCardsCardAction);
+                        val trashCardsCardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND).apply {
+                            deck = Deck.Intrigue
+                            cardName = "Steward"
+                            buttonValue = "Done"
+                            numCards = 2
+                            instructions = "Select two cards to trash."
+                            cards = player.hand
+                        }
+                        game.setPlayerCardAction(player, trashCardsCardAction)
                     }
                 }
             }
-        } else if (cardAction.getCardName().equals("Trusty Steed")) {
-            if (choice.equals("cardsAndActions")) {
-                player.drawCards(2);
-                player.addActions(2);
-                game.addHistory(player.getUsername(), " chose +2 Cards, +2 Actions");
-            } else if (choice.equals("cardsAndCoins")) {
-                player.drawCards(2);
-                player.addCoins(2);
-                game.addHistory(player.getUsername(), " chose +2 Cards, +2 Coins");
-            } else if (choice.equals("cardsAndSilvers")) {
-                player.drawCards(2);
-                game.playerGainedCard(player, game.getSilverCard());
-                game.playerGainedCard(player, game.getSilverCard());
-                game.playerGainedCard(player, game.getSilverCard());
-                game.playerGainedCard(player, game.getSilverCard());
-                player.getDiscard().addAll(player.getDeck());
-                player.getDeck().clear();
-                game.addHistory(player.getUsername(), " chose +2 Cards, gain 4 Silvers and put your deck into your discard pile");
-            } else if (choice.equals("actionsAndCoins")) {
-                player.addActions(2);
-                player.addCoins(2);
-                game.addHistory(player.getUsername(), " chose +2 Actions, +2 Coins");
-            } else if (choice.equals("actionsAndSilvers")) {
-                player.addActions(2);
-                game.playerGainedCard(player, game.getSilverCard());
-                game.playerGainedCard(player, game.getSilverCard());
-                game.playerGainedCard(player, game.getSilverCard());
-                game.playerGainedCard(player, game.getSilverCard());
-                player.getDiscard().addAll(player.getDeck());
-                player.getDeck().clear();
-                game.addHistory(player.getUsername(), " chose +2 Actions, gain 4 Silvers and put your deck into your discard pile");
-            } else if (choice.equals("coinsAndSilvers")) {
-                player.addCoins(2);
-                game.playerGainedCard(player, game.getSilverCard());
-                game.playerGainedCard(player, game.getSilverCard());
-                game.playerGainedCard(player, game.getSilverCard());
-                game.playerGainedCard(player, game.getSilverCard());
-                player.getDiscard().addAll(player.getDeck());
-                player.getDeck().clear();
-                game.addHistory(player.getUsername(), " chose +2 Coins, gain 4 Silvers and put your deck into your discard pile");
+            "Trusty Steed" -> {
+                when (choice) {
+                    "cardsAndActions" -> {
+                        player.drawCards(2)
+                        player.addActions(2)
+                        game.addHistory(player.username, " chose +2 Cards, +2 Actions")
+                    }
+                    "cardsAndCoins" -> {
+                        player.drawCards(2)
+                        player.addCoins(2)
+                        game.addHistory(player.username, " chose +2 Cards, +2 Coins")
+                    }
+                    "cardsAndSilvers" -> {
+                        player.drawCards(2)
+                        game.playerGainedCard(player, game.silverCard)
+                        game.playerGainedCard(player, game.silverCard)
+                        game.playerGainedCard(player, game.silverCard)
+                        game.playerGainedCard(player, game.silverCard)
+                        player.discard.addAll(player.deck)
+                        player.deck.clear()
+                        game.addHistory(player.username, " chose +2 Cards, gain 4 Silvers and put your deck into your discard pile")
+                    }
+                    "actionsAndCoins" -> {
+                        player.addActions(2)
+                        player.addCoins(2)
+                        game.addHistory(player.username, " chose +2 Actions, +2 Coins")
+                    }
+                    "actionsAndSilvers" -> {
+                        player.addActions(2)
+                        game.playerGainedCard(player, game.silverCard)
+                        game.playerGainedCard(player, game.silverCard)
+                        game.playerGainedCard(player, game.silverCard)
+                        game.playerGainedCard(player, game.silverCard)
+                        player.discard.addAll(player.deck)
+                        player.deck.clear()
+                        game.addHistory(player.username, " chose +2 Actions, gain 4 Silvers and put your deck into your discard pile")
+                    }
+                    "coinsAndSilvers" -> {
+                        player.addCoins(2)
+                        game.playerGainedCard(player, game.silverCard)
+                        game.playerGainedCard(player, game.silverCard)
+                        game.playerGainedCard(player, game.silverCard)
+                        game.playerGainedCard(player, game.silverCard)
+                        player.discard.addAll(player.deck)
+                        player.deck.clear()
+                        game.addHistory(player.username, " chose +2 Coins, gain 4 Silvers and put your deck into your discard pile")
+                    }
+                }
+                game.refreshAllPlayersPlayingArea()
             }
-            game.refreshAllPlayersPlayingArea();
-        } else if (cardAction.getCardName().equals("Torturer")) {
-            if (choice.equals("discard")) {
-                int cardsToDiscard = 2;
-                if (player.getHand().size() == 1) {
-                    cardsToDiscard = 1;
+            "Torturer" -> when (choice) {
+                "discard" -> {
+                    var cardsToDiscard = 2
+                    if (player.hand.size == 1) {
+                        cardsToDiscard = 1
+                    }
+                    if (player.hand.size > 0) {
+                        val discardCardsAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND).apply {
+                            deck = Deck.Intrigue
+                            cardName = "Torturer"
+                            buttonValue = "Done"
+                            numCards = cardsToDiscard
+                            instructions = "Select two cards to discard."
+                            cards = player.hand
+                        }
+                        game.setPlayerCardAction(player, discardCardsAction)
+                    }
                 }
-                if (player.getHand().size() > 0) {
-                    CardAction discardCardsAction = new CardAction(CardAction.TYPE_DISCARD_FROM_HAND);
-                    discardCardsAction.setDeck(Deck.Intrigue);
-                    discardCardsAction.setCardName("Torturer");
-                    discardCardsAction.setButtonValue("Done");
-                    discardCardsAction.setNumCards(cardsToDiscard);
-                    discardCardsAction.setInstructions("Select two cards to discard.");
-                    discardCardsAction.setCards(player.getHand());
-                    game.setPlayerCardAction(player, discardCardsAction);
-                }
-            } else if (choice.equals("curse")) {
-                game.addHistory(player.getUsername(), " chose to gain a ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR));
-                if (game.isCardInSupply(Card.CURSE_ID)) {
-                    game.playerGainedCardToHand(player, game.getCurseCard());
-                    player.addCardToHand(game.getCurseCard());
-                    game.refreshHand(player);
-                }
-            }
-        } else if (cardAction.getCardName().equals("Tournament")) {
-            if (choice.equals("prize")) {
-                if (game.getPrizeCards().isEmpty()) {
-                    game.addHistory(player.getUsername(), " chose to gain a Prize but there were no more available");
-                } else if (game.getPrizeCards().size() == 1) {
-                    game.playerGainedCardToTopOfDeck(player, game.getPrizeCards().get(0), false);
-                    game.getPrizeCards().clear();
-                } else {
-                    CardAction choosePrizeCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS);
-                    choosePrizeCardAction.setDeck(Deck.Cornucopia);
-                    choosePrizeCardAction.setCardName(cardAction.getCardName());
-                    choosePrizeCardAction.setNumCards(1);
-                    choosePrizeCardAction.setButtonValue("Done");
-                    choosePrizeCardAction.setInstructions("Select one of the following cards to gain and then click Done.");
-                    choosePrizeCardAction.getCards().addAll(game.getPrizeCards());
-                    game.setPlayerCardAction(player, choosePrizeCardAction);
-                }
-            } else if (choice.equals("duchy")) {
-                if (game.isCardInSupply(Card.DUCHY_ID)) {
-                    game.playerGainedCardToTopOfDeck(player, game.getDuchyCard());
-                    game.addHistory(player.getUsername(), " chose to gain a ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(game.getDuchyCard()));
-                } else {
-                    game.addHistory(player.getUsername(), " chose to gain a ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(game.getDuchyCard()), " but there were no more in the supply");
+                "curse" -> {
+                    game.addHistory(player.username, " chose to gain a ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR))
+                    if (game.isCardInSupply(Card.CURSE_ID)) {
+                        game.playerGainedCardToHand(player, game.curseCard)
+                        player.addCardToHand(game.curseCard)
+                        game.refreshHand(player)
+                    }
                 }
             }
-        } else if (cardAction.getCardName().equals("Trader")) {
-            Card cardToGain = cardAction.getAssociatedCard();
-            if (choice.equals("silver")) {
-                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Trader", Card.ACTION_REACTION_COLOR), " to gain ", KingdomUtil.INSTANCE.getArticleWithCardName(game.getSilverCard()), " instead");
-                if (game.getSupply().get(Card.SILVER_ID) > 0) {
-                    game.playerGainedCard(player, game.getSilverCard());
+            "Tournament" -> when (choice) {
+                "prize" -> when {
+                    game.prizeCards.isEmpty() -> game.addHistory(player.username, " chose to gain a Prize but there were no more available")
+                    game.prizeCards.size == 1 -> {
+                        game.playerGainedCardToTopOfDeck(player, game.prizeCards[0], false)
+                        game.prizeCards.clear()
+                    }
+                    else -> {
+                        val choosePrizeCardAction = CardAction(CardAction.TYPE_GAIN_CARDS).apply {
+                            deck = Deck.Cornucopia
+                            cardName = cardAction.cardName
+                            numCards = 1
+                            buttonValue = "Done"
+                            instructions = "Select one of the following cards to gain and then click Done."
+                            cards.addAll(game.prizeCards)
+                        }
+                        game.setPlayerCardAction(player, choosePrizeCardAction)
+                    }
                 }
-            } else {
-                if (cardAction.getDestination().equals("hand")) {
-                    game.playerGainedCardToHand(player, cardToGain);
-                } else if (cardAction.getDestination().equals("deck")) {
-                    game.playerGainedCardToTopOfDeck(player, cardToGain);
-                } else if (cardAction.getDestination().equals("discard")) {
-                    game.playerGainedCard(player, cardToGain);
-                }
-            }
-        } else if (cardAction.getCardName().equals("Watchtower")) {
-            Card cardToGain = cardAction.getCards().get(0);
-            if (choice.equals("trash")) {
-                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to trash ", KingdomUtil.INSTANCE.getArticleWithCardName(cardToGain));
-                game.moveGainedCard(player, cardToGain, "trash");
-            } else if (choice.equals("deck")) {
-                game.addHistory(player.getUsername(), " revealed ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to put ", KingdomUtil.INSTANCE.getArticleWithCardName(cardToGain), " on top of ", player.getPronoun(), " deck");
-                game.moveGainedCard(player, cardToGain, "deck");
-            } else {
-                if (cardAction.getDestination().equals("hand")) {
-                    game.playerGainedCardToHand(player, cardToGain);
-                } else if (cardAction.getDestination().equals("deck")) {
-                    game.playerGainedCardToTopOfDeck(player, cardToGain);
-                } else if (cardAction.getDestination().equals("discard")) {
-                    game.playerGainedCard(player, cardToGain);
+                "duchy" -> when {
+                    game.isCardInSupply(Card.DUCHY_ID) -> {
+                        game.playerGainedCardToTopOfDeck(player, game.duchyCard)
+                        game.addHistory(player.username, " chose to gain a ", KingdomUtil.getCardWithBackgroundColor(game.duchyCard))
+                    }
+                    else -> game.addHistory(player.username, " chose to gain a ", KingdomUtil.getCardWithBackgroundColor(game.duchyCard), " but there were no more in the supply")
                 }
             }
-        } else if (cardAction.getCardName().equals("Young Witch")) {
-            if (choice.equals("reveal")) {
-                game.addHistory(player.getUsername(), " revealed a Bane card");
-            } else if (choice.equals("curse")) {
-                if (game.getSupply().get(Card.CURSE_ID) > 0) {
-                    game.playerGainedCard(player, game.getCurseCard());
+            "Trader" -> {
+                val cardToGain = cardAction.associatedCard
+                when (choice) {
+                    "silver" -> {
+                        game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Trader", Card.ACTION_REACTION_COLOR), " to gain ", KingdomUtil.getArticleWithCardName(game.silverCard), " instead")
+                        if (game.supply[Card.SILVER_ID]!! > 0) {
+                            game.playerGainedCard(player, game.silverCard)
+                        }
+                    }
+                    else -> when (cardAction.destination) {
+                        "hand" -> game.playerGainedCardToHand(player, cardToGain!!)
+                        "deck" -> game.playerGainedCardToTopOfDeck(player, cardToGain!!)
+                        "discard" -> game.playerGainedCard(player, cardToGain)
+                    }
+                }
+            }
+            "Watchtower" -> {
+                val cardToGain = cardAction.cards[0]
+                when (choice) {
+                    "trash" -> {
+                        game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to trash ", KingdomUtil.getArticleWithCardName(cardToGain))
+                        game.moveGainedCard(player, cardToGain, "trash")
+                    }
+                    "deck" -> {
+                        game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to put ", KingdomUtil.getArticleWithCardName(cardToGain), " on top of ", player.pronoun, " deck")
+                        game.moveGainedCard(player, cardToGain, "deck")
+                    }
+                    else -> when (cardAction.destination) {
+                        "hand" -> game.playerGainedCardToHand(player, cardToGain)
+                        "deck" -> game.playerGainedCardToTopOfDeck(player, cardToGain)
+                        "discard" -> game.playerGainedCard(player, cardToGain)
+                    }
+                }
+            }
+            "Young Witch" -> when (choice) {
+                "reveal" -> game.addHistory(player.username, " revealed a Bane card")
+                "curse" -> if (game.supply[Card.CURSE_ID]!! > 0) {
+                    game.playerGainedCard(player, game.curseCard)
                 }
             }
         }
-        return incompleteCard;
+        return incompleteCard
     }
 }

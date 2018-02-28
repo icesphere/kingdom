@@ -13,7 +13,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
     val durationCards: MutableList<Card> = ArrayList(0)
     val havenCards: MutableList<Card> = ArrayList(0)
     val islandCards: List<Card> = ArrayList(0)
-    val nativeVillageCards: List<Card> = ArrayList(0)
+    val nativeVillageCards: MutableList<Card> = ArrayList(0)
     val treasureCards = ArrayList<Card>(0)
     val actionCards = ArrayList<Card>(0)
     private val victoryCards = ArrayList<Card>(0)

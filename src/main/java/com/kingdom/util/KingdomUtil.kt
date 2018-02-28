@@ -302,7 +302,7 @@ object KingdomUtil {
         return gameTime.toString()
     }
 
-    fun uniqueCardList(list: List<Card>): List<Card> {
+    fun uniqueCardList(list: List<Card>): MutableList<Card> {
         val set = HashSet(list)
         return ArrayList(set)
     }
