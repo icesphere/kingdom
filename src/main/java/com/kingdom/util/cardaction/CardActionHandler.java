@@ -55,7 +55,7 @@ public class CardActionHandler {
                 game.addHistory(player.getUsername(), " added ", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "card"), " on top of ", player.getPronoun(), " deck");
             }
         } else if (type == CardAction.TYPE_CHOOSE_CARDS || type == CardAction.TYPE_SETUP_LEADERS) {
-            incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds);
+            incompleteCard = ChooseCardsHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
         } else if (type == CardAction.TYPE_YES_NO) {
             incompleteCard = YesNoHandler.handleCardAction(game, player, cardAction, yesNoAnswer);
         } else if (type == CardAction.TYPE_CHOICES) {

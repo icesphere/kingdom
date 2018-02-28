@@ -12,13 +12,13 @@ class Player(user: User, game: Game) : Comparable<Player> {
     val discard = LinkedList<Card>()
     val durationCards: MutableList<Card> = ArrayList(0)
     val havenCards: MutableList<Card> = ArrayList(0)
-    val islandCards: List<Card> = ArrayList(0)
+    val islandCards: MutableList<Card> = ArrayList(0)
     val nativeVillageCards: MutableList<Card> = ArrayList(0)
     val treasureCards = ArrayList<Card>(0)
     val actionCards = ArrayList<Card>(0)
     private val victoryCards = ArrayList<Card>(0)
-    val museumCards: List<Card> = ArrayList(0)
-    val cityPlannerCards: List<Card> = ArrayList(0)
+    val museumCards: MutableList<Card> = ArrayList(0)
+    val cityPlannerCards: MutableList<Card> = ArrayList(0)
     var pirateShipCoins: Int = 0
         private set
     var coins: Int = 0
@@ -160,7 +160,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
     val tinkerCards: MutableList<Card> = ArrayList(0)
     val extraCardActions: Queue<CardAction> = LinkedList()
     val isUsingLeaders: Boolean
-    val leaders: List<Card> = ArrayList(3)
+    val leaders: MutableList<Card> = ArrayList(3)
     var pointsFromLeaders: Int = 0
         private set
     private var numCopper: Int = 0

@@ -82,7 +82,7 @@ class Card {
     var cattleTokens: Int = 0
 
     @Transient
-    val associatedCards: List<Card> = ArrayList(0)
+    val associatedCards: MutableList<Card> = ArrayList(0)
 
     @Transient
     var isDisableSelect: Boolean = false
