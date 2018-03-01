@@ -21,7 +21,7 @@ public class CardActionHandler {
         } else if (type == CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY || type == CardAction.TYPE_GAIN_CARDS || type == CardAction.TYPE_GAIN_CARDS_UP_TO) {
             GainCardsHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
         } else if (type == CardAction.TYPE_TRASH_CARDS_FROM_HAND || type == CardAction.TYPE_TRASH_UP_TO_FROM_HAND) {
-            incompleteCard = TrashCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds);
+            incompleteCard = TrashCardsHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
         } else if (type == CardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY) {
             for (Integer selectedCardId : selectedCardIds) {
                 Card card = supplyMap.get(selectedCardId);
