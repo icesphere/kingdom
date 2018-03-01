@@ -63,7 +63,7 @@ public class CardActionHandler {
         } else if (type == CardAction.TYPE_CHOOSE_IN_ORDER) {
             incompleteCard = ChooseInOrderHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
         } else if (type == CardAction.TYPE_CHOOSE_UP_TO) {
-            incompleteCard = ChooseUpToHandler.handleCardAction(game, player, cardAction, selectedCardIds);
+            incompleteCard = ChooseUpToHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
         } else if (type == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || type == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
             ChooseNumberBetweenHandler.INSTANCE.handleCardAction(game, player, cardAction, numberChosen);
         }
