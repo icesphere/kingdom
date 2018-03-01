@@ -34,7 +34,7 @@ public class KingdomComputerCardActionHandler {
                 break;
             case "Bureaucrat": {
                 List<Integer> cardIds = computer.getCardsNotNeeded(cardAction.getCards(), 1);
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
+                CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
                 break;
             }
             case "Cellar":
@@ -44,10 +44,10 @@ public class KingdomComputerCardActionHandler {
                         cardsToDiscard.add(card.getCardId());
                     }
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardsToDiscard, null, null, -1);
+                CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, cardsToDiscard, null, null, -1);
                 break;
             case "Chancellor":
-                CardActionHandler.handleSubmittedCardAction(game, player, null, "yes", null, -1);
+                CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, null, "yes", null, -1);
                 break;
             case "Chapel":
                 List<Integer> cardsToTrash = new ArrayList<>();
@@ -59,17 +59,17 @@ public class KingdomComputerCardActionHandler {
                         break;
                     }
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardsToTrash, null, null, -1);
+                CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, cardsToTrash, null, null, -1);
                 break;
             case "Feast":
                 chooseHighestCostCard(cardAction, computer, game, player);
                 break;
             case "Library":
-                CardActionHandler.handleSubmittedCardAction(game, player, null, "yes", null, -1);
+                CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, null, "yes", null, -1);
                 break;
             case "Militia":
                 int numCardsToDiscard = player.getHand().size() - 3;
-                CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToDiscard(cardAction.getCards(), numCardsToDiscard), null, null, -1);
+                CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, computer.getCardsToDiscard(cardAction.getCards(), numCardsToDiscard), null, null, -1);
                 break;
             case "Mine":
                 if (type == CardAction.TYPE_TRASH_CARDS_FROM_HAND) {
@@ -103,7 +103,7 @@ public class KingdomComputerCardActionHandler {
                         yesNoAnswer = "yes";
                     }
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, null, yesNoAnswer, null, -1);
+                CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, null, yesNoAnswer, null, -1);
                 break;
             case "Thief": {
                 List<Integer> cardIds = new ArrayList<>();
@@ -136,7 +136,7 @@ public class KingdomComputerCardActionHandler {
                         }
                     }
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
+                CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
                 break;
             }
             case "Throne Room": {
@@ -148,7 +148,7 @@ public class KingdomComputerCardActionHandler {
                 Card cardToGain = computer.getHighestCostCard(cardAction.getCards());
                 List<Integer> cardIds = new ArrayList<>();
                 cardIds.add(cardToGain.getCardId());
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
+                CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
                 break;
             }
             default:
@@ -172,6 +172,6 @@ public class KingdomComputerCardActionHandler {
         }
         List<Integer> cardIds = new ArrayList<>();
         cardIds.add(card.getCardId());
-        CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
+        CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
     }
 }

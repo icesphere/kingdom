@@ -19,11 +19,11 @@ public class FanComputerCardActionHandler {
 
         if (cardName.equals("Archivist")) {
             //todo determine when other choice would be better
-            CardActionHandler.handleSubmittedCardAction(game, player, null, null, "draw", -1);
+            CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, null, null, "draw", -1);
         } else if (cardName.equals("Museum")) {
             //todo add logic for when to use museum
             List<Integer> cardIds = new ArrayList<Integer>();
-            CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
+            CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
         }
     }
 }

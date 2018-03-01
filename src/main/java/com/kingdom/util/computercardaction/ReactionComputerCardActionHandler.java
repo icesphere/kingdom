@@ -14,10 +14,10 @@ public class ReactionComputerCardActionHandler {
 
         if (cardName.equals("Choose Reaction")) {
             //todo figure out if one if better than another to play first
-            CardActionHandler.handleSubmittedCardAction(game, player, null, null, cardAction.getChoices().get(0).getValue(), -1);
+            CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, null, null, cardAction.getChoices().get(0).getValue(), -1);
         } else if (cardName.equals("Duchess for Duchy")) {
             //todo determine when it is good to get a Duchess
-            CardActionHandler.handleSubmittedCardAction(game, player, null, "no", null, -1);
+            CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, null, "no", null, -1);
         }
     }
 }

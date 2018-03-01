@@ -1,118 +1,112 @@
-package com.kingdom.util.cardaction;
+package com.kingdom.util.cardaction
 
-import com.kingdom.model.*;
-import com.kingdom.util.KingdomUtil;
+import com.kingdom.model.*
+import com.kingdom.util.KingdomUtil
 
-import java.util.List;
-import java.util.Map;
+object CardActionHandler {
+    fun handleSubmittedCardAction(game: Game, player: Player, selectedCardIds: List<Int>, yesNoAnswer: String, choice: String, numberChosen: Int) {
 
-public class CardActionHandler {
-    public static void handleSubmittedCardAction(Game game, Player player, List<Integer> selectedCardIds, String yesNoAnswer, String choice, int numberChosen) {
+        player.isShowCardAction = false
 
-        player.setShowCardAction(false);
+        val supplyMap = game.supplyMap
+        val cardAction = player.cardAction
+        val type = cardAction!!.type
+        var incompleteCard: IncompleteCard? = null
 
-        Map<Integer, Card> supplyMap = game.getSupplyMap();
-        CardAction cardAction = player.getCardAction();
-        int type = cardAction.getType();
-        IncompleteCard incompleteCard = null;
-
-        if (cardAction.isDiscard()) {
-            incompleteCard = DiscardCardsHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
-        } else if (type == CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY || type == CardAction.TYPE_GAIN_CARDS || type == CardAction.TYPE_GAIN_CARDS_UP_TO) {
-            GainCardsHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
-        } else if (type == CardAction.TYPE_TRASH_CARDS_FROM_HAND || type == CardAction.TYPE_TRASH_UP_TO_FROM_HAND) {
-            incompleteCard = TrashCardsHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
-        } else if (type == CardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY) {
-            for (Integer selectedCardId : selectedCardIds) {
-                Card card = supplyMap.get(selectedCardId);
-                game.playerGainedCardToHand(player, card);
+        when {
+            cardAction.isDiscard -> incompleteCard = DiscardCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY || type == CardAction.TYPE_GAIN_CARDS || type == CardAction.TYPE_GAIN_CARDS_UP_TO -> GainCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == CardAction.TYPE_TRASH_CARDS_FROM_HAND || type == CardAction.TYPE_TRASH_UP_TO_FROM_HAND -> incompleteCard = TrashCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == CardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY -> {
+                selectedCardIds
+                        .mapNotNull { supplyMap[it] }
+                        .forEach { game.playerGainedCardToHand(player, it) }
+                game.refreshPlayingArea(player)
             }
-            game.refreshPlayingArea(player);
-        } else if (type == CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK) {
-            if (selectedCardIds.size() > 1 && cardAction.getCardName().equals("Ghost Ship")) {
-                CardAction reorderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                reorderCardAction.setDeck(Deck.Seaside);
-                reorderCardAction.setHideOnSelect(true);
-                reorderCardAction.setNumCards(selectedCardIds.size());
-                reorderCardAction.setCardName(cardAction.getCardName());
-                for (Integer selectedCardId : selectedCardIds) {
-                    Card card = supplyMap.get(selectedCardId);
-                    player.removeCardFromHand(card);
-                    reorderCardAction.getCards().add(card);
+            type == CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK -> when {
+                selectedCardIds.size > 1 && cardAction.cardName == "Ghost Ship" -> {
+                    val reorderCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER)
+                    reorderCardAction.deck = Deck.Seaside
+                    reorderCardAction.isHideOnSelect = true
+                    reorderCardAction.numCards = selectedCardIds.size
+                    reorderCardAction.cardName = cardAction.cardName
+                    for (selectedCardId in selectedCardIds) {
+                        val card = supplyMap[selectedCardId]!!
+                        player.removeCardFromHand(card)
+                        reorderCardAction.cards.add(card)
+                    }
+                    reorderCardAction.buttonValue = "Done"
+                    reorderCardAction.instructions = "Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)"
+                    game.setPlayerCardAction(player, reorderCardAction)
                 }
-                reorderCardAction.setButtonValue("Done");
-                reorderCardAction.setInstructions("Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)");
-                game.setPlayerCardAction(player, reorderCardAction);
-            } else if (cardAction.getCardName().equals("Bureaucrat")) {
-                Card card = supplyMap.get(selectedCardIds.get(0));
-                game.addHistory(player.getUsername(), " added 1 Victory card on top of ", player.getPronoun(), " deck");
-                player.putCardFromHandOnTopOfDeck(card);
-            } else {
-                for (Integer selectedCardId : selectedCardIds) {
-                    Card card = player.getCardFromHandById(selectedCardId);
-                    player.putCardFromHandOnTopOfDeck(card);
+                cardAction.cardName == "Bureaucrat" -> {
+                    val card = supplyMap[selectedCardIds[0]]!!
+                    game.addHistory(player.username, " added 1 Victory card on top of ", player.pronoun, " deck")
+                    player.putCardFromHandOnTopOfDeck(card)
                 }
-                game.addHistory(player.getUsername(), " added ", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "card"), " on top of ", player.getPronoun(), " deck");
+                else -> {
+                    selectedCardIds
+                            .map { player.getCardFromHandById(it) }
+                            .forEach { player.putCardFromHandOnTopOfDeck(it!!) }
+                    game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardIds.size, "card"), " on top of ", player.pronoun, " deck")
+                }
             }
-        } else if (type == CardAction.TYPE_CHOOSE_CARDS || type == CardAction.TYPE_SETUP_LEADERS) {
-            incompleteCard = ChooseCardsHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
-        } else if (type == CardAction.TYPE_YES_NO) {
-            incompleteCard = YesNoHandler.INSTANCE.handleCardAction(game, player, cardAction, yesNoAnswer);
-        } else if (type == CardAction.TYPE_CHOICES) {
-            incompleteCard = ChoicesHandler.INSTANCE.handleCardAction(game, player, cardAction, choice);
-        } else if (type == CardAction.TYPE_CHOOSE_IN_ORDER) {
-            incompleteCard = ChooseInOrderHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
-        } else if (type == CardAction.TYPE_CHOOSE_UP_TO) {
-            incompleteCard = ChooseUpToHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
-        } else if (type == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || type == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
-            ChooseNumberBetweenHandler.INSTANCE.handleCardAction(game, player, cardAction, numberChosen);
+            type == CardAction.TYPE_CHOOSE_CARDS || type == CardAction.TYPE_SETUP_LEADERS -> incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == CardAction.TYPE_YES_NO -> incompleteCard = YesNoHandler.handleCardAction(game, player, cardAction, yesNoAnswer)
+            type == CardAction.TYPE_CHOICES -> incompleteCard = ChoicesHandler.handleCardAction(game, player, cardAction, choice)
+            type == CardAction.TYPE_CHOOSE_IN_ORDER -> incompleteCard = ChooseInOrderHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == CardAction.TYPE_CHOOSE_UP_TO -> incompleteCard = ChooseUpToHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || type == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN -> ChooseNumberBetweenHandler.handleCardAction(game, player, cardAction, numberChosen)
         }
 
-        if (cardAction.isGainCardAction()) {
-            game.finishedGainCardAction(player, cardAction);
+        if (cardAction.isGainCardAction) {
+            game.finishedGainCardAction(player, cardAction)
         }
 
         if (game.hasIncompleteCard()) {
-            game.getIncompleteCard().actionFinished(player);
+            game.incompleteCard!!.actionFinished(player)
         }
 
-        game.refreshHandArea(player);
-        game.refreshCardsBought(player);
+        game.refreshHandArea(player)
+        game.refreshCardsBought(player)
 
-
-        if (!player.isShowCardAction() && !player.getExtraCardActions().isEmpty()) {
-            game.setPlayerCardAction(player, player.getExtraCardActions().remove());
-        } else if (!player.isShowCardAction() && cardAction.isGainCardAction() && game.hasUnfinishedGainCardActions()) {
-            if (!cardAction.getAssociatedCard().getGainCardActions().isEmpty()) {
-                game.setPlayerGainCardAction(player, cardAction.getAssociatedCard());
-            } else {
-                game.setPlayerGainCardAction(player, game.getCardWithUnfinishedGainCardActions());
+        when {
+            !player.isShowCardAction && !player.extraCardActions.isEmpty() -> game.setPlayerCardAction(player, player.extraCardActions.remove())
+            !player.isShowCardAction && cardAction.isGainCardAction && game.hasUnfinishedGainCardActions() -> when {
+                !cardAction.associatedCard!!.gainCardActions.isEmpty() -> game.setPlayerGainCardAction(player, cardAction.associatedCard!!)
+                else -> game.setPlayerGainCardAction(player, game.cardWithUnfinishedGainCardActions)
             }
         }
 
-        if (cardAction.isGainCardAfterBuyAction()) {
-            game.playerGainedCard(player, cardAction.getAssociatedCard());
+        if (cardAction.isGainCardAfterBuyAction) {
+            game.playerGainedCard(player, cardAction.associatedCard!!)
         }
+
+            //check for throne room/king's court/golem actions
 
         //check for throne room/king's court/golem actions
-        if (!game.hasIncompleteCard() && !game.getCurrentPlayer().isShowCardAction()) {
-            if (!game.getRepeatedActions().isEmpty()) {
-                game.playRepeatedAction(game.getCurrentPlayer(), false);
-            } else if (!game.getGolemActions().isEmpty()) {
-                game.playGolemActionCard(game.getCurrentPlayer());
+
+        //check for throne room/king's court/golem actions
+
+        //check for throne room/king's court/golem actions
+        if (!game.hasIncompleteCard() && !game.currentPlayer!!.isShowCardAction) {
+            if (!game.repeatedActions.isEmpty()) {
+                game.playRepeatedAction(game.currentPlayer!!, false)
+            } else if (!game.golemActions.isEmpty()) {
+                game.playGolemActionCard(game.currentPlayer)
             }
         }
 
-        if (!game.hasIncompleteCard() && !player.isShowCardAction() && !game.isCurrentPlayer(player) && game.getPlayersWithCardActions().isEmpty()) {
-            if (game.getCurrentPlayer().isShowCardAction() && game.getCurrentPlayer().getCardAction().isWaitingForPlayers()) {
-                game.closeCardActionDialog(game.getCurrentPlayer());
-                game.closeLoadingDialog(game.getCurrentPlayer());
+        if (!game.hasIncompleteCard() && !player.isShowCardAction && !game.isCurrentPlayer(player) && game.playersWithCardActions.isEmpty()) {
+            if (game.currentPlayer!!.isShowCardAction && game.currentPlayer!!.cardAction!!.isWaitingForPlayers) {
+                game.closeCardActionDialog(game.currentPlayer!!)
+                game.closeLoadingDialog(game.currentPlayer!!)
             }
         }
 
-        if (incompleteCard != null && incompleteCard.isEndTurn()) {
-            game.setEndingTurn(false);
-            game.endPlayerTurn(player, false);
+        if (incompleteCard != null && incompleteCard.isEndTurn) {
+            game.isEndingTurn = false
+            game.endPlayerTurn(player, false)
         }
     }
 }

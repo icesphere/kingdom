@@ -27,12 +27,12 @@ public class LeaderComputerCardActionHandler {
             for (int i = 0; i < cardAction.getNumCards(); i++) {
                 cardIds.add(cards.get(i).getCardId());
             }
-            CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
+            CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
         } else if (cardName.equals("Bilkis")) {
             Card cardToGain = computer.getHighestCostCard(cardAction.getCards());
             List<Integer> cardIds = new ArrayList<Integer>();
             cardIds.add(cardToGain.getCardId());
-            CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
+            CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, cardIds, null, null, -1);
         } else if (cardName.equals("Plato")) {
             List<Integer> cardsToTrash = new ArrayList<Integer>();
             for (Card card : cardAction.getCards()) {
@@ -43,7 +43,7 @@ public class LeaderComputerCardActionHandler {
                     break;
                 }
             }
-            CardActionHandler.handleSubmittedCardAction(game, player, cardsToTrash, null, null, -1);
+            CardActionHandler.INSTANCE.handleSubmittedCardAction(game, player, cardsToTrash, null, null, -1);
         }
     }
 }
