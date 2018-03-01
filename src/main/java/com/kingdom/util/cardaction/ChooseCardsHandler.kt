@@ -234,11 +234,8 @@ object ChooseCardsHandler {
                     }
                     val card = cardAction.cards[0]
                     val cost = card.cost
-                    for (c in game.supplyMap.values) {
-                        if (game.getCardCost(c) == cost && c.costIncludesPotion == card.costIncludesPotion && game.supply[c.cardId]!! > 0) {
-                            chooseAgainCardAction.cards.add(c)
-                        }
-                    }
+                    game.supplyMap.values
+                            .filterTo (chooseAgainCardAction.cards) { game.getCardCost(it) == cost && it.costIncludesPotion == card.costIncludesPotion && game.supply[it.cardId]!! > 0 }
                     if (chooseAgainCardAction.cards.size > 0) {
                         game.setPlayerCardAction(game.currentPlayer!!, chooseAgainCardAction)
                     } else {
@@ -329,11 +326,8 @@ object ChooseCardsHandler {
                     numCards = 1
                     instructions = "Select one of the following cards to gain and then click Done."
                 }
-                for (c in game.supplyMap.values) {
-                    if (c.isAction && game.getCardCost(c) <= combinedCost && (!c.costIncludesPotion || selectedCard.costIncludesPotion || cardAction.associatedCard!!.costIncludesPotion) && game.isCardInSupply(c)) {
-                        gainCardAction.cards.add(c)
-                    }
-                }
+                game.supplyMap.values
+                        .filterTo (gainCardAction.cards) { it.isAction && game.getCardCost(it) <= combinedCost && (!it.costIncludesPotion || selectedCard.costIncludesPotion || cardAction.associatedCard!!.costIncludesPotion) && game.isCardInSupply(it) }
                 if (gainCardAction.cards.size > 0) {
                     game.setPlayerCardAction(player, gainCardAction)
                 }

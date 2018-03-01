@@ -92,7 +92,6 @@ object ChoicesHandler {
                 gainCardAction.associatedCard = cardAction.associatedCard
                 gainCardAction.instructions = "Select one of the following cards to gain and then click Done."
 
-                val cards = ArrayList<Card>()
                 var cost = game.getCardCost(gainCardAction.associatedCard!!)
                 when (choice) {
                     "more" -> {
@@ -104,11 +103,9 @@ object ChoicesHandler {
                         gainCardAction.phase = 2
                     }
                 }
-                for (c in game.supplyMap.values) {
-                    if (game.getCardCost(c) == cost && cardAction.associatedCard!!.costIncludesPotion == c.costIncludesPotion && game.isCardInSupply(c)) {
-                        cards.add(c)
-                    }
-                }
+                val cards = game.supplyMap.values
+                        .filter { game.getCardCost(it) == cost && cardAction.associatedCard!!.costIncludesPotion == it.costIncludesPotion && game.isCardInSupply(it) }
+                        .toMutableList()
 
                 gainCardAction.cards = cards
                 game.setPlayerCardAction(player, gainCardAction)
@@ -342,11 +339,8 @@ object ChoicesHandler {
                     instructions = "Select one of the following cards to gain and then click Done."
                 }
 
-                for (c in game.supplyMap.values) {
-                    if (game.getCardCost(c) <= 3 && !c.costIncludesPotion && game.isCardInSupply(c)) {
-                        gainCardAction.cards.add(c)
-                    }
-                }
+                game.supplyMap.values
+                        .filterTo (gainCardAction.cards) { game.getCardCost(it) <= 3 && !it.costIncludesPotion && game.isCardInSupply(it) }
 
                 if (gainCardAction.cards.size > 0) {
                     game.setPlayerCardAction(player, gainCardAction)
@@ -364,27 +358,25 @@ object ChoicesHandler {
                     }
                     player.discardHand()
                     player.drawCards(4)
-                    for (p in players) {
-                        if (p.userId != player.userId) {
-                            if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(p.userId)) {
-                                game.addHistory(p.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
-                            } else if (!p.hasMoat() && !p.hasLighthouse() && p.hand.size >= 5) {
-                                for (c in p.hand) {
-                                    game.playerDiscardedCard(p, c)
-                                }
-                                p.discardHand()
-                                p.drawCards(4)
-                            } else {
-                                if (p.hasLighthouse()) {
-                                    game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
-                                } else if (p.hasMoat()) {
-                                    game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                    players
+                            .filter { it.userId != player.userId }
+                            .forEach {
+                                if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(it.userId)) {
+                                    game.addHistory(it.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                                } else if (!it.hasMoat() && !it.hasLighthouse() && it.hand.size >= 5) {
+                                    for (c in it.hand) {
+                                        game.playerDiscardedCard(it, c)
+                                    }
+                                    it.discardHand()
+                                    it.drawCards(4)
                                 } else {
-                                    game.addHistory(p.username, " had less than 5 cards")
+                                    when {
+                                        it.hasLighthouse() -> game.addHistory(it.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                        it.hasMoat() -> game.addHistory(it.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                        else -> game.addHistory(it.username, " had less than 5 cards")
+                                    }
                                 }
                             }
-                        }
-                    }
                     game.refreshAllPlayersHand()
                     game.refreshAllPlayersDiscard()
                     game.refreshAllPlayersCardsBought()
@@ -678,11 +670,8 @@ object ChoicesHandler {
                                 cards = player.hand
                                 phase = cardAction.phase
                             }
-                            for (cardActionChoice in cardAction.choices) {
-                                if (cardActionChoice.value != choice) {
-                                    trashCardAction.choices.add(cardActionChoice)
-                                }
-                            }
+                            cardAction.choices
+                                    .filterTo (trashCardAction.choices) { it.value != choice }
                             if (cardAction.phase == 1) {
                                 trashCardAction.choices.add(CardActionChoice("None", "none"))
                             }
@@ -708,11 +697,8 @@ object ChoicesHandler {
                         nextCardAction.instructions = "Choose another effect to apply (you will gain a curse), or click None if you don't want to apply any more effects."
                     }
 
-                    for (cardActionChoice in cardAction.choices) {
-                        if (cardActionChoice.value != choice) {
-                            nextCardAction.choices.add(cardActionChoice)
-                        }
-                    }
+                    cardAction.choices
+                            .filterTo (nextCardAction.choices) { it.value != choice }
 
                     if (cardAction.phase == 1) {
                         nextCardAction.choices.add(CardActionChoice("None", "none"))
@@ -872,7 +858,7 @@ object ChoicesHandler {
                 }
             }
             "Trader" -> {
-                val cardToGain = cardAction.associatedCard
+                val cardToGain = cardAction.associatedCard!!
                 when (choice) {
                     "silver" -> {
                         game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Trader", Card.ACTION_REACTION_COLOR), " to gain ", KingdomUtil.getArticleWithCardName(game.silverCard), " instead")
@@ -881,8 +867,8 @@ object ChoicesHandler {
                         }
                     }
                     else -> when (cardAction.destination) {
-                        "hand" -> game.playerGainedCardToHand(player, cardToGain!!)
-                        "deck" -> game.playerGainedCardToTopOfDeck(player, cardToGain!!)
+                        "hand" -> game.playerGainedCardToHand(player, cardToGain)
+                        "deck" -> game.playerGainedCardToTopOfDeck(player, cardToGain)
                         "discard" -> game.playerGainedCard(player, cardToGain)
                     }
                 }

@@ -11,14 +11,15 @@ object GainCardsHandler {
         val cardMap = game.cardMap
 
         if (cardAction.cardName != "Tournament" && cardAction.cardName != "Museum" && cardAction.cardName != "Artisan") {
-            for (selectedCardId in selectedCardIds) {
-                val card = cardMap[selectedCardId]!!
-                when (type) {
-                    CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY,
-                    CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY -> game.playerGainedCard(player, card)
-                    else -> game.playerGainedCard(player, card, false)
-                }
-            }
+            selectedCardIds
+                    .map { cardMap[it]!! }
+                    .forEach {
+                        when (type) {
+                            CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY,
+                            CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY -> game.playerGainedCard(player, it)
+                            else -> game.playerGainedCard(player, it, false)
+                        }
+                    }
         }
 
         when (cardAction.cardName) {

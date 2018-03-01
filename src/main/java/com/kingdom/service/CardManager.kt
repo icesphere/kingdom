@@ -44,7 +44,7 @@ class CardManager(private val cardRepository: CardRepository,
     }
 
     fun setRandomKingdomCards(game: Game) {
-        cardRandomizer.setRandomKingdomCards(game, game.randomizingOptions)
+        cardRandomizer.setRandomKingdomCards(game, game.randomizingOptions!!)
     }
 
     fun swapRandomCard(game: Game, cardId: Int) {

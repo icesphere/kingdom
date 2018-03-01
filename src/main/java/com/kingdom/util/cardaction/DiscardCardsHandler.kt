@@ -72,7 +72,7 @@ object DiscardCardsHandler {
                 game.addHistory(player.username, " gained +1 Buy")
             }
             "Scriptorium" -> {
-                val selectedCard = game.cardMap[selectedCardIds[0]]
+                val selectedCard = game.cardMap[selectedCardIds[0]]!!
                 game.playerGainedCard(player, selectedCard)
             }
             "Secret Chamber" -> player.addCoins(selectedCardIds.size)

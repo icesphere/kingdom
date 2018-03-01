@@ -4,7 +4,7 @@ import com.kingdom.model.*
 import com.kingdom.util.KingdomUtil
 
 object CardActionHandler {
-    fun handleSubmittedCardAction(game: Game, player: Player, selectedCardIds: List<Int>, yesNoAnswer: String, choice: String, numberChosen: Int) {
+    fun handleSubmittedCardAction(game: Game, player: Player, selectedCardIds: List<Int>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
 
         player.isShowCardAction = false
 
@@ -52,8 +52,8 @@ object CardActionHandler {
                 }
             }
             type == CardAction.TYPE_CHOOSE_CARDS || type == CardAction.TYPE_SETUP_LEADERS -> incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
-            type == CardAction.TYPE_YES_NO -> incompleteCard = YesNoHandler.handleCardAction(game, player, cardAction, yesNoAnswer)
-            type == CardAction.TYPE_CHOICES -> incompleteCard = ChoicesHandler.handleCardAction(game, player, cardAction, choice)
+            type == CardAction.TYPE_YES_NO -> incompleteCard = YesNoHandler.handleCardAction(game, player, cardAction, yesNoAnswer!!)
+            type == CardAction.TYPE_CHOICES -> incompleteCard = ChoicesHandler.handleCardAction(game, player, cardAction, choice!!)
             type == CardAction.TYPE_CHOOSE_IN_ORDER -> incompleteCard = ChooseInOrderHandler.handleCardAction(game, player, cardAction, selectedCardIds)
             type == CardAction.TYPE_CHOOSE_UP_TO -> incompleteCard = ChooseUpToHandler.handleCardAction(game, player, cardAction, selectedCardIds)
             type == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || type == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN -> ChooseNumberBetweenHandler.handleCardAction(game, player, cardAction, numberChosen)

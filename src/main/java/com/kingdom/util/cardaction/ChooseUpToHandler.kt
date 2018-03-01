@@ -78,7 +78,7 @@ object ChooseUpToHandler {
                 game.addHistory(player.username, " chose not to play an action with ", KingdomUtil.getWordWithBackgroundColor("King's Court", Card.ACTION_COLOR))
             }
             "Mendicant" -> if (selectedCardIds.isNotEmpty()) {
-                val selectedCard = cardMap[selectedCardIds[0]]
+                val selectedCard = cardMap[selectedCardIds[0]]!!
                 game.trashedCards.remove(selectedCard)
                 game.playerGainedCard(player, selectedCard, false)
             } else {

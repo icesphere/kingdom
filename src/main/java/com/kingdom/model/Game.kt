@@ -2805,7 +2805,7 @@ class Game(val gameId: Int) {
         this.gameManager = gameManager
     }
 
-    fun cardActionSubmitted(player: Player, selectedCardIds: List<Int>?, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
+    fun cardActionSubmitted(player: Player, selectedCardIds: List<Int>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
         if (allowClick(player)) {
             updateLastActivity()
             try {
