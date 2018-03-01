@@ -1,115 +1,119 @@
-package com.kingdom.util.cardaction;
+package com.kingdom.util.cardaction
 
-import com.kingdom.model.*;
-import com.kingdom.util.KingdomUtil;
+import com.kingdom.model.*
+import com.kingdom.util.KingdomUtil
 
-import java.util.List;
+object DiscardCardsHandler {
+    fun handleCardAction(game: Game, player: Player, cardAction: CardAction, selectedCardIds: List<Int>): IncompleteCard? {
 
-public class DiscardCardsHandler {
-    public static IncompleteCard handleCardAction(Game game, Player player, CardAction cardAction, List<Integer> selectedCardIds) {
-
-        IncompleteCard incompleteCard = null;
+        var incompleteCard: IncompleteCard? = null
 
         if (selectedCardIds.isEmpty()) {
-            game.addHistory(player.getUsername(), " did not discard a card");
+            game.addHistory(player.username, " did not discard a card")
         } else {
-            game.addHistory(player.getUsername(), " discarded ", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "card"));
+            game.addHistory(player.username, " discarded ", KingdomUtil.getPlural(selectedCardIds.size, "card"))
         }
 
-        for (Integer selectedCardId : selectedCardIds) {
-            if (cardAction.getType() == CardAction.TYPE_DISCARD_UP_TO) {
-                player.addCardToDiscard(game.getCardMap().get(selectedCardId));
-                game.playerDiscardedCard(player, game.getCardMap().get(selectedCardId));
+        for (selectedCardId in selectedCardIds) {
+            val selectedCard = game.cardMap[selectedCardId]!!
+            if (cardAction.type == CardAction.TYPE_DISCARD_UP_TO) {
+                player.addCardToDiscard(selectedCard)
+                game.playerDiscardedCard(player, selectedCard)
             } else {
-                player.discardCardFromHand(selectedCardId);
-                game.playerDiscardedCard(player, game.getCardMap().get(selectedCardId));
+                player.discardCardFromHand(selectedCardId)
+                game.playerDiscardedCard(player, selectedCard)
             }
         }
-        if (cardAction.getCardName().equals("Cartographer")) {
-            List<Card> cards = cardAction.getCards();
-            for (Integer selectedCardId : selectedCardIds) {
-                Card card = game.getCardMap().get(selectedCardId);
-                cards.remove(card);
-            }
-            if (!cards.isEmpty()) {
-                if (cards.size() == 1) {
-                    player.addCardToTopOfDeck(cards.get(0));
-                } else {
-                    CardAction chooseOrderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-                    chooseOrderCardAction.setDeck(Deck.Hinterlands);
-                    chooseOrderCardAction.setHideOnSelect(true);
-                    chooseOrderCardAction.setNumCards(cards.size());
-                    chooseOrderCardAction.setCardName(cardAction.getCardName());
-                    chooseOrderCardAction.setCards(cards);
-                    chooseOrderCardAction.setButtonValue("Done");
-                    chooseOrderCardAction.setInstructions("Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)");
-                    game.setPlayerCardAction(player, chooseOrderCardAction);
-                }
-            }
-        } else if (cardAction.getCardName().equals("Cellar")) {
-            player.drawCards(selectedCardIds.size());
-        } else if (cardAction.getCardName().equals("Druid")) {
-            player.addCoins(2 * selectedCardIds.size());
-        } else if (cardAction.getCardName().equals("Fruit Merchant")) {
-            if (!selectedCardIds.isEmpty()) {
-                player.addFruitTokens(selectedCardIds.size());
-                game.addHistory(player.getUsername(), " gained ", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "fruit token"));
-            }
-        } else if (cardAction.getCardName().equals("Hamlet")) {
-            player.addActions(1);
-            game.refreshAllPlayersCardsPlayed();
-            game.addHistory(player.getUsername(), " gained +1 Action");
-            if (player.getHand().isEmpty()) {
-                game.addHistory(player.getUsername(), " did not have any cards in ", player.getPronoun(), " hand to discard for +1 Buy");
-            } else {
-                incompleteCard = new SinglePlayerIncompleteCard(cardAction.getCardName(), game);
-                game.addNextAction("discard for buy");
-            }
-        } else if (cardAction.getCardName().equals("Hamlet2")) {
-            player.addBuys(1);
-            game.refreshAllPlayersCardsBought();
-            game.addHistory(player.getUsername(), " gained +1 Buy");
-        } else if (cardAction.getCardName().equals("Scriptorium")) {
-            Card selectedCard = game.getCardMap().get(selectedCardIds.get(0));
-            game.playerGainedCard(player, selectedCard);
-        } else if (cardAction.getCardName().equals("Secret Chamber")) {
-            player.addCoins(selectedCardIds.size());
-        } else if (cardAction.getCardName().equals("Stables")) {
-            if (!selectedCardIds.isEmpty()) {
-                game.addHistory(player.getUsername(), " gained +3 Cards and +1 Action");
-                player.drawCards(3);
-                player.addActions(1);
-                game.refreshAllPlayersCardsPlayed();
-            }
-        } else if (cardAction.getCardName().equals("Vault")) {
-            incompleteCard = new MultiPlayerIncompleteCard(cardAction.getCardName(), game, false);
-            player.addCoins(selectedCardIds.size());
-            game.addHistory(player.getUsername(), " gained +", KingdomUtil.INSTANCE.getPlural(selectedCardIds.size(), "Coin"), " from playing ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("Vault", Card.ACTION_COLOR), "");
 
-            for (Player otherPlayer : game.getPlayers()) {
-                if (otherPlayer.getUserId() != game.getCurrentPlayerId()) {
-                    if (otherPlayer.getHand().size() >= 1) {
-                        CardAction yesNoCardAction = new CardAction(CardAction.TYPE_YES_NO);
-                        yesNoCardAction.setDeck(Deck.Prosperity);
-                        yesNoCardAction.setCardName("Vault");
-                        if (otherPlayer.getHand().size() == 1) {
-                            yesNoCardAction.setNumCards(1);
-                            yesNoCardAction.setInstructions("Do you want to discard the card in your hand?");
-                        } else {
-                            yesNoCardAction.setNumCards(2);
-                            yesNoCardAction.setInstructions("Do you want to discard two cards and draw one card?");
-                        }
-                        game.setPlayerCardAction(otherPlayer, yesNoCardAction);
+        when (cardAction.cardName) {
+            "Cartographer" -> {
+                val cards = cardAction.cards
+                selectedCardIds
+                        .map { game.cardMap[it] }
+                        .forEach { cards.remove(it) }
+
+                if (cards.isNotEmpty()) {
+                    if (cards.size == 1) {
+                        player.addCardToTopOfDeck(cards[0])
                     } else {
-                        incompleteCard.setPlayerActionCompleted(otherPlayer.getUserId());
+                        val chooseOrderCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER).apply {
+                            deck = Deck.Hinterlands
+                            isHideOnSelect = true
+                            numCards = cards.size
+                            cardName = cardAction.cardName
+                            this.cards = cards
+                            buttonValue = "Done"
+                            instructions = "Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)"
+                        }
+                        game.setPlayerCardAction(player, chooseOrderCardAction)
                     }
                 }
             }
-            incompleteCard.allActionsSet();
-        } else if (cardAction.getCardName().equals("Vault2")) {
-            player.drawCards(1);
+            "Cellar" -> player.drawCards(selectedCardIds.size)
+            "Druid" -> player.addCoins(2 * selectedCardIds.size)
+            "Fruit Merchant" -> if (selectedCardIds.isNotEmpty()) {
+                player.addFruitTokens(selectedCardIds.size)
+                game.addHistory(player.username, " gained ", KingdomUtil.getPlural(selectedCardIds.size, "fruit token"))
+            }
+            "Hamlet" -> {
+                player.addActions(1)
+                game.refreshAllPlayersCardsPlayed()
+                game.addHistory(player.username, " gained +1 Action")
+                if (player.hand.isEmpty()) {
+                    game.addHistory(player.username, " did not have any cards in ", player.pronoun, " hand to discard for +1 Buy")
+                } else {
+                    incompleteCard = SinglePlayerIncompleteCard(cardAction.cardName, game)
+                    game.addNextAction("discard for buy")
+                }
+            }
+            "Hamlet2" -> {
+                player.addBuys(1)
+                game.refreshAllPlayersCardsBought()
+                game.addHistory(player.username, " gained +1 Buy")
+            }
+            "Scriptorium" -> {
+                val selectedCard = game.cardMap[selectedCardIds[0]]
+                game.playerGainedCard(player, selectedCard)
+            }
+            "Secret Chamber" -> player.addCoins(selectedCardIds.size)
+            "Stables" -> if (!selectedCardIds.isEmpty()) {
+                game.addHistory(player.username, " gained +3 Cards and +1 Action")
+                player.drawCards(3)
+                player.addActions(1)
+                game.refreshAllPlayersCardsPlayed()
+            }
+            "Vault" -> {
+                incompleteCard = MultiPlayerIncompleteCard(cardAction.cardName, game, false)
+                player.addCoins(selectedCardIds.size)
+                game.addHistory(player.username, " gained +", KingdomUtil.getPlural(selectedCardIds.size, "Coin"), " from playing ", KingdomUtil.getWordWithBackgroundColor("Vault", Card.ACTION_COLOR), "")
+
+                for (otherPlayer in game.players) {
+                    if (otherPlayer.userId != game.currentPlayerId) {
+                        if (otherPlayer.hand.size >= 1) {
+                            val yesNoCardAction = CardAction(CardAction.TYPE_YES_NO)
+                            yesNoCardAction.deck = Deck.Prosperity
+                            yesNoCardAction.cardName = "Vault"
+                            when {
+                                otherPlayer.hand.size == 1 -> {
+                                    yesNoCardAction.numCards = 1
+                                    yesNoCardAction.instructions = "Do you want to discard the card in your hand?"
+                                }
+                                else -> {
+                                    yesNoCardAction.numCards = 2
+                                    yesNoCardAction.instructions = "Do you want to discard two cards and draw one card?"
+                                }
+                            }
+                            game.setPlayerCardAction(otherPlayer, yesNoCardAction)
+                        } else {
+                            incompleteCard.setPlayerActionCompleted(otherPlayer.userId)
+                        }
+                    }
+                }
+                incompleteCard.allActionsSet()
+            }
+            "Vault2" -> player.drawCards(1)
         }
 
-        return incompleteCard;
+        return incompleteCard
     }
 }
