@@ -26,8 +26,8 @@ class LoggedInUsers {
         return ArrayList(users.values)
     }
 
-    fun getUser(userId: Int): User {
-        return users[userId]!!
+    fun getUser(userId: Int): User? {
+        return users[userId]
     }
 
     fun updateUser(user: User) {

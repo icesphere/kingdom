@@ -1,330 +1,316 @@
-package com.kingdom.web;
+package com.kingdom.web
 
-import com.kingdom.model.User;
-import com.kingdom.service.GameRoomManager;
-import com.kingdom.service.LoggedInUsers;
-import com.kingdom.service.UserManager;
-import com.kingdom.util.EmailUtil;
-import com.kingdom.util.KingdomUtil;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.kingdom.model.User
+import com.kingdom.service.GameRoomManager
+import com.kingdom.service.LoggedInUsers
+import com.kingdom.service.UserManager
+import com.kingdom.util.EmailUtil
+import com.kingdom.util.KingdomUtil
+import org.apache.commons.lang3.RandomStringUtils
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.servlet.ModelAndView
+import java.util.*
+import java.util.regex.Pattern
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 @Controller
-public class MainController {
-
-    private static final int MAX_USER_LIMIT = 100;
-
-    private UserManager manager;
-    private GameRoomManager gameRoomManager;
-
-    public MainController(UserManager manager,
-                          GameRoomManager gameRoomManager) {
-        this.manager = manager;
-        this.gameRoomManager = gameRoomManager;
-    }
+class MainController(private var manager: UserManager?,
+                     private val gameRoomManager: GameRoomManager) {
 
     @RequestMapping("/login.html")
-    public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        ModelAndView modelAndView = new ModelAndView("login");
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        boolean mobile = KingdomUtil.INSTANCE.isMobile(request);
-        modelAndView.addObject("mobile", mobile);
+    @Throws(Exception::class)
+    fun login(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val modelAndView = ModelAndView("login")
+        val username = request.getParameter("username")
+        val password = request.getParameter("password")
+        val mobile = KingdomUtil.isMobile(request)
+        modelAndView.addObject("mobile", mobile)
         if (username != null && password != null) {
-            User user = manager.getUser(username, password);
+            val user = manager!!.getUser(username, password)
             if (user != null) {
-                user.setLastLogin(new Date());
-                user.incrementLogins();
-                user.setUserAgent(request.getHeader("User-Agent"));
-                user.setIpAddress(request.getRemoteAddr());
-                user.setLocation(KingdomUtil.INSTANCE.getLocation(user.getIpAddress()));
-                user.setMobile(mobile);
-                manager.saveUser(user);
-                if (!user.getAdmin() && LoggedInUsers.Companion.getInstance().getUsers().size() >= MAX_USER_LIMIT) {
-                    ModelAndView modelAndView1 = new ModelAndView("userLimitReached");
-                    modelAndView1.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-                    return modelAndView1;
+                user.lastLogin = Date()
+                user.incrementLogins()
+                user.userAgent = request.getHeader("User-Agent")
+                user.ipAddress = request.remoteAddr
+                user.location = KingdomUtil.getLocation(user.ipAddress)
+                user.isMobile = mobile
+                manager!!.saveUser(user)
+                if (!user.admin && LoggedInUsers.instance.getUsers().size >= MAX_USER_LIMIT) {
+                    val modelAndView1 = ModelAndView("userLimitReached")
+                    modelAndView1.addObject("mobile", KingdomUtil.isMobile(request))
+                    return modelAndView1
                 } else {
-                    LoggedInUsers.Companion.getInstance().userLoggedIn(user);
-                    LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
-                    HttpSession session = request.getSession(true);
-                    session.setMaxInactiveInterval(60 * 30);
-                    session.setAttribute("user", user);
-                    session.setAttribute("mobile", mobile);
-                    if (user.getChangePassword()) {
-                        return new ModelAndView("redirect:/changeTemporaryPassword.html");
+                    LoggedInUsers.instance.userLoggedIn(user)
+                    LoggedInUsers.instance.refreshLobbyPlayers()
+                    val session = request.getSession(true)
+                    session.maxInactiveInterval = 60 * 30
+                    session.setAttribute("user", user)
+                    session.setAttribute("mobile", mobile)
+                    return if (user.changePassword) {
+                        ModelAndView("redirect:/changeTemporaryPassword.html")
                     } else {
-                        return new ModelAndView("redirect:/showGameRooms.html");
+                        ModelAndView("redirect:/showGameRooms.html")
                     }
                 }
             }
         }
-        return modelAndView;
+        return modelAndView
     }
 
     @RequestMapping("/logout.html")
-    public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        User user = getUser(request);
-        KingdomUtil.INSTANCE.logoutUser(user, request);
-        return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    @Throws(Exception::class)
+    fun logout(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        KingdomUtil.logoutUser(user, request)
+        return KingdomUtil.getLoginModelAndView(request)
     }
 
     @RequestMapping("/admin.html")
-    public ModelAndView admin(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Throws(Exception::class)
+    fun admin(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         if (!isAdmin(request)) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        ModelAndView modelAndView = new ModelAndView("admin");
-        User user = getUser(request);
-        User loggedInUser = LoggedInUsers.Companion.getInstance().getUser(user.getUserId());
-        boolean showCancelGame = loggedInUser != null && loggedInUser.getGameId() > 0;
-        modelAndView.addObject("showCancelGame", showCancelGame);
-        modelAndView.addObject("numErrors", manager.getErrorCount());
-        modelAndView.addObject("loggedInUsersCount", LoggedInUsers.Companion.getInstance().getUsers().size());
-        modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite());
-        modelAndView.addObject("updatingMessage", gameRoomManager.getUpdatingMessage());
-        modelAndView.addObject("showNews", gameRoomManager.isShowNews());
-        modelAndView.addObject("news", gameRoomManager.getNews());
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        return modelAndView;
+        val modelAndView = ModelAndView("admin")
+        val user = getUser(request)
+        val loggedInUser = LoggedInUsers.instance.getUser(user!!.userId)
+        val showCancelGame = loggedInUser != null && loggedInUser.gameId > 0
+        modelAndView.addObject("showCancelGame", showCancelGame)
+        modelAndView.addObject("numErrors", manager!!.errorCount)
+        modelAndView.addObject("loggedInUsersCount", LoggedInUsers.instance.getUsers().size)
+        modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
+        modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage!!)
+        modelAndView.addObject("showNews", gameRoomManager.isShowNews)
+        modelAndView.addObject("news", gameRoomManager.news)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
     }
 
     @RequestMapping("/requestAccount.html")
-    public ModelAndView requestAccount(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        ModelAndView modelAndView = new ModelAndView("requestAccount");
-        modelAndView.addObject("error", "");
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        return modelAndView;
+    @Throws(Exception::class)
+    fun requestAccount(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val modelAndView = ModelAndView("requestAccount")
+        modelAndView.addObject("error", "")
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
     }
 
     @RequestMapping("/submitAccount.html")
-    public ModelAndView submitAccountRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String error = null;
-        String username = request.getParameter("username");
-        if (username == null || username.equals("")) {
-            error = "Username required";
-        } else if (manager.usernameExists(username) || username.equalsIgnoreCase("admin")) {
-            error = "Username already exists";
+    @Throws(Exception::class)
+    fun submitAccountRequest(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        var error: String? = null
+        val username = request.getParameter("username")
+        if (username == null || username == "") {
+            error = "Username required"
+        } else if (manager!!.usernameExists(username) || username.equals("admin", ignoreCase = true)) {
+            error = "Username already exists"
         } else {
-            Pattern p = Pattern.compile("[a-zA-Z0-9_]+");
-            Matcher m = p.matcher(username);
-            boolean matchFound = m.matches();
+            val p = Pattern.compile("[a-zA-Z0-9_]+")
+            val m = p.matcher(username)
+            val matchFound = m.matches()
             if (!matchFound) {
-                error = "Invalid username (can only contain letters and numbers, with no spaces)";
+                error = "Invalid username (can only contain letters and numbers, with no spaces)"
             }
         }
-        String email = request.getParameter("email");
-        if (email == null || email.equals("")) {
-            error = "Email required";
+        val email = request.getParameter("email")
+        if (email == null || email == "") {
+            error = "Email required"
         } else {
-            Pattern p = Pattern.compile(".+@.+\\.[a-zA-Z0-9_]+");
-            Matcher m = p.matcher(email);
-            boolean matchFound = m.matches();
+            val p = Pattern.compile(".+@.+\\.[a-zA-Z0-9_]+")
+            val m = p.matcher(email)
+            val matchFound = m.matches()
             if (!matchFound) {
-                error = "Invalid email";
+                error = "Invalid email"
             }
         }
 
         if (error == null) {
-            User user = new User();
-            user.setEmail(email);
-            user.setUsername(username);
-            user.setPassword(RandomStringUtils.random(6, "ABCDEFGH23456789"));
-            user.setCreationDate(new Date());
-            if (request.getParameter("gender") != null && request.getParameter("gender").equals(User.FEMALE)) {
-                user.setGender(request.getParameter("gender"));
+            val user = User()
+            user.email = email
+            user.username = username
+            user.password = RandomStringUtils.random(6, "ABCDEFGH23456789")
+            user.creationDate = Date()
+            if (request.getParameter("gender") != null && request.getParameter("gender") == User.FEMALE) {
+                user.gender = request.getParameter("gender")
             }
-            user.setChangePassword(true);
-            manager.saveUser(user);
-            EmailUtil.INSTANCE.sendAccountRequestEmail(user);
-            ModelAndView modelAndView = new ModelAndView("accountRequestSubmitted");
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
+            user.changePassword = true
+            manager!!.saveUser(user)
+            EmailUtil.sendAccountRequestEmail(user)
+            val modelAndView = ModelAndView("accountRequestSubmitted")
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
         } else {
-            ModelAndView modelAndView = new ModelAndView("requestAccount");
-            modelAndView.addObject("error", error);
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
+            val modelAndView = ModelAndView("requestAccount")
+            modelAndView.addObject("error", error)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
         }
     }
 
     @RequestMapping("/myAccount.html")
-    public ModelAndView myAccount(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
-        }
-        ModelAndView modelAndView = new ModelAndView("myAccount");
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("invalidPassword", false);
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        return modelAndView;
+    fun myAccount(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
+        val modelAndView = ModelAndView("myAccount")
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("invalidPassword", false)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
     }
 
     @RequestMapping("/saveMyAccountPassword.html")
-    public ModelAndView saveMyAccountPassword(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
-        }
-        String currentPassword = request.getParameter("currentPassword");
-        if (currentPassword.equals(user.getPassword())) {
-            String password = request.getParameter("password");
-            user.setPassword(password);
-            manager.saveUser(user);
+    fun saveMyAccountPassword(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
+        val currentPassword = request.getParameter("currentPassword")
+        if (currentPassword == user.password) {
+            val password = request.getParameter("password")
+            user.password = password
+            manager!!.saveUser(user)
         } else {
-            ModelAndView modelAndView = new ModelAndView("myAccount");
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("invalidPassword", true);
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
+            val modelAndView = ModelAndView("myAccount")
+            modelAndView.addObject("user", user)
+            modelAndView.addObject("invalidPassword", true)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
         }
-        return new ModelAndView("redirect:/showGameRooms.html");
+        return ModelAndView("redirect:/showGameRooms.html")
     }
 
     @RequestMapping("/changeTemporaryPassword.html")
-    public ModelAndView changeTemporaryPassword(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
-        }
-        String password = request.getParameter("password");
-        if (password != null && !password.trim().equals("")) {
-            user.setPassword(password);
-            user.setChangePassword(false);
-            manager.saveUser(user);
+    fun changeTemporaryPassword(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
+        val password = request.getParameter("password")
+        if (password != null && password.trim { it <= ' ' } != "") {
+            user.password = password
+            user.changePassword = false
+            manager!!.saveUser(user)
         } else {
-            ModelAndView modelAndView = new ModelAndView("changePassword");
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
+            val modelAndView = ModelAndView("changePassword")
+            modelAndView.addObject("user", user)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
         }
-        return new ModelAndView("redirect:/showGameRooms.html");
+        return ModelAndView("redirect:/showGameRooms.html")
     }
 
     @RequestMapping("/saveMyAccount.html")
-    public ModelAndView saveMyAccount(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
-        }
-        int soundDefault = KingdomUtil.INSTANCE.getRequestInt(request, "soundDefault", User.SOUND_DEFAULT_ON);
-        user.setSoundDefault(soundDefault);
-        manager.saveUser(user);
-        return new ModelAndView("redirect:/showGameRooms.html");
+    fun saveMyAccount(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
+        val soundDefault = KingdomUtil.getRequestInt(request, "soundDefault", User.SOUND_DEFAULT_ON)
+        user.soundDefault = soundDefault
+        manager!!.saveUser(user)
+        return ModelAndView("redirect:/showGameRooms.html")
     }
 
-    public void setUserManager(UserManager manager) {
-        this.manager = manager;
+    fun setUserManager(manager: UserManager) {
+        this.manager = manager
     }
 
-    private User getUser(HttpServletRequest request) {
-        return KingdomUtil.INSTANCE.getUser(request);
+    private fun getUser(request: HttpServletRequest): User? {
+        return KingdomUtil.getUser(request)
     }
 
-    private boolean isAdmin(HttpServletRequest request) {
-        User user = getUser(request);
-        return user != null && user.getAdmin();
+    private fun isAdmin(request: HttpServletRequest): Boolean {
+        val user = getUser(request)
+        return user != null && user.admin
     }
 
     @RequestMapping("/showHelp.html")
-    public ModelAndView showHelp(HttpServletRequest request, HttpServletResponse response) {
-        ModelAndView modelAndView = new ModelAndView("help");
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        return modelAndView;
+    fun showHelp(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val modelAndView = ModelAndView("help")
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
     }
 
     @RequestMapping("/showDisclaimer.html")
-    public ModelAndView showDisclaimer(HttpServletRequest request, HttpServletResponse response) {
-        ModelAndView modelAndView = new ModelAndView("disclaimer");
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        return modelAndView;
+    fun showDisclaimer(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val modelAndView = ModelAndView("disclaimer")
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
     }
 
     @RequestMapping("/getPlayerStatsDivFromAdmin.html")
-    public ModelAndView getPlayerStatsDivFromAdmin(HttpServletRequest request, HttpServletResponse response) {
+    fun getPlayerStatsDivFromAdmin(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         if (!isAdmin(request)) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
-        User user = manager.getUser(KingdomUtil.INSTANCE.getRequestInt(request, "userId", -1));
-        if (user == null) {
-            return new ModelAndView("redirect:/listUsers.html");
-        }
-        ModelAndView modelAndView = new ModelAndView("playerStatsDiv");
-        manager.calculateGameStats(user);
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        return modelAndView;
+        val user = manager!!.getUser(KingdomUtil.getRequestInt(request, "userId", -1))
+                ?: return ModelAndView("redirect:/listUsers.html")
+        val modelAndView = ModelAndView("playerStatsDiv")
+        manager!!.calculateGameStats(user)
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
     }
 
     @RequestMapping("/forgotLogin.html")
-    public ModelAndView forgotLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        ModelAndView modelAndView = new ModelAndView("forgotLogin");
-        modelAndView.addObject("error", "");
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        return modelAndView;
+    @Throws(Exception::class)
+    fun forgotLogin(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val modelAndView = ModelAndView("forgotLogin")
+        modelAndView.addObject("error", "")
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
     }
 
     @RequestMapping("/submitForgotLogin.html")
-    public ModelAndView submitForgotLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String error = null;
-        String email = request.getParameter("email");
-        if (email == null || email.equals("")) {
-            error = "Email required";
+    @Throws(Exception::class)
+    fun submitForgotLogin(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        var error: String? = null
+        val email = request.getParameter("email")
+        if (email == null || email == "") {
+            error = "Email required"
         } else {
-            Pattern p = Pattern.compile(".+@.+\\.[a-zA-Z0-9_]+");
-            Matcher m = p.matcher(email);
-            boolean matchFound = m.matches();
+            val p = Pattern.compile(".+@.+\\.[a-zA-Z0-9_]+")
+            val m = p.matcher(email)
+            val matchFound = m.matches()
             if (!matchFound) {
-                error = "Invalid email";
+                error = "Invalid email"
             }
         }
 
         if (error == null) {
-            User user = manager.getUserByEmail(email);
+            val user = manager!!.getUserByEmail(email!!)
             if (user != null) {
-                EmailUtil.INSTANCE.sendForgotLoginEmail(user);
+                EmailUtil.sendForgotLoginEmail(user)
             }
-            ModelAndView modelAndView = new ModelAndView("forgotLoginSubmitted");
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
+            val modelAndView = ModelAndView("forgotLoginSubmitted")
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
         } else {
-            ModelAndView modelAndView = new ModelAndView("forgotLogin");
-            modelAndView.addObject("error", error);
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
+            val modelAndView = ModelAndView("forgotLogin")
+            modelAndView.addObject("error", error)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
         }
     }
 
     @RequestMapping("/setUpdatingWebsite.html")
-    public ModelAndView setUpdatingWebsite(HttpServletRequest request, HttpServletResponse response) {
-        boolean updatingWebsite = KingdomUtil.INSTANCE.getRequestBoolean(request, "updatingWebsite");
-        gameRoomManager.setUpdatingWebsite(updatingWebsite);
-        gameRoomManager.setUpdatingMessage(request.getParameter("updatingMessage"));
-        return new ModelAndView("empty");
+    fun setUpdatingWebsite(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val updatingWebsite = KingdomUtil.getRequestBoolean(request, "updatingWebsite")
+        gameRoomManager.isUpdatingWebsite = updatingWebsite
+        gameRoomManager.updatingMessage = request.getParameter("updatingMessage")
+        return ModelAndView("empty")
     }
 
     @RequestMapping("/setShowNews.html")
-    public ModelAndView setShowNews(HttpServletRequest request, HttpServletResponse response) {
-        boolean showNews = KingdomUtil.INSTANCE.getRequestBoolean(request, "showNews");
-        gameRoomManager.setShowNews(showNews);
-        gameRoomManager.setNews(request.getParameter("news"));
-        return new ModelAndView("empty");
+    fun setShowNews(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val showNews = KingdomUtil.getRequestBoolean(request, "showNews")
+        gameRoomManager.isShowNews = showNews
+        gameRoomManager.news = request.getParameter("news")
+        return ModelAndView("empty")
     }
 
     @RequestMapping("/switchSite.html")
-    public ModelAndView switchSite(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        boolean mobile = KingdomUtil.INSTANCE.isMobile(request);
-        request.getSession().setAttribute("mobile", !mobile);
-        return new ModelAndView("empty");
+    @Throws(Exception::class)
+    fun switchSite(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val mobile = KingdomUtil.isMobile(request)
+        request.session.setAttribute("mobile", !mobile)
+        return ModelAndView("empty")
+    }
+
+    companion object {
+
+        private val MAX_USER_LIMIT = 100
     }
 }
