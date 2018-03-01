@@ -402,7 +402,7 @@ class Game(val gameId: Int) {
             KingdomUtil.getCardNames(prizeCards)
         }
 
-    val nextAction: String
+    val nextAction: String?
         get() = nextActionQueue.peek()
 
     val numProvincesLeft: Int
