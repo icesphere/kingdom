@@ -19,7 +19,7 @@ public class CardActionHandler {
         if (cardAction.isDiscard()) {
             incompleteCard = DiscardCardsHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
         } else if (type == CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY || type == CardAction.TYPE_GAIN_CARDS || type == CardAction.TYPE_GAIN_CARDS_UP_TO) {
-            GainCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds);
+            GainCardsHandler.INSTANCE.handleCardAction(game, player, cardAction, selectedCardIds);
         } else if (type == CardAction.TYPE_TRASH_CARDS_FROM_HAND || type == CardAction.TYPE_TRASH_UP_TO_FROM_HAND) {
             incompleteCard = TrashCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds);
         } else if (type == CardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY) {

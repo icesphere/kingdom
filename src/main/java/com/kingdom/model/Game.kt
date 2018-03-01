@@ -1759,7 +1759,7 @@ class Game(val gameId: Int) {
     }
 
     @JvmOverloads
-    fun playerGainedCard(player: Player, card: Card?, takeFromSupply: Boolean = true) {
+    fun playerGainedCard(player: Player, card: Card, takeFromSupply: Boolean = true) {
         playerGainedCard(player, card, "discard", takeFromSupply, false)
     }
 
@@ -1782,9 +1782,9 @@ class Game(val gameId: Int) {
         return card.isVictory || card.isCurse || isShowGardens || isShowFarmlands || isShowFairgrounds || isShowVineyard && card.isAction || isShowCathedral && card.isSalvation
     }
 
-    fun playerGainedCard(player: Player, card: Card?, cardDestination: String, takeFromSupply: Boolean, gainedFromBuy: Boolean) {
+    fun playerGainedCard(player: Player, card: Card, cardDestination: String, takeFromSupply: Boolean, gainedFromBuy: Boolean) {
         var destination = cardDestination
-        if (card!!.isCopied && !card.isCardNotGained) {
+        if (card.isCopied && !card.isCardNotGained) {
             if (!card.gainCardActions.isEmpty()) {
                 waitIfNotCurrentPlayer(player)
                 setPlayerGainCardAction(player, card)
@@ -2307,7 +2307,7 @@ class Game(val gameId: Int) {
                 nextPlayer.addCardToHand(card)
             }
             nextPlayer.setAsideCards.clear()
-            addHistory(nextPlayer.username, " returned ", numHorseTraders.toString(), " ", KingdomUtil.getCardWithBackgroundColor(horseTradersCard), " to ", nextPlayer.pronoun, " hand, and got to draw ", KingdomUtil.getPlural(numHorseTraders, "Card"))
+            addHistory(nextPlayer.username, " returned ", numHorseTraders.toString(), " ", KingdomUtil.getCardWithBackgroundColor(horseTradersCard!!), " to ", nextPlayer.pronoun, " hand, and got to draw ", KingdomUtil.getPlural(numHorseTraders, "Card"))
             nextPlayer.drawCards(numHorseTraders)
         }
         refreshHandArea(nextPlayer)

@@ -1,119 +1,121 @@
-package com.kingdom.util.cardaction;
+package com.kingdom.util.cardaction
 
-import com.kingdom.model.*;
-import com.kingdom.util.KingdomUtil;
+import com.kingdom.model.*
+import com.kingdom.util.KingdomUtil
+import java.util.*
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+object GainCardsHandler {
+    fun handleCardAction(game: Game, player: Player, cardAction: CardAction, selectedCardIds: List<Int>) {
 
-public class GainCardsHandler {
-    public static void handleCardAction(Game game, Player player, CardAction cardAction, List<Integer> selectedCardIds) {
+        val type = cardAction.type
+        val cardMap = game.cardMap
 
-        int type = cardAction.getType();
-        Map<Integer, Card> cardMap = game.getCardMap();
-
-        if (!cardAction.getCardName().equals("Tournament") && !cardAction.getCardName().equals("Museum") && !cardAction.getCardName().equals("Artisan")) {
-            for (Integer selectedCardId : selectedCardIds) {
-                Card card = cardMap.get(selectedCardId);
-                if (type == CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY) {
-                    game.playerGainedCard(player, card);
-                } else {
-                    game.playerGainedCard(player, card, false);
+        if (cardAction.cardName != "Tournament" && cardAction.cardName != "Museum" && cardAction.cardName != "Artisan") {
+            for (selectedCardId in selectedCardIds) {
+                val card = cardMap[selectedCardId]!!
+                when (type) {
+                    CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY,
+                    CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY -> game.playerGainedCard(player, card)
+                    else -> game.playerGainedCard(player, card, false)
                 }
             }
         }
 
-        if (cardAction.getCardName().equals("Artisan")) {
-            Card card = cardMap.get(selectedCardIds.get(0));
+        when (cardAction.cardName) {
+            "Artisan" -> {
+                val card = cardMap[selectedCardIds[0]]!!
 
-            game.playerGainedCardToHand(player, card);
+                game.playerGainedCardToHand(player, card)
 
-            game.refreshPlayingArea(player);
+                game.refreshPlayingArea(player)
 
-            CardAction putCardOnTopOfDeckAction = new CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK);
-            putCardOnTopOfDeckAction.setDeck(Deck.Kingdom);
-            putCardOnTopOfDeckAction.setCardName("Artisan");
-            putCardOnTopOfDeckAction.getCards().addAll(player.getHand());
-            putCardOnTopOfDeckAction.setButtonValue("Done");
-            putCardOnTopOfDeckAction.setNumCards(1);
-            putCardOnTopOfDeckAction.setInstructions("Select a card from your hand to put on top of your deck.");
-            game.setPlayerCardAction(player, putCardOnTopOfDeckAction);
-        }
-        if (cardAction.getCardName().equals("Black Market")) {
-            Card cardBought = cardMap.get(selectedCardIds.get(0));
-            game.boughtBlackMarketCard(cardBought);
-            game.getBlackMarketCardsToBuy().remove(cardBought);
-            CardAction chooseOrderCardAction = new CardAction(CardAction.TYPE_CHOOSE_IN_ORDER);
-            chooseOrderCardAction.setDeck(Deck.Promo);
-            chooseOrderCardAction.setHideOnSelect(true);
-            chooseOrderCardAction.setNumCards(game.getBlackMarketCardsToBuy().size());
-            chooseOrderCardAction.setCardName("Black Market");
-            chooseOrderCardAction.setCards(game.getBlackMarketCardsToBuy());
-            chooseOrderCardAction.setButtonValue("Done");
-            chooseOrderCardAction.setInstructions("Click the cards in the order you want them to be on the bottom of the black market deck, starting with the top card and then click Done. (The last card you click will be the bottom card of the black market deck)");
-            game.setPlayerCardAction(player, chooseOrderCardAction);
-        } else if (cardAction.getCardName().equals("Develop")) {
-            if (cardAction.getPhase() < 3) {
-                CardAction gainCardAction = new CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY);
-                gainCardAction.setDeck(Deck.Hinterlands);
-                gainCardAction.setCardName(cardAction.getCardName());
-                gainCardAction.setButtonValue("Done");
-                gainCardAction.setNumCards(1);
-                gainCardAction.setInstructions("Select one of the following cards to gain and then click Done.");
-                gainCardAction.setAssociatedCard(cardAction.getAssociatedCard());
-                gainCardAction.setPhase(3);
-
-                List<Card> cards = new ArrayList<Card>();
-                int cost = game.getCardCost(gainCardAction.getAssociatedCard());
-                if (cardAction.getPhase() == 1) {
-                    cost = cost - 1;
-                } else if (cardAction.getPhase() == 2) {
-                    cost = cost + 1;
+                val putCardOnTopOfDeckAction = CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK).apply {
+                    deck = Deck.Kingdom
+                    cardName = "Artisan"
+                    cards.addAll(player.hand)
+                    buttonValue = "Done"
+                    numCards = 1
+                    instructions = "Select a card from your hand to put on top of your deck."
                 }
-                for (Card c : game.getSupplyMap().values()) {
-                    if (game.getCardCost(c) == cost && cardAction.getAssociatedCard().getCostIncludesPotion() == c.getCostIncludesPotion() && game.getSupply().get(c.getCardId()) > 0) {
-                        cards.add(c);
+                game.setPlayerCardAction(player, putCardOnTopOfDeckAction)
+            }
+            "Black Market" -> {
+                val cardBought = cardMap[selectedCardIds[0]]!!
+                game.boughtBlackMarketCard(cardBought)
+                game.blackMarketCardsToBuy.remove(cardBought)
+                val chooseOrderCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER).apply {
+                    deck = Deck.Promo
+                    isHideOnSelect = true
+                    numCards = game.blackMarketCardsToBuy.size
+                    cardName = "Black Market"
+                    cards = game.blackMarketCardsToBuy
+                    buttonValue = "Done"
+                    instructions = "Click the cards in the order you want them to be on the bottom of the black market deck, starting with the top card and then click Done. (The last card you click will be the bottom card of the black market deck)"
+                }
+                game.setPlayerCardAction(player, chooseOrderCardAction)
+            }
+            "Develop" -> if (cardAction.phase < 3) {
+                val gainCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                    deck = Deck.Hinterlands
+                    cardName = cardAction.cardName
+                    buttonValue = "Done"
+                    numCards = 1
+                    instructions = "Select one of the following cards to gain and then click Done."
+                    associatedCard = cardAction.associatedCard
+                    phase = 3
+                }
+
+                val cards = ArrayList<Card>()
+                var cost = game.getCardCost(gainCardAction.associatedCard!!)
+
+                when (cardAction.phase) {
+                    1 -> cost -= 1
+                    2 -> cost += 1
+                }
+
+                game.supplyMap.values.filterTo(cards) {
+                    game.getCardCost(it) == cost &&
+                            cardAction.associatedCard!!.costIncludesPotion == it.costIncludesPotion &&
+                            game.supply[it.cardId]!! > 0
+                }
+
+                gainCardAction.cards = cards
+                game.setPlayerCardAction(player, gainCardAction)
+            }
+            "Horn of Plenty" -> {
+                val card = cardMap[selectedCardIds[0]]!!
+                if (card.isVictory) {
+                    (game.cardsPlayed as LinkedList<*>).removeLastOccurrence(cardAction.associatedCard)
+                    game.treasureCardsPlayed.remove(cardAction.associatedCard)
+                    game.trashedCards.add(cardAction.associatedCard!!)
+                    game.playerLostCard(player, cardAction.associatedCard!!)
+                    game.addHistory(player.username, "'s ", KingdomUtil.getCardWithBackgroundColor(cardAction.associatedCard!!), " was trashed")
+                    game.refreshAllPlayersCardsPlayed()
+                }
+            }
+            "Ironworks" -> {
+                val card = cardMap[selectedCardIds[0]]!!
+                when {
+                    card.isAction -> {
+                        player.addActions(1)
+                        game.refreshAllPlayersCardsPlayed()
                     }
+                    card.isTreasure -> player.addCoins(1)
+                    card.isVictory -> player.drawCards(1)
                 }
-
-                gainCardAction.setCards(cards);
-                game.setPlayerCardAction(player, gainCardAction);
             }
-        } else if (cardAction.getCardName().equals("Horn of Plenty")) {
-            Card card = cardMap.get(selectedCardIds.get(0));
-            if (card.isVictory()) {
-                ((LinkedList) game.getCardsPlayed()).removeLastOccurrence(cardAction.getAssociatedCard());
-                game.getTreasureCardsPlayed().remove(cardAction.getAssociatedCard());
-                game.getTrashedCards().add(cardAction.getAssociatedCard());
-                game.playerLostCard(player, cardAction.getAssociatedCard());
-                game.addHistory(player.getUsername(), "'s ", KingdomUtil.INSTANCE.getCardWithBackgroundColor(cardAction.getAssociatedCard()), " was trashed");
-                game.refreshAllPlayersCardsPlayed();
+            "Museum" -> {
+                val card = cardMap[selectedCardIds[0]]!!
+                game.playerGainedCard(player, card, false)
+                game.prizeCards.remove(card)
             }
-        } else if (cardAction.getCardName().equals("Ironworks")) {
-            Card card = cardMap.get(selectedCardIds.get(0));
-            if (card.isAction()) {
-                player.addActions(1);
-                game.refreshAllPlayersCardsPlayed();
+            "Tournament" -> {
+                val card = cardMap[selectedCardIds[0]]!!
+                game.playerGainedCardToTopOfDeck(player, card, false)
+                game.prizeCards.remove(card)
             }
-            if (card.isTreasure()) {
-                player.addCoins(1);
-            }
-            if (card.isVictory()) {
-                player.drawCards(1);
-            }
-        } else if (cardAction.getCardName().equals("Museum")) {
-            Card card = cardMap.get(selectedCardIds.get(0));
-            game.playerGainedCard(player, card, false);
-            game.getPrizeCards().remove(card);
-        } else if (cardAction.getCardName().equals("Tournament")) {
-            Card card = cardMap.get(selectedCardIds.get(0));
-            game.playerGainedCardToTopOfDeck(player, card, false);
-            game.getPrizeCards().remove(card);
-        } else if (cardAction.getCardName().equals("University")) {
-            if (selectedCardIds.isEmpty()) {
-                game.addHistory(player.getUsername(), " chose not to gain a card with ", KingdomUtil.INSTANCE.getWordWithBackgroundColor("University", Card.ACTION_COLOR));
+            "University" -> if (selectedCardIds.isEmpty()) {
+                game.addHistory(player.username, " chose not to gain a card with ", KingdomUtil.getWordWithBackgroundColor("University", Card.ACTION_COLOR))
             }
         }
     }
