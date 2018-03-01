@@ -1873,7 +1873,7 @@ class Game(val gameId: Int) {
                 gainCardFinished(player, card)
             }
             if (checkFoolsGold && card.isProvince) {
-                val foolsGoldCardAction = GainCardsSpecialActionHandler.getFoolsGoldCardAction()
+                val foolsGoldCardAction = GainCardsSpecialActionHandler.foolsGoldCardAction
                 for (p in players) {
                     if (!isCurrentPlayer(p) && p.hasFoolsGoldInHand()) {
                         waitIfNotCurrentPlayer(p)
