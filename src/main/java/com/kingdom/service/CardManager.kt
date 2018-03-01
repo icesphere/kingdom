@@ -13,14 +13,14 @@ import java.util.Collections
 class CardManager(private val cardRepository: CardRepository,
                   private val cardRandomizer: CardRandomizer) {
 
-    val prizeCards: List<Card>
-        get() = cardRepository.findByPrizeCardOrderByNameAsc(true)
+    val prizeCards: MutableList<Card>
+        get() = cardRepository.findByPrizeCardOrderByNameAsc(true).toMutableList()
 
-    val availableLeaderCards: List<Card>
+    val availableLeaderCards: MutableList<Card>
         get() {
             val cards = getCardsByDeck(Deck.Leaders, false)
             Collections.shuffle(cards)
-            return cards.subList(0, 7)
+            return cards.subList(0, 7).toMutableList()
         }
 
     fun getAllCards(includeFanExpansionCards: Boolean): List<Card> {

@@ -1,2592 +1,2591 @@
-package com.kingdom.web;
+package com.kingdom.web
 
-import com.kingdom.model.*;
-import com.kingdom.service.*;
-import com.kingdom.util.KingdomUtil;
-import freemarker.ext.beans.BeansWrapper;
-import freemarker.template.TemplateModelException;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import com.kingdom.model.*
+import com.kingdom.service.*
+import com.kingdom.util.KingdomUtil
+import freemarker.ext.beans.BeansWrapper
+import freemarker.template.TemplateModelException
+import org.apache.commons.collections.CollectionUtils
+import org.springframework.http.MediaType
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.servlet.ModelAndView
+import java.util.*
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 @Controller
-public class GameController {
-
-    CardManager cardManager;
-    UserManager userManager;
-    GameManager gameManager;
-    GameRoomManager gameRoomManager;
-    LobbyChats lobbyChats;
-
-    public GameController(CardManager cardManager,
-                          UserManager userManager,
-                          GameManager gameManager,
-                          GameRoomManager gameRoomManager,
-                          LobbyChats lobbyChats) {
-        this.cardManager = cardManager;
-        this.userManager = userManager;
-        this.gameManager = gameManager;
-        this.gameRoomManager = gameRoomManager;
-        this.lobbyChats = lobbyChats;
-    }
+class GameController(private var cardManager: CardManager,
+                     private var userManager: UserManager,
+                     private var gameManager: GameManager,
+                     private var gameRoomManager: GameRoomManager,
+                     private var lobbyChats: LobbyChats) {
 
     @RequestMapping("/createGame.html")
-    public ModelAndView createGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
-        }
+    fun createGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
 
-        Game game = getGame(request);
+        var game = getGame(request)
         if (game == null) {
-            game = gameRoomManager.getNextAvailableGame();
+            game = gameRoomManager.nextAvailableGame
         }
-        if (game == null || gameRoomManager.isUpdatingWebsite()) {
-            return new ModelAndView("redirect:/showGameRooms.html");
+        if (game == null || gameRoomManager.isUpdatingWebsite) {
+            return ModelAndView("redirect:/showGameRooms.html")
         }
 
-        ModelAndView modelAndView = new ModelAndView("selectCards");
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        modelAndView.addObject("createGame", true);
-        modelAndView.addObject("title", "Create Game");
-        modelAndView.addObject("action", "saveGame.html");
+        val modelAndView = ModelAndView("selectCards")
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        modelAndView.addObject("createGame", true)
+        modelAndView.addObject("title", "Create Game")
+        modelAndView.addObject("action", "saveGame.html")
 
         try {
-            request.getSession().setAttribute("gameId", game.getGameId());
-            if (user.getGuest()) {
-                return new ModelAndView("redirect:/showGameRooms.html");
+            request.session.setAttribute("gameId", game.gameId)
+            if (user.guest) {
+                return ModelAndView("redirect:/showGameRooms.html")
             }
-            game.setCreatorId(user.getUserId());
-            game.setCreatorName(user.getUsername());
-            LoggedInUsers.Companion.getInstance().refreshLobbyGameRooms();
-            boolean includeTesting = user.getAdmin();
-            addSelectCardsObjects(user, modelAndView, includeTesting);
-            return modelAndView;
-        } catch (Throwable t) {
-            t.printStackTrace();
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            game.creatorId = user.userId
+            game.creatorName = user.username
+            LoggedInUsers.instance.refreshLobbyGameRooms()
+            val includeTesting = user.admin
+            addSelectCardsObjects(user, modelAndView, includeTesting)
+            return modelAndView
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/selectCards.html")
-    public ModelAndView selectCards(HttpServletRequest request, HttpServletResponse response) {
-        User user = new User();
+    fun selectCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = User()
 
-        ModelAndView modelAndView = new ModelAndView("selectCards");
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        modelAndView.addObject("createGame", false);
-        modelAndView.addObject("title", "Select Cards");
-        modelAndView.addObject("action", "generateCards.html");
+        val modelAndView = ModelAndView("selectCards")
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        modelAndView.addObject("createGame", false)
+        modelAndView.addObject("title", "Select Cards")
+        modelAndView.addObject("action", "generateCards.html")
 
         try {
-            boolean includeTesting = false;
-            addSelectCardsObjects(user, modelAndView, includeTesting);
-            return modelAndView;
-        } catch (Throwable t) {
-            return new ModelAndView("empty");
+            val includeTesting = false
+            addSelectCardsObjects(user, modelAndView, includeTesting)
+            return modelAndView
+        } catch (t: Throwable) {
+            return ModelAndView("empty")
         }
+
     }
 
-    private void addSelectCardsObjects(User user, ModelAndView modelAndView, boolean includeTesting) {
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, includeTesting));
-        modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, includeTesting));
-        modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, includeTesting));
-        modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, includeTesting));
-        modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, includeTesting));
-        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, includeTesting));
-        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, includeTesting));
-        modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, includeTesting));
-        modelAndView.addObject("salvationCards", cardManager.getCards(Deck.Salvation, includeTesting));
-        modelAndView.addObject("fairyTaleCards", cardManager.getCards(Deck.FairyTale, includeTesting));
-        modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, includeTesting));
-        modelAndView.addObject("fanCards", cardManager.getCards(Deck.Fan, includeTesting));
-        modelAndView.addObject("annotatedGames", gameManager.getAnnotatedGames());
-        modelAndView.addObject("recentGames", gameManager.getGameHistoryList(user.getUserId()));
-        modelAndView.addObject("excludedCards", user.getExcludedCardNames());
-        modelAndView.addObject("recommendedSets", gameManager.getRecommendedSets());
+    private fun addSelectCardsObjects(user: User, modelAndView: ModelAndView, includeTesting: Boolean) {
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, includeTesting))
+        modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, includeTesting))
+        modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, includeTesting))
+        modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, includeTesting))
+        modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, includeTesting))
+        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, includeTesting))
+        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, includeTesting))
+        modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, includeTesting))
+        modelAndView.addObject("salvationCards", cardManager.getCards(Deck.Salvation, includeTesting))
+        modelAndView.addObject("fairyTaleCards", cardManager.getCards(Deck.FairyTale, includeTesting))
+        modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, includeTesting))
+        modelAndView.addObject("fanCards", cardManager.getCards(Deck.Fan, includeTesting))
+        modelAndView.addObject("annotatedGames", gameManager.annotatedGames)
+        modelAndView.addObject("recentGames", gameManager.getGameHistoryList(user.userId))
+        modelAndView.addObject("excludedCards", user.excludedCardNames)
+        modelAndView.addObject("recommendedSets", gameManager.recommendedSets)
     }
 
     @RequestMapping("/generateCards.html")
-    public ModelAndView generateCards(HttpServletRequest request, HttpServletResponse response) throws TemplateModelException {
-        User user = new User();
-        Game game = new Game(-1);
+    @Throws(TemplateModelException::class)
+    fun generateCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = User()
+        val game = Game(-1)
 
-        String generateType = request.getParameter("generateType");
-        boolean includeLeaders = KingdomUtil.INSTANCE.getRequestBoolean(request, "include_leaders");
+        val generateType = request.getParameter("generateType")
+        val includeLeaders = KingdomUtil.getRequestBoolean(request, "include_leaders")
 
         if (includeLeaders) {
-            game.setUsingLeaders(true);
-            game.setAvailableLeaders(cardManager.getAvailableLeaderCards());
+            game.isUsingLeaders = true
+            game.availableLeaders = cardManager.availableLeaderCards
         }
 
-        List<Deck> decks = new ArrayList<>();
-        List<Card> customSelection = new ArrayList<>();
-        List<Card> excludedCards = new ArrayList<>(0);
-        parseCardSelectionRequest(request, user, game, decks, customSelection, excludedCards, generateType);
+        val decks = ArrayList<Deck>()
+        val customSelection = ArrayList<Card>()
+        val excludedCards = ArrayList<Card>(0)
+        parseCardSelectionRequest(request, user, game, decks, customSelection, excludedCards, generateType)
 
-        setRandomizingOptions(request, game, customSelection, excludedCards, generateType);
+        setRandomizingOptions(request, game, customSelection, excludedCards, generateType)
 
-        game.setDecks(decks);
-        cardManager.setRandomKingdomCards(game);
+        game.decks = decks
+        cardManager.setRandomKingdomCards(game)
 
-        user.setExcludedCards(KingdomUtil.INSTANCE.getCommaSeparatedCardNames(excludedCards));
-        userManager.saveUser(user);
+        user.excludedCards = KingdomUtil.getCommaSeparatedCardNames(excludedCards)
+        userManager.saveUser(user)
 
-        return showRandomConfirmPage(request, user, game);
+        return showRandomConfirmPage(request, user, game)
     }
 
     @RequestMapping("/saveGame.html")
-    public ModelAndView saveGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun saveGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
+            if (game.status == Game.STATUS_GAME_BEING_CONFIGURED) {
 
-                String generateType = request.getParameter("generateType");
+                val generateType = request.getParameter("generateType")
 
-                int numPlayers = 1;
-                int numComputerPlayers = 0;
-                int numEasyComputerPlayers = 0;
-                int numMediumComputerPlayers = 0;
-                int numHardComputerPlayers = 0;
-                int numBMUComputerPlayers = 0;
+                var numPlayers = 1
+                var numComputerPlayers = 0
+                var numEasyComputerPlayers = 0
+                var numMediumComputerPlayers = 0
+                var numHardComputerPlayers = 0
+                var numBMUComputerPlayers = 0
 
-                boolean includeLeaders = KingdomUtil.INSTANCE.getRequestBoolean(request, "include_leaders");
+                val includeLeaders = KingdomUtil.getRequestBoolean(request, "include_leaders")
 
-                user.setBaseChecked(request.getParameter("deck_kingdom") != null);
-                user.setIntrigueChecked(request.getParameter("deck_intrigue") != null);
-                user.setSeasideChecked(request.getParameter("deck_seaside") != null);
-                user.setAlchemyChecked(request.getParameter("deck_alchemy") != null);
-                user.setProsperityChecked(request.getParameter("deck_prosperity") != null);
-                user.setCornucopiaChecked(request.getParameter("deck_cornucopia") != null);
-                user.setHinterlandsChecked(request.getParameter("deck_hinterlands") != null);
-                user.setPromoChecked(request.getParameter("promo_cards") != null);
-                user.setSalvationChecked(request.getParameter("deck_salvation") != null);
-                user.setFairyTaleChecked(request.getParameter("deck_fairytale") != null);
-                user.setProletariatChecked(request.getParameter("deck_proletariat") != null);
-                user.setOtherFanCardsChecked(request.getParameter("other_fan_cards") != null);
-                user.setLeadersChecked(includeLeaders);
-                user.setAlwaysPlayTreasureCards(KingdomUtil.INSTANCE.getRequestBoolean(request, "playTreasureCards"));
-                user.setShowVictoryPoints(KingdomUtil.INSTANCE.getRequestBoolean(request, "showVictoryPoints"));
-                user.setIdenticalStartingHands(KingdomUtil.INSTANCE.getRequestBoolean(request, "identicalStartingHands"));
+                user.baseChecked = request.getParameter("deck_kingdom") != null
+                user.intrigueChecked = request.getParameter("deck_intrigue") != null
+                user.seasideChecked = request.getParameter("deck_seaside") != null
+                user.alchemyChecked = request.getParameter("deck_alchemy") != null
+                user.prosperityChecked = request.getParameter("deck_prosperity") != null
+                user.cornucopiaChecked = request.getParameter("deck_cornucopia") != null
+                user.hinterlandsChecked = request.getParameter("deck_hinterlands") != null
+                user.promoChecked = request.getParameter("promo_cards") != null
+                user.salvationChecked = request.getParameter("deck_salvation") != null
+                user.fairyTaleChecked = request.getParameter("deck_fairytale") != null
+                user.proletariatChecked = request.getParameter("deck_proletariat") != null
+                user.otherFanCardsChecked = request.getParameter("other_fan_cards") != null
+                user.leadersChecked = includeLeaders
+                user.alwaysPlayTreasureCards = KingdomUtil.getRequestBoolean(request, "playTreasureCards")
+                user.showVictoryPoints = KingdomUtil.getRequestBoolean(request, "showVictoryPoints")
+                user.identicalStartingHands = KingdomUtil.getRequestBoolean(request, "identicalStartingHands")
 
-                user.setBaseWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_kingdom", 3));
-                user.setIntrigueWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_intrigue", 3));
-                user.setSeasideWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_seaside", 3));
-                user.setAlchemyWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_alchemy", 3));
-                user.setProsperityWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_prosperity", 3));
-                user.setCornucopiaWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_cornucopia", 3));
-                user.setHinterlandsWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_hinterlands", 3));
-                user.setPromoWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_promo", 3));
-                user.setSalvationWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_salvation", 3));
-                user.setFairyTaleWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_fairytale", 3));
-                user.setProletariatWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_proletariat", 3));
-                user.setFanWeight(KingdomUtil.INSTANCE.getRequestInt(request, "deck_weight_fan", 3));
+                user.baseWeight = KingdomUtil.getRequestInt(request, "deck_weight_kingdom", 3)
+                user.intrigueWeight = KingdomUtil.getRequestInt(request, "deck_weight_intrigue", 3)
+                user.seasideWeight = KingdomUtil.getRequestInt(request, "deck_weight_seaside", 3)
+                user.alchemyWeight = KingdomUtil.getRequestInt(request, "deck_weight_alchemy", 3)
+                user.prosperityWeight = KingdomUtil.getRequestInt(request, "deck_weight_prosperity", 3)
+                user.cornucopiaWeight = KingdomUtil.getRequestInt(request, "deck_weight_cornucopia", 3)
+                user.hinterlandsWeight = KingdomUtil.getRequestInt(request, "deck_weight_hinterlands", 3)
+                user.promoWeight = KingdomUtil.getRequestInt(request, "deck_weight_promo", 3)
+                user.salvationWeight = KingdomUtil.getRequestInt(request, "deck_weight_salvation", 3)
+                user.fairyTaleWeight = KingdomUtil.getRequestInt(request, "deck_weight_fairytale", 3)
+                user.proletariatWeight = KingdomUtil.getRequestInt(request, "deck_weight_proletariat", 3)
+                user.fanWeight = KingdomUtil.getRequestInt(request, "deck_weight_fan", 3)
 
-                for (int i = 2; i <= 6; i++) {
-                    user.setPlayerDefault(i, request.getParameter("player" + i));
+                for (i in 2..6) {
+                    user.setPlayerDefault(i, request.getParameter("player" + i))
 
-                    if (request.getParameter("player" + i).equals("human")) {
-                        numPlayers++;
-                    } else if (request.getParameter("player" + i).equals("computer_easy")) {
-                        numPlayers++;
-                        numComputerPlayers++;
-                        numEasyComputerPlayers++;
-                    } else if (request.getParameter("player" + i).equals("computer_medium")) {
-                        numPlayers++;
-                        numComputerPlayers++;
-                        numMediumComputerPlayers++;
-                    } else if (request.getParameter("player" + i).equals("computer_hard")) {
-                        numPlayers++;
-                        numComputerPlayers++;
-                        numHardComputerPlayers++;
-                    } else if (request.getParameter("player" + i).equals("computer_bmu")) {
-                        numPlayers++;
-                        numComputerPlayers++;
-                        numBMUComputerPlayers++;
+                    when {
+                        request.getParameter("player" + i) == "human" -> numPlayers++
+                        request.getParameter("player" + i) == "computer_easy" -> {
+                            numPlayers++
+                            numComputerPlayers++
+                            numEasyComputerPlayers++
+                        }
+                        request.getParameter("player" + i) == "computer_medium" -> {
+                            numPlayers++
+                            numComputerPlayers++
+                            numMediumComputerPlayers++
+                        }
+                        request.getParameter("player" + i) == "computer_hard" -> {
+                            numPlayers++
+                            numComputerPlayers++
+                            numHardComputerPlayers++
+                        }
+                        request.getParameter("player" + i) == "computer_bmu" -> {
+                            numPlayers++
+                            numComputerPlayers++
+                            numBMUComputerPlayers++
+                        }
                     }
                 }
-                game.setNumPlayers(numPlayers);
-                game.setNumComputerPlayers(numComputerPlayers);
-                game.setNumEasyComputerPlayers(numEasyComputerPlayers);
-                game.setNumMediumComputerPlayers(numMediumComputerPlayers);
-                game.setNumHardComputerPlayers(numHardComputerPlayers);
-                game.setNumBMUComputerPlayers(numBMUComputerPlayers);
+                game.numPlayers = numPlayers
+                game.numComputerPlayers = numComputerPlayers
+                game.numEasyComputerPlayers = numEasyComputerPlayers
+                game.numMediumComputerPlayers = numMediumComputerPlayers
+                game.numHardComputerPlayers = numHardComputerPlayers
+                game.numBMUComputerPlayers = numBMUComputerPlayers
 
-                game.setShowVictoryPoints(KingdomUtil.INSTANCE.getRequestBoolean(request, "showVictoryPoints"));
-                game.setIdenticalStartingHands(KingdomUtil.INSTANCE.getRequestBoolean(request, "identicalStartingHands"));
+                game.isShowVictoryPoints = KingdomUtil.getRequestBoolean(request, "showVictoryPoints")
+                game.isIdenticalStartingHands = KingdomUtil.getRequestBoolean(request, "identicalStartingHands")
 
-                game.setPlayTreasureCards(KingdomUtil.INSTANCE.getRequestBoolean(request, "playTreasureCards"));
-                game.setTitle(request.getParameter("title"));
-                game.setPrivateGame(KingdomUtil.INSTANCE.getRequestBoolean(request, "privateGame"));
-                if (game.isPrivateGame()) {
-                    game.setPassword(request.getParameter("gamePassword"));
+                game.isPlayTreasureCards = KingdomUtil.getRequestBoolean(request, "playTreasureCards")
+                game.title = request.getParameter("title")
+                game.isPrivateGame = KingdomUtil.getRequestBoolean(request, "privateGame")
+                if (game.isPrivateGame) {
+                    game.password = request.getParameter("gamePassword")
                 }
-                game.setMobile(KingdomUtil.INSTANCE.isMobile(request));
+                game.mobile = KingdomUtil.isMobile(request)
 
-                List<Deck> decks = new ArrayList<>();
-                List<Card> customSelection = new ArrayList<Card>();
-                List<Card> excludedCards = new ArrayList<Card>(0);
-                parseCardSelectionRequest(request, user, game, decks, customSelection, excludedCards, generateType);
+                val decks = ArrayList<Deck>()
+                val customSelection = ArrayList<Card>()
+                val excludedCards = ArrayList<Card>(0)
+                parseCardSelectionRequest(request, user, game, decks, customSelection, excludedCards, generateType)
 
-                if (generateType.equals("annotatedGame") || generateType.equals("recentGame") || generateType.equals("recommendedSet")) {
-                    String cards;
-                    boolean includePlatinumAndColony = false;
-                    if (generateType.equals("annotatedGame")) {
-                        AnnotatedGame annotatedGame = gameManager.getAnnotatedGame(Integer.parseInt(request.getParameter("annotatedGameId")));
-                        cards = annotatedGame.getCards();
-                        includePlatinumAndColony = annotatedGame.getIncludeColonyAndPlatinum();
-                        game.setAnnotatedGame(true);
+                if (generateType == "annotatedGame" || generateType == "recentGame" || generateType == "recommendedSet") {
+                    var cards: String
+                    var includePlatinumAndColony = false
+                    if (generateType == "annotatedGame") {
+                        val annotatedGame = gameManager.getAnnotatedGame(Integer.parseInt(request.getParameter("annotatedGameId")))
+                        cards = annotatedGame.cards
+                        includePlatinumAndColony = annotatedGame.includeColonyAndPlatinum
+                        game.isAnnotatedGame = true
                     } else {
-                        if (generateType.equals("recentGame")) {
-                            cards = request.getParameter("recentGameCards");
-                            game.setRecentGame(true);
+                        if (generateType == "recentGame") {
+                            cards = request.getParameter("recentGameCards")
+                            game.isRecentGame = true
                         } else {
-                            cards = request.getParameter("recommendedSetCards");
-                            game.setRecommendedSet(true);
+                            cards = request.getParameter("recommendedSetCards")
+                            game.isRecommendedSet = true
                         }
                         if (cards.endsWith("Platinum,Colony")) {
-                            cards = cards.substring(0, cards.indexOf(",Platinum,Colony"));
-                            includePlatinumAndColony = true;
+                            cards = cards.substring(0, cards.indexOf(",Platinum,Colony"))
+                            includePlatinumAndColony = true
                         }
                     }
-                    List<Card> kingdomCards = new ArrayList<>();
-                    for (String cardString : cards.split(",")) {
-                        Card card;
-                        if (generateType.equals("annotatedGame")) {
-                            card = cardManager.getCard(Integer.parseInt(cardString));
+                    val kingdomCards = ArrayList<Card>()
+                    for (cardString in cards.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+                        val card = if (generateType == "annotatedGame") {
+                            cardManager.getCard(Integer.parseInt(cardString))
                         } else {
-                            card = cardManager.getCard(cardString);
+                            cardManager.getCard(cardString)
                         }
-                        if (card != null) {
-                            customSelection.add(card);
-                        }
+                        customSelection.add(card)
                     }
 
-                    game.setAlwaysIncludeColonyAndPlatinum(includePlatinumAndColony);
+                    game.isAlwaysIncludeColonyAndPlatinum = includePlatinumAndColony
                 }
 
                 if (includeLeaders) {
-                    game.setUsingLeaders(true);
-                    game.setAvailableLeaders(cardManager.getAvailableLeaderCards());
+                    game.isUsingLeaders = true
+                    game.availableLeaders = cardManager.availableLeaderCards
                 }
 
-                setRandomizingOptions(request, game, customSelection, excludedCards, generateType);
+                setRandomizingOptions(request, game, customSelection, excludedCards, generateType)
 
-                game.setDecks(decks);
-                cardManager.setRandomKingdomCards(game);
+                game.decks = decks
+                cardManager.setRandomKingdomCards(game)
 
-                user.setExcludedCards(KingdomUtil.INSTANCE.getCommaSeparatedCardNames(excludedCards));
-                userManager.saveUser(user);
+                user.excludedCards = KingdomUtil.getCommaSeparatedCardNames(excludedCards)
+                userManager.saveUser(user)
 
-                return new ModelAndView("redirect:/confirmCards.html");
+                return ModelAndView("redirect:/confirmCards.html")
             }
-            return new ModelAndView("redirect:/showGameRooms.html");
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            return ModelAndView("redirect:/showGameRooms.html")
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
-    private void parseCardSelectionRequest(HttpServletRequest request, User user, Game game, List<Deck> decks, List<Card> customSelection, List<Card> excludedCards, String generateType) {
-        Enumeration parameterNames = request.getParameterNames();
+    private fun parseCardSelectionRequest(request: HttpServletRequest, user: User, game: Game, decks: MutableList<Deck>, customSelection: MutableList<Card>, excludedCards: MutableList<Card>, generateType: String) {
+        val parameterNames = request.parameterNames
         while (parameterNames.hasMoreElements()) {
-            String name = (String) parameterNames.nextElement();
-            if (name.startsWith("deck_") && !name.startsWith("deck_weight_")) {
-                Deck deck = Deck.valueOf(request.getParameter(name));
-                int weight = 3;
-                if (deck == Deck.Kingdom) {
-                    weight = user.getBaseWeight();
-                } else if (deck == Deck.Intrigue) {
-                    weight = user.getIntrigueWeight();
-                } else if (deck == Deck.Seaside) {
-                    weight = user.getSeasideWeight();
-                } else if (deck == Deck.Alchemy) {
-                    weight = user.getAlchemyWeight();
-                } else if (deck == Deck.Prosperity) {
-                    weight = user.getProsperityWeight();
-                } else if (deck == Deck.Cornucopia) {
-                    weight = user.getCornucopiaWeight();
-                } else if (deck == Deck.Hinterlands) {
-                    weight = user.getHinterlandsWeight();
-                } else if (deck == Deck.Salvation) {
-                    weight = user.getSalvationWeight();
-                } else if (deck == Deck.FairyTale) {
-                    weight = user.getFairyTaleWeight();
-                } else if (deck == Deck.Proletariat) {
-                    weight = user.getProletariatWeight();
+            val name = parameterNames.nextElement() as String
+            when {
+                name.startsWith("deck_") && !name.startsWith("deck_weight_") -> {
+                    val deck = Deck.valueOf(request.getParameter(name))
+                    var weight = when (deck) {
+                        Deck.Kingdom -> user.baseWeight
+                        Deck.Intrigue -> user.intrigueWeight
+                        Deck.Seaside -> user.seasideWeight
+                        Deck.Alchemy -> user.alchemyWeight
+                        Deck.Prosperity -> user.prosperityWeight
+                        Deck.Cornucopia -> user.cornucopiaWeight
+                        Deck.Hinterlands -> user.hinterlandsWeight
+                        Deck.Salvation -> user.salvationWeight
+                        Deck.FairyTale -> user.fairyTaleWeight
+                        Deck.Proletariat -> user.proletariatWeight
+                        else -> 3
+                    }
+                    if (weight > 5) {
+                        weight = 5
+                    }
+                    for (i in 0 until weight) {
+                        decks.add(deck)
+                    }
                 }
-                if (weight > 5) {
-                    weight = 5;
+                name.startsWith("card_") -> {
+                    val cardId = Integer.parseInt(name.substring(5))
+                    val card = cardManager.getCard(cardId)
+                    customSelection.add(card)
                 }
-                for (int i = 0; i < weight; i++) {
-                    decks.add(deck);
+                name.startsWith("excluded_card_") -> {
+                    val cardId = Integer.parseInt(name.substring(14))
+                    val card = cardManager.getCard(cardId)
+                    excludedCards.add(card)
                 }
-            } else if (name.startsWith("card_")) {
-                int cardId = Integer.parseInt(name.substring(5));
-                Card card = cardManager.getCard(cardId);
-                customSelection.add(card);
-            } else if (name.startsWith("excluded_card_")) {
-                int cardId = Integer.parseInt(name.substring(14));
-                Card card = cardManager.getCard(cardId);
-                excludedCards.add(card);
             }
         }
 
-        String promoCards = request.getParameter("promo_cards");
-        if (promoCards != null && promoCards.equals("true")) {
-            for (int i = 0; i < user.getPromoWeight(); i++) {
-                decks.add(Deck.Promo);
+        val promoCards = request.getParameter("promo_cards")
+        if (promoCards != null && promoCards == "true") {
+            for (i in 0 until user.promoWeight) {
+                decks.add(Deck.Promo)
             }
         }
-        String otherFanCards = request.getParameter("other_fan_cards");
-        if (otherFanCards != null && otherFanCards.equals("true")) {
-            for (int i = 0; i < user.getFanWeight(); i++) {
-                decks.add(Deck.Fan);
+        val otherFanCards = request.getParameter("other_fan_cards")
+        if (otherFanCards != null && otherFanCards == "true") {
+            for (i in 0 until user.fanWeight) {
+                decks.add(Deck.Fan)
             }
         }
     }
 
-    private void setRandomizingOptions(HttpServletRequest request, Game game, List<Card> customSelection, List<Card> excludedCards, String generateType) {
-        RandomizingOptions options = new RandomizingOptions();
+    private fun setRandomizingOptions(request: HttpServletRequest, game: Game, customSelection: List<Card>, excludedCards: List<Card>, generateType: String) {
+        val options = RandomizingOptions()
 
-        options.setExcludedCards(excludedCards);
+        options.excludedCards = excludedCards
 
-        if (generateType.equals("custom") || generateType.equals("annotatedGame") || generateType.equals("recentGame") || generateType.equals("recommendedSet")) {
-            game.setCustom(true);
-            options.setThreeToFiveAlchemy(true);
-            options.setCustomSelection(customSelection);
-            if (KingdomUtil.INSTANCE.getRequestBoolean(request, "includeColonyAndPlatinumCards")) {
-                game.setAlwaysIncludeColonyAndPlatinum(true);
+        if (generateType == "custom" || generateType == "annotatedGame" || generateType == "recentGame" || generateType == "recommendedSet") {
+            game.setCustom(true)
+            options.isThreeToFiveAlchemy = true
+            options.customSelection = customSelection
+            if (KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")) {
+                game.isAlwaysIncludeColonyAndPlatinum = true
             }
         } else {
-            options.setThreeToFiveAlchemy(KingdomUtil.INSTANCE.getRequestBoolean(request, "threeToFiveAlchemy"));
-            options.setOneOfEachCost(KingdomUtil.INSTANCE.getRequestBoolean(request, "oneOfEachCost"));
-            options.setOneWithBuy(KingdomUtil.INSTANCE.getRequestBoolean(request, "oneWithBuy"));
-            options.setOneWithActions(KingdomUtil.INSTANCE.getRequestBoolean(request, "oneWithActions"));
-            options.setDefenseForAttack(KingdomUtil.INSTANCE.getRequestBoolean(request, "defenseForAttack"));
-            game.setAlwaysIncludeColonyAndPlatinum(KingdomUtil.INSTANCE.getRequestBoolean(request, "alwaysIncludeColonyAndPlatinum"));
+            options.isThreeToFiveAlchemy = KingdomUtil.getRequestBoolean(request, "threeToFiveAlchemy")
+            options.isOneOfEachCost = KingdomUtil.getRequestBoolean(request, "oneOfEachCost")
+            options.isOneWithBuy = KingdomUtil.getRequestBoolean(request, "oneWithBuy")
+            options.isOneWithActions = KingdomUtil.getRequestBoolean(request, "oneWithActions")
+            options.isDefenseForAttack = KingdomUtil.getRequestBoolean(request, "defenseForAttack")
+            game.isAlwaysIncludeColonyAndPlatinum = KingdomUtil.getRequestBoolean(request, "alwaysIncludeColonyAndPlatinum")
         }
-        game.setRandomizingOptions(options);
+        game.randomizingOptions = options
     }
 
     @RequestMapping("/confirmCards.html")
-    public ModelAndView confirmCards(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun confirmCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
-                return showRandomConfirmPage(request, user, game);
+            return if (game.status == Game.STATUS_GAME_BEING_CONFIGURED) {
+                showRandomConfirmPage(request, user, game)
             } else {
-                if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
-                    return new ModelAndView("redirect:/showGame.html");
+                if (game.status == Game.STATUS_GAME_IN_PROGRESS) {
+                    ModelAndView("redirect:/showGame.html")
                 } else {
-                    return new ModelAndView("redirect:/showGameRooms.html");
+                    ModelAndView("redirect:/showGameRooms.html")
                 }
             }
-        } catch (Throwable t) {
-            t.printStackTrace();
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
-    private ModelAndView showRandomConfirmPage(HttpServletRequest request, User user, Game game) throws TemplateModelException {
-        boolean includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum() || (game.getKingdomCards().get(0).isProsperity() && !game.isNeverIncludeColonyAndPlatinum());
-        boolean playTreasureCardsRequired = false;
-        for (Card card : game.getKingdomCards()) {
-            if (card.getPlayTreasureCards()) {
-                playTreasureCardsRequired = true;
+    @Throws(TemplateModelException::class)
+    private fun showRandomConfirmPage(request: HttpServletRequest, user: User, game: Game): ModelAndView {
+        val includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].isProsperity && !game.isNeverIncludeColonyAndPlatinum
+        var playTreasureCardsRequired = false
+        for (card in game.kingdomCards) {
+            if (card.playTreasureCards) {
+                playTreasureCardsRequired = true
             }
         }
-        ModelAndView modelAndView = new ModelAndView("randomConfirm");
-        modelAndView.addObject("createGame", KingdomUtil.INSTANCE.getRequestBoolean(request, "createGame"));
-        modelAndView.addObject("player", new Player(user, game));
-        modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
-        modelAndView.addObject("costDiscount", game.getCostDiscount());
-        modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-        modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-        addTrollTokenObjects(game, modelAndView);
-        modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-        modelAndView.addObject("cards", game.getKingdomCards());
-        modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum);
-        modelAndView.addObject("playTreasureCardsRequired", playTreasureCardsRequired);
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        modelAndView.addObject("randomizerReplacementCardNotFound", game.isRandomizerReplacementCardNotFound());
-        return modelAndView;
+        val modelAndView = ModelAndView("randomConfirm")
+        modelAndView.addObject("createGame", KingdomUtil.getRequestBoolean(request, "createGame"))
+        modelAndView.addObject("player", Player(user, game))
+        modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+        modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        addTrollTokenObjects(game, modelAndView)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("cards", game.kingdomCards)
+        modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
+        modelAndView.addObject("playTreasureCardsRequired", playTreasureCardsRequired)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        modelAndView.addObject("randomizerReplacementCardNotFound", game.isRandomizerReplacementCardNotFound)
+        return modelAndView
     }
 
-    private void addTrollTokenObjects(Game game, ModelAndView modelAndView) throws TemplateModelException {
-        modelAndView.addObject("showTrollTokens", game.isShowTrollTokens());
-        if (game.isShowTrollTokens()) {
-            BeansWrapper bw = new BeansWrapper();
-            modelAndView.addObject("trollTokens", bw.wrap(game.getTrollTokens()));
+    @Throws(TemplateModelException::class)
+    private fun addTrollTokenObjects(game: Game, modelAndView: ModelAndView) {
+        modelAndView.addObject("showTrollTokens", game.isShowTrollTokens)
+        if (game.isShowTrollTokens) {
+            val bw = BeansWrapper()
+            modelAndView.addObject("trollTokens", bw.wrap(game.trollTokens))
         }
     }
 
     @RequestMapping("/changeRandomCards.html")
-    public ModelAndView changeRandomCards(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun changeRandomCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
-                cardManager.setRandomKingdomCards(game);
-                return confirmCards(request, response);
+            return if (game.status == Game.STATUS_GAME_BEING_CONFIGURED) {
+                cardManager.setRandomKingdomCards(game)
+                confirmCards(request, response)
             } else {
-                if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
-                    return new ModelAndView("redirect:/showGame.html");
+                if (game.status == Game.STATUS_GAME_IN_PROGRESS) {
+                    ModelAndView("redirect:/showGame.html")
                 } else {
-                    return new ModelAndView("redirect:/showGameRooms.html");
+                    ModelAndView("redirect:/showGameRooms.html")
                 }
             }
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/swapRandomCard.html")
-    public ModelAndView swapRandomCard(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun swapRandomCard(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
-                cardManager.swapRandomCard(game, Integer.parseInt(request.getParameter("cardId")));
-                return confirmCards(request, response);
+            return if (game.status == Game.STATUS_GAME_BEING_CONFIGURED) {
+                cardManager.swapRandomCard(game, Integer.parseInt(request.getParameter("cardId")))
+                confirmCards(request, response)
             } else {
-                if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
-                    return new ModelAndView("redirect:/showGame.html");
+                if (game.status == Game.STATUS_GAME_IN_PROGRESS) {
+                    ModelAndView("redirect:/showGame.html")
                 } else {
-                    return new ModelAndView("redirect:/showGameRooms.html");
+                    ModelAndView("redirect:/showGameRooms.html")
                 }
             }
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/swapForTypeOfCard.html")
-    public ModelAndView swapForTypeOfCard(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun swapForTypeOfCard(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
-                cardManager.swapForTypeOfCard(game, Integer.parseInt(request.getParameter("cardId")), request.getParameter("cardType"));
-                return confirmCards(request, response);
+            return if (game.status == Game.STATUS_GAME_BEING_CONFIGURED) {
+                cardManager.swapForTypeOfCard(game, Integer.parseInt(request.getParameter("cardId")), request.getParameter("cardType"))
+                confirmCards(request, response)
             } else {
-                if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
-                    return new ModelAndView("redirect:/showGame.html");
+                if (game.status == Game.STATUS_GAME_IN_PROGRESS) {
+                    ModelAndView("redirect:/showGame.html")
                 } else {
-                    return new ModelAndView("redirect:/showGameRooms.html");
+                    ModelAndView("redirect:/showGameRooms.html")
                 }
             }
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
 
     @RequestMapping("/togglePlatinumAndColony.html")
-    public ModelAndView togglePlatinumAndColony(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun togglePlatinumAndColony(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
-                boolean include = KingdomUtil.INSTANCE.getRequestBoolean(request, "include");
-                game.setAlwaysIncludeColonyAndPlatinum(include);
-                game.setNeverIncludeColonyAndPlatinum(!include);
-                return confirmCards(request, response);
+            return if (game.status == Game.STATUS_GAME_BEING_CONFIGURED) {
+                val include = KingdomUtil.getRequestBoolean(request, "include")
+                game.isAlwaysIncludeColonyAndPlatinum = include
+                game.isNeverIncludeColonyAndPlatinum = !include
+                confirmCards(request, response)
             } else {
-                if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
-                    return new ModelAndView("redirect:/showGame.html");
+                if (game.status == Game.STATUS_GAME_IN_PROGRESS) {
+                    ModelAndView("redirect:/showGame.html")
                 } else {
-                    return new ModelAndView("redirect:/showGameRooms.html");
+                    ModelAndView("redirect:/showGameRooms.html")
                 }
             }
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/keepRandomCards.html")
-    public ModelAndView keepRandomCards(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun keepRandomCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            if (game.getStatus() == Game.STATUS_GAME_BEING_CONFIGURED) {
-                game.setStatus(Game.STATUS_GAME_WAITING_FOR_PLAYERS);
-                LoggedInUsers.Companion.getInstance().refreshLobbyGameRooms();
-                boolean hasBlackMarket = false;
-                boolean playTreasureCardsRequired = false;
-                boolean includePrizes = false;
-                for (Card card : game.getKingdomCards()) {
-                    if (card.getName().equals("Black Market")) {
-                        hasBlackMarket = true;
-                    } else if (card.getName().equals("Tournament") || card.getName().equals("Museum")) {
-                        includePrizes = true;
+            if (game.status == Game.STATUS_GAME_BEING_CONFIGURED) {
+                game.status = Game.STATUS_GAME_WAITING_FOR_PLAYERS
+                LoggedInUsers.instance.refreshLobbyGameRooms()
+                var hasBlackMarket = false
+                var playTreasureCardsRequired = false
+                var includePrizes = false
+                for (card in game.kingdomCards) {
+                    if (card.name == "Black Market") {
+                        hasBlackMarket = true
+                    } else if (card.name == "Tournament" || card.name == "Museum") {
+                        includePrizes = true
                     }
-                    if (card.getPlayTreasureCards()) {
-                        playTreasureCardsRequired = true;
+                    if (card.playTreasureCards) {
+                        playTreasureCardsRequired = true
                     }
                 }
                 if (hasBlackMarket) {
-                    setBlackMarketCards(game);
+                    setBlackMarketCards(game)
                 }
                 if (playTreasureCardsRequired) {
-                    game.setPlayTreasureCards(true);
+                    game.isPlayTreasureCards = true
                 }
-                if (game.isAlwaysIncludeColonyAndPlatinum() || (game.getKingdomCards().get(0).isProsperity() && !game.isNeverIncludeColonyAndPlatinum())) {
-                    game.setIncludeColonyCards(true);
-                    game.setIncludePlatinumCards(true);
+                if (game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].isProsperity && !game.isNeverIncludeColonyAndPlatinum) {
+                    game.isIncludeColonyCards = true
+                    game.isIncludePlatinumCards = true
                 }
                 if (includePrizes || hasBlackMarket) {
-                    game.setPrizeCards(cardManager.getPrizeCards());
+                    game.prizeCards = cardManager.prizeCards
                 }
-                game.setGameManager(gameManager);
-                game.init();
-                addPlayerToGame(game, user);
+                game.setGameManager(gameManager)
+                game.init()
+                addPlayerToGame(game, user)
             }
-            if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
-                return new ModelAndView("redirect:/showGame.html");
+            return if (game.status == Game.STATUS_GAME_IN_PROGRESS) {
+                ModelAndView("redirect:/showGame.html")
             } else {
-                return new ModelAndView("redirect:/showGameRooms.html");
+                ModelAndView("redirect:/showGameRooms.html")
             }
-        } catch (Throwable t) {
-            t.printStackTrace();
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
-    @SuppressWarnings({"unchecked"})
-    private void setBlackMarketCards(Game game) {
-        List<Card> allCards = cardManager.getAllCards(false);
-        List<Card> blackMarketCards = (List<Card>) CollectionUtils.subtract(allCards, game.getKingdomCards());
-        Collections.shuffle(blackMarketCards);
-        game.setBlackMarketCards(blackMarketCards);
+    private fun setBlackMarketCards(game: Game) {
+        val allCards = cardManager.getAllCards(false)
+        val blackMarketCards = CollectionUtils.subtract(allCards, game.kingdomCards) as MutableList<Card>
+        Collections.shuffle(blackMarketCards)
+        game.blackMarketCards = blackMarketCards
     }
 
     @RequestMapping("/cancelGame.html")
-    public ModelAndView cancelGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        String gameIdParam = request.getParameter("gameId");
+    fun cancelGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val gameIdParam = request.getParameter("gameId")
         if (user == null || gameIdParam == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        int gameId = Integer.parseInt(gameIdParam);
-        Game game = gameRoomManager.getGame(gameId);
-        if (game != null && (user.getAdmin() || game.getCreatorId() == user.getUserId())) {
-            game.reset();
+        val gameId = Integer.parseInt(gameIdParam)
+        val game = gameRoomManager.getGame(gameId)
+        if (game != null && (user.admin || game.creatorId == user.userId)) {
+            game.reset()
         }
-        return new ModelAndView("redirect:/showGameRooms.html");
+        return ModelAndView("redirect:/showGameRooms.html")
     }
 
     @RequestMapping("/cancelCreateGame.html")
-    public ModelAndView cancelCreateGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun cancelCreateGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        game.reset();
-        return new ModelAndView("redirect:/showGameRooms.html");
+        game.reset()
+        return ModelAndView("redirect:/showGameRooms.html")
     }
 
     @RequestMapping("/showGameRooms.html")
-    public ModelAndView showGameRooms(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
+    fun showGameRooms(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
         if (user == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
-        } else if (user.isExpired()) {
-            KingdomUtil.INSTANCE.logoutUser(user, request);
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
+        } else if (user.isExpired) {
+            KingdomUtil.logoutUser(user, request)
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        Game game = getGame(request);
+        val game = getGame(request)
         try {
-            if (game != null && game.getStatus() != Game.STATUS_GAME_WAITING_FOR_PLAYERS && game.getStatus() != Game.STATUS_GAME_FINISHED && game.getPlayerMap().containsKey(user.getUserId())) {
-                return new ModelAndView("redirect:/showGame.html");
+            if (game != null && game.status != Game.STATUS_GAME_WAITING_FOR_PLAYERS && game.status != Game.STATUS_GAME_FINISHED && game.playerMap.containsKey(user.userId)) {
+                return ModelAndView("redirect:/showGame.html")
             }
-            user.getRefreshLobby().setRefreshPlayers(false);
-            user.getRefreshLobby().setRefreshGameRooms(false);
-            user.getRefreshLobby().setRefreshChat(false);
-            LoggedInUsers.Companion.getInstance().refreshLobby(user);
-            ModelAndView modelAndView = new ModelAndView("gameRooms");
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("players", LoggedInUsers.Companion.getInstance().getUsers());
-            modelAndView.addObject("gameRooms", gameRoomManager.getLobbyGameRooms());
-            modelAndView.addObject("chats", lobbyChats.getChats());
-            modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached());
-            modelAndView.addObject("numGamesInProgress", gameRoomManager.getGamesInProgress().size());
-            modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite());
-            modelAndView.addObject("updatingMessage", gameRoomManager.getUpdatingMessage());
-            modelAndView.addObject("showNews", gameRoomManager.isShowNews());
-            modelAndView.addObject("news", gameRoomManager.getNews());
+            user.refreshLobby.isRefreshPlayers = false
+            user.refreshLobby.isRefreshGameRooms = false
+            user.refreshLobby.isRefreshChat = false
+            LoggedInUsers.instance.refreshLobby(user)
+            val modelAndView = ModelAndView("gameRooms")
+            modelAndView.addObject("user", user)
+            modelAndView.addObject("players", LoggedInUsers.instance.getUsers())
+            modelAndView.addObject("gameRooms", gameRoomManager.lobbyGameRooms)
+            modelAndView.addObject("chats", lobbyChats.chats)
+            modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached())
+            modelAndView.addObject("numGamesInProgress", gameRoomManager.gamesInProgress.size)
+            modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
+            modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage!!)
+            modelAndView.addObject("showNews", gameRoomManager.isShowNews)
+            modelAndView.addObject("news", gameRoomManager.news)
 
-            return modelAndView;
-        } catch (Throwable t) {
+            return modelAndView
+        } catch (t: Throwable) {
             if (game != null) {
-                GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-                game.logError(error);
+                val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+                game.logError(error)
             }
-            return new ModelAndView("empty");
+            return ModelAndView("empty")
         }
+
     }
 
-    private void addPlayerToGame(Game game, User user) {
-        user.setGameId(game.getGameId());
-        user.setStatus("");
-        game.addPlayer(user);
-        LoggedInUsers.Companion.getInstance().updateUserStatus(user);
-        LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
-        LoggedInUsers.Companion.getInstance().refreshLobbyGameRooms();
+    private fun addPlayerToGame(game: Game, user: User) {
+        user.gameId = game.gameId
+        user.status = ""
+        game.addPlayer(user)
+        LoggedInUsers.instance.updateUserStatus(user)
+        LoggedInUsers.instance.refreshLobbyPlayers()
+        LoggedInUsers.instance.refreshLobbyGameRooms()
     }
 
-    private void removePlayerFromGame(Game game, User user) {
-        user.setGameId(0);
-        game.removePlayer(user);
-        LoggedInUsers.Companion.getInstance().updateUser(user);
-        LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
-        LoggedInUsers.Companion.getInstance().refreshLobbyGameRooms();
+    private fun removePlayerFromGame(game: Game, user: User) {
+        user.gameId = 0
+        game.removePlayer(user)
+        LoggedInUsers.instance.updateUser(user)
+        LoggedInUsers.instance.refreshLobbyPlayers()
+        LoggedInUsers.instance.refreshLobbyGameRooms()
     }
 
     @RequestMapping("/leaveGame.html")
-    public ModelAndView leaveGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun leaveGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
+        if (user.gameId == 0) {
+            return ModelAndView("redirect:/showGameRooms.html")
         }
-        if (user.getGameId() == 0) {
-            return new ModelAndView("redirect:/showGameRooms.html");
-        }
-        Game game = gameRoomManager.getGame(user.getGameId());
-        if (game == null || game.getStatus() != Game.STATUS_GAME_WAITING_FOR_PLAYERS) {
-            return new ModelAndView("redirect:/showGameRooms.html");
+        val game = gameRoomManager.getGame(user.gameId)
+        if (game == null || game.status != Game.STATUS_GAME_WAITING_FOR_PLAYERS) {
+            return ModelAndView("redirect:/showGameRooms.html")
         } else {
-            removePlayerFromGame(game, user);
+            removePlayerFromGame(game, user)
         }
-        return new ModelAndView("redirect:/showGameRooms.html");
+        return ModelAndView("redirect:/showGameRooms.html")
     }
 
     @RequestMapping("/joinGame.html")
-    public ModelAndView joinGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun joinGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
+        if (user.gameId != 0) {
+            return ModelAndView("redirect:/showGameRooms.html")
         }
-        if (user.getGameId() != 0) {
-            return new ModelAndView("redirect:/showGameRooms.html");
-        }
-        String gameIdParam = request.getParameter("gameId");
-        Game game;
+        val gameIdParam = request.getParameter("gameId")
+        val game: Game?
         if (gameIdParam != null) {
-            int gameId = Integer.parseInt(gameIdParam);
-            game = gameRoomManager.getGame(gameId);
+            val gameId = Integer.parseInt(gameIdParam)
+            game = gameRoomManager.getGame(gameId)
         } else {
-            game = getGame(request);
+            game = getGame(request)
         }
         if (game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            if (game.getPlayers().size() == game.getNumPlayers() || game.isPrivateGame()) {
-                return showGameRooms(request, response);
+            if (game.players.size == game.numPlayers || game.isPrivateGame) {
+                return showGameRooms(request, response)
             } else {
-                if (!game.getPlayerMap().containsKey(user.getUserId())) {
+                if (!game.playerMap.containsKey(user.userId)) {
                     if (gameIdParam != null) {
-                        request.getSession().setAttribute("gameId", Integer.parseInt(gameIdParam));
+                        request.session.setAttribute("gameId", Integer.parseInt(gameIdParam))
                     }
-                    addPlayerToGame(game, user);
+                    addPlayerToGame(game, user)
                 }
-                if (game.getStatus() == Game.STATUS_GAME_IN_PROGRESS) {
-                    return new ModelAndView("redirect:/showGame.html");
+                return if (game.status == Game.STATUS_GAME_IN_PROGRESS) {
+                    ModelAndView("redirect:/showGame.html")
                 } else {
-                    return new ModelAndView("redirect:/showGameRooms.html");
+                    ModelAndView("redirect:/showGameRooms.html")
                 }
             }
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @ResponseBody
-    @RequestMapping(value = "/joinPrivateGame", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map joinPrivateGame(HttpServletRequest request, HttpServletResponse response) {
-        Map model = new HashMap();
-        User user = getUser(request);
+    @RequestMapping(value = "/joinPrivateGame", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun joinPrivateGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val model = HashMap<String, Any>()
+        val user = getUser(request)
         if (user == null) {
-            model.put("redirectToLogin", true);
-            return model;
+            model.put("redirectToLogin", true)
+            return model
         }
-        String gameIdParam = request.getParameter("gameId");
-        Game game;
+        val gameIdParam = request.getParameter("gameId")
+        val game: Game?
         if (gameIdParam != null) {
-            int gameId = Integer.parseInt(gameIdParam);
-            game = gameRoomManager.getGame(gameId);
+            val gameId = Integer.parseInt(gameIdParam)
+            game = gameRoomManager.getGame(gameId)
         } else {
-            game = getGame(request);
+            game = getGame(request)
         }
         if (game == null) {
-            model.put("redirectToLogin", true);
-            return model;
+            model.put("redirectToLogin", true)
+            return model
         }
         try {
-            String message = "Success";
-            String gamePassword = request.getParameter("gamePassword");
-            if (gamePassword == null || !gamePassword.equals(game.getPassword())) {
-                message = "Invalid Password";
-            } else if (game.getPlayers().size() == game.getNumPlayers()) {
-                message = "Game Room Full";
-            } else if (!game.getPlayerMap().containsKey(user.getUserId())) {
+            var message = "Success"
+            val gamePassword = request.getParameter("gamePassword")
+            if (gamePassword == null || gamePassword != game.password) {
+                message = "Invalid Password"
+            } else if (game.players.size == game.numPlayers) {
+                message = "Game Room Full"
+            } else if (!game.playerMap.containsKey(user.userId)) {
                 if (gameIdParam != null) {
-                    request.getSession().setAttribute("gameId", Integer.parseInt(gameIdParam));
+                    request.session.setAttribute("gameId", Integer.parseInt(gameIdParam))
                 }
-                addPlayerToGame(game, user);
+                addPlayerToGame(game, user)
             }
 
-            model.put("message", message);
-            model.put("start", game.getStatus() == Game.STATUS_GAME_IN_PROGRESS);
+            model.put("message", message)
+            model.put("start", game.status == Game.STATUS_GAME_IN_PROGRESS)
 
-            return model;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return model;
+            return model
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return model
         }
+
     }
 
     @RequestMapping("/showGame.html")
-    public ModelAndView showGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun showGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         } else if (game == null) {
-            return new ModelAndView("redirect:/showGameRooms.html");
+            return ModelAndView("redirect:/showGameRooms.html")
         }
         try {
-            ModelAndView modelAndView = new ModelAndView("game");
-            Player player = game.getPlayerMap().get(user.getUserId());
-            if (player == null) {
-                return showGameRooms(request, response);
-            }
-            game.refreshAll(player);
-            game.closeLoadingDialog(player);
-            addGameObjects(game, player, modelAndView, request);
-            modelAndView.addObject("user", user);
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView("game")
+            val player = game.playerMap[user.userId] ?: return showGameRooms(request, response)
+            game.refreshAll(player)
+            game.closeLoadingDialog(player)
+            addGameObjects(game, player, modelAndView, request)
+            modelAndView.addObject("user", user)
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @ResponseBody
-    @RequestMapping(value = "/refreshGame", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map refreshGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
-        Map model = new HashMap();
+    @RequestMapping(value = "/refreshGame", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun refreshGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val user = getUser(request)
+        val game = getGame(request)
+        val model = HashMap<String, Any>()
         if (user == null || game == null) {
-            model.put("redirectToLogin", true);
-            return model;
+            model.put("redirectToLogin", true)
+            return model
         }
         try {
-            Refresh refresh = game.getNeedsRefresh().get(user.getUserId());
+            val refresh = game.needsRefresh[user.userId]
             if (refresh == null) {
-                model.put("redirectToLobby", true);
-                return model;
+                model.put("redirectToLobby", true)
+                return model
             }
-            model.put("refreshEndTurn", refresh.isRefreshEndTurn());
-            if (refresh.isRefreshEndTurn()) {
-                refresh.setRefreshEndTurn(false);
-                Player player = game.getPlayerMap().get(user.getUserId());
-                if (player.getTurns() > 0) {
-                    boolean refreshHandArea = refresh.isRefreshHand() || refresh.isRefreshHandArea() || refresh.isRefreshDiscard();
-                    model.put("refreshHandOnEndTurn", refresh.isRefreshHandOnEndTurn());
-                    refresh.setRefreshHandOnEndTurn(false);
-                    model.put("refreshSupplyOnEndTurn", refresh.isRefreshSupplyOnEndTurn());
-                    refresh.setRefreshSupplyOnEndTurn(false);
+            model.put("refreshEndTurn", refresh.isRefreshEndTurn)
+            if (refresh.isRefreshEndTurn) {
+                refresh.isRefreshEndTurn = false
+                val player = game.playerMap[user.userId]!!
+                if (player.turns > 0) {
+                    val refreshHandArea = refresh.isRefreshHand || refresh.isRefreshHandArea || refresh.isRefreshDiscard
+                    model.put("refreshHandOnEndTurn", refresh.isRefreshHandOnEndTurn)
+                    refresh.isRefreshHandOnEndTurn = false
+                    model.put("refreshSupplyOnEndTurn", refresh.isRefreshSupplyOnEndTurn)
+                    refresh.isRefreshSupplyOnEndTurn = false
                 }
-                model.put("refreshPlayersOnEndTurn", refresh.isRefreshPlayers());
-                refresh.setRefreshPlayers(false);
-                return model;
+                model.put("refreshPlayersOnEndTurn", refresh.isRefreshPlayers)
+                refresh.isRefreshPlayers = false
+                return model
             }
-            model.put("refreshGameStatus", refresh.isRefreshGameStatus());
-            if (refresh.isRefreshGameStatus()) {
-                refresh.setRefreshGameStatus(false);
-                model.put("gameStatus", game.getStatus());
-                String currentPlayer = String.valueOf(game.getStatus() == Game.STATUS_GAME_IN_PROGRESS && user.getUserId() == game.getCurrentPlayerId());
-                model.put("currentPlayer", currentPlayer);
+            model.put("refreshGameStatus", refresh.isRefreshGameStatus)
+            if (refresh.isRefreshGameStatus) {
+                refresh.isRefreshGameStatus = false
+                model.put("gameStatus", game.status)
+                val currentPlayer = (game.status == Game.STATUS_GAME_IN_PROGRESS && user.userId == game.currentPlayerId).toString()
+                model.put("currentPlayer", currentPlayer)
             }
-            model.put("closeCardActionDialog", refresh.isCloseCardActionDialog());
-            if (refresh.isCloseCardActionDialog()) {
-                refresh.setCloseCardActionDialog(false);
+            model.put("closeCardActionDialog", refresh.isCloseCardActionDialog)
+            if (refresh.isCloseCardActionDialog) {
+                refresh.isCloseCardActionDialog = false
             }
-            model.put("closeLoadingDialog", refresh.isCloseLoadingDialog());
-            if (refresh.isCloseLoadingDialog()) {
-                refresh.setCloseLoadingDialog(false);
+            model.put("closeLoadingDialog", refresh.isCloseLoadingDialog)
+            if (refresh.isCloseLoadingDialog) {
+                refresh.isCloseLoadingDialog = false
             }
-            int divsToLoad = 0;
-            model.put("refreshPlayers", refresh.isRefreshPlayers());
-            if (refresh.isRefreshPlayers()) {
-                divsToLoad++;
-                refresh.setRefreshPlayers(false);
+            var divsToLoad = 0
+            model.put("refreshPlayers", refresh.isRefreshPlayers)
+            if (refresh.isRefreshPlayers) {
+                divsToLoad++
+                refresh.isRefreshPlayers = false
             }
-            model.put("refreshSupply", refresh.isRefreshSupply());
-            if (refresh.isRefreshSupply()) {
-                divsToLoad++;
-                refresh.setRefreshSupply(false);
+            model.put("refreshSupply", refresh.isRefreshSupply)
+            if (refresh.isRefreshSupply) {
+                divsToLoad++
+                refresh.isRefreshSupply = false
             }
-            model.put("refreshPlayingArea", refresh.isRefreshPlayingArea());
-            if (refresh.isRefreshPlayingArea()) {
-                divsToLoad++;
-                refresh.setRefreshPlayingArea(false);
+            model.put("refreshPlayingArea", refresh.isRefreshPlayingArea)
+            if (refresh.isRefreshPlayingArea) {
+                divsToLoad++
+                refresh.isRefreshPlayingArea = false
             }
-            model.put("refreshCardsPlayed", refresh.isRefreshCardsPlayedDiv());
-            if (refresh.isRefreshCardsPlayedDiv()) {
-                divsToLoad++;
-                refresh.setRefreshCardsPlayedDiv(false);
+            model.put("refreshCardsPlayed", refresh.isRefreshCardsPlayedDiv)
+            if (refresh.isRefreshCardsPlayedDiv) {
+                divsToLoad++
+                refresh.isRefreshCardsPlayedDiv = false
             }
-            model.put("refreshCardsBought", refresh.isRefreshCardsBoughtDiv());
-            if (refresh.isRefreshCardsBoughtDiv()) {
-                divsToLoad++;
-                refresh.setRefreshCardsBoughtDiv(false);
+            model.put("refreshCardsBought", refresh.isRefreshCardsBoughtDiv)
+            if (refresh.isRefreshCardsBoughtDiv) {
+                divsToLoad++
+                refresh.isRefreshCardsBoughtDiv = false
             }
-            model.put("refreshHistory", refresh.isRefreshHistory());
-            if (refresh.isRefreshHistory()) {
-                divsToLoad++;
-                refresh.setRefreshHistory(false);
+            model.put("refreshHistory", refresh.isRefreshHistory)
+            if (refresh.isRefreshHistory) {
+                divsToLoad++
+                refresh.isRefreshHistory = false
             }
-            model.put("refreshHandArea", refresh.isRefreshHandArea());
-            if (refresh.isRefreshHandArea()) {
-                divsToLoad++;
-                refresh.setRefreshHandArea(false);
+            model.put("refreshHandArea", refresh.isRefreshHandArea)
+            if (refresh.isRefreshHandArea) {
+                divsToLoad++
+                refresh.isRefreshHandArea = false
             }
-            model.put("refreshHand", refresh.isRefreshHand());
-            if (refresh.isRefreshHand()) {
-                divsToLoad++;
-                refresh.setRefreshHand(false);
+            model.put("refreshHand", refresh.isRefreshHand)
+            if (refresh.isRefreshHand) {
+                divsToLoad++
+                refresh.isRefreshHand = false
             }
-            model.put("refreshDiscard", refresh.isRefreshDiscard());
-            if (refresh.isRefreshDiscard()) {
-                divsToLoad++;
-                refresh.setRefreshDiscard(false);
+            model.put("refreshDiscard", refresh.isRefreshDiscard)
+            if (refresh.isRefreshDiscard) {
+                divsToLoad++
+                refresh.isRefreshDiscard = false
             }
-            model.put("refreshChat", refresh.isRefreshChat());
-            if (refresh.isRefreshChat()) {
-                divsToLoad++;
-                refresh.setRefreshChat(false);
+            model.put("refreshChat", refresh.isRefreshChat)
+            if (refresh.isRefreshChat) {
+                divsToLoad++
+                refresh.isRefreshChat = false
             }
-            model.put("refreshCardAction", refresh.isRefreshCardAction());
-            if (refresh.isRefreshCardAction()) {
-                Player player = game.getPlayerMap().get(user.getUserId());
-                if (player.getCardAction() == null) {
-                    GameError error = new GameError(GameError.GAME_ERROR, "Card action is null for user: " + player.getUsername() + ", show card action: " + player.isShowCardAction());
-                    game.logError(error, false);
-                    model.put("refreshCardAction", false);
+            model.put("refreshCardAction", refresh.isRefreshCardAction)
+            if (refresh.isRefreshCardAction) {
+                val player = game.playerMap[user.userId]!!
+                if (player.cardAction == null) {
+                    val error = GameError(GameError.GAME_ERROR, "Card action is null for user: " + player.username + ", show card action: " + player.isShowCardAction)
+                    game.logError(error, false)
+                    model.put("refreshCardAction", false)
                 } else {
-                    model.put("cardActionCardsSize", player.getCardAction().getCards().size());
-                    model.put("cardActionNumCards", player.getCardAction().getNumCards());
-                    model.put("cardActionType", player.getCardAction().getType());
-                    model.put("cardActionWidth", player.getCardAction().getWidth());
-                    model.put("cardActionSelectExact", player.getCardAction().isSelectExact());
-                    model.put("cardActionSelectUpTo", player.getCardAction().isSelectUpTo());
-                    model.put("cardActionSelectAtLeast", player.getCardAction().isSelectAtLeast());
-                    divsToLoad++;
+                    model.put("cardActionCardsSize", player.cardAction!!.cards.size)
+                    model.put("cardActionNumCards", player.cardAction!!.numCards)
+                    model.put("cardActionType", player.cardAction!!.type)
+                    model.put("cardActionWidth", player.cardAction!!.width)
+                    model.put("cardActionSelectExact", player.cardAction!!.isSelectExact)
+                    model.put("cardActionSelectUpTo", player.cardAction!!.isSelectUpTo)
+                    model.put("cardActionSelectAtLeast", player.cardAction!!.isSelectAtLeast)
+                    divsToLoad++
                 }
-                refresh.setRefreshCardAction(false);
+                refresh.isRefreshCardAction = false
             }
-            model.put("refreshInfoDialog", refresh.isRefreshInfoDialog());
-            if (refresh.isRefreshInfoDialog()) {
-                Player player = game.getPlayerMap().get(user.getUserId());
-                model.put("infoDialogHideMethod", player.getInfoDialog().getHideMethod());
-                model.put("infoDialogWidth", player.getInfoDialog().getWidth());
-                model.put("infoDialogHeight", player.getInfoDialog().getHeight());
-                model.put("infoDialogTimeout", player.getInfoDialog().getTimeout());
-                divsToLoad++;
-                refresh.setRefreshInfoDialog(false);
+            model.put("refreshInfoDialog", refresh.isRefreshInfoDialog)
+            if (refresh.isRefreshInfoDialog) {
+                val player = game.playerMap[user.userId]!!
+                model.put("infoDialogHideMethod", player.infoDialog!!.hideMethod!!)
+                model.put("infoDialogWidth", player.infoDialog!!.width)
+                model.put("infoDialogHeight", player.infoDialog!!.height)
+                model.put("infoDialogTimeout", player.infoDialog!!.timeout)
+                divsToLoad++
+                refresh.isRefreshInfoDialog = false
             }
-            model.put("playBeep", refresh.isPlayBeep());
-            if (refresh.isPlayBeep()) {
-                refresh.setPlayBeep(false);
+            model.put("playBeep", refresh.isPlayBeep)
+            if (refresh.isPlayBeep) {
+                refresh.isPlayBeep = false
             }
-            model.put("refreshTitle", refresh.isRefreshTitle());
-            if (refresh.isRefreshTitle()) {
-                refresh.setRefreshTitle(false);
-                if (game.getStatus() == Game.STATUS_GAME_FINISHED) {
-                    model.put("title", "Game Over");
-                } else if (game.getCurrentPlayerId() == user.getUserId()) {
-                    model.put("title", "Your Turn");
+            model.put("refreshTitle", refresh.isRefreshTitle)
+            if (refresh.isRefreshTitle) {
+                refresh.isRefreshTitle = false
+                if (game.status == Game.STATUS_GAME_FINISHED) {
+                    model.put("title", "Game Over")
+                } else if (game.currentPlayerId == user.userId) {
+                    model.put("title", "Your Turn")
                 } else {
-                    model.put("title", game.getCurrentPlayer().getUsername() + "'s Turn");
+                    model.put("title", game.currentPlayer!!.username + "'s Turn")
                 }
             }
-            model.put("divsToLoad", divsToLoad);
+            model.put("divsToLoad", divsToLoad)
 
-            return model;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return model;
+            return model
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return model
         }
+
     }
 
     @ResponseBody
-    @RequestMapping(value = "/clickCard", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map clickCard(HttpServletRequest request, HttpServletResponse response) {
-        Map model = new HashMap();
-        User user = getUser(request);
-        Game game = getGame(request);
+    @RequestMapping(value = "/clickCard", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun clickCard(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val model = HashMap<String, Any>()
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            model.put("redirectToLogin", true);
-            return model;
+            model.put("redirectToLogin", true)
+            return model
         }
         try {
-            String clickType = request.getParameter("clickType");
+            val clickType = request.getParameter("clickType")
             if (request.getParameter("cardId") != null) {
-                int cardId = Integer.parseInt(request.getParameter("cardId"));
-                Player player = game.getPlayerMap().get(user.getUserId());
+                val cardId = Integer.parseInt(request.getParameter("cardId"))
+                val player = game.playerMap[user.userId]
                 if (player == null) {
-                    model.put("redirectToLobby", true);
-                    return model;
+                    model.put("redirectToLobby", true)
+                    return model
                 }
-                game.cardClicked(player, clickType, cardId);
-                game.closeLoadingDialog(player);
+                game.cardClicked(player, clickType, cardId)
+                game.closeLoadingDialog(player)
             }
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
         }
-        return refreshGame(request, response);
+
+        return refreshGame(request, response)
     }
 
     @ResponseBody
-    @RequestMapping(value = "/playAllTreasureCards", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map playAllTreasureCards(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    @RequestMapping(value = "/playAllTreasureCards", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun playAllTreasureCards(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            Map model = new HashMap();
-            model.put("redirectToLogin", true);
-            return model;
+            val model = HashMap<String, Any>()
+            model.put("redirectToLogin", true)
+            return model
         }
-        Player player = game.getPlayerMap().get(user.getUserId());
+        val player = game.playerMap[user.userId]
         if (player == null) {
-            Map model = new HashMap();
-            model.put("redirectToLobby", true);
-            return model;
+            val model = HashMap<String, Any>()
+            model.put("redirectToLobby", true)
+            return model
         }
         try {
-            game.playAllTreasureCards(player);
-            game.closeLoadingDialog(player);
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
+            game.playAllTreasureCards(player)
+            game.closeLoadingDialog(player)
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
         }
-        return refreshGame(request, response);
+
+        return refreshGame(request, response)
     }
 
     @ResponseBody
-    @RequestMapping(value = "/endTurn", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map endTurn(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    @RequestMapping(value = "/endTurn", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun endTurn(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            Map model = new HashMap();
-            model.put("redirectToLogin", true);
-            return model;
+            val model = HashMap<String, Any>()
+            model.put("redirectToLogin", true)
+            return model
         }
         try {
-            Player player = game.getPlayerMap().get(user.getUserId());
-            game.endPlayerTurn(player);
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
+            val player = game.playerMap[user.userId]!!
+            game.endPlayerTurn(player)
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
         }
-        return refreshGame(request, response);
+
+        return refreshGame(request, response)
     }
 
     @RequestMapping("/submitCardAction.html")
-    public ModelAndView submitCardAction(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun submitCardAction(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
             //todo error handling if choice is null
-            Player player = game.getPlayerMap().get(user.getUserId());
-            if (player.getCardAction() != null) {
-                if (player.getCardAction().getType() == CardAction.TYPE_INFO) {
-                    game.cardActionSubmitted(player, null, null, null, -1);
-                } else if (player.getCardAction().getType() == CardAction.TYPE_YES_NO) {
+            val player = game.playerMap[user.userId]!!
+            if (player.cardAction != null) {
+                if (player.cardAction!!.type == CardAction.TYPE_INFO) {
+                    game.cardActionSubmitted(player, null!!, null, null, -1)
+                } else if (player.cardAction!!.type == CardAction.TYPE_YES_NO) {
                     if (request.getParameter("answer") == null) {
-                        GameError error = new GameError(GameError.GAME_ERROR, "Card Action answer was null");
-                        game.logError(error, false);
+                        val error = GameError(GameError.GAME_ERROR, "Card Action answer was null")
+                        game.logError(error, false)
                         //todo
                     } else {
-                        game.cardActionSubmitted(player, null, request.getParameter("answer"), null, -1);
+                        game.cardActionSubmitted(player, null!!, request.getParameter("answer"), null, -1)
                     }
-                } else if (player.getCardAction().getType() == CardAction.TYPE_CHOICES) {
+                } else if (player.cardAction!!.type == CardAction.TYPE_CHOICES) {
                     if (request.getParameter("choice") == null) {
-                        GameError error = new GameError(GameError.GAME_ERROR, "Card Action choice was null");
-                        game.logError(error, false);
+                        val error = GameError(GameError.GAME_ERROR, "Card Action choice was null")
+                        game.logError(error, false)
                         //todo
                     } else {
-                        game.cardActionSubmitted(player, null, null, request.getParameter("choice"), -1);
+                        game.cardActionSubmitted(player, null!!, null, request.getParameter("choice"), -1)
                     }
-                } else if (player.getCardAction().getType() == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || player.getCardAction().getType() == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
+                } else if (player.cardAction!!.type == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || player.cardAction!!.type == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
                     if (request.getParameter("numberChosen") == null) {
-                        GameError error = new GameError(GameError.GAME_ERROR, "Card Action number chosen was null");
-                        game.logError(error, false);
+                        val error = GameError(GameError.GAME_ERROR, "Card Action number chosen was null")
+                        game.logError(error, false)
                         //todo
                     } else {
-                        game.cardActionSubmitted(player, null, null, null, Integer.parseInt(request.getParameter("numberChosen")));
+                        game.cardActionSubmitted(player, null!!, null, null, Integer.parseInt(request.getParameter("numberChosen")))
                     }
                 } else {
                     if (request.getParameter("selectedCards") == null) {
-                        GameError error = new GameError(GameError.GAME_ERROR, "Card Action selected cards string was null");
-                        game.logError(error, false);
+                        val error = GameError(GameError.GAME_ERROR, "Card Action selected cards string was null")
+                        game.logError(error, false)
                         //todo
                     } else {
-                        String selectedCardsString = request.getParameter("selectedCards");
-                        String[] selectedCardsStrings = selectedCardsString.split(",");
-                        List<Integer> selectedCardIds = new ArrayList<Integer>();
-                        for (String cardId : selectedCardsStrings) {
-                            if (!cardId.equals("")) {
-                                selectedCardIds.add(Integer.parseInt(cardId));
+                        val selectedCardsString = request.getParameter("selectedCards")
+                        val selectedCardsStrings = selectedCardsString.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                        val selectedCardIds = ArrayList<Int>()
+                        for (cardId in selectedCardsStrings) {
+                            if (cardId != "") {
+                                selectedCardIds.add(Integer.parseInt(cardId))
                             }
                         }
-                        game.cardActionSubmitted(player, selectedCardIds, null, null, -1);
+                        game.cardActionSubmitted(player, selectedCardIds, null, null, -1)
                     }
                 }
             }
-            game.closeLoadingDialog(player);
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
+            game.closeLoadingDialog(player)
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
         }
-        return new ModelAndView("empty");
+
+        return ModelAndView("empty")
     }
 
     @RequestMapping("/getPlayersDiv.html")
-    public ModelAndView getPlayersDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getPlayersDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            String template = "playersDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                template = "playersDivMobile";
+            var template = "playersDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "playersDivMobile"
             }
-            ModelAndView modelAndView = new ModelAndView(template);
-            modelAndView.addObject("players", game.getPlayers());
-            modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints());
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView(template)
+            modelAndView.addObject("players", game.players)
+            modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getSupplyDiv.html")
-    public ModelAndView getSupplyDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
-        if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
-        }
-        return getSupplyDiv(request, user, game, game.getCurrentPlayerId());
+    fun getSupplyDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        return if (user == null || game == null) {
+            ModelAndView("redirect:/login.html")
+        } else getSupplyDiv(request, user, game, game.currentPlayerId)
     }
 
     @RequestMapping("/getSupplyDivOnEndTurn.html")
-    public ModelAndView getSupplyDivOnEndTurn(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
-        if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
-        }
-        return getSupplyDiv(request, user, game, 0);
+    fun getSupplyDivOnEndTurn(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        return if (user == null || game == null) {
+            ModelAndView("redirect:/login.html")
+        } else getSupplyDiv(request, user, game, 0)
     }
 
-    private ModelAndView getSupplyDiv(HttpServletRequest request, User user, Game game, int currentPlayerId) {
+    private fun getSupplyDiv(request: HttpServletRequest, user: User, game: Game, currentPlayerId: Int): ModelAndView {
         try {
-            String supplyDivTemplate = "supplyDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                supplyDivTemplate = "supplyDivMobile";
+            var supplyDivTemplate = "supplyDiv"
+            if (KingdomUtil.isMobile(request)) {
+                supplyDivTemplate = "supplyDivMobile"
             }
-            ModelAndView modelAndView = new ModelAndView(supplyDivTemplate);
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("currentPlayerId", currentPlayerId);
-            modelAndView.addObject("kingdomCards", game.getKingdomCards());
-            modelAndView.addObject("supplyCards", game.getSupplyCards());
+            val modelAndView = ModelAndView(supplyDivTemplate)
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("currentPlayerId", currentPlayerId)
+            modelAndView.addObject("kingdomCards", game.kingdomCards)
+            modelAndView.addObject("supplyCards", game.supplyCards)
             try {
-                BeansWrapper bw = new BeansWrapper();
-                modelAndView.addObject("supply", bw.wrap(game.getSupply()));
-                if (game.isShowEmbargoTokens()) {
-                    modelAndView.addObject("embargoTokens", bw.wrap(game.getEmbargoTokens()));
+                val bw = BeansWrapper()
+                modelAndView.addObject("supply", bw.wrap(game.supply))
+                if (game.isShowEmbargoTokens) {
+                    modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
                 }
-                addTrollTokenObjects(game, modelAndView);
-                if (game.isTrackTradeRouteTokens()) {
-                    modelAndView.addObject("tradeRouteTokenMap", bw.wrap(game.getTradeRouteTokenMap()));
+                addTrollTokenObjects(game, modelAndView)
+                if (game.isTrackTradeRouteTokens) {
+                    modelAndView.addObject("tradeRouteTokenMap", bw.wrap(game.tradeRouteTokenMap))
                 }
-            } catch (TemplateModelException e) {
+            } catch (e: TemplateModelException) {
                 //
             }
-            modelAndView.addObject("gameStatus", game.getStatus());
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens());
-            modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens());
-            modelAndView.addObject("tradeRouteTokensOnMat", game.getTradeRouteTokensOnMat());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+
+            modelAndView.addObject("gameStatus", game.status)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
+            modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
+            modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getPreviousPlayerPlayingAreaDiv.html")
-    public ModelAndView getPreviousPlayerPlayingAreaDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getPreviousPlayerPlayingAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            String template = "playingAreaDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                template = "playingAreaDivMobile";
+            var template = "playingAreaDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "playingAreaDivMobile"
             }
-            ModelAndView modelAndView = new ModelAndView(template);
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("currentPlayerId", game.getPreviousPlayerId());
-            modelAndView.addObject("gameStatus", game.getStatus());
-            modelAndView.addObject("currentPlayer", game.getPreviousPlayer());
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("cardsPlayed", game.getPreviousPlayerCardsPlayed());
-            modelAndView.addObject("cardsBought", game.getPreviousPlayerCardsBought());
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            addTrollTokenObjects(game, modelAndView);
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("showPotions", game.isUsePotions());
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView(template)
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("currentPlayerId", game.previousPlayerId)
+            modelAndView.addObject("gameStatus", game.status)
+            modelAndView.addObject("currentPlayer", game.previousPlayer!!)
+            modelAndView.addObject("user", user)
+            modelAndView.addObject("cardsPlayed", game.previousPlayerCardsPlayed)
+            modelAndView.addObject("cardsBought", game.previousPlayerCardsBought)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            addTrollTokenObjects(game, modelAndView)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("showPotions", game.isUsePotions)
+            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getPlayingAreaDiv.html")
-    public ModelAndView getPlayingAreaDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getPlayingAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            String template = "playingAreaDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                template = "playingAreaDivMobile";
+            var template = "playingAreaDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "playingAreaDivMobile"
             }
-            ModelAndView modelAndView = new ModelAndView(template);
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
-            modelAndView.addObject("gameStatus", game.getStatus());
-            modelAndView.addObject("currentPlayer", game.getCurrentPlayer());
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("cardsPlayed", game.getCardsPlayed());
-            modelAndView.addObject("cardsBought", game.getCardsBought());
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            addTrollTokenObjects(game, modelAndView);
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("showPotions", game.isUsePotions());
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView(template)
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+            modelAndView.addObject("gameStatus", game.status)
+            modelAndView.addObject("currentPlayer", game.currentPlayer!!)
+            modelAndView.addObject("user", user)
+            modelAndView.addObject("cardsPlayed", game.cardsPlayed)
+            modelAndView.addObject("cardsBought", game.cardsBought)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            addTrollTokenObjects(game, modelAndView)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("showPotions", game.isUsePotions)
+            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getCardsPlayedDiv.html")
-    public ModelAndView getCardsPlayedDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getCardsPlayedDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            String template = "cardsPlayedDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                template = "cardsPlayedDivMobile";
+            var template = "cardsPlayedDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "cardsPlayedDivMobile"
             }
-            ModelAndView modelAndView = new ModelAndView(template);
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
-            modelAndView.addObject("gameStatus", game.getStatus());
-            modelAndView.addObject("currentPlayer", game.getCurrentPlayer());
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("cardsPlayed", game.getCardsPlayed());
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            addTrollTokenObjects(game, modelAndView);
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView(template)
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+            modelAndView.addObject("gameStatus", game.status)
+            modelAndView.addObject("currentPlayer", game.currentPlayer!!)
+            modelAndView.addObject("user", user)
+            modelAndView.addObject("cardsPlayed", game.cardsPlayed)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            addTrollTokenObjects(game, modelAndView)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getCardsBoughtDiv.html")
-    public ModelAndView getCardsBoughtDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getCardsBoughtDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            String template = "cardsBoughtDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                template = "cardsBoughtDivMobile";
+            var template = "cardsBoughtDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "cardsBoughtDivMobile"
             }
-            ModelAndView modelAndView = new ModelAndView(template);
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
-            modelAndView.addObject("gameStatus", game.getStatus());
-            modelAndView.addObject("currentPlayer", game.getCurrentPlayer());
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("cardsBought", game.getCardsBought());
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            addTrollTokenObjects(game, modelAndView);
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("showPotions", game.isUsePotions());
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView(template)
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+            modelAndView.addObject("gameStatus", game.status)
+            modelAndView.addObject("currentPlayer", game.currentPlayer!!)
+            modelAndView.addObject("user", user)
+            modelAndView.addObject("cardsBought", game.cardsBought)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            addTrollTokenObjects(game, modelAndView)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("showPotions", game.isUsePotions)
+            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getHistoryDiv.html")
-    public ModelAndView getHistoryDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getHistoryDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            String template = "historyDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                template = "historyDivMobile";
+            var template = "historyDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "historyDivMobile"
             }
-            ModelAndView modelAndView = new ModelAndView(template);
-            modelAndView.addObject("turnHistory", game.getRecentTurnHistory());
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView(template)
+            modelAndView.addObject("turnHistory", game.recentTurnHistory)
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getHandDiv.html")
-    public ModelAndView getHandDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getHandDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            ModelAndView modelAndView = new ModelAndView("handDiv");
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            addTrollTokenObjects(game, modelAndView);
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView("handDiv")
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            addTrollTokenObjects(game, modelAndView)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getHandAreaDiv.html")
-    public ModelAndView getHandAreaDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
-        if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
-        }
-        return getHandAreaDiv(request, user, game, game.getCurrentPlayerId());
+    fun getHandAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        return if (user == null || game == null) {
+            ModelAndView("redirect:/login.html")
+        } else getHandAreaDiv(request, user, game, game.currentPlayerId)
     }
 
     @RequestMapping("/getHandAreaDivOnEndTurn.html")
-    public ModelAndView getHandAreaDivOnEndTurn(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
-        if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
-        }
-        return getHandAreaDiv(request, user, game, 0);
+    fun getHandAreaDivOnEndTurn(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        return if (user == null || game == null) {
+            ModelAndView("redirect:/login.html")
+        } else getHandAreaDiv(request, user, game, 0)
     }
 
-    private ModelAndView getHandAreaDiv(HttpServletRequest request, User user, Game game, int currentPlayerId) {
+    private fun getHandAreaDiv(request: HttpServletRequest, user: User, game: Game, currentPlayerId: Int): ModelAndView {
         try {
-            String template = "handAreaDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                template = "handAreaDivMobile";
+            var template = "handAreaDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "handAreaDivMobile"
             }
-            ModelAndView modelAndView = new ModelAndView(template);
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            addTrollTokenObjects(game, modelAndView);
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("showDuration", game.isShowDuration());
-            modelAndView.addObject("showIslandCards", game.isShowIslandCards());
-            modelAndView.addObject("showMuseumCards", game.isShowMuseumCards());
-            modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards());
-            modelAndView.addObject("showNativeVillage", game.isShowNativeVillage());
-            modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins());
-            modelAndView.addObject("showFruitTokens", game.isShowFruitTokens());
-            modelAndView.addObject("showCattleTokens", game.isShowCattleTokens());
-            modelAndView.addObject("showSins", game.isShowSins());
-            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins());
-            modelAndView.addObject("currentPlayerId", currentPlayerId);
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView(template)
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            addTrollTokenObjects(game, modelAndView)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("showDuration", game.isShowDuration)
+            modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+            modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
+            modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
+            modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
+            modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
+            modelAndView.addObject("showFruitTokens", game.isShowFruitTokens)
+            modelAndView.addObject("showCattleTokens", game.isShowCattleTokens)
+            modelAndView.addObject("showSins", game.isShowSins)
+            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
+            modelAndView.addObject("currentPlayerId", currentPlayerId)
+            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getDurationDiv.html")
-    public ModelAndView getDurationDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getDurationDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            ModelAndView modelAndView = new ModelAndView("durationDiv");
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            addTrollTokenObjects(game, modelAndView);
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView("durationDiv")
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            addTrollTokenObjects(game, modelAndView)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getDiscardDiv.html")
-    public ModelAndView getDiscardDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getDiscardDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            String template = "discardDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                template = "discardDivMobile";
+            var template = "discardDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "discardDivMobile"
             }
-            ModelAndView modelAndView = new ModelAndView(template);
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            addTrollTokenObjects(game, modelAndView);
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView(template)
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            addTrollTokenObjects(game, modelAndView)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getChatDiv.html")
-    public ModelAndView getChatDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getChatDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            List<ChatMessage> chats = game.getChats();
-            String template = "chatDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                template = "chatDivMobile";
+            val chats = game.chats
+            var template = "chatDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "chatDivMobile"
                 //Collections.reverse(chats);
             }
-            ModelAndView modelAndView = new ModelAndView(template);
-            modelAndView.addObject("chats", chats);
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView(template)
+            modelAndView.addObject("chats", chats)
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getCardActionDiv.html")
-    public ModelAndView getCardActionDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getCardActionDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            String template = "cardActionDiv";
-            if (KingdomUtil.INSTANCE.isMobile(request)) {
-                template = "cardActionDivMobile";
+            var template = "cardActionDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "cardActionDivMobile"
             }
-            ModelAndView modelAndView = new ModelAndView(template);
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            addTrollTokenObjects(game, modelAndView);
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            if (player.getCardAction().getType() == CardAction.TYPE_SETUP_LEADERS) {
-                modelAndView.addObject("kingdomCards", game.getKingdomCards());
-                modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards() && game.isIncludePlatinumCards());
+            val modelAndView = ModelAndView(template)
+            val player = game.playerMap[user.userId]!!
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            addTrollTokenObjects(game, modelAndView)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            if (player.cardAction!!.type == CardAction.TYPE_SETUP_LEADERS) {
+                modelAndView.addObject("kingdomCards", game.kingdomCards)
+                modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
             }
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getGameInfoDiv.html")
-    public ModelAndView getGameInfoDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getGameInfoDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            ModelAndView modelAndView = new ModelAndView("gameInfoDiv");
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("players", game.getPlayers());
-            modelAndView.addObject("trashedCards", KingdomUtil.INSTANCE.groupCards(game.getTrashedCards(), true));
-            modelAndView.addObject("showIslandCards", game.isShowIslandCards());
-            modelAndView.addObject("showMuseumCards", game.isShowMuseumCards());
-            modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards());
-            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins());
-            modelAndView.addObject("showNativeVillage", game.isShowNativeVillage());
-            modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins());
-            modelAndView.addObject("showFruitTokens", game.isShowFruitTokens());
-            modelAndView.addObject("showCattleTokens", game.isShowCattleTokens());
-            modelAndView.addObject("showSins", game.isShowSins());
-            modelAndView.addObject("showDuration", game.isShowDuration());
-            modelAndView.addObject("showPrizeCards", game.isShowPrizeCards());
-            modelAndView.addObject("prizeCards", game.getPrizeCardsString());
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView("gameInfoDiv")
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("players", game.players)
+            modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
+            modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+            modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
+            modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
+            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
+            modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
+            modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
+            modelAndView.addObject("showFruitTokens", game.isShowFruitTokens)
+            modelAndView.addObject("showCattleTokens", game.isShowCattleTokens)
+            modelAndView.addObject("showSins", game.isShowSins)
+            modelAndView.addObject("showDuration", game.isShowDuration)
+            modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
+            modelAndView.addObject("prizeCards", game.prizeCardsString)
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/showGameResults.html")
-    public ModelAndView showGameResults(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun showGameResults(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
-        ModelAndView modelAndView = new ModelAndView("gameResults");
+        val modelAndView = ModelAndView("gameResults")
         try {
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("gameStatus", game.getStatus());
-            modelAndView.addObject("gameEndReason", game.getGameEndReason());
-            modelAndView.addObject("winnerString", game.getWinnerString());
-            modelAndView.addObject("players", game.getPlayers());
-            modelAndView.addObject("turnHistory", game.getRecentTurnHistory());
+            modelAndView.addObject("user", user)
+            modelAndView.addObject("gameStatus", game.status)
+            modelAndView.addObject("gameEndReason", game.gameEndReason)
+            modelAndView.addObject("winnerString", game.winnerString)
+            modelAndView.addObject("players", game.players)
+            modelAndView.addObject("turnHistory", game.recentTurnHistory)
 
-            modelAndView.addObject("showGarden", game.isShowGardens());
-            modelAndView.addObject("showFarmlands", game.isShowFarmlands());
-            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins());
-            modelAndView.addObject("showVineyard", game.isShowVineyard());
-            modelAndView.addObject("showSilkRoads", game.isShowSilkRoads());
-            modelAndView.addObject("showCathedral", game.isShowCathedral());
-            modelAndView.addObject("showFairgrounds", game.isShowFairgrounds());
-            modelAndView.addObject("showGreatHall", game.isShowGreatHall());
-            modelAndView.addObject("showHarem", game.isShowHarem());
-            modelAndView.addObject("showDuke", game.isShowDuke());
-            modelAndView.addObject("showNobles", game.isShowNobles());
-            modelAndView.addObject("showArchbishops", game.isShowArchbishops());
-            modelAndView.addObject("showIslandCards", game.isShowIslandCards());
-            modelAndView.addObject("showMuseumCards", game.isShowMuseumCards());
-            modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards());
-            modelAndView.addObject("showColony", game.isIncludeColonyCards());
-            modelAndView.addObject("showSins", game.isShowSins());
-            modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints());
-            modelAndView.addObject("showEnchantedPalace", game.isCheckEnchantedPalace());
-            modelAndView.addObject("showHedgeWizard", game.isShowHedgeWizard());
-            modelAndView.addObject("showGoldenTouch", game.isShowGoldenTouch());
+            modelAndView.addObject("showGarden", game.isShowGardens)
+            modelAndView.addObject("showFarmlands", game.isShowFarmlands)
+            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
+            modelAndView.addObject("showVineyard", game.isShowVineyard)
+            modelAndView.addObject("showSilkRoads", game.isShowSilkRoads)
+            modelAndView.addObject("showCathedral", game.isShowCathedral)
+            modelAndView.addObject("showFairgrounds", game.isShowFairgrounds)
+            modelAndView.addObject("showGreatHall", game.isShowGreatHall)
+            modelAndView.addObject("showHarem", game.isShowHarem)
+            modelAndView.addObject("showDuke", game.isShowDuke)
+            modelAndView.addObject("showNobles", game.isShowNobles)
+            modelAndView.addObject("showArchbishops", game.isShowArchbishops)
+            modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+            modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
+            modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
+            modelAndView.addObject("showColony", game.isIncludeColonyCards)
+            modelAndView.addObject("showSins", game.isShowSins)
+            modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
+            modelAndView.addObject("showEnchantedPalace", game.isCheckEnchantedPalace)
+            modelAndView.addObject("showHedgeWizard", game.isShowHedgeWizard)
+            modelAndView.addObject("showGoldenTouch", game.isShowGoldenTouch)
 
-            modelAndView.addObject("chats", game.getChats());
-            modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents());
+            modelAndView.addObject("chats", game.chats)
+            modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
 
-            modelAndView.addObject("trashedCards", KingdomUtil.INSTANCE.groupCards(game.getTrashedCards(), true));
+            modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
 
-            modelAndView.addObject("logId", game.getLogId());
+            modelAndView.addObject("logId", game.logId)
 
-            modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents());
+            modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents)
 
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/getInfoDialogDiv.html")
-    public ModelAndView getInfoDialogDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun getInfoDialogDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            ModelAndView modelAndView = new ModelAndView("infoDialogDiv");
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView("infoDialogDiv")
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/exitGame.html")
-    public ModelAndView exitGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun exitGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            user.setGameId(0);
-            user.setStats(null);
-            LoggedInUsers.Companion.getInstance().updateUser(user);
-            LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
-            Player player = game.getPlayerMap().get(user.getUserId());
-            if (player == null) {
-                return new ModelAndView("redirect:/showGame.html");
-            }
-            game.playerExitedGame(player);
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
+            user.gameId = 0
+            user.stats = null
+            LoggedInUsers.instance.updateUser(user)
+            LoggedInUsers.instance.refreshLobbyPlayers()
+            val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGame.html")
+            game.playerExitedGame(player)
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
         }
-        return new ModelAndView("empty");
+
+        return ModelAndView("empty")
     }
 
     @ResponseBody
-    @RequestMapping(value = "/quitGame", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map quitGame(HttpServletRequest request, HttpServletResponse response) {
-        Map model = new HashMap();
-        User user = getUser(request);
-        Game game = getGame(request);
+    @RequestMapping(value = "/quitGame", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun quitGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val model = HashMap<String, Any>()
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            model.put("redirectToLogin", true);
-            return model;
+            model.put("redirectToLogin", true)
+            return model
         }
         try {
-            if (game.getStatus() == Game.STATUS_GAME_WAITING_FOR_PLAYERS) {
-                game.reset();
-                model.put("redirectToLobby", true);
-                return model;
+            if (game.status == Game.STATUS_GAME_WAITING_FOR_PLAYERS) {
+                game.reset()
+                model.put("redirectToLobby", true)
+                return model
             }
-            if (game.getStatus() != Game.STATUS_GAME_FINISHED) {
-                Player player = game.getPlayerMap().get(user.getUserId());
-                game.playerQuitGame(player);
+            if (game.status != Game.STATUS_GAME_FINISHED) {
+                val player = game.playerMap[user.userId]!!
+                game.playerQuitGame(player)
             }
-            return refreshGame(request, response);
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return model;
+            return refreshGame(request, response)
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return model
         }
+
     }
 
-    private void processChatCommand(User user, String commandString) {
+    private fun processChatCommand(user: User, commandString: String) {
         try {
-            String command = commandString.substring(1, commandString.indexOf(" "));
-            String remainingString = commandString.substring(command.length() + 2);
-            if (command.equalsIgnoreCase("lobby")) {
-                sendLobbyChat(user, remainingString);
-            } else if (command.equalsIgnoreCase("whisper") || command.equalsIgnoreCase("w")) {
-                String username = remainingString.substring(0, remainingString.indexOf(" "));
-                String message = remainingString.substring(username.length() + 1);
-                User receivingUser = userManager.getUser(username);
+            val command = commandString.substring(1, commandString.indexOf(" "))
+            val remainingString = commandString.substring(command.length + 2)
+            if (command.equals("lobby", ignoreCase = true)) {
+                sendLobbyChat(user, remainingString)
+            } else if (command.equals("whisper", ignoreCase = true) || command.equals("w", ignoreCase = true)) {
+                val username = remainingString.substring(0, remainingString.indexOf(" "))
+                val message = remainingString.substring(username.length + 1)
+                val receivingUser = userManager.getUser(username)
                 if (receivingUser != null) {
-                    sendPrivateChat(user, message, receivingUser.getUserId());
+                    sendPrivateChat(user, message, receivingUser.userId)
                 }
             }
             //todo help command
-        } catch (Exception e) {
-            //todo display invalid command message    
+        } catch (e: Exception) {
+            //todo display invalid command message
+        }
+
+    }
+
+    private fun sendLobbyChat(user: User, message: String?) {
+        if (message != null && message != "") {
+            lobbyChats.addChat(user, message)
         }
     }
 
-    private void sendLobbyChat(User user, String message) {
-        if (message != null && !message.equals("")) {
-            lobbyChats.addChat(user, message);
-        }
-    }
-
-    private void sendPrivateChat(User user, String message, int receivingUserId) {
-        if (message != null && !message.equals("") && receivingUserId > 0) {
-            User receivingUser = LoggedInUsers.Companion.getInstance().getUser(receivingUserId);
+    private fun sendPrivateChat(user: User, message: String?, receivingUserId: Int) {
+        if (message != null && message != "" && receivingUserId > 0) {
+            val receivingUser = LoggedInUsers.instance.getUser(receivingUserId)
             if (receivingUser != null) {
-                if (receivingUser.getGameId() > 0) {
-                    Game game = gameRoomManager.getGame(receivingUser.getGameId());
-                    game.addPrivateChat(user, receivingUser, message);
+                if (receivingUser.gameId > 0) {
+                    val game = gameRoomManager.getGame(receivingUser.gameId)!!
+                    game.addPrivateChat(user, receivingUser, message)
                 } else {
-                    lobbyChats.addPrivateChat(user, receivingUser, message);
-                    LoggedInUsers.Companion.getInstance().refreshLobbyChat();
+                    lobbyChats.addPrivateChat(user, receivingUser, message)
+                    LoggedInUsers.instance.refreshLobbyChat()
                 }
             }
         }
     }
 
     @ResponseBody
-    @RequestMapping(value = "/sendChat", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map sendChat(HttpServletRequest request, HttpServletResponse response) {
-        Map model = new HashMap();
-        User user = getUser(request);
-        Game game = getGame(request);
+    @RequestMapping(value = "/sendChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun sendChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val model = HashMap<String, Any>()
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            model.put("redirectToLogin", true);
-            return model;
+            model.put("redirectToLogin", true)
+            return model
         }
         try {
-            Player player = game.getPlayerMap().get(user.getUserId());
-            String message = request.getParameter("message");
-            if (message != null && !message.equals("")) {
+            val player = game.playerMap[user.userId]!!
+            val message = request.getParameter("message")
+            if (message != null && message != "") {
                 if (message.startsWith("/")) {
-                    processChatCommand(user, message);
+                    processChatCommand(user, message)
                 } else {
-                    game.addChat(player, message);
+                    game.addChat(player, message)
                 }
             }
-            return refreshGame(request, response);
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return model;
+            return refreshGame(request, response)
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return model
         }
+
     }
 
     @ResponseBody
-    @RequestMapping(value = "/sendLobbyChat", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map sendLobbyChat(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
+    @RequestMapping(value = "/sendLobbyChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun sendLobbyChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val user = getUser(request)
         if (user == null) {
-            Map model = new HashMap();
-            model.put("redirectToLogin", true);
-            return model;
+            val model = HashMap<String, Any>()
+            model.put("redirectToLogin", true)
+            return model
         }
-        LoggedInUsers.Companion.getInstance().updateUser(user);
-        String message = request.getParameter("message");
+        LoggedInUsers.instance.updateUser(user)
+        val message = request.getParameter("message")
         if (message != null && message.startsWith("/")) {
-            processChatCommand(user, message);
+            processChatCommand(user, message)
         } else {
-            sendLobbyChat(user, message);
+            sendLobbyChat(user, message)
         }
-        LoggedInUsers.Companion.getInstance().refreshLobbyChat();
-        return refreshLobby(request, response);
+        LoggedInUsers.instance.refreshLobbyChat()
+        return refreshLobby(request, response)
     }
 
     @ResponseBody
-    @RequestMapping(value = "/sendPrivateChat", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map sendPrivateChat(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
+    @RequestMapping(value = "/sendPrivateChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun sendPrivateChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val user = getUser(request)
         if (user == null) {
-            Map model = new HashMap();
-            model.put("redirectToLogin", true);
-            return model;
+            val model = HashMap<String, Any>()
+            model.put("redirectToLogin", true)
+            return model
         }
-        String message = request.getParameter("message");
-        int receivingUserId = KingdomUtil.INSTANCE.getRequestInt(request, "receivingUserId", 0);
-        sendPrivateChat(user, message, receivingUserId);
-        return refreshLobby(request, response);
+        val message = request.getParameter("message")
+        val receivingUserId = KingdomUtil.getRequestInt(request, "receivingUserId", 0)
+        sendPrivateChat(user, message, receivingUserId)
+        return refreshLobby(request, response)
     }
 
-    private ModelAndView loadPlayerDialogContainingCards(HttpServletRequest request, HttpServletResponse response, String templateFile) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    private fun loadPlayerDialogContainingCards(request: HttpServletRequest, response: HttpServletResponse, templateFile: String): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
         try {
-            ModelAndView modelAndView = new ModelAndView(templateFile);
-            Player player = game.getPlayerMap().get(user.getUserId());
-            modelAndView.addObject("player", player);
-            modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
-            modelAndView.addObject("costDiscount", game.getCostDiscount());
-            modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-            modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-            addTrollTokenObjects(game, modelAndView);
-            modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-            modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-            return modelAndView;
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
-            return new ModelAndView("empty");
+            val modelAndView = ModelAndView(templateFile)
+            val player = game.playerMap[user.userId]
+            modelAndView.addObject("player", player)
+            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+            modelAndView.addObject("costDiscount", game.costDiscount)
+            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+            addTrollTokenObjects(game, modelAndView)
+            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+            return modelAndView
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+            return ModelAndView("empty")
         }
+
     }
 
     @RequestMapping("/loadNativeVillageDialog.html")
-    public ModelAndView loadNativeVillageDialog(HttpServletRequest request, HttpServletResponse response) {
-        return loadPlayerDialogContainingCards(request, response, "nativeVillageDialog");
+    fun loadNativeVillageDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        return loadPlayerDialogContainingCards(request, response, "nativeVillageDialog")
     }
 
     @RequestMapping("/loadIslandCardsDialog.html")
-    public ModelAndView loadIslandCardsDialog(HttpServletRequest request, HttpServletResponse response) {
-        return loadPlayerDialogContainingCards(request, response, "islandCardsDialog");
+    fun loadIslandCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        return loadPlayerDialogContainingCards(request, response, "islandCardsDialog")
     }
 
     @RequestMapping("/loadMuseumCardsDialog.html")
-    public ModelAndView loadMuseumCardsDialog(HttpServletRequest request, HttpServletResponse response) {
-        return loadPlayerDialogContainingCards(request, response, "museumCardsDialog");
+    fun loadMuseumCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        return loadPlayerDialogContainingCards(request, response, "museumCardsDialog")
     }
 
     @RequestMapping("/loadCityPlannerCardsDialog.html")
-    public ModelAndView loadCityPlannerCardsDialog(HttpServletRequest request, HttpServletResponse response) {
-        return loadPlayerDialogContainingCards(request, response, "cityPlannerCardsDialog");
+    fun loadCityPlannerCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        return loadPlayerDialogContainingCards(request, response, "cityPlannerCardsDialog")
     }
 
-    private void addGameObjects(Game game, Player player, ModelAndView modelAndView, HttpServletRequest request) {
-        BeansWrapper bw = new BeansWrapper();
-        modelAndView.addObject("player", player);
-        modelAndView.addObject("kingdomCards", game.getKingdomCards());
-        modelAndView.addObject("supplyCards", game.getSupplyCards());
+    private fun addGameObjects(game: Game, player: Player, modelAndView: ModelAndView, request: HttpServletRequest) {
+        val bw = BeansWrapper()
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("kingdomCards", game.kingdomCards)
+        modelAndView.addObject("supplyCards", game.supplyCards)
         try {
-            modelAndView.addObject("supply", bw.wrap(game.getSupply()));
-            if (game.isShowEmbargoTokens()) {
-                modelAndView.addObject("embargoTokens", bw.wrap(game.getEmbargoTokens()));
+            modelAndView.addObject("supply", bw.wrap(game.supply))
+            if (game.isShowEmbargoTokens) {
+                modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
             }
-            addTrollTokenObjects(game, modelAndView);
-            if (game.isTrackTradeRouteTokens()) {
-                modelAndView.addObject("tradeRouteTokenMap", bw.wrap(game.getTradeRouteTokenMap()));
+            addTrollTokenObjects(game, modelAndView)
+            if (game.isTrackTradeRouteTokens) {
+                modelAndView.addObject("tradeRouteTokenMap", bw.wrap(game.tradeRouteTokenMap))
             }
-        } catch (TemplateModelException e) {
+        } catch (e: TemplateModelException) {
             //
         }
-        modelAndView.addObject("supplySize", game.getSupply().size());
-        modelAndView.addObject("players", game.getPlayers());
-        modelAndView.addObject("currentPlayer", game.getCurrentPlayer());
-        modelAndView.addObject("currentPlayerId", game.getCurrentPlayerId());
-        modelAndView.addObject("gameStatus", game.getStatus());
-        modelAndView.addObject("cardsPlayed", game.getCardsPlayed());
-        modelAndView.addObject("cardsBought", game.getCardsBought());
-        modelAndView.addObject("turnHistory", game.getRecentTurnHistory());
-        modelAndView.addObject("chats", game.getChats());
-        modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents());
-        modelAndView.addObject("costDiscount", game.getCostDiscount());
-        modelAndView.addObject("fruitTokensPlayed", game.getFruitTokensPlayed());
-        modelAndView.addObject("actionCardDiscount", game.getActionCardDiscount());
-        modelAndView.addObject("actionCardsInPlay", game.getActionCardsInPlay());
-        modelAndView.addObject("showDuration", game.isShowDuration());
-        modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens());
-        modelAndView.addObject("showIslandCards", game.isShowIslandCards());
-        modelAndView.addObject("showMuseumCards", game.isShowMuseumCards());
-        modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards());
-        modelAndView.addObject("showNativeVillage", game.isShowNativeVillage());
-        modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins());
-        modelAndView.addObject("showFruitTokens", game.isShowFruitTokens());
-        modelAndView.addObject("showCattleTokens", game.isShowCattleTokens());
-        modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins());
-        modelAndView.addObject("showPotions", game.isUsePotions());
-        modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards());
-        modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints());
-        modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens());
-        modelAndView.addObject("tradeRouteTokensOnMat", game.getTradeRouteTokensOnMat());
-        modelAndView.addObject("trashedCards", KingdomUtil.INSTANCE.groupCards(game.getTrashedCards(), true));
-        modelAndView.addObject("prizeCards", game.getPrizeCardsString());
 
-        modelAndView.addObject("showGarden", game.isShowGardens());
-        modelAndView.addObject("showFarmlands", game.isShowFarmlands());
-        modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins());
-        modelAndView.addObject("showSins", game.isShowSins());
-        modelAndView.addObject("showVineyard", game.isShowVineyard());
-        modelAndView.addObject("showSilkRoads", game.isShowSilkRoads());
-        modelAndView.addObject("showCathedral", game.isShowCathedral());
-        modelAndView.addObject("showFairgrounds", game.isShowFairgrounds());
-        modelAndView.addObject("showGreatHall", game.isShowGreatHall());
-        modelAndView.addObject("showHarem", game.isShowHarem());
-        modelAndView.addObject("showDuke", game.isShowDuke());
-        modelAndView.addObject("showNobles", game.isShowNobles());
-        modelAndView.addObject("showArchbishops", game.isShowArchbishops());
-        modelAndView.addObject("showIslandCards", game.isShowIslandCards());
-        modelAndView.addObject("showMuseumCards", game.isShowMuseumCards());
-        modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards());
-        modelAndView.addObject("showColony", game.isIncludeColonyCards());
-        modelAndView.addObject("showEnchantedPalace", game.isCheckEnchantedPalace());
-        modelAndView.addObject("showHedgeWizard", game.isShowHedgeWizard());
-        modelAndView.addObject("showGoldenTouch", game.isShowGoldenTouch());
+        modelAndView.addObject("supplySize", game.supply.size)
+        modelAndView.addObject("players", game.players)
+        modelAndView.addObject("currentPlayer", game.currentPlayer!!)
+        modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+        modelAndView.addObject("gameStatus", game.status)
+        modelAndView.addObject("cardsPlayed", game.cardsPlayed)
+        modelAndView.addObject("cardsBought", game.cardsBought)
+        modelAndView.addObject("turnHistory", game.recentTurnHistory)
+        modelAndView.addObject("chats", game.chats)
+        modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+        modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("showDuration", game.isShowDuration)
+        modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
+        modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+        modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
+        modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
+        modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
+        modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
+        modelAndView.addObject("showFruitTokens", game.isShowFruitTokens)
+        modelAndView.addObject("showCattleTokens", game.isShowCattleTokens)
+        modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
+        modelAndView.addObject("showPotions", game.isUsePotions)
+        modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+        modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
+        modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
+        modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
+        modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
+        modelAndView.addObject("prizeCards", game.prizeCardsString)
 
-        modelAndView.addObject("showPrizeCards", game.isShowPrizeCards());
+        modelAndView.addObject("showGarden", game.isShowGardens)
+        modelAndView.addObject("showFarmlands", game.isShowFarmlands)
+        modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
+        modelAndView.addObject("showSins", game.isShowSins)
+        modelAndView.addObject("showVineyard", game.isShowVineyard)
+        modelAndView.addObject("showSilkRoads", game.isShowSilkRoads)
+        modelAndView.addObject("showCathedral", game.isShowCathedral)
+        modelAndView.addObject("showFairgrounds", game.isShowFairgrounds)
+        modelAndView.addObject("showGreatHall", game.isShowGreatHall)
+        modelAndView.addObject("showHarem", game.isShowHarem)
+        modelAndView.addObject("showDuke", game.isShowDuke)
+        modelAndView.addObject("showNobles", game.isShowNobles)
+        modelAndView.addObject("showArchbishops", game.isShowArchbishops)
+        modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+        modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
+        modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
+        modelAndView.addObject("showColony", game.isIncludeColonyCards)
+        modelAndView.addObject("showEnchantedPalace", game.isCheckEnchantedPalace)
+        modelAndView.addObject("showHedgeWizard", game.isShowHedgeWizard)
+        modelAndView.addObject("showGoldenTouch", game.isShowGoldenTouch)
 
-        modelAndView.addObject("gameEndReason", game.getGameEndReason());
-        modelAndView.addObject("winnerString", game.getWinnerString());
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents());
-        modelAndView.addObject("logId", game.getLogId());
+        modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
+
+        modelAndView.addObject("gameEndReason", game.gameEndReason)
+        modelAndView.addObject("winnerString", game.winnerString)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents)
+        modelAndView.addObject("logId", game.logId)
     }
 
-    public void setCardManager(CardManager cardManager) {
-        this.cardManager = cardManager;
+    fun setCardManager(cardManager: CardManager) {
+        this.cardManager = cardManager
     }
 
-    public void setUserManager(UserManager userManager) {
-        this.userManager = userManager;
+    fun setUserManager(userManager: UserManager) {
+        this.userManager = userManager
     }
 
-    public void setGameManager(GameManager gameManager) {
-        this.gameManager = gameManager;
+    fun setGameManager(gameManager: GameManager) {
+        this.gameManager = gameManager
     }
 
-    private User getUser(HttpServletRequest request) {
-        return KingdomUtil.INSTANCE.getUser(request);
+    private fun getUser(request: HttpServletRequest): User? {
+        return KingdomUtil.getUser(request)
     }
 
-    private Game getGame(HttpServletRequest request) {
-        Object gameId = request.getSession().getAttribute("gameId");
-        if (gameId == null) {
-            return null;
-        }
-        return gameRoomManager.getGame((Integer) gameId);
+    private fun getGame(request: HttpServletRequest): Game? {
+        val gameId = request.session.getAttribute("gameId") ?: return null
+        return gameRoomManager.getGame(gameId as Int)
     }
 
     @RequestMapping("/gameHistory.html")
-    public ModelAndView gameHistory(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun gameHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        ModelAndView modelAndView = new ModelAndView("gameHistory");
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("games", gameManager.getGameHistoryList());
-        return modelAndView;
+        val modelAndView = ModelAndView("gameHistory")
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("games", gameManager.gameHistoryList)
+        return modelAndView
     }
 
     @RequestMapping("/gamePlayersHistory.html")
-    public ModelAndView gamePlayersHistory(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun gamePlayersHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        int gameId = Integer.parseInt(request.getParameter("gameId"));
-        ModelAndView modelAndView = new ModelAndView("gamePlayersHistory");
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("players", gameManager.getGamePlayersHistory(gameId));
-        modelAndView.addObject("gameId", gameId);
-        return modelAndView;
+        val gameId = Integer.parseInt(request.getParameter("gameId"))
+        val modelAndView = ModelAndView("gamePlayersHistory")
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("players", gameManager.getGamePlayersHistory(gameId))
+        modelAndView.addObject("gameId", gameId)
+        return modelAndView
     }
 
     @RequestMapping("/playerGameHistory.html")
-    public ModelAndView playerGameHistory(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun playerGameHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        ModelAndView modelAndView = new ModelAndView("gameHistory");
-        modelAndView.addObject("user", user);
-        int userId = Integer.parseInt(request.getParameter("userId"));
-        modelAndView.addObject("games", gameManager.getGameHistoryList(userId));
-        return modelAndView;
+        val modelAndView = ModelAndView("gameHistory")
+        modelAndView.addObject("user", user)
+        val userId = Integer.parseInt(request.getParameter("userId"))
+        modelAndView.addObject("games", gameManager.getGameHistoryList(userId))
+        return modelAndView
     }
 
     @RequestMapping("/gameErrors.html")
-    public ModelAndView gameErrors(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun gameErrors(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        ModelAndView modelAndView = new ModelAndView("gameErrors");
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("errors", gameManager.getGameErrors());
-        return modelAndView;
+        val modelAndView = ModelAndView("gameErrors")
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("errors", gameManager.gameErrors)
+        return modelAndView
     }
 
     @RequestMapping("/deleteGameError.html")
-    public ModelAndView deleteGameError(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun deleteGameError(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        int errorId = Integer.parseInt(request.getParameter("errorId"));
-        gameManager.deleteGameError(errorId);
-        return gameErrors(request, response);
+        val errorId = Integer.parseInt(request.getParameter("errorId"))
+        gameManager.deleteGameError(errorId)
+        return gameErrors(request, response)
     }
 
     @RequestMapping("/showGameLog.html")
-    public ModelAndView showGameLog(HttpServletRequest request, HttpServletResponse response) {
-        ModelAndView modelAndView = new ModelAndView("gameLog");
-        int logId = KingdomUtil.INSTANCE.getRequestInt(request, "logId", -1);
-        int gameId = KingdomUtil.INSTANCE.getRequestInt(request, "gameId", -1);
-        String[] logs = new String[0];
-        GameLog log = null;
+    fun showGameLog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val modelAndView = ModelAndView("gameLog")
+        val logId = KingdomUtil.getRequestInt(request, "logId", -1)
+        val gameId = KingdomUtil.getRequestInt(request, "gameId", -1)
+        var logs = arrayOfNulls<String>(0)
+        var log: GameLog? = null
         if (logId > 0) {
-            log = gameManager.getGameLog(logId);
+            log = gameManager.getGameLog(logId)
         } else if (gameId > 0) {
-            log = gameManager.getGameLogByGameId(gameId);
+            log = gameManager.getGameLogByGameId(gameId)
         }
-        boolean logNotFound;
+        val logNotFound: Boolean
         if (log != null) {
-            logNotFound = false;
-            logs = log.getLog().split(";");
+            logNotFound = false
+            logs = log.log!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         } else {
-            logNotFound = true;
+            logNotFound = true
         }
-        modelAndView.addObject("logs", logs);
-        modelAndView.addObject("logNotFound", logNotFound);
-        return modelAndView;
+        modelAndView.addObject("logs", logs)
+        modelAndView.addObject("logNotFound", logNotFound)
+        return modelAndView
     }
 
     @ResponseBody
-    @RequestMapping(value = "/changeStatus", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map changeStatus(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
+    @RequestMapping(value = "/changeStatus", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun changeStatus(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val user = getUser(request)
         if (user == null) {
-            Map model = new HashMap();
-            model.put("redirectToLogin", true);
-            return model;
+            val model = HashMap<String, Any>()
+            model.put("redirectToLogin", true)
+            return model
         }
-        String status = request.getParameter("status");
+        val status = request.getParameter("status")
         if (status != null) {
-            user.setStatus(status);
+            user.status = status
         }
-        LoggedInUsers.Companion.getInstance().updateUserStatus(user);
-        LoggedInUsers.Companion.getInstance().refreshLobbyPlayers();
-        return refreshLobby(request, response);
+        LoggedInUsers.instance.updateUserStatus(user)
+        LoggedInUsers.instance.refreshLobbyPlayers()
+        return refreshLobby(request, response)
     }
 
     @RequestMapping("/showLobbyPlayers.html")
-    public ModelAndView showLobbyPlayers(HttpServletRequest request, HttpServletResponse response) {
-        ModelAndView modelAndView = new ModelAndView("lobbyPlayers");
-        modelAndView.addObject("user", getUser(request));
-        modelAndView.addObject("players", LoggedInUsers.Companion.getInstance().getUsers());
-        return modelAndView;
+    fun showLobbyPlayers(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val modelAndView = ModelAndView("lobbyPlayers")
+        modelAndView.addObject("user", getUser(request)!!)
+        modelAndView.addObject("players", LoggedInUsers.instance.getUsers())
+        return modelAndView
     }
 
     @RequestMapping("/getPlayerStatsDiv")
-    public ModelAndView getPlayerStatsDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null) {
-            return new ModelAndView("redirect:/login.html");
-        }
-        ModelAndView modelAndView = new ModelAndView("playerStatsDiv");
-        userManager.calculateGameStats(user);
-        modelAndView.addObject("user", user);
-        return modelAndView;
+    fun getPlayerStatsDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return ModelAndView("redirect:/login.html")
+        val modelAndView = ModelAndView("playerStatsDiv")
+        userManager.calculateGameStats(user)
+        modelAndView.addObject("user", user)
+        return modelAndView
     }
 
     @RequestMapping("/overallGameStats.html")
-    public ModelAndView overallGameStats(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun overallGameStats(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        ModelAndView modelAndView = new ModelAndView("overallStats");
-        OverallStats stats = gameManager.getOverallStats();
-        OverallStats todayStats = gameManager.getOverallStatsForToday();
-        OverallStats yesterdayStats = gameManager.getOverallStatsForYesterday();
-        OverallStats weekStats = gameManager.getOverallStatsForPastWeek();
-        OverallStats monthStats = gameManager.getOverallStatsForPastMonth();
-        modelAndView.addObject("overallStats", stats);
-        modelAndView.addObject("todayStats", todayStats);
-        modelAndView.addObject("yesterdayStats", yesterdayStats);
-        modelAndView.addObject("weekStats", weekStats);
-        modelAndView.addObject("monthStats", monthStats);
-        return modelAndView;
+        val modelAndView = ModelAndView("overallStats")
+        val stats = gameManager.overallStats
+        val todayStats = gameManager.overallStatsForToday
+        val yesterdayStats = gameManager.overallStatsForYesterday
+        val weekStats = gameManager.overallStatsForPastWeek
+        val monthStats = gameManager.overallStatsForPastMonth
+        modelAndView.addObject("overallStats", stats)
+        modelAndView.addObject("todayStats", todayStats)
+        modelAndView.addObject("yesterdayStats", yesterdayStats)
+        modelAndView.addObject("weekStats", weekStats)
+        modelAndView.addObject("monthStats", monthStats)
+        return modelAndView
     }
 
     @RequestMapping("/userStats.html")
-    public ModelAndView userStats(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun userStats(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        ModelAndView modelAndView = new ModelAndView("userStats");
-        UserStats stats = gameManager.getUserStats();
-        modelAndView.addObject("stats", stats);
-        return modelAndView;
+        val modelAndView = ModelAndView("userStats")
+        val stats = gameManager.userStats
+        modelAndView.addObject("stats", stats)
+        return modelAndView
     }
 
     @RequestMapping("/annotatedGames.html")
-    public ModelAndView annotatedGames(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun annotatedGames(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        ModelAndView modelAndView = new ModelAndView("annotatedGames");
-        List<AnnotatedGame> games = gameManager.getAnnotatedGames();
-        modelAndView.addObject("games", games);
-        return modelAndView;
+        val modelAndView = ModelAndView("annotatedGames")
+        val games = gameManager.annotatedGames
+        modelAndView.addObject("games", games)
+        return modelAndView
     }
 
     @RequestMapping("/saveAnnotatedGame.html")
-    public ModelAndView saveAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun saveAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
 
-        List<String> cardsIds = new ArrayList<String>();
-        Enumeration parameterNames = request.getParameterNames();
+        val cardsIds = ArrayList<String>()
+        val parameterNames = request.parameterNames
         while (parameterNames.hasMoreElements()) {
-            String name = (String) parameterNames.nextElement();
+            val name = parameterNames.nextElement() as String
             if (name.startsWith("card_")) {
-                int cardId = Integer.parseInt(name.substring(5));
-                cardsIds.add(String.valueOf(cardId));
+                val cardId = Integer.parseInt(name.substring(5))
+                cardsIds.add(cardId.toString())
             }
         }
-        AnnotatedGame game;
-        String id = request.getParameter("id");
-        if (id.equals("0")) {
-            game = new AnnotatedGame();
+        val game: AnnotatedGame
+        val id = request.getParameter("id")
+        if (id == "0") {
+            game = AnnotatedGame()
         } else {
-            game = gameManager.getAnnotatedGame(Integer.parseInt(id));
+            game = gameManager.getAnnotatedGame(Integer.parseInt(id))
         }
-        game.setTitle(request.getParameter("title"));
-        game.setCards(KingdomUtil.INSTANCE.implode(cardsIds, ","));
-        game.setIncludeColonyAndPlatinum(KingdomUtil.INSTANCE.getRequestBoolean(request, "includeColonyAndPlatinumCards"));
-        gameManager.saveAnnotatedGame(game);
-        return annotatedGames(request, response);
+        game.title = request.getParameter("title")
+        game.cards = KingdomUtil.implode(cardsIds, ",")
+        game.includeColonyAndPlatinum = KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")
+        gameManager.saveAnnotatedGame(game)
+        return annotatedGames(request, response)
     }
 
     @RequestMapping("/deleteAnnotatedGame.html")
-    public ModelAndView deleteAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun deleteAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        String id = request.getParameter("id");
-        AnnotatedGame game = gameManager.getAnnotatedGame(Integer.parseInt(id));
-        gameManager.deleteAnnotatedGame(game);
-        return annotatedGames(request, response);
+        val id = request.getParameter("id")
+        val game = gameManager.getAnnotatedGame(Integer.parseInt(id))
+        gameManager.deleteAnnotatedGame(game)
+        return annotatedGames(request, response)
     }
 
-    @SuppressWarnings({"UnusedAssignment"})
     @RequestMapping("/showAnnotatedGame.html")
-    public ModelAndView showAnnotatedGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun showAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        ModelAndView modelAndView = new ModelAndView("annotatedGame");
-        String id = request.getParameter("id");
+        val modelAndView = ModelAndView("annotatedGame")
+        val id = request.getParameter("id")
 
-        AnnotatedGame game;
-        List<String> selectedCards = new ArrayList<String>();
-        if (id.equals("0")) {
-            game = new AnnotatedGame();
+        val game: AnnotatedGame
+        val selectedCards = ArrayList<String>()
+        if (id == "0") {
+            game = AnnotatedGame()
         } else {
-            game = gameManager.getAnnotatedGame(Integer.parseInt(id));
-            for (String cardId : game.getCards().split(",")) {
-                Card card = cardManager.getCard(Integer.parseInt(cardId));
-                selectedCards.add(card.getName());
+            game = gameManager.getAnnotatedGame(Integer.parseInt(id))
+            for (cardId in game.cards.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+                val card = cardManager.getCard(Integer.parseInt(cardId))
+                selectedCards.add(card.name)
             }
         }
 
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("selectedCards", selectedCards);
-        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, true));
-        modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, true));
-        modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, true));
-        modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, true));
-        modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, true));
-        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, true));
-        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, true));
-        modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, true));
-        modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, true));
-        modelAndView.addObject("game", game);
-        return modelAndView;
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("selectedCards", selectedCards)
+        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, true))
+        modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, true))
+        modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, true))
+        modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, true))
+        modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, true))
+        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, true))
+        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, true))
+        modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, true))
+        modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, true))
+        modelAndView.addObject("game", game)
+        return modelAndView
     }
 
     @RequestMapping("/showModifyHand.html")
-    public ModelAndView showModifyHand(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun showModifyHand(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        if (!game.isTestGame() && !user.getAdmin()) {
-            return new ModelAndView("redirect:/showGame.html");
+        if (!game.isTestGame && !user.admin) {
+            return ModelAndView("redirect:/showGame.html")
         }
-        Player player = game.getPlayerMap().get(user.getUserId());
-        ModelAndView modelAndView = new ModelAndView("modifyHand");
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("cards", game.getSupplyMap().values());
-        modelAndView.addObject("myPlayer", player);
-        modelAndView.addObject("players", game.getPlayers());
-        return modelAndView;
+        val player = game.playerMap[user.userId]
+        val modelAndView = ModelAndView("modifyHand")
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("cards", game.supplyMap.values)
+        modelAndView.addObject("myPlayer", player)
+        modelAndView.addObject("players", game.players)
+        return modelAndView
     }
 
     @RequestMapping("/modifyHand.html")
-    public ModelAndView modifyHand(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun modifyHand(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        if (!game.isTestGame() && !user.getAdmin()) {
-            return new ModelAndView("redirect:/showGame.html");
+        if (!game.isTestGame && !user.admin) {
+            return ModelAndView("redirect:/showGame.html")
         }
 
-        for (Player player : game.getPlayers()) {
-            String currentHandChoice = request.getParameter("currentHandChoice_" + player.getUserId());
-            List<Card> currentCards = new ArrayList<Card>(player.getHand());
-            if (currentHandChoice.equals("discard")) {
-                for (Card card : currentCards) {
-                    player.discardCardFromHand(card);
+        for (player in game.players) {
+            val currentHandChoice = request.getParameter("currentHandChoice_" + player.userId)
+            val currentCards = ArrayList(player.hand)
+            if (currentHandChoice == "discard") {
+                for (card in currentCards) {
+                    player.discardCardFromHand(card)
                 }
-            } else if (currentHandChoice.equals("trash")) {
-                for (Card card : currentCards) {
-                    player.removeCardFromHand(card);
+            } else if (currentHandChoice == "trash") {
+                for (card in currentCards) {
+                    player.removeCardFromHand(card)
                 }
             }
 
-            Enumeration parameterNames = request.getParameterNames();
+            val parameterNames = request.parameterNames
             while (parameterNames.hasMoreElements()) {
-                String name = (String) parameterNames.nextElement();
-                if (name.startsWith("card_") && name.endsWith("_" + player.getUserId())) {
-                    String ids = name.substring(5);
-                    int cardId = Integer.parseInt(ids.substring(0, ids.indexOf("_")));
-                    Card card = game.getSupplyMap().get(cardId);
-                    int numCards = KingdomUtil.INSTANCE.getRequestInt(request, name, 0);
-                    for (int i = 0; i < numCards; i++) {
-                        player.addCardToHand(card);
+                val name = parameterNames.nextElement() as String
+                if (name.startsWith("card_") && name.endsWith("_" + player.userId)) {
+                    val ids = name.substring(5)
+                    val cardId = Integer.parseInt(ids.substring(0, ids.indexOf("_")))
+                    val card = game.supplyMap[cardId]!!
+                    val numCards = KingdomUtil.getRequestInt(request, name, 0)
+                    for (i in 0 until numCards) {
+                        player.addCardToHand(card)
                     }
                 }
             }
-            game.refreshHand(player);
+            game.refreshHand(player)
         }
-        return new ModelAndView("redirect:/showGame.html");
+        return ModelAndView("redirect:/showGame.html")
     }
 
-    private boolean showGame(Game game, User user) {
-        return game != null && game.getStatus() != Game.STATUS_GAME_WAITING_FOR_PLAYERS && game.getStatus() != Game.STATUS_GAME_FINISHED && game.getPlayerMap().containsKey(user.getUserId());
+    private fun showGame(game: Game?, user: User?): Boolean {
+        return game != null && game.status != Game.STATUS_GAME_WAITING_FOR_PLAYERS && game.status != Game.STATUS_GAME_FINISHED && game.playerMap.containsKey(user!!.userId)
     }
 
     @ResponseBody
-    @RequestMapping(value = "/refreshLobby", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map refreshLobby(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        RefreshLobby refresh;
+    @RequestMapping(value = "/refreshLobby", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun refreshLobby(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val user = getUser(request)
+        val refresh: RefreshLobby
         if (user == null) {
-            refresh = new RefreshLobby();
-            refresh.setRedirectToLogin(true);
+            refresh = RefreshLobby()
+            refresh.isRedirectToLogin = true
         } else {
-            refresh = user.getRefreshLobby();
-            if (user.isExpired()) {
-                KingdomUtil.INSTANCE.logoutUser(user, request);
-                refresh.setRedirectToLogin(true);
+            refresh = user.refreshLobby
+            if (user.isExpired) {
+                KingdomUtil.logoutUser(user, request)
+                refresh.isRedirectToLogin = true
             }
         }
-        Game game = getGame(request);
+        val game = getGame(request)
         if (showGame(game, user)) {
-            refresh.setStartGame(true);
+            refresh.isStartGame = true
         }
-        Map model = new HashMap();
-        model.put("redirectToLogin", refresh.isRedirectToLogin());
-        if (refresh.isRedirectToLogin()) {
-            refresh.setRedirectToLogin(false);
+        val model = HashMap<String, Any>()
+        model.put("redirectToLogin", refresh.isRedirectToLogin)
+        if (refresh.isRedirectToLogin) {
+            refresh.isRedirectToLogin = false
         }
-        model.put("startGame", refresh.isStartGame());
-        if (refresh.isStartGame()) {
-            refresh.setStartGame(false);
+        model.put("startGame", refresh.isStartGame)
+        if (refresh.isStartGame) {
+            refresh.isStartGame = false
         }
-        int divsToLoad = 0;
-        model.put("refreshPlayers", refresh.isRefreshPlayers());
-        if (refresh.isRefreshPlayers()) {
-            divsToLoad++;
-            refresh.setRefreshPlayers(false);
+        var divsToLoad = 0
+        model.put("refreshPlayers", refresh.isRefreshPlayers)
+        if (refresh.isRefreshPlayers) {
+            divsToLoad++
+            refresh.isRefreshPlayers = false
         }
-        model.put("refreshGameRooms", refresh.isRefreshGameRooms());
-        if (refresh.isRefreshGameRooms()) {
-            divsToLoad++;
-            refresh.setRefreshGameRooms(false);
+        model.put("refreshGameRooms", refresh.isRefreshGameRooms)
+        if (refresh.isRefreshGameRooms) {
+            divsToLoad++
+            refresh.isRefreshGameRooms = false
         }
-        model.put("refreshChat", refresh.isRefreshChat());
-        if (refresh.isRefreshChat()) {
-            divsToLoad++;
-            refresh.setRefreshChat(false);
+        model.put("refreshChat", refresh.isRefreshChat)
+        if (refresh.isRefreshChat) {
+            divsToLoad++
+            refresh.isRefreshChat = false
         }
-        model.put("divsToLoad", divsToLoad);
+        model.put("divsToLoad", divsToLoad)
 
-        return model;
+        return model
     }
 
     @RequestMapping("/getLobbyPlayersDiv")
-    public ModelAndView getLobbyPlayersDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        RefreshLobby refresh;
+    fun getLobbyPlayersDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val refresh: RefreshLobby
         if (user == null) {
-            refresh = new RefreshLobby();
-            refresh.setRedirectToLogin(true);
+            refresh = RefreshLobby()
+            refresh.isRedirectToLogin = true
         } else {
-            refresh = user.getRefreshLobby();
-            if (user.isExpired()) {
-                KingdomUtil.INSTANCE.logoutUser(user, request);
-                refresh.setRedirectToLogin(true);
+            refresh = user.refreshLobby
+            if (user.isExpired) {
+                KingdomUtil.logoutUser(user, request)
+                refresh.isRedirectToLogin = true
             }
         }
-        Game game = getGame(request);
+        val game = getGame(request)
         if (showGame(game, user)) {
-            refresh.setStartGame(true);
+            refresh.isStartGame = true
         }
-        LoggedInUsers.Companion.getInstance().refreshLobby(user);
-        ModelAndView modelAndView = new ModelAndView("lobbyPlayersDiv");
-        modelAndView.addObject("players", LoggedInUsers.Companion.getInstance().getUsers());
-        return modelAndView;
+        LoggedInUsers.instance.refreshLobby(user!!)
+        val modelAndView = ModelAndView("lobbyPlayersDiv")
+        modelAndView.addObject("players", LoggedInUsers.instance.getUsers())
+        return modelAndView
     }
 
     @RequestMapping("/getLobbyChatDiv")
-    public ModelAndView getLobbyChatDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        RefreshLobby refresh;
+    fun getLobbyChatDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val refresh: RefreshLobby
         if (user == null) {
-            refresh = new RefreshLobby();
-            refresh.setRedirectToLogin(true);
+            refresh = RefreshLobby()
+            refresh.isRedirectToLogin = true
         } else {
-            refresh = user.getRefreshLobby();
-            if (user.isExpired()) {
-                KingdomUtil.INSTANCE.logoutUser(user, request);
-                refresh.setRedirectToLogin(true);
+            refresh = user.refreshLobby
+            if (user.isExpired) {
+                KingdomUtil.logoutUser(user, request)
+                refresh.isRedirectToLogin = true
             }
         }
-        Game game = getGame(request);
+        val game = getGame(request)
         if (showGame(game, user)) {
-            refresh.setStartGame(true);
+            refresh.isStartGame = true
         }
-        LoggedInUsers.Companion.getInstance().refreshLobby(user);
-        String template = "lobbyChatDiv";
-        if (KingdomUtil.INSTANCE.isMobile(request)) {
-            template = "lobbyChatDivMobile";
+        LoggedInUsers.instance.refreshLobby(user!!)
+        var template = "lobbyChatDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "lobbyChatDivMobile"
         }
-        ModelAndView modelAndView = new ModelAndView(template);
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("chats", lobbyChats.getChats());
-        return modelAndView;
+        val modelAndView = ModelAndView(template)
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("chats", lobbyChats.chats)
+        return modelAndView
     }
 
     @RequestMapping("/getLobbyGameRoomsDiv")
-    public ModelAndView getLobbyGameRoomsDiv(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        RefreshLobby refresh;
+    fun getLobbyGameRoomsDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val refresh: RefreshLobby
         if (user == null) {
-            refresh = new RefreshLobby();
-            refresh.setRedirectToLogin(true);
+            refresh = RefreshLobby()
+            refresh.isRedirectToLogin = true
         } else {
-            refresh = user.getRefreshLobby();
-            if (user.isExpired()) {
-                KingdomUtil.INSTANCE.logoutUser(user, request);
-                refresh.setRedirectToLogin(true);
+            refresh = user.refreshLobby
+            if (user.isExpired) {
+                KingdomUtil.logoutUser(user, request)
+                refresh.isRedirectToLogin = true
             }
         }
-        Game game = getGame(request);
+        val game = getGame(request)
         if (showGame(game, user)) {
-            refresh.setStartGame(true);
+            refresh.isStartGame = true
         }
-        LoggedInUsers.Companion.getInstance().refreshLobby(user);
-        ModelAndView modelAndView = new ModelAndView("lobbyGameRoomsDiv");
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("gameRooms", gameRoomManager.getLobbyGameRooms());
-        modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached());
-        modelAndView.addObject("numGamesInProgress", gameRoomManager.getGamesInProgress().size());
-        modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite());
-        modelAndView.addObject("updatingMessage", gameRoomManager.getUpdatingMessage());
-        modelAndView.addObject("showNews", gameRoomManager.isShowNews());
-        modelAndView.addObject("news", gameRoomManager.getNews());
-        modelAndView.addObject("mobile", KingdomUtil.INSTANCE.isMobile(request));
-        return modelAndView;
+        LoggedInUsers.instance.refreshLobby(user!!)
+        val modelAndView = ModelAndView("lobbyGameRoomsDiv")
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("gameRooms", gameRoomManager.lobbyGameRooms)
+        modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached())
+        modelAndView.addObject("numGamesInProgress", gameRoomManager.gamesInProgress.size)
+        modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
+        modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage!!)
+        modelAndView.addObject("showNews", gameRoomManager.isShowNews)
+        modelAndView.addObject("news", gameRoomManager.news)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
     }
 
     @RequestMapping("/showGamesInProgress.html")
-    public ModelAndView showGamesInProgress(HttpServletRequest request, HttpServletResponse response) {
-        ModelAndView modelAndView = new ModelAndView("gamesInProgress");
-        modelAndView.addObject("games", gameRoomManager.getGamesInProgress());
-        return modelAndView;
+    fun showGamesInProgress(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val modelAndView = ModelAndView("gamesInProgress")
+        modelAndView.addObject("games", gameRoomManager.gamesInProgress)
+        return modelAndView
     }
 
     @RequestMapping("/toggleSound.html")
-    public ModelAndView toggleSound(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        user.toggleSoundDefault();
-        userManager.saveUser(user);
-        return new ModelAndView("empty");
+    fun toggleSound(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        user!!.toggleSoundDefault()
+        userManager.saveUser(user)
+        return ModelAndView("empty")
     }
 
     @RequestMapping("/repeatGame.html")
-    public ModelAndView repeatGame(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun repeatGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
-        if (gameRoomManager.isUpdatingWebsite()) {
-            return new ModelAndView("redirect:/showGameRooms.html");
+        if (gameRoomManager.isUpdatingWebsite) {
+            return ModelAndView("redirect:/showGameRooms.html")
         }
-        game.repeat();
-        return new ModelAndView("redirect:/showGame.html");
+        game.repeat()
+        return ModelAndView("redirect:/showGame.html")
     }
 
     @RequestMapping("/showGameCards.html")
-    public ModelAndView showGameCards(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun showGameCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
-        ModelAndView modelAndView = new ModelAndView("gameCards");
-        modelAndView.addObject("cards", game.getKingdomCards());
-        modelAndView.addObject("prizeCards", game.getPrizeCards());
-        modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards() && game.isIncludePlatinumCards());
-        return modelAndView;
+        val modelAndView = ModelAndView("gameCards")
+        modelAndView.addObject("cards", game.kingdomCards)
+        modelAndView.addObject("prizeCards", game.prizeCards)
+        modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
+        return modelAndView
     }
 
     @RequestMapping("/showLeaders.html")
-    public ModelAndView showLeaders(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        Game game = getGame(request);
+    fun showLeaders(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            return new ModelAndView("redirect:/login.html");
+            return ModelAndView("redirect:/login.html")
         }
-        ModelAndView modelAndView = new ModelAndView("gameCards");
-        modelAndView.addObject("cards", game.getAvailableLeaders());
-        modelAndView.addObject("prizeCards", game.getPrizeCards());
-        modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards() && game.isIncludePlatinumCards());
-        return modelAndView;
+        val modelAndView = ModelAndView("gameCards")
+        modelAndView.addObject("cards", game.availableLeaders)
+        modelAndView.addObject("prizeCards", game.prizeCards)
+        modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
+        return modelAndView
     }
 
     @ResponseBody
-    @RequestMapping(value = "/useFruitTokens", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map useFruitTokens(HttpServletRequest request, HttpServletResponse response) {
-        Map model = new HashMap();
-        User user = getUser(request);
-        Game game = getGame(request);
+    @RequestMapping(value = "/useFruitTokens", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun useFruitTokens(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val model = HashMap<String, Any>()
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            model.put("redirectToLogin", true);
-            return model;
+            model.put("redirectToLogin", true)
+            return model
         }
         try {
-            Player player = game.getPlayerMap().get(user.getUserId());
+            val player = game.playerMap[user.userId]
             if (player == null) {
-                model.put("redirectToLobby", true);
-                return model;
+                model.put("redirectToLobby", true)
+                return model
             }
-            game.showUseFruitTokensCardAction(player);
-            game.closeLoadingDialog(player);
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
+            game.showUseFruitTokensCardAction(player)
+            game.closeLoadingDialog(player)
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
         }
-        return refreshGame(request, response);
+
+        return refreshGame(request, response)
     }
 
     @ResponseBody
-    @RequestMapping(value = "/useCattleTokens", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map useCattleTokens(HttpServletRequest request, HttpServletResponse response) {
-        Map model = new HashMap();
-        User user = getUser(request);
-        Game game = getGame(request);
+    @RequestMapping(value = "/useCattleTokens", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun useCattleTokens(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        val model = HashMap<String, Any>()
+        val user = getUser(request)
+        val game = getGame(request)
         if (user == null || game == null) {
-            model.put("redirectToLogin", true);
-            return model;
+            model.put("redirectToLogin", true)
+            return model
         }
         try {
-            Player player = game.getPlayerMap().get(user.getUserId());
+            val player = game.playerMap[user.userId]
             if (player == null) {
-                model.put("redirectToLobby", true);
-                return model;
+                model.put("redirectToLobby", true)
+                return model
             }
-            game.showUseCattleTokensCardAction(player);
-            game.closeLoadingDialog(player);
-        } catch (Throwable t) {
-            GameError error = new GameError(GameError.GAME_ERROR, KingdomUtil.INSTANCE.getStackTrace(t));
-            game.logError(error);
+            game.showUseCattleTokensCardAction(player)
+            game.closeLoadingDialog(player)
+        } catch (t: Throwable) {
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
         }
-        return refreshGame(request, response);
+
+        return refreshGame(request, response)
     }
 
     @RequestMapping("/recommendedSets.html")
-    public ModelAndView recommendedSets(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun recommendedSets(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        ModelAndView modelAndView = new ModelAndView("recommendedSets");
-        List<RecommendedSet> recommendedSets = gameManager.getRecommendedSets();
-        modelAndView.addObject("recommendedSets", recommendedSets);
-        return modelAndView;
+        val modelAndView = ModelAndView("recommendedSets")
+        val recommendedSets = gameManager.recommendedSets
+        modelAndView.addObject("recommendedSets", recommendedSets)
+        return modelAndView
     }
 
     @RequestMapping("/saveRecommendedSet.html")
-    public ModelAndView saveRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun saveRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
 
-        RecommendedSet set;
-        String id = request.getParameter("id");
-        if (id.equals("0")) {
-            set = new RecommendedSet();
+        val set: RecommendedSet
+        val id = request.getParameter("id")
+        if (id == "0") {
+            set = RecommendedSet()
         } else {
-            set = gameManager.getRecommendedSet(Integer.parseInt(id));
+            set = gameManager.getRecommendedSet(Integer.parseInt(id))
         }
-        set.setName(request.getParameter("name"));
-        set.setDeck(request.getParameter("deck"));
-        set.setCards(request.getParameter("cards"));
-        gameManager.saveRecommendedSet(set);
-        return recommendedSets(request, response);
+        set.name = request.getParameter("name")
+        set.deck = request.getParameter("deck")
+        set.cards = request.getParameter("cards")
+        gameManager.saveRecommendedSet(set)
+        return recommendedSets(request, response)
     }
 
     @RequestMapping("/deleteRecommendedSet.html")
-    public ModelAndView deleteRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun deleteRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        String id = request.getParameter("id");
-        RecommendedSet set = gameManager.getRecommendedSet(Integer.parseInt(id));
-        gameManager.deleteRecommendedSet(set);
-        return recommendedSets(request, response);
+        val id = request.getParameter("id")
+        val set = gameManager.getRecommendedSet(Integer.parseInt(id))
+        gameManager.deleteRecommendedSet(set)
+        return recommendedSets(request, response)
     }
 
-    @SuppressWarnings({"UnusedAssignment"})
     @RequestMapping("/showRecommendedSet.html")
-    public ModelAndView showRecommendedSet(HttpServletRequest request, HttpServletResponse response) {
-        User user = getUser(request);
-        if (user == null || !user.getAdmin()) {
-            return KingdomUtil.INSTANCE.getLoginModelAndView(request);
+    fun showRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        if (user == null || !user.admin) {
+            return KingdomUtil.getLoginModelAndView(request)
         }
-        ModelAndView modelAndView = new ModelAndView("recommendedSet");
-        String id = request.getParameter("id");
+        val modelAndView = ModelAndView("recommendedSet")
+        val id = request.getParameter("id")
 
-        RecommendedSet set;
-        List<String> selectedCards = new ArrayList<String>();
-        if (id.equals("0")) {
-            set = new RecommendedSet();
+        val set: RecommendedSet
+        val selectedCards = ArrayList<String>()
+        if (id == "0") {
+            set = RecommendedSet()
         } else {
-            set = gameManager.getRecommendedSet(Integer.parseInt(id));
+            set = gameManager.getRecommendedSet(Integer.parseInt(id))
         }
 
-        modelAndView.addObject("set", set);
-        return modelAndView;
+        modelAndView.addObject("set", set)
+        return modelAndView
     }
 }

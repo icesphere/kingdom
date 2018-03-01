@@ -40,8 +40,8 @@ class GameRoomManager {
     val gamesInProgress: List<GameRoom>
         get() = getGameRooms(false)
 
-    fun getGame(gameId: Int): Game {
-        return games[gameId]!!
+    fun getGame(gameId: Int): Game? {
+        return games[gameId]
     }
 
     private fun getGameRooms(lobbyGameRooms: Boolean): List<GameRoom> {
