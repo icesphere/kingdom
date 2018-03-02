@@ -152,7 +152,7 @@
                 <configuration>
                     <compilerPlugins>
                         <!-- Or "spring" for the Spring support -->
-                        <plugin>all-open</plugin>
+                        <plugin>spring</plugin>
                     </compilerPlugins>
                 </configuration>
 

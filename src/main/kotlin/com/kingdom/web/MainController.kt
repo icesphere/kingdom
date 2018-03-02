@@ -15,8 +15,9 @@ import java.util.regex.Pattern
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+@Suppress("unused")
 @Controller
-class MainController(private var manager: UserManager?,
+class MainController(private var userManager: UserManager,
                      private val gameRoomManager: GameRoomManager) {
 
     @RequestMapping("/login.html")
@@ -28,7 +29,7 @@ class MainController(private var manager: UserManager?,
         val mobile = KingdomUtil.isMobile(request)
         modelAndView.addObject("mobile", mobile)
         if (username != null && password != null) {
-            val user = manager!!.getUser(username, password)
+            val user = userManager.getUser(username, password)
             if (user != null) {
                 user.lastLogin = Date()
                 user.incrementLogins()
@@ -36,7 +37,7 @@ class MainController(private var manager: UserManager?,
                 user.ipAddress = request.remoteAddr
                 user.location = KingdomUtil.getLocation(user.ipAddress)
                 user.isMobile = mobile
-                manager!!.saveUser(user)
+                userManager.saveUser(user)
                 if (!user.admin && LoggedInUsers.getUsers().size >= MAX_USER_LIMIT) {
                     val modelAndView1 = ModelAndView("userLimitReached")
                     modelAndView1.addObject("mobile", KingdomUtil.isMobile(request))
@@ -74,14 +75,14 @@ class MainController(private var manager: UserManager?,
             return KingdomUtil.getLoginModelAndView(request)
         }
         val modelAndView = ModelAndView("admin")
-        val user = getUser(request)
-        val loggedInUser = LoggedInUsers.getUser(user!!.userId)
+        val user = getUser(request)!!
+        val loggedInUser = LoggedInUsers.getUser(user.userId)
         val showCancelGame = loggedInUser != null && loggedInUser.gameId > 0
         modelAndView.addObject("showCancelGame", showCancelGame)
-        modelAndView.addObject("numErrors", manager!!.errorCount)
+        modelAndView.addObject("numErrors", userManager.errorCount)
         modelAndView.addObject("loggedInUsersCount", LoggedInUsers.getUsers().size)
         modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
-        modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage!!)
+        modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage ?: "")
         modelAndView.addObject("showNews", gameRoomManager.isShowNews)
         modelAndView.addObject("news", gameRoomManager.news)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
@@ -104,7 +105,7 @@ class MainController(private var manager: UserManager?,
         val username = request.getParameter("username")
         if (username == null || username == "") {
             error = "Username required"
-        } else if (manager!!.usernameExists(username) || username.equals("admin", ignoreCase = true)) {
+        } else if (userManager.usernameExists(username) || username.equals("admin", ignoreCase = true)) {
             error = "Username already exists"
         } else {
             val p = Pattern.compile("[a-zA-Z0-9_]+")
@@ -136,7 +137,7 @@ class MainController(private var manager: UserManager?,
                 user.gender = request.getParameter("gender")
             }
             user.changePassword = true
-            manager!!.saveUser(user)
+            userManager.saveUser(user)
             EmailUtil.sendAccountRequestEmail(user)
             val modelAndView = ModelAndView("accountRequestSubmitted")
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
@@ -166,7 +167,7 @@ class MainController(private var manager: UserManager?,
         if (currentPassword == user.password) {
             val password = request.getParameter("password")
             user.password = password
-            manager!!.saveUser(user)
+            userManager.saveUser(user)
         } else {
             val modelAndView = ModelAndView("myAccount")
             modelAndView.addObject("user", user)
@@ -184,7 +185,7 @@ class MainController(private var manager: UserManager?,
         if (password != null && password.trim { it <= ' ' } != "") {
             user.password = password
             user.changePassword = false
-            manager!!.saveUser(user)
+            userManager.saveUser(user)
         } else {
             val modelAndView = ModelAndView("changePassword")
             modelAndView.addObject("user", user)
@@ -199,12 +200,12 @@ class MainController(private var manager: UserManager?,
         val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
         val soundDefault = KingdomUtil.getRequestInt(request, "soundDefault", User.SOUND_DEFAULT_ON)
         user.soundDefault = soundDefault
-        manager!!.saveUser(user)
+        userManager.saveUser(user)
         return ModelAndView("redirect:/showGameRooms.html")
     }
 
     fun setUserManager(manager: UserManager) {
-        this.manager = manager
+        this.userManager = manager
     }
 
     private fun getUser(request: HttpServletRequest): User? {
@@ -235,10 +236,10 @@ class MainController(private var manager: UserManager?,
         if (!isAdmin(request)) {
             return ModelAndView("redirect:/login.html")
         }
-        val user = manager!!.getUser(KingdomUtil.getRequestInt(request, "userId", -1))
+        val user = userManager.getUser(KingdomUtil.getRequestInt(request, "userId", -1))
                 ?: return ModelAndView("redirect:/listUsers.html")
         val modelAndView = ModelAndView("playerStatsDiv")
-        manager!!.calculateGameStats(user)
+        userManager.calculateGameStats(user)
         modelAndView.addObject("user", user)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         return modelAndView
@@ -270,7 +271,7 @@ class MainController(private var manager: UserManager?,
         }
 
         if (error == null) {
-            val user = manager!!.getUserByEmail(email!!)
+            val user = userManager.getUserByEmail(email!!)
             if (user != null) {
                 EmailUtil.sendForgotLoginEmail(user)
             }

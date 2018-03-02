@@ -239,7 +239,7 @@ object KingdomUtil {
     fun getUser(request: HttpServletRequest): User? {
         return if (request.session == null) {
             null
-        } else request.session.getAttribute("user") as User
+        } else request.session.getAttribute("user") as User?
     }
 
     fun isMobile(request: HttpServletRequest): Boolean {
