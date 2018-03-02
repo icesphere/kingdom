@@ -6,11 +6,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 
 @EnableTransactionManagement
 @SpringBootApplication
-object KingdomApplication {
+class KingdomApplication {
+}
 
-    @JvmStatic
-    fun main(args: Array<String>) {
-        SpringApplication.run(KingdomApplication::class.java, *args)
-    }
-
+fun main(args: Array<String>) {
+    SpringApplication.run(KingdomApplication::class.java, *args)
 }
