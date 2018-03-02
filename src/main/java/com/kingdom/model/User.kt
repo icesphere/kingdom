@@ -197,8 +197,8 @@ class User {
             val thirtyMinutes = (60 * 1000 * 30).toLong()
             val expired = lastRefresh == null || lastRefresh!!.time + thirtyMinutes < System.currentTimeMillis()
             if (expired) {
-                LoggedInUsers.instance.userLoggedOut(this)
-                LoggedInUsers.instance.refreshLobbyPlayers()
+                LoggedInUsers.userLoggedOut(this)
+                LoggedInUsers.refreshLobbyPlayers()
             }
             return expired
         }

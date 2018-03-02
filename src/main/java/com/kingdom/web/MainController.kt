@@ -37,13 +37,13 @@ class MainController(private var manager: UserManager?,
                 user.location = KingdomUtil.getLocation(user.ipAddress)
                 user.isMobile = mobile
                 manager!!.saveUser(user)
-                if (!user.admin && LoggedInUsers.instance.getUsers().size >= MAX_USER_LIMIT) {
+                if (!user.admin && LoggedInUsers.getUsers().size >= MAX_USER_LIMIT) {
                     val modelAndView1 = ModelAndView("userLimitReached")
                     modelAndView1.addObject("mobile", KingdomUtil.isMobile(request))
                     return modelAndView1
                 } else {
-                    LoggedInUsers.instance.userLoggedIn(user)
-                    LoggedInUsers.instance.refreshLobbyPlayers()
+                    LoggedInUsers.userLoggedIn(user)
+                    LoggedInUsers.refreshLobbyPlayers()
                     val session = request.getSession(true)
                     session.maxInactiveInterval = 60 * 30
                     session.setAttribute("user", user)
@@ -75,11 +75,11 @@ class MainController(private var manager: UserManager?,
         }
         val modelAndView = ModelAndView("admin")
         val user = getUser(request)
-        val loggedInUser = LoggedInUsers.instance.getUser(user!!.userId)
+        val loggedInUser = LoggedInUsers.getUser(user!!.userId)
         val showCancelGame = loggedInUser != null && loggedInUser.gameId > 0
         modelAndView.addObject("showCancelGame", showCancelGame)
         modelAndView.addObject("numErrors", manager!!.errorCount)
-        modelAndView.addObject("loggedInUsersCount", LoggedInUsers.instance.getUsers().size)
+        modelAndView.addObject("loggedInUsersCount", LoggedInUsers.getUsers().size)
         modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
         modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage!!)
         modelAndView.addObject("showNews", gameRoomManager.isShowNews)

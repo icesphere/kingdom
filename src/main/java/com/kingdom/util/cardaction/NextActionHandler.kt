@@ -133,12 +133,12 @@ object NextActionHandler {
             "finish attack" -> {
                 game.removeNextAction()
                 game.removeIncompleteCard()
-                SpecialActionHandler.handleSpecialAction(game, game.attackCard)
+                SpecialActionHandler.handleSpecialAction(game, game.attackCard!!)
             }
         }
         when (cardName) {
             "Black Market" -> {
-                val player = game.currentPlayer
+                val player = game.currentPlayer!!
                 if (game.blackMarketTreasureQueue.isEmpty()) {
                     game.removeNextAction()
                     val buyCardAction = CardAction(CardAction.TYPE_GAIN_CARDS)
@@ -146,10 +146,10 @@ object NextActionHandler {
                     for (card in game.blackMarketCardsToBuy) {
                         if (card.name == "Grand Market") {
                             val addCard = game.blackMarketTreasureCardsPlayed.none { it.cardId == Card.COPPER_ID }
-                            if (addCard && game.canBuyCard(player!!, card)) {
+                            if (addCard && game.canBuyCard(player, card)) {
                                 buyCardAction.cards.add(card)
                             }
-                        } else if (game.canBuyCardNotInSupply(player!!, card)) {
+                        } else if (game.canBuyCardNotInSupply(player, card)) {
                             buyCardAction.cards.add(card)
                         }
                     }
@@ -158,7 +158,7 @@ object NextActionHandler {
                         buyCardAction.numCards = 1
                         buyCardAction.buttonValue = "Done"
                         buyCardAction.instructions = "Click on the card you want to buy and then click Done."
-                        game.setPlayerCardAction(player!!, buyCardAction)
+                        game.setPlayerCardAction(player, buyCardAction)
                     } else {
                         val sortCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER)
                         sortCardAction.deck = Deck.Promo
@@ -167,19 +167,19 @@ object NextActionHandler {
                         sortCardAction.cards = game.blackMarketCardsToBuy
                         sortCardAction.buttonValue = "Done"
                         sortCardAction.instructions = "You don't have enough coins to buy any of these black market cards. Click the cards in the order you want them to be on the bottom of the black market deck, starting with the top card and then click Done. (The last card you click will be the bottom card of the black market deck)"
-                        game.setPlayerCardAction(player!!, sortCardAction)
+                        game.setPlayerCardAction(player, sortCardAction)
                     }
                 } else {
                     var treasureCard: Card? = game.blackMarketTreasureQueue.remove()
                     while (treasureCard!!.isAutoPlayTreasure) {
-                        game.playTreasureCard(player!!, treasureCard, true, true, false, true, true)
+                        game.playTreasureCard(player, treasureCard, true, true, false, true, true)
                         if (game.blackMarketTreasureQueue.isEmpty()) {
                             treasureCard = null
                             break
                         }
                         treasureCard = game.blackMarketTreasureQueue.remove()
                     }
-                    game.playTreasureCard(player!!, treasureCard, true, true, false, true, true)
+                    game.playTreasureCard(player, treasureCard, true, true, false, true, true)
                 }
             }
             "Hamlet" -> {

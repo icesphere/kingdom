@@ -724,96 +724,96 @@ class UAgentInfo
     companion object {
 
         // Initialize some initial smartphone string variables.
-        val engineWebKit = "webkit"
+        const val engineWebKit = "webkit"
 
-        val deviceIphone = "iphone"
-        val deviceIpod = "ipod"
-        val deviceIpad = "ipad"
-        val deviceMacPpc = "macintosh" //Used for disambiguation
+        const val deviceIphone = "iphone"
+        const val deviceIpod = "ipod"
+        const val deviceIpad = "ipad"
+        const val deviceMacPpc = "macintosh" //Used for disambiguation
 
-        val deviceAndroid = "android"
-        val deviceGoogleTV = "googletv"
-        val deviceXoom = "xoom" //Motorola Xoom
-        val deviceHtcFlyer = "htc_flyer" //HTC Flyer
+        const val deviceAndroid = "android"
+        const val deviceGoogleTV = "googletv"
+        const val deviceXoom = "xoom" //Motorola Xoom
+        const val deviceHtcFlyer = "htc_flyer" //HTC Flyer
 
-        val deviceSymbian = "symbian"
-        val deviceS60 = "series60"
-        val deviceS70 = "series70"
-        val deviceS80 = "series80"
-        val deviceS90 = "series90"
+        const val deviceSymbian = "symbian"
+        const val deviceS60 = "series60"
+        const val deviceS70 = "series70"
+        const val deviceS80 = "series80"
+        const val deviceS90 = "series90"
 
-        val deviceWinPhone7 = "windows phone os 7"
-        val deviceWinMob = "windows ce"
-        val deviceWindows = "windows"
-        val deviceIeMob = "iemobile"
-        val devicePpc = "ppc" //Stands for PocketPC
-        val enginePie = "wm5 pie" //An old Windows Mobile
+        const val deviceWinPhone7 = "windows phone os 7"
+        const val deviceWinMob = "windows ce"
+        const val deviceWindows = "windows"
+        const val deviceIeMob = "iemobile"
+        const val devicePpc = "ppc" //Stands for PocketPC
+        const val enginePie = "wm5 pie" //An old Windows Mobile
 
-        val deviceBB = "blackberry"
-        val vndRIM = "vnd.rim" //Detectable when BB devices emulate IE or Firefox
-        val deviceBBStorm = "blackberry95"  //Storm 1 and 2
-        val deviceBBBold = "blackberry97"  //Bold
-        val deviceBBTour = "blackberry96"  //Tour
-        val deviceBBCurve = "blackberry89"  //Curve 2
-        val deviceBBTorch = "blackberry 98"  //Torch
-        val deviceBBPlaybook = "playbook" //PlayBook tablet
+        const val deviceBB = "blackberry"
+        const val vndRIM = "vnd.rim" //Detectable when BB devices emulate IE or Firefox
+        const val deviceBBStorm = "blackberry95"  //Storm 1 and 2
+        const val deviceBBBold = "blackberry97"  //Bold
+        const val deviceBBTour = "blackberry96"  //Tour
+        const val deviceBBCurve = "blackberry89"  //Curve 2
+        const val deviceBBTorch = "blackberry 98"  //Torch
+        const val deviceBBPlaybook = "playbook" //PlayBook tablet
 
-        val devicePalm = "palm"
-        val deviceWebOS = "webos" //For Palm's new WebOS devices
-        val engineBlazer = "blazer" //Old Palm
-        val engineXiino = "xiino" //Another old Palm
+        const val devicePalm = "palm"
+        const val deviceWebOS = "webos" //For Palm's new WebOS devices
+        const val engineBlazer = "blazer" //Old Palm
+        const val engineXiino = "xiino" //Another old Palm
 
-        val deviceKindle = "kindle"  //Amazon Kindle, eInk one.
+        const val deviceKindle = "kindle"  //Amazon Kindle, eInk one.
 
-        val deviceNuvifone = "nuvifone"  //Garmin Nuvifone
+        const val deviceNuvifone = "nuvifone"  //Garmin Nuvifone
 
         //Initialize variables for mobile-specific content.
-        val vndwap = "vnd.wap"
-        val wml = "wml"
+        const val vndwap = "vnd.wap"
+        const val wml = "wml"
 
         //Initialize variables for other random devices and mobile browsers.
-        val deviceBrew = "brew"
-        val deviceDanger = "danger"
-        val deviceHiptop = "hiptop"
-        val devicePlaystation = "playstation"
-        val deviceNintendoDs = "nitro"
-        val deviceNintendo = "nintendo"
-        val deviceWii = "wii"
-        val deviceXbox = "xbox"
-        val deviceArchos = "archos"
+        const val deviceBrew = "brew"
+        const val deviceDanger = "danger"
+        const val deviceHiptop = "hiptop"
+        const val devicePlaystation = "playstation"
+        const val deviceNintendoDs = "nitro"
+        const val deviceNintendo = "nintendo"
+        const val deviceWii = "wii"
+        const val deviceXbox = "xbox"
+        const val deviceArchos = "archos"
 
-        val engineOpera = "opera" //Popular browser
-        val engineNetfront = "netfront" //Common embedded OS browser
-        val engineUpBrowser = "up.browser" //common on some phones
-        val engineOpenWeb = "openweb" //Transcoding by OpenWave server
-        val deviceMidp = "midp" //a mobile Java technology
-        val uplink = "up.link"
-        val engineTelecaQ = "teleca q" //a modern feature phone browser
-        val devicePda = "pda" //some devices report themselves as PDAs
-        val mini = "mini"  //Some mobile browsers put "mini" in their names.
-        val mobile = "mobile" //Some mobile browsers put "mobile" in their user agent strings.
-        val mobi = "mobi" //Some mobile browsers put "mobi" in their user agent strings.
+        const val engineOpera = "opera" //Popular browser
+        const val engineNetfront = "netfront" //Common embedded OS browser
+        const val engineUpBrowser = "up.browser" //common on some phones
+        const val engineOpenWeb = "openweb" //Transcoding by OpenWave server
+        const val deviceMidp = "midp" //a mobile Java technology
+        const val uplink = "up.link"
+        const val engineTelecaQ = "teleca q" //a modern feature phone browser
+        const val devicePda = "pda" //some devices report themselves as PDAs
+        const val mini = "mini"  //Some mobile browsers put "mini" in their names.
+        const val mobile = "mobile" //Some mobile browsers put "mobile" in their user agent strings.
+        const val mobi = "mobi" //Some mobile browsers put "mobi" in their user agent strings.
 
         //Use Maemo, Tablet, and Linux to test for Nokia"s Internet Tablets.
-        val maemo = "maemo"
-        val maemoTablet = "tablet"
-        val linux = "linux"
-        val qtembedded = "qt embedded" //for Sony Mylo
-        val mylocom2 = "com2" //for Sony Mylo also
+        const val maemo = "maemo"
+        const val maemoTablet = "tablet"
+        const val linux = "linux"
+        const val qtembedded = "qt embedded" //for Sony Mylo
+        const val mylocom2 = "com2" //for Sony Mylo also
 
         //In some UserAgents, the only clue is the manufacturer.
-        val manuSonyEricsson = "sonyericsson"
-        val manuericsson = "ericsson"
-        val manuSamsung1 = "sec-sgh"
-        val manuSony = "sony"
-        val manuHtc = "htc" //Popular Android and WinMo manufacturer
+        const val manuSonyEricsson = "sonyericsson"
+        const val manuericsson = "ericsson"
+        const val manuSamsung1 = "sec-sgh"
+        const val manuSony = "sony"
+        const val manuHtc = "htc" //Popular Android and WinMo manufacturer
 
         //In some UserAgents, the only clue is the operator.
-        val svcDocomo = "docomo"
-        val svcKddi = "kddi"
-        val svcVodafone = "vodafone"
+        const val svcDocomo = "docomo"
+        const val svcKddi = "kddi"
+        const val svcVodafone = "vodafone"
 
         //Disambiguation strings.
-        val disUpdate = "update" //pda vs. update
+        const val disUpdate = "update" //pda vs. update
     }
 }

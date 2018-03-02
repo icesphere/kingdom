@@ -783,9 +783,9 @@ class Game(val gameId: Int) {
         if (!repeatingGame) {
             status = Game.STATUS_NO_GAMES
             for (player in players) {
-                LoggedInUsers.instance.gameReset(player.userId)
+                LoggedInUsers.gameReset(player.userId)
             }
-            LoggedInUsers.instance.refreshLobbyPlayers()
+            LoggedInUsers.refreshLobbyPlayers()
             numPlayers = 0
             numComputerPlayers = 0
             numEasyComputerPlayers = 0
@@ -961,7 +961,7 @@ class Game(val gameId: Int) {
         isRandomizerReplacementCardNotFound = false
         goodwillCardsInPlay = 0
         fruitTokensPlayed = 0
-        LoggedInUsers.instance.refreshLobbyGameRooms()
+        LoggedInUsers.refreshLobbyGameRooms()
     }
 
     private fun start() {

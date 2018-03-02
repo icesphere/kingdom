@@ -270,8 +270,8 @@ object KingdomUtil {
 
     fun logoutUser(user: User?, request: HttpServletRequest) {
         if (user != null) {
-            LoggedInUsers.instance.userLoggedOut(user)
-            LoggedInUsers.instance.refreshLobbyPlayers()
+            LoggedInUsers.userLoggedOut(user)
+            LoggedInUsers.refreshLobbyPlayers()
         }
         val session = request.getSession(false)
         if (session != null) {

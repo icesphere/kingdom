@@ -1,10 +1,13 @@
 package com.kingdom.service
 
 import com.kingdom.model.User
+import org.springframework.stereotype.Service
 
 import java.util.*
 
-class LoggedInUsers {
+object LoggedInUsers {
+
+    private val users = HashMap<Int, User>()
 
     fun userLoggedIn(user: User) {
         updateUser(user, true, true)
@@ -74,11 +77,5 @@ class LoggedInUsers {
         for (user in users.values) {
             user.refreshLobby.isRefreshChat = true
         }
-    }
-
-    companion object {
-        private val users = HashMap<Int, User>()
-
-        val instance = LoggedInUsers()
     }
 }

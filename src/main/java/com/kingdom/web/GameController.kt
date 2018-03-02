@@ -47,7 +47,7 @@ class GameController(private var cardManager: CardManager,
             }
             game.creatorId = user.userId
             game.creatorName = user.username
-            LoggedInUsers.instance.refreshLobbyGameRooms()
+            LoggedInUsers.refreshLobbyGameRooms()
             val includeTesting = user.admin
             addSelectCardsObjects(user, modelAndView, includeTesting)
             return modelAndView
@@ -544,7 +544,7 @@ class GameController(private var cardManager: CardManager,
         try {
             if (game.status == Game.STATUS_GAME_BEING_CONFIGURED) {
                 game.status = Game.STATUS_GAME_WAITING_FOR_PLAYERS
-                LoggedInUsers.instance.refreshLobbyGameRooms()
+                LoggedInUsers.refreshLobbyGameRooms()
                 var hasBlackMarket = false
                 var playTreasureCardsRequired = false
                 var includePrizes = false
@@ -639,10 +639,10 @@ class GameController(private var cardManager: CardManager,
             user.refreshLobby.isRefreshPlayers = false
             user.refreshLobby.isRefreshGameRooms = false
             user.refreshLobby.isRefreshChat = false
-            LoggedInUsers.instance.refreshLobby(user)
+            LoggedInUsers.refreshLobby(user)
             val modelAndView = ModelAndView("gameRooms")
             modelAndView.addObject("user", user)
-            modelAndView.addObject("players", LoggedInUsers.instance.getUsers())
+            modelAndView.addObject("players", LoggedInUsers.getUsers())
             modelAndView.addObject("gameRooms", gameRoomManager.lobbyGameRooms)
             modelAndView.addObject("chats", lobbyChats.chats)
             modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached())
@@ -667,17 +667,17 @@ class GameController(private var cardManager: CardManager,
         user.gameId = game.gameId
         user.status = ""
         game.addPlayer(user)
-        LoggedInUsers.instance.updateUserStatus(user)
-        LoggedInUsers.instance.refreshLobbyPlayers()
-        LoggedInUsers.instance.refreshLobbyGameRooms()
+        LoggedInUsers.updateUserStatus(user)
+        LoggedInUsers.refreshLobbyPlayers()
+        LoggedInUsers.refreshLobbyGameRooms()
     }
 
     private fun removePlayerFromGame(game: Game, user: User) {
         user.gameId = 0
         game.removePlayer(user)
-        LoggedInUsers.instance.updateUser(user)
-        LoggedInUsers.instance.refreshLobbyPlayers()
-        LoggedInUsers.instance.refreshLobbyGameRooms()
+        LoggedInUsers.updateUser(user)
+        LoggedInUsers.refreshLobbyPlayers()
+        LoggedInUsers.refreshLobbyGameRooms()
     }
 
     @RequestMapping("/leaveGame.html")
@@ -1678,8 +1678,8 @@ class GameController(private var cardManager: CardManager,
         try {
             user.gameId = 0
             user.stats = null
-            LoggedInUsers.instance.updateUser(user)
-            LoggedInUsers.instance.refreshLobbyPlayers()
+            LoggedInUsers.updateUser(user)
+            LoggedInUsers.refreshLobbyPlayers()
             val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGame.html")
             game.playerExitedGame(player)
         } catch (t: Throwable) {
@@ -1748,14 +1748,14 @@ class GameController(private var cardManager: CardManager,
 
     private fun sendPrivateChat(user: User, message: String?, receivingUserId: Int) {
         if (message != null && message != "" && receivingUserId > 0) {
-            val receivingUser = LoggedInUsers.instance.getUser(receivingUserId)
+            val receivingUser = LoggedInUsers.getUser(receivingUserId)
             if (receivingUser != null) {
                 if (receivingUser.gameId > 0) {
                     val game = gameRoomManager.getGame(receivingUser.gameId)!!
                     game.addPrivateChat(user, receivingUser, message)
                 } else {
                     lobbyChats.addPrivateChat(user, receivingUser, message)
-                    LoggedInUsers.instance.refreshLobbyChat()
+                    LoggedInUsers.refreshLobbyChat()
                 }
             }
         }
@@ -1799,14 +1799,14 @@ class GameController(private var cardManager: CardManager,
             model.put("redirectToLogin", true)
             return model
         }
-        LoggedInUsers.instance.updateUser(user)
+        LoggedInUsers.updateUser(user)
         val message = request.getParameter("message")
         if (message != null && message.startsWith("/")) {
             processChatCommand(user, message)
         } else {
             sendLobbyChat(user, message)
         }
-        LoggedInUsers.instance.refreshLobbyChat()
+        LoggedInUsers.refreshLobbyChat()
         return refreshLobby(request, response)
     }
 
@@ -2071,8 +2071,8 @@ class GameController(private var cardManager: CardManager,
         if (status != null) {
             user.status = status
         }
-        LoggedInUsers.instance.updateUserStatus(user)
-        LoggedInUsers.instance.refreshLobbyPlayers()
+        LoggedInUsers.updateUserStatus(user)
+        LoggedInUsers.refreshLobbyPlayers()
         return refreshLobby(request, response)
     }
 
@@ -2080,7 +2080,7 @@ class GameController(private var cardManager: CardManager,
     fun showLobbyPlayers(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val modelAndView = ModelAndView("lobbyPlayers")
         modelAndView.addObject("user", getUser(request)!!)
-        modelAndView.addObject("players", LoggedInUsers.instance.getUsers())
+        modelAndView.addObject("players", LoggedInUsers.getUsers())
         return modelAndView
     }
 
@@ -2347,9 +2347,9 @@ class GameController(private var cardManager: CardManager,
         if (showGame(game, user)) {
             refresh.isStartGame = true
         }
-        LoggedInUsers.instance.refreshLobby(user!!)
+        LoggedInUsers.refreshLobby(user!!)
         val modelAndView = ModelAndView("lobbyPlayersDiv")
-        modelAndView.addObject("players", LoggedInUsers.instance.getUsers())
+        modelAndView.addObject("players", LoggedInUsers.getUsers())
         return modelAndView
     }
 
@@ -2371,7 +2371,7 @@ class GameController(private var cardManager: CardManager,
         if (showGame(game, user)) {
             refresh.isStartGame = true
         }
-        LoggedInUsers.instance.refreshLobby(user!!)
+        LoggedInUsers.refreshLobby(user!!)
         var template = "lobbyChatDiv"
         if (KingdomUtil.isMobile(request)) {
             template = "lobbyChatDivMobile"
@@ -2400,7 +2400,7 @@ class GameController(private var cardManager: CardManager,
         if (showGame(game, user)) {
             refresh.isStartGame = true
         }
-        LoggedInUsers.instance.refreshLobby(user!!)
+        LoggedInUsers.refreshLobby(user!!)
         val modelAndView = ModelAndView("lobbyGameRoomsDiv")
         modelAndView.addObject("user", user)
         modelAndView.addObject("gameRooms", gameRoomManager.lobbyGameRooms)
