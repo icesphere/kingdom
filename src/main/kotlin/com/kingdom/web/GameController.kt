@@ -52,10 +52,7 @@ class GameController(private var cardManager: CardManager,
             addSelectCardsObjects(user, modelAndView, includeTesting)
             return modelAndView
         } catch (t: Throwable) {
-            t.printStackTrace()
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -75,6 +72,7 @@ class GameController(private var cardManager: CardManager,
             addSelectCardsObjects(user, modelAndView, includeTesting)
             return modelAndView
         } catch (t: Throwable) {
+            t.printStackTrace()
             return ModelAndView("empty")
         }
 
@@ -282,9 +280,7 @@ class GameController(private var cardManager: CardManager,
             }
             return ModelAndView("redirect:/showGameRooms.html")
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -384,10 +380,7 @@ class GameController(private var cardManager: CardManager,
                 }
             }
         } catch (t: Throwable) {
-            t.printStackTrace()
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -446,9 +439,7 @@ class GameController(private var cardManager: CardManager,
                 }
             }
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -472,9 +463,7 @@ class GameController(private var cardManager: CardManager,
                 }
             }
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -498,9 +487,7 @@ class GameController(private var cardManager: CardManager,
                 }
             }
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -527,9 +514,7 @@ class GameController(private var cardManager: CardManager,
                 }
             }
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -581,10 +566,7 @@ class GameController(private var cardManager: CardManager,
                 ModelAndView("redirect:/showGameRooms.html")
             }
         } catch (t: Throwable) {
-            t.printStackTrace()
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -648,12 +630,13 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached())
             modelAndView.addObject("numGamesInProgress", gameRoomManager.gamesInProgress.size)
             modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
-            modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage!!)
+            modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage ?: "")
             modelAndView.addObject("showNews", gameRoomManager.isShowNews)
             modelAndView.addObject("news", gameRoomManager.news)
 
             return modelAndView
         } catch (t: Throwable) {
+            t.printStackTrace()
             if (game != null) {
                 val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
                 game.logError(error)
@@ -729,9 +712,7 @@ class GameController(private var cardManager: CardManager,
                 }
             }
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -776,6 +757,7 @@ class GameController(private var cardManager: CardManager,
 
             return model
         } catch (t: Throwable) {
+            t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
             game.logError(error)
             return model
@@ -801,9 +783,7 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("user", user)
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -913,13 +893,14 @@ class GameController(private var cardManager: CardManager,
                     game.logError(error, false)
                     model.put("refreshCardAction", false)
                 } else {
-                    model.put("cardActionCardsSize", player.cardAction!!.cards.size)
-                    model.put("cardActionNumCards", player.cardAction!!.numCards)
-                    model.put("cardActionType", player.cardAction!!.type)
-                    model.put("cardActionWidth", player.cardAction!!.width)
-                    model.put("cardActionSelectExact", player.cardAction!!.isSelectExact)
-                    model.put("cardActionSelectUpTo", player.cardAction!!.isSelectUpTo)
-                    model.put("cardActionSelectAtLeast", player.cardAction!!.isSelectAtLeast)
+                    val cardAction = player.cardAction!!
+                    model.put("cardActionCardsSize", cardAction.cards.size)
+                    model.put("cardActionNumCards", cardAction.numCards)
+                    model.put("cardActionType", cardAction.type)
+                    model.put("cardActionWidth", cardAction.width)
+                    model.put("cardActionSelectExact", cardAction.isSelectExact)
+                    model.put("cardActionSelectUpTo", cardAction.isSelectUpTo)
+                    model.put("cardActionSelectAtLeast", cardAction.isSelectAtLeast)
                     divsToLoad++
                 }
                 refresh.isRefreshCardAction = false
@@ -953,6 +934,7 @@ class GameController(private var cardManager: CardManager,
 
             return model
         } catch (t: Throwable) {
+            t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
             game.logError(error)
             return model
@@ -983,6 +965,7 @@ class GameController(private var cardManager: CardManager,
                 game.closeLoadingDialog(player)
             }
         } catch (t: Throwable) {
+            t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
             game.logError(error)
         }
@@ -1010,6 +993,7 @@ class GameController(private var cardManager: CardManager,
             game.playAllTreasureCards(player)
             game.closeLoadingDialog(player)
         } catch (t: Throwable) {
+            t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
             game.logError(error)
         }
@@ -1031,6 +1015,7 @@ class GameController(private var cardManager: CardManager,
             val player = game.playerMap[user.userId]!!
             game.endPlayerTurn(player)
         } catch (t: Throwable) {
+            t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
             game.logError(error)
         }
@@ -1050,14 +1035,14 @@ class GameController(private var cardManager: CardManager,
             val player = game.playerMap[user.userId]!!
             if (player.cardAction != null) {
                 if (player.cardAction!!.type == CardAction.TYPE_INFO) {
-                    game.cardActionSubmitted(player, null!!, null, null, -1)
+                    game.cardActionSubmitted(player, emptyList(), null, null, -1)
                 } else if (player.cardAction!!.type == CardAction.TYPE_YES_NO) {
                     if (request.getParameter("answer") == null) {
                         val error = GameError(GameError.GAME_ERROR, "Card Action answer was null")
                         game.logError(error, false)
                         //todo
                     } else {
-                        game.cardActionSubmitted(player, null!!, request.getParameter("answer"), null, -1)
+                        game.cardActionSubmitted(player, emptyList(), request.getParameter("answer"), null, -1)
                     }
                 } else if (player.cardAction!!.type == CardAction.TYPE_CHOICES) {
                     if (request.getParameter("choice") == null) {
@@ -1065,7 +1050,7 @@ class GameController(private var cardManager: CardManager,
                         game.logError(error, false)
                         //todo
                     } else {
-                        game.cardActionSubmitted(player, null!!, null, request.getParameter("choice"), -1)
+                        game.cardActionSubmitted(player, emptyList(), null, request.getParameter("choice"), -1)
                     }
                 } else if (player.cardAction!!.type == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || player.cardAction!!.type == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
                     if (request.getParameter("numberChosen") == null) {
@@ -1073,7 +1058,7 @@ class GameController(private var cardManager: CardManager,
                         game.logError(error, false)
                         //todo
                     } else {
-                        game.cardActionSubmitted(player, null!!, null, null, Integer.parseInt(request.getParameter("numberChosen")))
+                        game.cardActionSubmitted(player, emptyList(), null, null, Integer.parseInt(request.getParameter("numberChosen")))
                     }
                 } else {
                     if (request.getParameter("selectedCards") == null) {
@@ -1095,6 +1080,7 @@ class GameController(private var cardManager: CardManager,
             }
             game.closeLoadingDialog(player)
         } catch (t: Throwable) {
+            t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
             game.logError(error)
         }
@@ -1119,9 +1105,8 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1181,9 +1166,8 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1201,7 +1185,7 @@ class GameController(private var cardManager: CardManager,
                 template = "playingAreaDivMobile"
             }
             val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]
+            val player = game.playerMap[user.userId]!!
             modelAndView.addObject("player", player)
             modelAndView.addObject("currentPlayerId", game.previousPlayerId)
             modelAndView.addObject("gameStatus", game.status)
@@ -1219,9 +1203,8 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1239,7 +1222,7 @@ class GameController(private var cardManager: CardManager,
                 template = "playingAreaDivMobile"
             }
             val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]
+            val player = game.playerMap[user.userId]!!
             modelAndView.addObject("player", player)
             modelAndView.addObject("currentPlayerId", game.currentPlayerId)
             modelAndView.addObject("gameStatus", game.status)
@@ -1257,9 +1240,8 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1277,7 +1259,7 @@ class GameController(private var cardManager: CardManager,
                 template = "cardsPlayedDivMobile"
             }
             val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]
+            val player = game.playerMap[user.userId]!!
             modelAndView.addObject("player", player)
             modelAndView.addObject("currentPlayerId", game.currentPlayerId)
             modelAndView.addObject("gameStatus", game.status)
@@ -1292,9 +1274,8 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1312,7 +1293,7 @@ class GameController(private var cardManager: CardManager,
                 template = "cardsBoughtDivMobile"
             }
             val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]
+            val player = game.playerMap[user.userId]!!
             modelAndView.addObject("player", player)
             modelAndView.addObject("currentPlayerId", game.currentPlayerId)
             modelAndView.addObject("gameStatus", game.status)
@@ -1329,9 +1310,8 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1352,9 +1332,8 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("turnHistory", game.recentTurnHistory)
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1379,9 +1358,8 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1433,9 +1411,8 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1460,9 +1437,8 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1480,7 +1456,7 @@ class GameController(private var cardManager: CardManager,
                 template = "discardDivMobile"
             }
             val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]
+            val player = game.playerMap[user.userId]!!
             modelAndView.addObject("player", player)
             modelAndView.addObject("currentPlayerId", game.currentPlayerId)
             modelAndView.addObject("costDiscount", game.costDiscount)
@@ -1491,9 +1467,7 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1516,9 +1490,7 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("chats", chats)
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1551,9 +1523,7 @@ class GameController(private var cardManager: CardManager,
             }
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1585,9 +1555,7 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("prizeCards", game.prizeCardsString)
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1641,9 +1609,7 @@ class GameController(private var cardManager: CardManager,
 
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1661,9 +1627,7 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("player", player)
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
     }
@@ -1844,11 +1808,15 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return ModelAndView("empty")
+            return logErrorAndReturnEmpty(t, game)
         }
 
+    }
+
+    private fun logErrorAndReturnEmpty(t: Throwable, game: Game): ModelAndView {
+        val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+        game.logError(error)
+        return ModelAndView("empty")
     }
 
     @RequestMapping("/loadNativeVillageDialog.html")
@@ -2490,6 +2458,7 @@ class GameController(private var cardManager: CardManager,
             game.showUseFruitTokensCardAction(player)
             game.closeLoadingDialog(player)
         } catch (t: Throwable) {
+            t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
             game.logError(error)
         }
@@ -2516,6 +2485,7 @@ class GameController(private var cardManager: CardManager,
             game.showUseCattleTokensCardAction(player)
             game.closeLoadingDialog(player)
         } catch (t: Throwable) {
+            t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
             game.logError(error)
         }
