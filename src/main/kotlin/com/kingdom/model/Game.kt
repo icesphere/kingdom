@@ -1,6 +1,7 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.Deck
 import com.kingdom.model.computer.*
 import com.kingdom.service.GameManager
 import com.kingdom.service.LoggedInUsers

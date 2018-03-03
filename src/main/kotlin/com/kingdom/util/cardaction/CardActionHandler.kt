@@ -1,6 +1,7 @@
 package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
+import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 
 object CardActionHandler {

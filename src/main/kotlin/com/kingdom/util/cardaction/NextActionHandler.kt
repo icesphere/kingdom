@@ -2,6 +2,7 @@ package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.specialaction.SpecialActionHandler
 

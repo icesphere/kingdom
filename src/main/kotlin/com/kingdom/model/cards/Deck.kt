@@ -1,4 +1,4 @@
-package com.kingdom.model
+package com.kingdom.model.cards
 
 enum class Deck {
     Kingdom,

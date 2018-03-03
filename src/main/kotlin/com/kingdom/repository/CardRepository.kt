@@ -1,6 +1,6 @@
 package com.kingdom.repository
 
-import com.kingdom.model.Deck
+import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.Card
 import org.springframework.data.repository.CrudRepository
 

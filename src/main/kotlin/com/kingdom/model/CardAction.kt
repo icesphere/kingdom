@@ -1,6 +1,7 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.Deck
 import java.util.*
 
 class CardAction(var type: Int) {

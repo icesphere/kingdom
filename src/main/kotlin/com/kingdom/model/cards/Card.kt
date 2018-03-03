@@ -1,7 +1,6 @@
 package com.kingdom.model.cards
 
 import com.kingdom.model.CardAction
-import com.kingdom.model.Deck
 import com.kingdom.util.KingdomUtil
 
 import javax.persistence.*
@@ -40,7 +39,7 @@ class Card {
     @Column(name = "victory_points")
     var victoryPoints: Int = 0
 
-    var deck: Deck? = null
+    lateinit var deck: Deck
 
     var testing: Boolean = false
 

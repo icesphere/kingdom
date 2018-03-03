@@ -1,7 +1,7 @@
 package com.kingdom.web
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.Deck
+import com.kingdom.model.cards.Deck
 import com.kingdom.model.User
 import com.kingdom.service.CardManager
 import com.kingdom.util.KingdomUtil

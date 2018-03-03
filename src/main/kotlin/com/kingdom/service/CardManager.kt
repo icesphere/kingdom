@@ -1,7 +1,7 @@
 package com.kingdom.service
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.Deck
+import com.kingdom.model.cards.Deck
 import com.kingdom.model.Game
 import com.kingdom.repository.CardRepository
 import com.kingdom.util.CardRandomizer

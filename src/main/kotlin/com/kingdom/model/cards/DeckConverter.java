@@ -1,7 +1,5 @@
 package com.kingdom.model.cards;
 
-import com.kingdom.model.Deck;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
