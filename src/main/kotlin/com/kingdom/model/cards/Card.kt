@@ -40,12 +40,7 @@ class Card {
     @Column(name = "victory_points")
     var victoryPoints: Int = 0
 
-    @Column(name = "deck")
-    var deckString: String? = null
-
-    @Transient
     var deck: Deck? = null
-        get() = deckString?.let { Deck.valueOf(deckString!!) }
 
     var testing: Boolean = false
 

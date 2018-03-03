@@ -1815,6 +1815,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     private fun logErrorAndReturnEmpty(t: Throwable, game: Game): ModelAndView {
+        t.printStackTrace()
         val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
         game.logError(error)
         return ModelAndView("empty")

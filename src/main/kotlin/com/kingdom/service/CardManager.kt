@@ -57,9 +57,9 @@ class CardManager(private val cardRepository: CardRepository,
 
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {
         return if (!includeTesting) {
-            cardRepository.findByDeckStringAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck.toString(), false, false, false)
+            cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false, false)
         } else {
-            cardRepository.findByDeckStringAndPrizeCardOrderByNameAsc(deck.toString(), false)
+            cardRepository.findByDeckAndPrizeCardOrderByNameAsc(deck, false)
         }
     }
 }
