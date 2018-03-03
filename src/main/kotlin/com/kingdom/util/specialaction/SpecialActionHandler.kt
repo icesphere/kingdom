@@ -1,6 +1,6 @@
 package com.kingdom.util.specialaction
 
-import com.kingdom.model.Card
+import com.kingdom.model.cards.Card
 import com.kingdom.model.Game
 import com.kingdom.model.IncompleteCard
 

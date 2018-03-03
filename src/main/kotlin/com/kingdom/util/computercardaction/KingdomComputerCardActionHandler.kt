@@ -1,6 +1,6 @@
 package com.kingdom.util.computercardaction
 
-import com.kingdom.model.Card
+import com.kingdom.model.cards.Card
 import com.kingdom.model.CardAction
 import com.kingdom.model.Game
 import com.kingdom.model.Player

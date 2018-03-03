@@ -1,5 +1,7 @@
-package com.kingdom.model
+package com.kingdom.model.cards
 
+import com.kingdom.model.CardAction
+import com.kingdom.model.Deck
 import com.kingdom.util.KingdomUtil
 
 import javax.persistence.*
@@ -439,7 +441,7 @@ class Card {
 
         val provinceCard: Card
             get() {
-                return Card(PROVINCE_ID , TYPE_VICTORY, "Province", 8).apply { victoryPoints = 6 }
+                return Card(PROVINCE_ID, TYPE_VICTORY, "Province", 8).apply { victoryPoints = 6 }
             }
 
         val colonyCard: Card

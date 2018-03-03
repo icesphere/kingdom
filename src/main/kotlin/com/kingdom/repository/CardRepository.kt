@@ -1,6 +1,6 @@
 package com.kingdom.repository
 
-import com.kingdom.model.Card
+import com.kingdom.model.cards.Card
 import org.springframework.data.repository.CrudRepository
 
 interface CardRepository : CrudRepository<Card, Int> {

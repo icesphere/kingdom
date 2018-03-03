@@ -1,6 +1,7 @@
 package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
+import com.kingdom.model.cards.Card
 import com.kingdom.util.KingdomUtil
 
 object FairyTaleSpecialActionHandler {

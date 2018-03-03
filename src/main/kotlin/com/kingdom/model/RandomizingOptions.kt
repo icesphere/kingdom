@@ -1,5 +1,6 @@
 package com.kingdom.model
 
+import com.kingdom.model.cards.Card
 import java.util.ArrayList
 
 class RandomizingOptions {

@@ -1,8 +1,7 @@
 package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
-
-import java.util.HashSet
+import com.kingdom.model.cards.Card
 
 object FanSpecialActionHandler {
 

@@ -1,6 +1,6 @@
 package com.kingdom.web
 
-import com.kingdom.model.Card
+import com.kingdom.model.cards.Card
 import com.kingdom.model.Deck
 import com.kingdom.model.User
 import com.kingdom.service.CardManager

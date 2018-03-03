@@ -1,6 +1,6 @@
 package com.kingdom.model.computer
 
-import com.kingdom.model.Card
+import com.kingdom.model.cards.Card
 import com.kingdom.model.Game
 import com.kingdom.model.Player
 import java.util.*

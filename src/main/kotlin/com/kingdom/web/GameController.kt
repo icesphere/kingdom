@@ -1,6 +1,7 @@
 package com.kingdom.web
 
 import com.kingdom.model.*
+import com.kingdom.model.cards.Card
 import com.kingdom.service.*
 import com.kingdom.util.KingdomUtil
 import freemarker.ext.beans.BeansWrapper

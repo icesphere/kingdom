@@ -1,5 +1,6 @@
 package com.kingdom.model
 
+import com.kingdom.model.cards.Card
 import com.kingdom.util.KingdomUtil
 
 import java.util.*

@@ -1,6 +1,6 @@
 package com.kingdom.util
 
-import com.kingdom.model.Card
+import com.kingdom.model.cards.Card
 
 import java.util.Comparator
 

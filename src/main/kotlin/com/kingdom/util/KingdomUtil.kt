@@ -1,20 +1,16 @@
 package com.kingdom.util
 
-import com.kingdom.model.Card
+import com.kingdom.model.cards.Card
 import com.kingdom.model.User
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.service.UAgentInfo
 import com.sun.jersey.api.client.Client
-import com.sun.jersey.api.client.WebResource
 import com.sun.jersey.core.util.MultivaluedMapImpl
 import org.springframework.web.servlet.ModelAndView
 
 import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpSession
-import javax.ws.rs.core.MultivaluedMap
 import java.io.PrintWriter
 import java.io.StringWriter
-import java.io.Writer
 import java.util.*
 
 object KingdomUtil {
