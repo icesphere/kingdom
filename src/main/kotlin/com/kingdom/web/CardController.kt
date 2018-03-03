@@ -3,6 +3,7 @@ package com.kingdom.web
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.User
+import com.kingdom.model.cards.CardType
 import com.kingdom.service.CardManager
 import com.kingdom.util.KingdomUtil
 import freemarker.ext.beans.BeansWrapper
@@ -58,7 +59,7 @@ class CardController(private var cardManager: CardManager) {
         with (card) {
             name = request.getParameter("name")
             deck = Deck.valueOf(request.getParameter("deck"))
-            type = Integer.parseInt(request.getParameter("type"))
+            type = CardType.fromCardTypeId(request.getParameter("type").toInt())
             cost = Integer.parseInt(request.getParameter("cost"))
             costIncludesPotion = KingdomUtil.getRequestBoolean(request, "costIncludesPotion")
             special = request.getParameter("special")

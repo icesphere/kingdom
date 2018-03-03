@@ -2,10 +2,9 @@ package com.kingdom.model.cards
 
 import com.kingdom.model.CardAction
 import com.kingdom.util.KingdomUtil
+import java.util.*
 
 import javax.persistence.*
-import java.util.ArrayList
-import java.util.HashMap
 
 @Table(name = "cards")
 @Entity
@@ -20,7 +19,7 @@ class Card {
 
     var cost: Int = 0
 
-    var type: Int = 0
+    lateinit var type: CardType
 
     var special: String? = ""
 
@@ -110,22 +109,21 @@ class Card {
     val typeAsString: String
         get() {
             return when (type) {
-                TYPE_ACTION -> "Action"
-                TYPE_ACTION_ATTACK -> "Action - Attack"
-                TYPE_ACTION_REACTION -> "Action - Reaction"
-                TYPE_VICTORY -> "Victory"
-                TYPE_CURSE -> "Curse"
-                TYPE_TREASURE -> "Treasure"
-                TYPE_ACTION_AND_VICTORY -> "Action - Victory"
-                TYPE_TREASURE_AND_VICTORY -> "Treasure - Victory"
-                TYPE_ACTION_DURATION -> "Action - Duration"
-                TYPE_VICTORY_AND_REACTION -> "Victory - Reaction"
-                TYPE_TREASURE_AND_CURSE -> "Treasure - Curse"
-                TYPE_DURATION_AND_VICTORY -> "Duration - Victory"
-                TYPE_LEADER -> "Leader"
-                TYPE_TREASURE_REACTION -> "Treasure - Reaction"
-                TYPE_ACTION_SUMMON -> "Action - Summon"
-                else -> ""
+                CardType.Action -> "Action"
+                CardType.ActionAttack -> "Action - Attack"
+                CardType.ActionReaction -> "Action - Reaction"
+                CardType.Victory -> "Victory"
+                CardType.Curse -> "Curse"
+                CardType.Treasure -> "Treasure"
+                CardType.ActionVictory -> "Action - Victory"
+                CardType.TreasureVictory -> "Treasure - Victory"
+                CardType.ActionDuration -> "Action - Duration"
+                CardType.VictoryReaction -> "Victory - Reaction"
+                CardType.TreasureCurse -> "Treasure - Curse"
+                CardType.DurationVictory -> "Duration - Victory"
+                CardType.Leader -> "Leader"
+                CardType.TreasureReaction -> "Treasure - Reaction"
+                CardType.ActionSummon -> "Action - Summon"
             }
         }
 
@@ -174,31 +172,31 @@ class Card {
         }
 
     val isVictoryOnly: Boolean
-        get() = type == TYPE_VICTORY
+        get() = type == CardType.Victory
 
     val isVictory: Boolean
-        get() = type == TYPE_VICTORY || type == TYPE_ACTION_AND_VICTORY || type == TYPE_TREASURE_AND_VICTORY || type == TYPE_VICTORY_AND_REACTION || type == TYPE_DURATION_AND_VICTORY
+        get() = type == CardType.Victory || type == CardType.ActionVictory || type == CardType.TreasureVictory || type == CardType.VictoryReaction || type == CardType.DurationVictory
 
     val isVictoryReaction: Boolean
-        get() = type == TYPE_VICTORY_AND_REACTION
+        get() = type == CardType.VictoryReaction
 
     val isAction: Boolean
-        get() = type == TYPE_ACTION || type == TYPE_ACTION_ATTACK || type == TYPE_ACTION_REACTION || type == TYPE_ACTION_AND_VICTORY || type == TYPE_ACTION_DURATION || type == TYPE_DURATION_AND_VICTORY || type == TYPE_ACTION_SUMMON
+        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionSummon
 
     val isTerminalAction: Boolean
         get() = isAction && addActions == 0 && name != "Nobles" && name != "Pawn" && name != "Trusty Steed"
 
     val isDuration: Boolean
-        get() = type == TYPE_ACTION_DURATION || type == TYPE_DURATION_AND_VICTORY
+        get() = type == CardType.ActionDuration || type == CardType.DurationVictory
 
     val isTreasure: Boolean
-        get() = type == TYPE_TREASURE || type == TYPE_TREASURE_AND_VICTORY || type == TYPE_TREASURE_AND_CURSE || type == TYPE_TREASURE_REACTION
+        get() = type == CardType.Treasure || type == CardType.TreasureVictory || type == CardType.TreasureCurse || type == CardType.TreasureReaction
 
     val isReaction: Boolean
-        get() = type == TYPE_ACTION_REACTION || type == TYPE_VICTORY_AND_REACTION || type == TYPE_TREASURE_REACTION
+        get() = type == CardType.ActionReaction || type == CardType.VictoryReaction || type == CardType.TreasureReaction
 
     val isCurse: Boolean
-        get() = type == TYPE_CURSE || type == TYPE_TREASURE_AND_CURSE
+        get() = type == CardType.Curse || type == CardType.TreasureCurse
 
     val isCurseOnly: Boolean
         get() = cardId == CURSE_ID
@@ -231,7 +229,7 @@ class Card {
         get() = cardId == POTION_ID
 
     val isAttack: Boolean
-        get() = type == TYPE_ACTION_ATTACK
+        get() = type == CardType.ActionAttack
 
     val isDefense: Boolean
         get() = name == "Moat" || name == "Lighthouse" || name == "Watchtower" || name == "Bell Tower" || name == "Enchanted Palace"
@@ -277,18 +275,18 @@ class Card {
 
     val backgroundColor: String
         get() = when {
-            type == TYPE_ACTION_AND_VICTORY -> ACTION_AND_VICTORY_IMAGE
-            type == TYPE_TREASURE_AND_VICTORY -> TREASURE_AND_VICTORY_IMAGE
-            type == TYPE_TREASURE_AND_CURSE -> TREASURE_AND_CURSE_IMAGE
-            type == TYPE_VICTORY_AND_REACTION -> VICTORY_AND_REACTION_IMAGE
-            type == TYPE_DURATION_AND_VICTORY -> DURATION_AND_VICTORY_IMAGE
-            type == TYPE_TREASURE_REACTION -> TREASURE_REACTION_IMAGE
+            type == CardType.ActionVictory -> ACTION_AND_VICTORY_IMAGE
+            type == CardType.TreasureVictory -> TREASURE_AND_VICTORY_IMAGE
+            type == CardType.TreasureCurse -> TREASURE_AND_CURSE_IMAGE
+            type == CardType.VictoryReaction -> VICTORY_AND_REACTION_IMAGE
+            type == CardType.DurationVictory -> DURATION_AND_VICTORY_IMAGE
+            type == CardType.TreasureReaction -> TREASURE_REACTION_IMAGE
             isTreasure -> TREASURE_COLOR
             isVictory -> VICTORY_COLOR
-            type == TYPE_ACTION_REACTION -> ACTION_REACTION_COLOR
-            type == TYPE_CURSE -> CURSE_COLOR
-            type == TYPE_ACTION_DURATION -> ACTION_DURATION_COLOR
-            type == TYPE_LEADER -> LEADER_COLOR
+            type == CardType.ActionReaction -> ACTION_REACTION_COLOR
+            type == CardType.Curse -> CURSE_COLOR
+            type == CardType.ActionDuration -> ACTION_DURATION_COLOR
+            type == CardType.Leader -> LEADER_COLOR
             else -> ACTION_COLOR
         }
 
@@ -323,7 +321,7 @@ class Card {
 
     constructor()
 
-    constructor(cardId: Int, type: Int, name: String, cost: Int) {
+    constructor(cardId: Int, type: CardType, name: String, cost: Int) {
         this.cardId = cardId
         this.type = type
         this.name = name
@@ -372,27 +370,10 @@ class Card {
     }
 
     override fun hashCode(): Int {
-        var result = cardId
-        result = 31 * result + type
-        return result
+        return Objects.hash(cardId)
     }
 
     companion object {
-        const val TYPE_ACTION = 1
-        const val TYPE_ACTION_ATTACK = 2
-        const val TYPE_VICTORY = 3
-        const val TYPE_ACTION_REACTION = 4
-        const val TYPE_TREASURE = 5
-        const val TYPE_CURSE = 6
-        const val TYPE_ACTION_AND_VICTORY = 7
-        const val TYPE_TREASURE_AND_VICTORY = 8
-        const val TYPE_ACTION_DURATION = 9
-        const val TYPE_TREASURE_AND_CURSE = 10
-        const val TYPE_VICTORY_AND_REACTION = 11
-        const val TYPE_DURATION_AND_VICTORY = 12
-        const val TYPE_LEADER = 13
-        const val TYPE_TREASURE_REACTION = 14
-        const val TYPE_ACTION_SUMMON = 15
 
         const val COPPER_ID = -1
         const val SILVER_ID = -2
@@ -425,52 +406,52 @@ class Card {
 
         val estateCard: Card
             get() {
-                return Card(ESTATE_ID, TYPE_VICTORY, "Estate", 2).apply { victoryPoints = 1 }
+                return Card(ESTATE_ID, CardType.Victory, "Estate", 2).apply { victoryPoints = 1 }
             }
 
         val duchyCard: Card
             get() {
-                return Card(DUCHY_ID, TYPE_VICTORY, "Duchy", 5).apply { victoryPoints = 3 }
+                return Card(DUCHY_ID, CardType.Victory, "Duchy", 5).apply { victoryPoints = 3 }
             }
 
         val provinceCard: Card
             get() {
-                return Card(PROVINCE_ID, TYPE_VICTORY, "Province", 8).apply { victoryPoints = 6 }
+                return Card(PROVINCE_ID, CardType.Victory, "Province", 8).apply { victoryPoints = 6 }
             }
 
         val colonyCard: Card
             get() {
-                return Card(COLONY_ID, TYPE_VICTORY, "Colony", 11).apply { victoryPoints = 11 }
+                return Card(COLONY_ID, CardType.Victory, "Colony", 11).apply { victoryPoints = 11 }
             }
 
         val copperCard: Card
             get() {
-                return Card(COPPER_ID, TYPE_TREASURE, "Copper", 0).apply { addCoins = 1 }
+                return Card(COPPER_ID, CardType.Treasure, "Copper", 0).apply { addCoins = 1 }
             }
 
         val silverCard: Card
             get() {
-                return Card(SILVER_ID, TYPE_TREASURE, "Silver", 3).apply { addCoins = 2 }
+                return Card(SILVER_ID, CardType.Treasure, "Silver", 3).apply { addCoins = 2 }
             }
 
         val goldCard: Card
             get() {
-                return Card(GOLD_ID, TYPE_TREASURE, "Gold", 6).apply { addCoins = 3 }
+                return Card(GOLD_ID, CardType.Treasure, "Gold", 6).apply { addCoins = 3 }
             }
 
         val platinumCard: Card
             get() {
-                return Card(PLATINUM_ID, TYPE_TREASURE, "Platinum", 9).apply { addCoins = 5 }
+                return Card(PLATINUM_ID, CardType.Treasure, "Platinum", 9).apply { addCoins = 5 }
             }
 
         val curseCard: Card
             get() {
-                return Card(CURSE_ID, TYPE_CURSE, "Curse", 0).apply { victoryPoints = -1 }
+                return Card(CURSE_ID, CardType.Curse, "Curse", 0).apply { victoryPoints = -1 }
             }
 
         val potionCard: Card
             get() {
-                return Card(POTION_ID, TYPE_TREASURE, "Potion", 4)
+                return Card(POTION_ID, CardType.Treasure, "Potion", 4)
             }
     }
 }
