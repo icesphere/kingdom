@@ -7,24 +7,24 @@ import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object GainCardsHandler {
-    fun handleCardAction(game: Game, player: Player, cardAction: CardAction, selectedCardIds: List<Int>) {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardIds: List<Int>) {
 
-        val type = cardAction.type
+        val type = oldCardAction.type
         val cardMap = game.cardMap
 
-        if (cardAction.cardName != "Tournament" && cardAction.cardName != "Museum" && cardAction.cardName != "Artisan") {
+        if (oldCardAction.cardName != "Tournament" && oldCardAction.cardName != "Museum" && oldCardAction.cardName != "Artisan") {
             selectedCardIds
                     .map { cardMap[it]!! }
                     .forEach {
                         when (type) {
-                            CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY,
-                            CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY -> game.playerGainedCard(player, it)
+                            OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY,
+                            OldCardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY -> game.playerGainedCard(player, it)
                             else -> game.playerGainedCard(player, it, false)
                         }
                     }
         }
 
-        when (cardAction.cardName) {
+        when (oldCardAction.cardName) {
             "Artisan" -> {
                 val card = cardMap[selectedCardIds[0]]!!
 
@@ -32,7 +32,7 @@ object GainCardsHandler {
 
                 game.refreshPlayingArea(player)
 
-                val putCardOnTopOfDeckAction = CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK).apply {
+                val putCardOnTopOfDeckAction = OldCardAction(OldCardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK).apply {
                     deck = Deck.Kingdom
                     cardName = "Artisan"
                     cards.addAll(player.hand)
@@ -46,7 +46,7 @@ object GainCardsHandler {
                 val cardBought = cardMap[selectedCardIds[0]]!!
                 game.boughtBlackMarketCard(cardBought)
                 game.blackMarketCardsToBuy.remove(cardBought)
-                val chooseOrderCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER).apply {
+                val chooseOrderCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER).apply {
                     deck = Deck.Promo
                     isHideOnSelect = true
                     numCards = game.blackMarketCardsToBuy.size
@@ -57,28 +57,28 @@ object GainCardsHandler {
                 }
                 game.setPlayerCardAction(player, chooseOrderCardAction)
             }
-            "Develop" -> if (cardAction.phase < 3) {
-                val gainCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+            "Develop" -> if (oldCardAction.phase < 3) {
+                val gainCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
                     deck = Deck.Hinterlands
-                    cardName = cardAction.cardName
+                    cardName = oldCardAction.cardName
                     buttonValue = "Done"
                     numCards = 1
                     instructions = "Select one of the following cards to gain and then click Done."
-                    associatedCard = cardAction.associatedCard
+                    associatedCard = oldCardAction.associatedCard
                     phase = 3
                 }
 
                 val cards = ArrayList<Card>()
                 var cost = game.getCardCost(gainCardAction.associatedCard!!)
 
-                when (cardAction.phase) {
+                when (oldCardAction.phase) {
                     1 -> cost -= 1
                     2 -> cost += 1
                 }
 
                 game.supplyMap.values.filterTo(cards) {
                     game.getCardCost(it) == cost &&
-                            cardAction.associatedCard!!.costIncludesPotion == it.costIncludesPotion &&
+                            oldCardAction.associatedCard!!.costIncludesPotion == it.costIncludesPotion &&
                             game.supply[it.cardId]!! > 0
                 }
 
@@ -88,11 +88,11 @@ object GainCardsHandler {
             "Horn of Plenty" -> {
                 val card = cardMap[selectedCardIds[0]]!!
                 if (card.isVictory) {
-                    (game.cardsPlayed as LinkedList<*>).removeLastOccurrence(cardAction.associatedCard)
-                    game.treasureCardsPlayed.remove(cardAction.associatedCard)
-                    game.trashedCards.add(cardAction.associatedCard!!)
-                    game.playerLostCard(player, cardAction.associatedCard!!)
-                    game.addHistory(player.username, "'s ", KingdomUtil.getCardWithBackgroundColor(cardAction.associatedCard!!), " was trashed")
+                    (game.cardsPlayed as LinkedList<*>).removeLastOccurrence(oldCardAction.associatedCard)
+                    game.treasureCardsPlayed.remove(oldCardAction.associatedCard)
+                    game.trashedCards.add(oldCardAction.associatedCard!!)
+                    game.playerLostCard(player, oldCardAction.associatedCard!!)
+                    game.addHistory(player.username, "'s ", KingdomUtil.getCardWithBackgroundColor(oldCardAction.associatedCard!!), " was trashed")
                     game.refreshAllPlayersCardsPlayed()
                 }
             }

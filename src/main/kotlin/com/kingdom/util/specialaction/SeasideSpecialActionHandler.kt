@@ -20,7 +20,7 @@ object SeasideSpecialActionHandler {
             "Ambassador" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                     cardAction.deck = Deck.Seaside
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -74,7 +74,7 @@ object SeasideSpecialActionHandler {
             }
             "Embargo" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.Seaside
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -104,7 +104,7 @@ object SeasideSpecialActionHandler {
                     }
                 }
                 if (hasProvince) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                     cardAction.deck = Deck.Seaside
                     cardAction.cardName = card.name
                     cardAction.instructions = "Do you want to reveal a Province and gain a Gold into your hand, or do you want to gain a silver into your hand?"
@@ -126,7 +126,7 @@ object SeasideSpecialActionHandler {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                         } else if (!player.hasMoat() && player.hand.size >= 4 && !player.hasLighthouse()) {
-                            val cardAction = CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK)
+                            val cardAction = OldCardAction(OldCardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK)
                             cardAction.deck = Deck.Seaside
                             cardAction.cardName = card.name
                             cardAction.cards.addAll(player.hand)
@@ -148,7 +148,7 @@ object SeasideSpecialActionHandler {
             }
             "Haven" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.Seaside
                 cardAction.cardName = card.name
                 cardAction.cards = KingdomUtil.uniqueCardList(player!!.hand)
@@ -163,7 +163,7 @@ object SeasideSpecialActionHandler {
                     game.removePlayedCard(card)
                     player!!.islandCards.add(card)
                 }
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.Seaside
                 cardAction.cardName = card.name
                 cardAction.cards = KingdomUtil.uniqueCardList(player!!.hand)
@@ -196,7 +196,7 @@ object SeasideSpecialActionHandler {
                     }
                     cards.size > 0 -> {
                         game.refreshHand(player!!)
-                        val cardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER)
+                        val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER)
                         cardAction.deck = Deck.Seaside
                         cardAction.isHideOnSelect = true
                         cardAction.numCards = cards.size
@@ -216,7 +216,7 @@ object SeasideSpecialActionHandler {
             }
             "Native Village" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.Seaside
                 cardAction.cardName = card.name
                 cardAction.instructions = "Do you want to put your top deck card on your Native Village, or put all the cards from your Native Village into your hand?"
@@ -226,7 +226,7 @@ object SeasideSpecialActionHandler {
             }
             "Navigator" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.Seaside
                 cardAction.cardName = card.name
                 cardAction.instructions = "Do you want to discard these cards, or put them back on top of your deck?"
@@ -248,7 +248,7 @@ object SeasideSpecialActionHandler {
                 val player = game.currentPlayer
                 val bottomCard = player!!.lookAtBottomDeckCard()
                 if (bottomCard != null) {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.deck = Deck.Seaside
                     cardAction.cards.add(bottomCard)
                     cardAction.cardName = card.name
@@ -260,7 +260,7 @@ object SeasideSpecialActionHandler {
             }
             "Pirate Ship" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.Seaside
                 cardAction.cardName = card.name
                 cardAction.instructions = "Do you want to attack other players and try to get a Pirate Ship Coin, or do you want to get " + KingdomUtil.getPlural(player!!.pirateShipCoins, "Coin") + " from your Pirate Ship Coins?"
@@ -271,7 +271,7 @@ object SeasideSpecialActionHandler {
             "Salvager" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Seaside
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -305,7 +305,7 @@ object SeasideSpecialActionHandler {
             }
             "Smugglers" -> {
                 val player = game.currentPlayer
-                val cardAction: CardAction
+                val oldCardAction: OldCardAction
                 val cards = ArrayList<Card>()
                 for (c in game.smugglersCards) {
                     if (game.isCardInSupply(c) && !c.costIncludesPotion) {
@@ -313,21 +313,21 @@ object SeasideSpecialActionHandler {
                     }
                 }
                 if (cards.size > 0) {
-                    cardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
-                    cardAction.deck = Deck.Seaside
-                    cardAction.cardName = card.name
-                    cardAction.buttonValue = "Done"
-                    cardAction.cards = KingdomUtil.uniqueCardList(cards)
-                    cardAction.numCards = 1
-                    cardAction.instructions = "Select one of the following cards to gain and then click Done."
+                    oldCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+                    oldCardAction.deck = Deck.Seaside
+                    oldCardAction.cardName = card.name
+                    oldCardAction.buttonValue = "Done"
+                    oldCardAction.cards = KingdomUtil.uniqueCardList(cards)
+                    oldCardAction.numCards = 1
+                    oldCardAction.instructions = "Select one of the following cards to gain and then click Done."
                 } else {
-                    cardAction = CardAction(CardAction.TYPE_INFO)
-                    cardAction.deck = Deck.Seaside
-                    cardAction.cardName = card.name
-                    cardAction.instructions = "The player to your right did not gain any cards costing 6 or less that are still in the supply."
-                    cardAction.buttonValue = "Close"
+                    oldCardAction = OldCardAction(OldCardAction.TYPE_INFO)
+                    oldCardAction.deck = Deck.Seaside
+                    oldCardAction.cardName = card.name
+                    oldCardAction.instructions = "The player to your right did not gain any cards costing 6 or less that are still in the supply."
+                    oldCardAction.buttonValue = "Close"
                 }
-                game.setPlayerCardAction(player!!, cardAction)
+                game.setPlayerCardAction(player!!, oldCardAction)
             }
             "Tactician" -> {
                 val player = game.currentPlayer
@@ -382,7 +382,7 @@ object SeasideSpecialActionHandler {
                         if (player.hand.size < 3) {
                             cardsToDiscard = player.hand.size
                         }
-                        val cardAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND)
+                        val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND)
                         cardAction.deck = Deck.Seaside
                         cardAction.cardName = card.name
                         cardAction.cards.addAll(player.hand)

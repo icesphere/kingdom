@@ -21,7 +21,7 @@ object HinterlandsSpecialActionHandler {
                     cards.add(c)
                 }
                 if (!cards.isEmpty()) {
-                    val cardAction = CardAction(CardAction.TYPE_DISCARD_UP_TO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_UP_TO)
                     cardAction.deck = Deck.Hinterlands
                     cardAction.cardName = card.name
                     cardAction.cards = cards
@@ -45,7 +45,7 @@ object HinterlandsSpecialActionHandler {
                 }
             }
             "Develop" -> if (player!!.hand.size > 0) {
-                val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                 cardAction.deck = Deck.Hinterlands
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -61,7 +61,7 @@ object HinterlandsSpecialActionHandler {
                 for (p in game.players) {
                     val topDeckCard = p.removeTopDeckCard()
                     if (topDeckCard != null) {
-                        val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                        val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                         cardAction.deck = Deck.Hinterlands
                         cardAction.cardName = card.name
                         cardAction.associatedCard = topDeckCard
@@ -86,7 +86,7 @@ object HinterlandsSpecialActionHandler {
                     if (player.hand.size < 3) {
                         cardsToDiscard = player.hand.size
                     }
-                    val cardAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND)
                     cardAction.deck = Deck.Hinterlands
                     cardAction.cardName = card.name
                     cardAction.cards.addAll(player.hand)
@@ -102,7 +102,7 @@ object HinterlandsSpecialActionHandler {
                     game.playerDiscardedCard(player, player.hand[0])
                     player.discardCardFromHand(player.hand[0])
                 } else {
-                    val cardAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND)
                     cardAction.deck = Deck.Hinterlands
                     cardAction.cardName = card.name
                     cardAction.cards.addAll(player.hand)
@@ -118,7 +118,7 @@ object HinterlandsSpecialActionHandler {
                 }
                 val topDeckCard = player!!.removeTopDeckCard()
                 if (topDeckCard != null) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                     cardAction.deck = Deck.Hinterlands
                     cardAction.cardName = card.name
                     cardAction.associatedCard = topDeckCard
@@ -135,7 +135,7 @@ object HinterlandsSpecialActionHandler {
                     game.refreshHand(player)
                     val cards = player.hand.filterNot { it.isTreasure }
                     if (!cards.isEmpty()) {
-                        val trashCardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND)
+                        val trashCardAction = OldCardAction(OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND)
                         trashCardAction.deck = Deck.Hinterlands
                         trashCardAction.cardName = card.name
                         trashCardAction.numCards = 1
@@ -147,7 +147,7 @@ object HinterlandsSpecialActionHandler {
                 }
             }
             "Mandarin" -> {
-                val cardAction = CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK)
                 cardAction.deck = Deck.Hinterlands
                 cardAction.cardName = card.name
                 cardAction.cards = KingdomUtil.uniqueCardList(player!!.hand)
@@ -170,7 +170,7 @@ object HinterlandsSpecialActionHandler {
                             game.addHistory(p.username, " drew 1 card")
                             game.refreshHand(p)
                             if (p.hand.size > 3) {
-                                val cardAction = CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND)
+                                val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND)
                                 cardAction.deck = Deck.Hinterlands
                                 cardAction.cardName = card.name
                                 cardAction.cards.addAll(p.hand)
@@ -201,7 +201,7 @@ object HinterlandsSpecialActionHandler {
                     game.playerDiscardedCard(player, player.hand[0])
                     player.discardCardFromHand(player.hand[0])
                 } else {
-                    val cardAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND)
                     cardAction.deck = Deck.Hinterlands
                     cardAction.cardName = card.name
                     cardAction.cards.addAll(player.hand)
@@ -220,7 +220,7 @@ object HinterlandsSpecialActionHandler {
                     val topCards = ArrayList<Card>()
                     val firstTopCard = p.removeTopDeckCard()
                     if (firstTopCard != null) {
-                        val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                        val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                         cardAction.deck = Deck.Hinterlands
                         cardAction.cardName = card.name
                         cardAction.choices.add(CardActionChoice("Discard", "discard"))
@@ -247,7 +247,7 @@ object HinterlandsSpecialActionHandler {
                             }
                         }
                         cardAction.cards.addAll(topCards)
-                        incompleteCard.extraCardActions.add(cardAction)
+                        incompleteCard.extraOldCardActions.add(cardAction)
                     } else {
                         game.addHistory(p.username, " did not have any cards to reveal")
                         incompleteCard.setPlayerActionCompleted(p.userId)
@@ -257,8 +257,8 @@ object HinterlandsSpecialActionHandler {
                     playersProcessed++
                 }
 
-                if (!incompleteCard.extraCardActions.isEmpty()) {
-                    val cardAction = incompleteCard.extraCardActions.remove()
+                if (!incompleteCard.extraOldCardActions.isEmpty()) {
+                    val cardAction = incompleteCard.extraOldCardActions.remove()
                     game.setPlayerCardAction(player!!, cardAction)
                 } else {
                     player!!.drawCards(2)
@@ -267,7 +267,7 @@ object HinterlandsSpecialActionHandler {
                 incompleteCard.allActionsSet()
             }
             "Spice Merchant" -> {
-                val cardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND)
                 cardAction.deck = Deck.Hinterlands
                 cardAction.cardName = card.name
                 cardAction.cards = KingdomUtil.uniqueCardList(player!!.treasureCards)
@@ -277,7 +277,7 @@ object HinterlandsSpecialActionHandler {
                 game.setPlayerCardAction(player, cardAction)
             }
             "Stables" -> {
-                val cardAction = CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
                 cardAction.deck = Deck.Hinterlands
                 cardAction.cardName = card.name
                 cardAction.cards = KingdomUtil.uniqueCardList(player!!.treasureCards)
@@ -287,7 +287,7 @@ object HinterlandsSpecialActionHandler {
                 game.setPlayerCardAction(player, cardAction)
             }
             "Trader" -> if (player!!.hand.size > 0) {
-                val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                 cardAction.deck = Deck.Hinterlands
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"

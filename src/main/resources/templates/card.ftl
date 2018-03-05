@@ -47,21 +47,21 @@
                     <td>
                         Type:
                         <select name="type">
-                            <option value="1" <#if card.type == 1>selected="true"</#if>>Action</option>
-                            <option value="2" <#if card.type == 2>selected="true"</#if>>Action - Attack</option>
-                            <option value="4" <#if card.type == 4>selected="true"</#if>>Action - Reaction</option>
-                            <option value="3" <#if card.type == 3>selected="true"</#if>>Victory</option>
-                            <option value="5" <#if card.type == 5>selected="true"</#if>>Treasure</option>
-                            <option value="6" <#if card.type == 6>selected="true"</#if>>Curse</option>
-                            <option value="7" <#if card.type == 7>selected="true"</#if>>Action - Victory</option>
-                            <option value="8" <#if card.type == 8>selected="true"</#if>>Treasure - Victory</option>
-                            <option value="9" <#if card.type == 9>selected="true"</#if>>Action - Duration</option>
-                            <option value="10" <#if card.type == 10>selected="true"</#if>>Treasure - Curse</option>
-                            <option value="11" <#if card.type == 11>selected="true"</#if>>Victory - Reaction</option>
-                            <option value="12" <#if card.type == 12>selected="true"</#if>>Duration - Victory</option>
-                            <option value="13" <#if card.type == 13>selected="true"</#if>>Leader</option>
-                            <option value="14" <#if card.type == 14>selected="true"</#if>>Treasure - Reaction</option>
-                            <option value="15" <#if card.type == 15>selected="true"</#if>>Action - Summon</option>
+                            <option value="1" <#if card.type.typeId == 1>selected="true"</#if>>Action</option>
+                            <option value="2" <#if card.type.typeId == 2>selected="true"</#if>>Action - Attack</option>
+                            <option value="4" <#if card.type.typeId == 4>selected="true"</#if>>Action - Reaction</option>
+                            <option value="3" <#if card.type.typeId == 3>selected="true"</#if>>Victory</option>
+                            <option value="5" <#if card.type.typeId == 5>selected="true"</#if>>Treasure</option>
+                            <option value="6" <#if card.type.typeId == 6>selected="true"</#if>>Curse</option>
+                            <option value="7" <#if card.type.typeId == 7>selected="true"</#if>>Action - Victory</option>
+                            <option value="8" <#if card.type.typeId == 8>selected="true"</#if>>Treasure - Victory</option>
+                            <option value="9" <#if card.type.typeId == 9>selected="true"</#if>>Action - Duration</option>
+                            <option value="10" <#if card.type.typeId == 10>selected="true"</#if>>Treasure - Curse</option>
+                            <option value="11" <#if card.type.typeId == 11>selected="true"</#if>>Victory - Reaction</option>
+                            <option value="12" <#if card.type.typeId == 12>selected="true"</#if>>Duration - Victory</option>
+                            <option value="13" <#if card.type.typeId == 13>selected="true"</#if>>Leader</option>
+                            <option value="14" <#if card.type.typeId == 14>selected="true"</#if>>Treasure - Reaction</option>
+                            <option value="15" <#if card.type.typeId == 15>selected="true"</#if>>Action - Summon</option>
                         </select>
                     </td>
                 </tr>

@@ -1,35 +1,35 @@
 package com.kingdom.util.computercardaction
 
-import com.kingdom.model.CardAction
+import com.kingdom.model.OldCardAction
 import com.kingdom.model.computer.ComputerPlayer
 import com.kingdom.util.cardaction.CardActionHandler
 import java.util.*
 
 object LeaderComputerCardActionHandler {
-    fun handleCardAction(cardAction: CardAction, computer: ComputerPlayer) {
+    fun handleCardAction(oldCardAction: OldCardAction, computer: ComputerPlayer) {
 
         val game = computer.game
         val player = computer.player
 
-        val cardName = cardAction.cardName
+        val cardName = oldCardAction.cardName
 
         when (cardName) {
             "Setup Leaders" -> {
-                val cards = ArrayList(cardAction.cards)
+                val cards = ArrayList(oldCardAction.cards)
                 Collections.shuffle(cards)
 
-                val cardIds = (0 until cardAction.numCards).map { cards[it].cardId }
+                val cardIds = (0 until oldCardAction.numCards).map { cards[it].cardId }
                 CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
             }
             "Bilkis" -> {
-                val cardToGain = computer.getHighestCostCard(cardAction.cards)
+                val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
                 val cardIds = ArrayList<Int>()
                 cardIds.add(cardToGain!!.cardId)
                 CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
             }
             "Plato" -> {
                 val cardsToTrash = ArrayList<Int>()
-                for (card in cardAction.cards) {
+                for (card in oldCardAction.cards) {
                     if (computer.isCardToTrash(card)) {
                         cardsToTrash.add(card.cardId)
                     }

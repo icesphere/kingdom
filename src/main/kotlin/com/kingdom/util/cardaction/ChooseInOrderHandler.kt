@@ -5,18 +5,18 @@ import com.kingdom.model.cards.Card
 import com.kingdom.util.KingdomUtil
 
 object ChooseInOrderHandler {
-    fun handleCardAction(game: Game, player: Player, cardAction: CardAction, selectedCardIds: List<Int>): IncompleteCard? {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardIds: List<Int>): IncompleteCard? {
 
         var incompleteCard: IncompleteCard? = null
 
         val cardMap = game.cardMap
 
-        when (cardAction.cardName) {
+        when (oldCardAction.cardName) {
             "Apothecary", "Navigator", "Scout", "Rabble", "Ghost Ship", "Mandarin", "Cartographer", "Oracle" -> {
                 val cards = selectedCardIds.map { cardMap[it]!! }
                 player.deck.addAll(0, cards)
 
-                when (cardAction.cardName) {
+                when (oldCardAction.cardName) {
                     "Ghost Ship" -> game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardIds.size, "card"), " on top of ", player.pronoun, " deck")
                     "Mandarin" -> {
                         game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardIds.size, "treasure card"), " from play on top of ", player.pronoun, " deck")
@@ -24,7 +24,7 @@ object ChooseInOrderHandler {
                         game.treasureCardsPlayed.clear()
                         game.refreshAllPlayersCardsPlayed()
                     }
-                    "Oracle" -> if ((!game.hasIncompleteCard() || game.incompleteCard!!.extraCardActions.isEmpty()) && game.isCurrentPlayer(player)) {
+                    "Oracle" -> if ((!game.hasIncompleteCard() || game.incompleteCard!!.extraOldCardActions.isEmpty()) && game.isCurrentPlayer(player)) {
                         player.drawCards(2)
                     }
                 }

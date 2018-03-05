@@ -16,7 +16,7 @@ object TreasureCardsSpecialActionHandler {
             "Contraband" -> {
                 val nextPlayer = game.players[game.nextPlayerIndex]
                 incompleteCard = MultiPlayerIncompleteCard(card.name, game, nextPlayer.userId)
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.Prosperity
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -39,7 +39,7 @@ object TreasureCardsSpecialActionHandler {
                 player.isFoolsGoldPlayed = true
             }
             "Horn of Plenty" -> {
-                val cardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+                val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
                 cardAction.deck = Deck.Cornucopia
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -59,7 +59,7 @@ object TreasureCardsSpecialActionHandler {
                 }
             }
             "Ill-Gotten Gains" -> {
-                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                 cardAction.deck = Deck.Hinterlands
                 cardAction.cardName = "Ill-Gotten Gains"
                 cardAction.instructions = "Do you want to gain a Copper card into your hand?"
@@ -90,7 +90,7 @@ object TreasureCardsSpecialActionHandler {
                     game.playerDiscardedCard(player, c)
                 }
                 if (treasureCard != null) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                     cardAction.deck = Deck.Prosperity
                     cardAction.cardName = card.name
                     cardAction.cards.add(treasureCard)
@@ -107,7 +107,7 @@ object TreasureCardsSpecialActionHandler {
                 game.refreshAllPlayersHandArea()
             }
             "Storybook" -> if (!player!!.getVictoryCards().isEmpty()) {
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                 cardAction.deck = Deck.FairyTale
                 cardAction.cardName = card.name
                 cardAction.cards.addAll(player.getVictoryCards())

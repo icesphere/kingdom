@@ -16,7 +16,7 @@ object LeaderSpecialActionHandler {
             }
             "Aristotle" -> player!!.cardBonusTurns = 2
             "Bilkis" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.Leaders
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -41,7 +41,7 @@ object LeaderSpecialActionHandler {
             }
             "Maecenas" -> player!!.setLeaderDiscount(3)
             "Plato" -> if (player!!.hand.size > 0) {
-                val cardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND)
                 cardAction.deck = Deck.Leaders
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"

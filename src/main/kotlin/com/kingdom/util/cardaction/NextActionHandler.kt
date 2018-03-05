@@ -25,7 +25,7 @@ object NextActionHandler {
                         .forEach {
                             if (it.hasBellTowerInHand()) {
                                 needBonusCheck = true
-                                val cardAction = CardAction(CardAction.TYPE_CHOICES).apply {
+                                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES).apply {
                                     deck = Deck.Salvation
                                     this.cardName = "Bell Tower"
                                     instructions = currentPlayer!!.username + " played " + KingdomUtil.getArticleWithCardName(game.attackCard!!) + ". You may reveal your Bell Tower to gain +2 cards before or after the attack."
@@ -66,7 +66,7 @@ object NextActionHandler {
                         .forEach {
                             if (it.hasEnchantedPalaceInHand()) {
                                 hasReaction = true
-                                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                                 cardAction.deck = Deck.FairyTale
                                 cardAction.cardName = "Enchanted Palace"
                                 cardAction.instructions = currentPlayer!!.username + " played " + KingdomUtil.getArticleWithCardName(game.attackCard!!) + ". Do you want to reveal your Enchanted Palace?"
@@ -94,7 +94,7 @@ object NextActionHandler {
                         .forEach {
                             if (it.hasHorseTradersInHand()) {
                                 hasReaction = true
-                                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                                 cardAction.deck = Deck.Cornucopia
                                 cardAction.cardName = "Horse Traders"
                                 cardAction.instructions = currentPlayer!!.username + " played " + KingdomUtil.getArticleWithCardName(game.attackCard!!) + ". Do you want to set aside your Horse Traders?"
@@ -118,7 +118,7 @@ object NextActionHandler {
                         .forEach {
                             if (it.hasSecretChamber()) {
                                 hasReaction = true
-                                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                                 cardAction.deck = Deck.Intrigue
                                 cardAction.cardName = "Secret Chamber"
                                 cardAction.instructions = currentPlayer!!.username + " played " + KingdomUtil.getArticleWithCardName(game.attackCard!!) + ", do you want to use your Secret Chamber?"
@@ -143,7 +143,7 @@ object NextActionHandler {
                 val player = game.currentPlayer!!
                 if (game.blackMarketTreasureQueue.isEmpty()) {
                     game.removeNextAction()
-                    val buyCardAction = CardAction(CardAction.TYPE_GAIN_CARDS)
+                    val buyCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS)
                     buyCardAction.deck = Deck.Promo
                     for (card in game.blackMarketCardsToBuy) {
                         if (card.name == "Grand Market") {
@@ -162,7 +162,7 @@ object NextActionHandler {
                         buyCardAction.instructions = "Click on the card you want to buy and then click Done."
                         game.setPlayerCardAction(player, buyCardAction)
                     } else {
-                        val sortCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER)
+                        val sortCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER)
                         sortCardAction.deck = Deck.Promo
                         sortCardAction.isHideOnSelect = true
                         sortCardAction.numCards = game.blackMarketCardsToBuy.size
@@ -186,7 +186,7 @@ object NextActionHandler {
             }
             "Hamlet" -> {
                 game.removeNextAction()
-                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                 cardAction.deck = Deck.Cornucopia
                 cardAction.cardName = "Hamlet2"
                 cardAction.instructions = "Do you want to discard a card from your hand to gain +1 Buy?"
@@ -208,7 +208,7 @@ object NextActionHandler {
                     }
                 }
                 val currentPlayer = game.currentPlayer!!
-                val trashCardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND).apply {
+                val trashCardAction = OldCardAction(OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND).apply {
                     deck = Deck.Intrigue
                     cards.addAll(currentPlayer.hand)
                     numCards = 1

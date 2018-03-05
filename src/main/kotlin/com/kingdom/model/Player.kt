@@ -90,16 +90,16 @@ class Player(user: User, game: Game) : Comparable<Player> {
     var isShowCardAction: Boolean = false
 
     /*
-    if (showCardAction && cardAction != null && !cardAction.isWaitingForPlayers()) {
-            extraCardActions.add(cardAction);
+    if (showCardAction && oldCardAction != null && !oldCardAction.isWaitingForPlayers()) {
+            extraOldCardActions.add(oldCardAction);
         } else {
-            this.cardAction = cardAction;
+            this.oldCardAction = oldCardAction;
         }
      */
 
-    var cardAction: CardAction? = null
+    var oldCardAction: OldCardAction? = null
         set(value) = if (isShowCardAction && value != null && !value.isWaitingForPlayers) {
-            extraCardActions.add(value)
+            extraOldCardActions.add(value)
             field = field
         } else {
             field = value
@@ -159,7 +159,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
     private var finalCards: List<Card>? = null
     var isPlayedTinker: Boolean = false
     val tinkerCards: MutableList<Card> = ArrayList(0)
-    val extraCardActions: Queue<CardAction> = LinkedList()
+    val extraOldCardActions: Queue<OldCardAction> = LinkedList()
     val isUsingLeaders: Boolean
     val leaders: MutableList<Card> = ArrayList(3)
     var pointsFromLeaders: Int = 0
@@ -626,7 +626,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
         drawCards(cardsToDraw)
 
         isShowCardAction = false
-        cardAction = null
+        oldCardAction = null
         isShowInfoDialog = false
         infoDialog = null
         hasLighthouse = false

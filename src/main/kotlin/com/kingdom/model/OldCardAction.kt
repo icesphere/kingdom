@@ -4,7 +4,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import java.util.*
 
-class CardAction(var type: Int) {
+class OldCardAction(var type: Int) {
     var cards: MutableList<Card> = ArrayList()
     var numCards: Int = 0
     var instructions = ""
@@ -77,30 +77,30 @@ class CardAction(var type: Int) {
         const val TYPE_DISCARD_UP_TO = 22
         const val TYPE_CHOOSE_EVEN_NUMBER_BETWEEN = 23
 
-        val waitingForPlayersCardAction: CardAction
+        val waitingForPlayersOldCardAction: OldCardAction
             get() {
-                return CardAction(TYPE_WAITING_FOR_PLAYERS).apply { instructions = "Waiting For Players" }
+                return OldCardAction(TYPE_WAITING_FOR_PLAYERS).apply { instructions = "Waiting For Players" }
             }
 
-        val waitingForSecretChamberCardAction: CardAction
+        val waitingForSecretChamberOldCardAction: OldCardAction
             get() {
-                return CardAction(TYPE_WAITING_FOR_PLAYERS).apply {
+                return OldCardAction(TYPE_WAITING_FOR_PLAYERS).apply {
                     instructions = "Waiting For Players to use Secret Chambers"
                     width = 300
                 }
             }
 
-        val waitingForHorseTradersCardAction: CardAction
+        val waitingForHorseTradersOldCardAction: OldCardAction
             get() {
-                return CardAction(TYPE_WAITING_FOR_PLAYERS).apply {
+                return OldCardAction(TYPE_WAITING_FOR_PLAYERS).apply {
                     instructions = "Waiting For Players to use Horse Traders"
                     width = 300
                 }
             }
 
-        val waitingForBellTowerCardAction: CardAction
+        val waitingForBellTowerOldCardAction: OldCardAction
             get() {
-                return CardAction(TYPE_WAITING_FOR_PLAYERS).apply {
+                return OldCardAction(TYPE_WAITING_FOR_PLAYERS).apply {
                     instructions = "Waiting For Players to use Bell Towers"
                     width = 300
                 }

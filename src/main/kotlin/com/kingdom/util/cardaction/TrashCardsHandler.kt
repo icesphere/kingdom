@@ -7,7 +7,7 @@ import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object TrashCardsHandler {
-    fun handleCardAction(game: Game, player: Player, cardAction: CardAction, selectedCardIds: List<Int>): IncompleteCard? {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardIds: List<Int>): IncompleteCard? {
 
         var incompleteCard: IncompleteCard? = null
 
@@ -33,7 +33,7 @@ object TrashCardsHandler {
 
         val trashedCard = cardMap[selectedCardIds[0]]!!
 
-        when (cardAction.cardName) {
+        when (oldCardAction.cardName) {
             "Alms" -> {
                 player.addSins(-1)
                 game.refreshAllPlayersPlayers()
@@ -63,11 +63,11 @@ object TrashCardsHandler {
                 player.addVictoryCoins(victoryCoinsGained)
                 game.refreshAllPlayersPlayers()
 
-                incompleteCard = MultiPlayerIncompleteCard(cardAction.cardName, game, false)
+                incompleteCard = MultiPlayerIncompleteCard(oldCardAction.cardName, game, false)
                 for (otherPlayer in game.players) {
                     if (otherPlayer.userId != game.currentPlayerId) {
                         if (otherPlayer.hand.size > 0) {
-                            val trashCardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND).apply {
+                            val trashCardAction = OldCardAction(OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND).apply {
                                 deck = Deck.Prosperity
                                 cardName = "Bishop 2"
                                 cards = KingdomUtil.uniqueCardList(otherPlayer.hand)
@@ -101,9 +101,9 @@ object TrashCardsHandler {
                         }
 
                 if (!cardsLess.isEmpty() && !cardsMore.isEmpty()) {
-                    val chooseWhichCardAction = CardAction(CardAction.TYPE_CHOICES).apply {
+                    val chooseWhichCardAction = OldCardAction(OldCardAction.TYPE_CHOICES).apply {
                         deck = Deck.Hinterlands
-                        cardName = cardAction.cardName
+                        cardName = oldCardAction.cardName
                         instructions = "Which do you want to do first: Gain a card costing $1 more than the trashed card, or Gain a card costing $1 less than the trashed card?"
                         choices.add(CardActionChoice("$1 More", "more"))
                         choices.add(CardActionChoice("$1 Less", "less"))
@@ -112,9 +112,9 @@ object TrashCardsHandler {
                     }
                     game.setPlayerCardAction(player, chooseWhichCardAction)
                 } else {
-                    val gainCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                    val gainCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
                         deck = Deck.Hinterlands
-                        cardName = cardAction.cardName
+                        cardName = oldCardAction.cardName
                         buttonValue = "Done"
                         numCards = 1
                         associatedCard = trashedCard
@@ -135,7 +135,7 @@ object TrashCardsHandler {
                 }
             }
             "Expand" -> {
-                val secondCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                val secondCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
                     deck = Deck.Prosperity
                     cardName = "Expand"
                     buttonValue = "Done"
@@ -154,14 +154,14 @@ object TrashCardsHandler {
                 }
             }
             "Farmland" -> {
-                val secondCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                val secondCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
                     deck = Deck.Hinterlands
-                    cardName = cardAction.cardName
+                    cardName = oldCardAction.cardName
                     buttonValue = "Done"
                     numCards = 1
                     instructions = "Select one of the following cards and then click Done."
-                    isGainCardAfterBuyAction = cardAction.isGainCardAfterBuyAction
-                    associatedCard = cardAction.associatedCard
+                    isGainCardAfterBuyAction = oldCardAction.isGainCardAfterBuyAction
+                    associatedCard = oldCardAction.associatedCard
                 }
                 var cost = game.getCardCost(trashedCard)
                 cost += 2
@@ -174,7 +174,7 @@ object TrashCardsHandler {
                 if (secondCardAction.cards.size == 1) {
                     game.playerGainedCard(player, secondCardAction.cards[0])
                 } else if (!secondCardAction.cards.isEmpty()) {
-                    cardAction.isGainCardAfterBuyAction = false
+                    oldCardAction.isGainCardAfterBuyAction = false
                     game.setPlayerCardAction(player, secondCardAction)
                 }
             }
@@ -184,7 +184,7 @@ object TrashCardsHandler {
                             .mapNotNull { cardMap[it] }
                             .sumBy { game.getCardCost(it) }
 
-                    val secondCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                    val secondCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
                         deck = Deck.Prosperity
                         cardName = "Forge"
                         buttonValue = "Done"
@@ -205,9 +205,9 @@ object TrashCardsHandler {
                 else -> game.addHistory(player.username, " chose to not trash any cards")
             }
             "Governor" -> {
-                val secondCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                val secondCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
                     deck = Deck.Promo
-                    cardName = cardAction.cardName
+                    cardName = oldCardAction.cardName
                     buttonValue = "Done"
                     numCards = 1
                     instructions = "Select one of the following cards to gain and then click Done."
@@ -228,7 +228,7 @@ object TrashCardsHandler {
                 }
             }
             "Mine" -> {
-                val secondCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY).apply {
+                val secondCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY).apply {
                     deck = Deck.Kingdom
                     cardName = "Mine"
                     buttonValue = "Done"
@@ -247,9 +247,9 @@ object TrashCardsHandler {
                 }
             }
             "Remake" -> {
-                val secondCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                val secondCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
                     deck = Deck.Cornucopia
-                    cardName = cardAction.cardName
+                    cardName = oldCardAction.cardName
                     buttonValue = "Done"
                     numCards = 1
                     instructions = "Select one of the following cards and then click Done."
@@ -267,7 +267,7 @@ object TrashCardsHandler {
                 }
             }
             "Remodel" -> {
-                val secondCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                val secondCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
                     deck = Deck.Kingdom
                     cardName = "Remodel"
                     buttonValue = "Done"
@@ -289,10 +289,10 @@ object TrashCardsHandler {
             "Salvager" -> player.addCoins(game.getCardCost(trashedCard))
             "Sorceress" -> {
                 val cursesRemaining = game.supply[Card.CURSE_ID]!!
-                if (cursesRemaining > 0 || cardAction.phase == 1 && cardAction.choices.size > 1) {
-                    val nextCardAction = CardAction(CardAction.TYPE_CHOICES)
+                if (cursesRemaining > 0 || oldCardAction.phase == 1 && oldCardAction.choices.size > 1) {
+                    val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                     nextCardAction.deck = Deck.FairyTale
-                    nextCardAction.cardName = cardAction.cardName
+                    nextCardAction.cardName = oldCardAction.cardName
 
                     if (cursesRemaining == 0) {
                         nextCardAction.instructions = "There are no curses remaining so you may only choose one more effect."
@@ -300,15 +300,15 @@ object TrashCardsHandler {
                         nextCardAction.instructions = "Choose another effect to apply (you will gain a curse), or click None if you don't want to apply any more effects."
                     }
 
-                    nextCardAction.choices.addAll(cardAction.choices)
-                    nextCardAction.phase = cardAction.phase + 1
+                    nextCardAction.choices.addAll(oldCardAction.choices)
+                    nextCardAction.phase = oldCardAction.phase + 1
                     game.setPlayerCardAction(player, nextCardAction)
                 }
             }
             "Spice Merchant" -> if (!selectedCardIds.isEmpty()) {
-                val choicesAction = CardAction(CardAction.TYPE_CHOICES).apply {
+                val choicesAction = OldCardAction(OldCardAction.TYPE_CHOICES).apply {
                     deck = Deck.Hinterlands
-                    cardName = cardAction.cardName
+                    cardName = oldCardAction.cardName
                     instructions = "Choose one: +2 Cards and +1 Action; or +$2 and +1 Buy."
                     choices.add(CardActionChoice("+2 Cards and +1 Action", "cards"))
                     choices.add(CardActionChoice("+$2 and +1 Buy", "money"))
@@ -334,8 +334,8 @@ object TrashCardsHandler {
                     }
                 }
                 if (trashedCard.isTreasure) {
-                    if (game.isCardInSupply(cardAction.cardId)) {
-                        game.playerGainedCard(player, cardMap[cardAction.cardId]!!)
+                    if (game.isCardInSupply(oldCardAction.cardId)) {
+                        game.playerGainedCard(player, cardMap[oldCardAction.cardId]!!)
                     }
                 }
                 if (trashedCard.isVictory) {
@@ -345,7 +345,7 @@ object TrashCardsHandler {
                 }
             }
             "Upgrade" -> {
-                val secondCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                val secondCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
                     deck = Deck.Intrigue
                     cardName = "Upgrade"
                     buttonValue = "Done"

@@ -28,7 +28,7 @@ object IntrigueSpecialActionHandler {
                     }
                 }
                 if (hasEstate) {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.deck = Deck.Intrigue
                     cardAction.cardName = card.name
                     cardAction.instructions = "Do you want to discard an Estate card from your hand? If you do then you get +4 coins, otherwise you gain an Estate card."
@@ -54,7 +54,7 @@ object IntrigueSpecialActionHandler {
             }
             "Courtyard" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK)
                 cardAction.deck = Deck.Intrigue
                 cardAction.cardName = card.name
                 cardAction.cards = KingdomUtil.uniqueCardList(player!!.hand)
@@ -67,7 +67,7 @@ object IntrigueSpecialActionHandler {
             }
             "Ironworks" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+                val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
                 cardAction.deck = Deck.Intrigue
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -88,7 +88,7 @@ object IntrigueSpecialActionHandler {
                 game.masqueradeCards.clear()
                 for (player in players) {
                     if (player.hand.size > 0) {
-                        val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                        val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                         cardAction.deck = Deck.Intrigue
                         cardAction.cardName = card.name
                         cardAction.cards = KingdomUtil.uniqueCardList(player.hand)
@@ -104,7 +104,7 @@ object IntrigueSpecialActionHandler {
             }
             "Mining Village" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                 cardAction.deck = Deck.Intrigue
                 cardAction.cardName = card.name
                 cardAction.cards.add(card)
@@ -113,7 +113,7 @@ object IntrigueSpecialActionHandler {
             }
             "Minion" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.Intrigue
                 cardAction.cardName = card.name
                 cardAction.instructions = "Choose one: +2 coins OR Discard your hand and draw 4 cards, and each other player with at least 5 cards in hand discards their hand and draws 4 cards."
@@ -123,7 +123,7 @@ object IntrigueSpecialActionHandler {
             }
             "Nobles" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.Intrigue
                 cardAction.cardName = card.name
                 cardAction.instructions = "Choose one: +3 Cards OR +2 Actions."
@@ -133,7 +133,7 @@ object IntrigueSpecialActionHandler {
             }
             "Pawn" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.Intrigue
                 cardAction.cardName = card.name
                 cardAction.instructions = "Choose a combination."
@@ -166,7 +166,7 @@ object IntrigueSpecialActionHandler {
                             if (c != null) {
                                 game.trashedCards.add(c)
                                 game.playerLostCard(player, c)
-                                val cardAction = CardAction(CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY)
+                                val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY)
                                 cardAction.deck = Deck.Intrigue
                                 cardAction.cardName = card.name
                                 cardAction.buttonValue = "Done"
@@ -227,7 +227,7 @@ object IntrigueSpecialActionHandler {
                     player!!.addCardToTopOfDeck(cards[0])
                 } else if (cards.size > 0) {
                     game.refreshHand(player!!)
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER)
                     cardAction.deck = Deck.Intrigue
                     cardAction.isHideOnSelect = true
                     cardAction.numCards = cards.size
@@ -240,7 +240,7 @@ object IntrigueSpecialActionHandler {
             }
             "Secret Chamber" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
                 cardAction.deck = Deck.Intrigue
                 cardAction.cardName = card.name
                 cardAction.cards.addAll(player!!.hand)
@@ -264,7 +264,7 @@ object IntrigueSpecialActionHandler {
             }
             "Steward" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.Intrigue
                 cardAction.cardName = card.name
                 cardAction.instructions = "Choose one:"
@@ -287,7 +287,7 @@ object IntrigueSpecialActionHandler {
                             game.trashedCards.add(topCard)
                             game.playerLostCard(nextPlayer, topCard)
                             game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Swindler", Card.ACTION_COLOR), " trashed ", nextPlayer.username, "'s ", KingdomUtil.getCardWithBackgroundColor(topCard))
-                            val nextCardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                            val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                             nextCardAction.deck = Deck.Intrigue
                             nextCardAction.numCards = 1
                             nextCardAction.buttonValue = "Done"
@@ -301,7 +301,7 @@ object IntrigueSpecialActionHandler {
                                 }
                             }
                             if (nextCardAction.cards.size > 0) {
-                                incompleteCard.extraCardActions.add(nextCardAction)
+                                incompleteCard.extraOldCardActions.add(nextCardAction)
                             } else {
                                 game.addHistory(nextPlayer.username, " did not have any cards in the supply to gain")
                             }
@@ -321,8 +321,8 @@ object IntrigueSpecialActionHandler {
                         nextPlayerIndex++
                     }
                 }
-                if (!incompleteCard.extraCardActions.isEmpty()) {
-                    val cardAction = incompleteCard.extraCardActions.remove()
+                if (!incompleteCard.extraOldCardActions.isEmpty()) {
+                    val cardAction = incompleteCard.extraOldCardActions.remove()
                     cardAction.deck = Deck.Intrigue
                     game.setPlayerCardAction(currentPlayer!!, cardAction)
                 }
@@ -335,7 +335,7 @@ object IntrigueSpecialActionHandler {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                         } else if (!player.hasMoat() && !player.hasLighthouse()) {
-                            val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                            val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                             cardAction.deck = Deck.Intrigue
                             cardAction.cardName = card.name
                             cardAction.instructions = "Choose one: Discard 2 cards OR Gain a Curse card into your hand."
@@ -362,7 +362,7 @@ object IntrigueSpecialActionHandler {
                     player.removeCardFromHand(player.hand[0])
                     game.addHistory("Trading Post trashed the last card in ", player.username, "'s hand")
                 } else if (player.hand.size > 1) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Intrigue
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -413,7 +413,7 @@ object IntrigueSpecialActionHandler {
             "Upgrade" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Intrigue
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -430,7 +430,7 @@ object IntrigueSpecialActionHandler {
                 if (player!!.deck.size + player.discard.size == 0) {
                     game.setPlayerInfoDialog(player, InfoDialog.getInfoDialog("Your deck and discard piles are empty."))
                 } else {
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                     cardAction.deck = Deck.Intrigue
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"

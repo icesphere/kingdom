@@ -17,10 +17,10 @@ class SinglePlayerIncompleteCard(cardName: String, game: Game) : IncompleteCard(
 
     override fun setWaitingDialogs() {
         if (!game.currentPlayer!!.isShowCardAction && !game.playersWithCardActions.isEmpty()) {
-            game.setPlayerCardAction(game.currentPlayer!!, CardAction.waitingForPlayersCardAction)
+            game.setPlayerCardAction(game.currentPlayer!!, OldCardAction.waitingForPlayersOldCardAction)
             return
         }
-        if (isCompleted && extraCardActions.isEmpty() && !game.currentPlayer!!.isShowCardAction) {
+        if (isCompleted && extraOldCardActions.isEmpty() && !game.currentPlayer!!.isShowCardAction) {
             while (game.hasNextAction()) {
                 NextActionHandler.handleAction(game, cardName)
             }

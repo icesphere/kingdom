@@ -5,7 +5,7 @@ import java.util.Queue
 
 abstract class IncompleteCard protected constructor(val cardName: String, val game: Game) {
 
-    var extraCardActions: Queue<CardAction> = LinkedList()
+    var extraOldCardActions: Queue<OldCardAction> = LinkedList()
         protected set
 
     var isEndTurn: Boolean = false
@@ -26,8 +26,8 @@ abstract class IncompleteCard protected constructor(val cardName: String, val ga
     fun actionFinished(player: Player) {
         if (!player.isShowCardAction) {
             setPlayerActionCompleted(player.userId)
-            if (!extraCardActions.isEmpty()) {
-                game.setPlayerCardAction(game.currentPlayer!!, extraCardActions.remove())
+            if (!extraOldCardActions.isEmpty()) {
+                game.setPlayerCardAction(game.currentPlayer!!, extraOldCardActions.remove())
             }
         }
         setWaitingDialogs()

@@ -118,7 +118,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         }
         try {
             var loopIterations = 0
-            while (player.isShowCardAction && player.cardAction!!.type == CardAction.TYPE_WAITING_FOR_PLAYERS) {
+            while (player.isShowCardAction && player.oldCardAction!!.type == OldCardAction.TYPE_WAITING_FOR_PLAYERS) {
                 if (stopped || game.status != Game.STATUS_GAME_IN_PROGRESS) {
                     return
                 }
@@ -159,7 +159,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
                 endTurn()
             }
             if (player.isShowCardAction) {
-                handleCardAction(player.cardAction!!)
+                handleCardAction(player.oldCardAction!!)
                 doNextAction()
             } else if (playAction && player.actions > 0 && !player.actionCards.isEmpty()) {
                 playAction()
@@ -1218,26 +1218,26 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         return isHasCountingHouse || isGardensStrategy || isHasGoons && game.goonsCardsPlayed > 0
     }
 
-    fun handleCardAction(cardAction: CardAction) {
-        if (cardAction.isWaitingForPlayers) {
+    fun handleCardAction(oldCardAction: OldCardAction) {
+        if (oldCardAction.isWaitingForPlayers) {
             return
         }
-        when(cardAction.deck) {
-            Deck.Kingdom -> KingdomComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Intrigue -> IntrigueComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Seaside -> SeasideComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Alchemy -> AlchemyComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Prosperity -> ProsperityComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Cornucopia -> CornucopiaComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Hinterlands -> HinterlandsComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Promo -> PromoComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Salvation -> SalvationComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.FairyTale -> FairyTaleComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Leaders -> LeaderComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Proletariat -> ProletariatComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Fan -> FanComputerCardActionHandler.handleCardAction(cardAction, this)
-            Deck.Reaction -> ReactionComputerCardActionHandler.handleCardAction(cardAction, this)
-            else -> throw RuntimeException("CardAction with card: " + cardAction.cardName + " and type: " + cardAction.type + " does not have a deck type")
+        when(oldCardAction.deck) {
+            Deck.Kingdom -> KingdomComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Intrigue -> IntrigueComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Seaside -> SeasideComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Alchemy -> AlchemyComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Prosperity -> ProsperityComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Cornucopia -> CornucopiaComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Hinterlands -> HinterlandsComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Promo -> PromoComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Salvation -> SalvationComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.FairyTale -> FairyTaleComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Leaders -> LeaderComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Proletariat -> ProletariatComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Fan -> FanComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            Deck.Reaction -> ReactionComputerCardActionHandler.handleCardAction(oldCardAction, this)
+            else -> throw RuntimeException("OldCardAction with card: " + oldCardAction.cardName + " and type: " + oldCardAction.type + " does not have a deck type")
         }
     }
 }

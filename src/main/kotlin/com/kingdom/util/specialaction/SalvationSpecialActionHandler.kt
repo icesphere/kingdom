@@ -16,7 +16,7 @@ object SalvationSpecialActionHandler {
 
         when (card.name) {
             "Alms" -> {
-                val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                 cardAction.deck = Deck.Salvation
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -30,7 +30,7 @@ object SalvationSpecialActionHandler {
                 }
             }
             "Archbishop" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.Salvation
                 cardAction.cardName = card.name
                 cardAction.instructions = "Choose one: +2 Actions; remove 1 sin; or each other player gains 1 sin."
@@ -47,7 +47,7 @@ object SalvationSpecialActionHandler {
                             incompleteCard.setPlayerActionCompleted(otherPlayer.userId)
                             game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                         } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse()) {
-                            val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                            val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                             cardAction.deck = Deck.Salvation
                             cardAction.cardName = card.name
                             cardAction.buttonValue = "Done"
@@ -77,7 +77,7 @@ object SalvationSpecialActionHandler {
                 incompleteCard.allActionsSet()
             }
             "Baptistry" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.Salvation
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -105,7 +105,7 @@ object SalvationSpecialActionHandler {
                         game.playerGainedCardToHand(player, cards[0], false)
                         player.discard.removeLastOccurrence(cards[0])
                     } else if (cards.size > 0) {
-                        val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                        val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                         cardAction.deck = Deck.Salvation
                         cardAction.cardName = card.name
                         cardAction.buttonValue = "Done"
@@ -117,7 +117,7 @@ object SalvationSpecialActionHandler {
                 }
             }
             "Edict" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.Salvation
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -157,22 +157,22 @@ object SalvationSpecialActionHandler {
                                     index = randomIndex2
                                 }
                                 if (revealedCard != null) {
-                                    val nextCardAction: CardAction
+                                    val nextOldCardAction: OldCardAction
                                     if (revealedCard.isTreasure) {
-                                        nextCardAction = CardAction(CardAction.TYPE_YES_NO)
-                                        nextCardAction.instructions = "The graverobber revealed this treasure card from " + otherPlayer.username + "'s discard pile. Do you want to gain this card?"
+                                        nextOldCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
+                                        nextOldCardAction.instructions = "The graverobber revealed this treasure card from " + otherPlayer.username + "'s discard pile. Do you want to gain this card?"
                                     } else {
-                                        nextCardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
-                                        nextCardAction.numCards = 0
-                                        nextCardAction.buttonValue = "Continue"
-                                        nextCardAction.instructions = "The graverobber revealed this non-treasure card from " + otherPlayer.username + "'s discard pile. Click Continue."
+                                        nextOldCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
+                                        nextOldCardAction.numCards = 0
+                                        nextOldCardAction.buttonValue = "Continue"
+                                        nextOldCardAction.instructions = "The graverobber revealed this non-treasure card from " + otherPlayer.username + "'s discard pile. Click Continue."
                                     }
-                                    nextCardAction.cardId = index
-                                    nextCardAction.deck = Deck.Salvation
-                                    nextCardAction.playerId = otherPlayer.userId
-                                    nextCardAction.cardName = card.name
-                                    nextCardAction.cards.add(revealedCard)
-                                    incompleteCard.extraCardActions.add(nextCardAction)
+                                    nextOldCardAction.cardId = index
+                                    nextOldCardAction.deck = Deck.Salvation
+                                    nextOldCardAction.playerId = otherPlayer.userId
+                                    nextOldCardAction.cardName = card.name
+                                    nextOldCardAction.cards.add(revealedCard)
+                                    incompleteCard.extraOldCardActions.add(nextOldCardAction)
                                 }
                             }
                         } else {
@@ -184,8 +184,8 @@ object SalvationSpecialActionHandler {
                         }
                     }
                 }
-                if (!incompleteCard.extraCardActions.isEmpty()) {
-                    val cardAction = incompleteCard.extraCardActions.remove()
+                if (!incompleteCard.extraOldCardActions.isEmpty()) {
+                    val cardAction = incompleteCard.extraOldCardActions.remove()
                     cardAction.deck = Deck.Salvation
                     game.setPlayerCardAction(player!!, cardAction)
                 }
@@ -241,7 +241,7 @@ object SalvationSpecialActionHandler {
                 game.refreshAllPlayersPlayers()
             }
             "Mendicant" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                 cardAction.deck = Deck.Salvation
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -255,7 +255,7 @@ object SalvationSpecialActionHandler {
                 }
             }
             "Scriptorium" -> {
-                val cardAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND)
                 cardAction.deck = Deck.Salvation
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"

@@ -9,12 +9,12 @@ import java.util.ArrayList
 
 object BuySpecialActionHandler {
 
-    fun getCardAction(game: Game, player: Player, card: Card): CardAction? {
+    fun getCardAction(game: Game, player: Player, card: Card): OldCardAction? {
 
         when (card.name) {
             "Botanical Gardens" -> when {
                 player.coins >= 6 -> {
-                    val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                     cardAction.deck = Deck.Proletariat
                     cardAction.cardName = card.name
                     cardAction.associatedCard = card
@@ -25,7 +25,7 @@ object BuySpecialActionHandler {
                     return cardAction
                 }
                 player.coins >= 3 -> {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.deck = Deck.Proletariat
                     cardAction.cardName = card.name
                     cardAction.associatedCard = card
@@ -35,7 +35,7 @@ object BuySpecialActionHandler {
             }
             "City Planner" -> when {
                 player.coins >= 2 && !player.getVictoryCards().isEmpty() -> {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.deck = Deck.Proletariat
                     cardAction.cardName = card.name
                     cardAction.associatedCard = card
@@ -45,7 +45,7 @@ object BuySpecialActionHandler {
             }
             "Farmland" -> when {
                 !player.hand.isEmpty() -> {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Hinterlands
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -59,7 +59,7 @@ object BuySpecialActionHandler {
             }
             "Orchard" -> when {
                 player.coins > 1 -> {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.deck = Deck.Proletariat
                     cardAction.cardName = card.name
                     cardAction.associatedCard = card
@@ -68,7 +68,7 @@ object BuySpecialActionHandler {
                 }
             }
             "Rancher" -> {
-                val cardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+                val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
                 cardAction.deck = Deck.Proletariat
                 cardAction.cardName = cardAction.cardName
                 cardAction.buttonValue = "Done"
@@ -86,7 +86,7 @@ object BuySpecialActionHandler {
                 }
             }
             "Squatter" -> {
-                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                 cardAction.deck = Deck.Proletariat
                 cardAction.cardName = card.name
                 cardAction.associatedCard = card
@@ -94,7 +94,7 @@ object BuySpecialActionHandler {
                 return cardAction
             }
             "Shepherd" -> if (player.coins >= 2) {
-                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                 cardAction.deck = Deck.Proletariat
                 cardAction.cardName = card.name
                 cardAction.associatedCard = card
@@ -106,8 +106,8 @@ object BuySpecialActionHandler {
         return null
     }
 
-    fun getHagglerCardAction(game: Game, card: Card): CardAction? {
-        val cardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+    fun getHagglerCardAction(game: Game, card: Card): OldCardAction? {
+        val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
         cardAction.deck = Deck.Hinterlands
         cardAction.cardName = "Haggler"
         cardAction.buttonValue = "Done"
@@ -169,7 +169,7 @@ object BuySpecialActionHandler {
                             game.playerGainedCard(player, applicableCard)
                         }
                         numApplicableCards == 2 -> {
-                            val nextCardAction = CardAction(CardAction.TYPE_CHOICES)
+                            val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                             nextCardAction.deck = Deck.Hinterlands
                             nextCardAction.playerId = nextPlayer.userId
                             nextCardAction.cardName = "Noble Brigand"

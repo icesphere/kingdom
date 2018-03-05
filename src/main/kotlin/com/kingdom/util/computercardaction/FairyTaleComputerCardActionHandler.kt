@@ -1,19 +1,19 @@
 package com.kingdom.util.computercardaction
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.CardAction
+import com.kingdom.model.OldCardAction
 import com.kingdom.model.computer.ComputerPlayer
 import com.kingdom.util.cardaction.CardActionHandler
 import java.util.*
 
 object FairyTaleComputerCardActionHandler {
-    fun handleCardAction(cardAction: CardAction, computer: ComputerPlayer) {
+    fun handleCardAction(oldCardAction: OldCardAction, computer: ComputerPlayer) {
 
         val game = computer.game
         val player = computer.player
 
-        val cardName = cardAction.cardName
-        val type = cardAction.type
+        val cardName = oldCardAction.cardName
+        val type = oldCardAction.type
 
         when (cardName) {
             "Bridge Troll" -> {
@@ -23,13 +23,13 @@ object FairyTaleComputerCardActionHandler {
                 if (card != null) {
                     cardIds.add(card.cardId)
                 } else {
-                    cardIds.add(cardAction.cards[0].cardId)
+                    cardIds.add(oldCardAction.cards[0].cardId)
                 }
                 CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
             }
             "Druid" -> {
                 //todo determine when not to discard a victory card
-                val cardsToDiscard = cardAction.cards.map { it.cardId }
+                val cardsToDiscard = oldCardAction.cards.map { it.cardId }
                 CardActionHandler.handleSubmittedCardAction(game, player, cardsToDiscard, null, null, -1)
             }
             "Enchanted Palace" -> CardActionHandler.handleSubmittedCardAction(game, player, null!!, "yes", null, -1)
@@ -37,18 +37,18 @@ object FairyTaleComputerCardActionHandler {
                 CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, "draw", -1)
             "Lost Village" -> //todo determine when it is good to discard
                 CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, "draw", -1)
-            "Magic Beans" -> if (type == CardAction.TYPE_CHOICES) {
+            "Magic Beans" -> if (type == OldCardAction.TYPE_CHOICES) {
                 //todo determine when it is good to return to supply
                 CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, "trash", -1)
             } else {
-                val cardToGain = computer.getHighestCostCard(cardAction.cards)
+                val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
                 val cardIds = ArrayList<Int>()
                 cardIds.add(cardToGain!!.cardId)
                 CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
             }
             "Master Huntsman" -> {
                 //todo determine best action to discard
-                val cardToDiscard = computer.getLowestCostCard(cardAction.cards)
+                val cardToDiscard = computer.getLowestCostCard(oldCardAction.cards)
                 val cardIds = ArrayList<Int>()
                 cardIds.add(cardToDiscard!!.cardId)
                 CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
@@ -62,7 +62,7 @@ object FairyTaleComputerCardActionHandler {
             "Sorceress" -> //todo determine best choices
                 CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, "coins", -1)
             "Storybook" -> {
-                val cardIds = cardAction.cards.map { it.cardId }
+                val cardIds = oldCardAction.cards.map { it.cardId }
                 CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
             }
             "Tinker" -> CardActionHandler.handleSubmittedCardAction(game, player, null!!, "yes", null, -1)

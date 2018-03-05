@@ -7,14 +7,14 @@ import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object ChooseUpToHandler {
-    fun handleCardAction(game: Game, player: Player, cardAction: CardAction, selectedCardIds: List<Int>): IncompleteCard? {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardIds: List<Int>): IncompleteCard? {
 
         var incompleteCard: IncompleteCard? = null
 
         val cardMap = game.cardMap
         val players = game.players
 
-        when (cardAction.cardName) {
+        when (oldCardAction.cardName) {
             "Ambassador" -> {
                 for (selectedCardId in selectedCardIds) {
                     val card = cardMap[selectedCardId]!!
@@ -23,7 +23,7 @@ object ChooseUpToHandler {
                     game.addToSupply(card.cardId)
                     game.addHistory(player.username, " added ", KingdomUtil.getArticleWithCardName(card), " to the supply")
                 }
-                val selectedCard = cardAction.cards[0]
+                val selectedCard = oldCardAction.cards[0]
                 var playerIndex = game.calculateNextPlayerIndex(game.currentPlayerIndex)
                 while (playerIndex != game.currentPlayerIndex) {
                     val nextPlayer = players[playerIndex]
@@ -93,7 +93,7 @@ object ChooseUpToHandler {
                     player.museumCards.add(selectedCard)
                 }
                 if (player.museumCards.size >= 4) {
-                    val museumCardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val museumCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     museumCardAction.deck = Deck.Fan
                     museumCardAction.cardName = "Museum Trash Cards"
                     museumCardAction.instructions = "Do you want to trash 4 cards from your Museum mat to gain a Prize and a Duchy?"
@@ -103,9 +103,9 @@ object ChooseUpToHandler {
             "Rancher" -> if (selectedCardIds.isNotEmpty()) {
                 val selectedCard = cardMap[selectedCardIds[0]]!!
                 game.addHistory(player.username, " revealed ", KingdomUtil.getArticleWithCardName(selectedCard))
-                val choicesCardAction = CardAction(CardAction.TYPE_CHOICES)
+                val choicesCardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 choicesCardAction.deck = Deck.Proletariat
-                choicesCardAction.cardName = cardAction.cardName
+                choicesCardAction.cardName = oldCardAction.cardName
                 choicesCardAction.instructions = "Choose one: +1 cattle token or +1 Buy."
                 choicesCardAction.choices.add(CardActionChoice("cattle token", "cattle"))
                 choicesCardAction.choices.add(CardActionChoice("+1 Buy", "buy"))
@@ -115,13 +115,13 @@ object ChooseUpToHandler {
                 for (selectedCardId in selectedCardIds) {
                     val selectedCard = cardMap[selectedCardId]!!
                     player.removeCardFromHand(selectedCard)
-                    cardAction.associatedCard!!.associatedCards.add(selectedCard)
+                    oldCardAction.associatedCard!!.associatedCards.add(selectedCard)
                     player.addCoins(1)
                 }
-                game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardIds.size, "card"), " under ", KingdomUtil.getCardWithBackgroundColor(cardAction.associatedCard!!), " and gained ", "+", KingdomUtil.getPlural(selectedCardIds.size, "coin"))
+                game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardIds.size, "card"), " under ", KingdomUtil.getCardWithBackgroundColor(oldCardAction.associatedCard!!), " and gained ", "+", KingdomUtil.getPlural(selectedCardIds.size, "coin"))
             }
             "Treasury", "Alchemist", "Herbalist", "Walled Village", "Scheme" -> {
-                incompleteCard = SinglePlayerIncompleteCard(cardAction.cardName, game)
+                incompleteCard = SinglePlayerIncompleteCard(oldCardAction.cardName, game)
 
                 for (selectedCardId in selectedCardIds) {
                     val card = cardMap[selectedCardId]!!
@@ -129,18 +129,18 @@ object ChooseUpToHandler {
                     player.addCardToTopOfDeck(card)
                 }
 
-                when (cardAction.cardName) {
+                when (oldCardAction.cardName) {
                     "Treasury", "Alchemist", "Walled Village" ->
-                        for (card in cardAction.cards) {
+                        for (card in oldCardAction.cards) {
                             card.isAutoSelect = false
                         }
                 }
 
                 if (selectedCardIds.isNotEmpty()) {
-                    val typeAdded: String = when (cardAction.cardName) {
+                    val typeAdded: String = when (oldCardAction.cardName) {
                         "Herbalist" -> KingdomUtil.getPlural(selectedCardIds.size, "Treasure Card")
                         "Scheme" -> KingdomUtil.getPlural(selectedCardIds.size, "Action Card")
-                        else -> KingdomUtil.getPlural(selectedCardIds.size, cardAction.cardName + " card")
+                        else -> KingdomUtil.getPlural(selectedCardIds.size, oldCardAction.cardName + " card")
                     }
                     game.addHistory(player.username, " added ", typeAdded, " to the top of ", player.pronoun, " deck")
                 }

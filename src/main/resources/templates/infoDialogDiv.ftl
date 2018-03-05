@@ -5,7 +5,7 @@
             <table>
                 <tr>
                     <#assign clickType="infoDialog">
-                    <#list player.cardAction.cards as card>
+                    <#list player.oldCardAction.cards as card>
                         <#if card_index == 7 || card_index == 14>
                             </tr>
                             <tr>

@@ -1,6 +1,6 @@
 package com.kingdom.model.cards
 
-import com.kingdom.model.CardAction
+import com.kingdom.model.OldCardAction
 import com.kingdom.util.KingdomUtil
 import java.util.*
 
@@ -8,7 +8,7 @@ import javax.persistence.*
 
 @Table(name = "cards")
 @Entity
-class Card {
+open class Card {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ class Card {
 
     lateinit var type: CardType
 
-    var special: String? = ""
+    var special: String = ""
 
     @Column(name = "add_actions")
     var addActions: Int = 0
@@ -92,7 +92,7 @@ class Card {
     var isCopied: Boolean = false
 
     @Transient
-    var gainCardActions: MutableMap<String, CardAction> = HashMap(0)
+    var gainOldCardActions: MutableMap<String, OldCardAction> = HashMap(0)
 
     @Transient
     var destination = ""
@@ -132,7 +132,7 @@ class Card {
 
     val truncatedSpecial: String?
         get() = if (textSize > 0) {
-            special!!.substring(0, textSize) + "..."
+            special.substring(0, textSize) + "..."
         } else {
             special
         }
@@ -359,18 +359,18 @@ class Card {
     }
 
     fun hasSpecial(): Boolean {
-        return special != null && special != ""
+        return special != ""
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Card) return false
         val card = other
-        return cardId == card.cardId
+        return cardId == card.cardId && name == card.name
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(cardId)
+        return Objects.hash(cardId, name)
     }
 
     companion object {

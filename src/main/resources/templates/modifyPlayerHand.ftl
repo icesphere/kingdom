@@ -1,6 +1,6 @@
 <div>
     <div style="padding-bottom:10px;">
-        Show Card Action: ${player.showCardAction?string}<#if player.showCardAction> - ${player.cardAction.type}</#if>
+        Show Card Action: ${player.showCardAction?string}<#if player.showCardAction> - ${player.oldCardAction.type}</#if>
     </div>
     <div style="padding-bottom:10px;">
         Current Hand: ${player.currentHand}

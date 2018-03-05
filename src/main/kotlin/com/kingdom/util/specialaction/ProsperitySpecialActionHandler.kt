@@ -18,7 +18,7 @@ object ProsperitySpecialActionHandler {
             "Bishop" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Prosperity
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -47,7 +47,7 @@ object ProsperitySpecialActionHandler {
                     }
                 }
                 if (numCoppersInDiscard > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_NUMBER_BETWEEN)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_NUMBER_BETWEEN)
                     cardAction.deck = Deck.Prosperity
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -62,7 +62,7 @@ object ProsperitySpecialActionHandler {
             "Expand" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Prosperity
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -75,7 +75,7 @@ object ProsperitySpecialActionHandler {
             "Forge" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND)
                     cardAction.deck = Deck.Prosperity
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -93,7 +93,7 @@ object ProsperitySpecialActionHandler {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                         } else if (!player.hasMoat() && player.hand.size > 3 && !player.hasLighthouse()) {
-                            val cardAction = CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND)
+                            val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND)
                             cardAction.deck = Deck.Prosperity
                             cardAction.cardName = card.name
                             cardAction.cards.addAll(player.hand)
@@ -115,7 +115,7 @@ object ProsperitySpecialActionHandler {
             }
             "King's Court" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                 cardAction.deck = Deck.Prosperity
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -128,7 +128,7 @@ object ProsperitySpecialActionHandler {
             }
             "Mint" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.Prosperity
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -154,7 +154,7 @@ object ProsperitySpecialActionHandler {
                             game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                         } else if (!player.hasMoat() && !player.hasLighthouse()) {
                             if (player.curseCardsInHand > 0) {
-                                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                                 cardAction.deck = Deck.Prosperity
                                 cardAction.cardName = card.name
                                 cardAction.instructions = "Choose one: Discard a curse OR gain a Curse and a Copper."
@@ -198,7 +198,7 @@ object ProsperitySpecialActionHandler {
                             }
                             if (cardsRevealed.size > 0) {
                                 game.addHistory("The top cards from ", player.username, "'s deck were ", KingdomUtil.getCardNames(cardsRevealed))
-                                val cardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER)
+                                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER)
                                 cardAction.deck = Deck.Prosperity
                                 for (c in cardsRevealed) {
                                     if (c.isTreasure || c.isAction) {
@@ -245,7 +245,7 @@ object ProsperitySpecialActionHandler {
                     game.addHistory(player.username, " gained +", KingdomUtil.getPlural(game.tradeRouteTokensOnMat, "Coin"), " from playing Trade Route")
                 }
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Prosperity
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -257,7 +257,7 @@ object ProsperitySpecialActionHandler {
             }
             "Vault" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
                 cardAction.deck = Deck.Prosperity
                 cardAction.cardName = card.name
                 cardAction.cards.addAll(player!!.hand)

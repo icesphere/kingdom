@@ -7,12 +7,12 @@ import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object ChoicesHandler {
-    fun handleCardAction(game: Game, player: Player, cardAction: CardAction, choice: String): IncompleteCard? {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, choice: String): IncompleteCard? {
 
         val players = game.players
         var incompleteCard: IncompleteCard? = null
 
-        when (cardAction.cardName) {
+        when (oldCardAction.cardName) {
             "Archbishop" -> when (choice) {
                 "actions" -> {
                     player.addActions(2)
@@ -49,9 +49,9 @@ object ChoicesHandler {
                     player.addCoins(1)
                     game.addHistory(player.username, " chose +$1 and discard")
                     if (!player.hand.isEmpty()) {
-                        val discardCardAction = CardAction(CardAction.TYPE_DISCARD_AT_LEAST_FROM_HAND)
+                        val discardCardAction = OldCardAction(OldCardAction.TYPE_DISCARD_AT_LEAST_FROM_HAND)
                         discardCardAction.deck = Deck.Fan
-                        discardCardAction.cardName = cardAction.cardName
+                        discardCardAction.cardName = oldCardAction.cardName
                         discardCardAction.cards = player.hand
                         discardCardAction.numCards = 1
                         discardCardAction.instructions = "Select 1 or more cards to discard from your hand and then click Done."
@@ -70,28 +70,28 @@ object ChoicesHandler {
             "Cattle Farm" -> when (choice) {
                 "discard" -> {
                     game.addHistory(player.username, " discarded the top card of ", player.pronoun, " deck")
-                    player.addCardToDiscard(cardAction.associatedCard!!)
-                    game.playerDiscardedCard(player, cardAction.associatedCard!!)
+                    player.addCardToDiscard(oldCardAction.associatedCard!!)
+                    game.playerDiscardedCard(player, oldCardAction.associatedCard!!)
                 }
                 "back" -> {
                     game.addHistory(player.username, " put back the top card of ", player.pronoun, " deck")
-                    player.addCardToTopOfDeck(cardAction.associatedCard!!)
+                    player.addCardToTopOfDeck(oldCardAction.associatedCard!!)
                 }
             }
             "Choose Reaction" -> {
-                val cardToGain = cardAction.associatedCard
-                val reaction = cardToGain!!.gainCardActions.remove(choice)
+                val cardToGain = oldCardAction.associatedCard
+                val reaction = cardToGain!!.gainOldCardActions.remove(choice)
                 if (reaction != null) {
                     game.setPlayerCardAction(player, reaction)
                 }
             }
             "Develop" -> {
-                val gainCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+                val gainCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
                 gainCardAction.deck = Deck.Hinterlands
-                gainCardAction.cardName = cardAction.cardName
+                gainCardAction.cardName = oldCardAction.cardName
                 gainCardAction.buttonValue = "Done"
                 gainCardAction.numCards = 1
-                gainCardAction.associatedCard = cardAction.associatedCard
+                gainCardAction.associatedCard = oldCardAction.associatedCard
                 gainCardAction.instructions = "Select one of the following cards to gain and then click Done."
 
                 var cost = game.getCardCost(gainCardAction.associatedCard!!)
@@ -106,7 +106,7 @@ object ChoicesHandler {
                     }
                 }
                 val cards = game.supplyMap.values
-                        .filter { game.getCardCost(it) == cost && cardAction.associatedCard!!.costIncludesPotion == it.costIncludesPotion && game.isCardInSupply(it) }
+                        .filter { game.getCardCost(it) == cost && oldCardAction.associatedCard!!.costIncludesPotion == it.costIncludesPotion && game.isCardInSupply(it) }
                         .toMutableList()
 
                 gainCardAction.cards = cards
@@ -115,12 +115,12 @@ object ChoicesHandler {
             "Duchess" -> when (choice) {
                 "discard" -> {
                     game.addHistory(player.username, " discarded the top card of ", player.pronoun, " deck")
-                    player.addCardToDiscard(cardAction.associatedCard!!)
-                    game.playerDiscardedCard(player, cardAction.associatedCard!!)
+                    player.addCardToDiscard(oldCardAction.associatedCard!!)
+                    game.playerDiscardedCard(player, oldCardAction.associatedCard!!)
                 }
                 "back" -> {
                     game.addHistory(player.username, " put back the top card of ", player.pronoun, " deck")
-                    player.addCardToTopOfDeck(cardAction.associatedCard!!)
+                    player.addCardToTopOfDeck(oldCardAction.associatedCard!!)
                 }
             }
             "Explorer" -> when (choice) {
@@ -162,16 +162,16 @@ object ChoicesHandler {
                 "trash" -> {
                     game.addHistory(player.username, " chose to trash and gain cards")
                     //todo do in player order
-                    incompleteCard = MultiPlayerIncompleteCard(cardAction.cardName, game, true)
+                    incompleteCard = MultiPlayerIncompleteCard(oldCardAction.cardName, game, true)
                     for (p in game.players) {
                         if (!p.hand.isEmpty()) {
                             var addToCost = 1
                             if (game.isCurrentPlayer(p)) {
                                 addToCost = 2
                             }
-                            val trashCardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND).apply {
+                            val trashCardAction = OldCardAction(OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND).apply {
                                 deck = Deck.Promo
-                                cardName = cardAction.cardName
+                                cardName = oldCardAction.cardName
                                 cards = KingdomUtil.uniqueCardList(p.hand)
                                 numCards = 1
                                 instructions = "Select a card to trash in order to gain a card costing exactly " + KingdomUtil.getPlural(addToCost, "coin") + "  more and then click Done, or just click Done if you don't want to trash a card."
@@ -186,16 +186,16 @@ object ChoicesHandler {
                 }
             }
             "Hooligans" -> {
-                val affectedPlayer = game.playerMap[cardAction.playerId]!!
+                val affectedPlayer = game.playerMap[oldCardAction.playerId]!!
                 when (choice) {
                     "discard" -> {
-                        game.addHistory(player.username, " discarded ", affectedPlayer.username, "'s ", KingdomUtil.getCardWithBackgroundColor(cardAction.associatedCard!!))
-                        affectedPlayer.addCardToDiscard(cardAction.associatedCard!!)
-                        game.playerDiscardedCard(affectedPlayer, cardAction.associatedCard!!)
+                        game.addHistory(player.username, " discarded ", affectedPlayer.username, "'s ", KingdomUtil.getCardWithBackgroundColor(oldCardAction.associatedCard!!))
+                        affectedPlayer.addCardToDiscard(oldCardAction.associatedCard!!)
+                        game.playerDiscardedCard(affectedPlayer, oldCardAction.associatedCard!!)
                     }
                     "deck" -> {
                         game.addHistory(player.username, " put the selected card on top of ", affectedPlayer.username, "'s deck")
-                        affectedPlayer.addCardToTopOfDeck(cardAction.associatedCard!!)
+                        affectedPlayer.addCardToTopOfDeck(oldCardAction.associatedCard!!)
                     }
                 }
             }
@@ -203,12 +203,12 @@ object ChoicesHandler {
                 when (choice) {
                     "discard" -> {
                         game.addHistory(player.username, " discarded the top card of ", player.pronoun, " deck")
-                        player.addCardToDiscard(cardAction.associatedCard!!)
-                        game.playerDiscardedCard(player, cardAction.associatedCard!!)
+                        player.addCardToDiscard(oldCardAction.associatedCard!!)
+                        game.playerDiscardedCard(player, oldCardAction.associatedCard!!)
                     }
                     "back" -> {
                         game.addHistory(player.username, " put back the top card of ", player.pronoun, " deck")
-                        player.addCardToTopOfDeck(cardAction.associatedCard!!)
+                        player.addCardToTopOfDeck(oldCardAction.associatedCard!!)
                     }
                 }
                 while (player.hand.size < 5) {
@@ -220,9 +220,9 @@ object ChoicesHandler {
 
                 val cards = player.hand.filterNot { it.isTreasure }.toMutableList()
                 if (!cards.isEmpty()) {
-                    val trashCardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND).apply {
+                    val trashCardAction = OldCardAction(OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND).apply {
                         deck = Deck.Hinterlands
-                        cardName = cardAction.cardName
+                        cardName = oldCardAction.cardName
                         numCards = 1
                         cards.addAll(KingdomUtil.uniqueCardList(cards))
                         instructions = "Select a card to trash from your hand and then click Done, or just click Done if you don't want to trash a card."
@@ -232,14 +232,14 @@ object ChoicesHandler {
                 }
             }
             "Jester" -> {
-                val cardToGain = cardAction.cards[0]
+                val cardToGain = oldCardAction.cards[0]
                 when (choice) {
                     "me" -> when {
                         game.isCardInSupply(cardToGain) -> game.playerGainedCard(player, cardToGain)
                         else -> game.addHistory("The supply did not have ", KingdomUtil.getArticleWithCardName(cardToGain))
                     }
                     "them" -> {
-                        val affectedPlayer = game.playerMap[cardAction.playerId]!!
+                        val affectedPlayer = game.playerMap[oldCardAction.playerId]!!
                         if (game.isCardInSupply(cardToGain)) {
                             game.playerGainedCard(affectedPlayer, cardToGain)
                             game.refreshDiscard(affectedPlayer)
@@ -250,7 +250,7 @@ object ChoicesHandler {
                 }
             }
             "Loan" -> {
-                val treasureCard = cardAction.cards[0]
+                val treasureCard = oldCardAction.cards[0]
                 when (choice) {
                     "discard" -> {
                         player.addCardToDiscard(treasureCard)
@@ -272,7 +272,7 @@ object ChoicesHandler {
                     "draw" -> {
                         player.addActions(1)
                         game.addHistory(player.username, " chose +1 Action and set aside cards until you choose to draw one.")
-                        val nextCardAction = CardAction(CardAction.TYPE_CHOICES).apply {
+                        val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOICES).apply {
                             deck = Deck.FairyTale
                             cardName = "Lost Village"
                             instructions = "Draw or set aside top card?"
@@ -290,9 +290,9 @@ object ChoicesHandler {
                     card != null -> {
                         game.addHistory(player.username, " set aside ", KingdomUtil.getArticleWithCardName(card))
                         game.setAsideCards.add(card)
-                        val nextCardAction = CardAction(CardAction.TYPE_CHOICES).apply {
+                        val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOICES).apply {
                             deck = Deck.FairyTale
-                            cardName = cardAction.cardName
+                            cardName = oldCardAction.cardName
                             instructions = "Draw or set aside top card?"
                             choices.add(CardActionChoice("Draw", "draw"))
                             choices.add(CardActionChoice("Set Aside", "aside"))
@@ -317,7 +317,7 @@ object ChoicesHandler {
                 game.setAsideCards.clear()
             }
             "Magic Beans" -> {
-                val card = cardAction.cards[0]
+                val card = oldCardAction.cards[0]
                 when (choice) {
                     "trash" -> {
                         game.addHistory(player.username, " chose to trash ", KingdomUtil.getCardWithBackgroundColor(card))
@@ -333,7 +333,7 @@ object ChoicesHandler {
                     }
                 }
 
-                val gainCardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
+                val gainCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
                     deck = Deck.FairyTale
                     cardName = card.name
                     buttonValue = "Done"
@@ -418,19 +418,19 @@ object ChoicesHandler {
             }
             "Navigator" -> when (choice) {
                 "discard" -> {
-                    player.discard.addAll(cardAction.cards)
-                    for (card in cardAction.cards) {
+                    player.discard.addAll(oldCardAction.cards)
+                    for (card in oldCardAction.cards) {
                         game.playerDiscardedCard(player, card)
                     }
                     game.addHistory(player.username, " chose to discard the cards")
                 }
                 "deck" -> {
-                    val sortCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER).apply {
+                    val sortCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER).apply {
                         deck = Deck.Seaside
                         isHideOnSelect = true
-                        numCards = cardAction.cards.size
+                        numCards = oldCardAction.cards.size
                         cardName = "Navigator"
-                        cards = cardAction.cards
+                        cards = oldCardAction.cards
                         buttonValue = "Done"
                         instructions = "Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)"
                     }
@@ -439,7 +439,7 @@ object ChoicesHandler {
                 }
             }
             "Noble Brigand" -> {
-                val nextPlayer = game.playerMap[cardAction.playerId]!!
+                val nextPlayer = game.playerMap[oldCardAction.playerId]!!
                 val cardToTrash: Card
                 val cardToDiscard: Card
                 when (choice) {
@@ -471,7 +471,7 @@ object ChoicesHandler {
                 }
             }
             "Oracle" -> {
-                val affectedPlayer = game.playerMap[cardAction.playerId]!!
+                val affectedPlayer = game.playerMap[oldCardAction.playerId]!!
                 when (choice) {
                     "discard" -> {
                         game.incompleteCard!!.setPlayerActionCompleted(affectedPlayer.userId)
@@ -480,7 +480,7 @@ object ChoicesHandler {
                         } else {
                             game.addHistory(player.username, " chose to discard the top cards of ", affectedPlayer.username, "'s deck")
                         }
-                        for (card in cardAction.cards) {
+                        for (card in oldCardAction.cards) {
                             affectedPlayer.addCardToDiscard(card)
                             game.playerDiscardedCard(affectedPlayer, card)
                         }
@@ -492,18 +492,18 @@ object ChoicesHandler {
                         } else {
                             game.addHistory(player.username, " chose to put back the top cards of ", affectedPlayer.username, "'s deck")
                         }
-                        if (cardAction.cards.size == 1 || KingdomUtil.uniqueCardList(cardAction.cards).size == 1) {
+                        if (oldCardAction.cards.size == 1 || KingdomUtil.uniqueCardList(oldCardAction.cards).size == 1) {
                             game.incompleteCard!!.setPlayerActionCompleted(affectedPlayer.userId)
-                            for (card in cardAction.cards) {
+                            for (card in oldCardAction.cards) {
                                 affectedPlayer.addCardToTopOfDeck(card)
                             }
                         } else {
-                            val reorderCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER).apply {
+                            val reorderCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER).apply {
                                 deck = Deck.Hinterlands
                                 isHideOnSelect = true
                                 numCards = 2
-                                cardName = cardAction.cardName
-                                cards.addAll(cardAction.cards)
+                                cardName = oldCardAction.cardName
+                                cards.addAll(oldCardAction.cards)
                                 buttonValue = "Done"
                                 instructions = "Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)"
                             }
@@ -511,7 +511,7 @@ object ChoicesHandler {
                         }
                     }
                 }
-                if (!player.isShowCardAction && (!game.hasIncompleteCard() || game.incompleteCard!!.extraCardActions.isEmpty())) {
+                if (!player.isShowCardAction && (!game.hasIncompleteCard() || game.incompleteCard!!.extraOldCardActions.isEmpty())) {
                     player.drawCards(2)
                 }
             }
@@ -552,14 +552,14 @@ object ChoicesHandler {
             }
             "Pirate Ship" -> when (choice) {
                 "attack" -> {
-                    incompleteCard = SinglePlayerIncompleteCard(cardAction.cardName, game)
+                    incompleteCard = SinglePlayerIncompleteCard(oldCardAction.cardName, game)
                     var nextPlayerIndex = game.nextPlayerIndex
                     while (nextPlayerIndex != game.currentPlayerIndex) {
                         val nextPlayer = players[nextPlayerIndex]
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
                             game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                         } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
-                            val nextCardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                            val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                             nextCardAction.deck = Deck.Seaside
                             nextCardAction.playerId = nextPlayer.userId
                             nextCardAction.cardName = "Pirate Ship"
@@ -586,7 +586,7 @@ object ChoicesHandler {
                                         nextCardAction.numCards = 0
                                     }
                                     nextCardAction.instructions = instructions
-                                    incompleteCard.extraCardActions.add(nextCardAction)
+                                    incompleteCard.extraOldCardActions.add(nextCardAction)
                                 } else {
                                     game.addHistory("The top card from ", nextPlayer.username, "'s deck was ", KingdomUtil.getArticleWithCardName(card1))
                                     if (card1.isTreasure) {
@@ -611,8 +611,8 @@ object ChoicesHandler {
                             nextPlayerIndex++
                         }
                     }
-                    if (!incompleteCard.extraCardActions.isEmpty()) {
-                        val pirateAttackAction = incompleteCard.extraCardActions.remove()
+                    if (!incompleteCard.extraOldCardActions.isEmpty()) {
+                        val pirateAttackAction = incompleteCard.extraOldCardActions.remove()
                         game.setPlayerCardAction(player, pirateAttackAction)
                     }
                 }
@@ -663,18 +663,18 @@ object ChoicesHandler {
                             game.addHistory(player.username, " trashed the last card in ", player.pronoun, " hand")
                         } else if (player.hand.size >= 2) {
                             showTrashCardAction = true
-                            val trashCardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND).apply {
+                            val trashCardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND).apply {
                                 deck = Deck.FairyTale
-                                cardName = cardAction.cardName
+                                cardName = oldCardAction.cardName
                                 buttonValue = "Done"
                                 numCards = 2
                                 instructions = "Select two cards to trash."
                                 cards = player.hand
-                                phase = cardAction.phase
+                                phase = oldCardAction.phase
                             }
-                            cardAction.choices
+                            oldCardAction.choices
                                     .filterTo (trashCardAction.choices) { it.value != choice }
-                            if (cardAction.phase == 1) {
+                            if (oldCardAction.phase == 1) {
                                 trashCardAction.choices.add(CardActionChoice("None", "none"))
                             }
                             game.setPlayerCardAction(player, trashCardAction)
@@ -683,15 +683,15 @@ object ChoicesHandler {
                 }
 
                 val cursesRemaining = game.supply[Card.CURSE_ID]!!
-                if (cursesRemaining > 0 && cardAction.phase > 1) {
+                if (cursesRemaining > 0 && oldCardAction.phase > 1) {
                     game.playerGainedCard(player, game.curseCard)
                 }
 
-                if (!showTrashCardAction && (cursesRemaining > 0 || cardAction.phase == 1)) {
+                if (!showTrashCardAction && (cursesRemaining > 0 || oldCardAction.phase == 1)) {
 
-                    val nextCardAction = CardAction(CardAction.TYPE_CHOICES)
+                    val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                     nextCardAction.deck = Deck.FairyTale
-                    nextCardAction.cardName = cardAction.cardName
+                    nextCardAction.cardName = oldCardAction.cardName
 
                     if (cursesRemaining == 0) {
                         nextCardAction.instructions = "There are no curses remaining so you may only choose one more effect."
@@ -699,15 +699,15 @@ object ChoicesHandler {
                         nextCardAction.instructions = "Choose another effect to apply (you will gain a curse), or click None if you don't want to apply any more effects."
                     }
 
-                    cardAction.choices
+                    oldCardAction.choices
                             .filterTo (nextCardAction.choices) { it.value != choice }
 
-                    if (cardAction.phase == 1) {
+                    if (oldCardAction.phase == 1) {
                         nextCardAction.choices.add(CardActionChoice("None", "none"))
                     }
 
-                    if (cardAction.choices.size > 1) {
-                        nextCardAction.phase = cardAction.phase + 1
+                    if (oldCardAction.choices.size > 1) {
+                        nextCardAction.phase = oldCardAction.phase + 1
                         game.setPlayerCardAction(player, nextCardAction)
                     }
                 }
@@ -743,7 +743,7 @@ object ChoicesHandler {
                             game.addHistory(player.username, " trashed ", KingdomUtil.getArticleWithCardName(card))
                         }
                     } else {
-                        val trashCardsCardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND).apply {
+                        val trashCardsCardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND).apply {
                             deck = Deck.Intrigue
                             cardName = "Steward"
                             buttonValue = "Done"
@@ -812,7 +812,7 @@ object ChoicesHandler {
                         cardsToDiscard = 1
                     }
                     if (player.hand.size > 0) {
-                        val discardCardsAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND).apply {
+                        val discardCardsAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND).apply {
                             deck = Deck.Intrigue
                             cardName = "Torturer"
                             buttonValue = "Done"
@@ -840,9 +840,9 @@ object ChoicesHandler {
                         game.prizeCards.clear()
                     }
                     else -> {
-                        val choosePrizeCardAction = CardAction(CardAction.TYPE_GAIN_CARDS).apply {
+                        val choosePrizeCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS).apply {
                             deck = Deck.Cornucopia
-                            cardName = cardAction.cardName
+                            cardName = oldCardAction.cardName
                             numCards = 1
                             buttonValue = "Done"
                             instructions = "Select one of the following cards to gain and then click Done."
@@ -860,7 +860,7 @@ object ChoicesHandler {
                 }
             }
             "Trader" -> {
-                val cardToGain = cardAction.associatedCard!!
+                val cardToGain = oldCardAction.associatedCard!!
                 when (choice) {
                     "silver" -> {
                         game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Trader", Card.ACTION_REACTION_COLOR), " to gain ", KingdomUtil.getArticleWithCardName(game.silverCard), " instead")
@@ -868,7 +868,7 @@ object ChoicesHandler {
                             game.playerGainedCard(player, game.silverCard)
                         }
                     }
-                    else -> when (cardAction.destination) {
+                    else -> when (oldCardAction.destination) {
                         "hand" -> game.playerGainedCardToHand(player, cardToGain)
                         "deck" -> game.playerGainedCardToTopOfDeck(player, cardToGain)
                         "discard" -> game.playerGainedCard(player, cardToGain)
@@ -876,7 +876,7 @@ object ChoicesHandler {
                 }
             }
             "Watchtower" -> {
-                val cardToGain = cardAction.cards[0]
+                val cardToGain = oldCardAction.cards[0]
                 when (choice) {
                     "trash" -> {
                         game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to trash ", KingdomUtil.getArticleWithCardName(cardToGain))
@@ -886,7 +886,7 @@ object ChoicesHandler {
                         game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to put ", KingdomUtil.getArticleWithCardName(cardToGain), " on top of ", player.pronoun, " deck")
                         game.moveGainedCard(player, cardToGain, "deck")
                     }
-                    else -> when (cardAction.destination) {
+                    else -> when (oldCardAction.destination) {
                         "hand" -> game.playerGainedCardToHand(player, cardToGain)
                         "deck" -> game.playerGainedCardToTopOfDeck(player, cardToGain)
                         "discard" -> game.playerGainedCard(player, cardToGain)

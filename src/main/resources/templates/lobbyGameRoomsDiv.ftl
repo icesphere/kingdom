@@ -67,7 +67,7 @@
             </#if>
         </table>
     </div>
-    <div id="cardsDialog_${room.gameId}" style="display:none" title="Kingdom Cards" class="cardAction">
+    <div id="cardsDialog_${room.gameId}" style="display:none" title="Kingdom Cards" class="oldCardAction">
         <#assign clickType="gameRoom">
         <#assign costDiscount = room.game.costDiscount>
         <#assign fruitTokensPlayed = 0>

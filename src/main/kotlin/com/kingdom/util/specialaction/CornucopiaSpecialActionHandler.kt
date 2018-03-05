@@ -69,7 +69,7 @@ object CornucopiaSpecialActionHandler {
                             game.refreshDiscard(nextPlayer)
                         }
                         if (nextPlayer.hand.size > 3) {
-                            val cardAction = CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND)
+                            val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND)
                             cardAction.deck = Deck.Cornucopia
                             cardAction.cardName = card.name
                             cardAction.cards.addAll(nextPlayer.hand)
@@ -140,7 +140,7 @@ object CornucopiaSpecialActionHandler {
             "Hamlet" -> when {
                 player!!.hand.isEmpty() -> game.addHistory(player.username, " did not have any cards in ", player.pronoun, " hand")
                 else -> {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.deck = Deck.Cornucopia
                     cardAction.cardName = card.name
                     cardAction.instructions = "Do you want to discard a card from your hand to gain +1 Action?"
@@ -178,7 +178,7 @@ object CornucopiaSpecialActionHandler {
                     game.addHistory(player.username, " discarded ", KingdomUtil.getArticleWithCardName(player.hand[0]))
                     player.discardCardFromHand(player.hand[0])
                 } else {
-                    val cardAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND)
                     cardAction.deck = Deck.Cornucopia
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -253,7 +253,7 @@ object CornucopiaSpecialActionHandler {
                                 if (game.supply[topDeckCard.cardId] == null || game.supply[topDeckCard.cardId] == 0) {
                                     game.addHistory("The supply did not have ", KingdomUtil.getArticleWithCardName(topDeckCard))
                                 } else {
-                                    val nextCardAction = CardAction(CardAction.TYPE_CHOICES)
+                                    val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                                     nextCardAction.deck = Deck.Cornucopia
                                     nextCardAction.cardName = card.name
                                     nextCardAction.instructions = "Your Jester discarded " + nextPlayer.username + "'s " + topDeckCard.name + ". Do you want to gain a copy of this card, or do you want " + nextPlayer.username + " to gain a copy of this card?"
@@ -261,7 +261,7 @@ object CornucopiaSpecialActionHandler {
                                     nextCardAction.choices.add(CardActionChoice("I want it", "me"))
                                     nextCardAction.choices.add(CardActionChoice("Give one to " + nextPlayer.username, "them"))
                                     nextCardAction.playerId = nextPlayer.userId
-                                    incompleteCard.extraCardActions.add(nextCardAction)
+                                    incompleteCard.extraOldCardActions.add(nextCardAction)
                                 }
                             }
                         } else {
@@ -277,8 +277,8 @@ object CornucopiaSpecialActionHandler {
                     nextPlayerIndex = game.calculateNextPlayerIndex(nextPlayerIndex)
                 }
                 game.refreshAllPlayersDiscard()
-                if (!incompleteCard.extraCardActions.isEmpty()) {
-                    val cardAction = incompleteCard.extraCardActions.remove()
+                if (!incompleteCard.extraOldCardActions.isEmpty()) {
+                    val cardAction = incompleteCard.extraOldCardActions.remove()
                     game.setPlayerCardAction(player!!, cardAction)
                 }
             }
@@ -310,7 +310,7 @@ object CornucopiaSpecialActionHandler {
             }
             "Remake" -> when {
                 player!!.hand.size > 0 -> {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Cornucopia
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -320,14 +320,14 @@ object CornucopiaSpecialActionHandler {
                     game.setPlayerCardAction(player, cardAction)
                     if (player.hand.size > 1) {
                         incompleteCard = SinglePlayerIncompleteCard(card.name, game)
-                        val secondCardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                        val secondCardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                         secondCardAction.deck = Deck.Cornucopia
                         secondCardAction.cardName = card.name
                         secondCardAction.buttonValue = "Done"
                         secondCardAction.numCards = 1
                         secondCardAction.instructions = "Select a card to trash."
                         secondCardAction.cards = player.hand
-                        incompleteCard.extraCardActions.add(secondCardAction)
+                        incompleteCard.extraOldCardActions.add(secondCardAction)
                     }
                 }
                 else -> game.addHistory(player.username, " did not have any cards in ", player.pronoun, " hand")
@@ -336,7 +336,7 @@ object CornucopiaSpecialActionHandler {
                 incompleteCard = MultiPlayerIncompleteCard(card.name, game, player!!.hasProvinceInHand())
                 game.isGainTournamentBonus = true
                 if (player.hasProvinceInHand()) {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.deck = Deck.Cornucopia
                     cardAction.cardName = card.name
                     cardAction.instructions = "Do you want to reveal and discard a Province to gain a Prize or a Duchy?"
@@ -345,7 +345,7 @@ object CornucopiaSpecialActionHandler {
                 for (p in players) {
                     if (p.userId != player.userId) {
                         if (p.hasProvinceInHand()) {
-                            val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                            val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                             cardAction.deck = Deck.Cornucopia
                             cardAction.cardName = card.name
                             cardAction.instructions = "Do you want to reveal a Province to prevent " + player.username + " from gaining +1 Card, +1 Coin?"
@@ -359,7 +359,7 @@ object CornucopiaSpecialActionHandler {
                 incompleteCard.allActionsSet()
             }
             "Trusty Steed" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.Cornucopia
                 cardAction.cardName = card.name
                 cardAction.instructions = "Choose a combination."
@@ -379,7 +379,7 @@ object CornucopiaSpecialActionHandler {
                         player.discardCardFromHand(player.hand[0])
                         game.addHistory(player.username, " discarded ", KingdomUtil.getArticleWithCardName(player.hand[0]))
                     } else {
-                        val cardAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND)
+                        val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND)
                         cardAction.deck = Deck.Cornucopia
                         cardAction.cardName = card.name
                         cardAction.buttonValue = "Done"
@@ -399,7 +399,7 @@ object CornucopiaSpecialActionHandler {
                         game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         if (nextPlayer.hasBaneCardInHand()) {
-                            val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                            val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                             cardAction.deck = Deck.Cornucopia
                             cardAction.cardName = card.name
                             cardAction.instructions = "Do you want to reveal your Bane card, or do you want to gain a Curse?"

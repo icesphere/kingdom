@@ -58,7 +58,7 @@ class MultiPlayerIncompleteCard : IncompleteCard {
 
     override fun setWaitingDialogs() {
         if (!game.currentPlayer!!.isShowCardAction && !game.playersWithCardActions.isEmpty()) {
-            game.setPlayerCardAction(game.currentPlayer!!, CardAction.waitingForPlayersCardAction)
+            game.setPlayerCardAction(game.currentPlayer!!, OldCardAction.waitingForPlayersOldCardAction)
             return
         }
         if (isCompleted) {
@@ -88,12 +88,12 @@ class MultiPlayerIncompleteCard : IncompleteCard {
             if (currentPlayerHasAction) {
                 for (player in game.players) {
                     if (!player.isShowCardAction) {
-                        game.setPlayerCardAction(player, CardAction.waitingForPlayersCardAction)
+                        game.setPlayerCardAction(player, OldCardAction.waitingForPlayersOldCardAction)
                     }
                 }
             } else {
                 if (!game.currentPlayer!!.isShowCardAction) {
-                    game.setPlayerCardAction(game.currentPlayer!!, CardAction.waitingForPlayersCardAction)
+                    game.setPlayerCardAction(game.currentPlayer!!, OldCardAction.waitingForPlayersOldCardAction)
                 }
             }
         }
@@ -101,7 +101,7 @@ class MultiPlayerIncompleteCard : IncompleteCard {
 
     private fun closeWaitingDialogs() {
         for (player in game.players) {
-            if (player.isShowCardAction && player.cardAction!!.isWaitingForPlayers) {
+            if (player.isShowCardAction && player.oldCardAction!!.isWaitingForPlayers) {
                 game.closeCardActionDialog(player)
                 game.closeLoadingDialog(player)
             }

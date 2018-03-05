@@ -6,7 +6,7 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 
 object DiscardCardsHandler {
-    fun handleCardAction(game: Game, player: Player, cardAction: CardAction, selectedCardIds: List<Int>): IncompleteCard? {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardIds: List<Int>): IncompleteCard? {
 
         var incompleteCard: IncompleteCard? = null
 
@@ -18,7 +18,7 @@ object DiscardCardsHandler {
 
         for (selectedCardId in selectedCardIds) {
             val selectedCard = game.cardMap[selectedCardId]!!
-            if (cardAction.type == CardAction.TYPE_DISCARD_UP_TO) {
+            if (oldCardAction.type == OldCardAction.TYPE_DISCARD_UP_TO) {
                 player.addCardToDiscard(selectedCard)
                 game.playerDiscardedCard(player, selectedCard)
             } else {
@@ -27,9 +27,9 @@ object DiscardCardsHandler {
             }
         }
 
-        when (cardAction.cardName) {
+        when (oldCardAction.cardName) {
             "Cartographer" -> {
-                val cards = cardAction.cards
+                val cards = oldCardAction.cards
                 selectedCardIds
                         .map { game.cardMap[it] }
                         .forEach { cards.remove(it) }
@@ -38,11 +38,11 @@ object DiscardCardsHandler {
                     if (cards.size == 1) {
                         player.addCardToTopOfDeck(cards[0])
                     } else {
-                        val chooseOrderCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER).apply {
+                        val chooseOrderCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER).apply {
                             deck = Deck.Hinterlands
                             isHideOnSelect = true
                             numCards = cards.size
-                            cardName = cardAction.cardName
+                            cardName = oldCardAction.cardName
                             this.cards = cards
                             buttonValue = "Done"
                             instructions = "Click the cards in the order you want them to be on the top of your deck, starting with the top card and then click Done. (The first card you click will be the top card of your deck)"
@@ -64,7 +64,7 @@ object DiscardCardsHandler {
                 if (player.hand.isEmpty()) {
                     game.addHistory(player.username, " did not have any cards in ", player.pronoun, " hand to discard for +1 Buy")
                 } else {
-                    incompleteCard = SinglePlayerIncompleteCard(cardAction.cardName, game)
+                    incompleteCard = SinglePlayerIncompleteCard(oldCardAction.cardName, game)
                     game.addNextAction("discard for buy")
                 }
             }
@@ -85,14 +85,14 @@ object DiscardCardsHandler {
                 game.refreshAllPlayersCardsPlayed()
             }
             "Vault" -> {
-                incompleteCard = MultiPlayerIncompleteCard(cardAction.cardName, game, false)
+                incompleteCard = MultiPlayerIncompleteCard(oldCardAction.cardName, game, false)
                 player.addCoins(selectedCardIds.size)
                 game.addHistory(player.username, " gained +", KingdomUtil.getPlural(selectedCardIds.size, "Coin"), " from playing ", KingdomUtil.getWordWithBackgroundColor("Vault", Card.ACTION_COLOR), "")
 
                 for (otherPlayer in game.players) {
                     if (otherPlayer.userId != game.currentPlayerId) {
                         if (otherPlayer.hand.size >= 1) {
-                            val yesNoCardAction = CardAction(CardAction.TYPE_YES_NO)
+                            val yesNoCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                             yesNoCardAction.deck = Deck.Prosperity
                             yesNoCardAction.cardName = "Vault"
                             when {

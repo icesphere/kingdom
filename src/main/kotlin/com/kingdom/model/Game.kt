@@ -278,9 +278,9 @@ class Game(val gameId: Int) {
         private set
     private var checkPlantation: Boolean = false
 
-    private val setupLeadersCardAction: CardAction
+    private val setupLeadersOldCardAction: OldCardAction
         get() {
-            val cardAction = CardAction(CardAction.TYPE_SETUP_LEADERS)
+            val cardAction = OldCardAction(OldCardAction.TYPE_SETUP_LEADERS)
             cardAction.numCards = 3
             cardAction.cards = availableLeaders
             cardAction.deck = Deck.Leaders
@@ -691,7 +691,7 @@ class Game(val gameId: Int) {
             }
         }
         if (isUsingLeaders) {
-            setPlayerCardAction(player, setupLeadersCardAction)
+            setPlayerCardAction(player, setupLeadersOldCardAction)
         }
         if (!repeated && players.size == numPlayers) {
             start()
@@ -1135,7 +1135,7 @@ class Game(val gameId: Int) {
                     leaderActivated = activateLeader(player, card.cardId)
                 }
 
-                if ((cardBought || leaderActivated) && !player.isComputer && player.buys == 0 && !player.isShowCardAction && player.extraCardActions.isEmpty() && !hasUnfinishedGainCardActions()) {
+                if ((cardBought || leaderActivated) && !player.isComputer && player.buys == 0 && !player.isShowCardAction && player.extraOldCardActions.isEmpty() && !hasUnfinishedGainCardActions()) {
                     endPlayerTurn(player, false)
                 } else {
                     if (actionPlayed || cardBought || treasurePlayed || leaderActivated) {
@@ -1217,7 +1217,7 @@ class Game(val gameId: Int) {
         if (player.coins >= cost && player.buys > 0 && numInSupply > 0 && !missingPotion) {
             if (confirm && !player.isComputer && !player.hasBoughtCard() && (!isPlayTreasureCards || treasureCardsPlayed.isEmpty())) {
                 if (isPlayTreasureCards && !player.treasureCards.isEmpty()) {
-                    val confirmBuyCardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val confirmBuyCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     confirmBuyCardAction.cardName = "Confirm Buy"
                     confirmBuyCardAction.cards.add(card)
                     confirmBuyCardAction.instructions = "You haven't played any treasure cards, are you sure you want to buy this card?"
@@ -1232,7 +1232,7 @@ class Game(val gameId: Int) {
                         }
                     }
                     if (confirmBuy) {
-                        val confirmBuyCardAction = CardAction(CardAction.TYPE_YES_NO)
+                        val confirmBuyCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                         confirmBuyCardAction.cardName = "Confirm Buy"
                         confirmBuyCardAction.cards.add(card)
                         confirmBuyCardAction.instructions = "You still have actions remaining, are you sure you want to buy this card?"
@@ -1498,7 +1498,7 @@ class Game(val gameId: Int) {
                 }
             }
             if (confirm) {
-                val confirmPlayTreasureCard = CardAction(CardAction.TYPE_YES_NO)
+                val confirmPlayTreasureCard = OldCardAction(OldCardAction.TYPE_YES_NO)
                 confirmPlayTreasureCard.cards.add(card)
                 confirmPlayTreasureCard.cardName = "Confirm Play Treasure Card"
                 confirmPlayTreasureCard.instructions = "You still have actions remaining, are you sure you want to play this Treasure card?"
@@ -1582,7 +1582,7 @@ class Game(val gameId: Int) {
                             }
                         }
                         if (confirm) {
-                            val confirmPlayTreasureCards = CardAction(CardAction.TYPE_YES_NO)
+                            val confirmPlayTreasureCards = OldCardAction(OldCardAction.TYPE_YES_NO)
                             confirmPlayTreasureCards.cardName = "Confirm Play Treasure Cards"
                             confirmPlayTreasureCards.instructions = "You still have actions remaining, are you sure you want to play your Treasure cards?"
                             setPlayerCardAction(player, confirmPlayTreasureCards)
@@ -1787,7 +1787,7 @@ class Game(val gameId: Int) {
     fun playerGainedCard(player: Player, card: Card, cardDestination: String, takeFromSupply: Boolean, gainedFromBuy: Boolean) {
         var destination = cardDestination
         if (card.isCopied && !card.isCardNotGained) {
-            if (!card.gainCardActions.isEmpty()) {
+            if (!card.gainOldCardActions.isEmpty()) {
                 waitIfNotCurrentPlayer(player)
                 setPlayerGainCardAction(player, card)
             } else {
@@ -1805,7 +1805,7 @@ class Game(val gameId: Int) {
                 if (checkNobleBrigand && card.name == "Noble Brigand") {
                     BuySpecialActionHandler.setNobleBrigandCardAction(this, player)
                 }
-                val buyCardActions = ArrayList<CardAction>(0)
+                val buyCardActions = ArrayList<OldCardAction>(0)
                 val buyCardAction = BuySpecialActionHandler.getCardAction(this, player, cardCopy)
                 if (buyCardAction != null) {
                     buyCardActions.add(buyCardAction)
@@ -1868,14 +1868,14 @@ class Game(val gameId: Int) {
             }
             cardCopy.destination = destination
             setGainedCardActions(player, cardCopy, destination)
-            if (!cardCopy.gainCardActions.isEmpty()) {
+            if (!cardCopy.gainOldCardActions.isEmpty()) {
                 waitIfNotCurrentPlayer(player)
                 setPlayerGainCardAction(player, cardCopy)
             } else {
                 gainCardFinished(player, card)
             }
             if (checkFoolsGold && card.isProvince) {
-                val foolsGoldCardAction = GainCardsSpecialActionHandler.foolsGoldCardAction
+                val foolsGoldCardAction = GainCardsSpecialActionHandler.foolsGoldOldCardAction
                 for (p in players) {
                     if (!isCurrentPlayer(p) && p.hasFoolsGoldInHand()) {
                         waitIfNotCurrentPlayer(p)
@@ -1911,7 +1911,7 @@ class Game(val gameId: Int) {
 
     fun gainCardFinished(player: Player, card: Card) {
         if (!player.isShowCardAction && hasUnfinishedGainCardActions()) {
-            if (!card.gainCardActions.isEmpty()) {
+            if (!card.gainOldCardActions.isEmpty()) {
                 setPlayerGainCardAction(player, card)
             } else {
                 setPlayerGainCardAction(player, cardWithUnfinishedGainCardActions)
@@ -1938,27 +1938,27 @@ class Game(val gameId: Int) {
         if (!isCurrentPlayer(player)) {
             playersWithCardActions.add(player.userId)
             if (!hasIncompleteCard() && !currentPlayer!!.isShowCardAction) {
-                setPlayerCardAction(currentPlayer!!, CardAction.waitingForPlayersCardAction)
+                setPlayerCardAction(currentPlayer!!, OldCardAction.waitingForPlayersOldCardAction)
             }
         }
     }
 
     fun setPlayerGainCardAction(player: Player, card: Card) {
-        val firstReaction = card.gainCardActions.values.iterator().next()
-        if (card.gainCardActions.size == 1) {
-            card.gainCardActions.clear()
+        val firstReaction = card.gainOldCardActions.values.iterator().next()
+        if (card.gainOldCardActions.size == 1) {
+            card.gainOldCardActions.clear()
             cardsWithGainCardActions.remove(card.cardId)
             setPlayerCardAction(player, firstReaction)
         } else {
             cardsWithGainCardActions[card.cardId] = card
-            val cardAction = CardAction(CardAction.TYPE_CHOICES)
+            val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
             cardAction.deck = Deck.Reaction
             cardAction.cardName = "Choose Reaction"
             cardAction.associatedCard = firstReaction.associatedCard
             cardAction.cards.add(firstReaction.associatedCard!!)
             cardAction.destination = firstReaction.destination
             cardAction.instructions = "Choose which card you want to process first to react to gaining this card."
-            for (action in card.gainCardActions.keys) {
+            for (action in card.gainOldCardActions.keys) {
                 cardAction.choices.add(CardActionChoice(action, action))
             }
             setPlayerCardAction(player, cardAction)
@@ -1967,11 +1967,11 @@ class Game(val gameId: Int) {
 
     private fun setGainedCardActions(player: Player, cardCopy: Card, destination: String) {
         val gainCardActions = getGainCardActions(player, cardCopy, destination)
-        cardCopy.gainCardActions = gainCardActions
+        cardCopy.gainOldCardActions = gainCardActions
     }
 
-    private fun getGainCardActions(player: Player, cardCopy: Card, destination: String): MutableMap<String, CardAction> {
-        val gainCardActions = HashMap<String, CardAction>()
+    private fun getGainCardActions(player: Player, cardCopy: Card, destination: String): MutableMap<String, OldCardAction> {
+        val gainCardActions = HashMap<String, OldCardAction>()
         if (royalSealCardPlayed && player.userId == currentPlayerId && destination != "deck") {
             val cardAction = GainCardsReactionHandler.getCardAction("Royal Seal", this, player, cardCopy, destination)
             if (cardAction != null) {
@@ -2027,7 +2027,7 @@ class Game(val gameId: Int) {
                 coins += player.coinsInHand
             }
             if (confirm && !player.isComputer && player.buys > 0 && (coins > 2 || coins == 2 && twoCostKingdomCards > 0)) {
-                val confirmEndTurn = CardAction(CardAction.TYPE_YES_NO)
+                val confirmEndTurn = OldCardAction(OldCardAction.TYPE_YES_NO)
                 confirmEndTurn.cardName = "Confirm End Turn"
                 confirmEndTurn.instructions = "You still have buys remaining, are you sure you want to end your turn?"
                 setPlayerCardAction(player, confirmEndTurn)
@@ -2042,7 +2042,7 @@ class Game(val gameId: Int) {
                     }
                 }
                 if (walledVillagesPlayed.size == 1) {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.deck = Deck.Promo
                     cardAction.cardName = "Walled Village"
                     cardAction.instructions = "Do you want your Walled Village to go on top of your deck?"
@@ -2050,7 +2050,7 @@ class Game(val gameId: Int) {
                     setPlayerCardAction(player, cardAction)
                     return
                 } else if (walledVillagesPlayed.size > 1) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                     cardAction.deck = Deck.Promo
                     cardAction.cardName = "Walled Village"
                     for (card in walledVillagesPlayed) {
@@ -2067,7 +2067,7 @@ class Game(val gameId: Int) {
             if (playedTreasuryCard) {
                 playedTreasuryCard = false
                 if (!boughtVictoryCard) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                     cardAction.deck = Deck.Seaside
                     cardAction.cardName = "Treasury"
                     for (card in cardsPlayed) {
@@ -2092,7 +2092,7 @@ class Game(val gameId: Int) {
                     hasPotion = player.potions > 0 || potionsPlayed > 0
                 }
                 if (hasPotion) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                     cardAction.deck = Deck.Alchemy
                     cardAction.cardName = "Alchemist"
                     for (card in cardsPlayed) {
@@ -2112,7 +2112,7 @@ class Game(val gameId: Int) {
                 playedHerbalistCard = false
                 val treasureCards = HashSet(treasureCardsPlayed)
                 if (treasureCards.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                     cardAction.deck = Deck.Alchemy
                     cardAction.cardName = "Herbalist"
                     var herbalistCardsPlayed = 0
@@ -2140,7 +2140,7 @@ class Game(val gameId: Int) {
                         numCards = actionCardsPlayed.size
                     }
                     schemeCardsPlayed = 0
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                     cardAction.deck = Deck.Hinterlands
                     cardAction.cardName = "Scheme"
                     cardAction.numCards = numCards
@@ -2603,7 +2603,7 @@ class Game(val gameId: Int) {
     fun refreshAll(player: Player) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshGameStatus = true
-        if (player.isShowCardAction && player.cardAction != null) {
+        if (player.isShowCardAction && player.oldCardAction != null) {
             refresh.isRefreshCardAction = true
         }
         refresh.isRefreshHandArea = true
@@ -2772,19 +2772,19 @@ class Game(val gameId: Int) {
         processingClick.remove(player.userId)
     }
 
-    fun setPlayerCardAction(player: Player, cardAction: CardAction?) {
-        if (cardAction == null) {
-            val error = GameError(GameError.GAME_ERROR, "setPlayerCardAction, cardAction is null for user: " + player.username)
+    fun setPlayerCardAction(player: Player, oldCardAction: OldCardAction?) {
+        if (oldCardAction == null) {
+            val error = GameError(GameError.GAME_ERROR, "setPlayerCardAction, oldCardAction is null for user: " + player.username)
             logError(error, false)
         } else {
-            if (player.isShowCardAction && player.cardAction!!.isWaitingForPlayers) {
+            if (player.isShowCardAction && player.oldCardAction!!.isWaitingForPlayers) {
                 closeCardActionDialog(player)
                 closeLoadingDialog(player)
             }
-            player.cardAction = cardAction
+            player.oldCardAction = oldCardAction
             player.isShowCardAction = true
             if (player.isComputer && status == STATUS_GAME_IN_PROGRESS) {
-                computerPlayers[player.userId]!!.handleCardAction(cardAction)
+                computerPlayers[player.userId]!!.handleCardAction(oldCardAction)
             } else {
                 refreshCardAction(player)
             }
@@ -2951,14 +2951,14 @@ class Game(val gameId: Int) {
         start()
     }
 
-    fun finishedGainCardAction(player: Player, cardAction: CardAction) {
-        val card = cardAction.associatedCard!!
-        if (card.gainCardActions.isEmpty()) {
+    fun finishedGainCardAction(player: Player, oldCardAction: OldCardAction) {
+        val card = oldCardAction.associatedCard!!
+        if (card.gainOldCardActions.isEmpty()) {
             cardsWithGainCardActions.remove(card.cardId)
         }
-        if (!isCurrentPlayer(player) && !player.isShowCardAction && player.extraCardActions.isEmpty() && !hasUnfinishedGainCardActions()) {
+        if (!isCurrentPlayer(player) && !player.isShowCardAction && player.extraOldCardActions.isEmpty() && !hasUnfinishedGainCardActions()) {
             playersWithCardActions.remove(player.userId)
-            if (playersWithCardActions.isEmpty() && currentPlayer!!.isShowCardAction && currentPlayer!!.cardAction!!.isWaitingForPlayers) {
+            if (playersWithCardActions.isEmpty() && currentPlayer!!.isShowCardAction && currentPlayer!!.oldCardAction!!.isWaitingForPlayers) {
                 closeCardActionDialog(currentPlayer!!)
                 closeLoadingDialog(currentPlayer!!)
             }
@@ -2967,7 +2967,7 @@ class Game(val gameId: Int) {
 
     fun finishTunnelCardAction(player: Player) {
         playersWithCardActions.remove(player.userId)
-        if (playersWithCardActions.isEmpty() && currentPlayer!!.isShowCardAction && currentPlayer!!.cardAction!!.isWaitingForPlayers) {
+        if (playersWithCardActions.isEmpty() && currentPlayer!!.isShowCardAction && currentPlayer!!.oldCardAction!!.isWaitingForPlayers) {
             closeCardActionDialog(currentPlayer!!)
             closeLoadingDialog(currentPlayer!!)
         }
@@ -2996,7 +2996,7 @@ class Game(val gameId: Int) {
     fun playerDiscardedCard(player: Player, card: Card) {
         if (checkTunnel && card.name == "Tunnel" && isCardInSupply(goldCard)) {
             waitIfNotCurrentPlayer(player)
-            val cardAction = CardAction(CardAction.TYPE_YES_NO)
+            val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
             cardAction.deck = Deck.Hinterlands
             cardAction.cardName = "Tunnel"
             cardAction.instructions = "Do you want to reveal your Tunnel to gain a Gold?"
@@ -3008,7 +3008,7 @@ class Game(val gameId: Int) {
 
     fun showUseFruitTokensCardAction(player: Player) {
         if (isCurrentPlayer(player)) {
-            val cardAction = CardAction(CardAction.TYPE_CHOOSE_NUMBER_BETWEEN)
+            val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_NUMBER_BETWEEN)
             cardAction.deck = Deck.Proletariat
             cardAction.cardName = "Use Fruit Tokens"
             cardAction.buttonValue = "Done"
@@ -3021,7 +3021,7 @@ class Game(val gameId: Int) {
 
     fun showUseCattleTokensCardAction(player: Player) {
         if (isCurrentPlayer(player)) {
-            val cardAction = CardAction(CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN)
+            val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN)
             cardAction.deck = Deck.Proletariat
             cardAction.cardName = "Use Cattle Tokens"
             cardAction.buttonValue = "Done"

@@ -1,20 +1,18 @@
 package com.kingdom.util.computercardaction
 
-import com.kingdom.model.CardAction
-import com.kingdom.model.Game
-import com.kingdom.model.Player
+import com.kingdom.model.OldCardAction
 import com.kingdom.model.computer.ComputerPlayer
 import com.kingdom.util.cardaction.CardActionHandler
 
 import java.util.ArrayList
 
 object FanComputerCardActionHandler {
-    fun handleCardAction(cardAction: CardAction, computer: ComputerPlayer) {
+    fun handleCardAction(oldCardAction: OldCardAction, computer: ComputerPlayer) {
 
         val game = computer.game
         val player = computer.player
 
-        val cardName = cardAction.cardName
+        val cardName = oldCardAction.cardName
 
         when (cardName) {
             "Archivist" -> //todo determine when other choice would be better

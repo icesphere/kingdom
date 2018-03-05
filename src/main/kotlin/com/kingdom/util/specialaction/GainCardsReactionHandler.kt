@@ -6,11 +6,11 @@ import com.kingdom.model.cards.Deck
 
 object GainCardsReactionHandler {
 
-    fun getCardAction(action: String, game: Game, player: Player, card: Card, destination: String): CardAction? {
+    fun getCardAction(action: String, game: Game, player: Player, card: Card, destination: String): OldCardAction? {
 
         when (action) {
             "Royal Seal" -> {
-                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                 cardAction.isGainCardAction = true
                 cardAction.deck = Deck.Prosperity
                 cardAction.cardName = "Royal Seal"
@@ -25,7 +25,7 @@ object GainCardsReactionHandler {
                 return cardAction
             }
             "Tinker" -> {
-                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                 cardAction.isGainCardAction = true
                 cardAction.deck = Deck.FairyTale
                 cardAction.cardName = "Tinker"
@@ -36,7 +36,7 @@ object GainCardsReactionHandler {
                 return cardAction
             }
             "Trader" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.isGainCardAction = true
                 cardAction.deck = Deck.Hinterlands
                 cardAction.cardName = "Trader"
@@ -49,7 +49,7 @@ object GainCardsReactionHandler {
                 return cardAction
             }
             "Watchtower" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.isGainCardAction = true
                 cardAction.deck = Deck.Prosperity
                 cardAction.cardName = "Watchtower"

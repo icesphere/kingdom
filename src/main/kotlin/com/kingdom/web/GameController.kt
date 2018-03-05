@@ -890,12 +890,12 @@ class GameController(private var cardManager: CardManager,
             model.put("refreshCardAction", refresh.isRefreshCardAction)
             if (refresh.isRefreshCardAction) {
                 val player = game.playerMap[user.userId]!!
-                if (player.cardAction == null) {
+                if (player.oldCardAction == null) {
                     val error = GameError(GameError.GAME_ERROR, "Card action is null for user: " + player.username + ", show card action: " + player.isShowCardAction)
                     game.logError(error, false)
                     model.put("refreshCardAction", false)
                 } else {
-                    val cardAction = player.cardAction!!
+                    val cardAction = player.oldCardAction!!
                     model.put("cardActionCardsSize", cardAction.cards.size)
                     model.put("cardActionNumCards", cardAction.numCards)
                     model.put("cardActionType", cardAction.type)
@@ -1035,10 +1035,10 @@ class GameController(private var cardManager: CardManager,
         try {
             //todo error handling if choice is null
             val player = game.playerMap[user.userId]!!
-            if (player.cardAction != null) {
-                if (player.cardAction!!.type == CardAction.TYPE_INFO) {
+            if (player.oldCardAction != null) {
+                if (player.oldCardAction!!.type == OldCardAction.TYPE_INFO) {
                     game.cardActionSubmitted(player, emptyList(), null, null, -1)
-                } else if (player.cardAction!!.type == CardAction.TYPE_YES_NO) {
+                } else if (player.oldCardAction!!.type == OldCardAction.TYPE_YES_NO) {
                     if (request.getParameter("answer") == null) {
                         val error = GameError(GameError.GAME_ERROR, "Card Action answer was null")
                         game.logError(error, false)
@@ -1046,7 +1046,7 @@ class GameController(private var cardManager: CardManager,
                     } else {
                         game.cardActionSubmitted(player, emptyList(), request.getParameter("answer"), null, -1)
                     }
-                } else if (player.cardAction!!.type == CardAction.TYPE_CHOICES) {
+                } else if (player.oldCardAction!!.type == OldCardAction.TYPE_CHOICES) {
                     if (request.getParameter("choice") == null) {
                         val error = GameError(GameError.GAME_ERROR, "Card Action choice was null")
                         game.logError(error, false)
@@ -1054,7 +1054,7 @@ class GameController(private var cardManager: CardManager,
                     } else {
                         game.cardActionSubmitted(player, emptyList(), null, request.getParameter("choice"), -1)
                     }
-                } else if (player.cardAction!!.type == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || player.cardAction!!.type == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
+                } else if (player.oldCardAction!!.type == OldCardAction.TYPE_CHOOSE_NUMBER_BETWEEN || player.oldCardAction!!.type == OldCardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
                     if (request.getParameter("numberChosen") == null) {
                         val error = GameError(GameError.GAME_ERROR, "Card Action number chosen was null")
                         game.logError(error, false)
@@ -1519,7 +1519,7 @@ class GameController(private var cardManager: CardManager,
             addTrollTokenObjects(game, modelAndView)
             modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            if (player.cardAction!!.type == CardAction.TYPE_SETUP_LEADERS) {
+            if (player.oldCardAction!!.type == OldCardAction.TYPE_SETUP_LEADERS) {
                 modelAndView.addObject("kingdomCards", game.kingdomCards)
                 modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
             }

@@ -11,7 +11,7 @@ object FanSpecialActionHandler {
 
         when (card.name) {
             "Archivist" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.Fan
                 cardAction.cardName = card.name
                 cardAction.instructions = "Choose one: Draw until you have 6 cards in hand; or +$1 and discard 1 or more cards."
@@ -24,7 +24,7 @@ object FanSpecialActionHandler {
                         .filterNot { player.museumCards.contains(it) }
                         .toSet()
                 if (!cards.isEmpty()) {
-                    val museumCardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                    val museumCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                     museumCardAction.deck = Deck.Fan
                     museumCardAction.cardName = card.name
                     museumCardAction.cards.addAll(cards)
@@ -33,7 +33,7 @@ object FanSpecialActionHandler {
                     museumCardAction.buttonValue = "Done"
                     game.setPlayerCardAction(player, museumCardAction)
                 } else if (player.museumCards.size >= 4) {
-                    val museumCardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val museumCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     museumCardAction.deck = Deck.Fan
                     museumCardAction.cardName = "Museum Trash Cards"
                     museumCardAction.instructions = "Do you want to trash 4 cards from your Museum mat to gain a Prize and a Duchy?"

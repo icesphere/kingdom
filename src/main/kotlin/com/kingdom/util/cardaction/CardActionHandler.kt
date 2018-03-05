@@ -10,23 +10,23 @@ object CardActionHandler {
         player.isShowCardAction = false
 
         val supplyMap = game.supplyMap
-        val cardAction = player.cardAction
+        val cardAction = player.oldCardAction
         val type = cardAction!!.type
         var incompleteCard: IncompleteCard? = null
 
         when {
             cardAction.isDiscard -> incompleteCard = DiscardCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
-            type == CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY || type == CardAction.TYPE_GAIN_CARDS || type == CardAction.TYPE_GAIN_CARDS_UP_TO -> GainCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
-            type == CardAction.TYPE_TRASH_CARDS_FROM_HAND || type == CardAction.TYPE_TRASH_UP_TO_FROM_HAND -> incompleteCard = TrashCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
-            type == CardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY -> {
+            type == OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == OldCardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY || type == OldCardAction.TYPE_GAIN_CARDS || type == OldCardAction.TYPE_GAIN_CARDS_UP_TO -> GainCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == OldCardAction.TYPE_TRASH_CARDS_FROM_HAND || type == OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND -> incompleteCard = TrashCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == OldCardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY -> {
                 selectedCardIds
                         .mapNotNull { supplyMap[it] }
                         .forEach { game.playerGainedCardToHand(player, it) }
                 game.refreshPlayingArea(player)
             }
-            type == CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK -> when {
+            type == OldCardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK -> when {
                 selectedCardIds.size > 1 && cardAction.cardName == "Ghost Ship" -> {
-                    val reorderCardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER)
+                    val reorderCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER)
                     reorderCardAction.deck = Deck.Seaside
                     reorderCardAction.isHideOnSelect = true
                     reorderCardAction.numCards = selectedCardIds.size
@@ -52,12 +52,12 @@ object CardActionHandler {
                     game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardIds.size, "card"), " on top of ", player.pronoun, " deck")
                 }
             }
-            type == CardAction.TYPE_CHOOSE_CARDS || type == CardAction.TYPE_SETUP_LEADERS -> incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
-            type == CardAction.TYPE_YES_NO -> incompleteCard = YesNoHandler.handleCardAction(game, player, cardAction, yesNoAnswer!!)
-            type == CardAction.TYPE_CHOICES -> incompleteCard = ChoicesHandler.handleCardAction(game, player, cardAction, choice!!)
-            type == CardAction.TYPE_CHOOSE_IN_ORDER -> incompleteCard = ChooseInOrderHandler.handleCardAction(game, player, cardAction, selectedCardIds)
-            type == CardAction.TYPE_CHOOSE_UP_TO -> incompleteCard = ChooseUpToHandler.handleCardAction(game, player, cardAction, selectedCardIds)
-            type == CardAction.TYPE_CHOOSE_NUMBER_BETWEEN || type == CardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN -> ChooseNumberBetweenHandler.handleCardAction(game, player, cardAction, numberChosen)
+            type == OldCardAction.TYPE_CHOOSE_CARDS || type == OldCardAction.TYPE_SETUP_LEADERS -> incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == OldCardAction.TYPE_YES_NO -> incompleteCard = YesNoHandler.handleCardAction(game, player, cardAction, yesNoAnswer!!)
+            type == OldCardAction.TYPE_CHOICES -> incompleteCard = ChoicesHandler.handleCardAction(game, player, cardAction, choice!!)
+            type == OldCardAction.TYPE_CHOOSE_IN_ORDER -> incompleteCard = ChooseInOrderHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == OldCardAction.TYPE_CHOOSE_UP_TO -> incompleteCard = ChooseUpToHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == OldCardAction.TYPE_CHOOSE_NUMBER_BETWEEN || type == OldCardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN -> ChooseNumberBetweenHandler.handleCardAction(game, player, cardAction, numberChosen)
         }
 
         if (cardAction.isGainCardAction) {
@@ -72,9 +72,9 @@ object CardActionHandler {
         game.refreshCardsBought(player)
 
         when {
-            !player.isShowCardAction && !player.extraCardActions.isEmpty() -> game.setPlayerCardAction(player, player.extraCardActions.remove())
+            !player.isShowCardAction && !player.extraOldCardActions.isEmpty() -> game.setPlayerCardAction(player, player.extraOldCardActions.remove())
             !player.isShowCardAction && cardAction.isGainCardAction && game.hasUnfinishedGainCardActions() -> when {
-                !cardAction.associatedCard!!.gainCardActions.isEmpty() -> game.setPlayerGainCardAction(player, cardAction.associatedCard!!)
+                !cardAction.associatedCard!!.gainOldCardActions.isEmpty() -> game.setPlayerGainCardAction(player, cardAction.associatedCard!!)
                 else -> game.setPlayerGainCardAction(player, game.cardWithUnfinishedGainCardActions)
             }
         }
@@ -99,7 +99,7 @@ object CardActionHandler {
         }
 
         if (!game.hasIncompleteCard() && !player.isShowCardAction && !game.isCurrentPlayer(player) && game.playersWithCardActions.isEmpty()) {
-            if (game.currentPlayer!!.isShowCardAction && game.currentPlayer!!.cardAction!!.isWaitingForPlayers) {
+            if (game.currentPlayer!!.isShowCardAction && game.currentPlayer!!.oldCardAction!!.isWaitingForPlayers) {
                 game.closeCardActionDialog(game.currentPlayer!!)
                 game.closeLoadingDialog(game.currentPlayer!!)
             }

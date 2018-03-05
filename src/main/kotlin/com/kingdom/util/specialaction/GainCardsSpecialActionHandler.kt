@@ -9,9 +9,9 @@ import java.util.*
 
 object GainCardsSpecialActionHandler {
 
-    val foolsGoldCardAction: CardAction
+    val foolsGoldOldCardAction: OldCardAction
         get() {
-            val cardAction = CardAction(CardAction.TYPE_YES_NO)
+            val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
             cardAction.deck = Deck.Hinterlands
             cardAction.cardName = "Fool's Gold"
             cardAction.instructions = "Do you want to trash your Fool's Gold to gain a Gold on top of your deck?"
@@ -19,12 +19,12 @@ object GainCardsSpecialActionHandler {
             return cardAction
         }
 
-    fun getCardAction(game: Game, player: Player, card: Card): CardAction? {
+    fun getCardAction(game: Game, player: Player, card: Card): OldCardAction? {
         val supplyMap = game.supplyMap
 
         when (card.name) {
             "Border Village" -> {
-                val cardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+                val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
                 cardAction.isGainCardAction = true
                 cardAction.deck = Deck.Hinterlands
                 cardAction.cardName = card.name
@@ -50,7 +50,7 @@ object GainCardsSpecialActionHandler {
             "Duchy" -> {
                 val duchessCard = game.kingdomCardMap["Duchess"]!!
                 if (game.isCheckDuchess && game.isCardInSupply(duchessCard)) {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.isGainCardAction = true
                     cardAction.deck = Deck.Reaction
                     cardAction.cardName = "Duchess for Duchy"
@@ -73,7 +73,7 @@ object GainCardsSpecialActionHandler {
             }
             "Inn" -> if (!player.discard.isEmpty()) {
                 val cards = player.discard.filterTo(ArrayList()) { it.isAction }
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                 cardAction.isGainCardAction = true
                 cardAction.deck = Deck.Hinterlands
                 cardAction.cardName = card.name
@@ -111,7 +111,7 @@ object GainCardsSpecialActionHandler {
                     game.treasureCardsPlayed.clear()
                     game.refreshAllPlayersCardsPlayed()
                 } else {
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER)
                     cardAction.isGainCardAction = true
                     cardAction.deck = Deck.Hinterlands
                     cardAction.isHideOnSelect = true

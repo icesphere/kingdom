@@ -39,7 +39,7 @@ object KingdomSpecialActionHandler {
             }
             "Artisan" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+                val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
                 cardAction.deck = Deck.Kingdom
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -69,7 +69,7 @@ object KingdomSpecialActionHandler {
                                 game.refreshHand(player)
                                 game.addHistory(player.username, " added 1 Victory card on top of ", player.pronoun, " deck")
                             } else {
-                                val cardAction = CardAction(CardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK)
+                                val cardAction = OldCardAction(OldCardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK)
                                 cardAction.deck = Deck.Kingdom
                                 cardAction.cardName = card.name
                                 cardAction.cards = victoryCards
@@ -97,7 +97,7 @@ object KingdomSpecialActionHandler {
             "Cellar" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
                     cardAction.deck = Deck.Kingdom
                     cardAction.cardName = card.name
                     cardAction.cards.addAll(player.hand)
@@ -109,7 +109,7 @@ object KingdomSpecialActionHandler {
             }
             "Chancellor" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                 cardAction.deck = Deck.Kingdom
                 cardAction.cardName = card.name
                 cardAction.instructions = "Would you like to put your deck into your discard pile?"
@@ -118,7 +118,7 @@ object KingdomSpecialActionHandler {
             "Chapel" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_UP_TO_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND)
                     cardAction.deck = Deck.Kingdom
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -136,7 +136,7 @@ object KingdomSpecialActionHandler {
             }
             "Feast" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+                val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
                 cardAction.deck = Deck.Kingdom
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -162,7 +162,7 @@ object KingdomSpecialActionHandler {
                 while (player!!.hand.size < 7) {
                     val topCard = player.removeTopDeckCard() ?: break
                     if (topCard.isAction) {
-                        val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                        val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                         cardAction.deck = Deck.Kingdom
                         cardAction.cardName = card.name
                         cardAction.cards.add(topCard)
@@ -183,7 +183,7 @@ object KingdomSpecialActionHandler {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                         } else if (!player.hasMoat() && player.hand.size > 3 && !player.hasLighthouse()) {
-                            val cardAction = CardAction(CardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND)
+                            val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND)
                             cardAction.deck = Deck.Kingdom
                             cardAction.cardName = card.name
                             cardAction.cards.addAll(player.hand)
@@ -207,7 +207,7 @@ object KingdomSpecialActionHandler {
             }
             "Mine" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                 cardAction.deck = Deck.Kingdom
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -239,7 +239,7 @@ object KingdomSpecialActionHandler {
             "Remodel" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Kingdom
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -253,13 +253,13 @@ object KingdomSpecialActionHandler {
                 incompleteCard = SinglePlayerIncompleteCard(card.name, game)
                 val currentPlayer = game.currentPlayer!!
                 if (currentPlayer.lookAtTopDeckCard() != null) {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.deck = Deck.Kingdom
                     cardAction.cardName = card.name
                     cardAction.instructions = "You are spying the top card of your deck. Do you want to discard it?"
                     cardAction.cards.add(currentPlayer.lookAtTopDeckCard()!!)
                     cardAction.playerId = currentPlayer.userId
-                    incompleteCard.extraCardActions.add(cardAction)
+                    incompleteCard.extraOldCardActions.add(cardAction)
                 } else {
                     game.addHistory(currentPlayer.username, " did not have a card to draw")
                 }
@@ -270,13 +270,13 @@ object KingdomSpecialActionHandler {
                         game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         if (nextPlayer.lookAtTopDeckCard() != null) {
-                            val nextCardAction = CardAction(CardAction.TYPE_YES_NO)
+                            val nextCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                             nextCardAction.deck = Deck.Kingdom
                             nextCardAction.cardName = card.name
                             nextCardAction.instructions = "You are spying the top card of " + nextPlayer.username + "'s deck. Do you want to discard it?"
                             nextCardAction.cards.add(nextPlayer.lookAtTopDeckCard()!!)
                             nextCardAction.playerId = nextPlayer.userId
-                            incompleteCard.extraCardActions.add(nextCardAction)
+                            incompleteCard.extraOldCardActions.add(nextCardAction)
                         } else {
                             game.addHistory(nextPlayer.username, " did not have a card to draw")
                         }
@@ -293,8 +293,8 @@ object KingdomSpecialActionHandler {
                         nextPlayerIndex++
                     }
                 }
-                if (!incompleteCard.extraCardActions.isEmpty()) {
-                    val cardAction = incompleteCard.extraCardActions.remove()
+                if (!incompleteCard.extraOldCardActions.isEmpty()) {
+                    val cardAction = incompleteCard.extraOldCardActions.remove()
                     game.setPlayerCardAction(currentPlayer, cardAction)
                 }
             }
@@ -307,7 +307,7 @@ object KingdomSpecialActionHandler {
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
                         game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
-                        val nextCardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                        val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                         nextCardAction.deck = Deck.Kingdom
                         nextCardAction.playerId = nextPlayer.userId
                         nextCardAction.cardName = card.name
@@ -339,7 +339,7 @@ object KingdomSpecialActionHandler {
                             nextCardAction.numCards = 0
                         }
                         nextCardAction.instructions = instructions
-                        incompleteCard.extraCardActions.add(nextCardAction)
+                        incompleteCard.extraOldCardActions.add(nextCardAction)
                     } else {
                         if (nextPlayer.hasLighthouse()) {
                             game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
@@ -353,14 +353,14 @@ object KingdomSpecialActionHandler {
                         nextPlayerIndex++
                     }
                 }
-                if (!incompleteCard.extraCardActions.isEmpty()) {
-                    val cardAction = incompleteCard.extraCardActions.remove()
+                if (!incompleteCard.extraOldCardActions.isEmpty()) {
+                    val cardAction = incompleteCard.extraOldCardActions.remove()
                     game.setPlayerCardAction(currentPlayer!!, cardAction)
                 }
             }
             "Throne Room" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.Kingdom
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -394,7 +394,7 @@ object KingdomSpecialActionHandler {
             }
             "Workshop" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
+                val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
                 cardAction.deck = Deck.Kingdom
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"

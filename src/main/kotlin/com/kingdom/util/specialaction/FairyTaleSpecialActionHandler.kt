@@ -13,7 +13,7 @@ object FairyTaleSpecialActionHandler {
 
         when (card.name) {
             "Bridge Troll" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.FairyTale
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -37,7 +37,7 @@ object FairyTaleSpecialActionHandler {
                 }
             }
             "Druid" -> if (!player!!.getVictoryCards().isEmpty()) {
-                val cardAction = CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
                 cardAction.deck = Deck.FairyTale
                 cardAction.cardName = card.name
                 cardAction.cards.addAll(player.getVictoryCards())
@@ -50,7 +50,7 @@ object FairyTaleSpecialActionHandler {
                 game.addHistory(player.username, " did not have any victory cards and got +2 cards.")
             }
             "Lost Village" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.FairyTale
                 cardAction.cardName = "Lost Village 1"
                 cardAction.instructions = "Choose one: +2 Actions, or +1 Action and set aside cards until you choose to draw one."
@@ -59,7 +59,7 @@ object FairyTaleSpecialActionHandler {
                 game.setPlayerCardAction(player!!, cardAction)
             }
             "Magic Beans" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.FairyTale
                 cardAction.cardName = card.name
                 cardAction.cards.add(card)
@@ -76,7 +76,7 @@ object FairyTaleSpecialActionHandler {
                             incompleteCard.setPlayerActionCompleted(otherPlayer.userId)
                             game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                         } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse() && otherPlayer.hand.size >= 4 && !otherPlayer.actionCards.isEmpty()) {
-                            val cardAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND)
+                            val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND)
                             cardAction.deck = Deck.FairyTale
                             cardAction.cardName = card.name
                             cardAction.buttonValue = "Done"
@@ -98,7 +98,7 @@ object FairyTaleSpecialActionHandler {
                 incompleteCard.allActionsSet()
             }
             "Quest" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.FairyTale
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"
@@ -113,7 +113,7 @@ object FairyTaleSpecialActionHandler {
                 game.setPlayerCardAction(player!!, cardAction)
             }
             "Sorceress" -> {
-                val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.deck = Deck.FairyTale
                 cardAction.cardName = card.name
                 cardAction.instructions = "Choose first effect to apply."

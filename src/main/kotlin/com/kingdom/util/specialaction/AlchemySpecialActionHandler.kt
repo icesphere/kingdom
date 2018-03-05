@@ -46,7 +46,7 @@ object AlchemySpecialActionHandler {
                     player!!.addCardToTopOfDeck(cards[0])
                 } else if (cards.size > 0) {
                     game.refreshHand(player!!)
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_IN_ORDER)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER)
                     cardAction.deck = Deck.Alchemy
                     cardAction.isHideOnSelect = true
                     cardAction.numCards = cards.size
@@ -60,7 +60,7 @@ object AlchemySpecialActionHandler {
             "Apprentice" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Alchemy
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -126,7 +126,7 @@ object AlchemySpecialActionHandler {
                 if (cards.size == 1) {
                     game.golemActions.push(cards[0])
                 } else if (cards.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                     cardAction.deck = Deck.Alchemy
                     cardAction.cardName = card.name
                     cardAction.buttonValue = "Done"
@@ -142,13 +142,13 @@ object AlchemySpecialActionHandler {
                 incompleteCard = SinglePlayerIncompleteCard(card.name, game)
                 val currentPlayer = game.currentPlayer!!
                 if (currentPlayer.lookAtTopDeckCard() != null) {
-                    val cardAction = CardAction(CardAction.TYPE_YES_NO)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                     cardAction.deck = Deck.Alchemy
                     cardAction.cardName = card.name
                     cardAction.instructions = "You are looking at the top card of your deck. Do you want to discard it?"
                     cardAction.cards.add(currentPlayer.lookAtTopDeckCard()!!)
                     cardAction.playerId = currentPlayer.userId
-                    incompleteCard.extraCardActions.add(cardAction)
+                    incompleteCard.extraOldCardActions.add(cardAction)
                 } else {
                     game.addHistory(currentPlayer.username, " did not have a card to draw")
                 }
@@ -159,13 +159,13 @@ object AlchemySpecialActionHandler {
                         game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         if (nextPlayer.lookAtTopDeckCard() != null) {
-                            val nextCardAction = CardAction(CardAction.TYPE_YES_NO)
+                            val nextCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
                             nextCardAction.deck = Deck.Alchemy
                             nextCardAction.cardName = card.name
                             nextCardAction.instructions = "You are looking at the top card of " + nextPlayer.username + "'s deck. Do you want to discard it?"
                             nextCardAction.cards.add(nextPlayer.lookAtTopDeckCard()!!)
                             nextCardAction.playerId = nextPlayer.userId
-                            incompleteCard.extraCardActions.add(nextCardAction)
+                            incompleteCard.extraOldCardActions.add(nextCardAction)
                         } else {
                             game.addHistory(nextPlayer.username, " did not have a card to draw")
                         }
@@ -182,8 +182,8 @@ object AlchemySpecialActionHandler {
                         nextPlayerIndex++
                     }
                 }
-                if (!incompleteCard.extraCardActions.isEmpty()) {
-                    val cardAction = incompleteCard.extraCardActions.remove()
+                if (!incompleteCard.extraOldCardActions.isEmpty()) {
+                    val cardAction = incompleteCard.extraOldCardActions.remove()
                     game.setPlayerCardAction(currentPlayer, cardAction)
                 } else {
                     var foundNonActionCard = false
@@ -200,7 +200,7 @@ object AlchemySpecialActionHandler {
             "Transmute" -> {
                 val player = game.currentPlayer
                 if (player!!.hand.size > 0) {
-                    val cardAction = CardAction(CardAction.TYPE_TRASH_CARDS_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Alchemy
                     cardAction.cardName = card.name
                     cardAction.cardId = card.cardId
@@ -215,7 +215,7 @@ object AlchemySpecialActionHandler {
             }
             "University" -> {
                 val player = game.currentPlayer
-                val cardAction = CardAction(CardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY)
+                val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY)
                 cardAction.deck = Deck.Alchemy
                 cardAction.cardName = card.name
                 cardAction.buttonValue = "Done"

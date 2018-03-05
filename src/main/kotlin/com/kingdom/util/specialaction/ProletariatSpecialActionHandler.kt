@@ -15,7 +15,7 @@ object ProletariatSpecialActionHandler {
             "Cattle Farm" -> {
                 val topDeckCard = player!!.removeTopDeckCard()
                 if (topDeckCard != null) {
-                    val cardAction = CardAction(CardAction.TYPE_CHOICES)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                     cardAction.deck = Deck.Proletariat
                     cardAction.cardName = card.name
                     cardAction.associatedCard = topDeckCard
@@ -32,7 +32,7 @@ object ProletariatSpecialActionHandler {
                     game.playerDiscardedCard(player, player.hand[0])
                     player.discardCardFromHand(player.hand[0])
                 } else {
-                    val cardAction = CardAction(CardAction.TYPE_DISCARD_FROM_HAND)
+                    val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND)
                     cardAction.deck = Deck.Proletariat
                     cardAction.cardName = card.name
                     cardAction.cards.addAll(player.hand)
@@ -43,7 +43,7 @@ object ProletariatSpecialActionHandler {
                 }
             }
             "Fruit Merchant" -> if (!player!!.hand.isEmpty()) {
-                val cardAction = CardAction(CardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
+                val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_UP_TO_FROM_HAND)
                 cardAction.deck = Deck.Proletariat
                 cardAction.cardName = card.name
                 cardAction.cards.addAll(player.hand)
@@ -61,7 +61,7 @@ object ProletariatSpecialActionHandler {
                             incompleteCard.setPlayerActionCompleted(p.userId)
                             game.addHistory(p.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                         } else if (!p.hasMoat() && p.hand.size > 3 && !p.hasLighthouse()) {
-                            val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                            val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                             cardAction.deck = Deck.Proletariat
                             cardAction.cardName = card.name
                             cardAction.cards.addAll(p.hand)
@@ -82,7 +82,7 @@ object ProletariatSpecialActionHandler {
                 incompleteCard.allActionsSet()
             }
             "Rancher" -> if (!player!!.getVictoryCards().isEmpty()) {
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_UP_TO)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
                 cardAction.deck = Deck.Proletariat
                 cardAction.cardName = card.name
                 cardAction.cards.addAll(player.getVictoryCards())
@@ -106,7 +106,7 @@ object ProletariatSpecialActionHandler {
                 game.addToSupply(card.cardId)
             }
             "Trainee" -> if (!player!!.hand.isEmpty()) {
-                val cardAction = CardAction(CardAction.TYPE_CHOOSE_CARDS)
+                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                 cardAction.deck = Deck.Proletariat
                 cardAction.cardName = card.name
                 cardAction.cards.addAll(player.hand)
