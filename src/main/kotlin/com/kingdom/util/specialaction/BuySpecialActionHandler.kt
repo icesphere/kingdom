@@ -152,7 +152,7 @@ object BuySpecialActionHandler {
                     }
                     game.addHistory(nextPlayer.username, " revealed ", KingdomUtil.groupCards(cards, true))
                     when {
-                        numApplicableCards == 1 || numApplicableCards == 2 && card1!!.cardId == card2!!.cardId -> {
+                        numApplicableCards == 1 || numApplicableCards == 2 && card1!!.name == card2!!.name -> {
                             val applicableCard: Card?
                             if (card1!!.isSilver || card1.isGold) {
                                 applicableCard = card1

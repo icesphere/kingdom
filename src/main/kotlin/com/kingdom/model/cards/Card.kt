@@ -1,79 +1,50 @@
 package com.kingdom.model.cards
 
 import com.kingdom.model.OldCardAction
+import com.kingdom.model.cards.supply.*
 import com.kingdom.util.KingdomUtil
 import java.util.*
 
 import javax.persistence.*
 
-@Table(name = "cards")
-@Entity
-open class Card {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cardid")
-    var cardId: Int = 0
-
-    var name = ""
-
-    var cost: Int = 0
-
-    lateinit var type: CardType
+open class Card(val name: String, val deck: Deck, val type: CardType, val cost: Int) {
 
     var special: String = ""
 
-    @Column(name = "add_actions")
     var addActions: Int = 0
 
-    @Column(name = "add_coins")
     var addCoins: Int = 0
 
-    @Column(name = "add_cards")
     var addCards: Int = 0
 
-    @Column(name = "add_buys")
     var addBuys: Int = 0
 
-    @Column(name = "victory_points")
     var victoryPoints: Int = 0
-
-    lateinit var deck: Deck
 
     var testing: Boolean = false
 
-    @Column(name = "cost_includes_potion")
     var costIncludesPotion: Boolean = false
 
-    @Column(name = "add_victory_coins")
     var addVictoryCoins: Int = 0
 
-    @Column(name = "play_treasure_cards")
     var playTreasureCards: Boolean = false
 
     var disabled: Boolean = false
 
-    @Column(name = "fan_expansion_card")
     var fanExpansionCard: Boolean = false
 
     var sins: Int = 0
 
-    @Column(name = "prize_card")
     var prizeCard: Boolean = false
 
-    @Column(name = "font_size")
     var fontSize: Int = 0
 
-    @Column(name = "name_lines")
     var nameLines = 1
 
-    @Column(name = "text_size")
     var textSize: Int = 0
 
-    @Column(name = "fruit_tokens")
     var fruitTokens: Int = 0
 
-    @Column(name = "cattle_tokens")
     var cattleTokens: Int = 0
 
     @Transient
@@ -199,34 +170,34 @@ open class Card {
         get() = type == CardType.Curse || type == CardType.TreasureCurse
 
     val isCurseOnly: Boolean
-        get() = cardId == CURSE_ID
+        get() = name == Curse.NAME
 
     val isCopper: Boolean
-        get() = cardId == COPPER_ID
+        get() = name == Copper.NAME
 
     val isSilver: Boolean
-        get() = cardId == SILVER_ID
+        get() = name == Silver.NAME
 
     val isGold: Boolean
-        get() = cardId == GOLD_ID
+        get() = name == Gold.NAME
 
     val isPlatinum: Boolean
-        get() = cardId == PLATINUM_ID
+        get() = name == Platinum.NAME
 
     val isEstate: Boolean
-        get() = cardId == ESTATE_ID
+        get() = name == Estate.NAME
 
     val isDuchy: Boolean
-        get() = cardId == DUCHY_ID
+        get() = name == Duchy.NAME
 
     val isProvince: Boolean
-        get() = cardId == PROVINCE_ID
+        get() = name == Province.NAME
 
     val isColony: Boolean
-        get() = cardId == COLONY_ID
+        get() = name == Colony.NAME
 
     val isPotion: Boolean
-        get() = cardId == POTION_ID
+        get() = name == Potion.NAME
 
     val isAttack: Boolean
         get() = type == CardType.ActionAttack
@@ -319,20 +290,7 @@ open class Card {
             }
         }
 
-    constructor()
-
-    constructor(cardId: Int, type: CardType, name: String, cost: Int) {
-        this.cardId = cardId
-        this.type = type
-        this.name = name
-        this.cost = cost
-    }
-
-    constructor(card: Card) {
-        this.cardId = card.cardId
-        this.name = card.name
-        this.cost = card.cost
-        this.type = card.type
+    constructor(card: Card) : this(card.name, card.deck, card.type, card.cost) {
         this.special = card.special
         this.addActions = card.addActions
         this.addCoins = card.addCoins
@@ -340,7 +298,6 @@ open class Card {
         this.addBuys = card.addBuys
         this.addVictoryCoins = card.addVictoryCoins
         this.victoryPoints = card.victoryPoints
-        this.deck = card.deck
         this.testing = card.testing
         this.costIncludesPotion = card.costIncludesPotion
         this.sins = card.sins
@@ -366,28 +323,14 @@ open class Card {
         if (this === other) return true
         if (other !is Card) return false
         val card = other
-        return cardId == card.cardId && name == card.name
+        return name == card.name
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(cardId, name)
+        return Objects.hash(name)
     }
 
     companion object {
-
-        const val COPPER_ID = -1
-        const val SILVER_ID = -2
-        const val GOLD_ID = -3
-        const val PLATINUM_ID = -9
-
-        const val ESTATE_ID = -4
-        const val DUCHY_ID = -5
-        const val PROVINCE_ID = -6
-        const val COLONY_ID = -10
-
-        const val CURSE_ID = -7
-
-        const val POTION_ID = -8
 
         const val TREASURE_COLOR = "#F6DC51"
         const val CURSE_COLOR = "#A17FBC"
@@ -405,53 +348,33 @@ open class Card {
         const val TREASURE_REACTION_IMAGE = "gold_blue.gif"
 
         val estateCard: Card
-            get() {
-                return Card(ESTATE_ID, CardType.Victory, "Estate", 2).apply { victoryPoints = 1 }
-            }
+            get() = Estate()
 
         val duchyCard: Card
-            get() {
-                return Card(DUCHY_ID, CardType.Victory, "Duchy", 5).apply { victoryPoints = 3 }
-            }
+            get() = Duchy()
 
         val provinceCard: Card
-            get() {
-                return Card(PROVINCE_ID, CardType.Victory, "Province", 8).apply { victoryPoints = 6 }
-            }
+            get() = Province()
 
         val colonyCard: Card
-            get() {
-                return Card(COLONY_ID, CardType.Victory, "Colony", 11).apply { victoryPoints = 11 }
-            }
+            get() = Colony()
 
         val copperCard: Card
-            get() {
-                return Card(COPPER_ID, CardType.Treasure, "Copper", 0).apply { addCoins = 1 }
-            }
+            get() = Copper()
 
         val silverCard: Card
-            get() {
-                return Card(SILVER_ID, CardType.Treasure, "Silver", 3).apply { addCoins = 2 }
-            }
+            get() = Silver()
 
         val goldCard: Card
-            get() {
-                return Card(GOLD_ID, CardType.Treasure, "Gold", 6).apply { addCoins = 3 }
-            }
+            get() = Gold()
 
         val platinumCard: Card
-            get() {
-                return Card(PLATINUM_ID, CardType.Treasure, "Platinum", 9).apply { addCoins = 5 }
-            }
+            get() = Platinum()
 
         val curseCard: Card
-            get() {
-                return Card(CURSE_ID, CardType.Curse, "Curse", 0).apply { victoryPoints = -1 }
-            }
+            get() = Curse()
 
         val potionCard: Card
-            get() {
-                return Card(POTION_ID, CardType.Treasure, "Potion", 4)
-            }
+            get() = Potion()
     }
 }

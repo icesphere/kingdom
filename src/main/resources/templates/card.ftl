@@ -16,7 +16,7 @@
 	</head>
 	<body>
         <form action="saveCard.html" method="POST" name="cardForm">
-            <input type="hidden" name="id" value="${card.cardId}"/>
+            <input type="hidden" name="cardName" value="${card.name}"/>
             <table>
                 <tr>
                     <td>
@@ -167,7 +167,7 @@
                     <td style="padding-left:10px;"><a href="listCards.html">Cancel</a></td>
                 </tr>
             </table>
-            <#if card.cardId != 0>
+            <#if card.name != "">
                 <div>
                     <#assign gameStatus = 3>
                     <#assign clickType="admin">

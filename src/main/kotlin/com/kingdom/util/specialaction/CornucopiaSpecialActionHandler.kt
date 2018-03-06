@@ -17,7 +17,7 @@ object CornucopiaSpecialActionHandler {
 
         when (card.name) {
             "Bag of Gold" -> when {
-                game.supply[Card.GOLD_ID]!! > 0 -> game.playerGainedCardToTopOfDeck(player!!, game.goldCard)
+                game.supply[Gold.NAME]!! > 0 -> game.playerGainedCardToTopOfDeck(player!!, game.goldCard)
                 else -> game.addHistory("The supply did not have any ", KingdomUtil.getCardWithBackgroundColor(game.goldCard))
             }
             "Farming Village" -> {
@@ -52,7 +52,7 @@ object CornucopiaSpecialActionHandler {
                 }
             }
             "Followers" -> {
-                if (game.supply[Card.ESTATE_ID]!! > 0) {
+                if (game.supply[Estate.NAME]!! > 0) {
                     game.playerGainedCard(player!!, game.estateCard)
                 }
                 incompleteCard = MultiPlayerIncompleteCard(card.name, game, false)
@@ -63,7 +63,7 @@ object CornucopiaSpecialActionHandler {
                         incompleteCard.setPlayerActionCompleted(nextPlayer.userId)
                         game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
-                        val cursesInSupply = game.supply[Card.CURSE_ID]!!
+                        val cursesInSupply = game.supply[Curse.NAME]!!
                         if (cursesInSupply > 0) {
                             game.playerGainedCard(nextPlayer, game.curseCard)
                             game.refreshDiscard(nextPlayer)
@@ -246,11 +246,11 @@ object CornucopiaSpecialActionHandler {
                             game.refreshDiscard(nextPlayer)
                             game.addHistory(KingdomUtil.getCardWithBackgroundColor(card), " discarded ", nextPlayer.username, "'s ", KingdomUtil.getCardWithBackgroundColor(topDeckCard))
                             if (topDeckCard.isVictory) {
-                                if (game.supply[Card.CURSE_ID]!! > 0) {
+                                if (game.supply[Curse.NAME]!! > 0) {
                                     game.playerGainedCard(nextPlayer, game.curseCard)
                                 }
                             } else {
-                                if (game.supply[topDeckCard.cardId] == null || game.supply[topDeckCard.cardId] == 0) {
+                                if (game.supply[topDeckCard.name] == null || game.supply[topDeckCard.name] == 0) {
                                     game.addHistory("The supply did not have ", KingdomUtil.getArticleWithCardName(topDeckCard))
                                 } else {
                                     val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
@@ -407,7 +407,7 @@ object CornucopiaSpecialActionHandler {
                             cardAction.choices.add(CardActionChoice("Gain a Curse", "curse"))
                             game.setPlayerCardAction(nextPlayer, cardAction)
                         } else {
-                            if (game.supply[Card.CURSE_ID]!! > 0) {
+                            if (game.supply[Curse.NAME]!! > 0) {
                                 game.playerGainedCard(nextPlayer, game.curseCard)
                                 game.refreshDiscard(nextPlayer)
                             }

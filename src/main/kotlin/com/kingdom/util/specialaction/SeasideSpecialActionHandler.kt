@@ -30,7 +30,7 @@ object SeasideSpecialActionHandler {
                         cardAction.cards = KingdomUtil.uniqueCardList(player.hand)
                     } else {
                         for (c in KingdomUtil.uniqueCardList(player.hand)) {
-                            if (supply[c.cardId] != null) {
+                            if (supply[c.name] != null) {
                                 cardAction.cards.add(c)
                             }
                         }
@@ -98,7 +98,7 @@ object SeasideSpecialActionHandler {
                 val player = game.currentPlayer
                 var hasProvince = false
                 for (c in player!!.hand) {
-                    if (c.cardId == Card.PROVINCE_ID) {
+                    if (c.name == Province.NAME) {
                         hasProvince = true
                         break
                     }
@@ -112,7 +112,7 @@ object SeasideSpecialActionHandler {
                     cardAction.choices.add(CardActionChoice("Silver", "silver"))
                     game.setPlayerCardAction(player, cardAction)
                 } else {
-                    if (game.isCardInSupply(Card.SILVER_ID)) {
+                    if (game.isCardInSupply(Silver.NAME)) {
                         game.playerGainedCardToHand(player, game.silverCard)
                         game.refreshHand(player)
                     }
@@ -290,7 +290,7 @@ object SeasideSpecialActionHandler {
                         if (topCard != null) {
                             player.addCardToDiscard(topCard)
                             game.playerDiscardedCard(player, topCard)
-                            if (game.isCardInSupply(Card.CURSE_ID)) {
+                            if (game.isCardInSupply(Curse.NAME)) {
                                 game.playerGainedCardToTopOfDeck(player, game.curseCard)
                             }
                         }
@@ -357,7 +357,7 @@ object SeasideSpecialActionHandler {
                     game.playerLostCard(player, secondTreasureMap)
                     var goldCardsGained = 0
                     for (i in 0..3) {
-                        if (game.isCardInSupply(Card.GOLD_ID)) {
+                        if (game.isCardInSupply(Gold.NAME)) {
                             goldCardsGained++
                             game.playerGainedCardToTopOfDeck(player, game.goldCard)
                         } else {

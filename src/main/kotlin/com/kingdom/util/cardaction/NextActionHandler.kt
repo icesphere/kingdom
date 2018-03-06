@@ -147,7 +147,7 @@ object NextActionHandler {
                     buyCardAction.deck = Deck.Promo
                     for (card in game.blackMarketCardsToBuy) {
                         if (card.name == "Grand Market") {
-                            val addCard = game.blackMarketTreasureCardsPlayed.none { it.cardId == Card.COPPER_ID }
+                            val addCard = game.blackMarketTreasureCardsPlayed.none { it.isCopper }
                             if (addCard && game.canBuyCard(player, card)) {
                                 buyCardAction.cards.add(card)
                             }

@@ -66,8 +66,8 @@ function resizeSupplyCardsDiv(){
     $("#supplyCardsDiv").css('overflow', 'auto');
 }
 
-function openSpecialDialog(cardId){
-    specialDialog = $("#specialDialog_"+cardId);
+function openSpecialDialog(cardName){
+    specialDialog = $("#specialDialog_"+cardName);
     specialDialog.dialog(
         {modal: true, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
     });
@@ -361,12 +361,12 @@ function closeLoadingDialog() {
     clearTimeout(reloadTimer);
 }
 
-function clickCard(clickType, cardId, special){
+function clickCard(clickType, cardName, special){
     if(!clickingCard && currentPlayer && gameStatus == 3 && (clickType == "supply" || clickType == "hand" || clickType == "leader")){
         clickingCard = true;
         refreshingGame = true;
         showLoadingDialog();
-        $.post("clickCard", {clickType: clickType, cardId: cardId}, function(data) {
+        $.post("clickCard", {clickType: clickType, cardName: cardName}, function(data) {
             refreshParts(data);
             clickingCard = false;
         });
@@ -392,12 +392,12 @@ function playAllTreasureCards(){
     }
 }
 
-function selectCard(cardIndex, cardId){
-    selectedCards[cardIndex] = cardId;
+function selectCard(cardIndex, cardName){
+    selectedCards[cardIndex] = cardName;
 }
 
-function selectCardInOrder(cardId){
-    selectedCards[selectedCardNumber] = cardId;
+function selectCardInOrder(cardName){
+    selectedCards[selectedCardNumber] = cardName;
     selectedCardNumber++;
 }
 
@@ -407,28 +407,28 @@ function showCardActionDialog(){
         if($(this).attr("hideOnSelect") == "true"){
             selectedCardNumber = 0;
             $(this).click(function() {
-                var cardId = $(this).attr("cardId");
+                var cardName = $(this).attr("cardName");
                 $(this).hide();
-                selectCardInOrder(cardId);
+                selectCardInOrder(cardName);
             });
         }
         else if($(this).attr("disableSelect") == "false"){
             if($(this).attr("autoSelect") == "true"){
                 $(this).removeClass("cardAction").addClass("cardActionSelected");
-                selectCard($(this).attr("cardIndex"), $(this).attr("cardId"));
+                selectCard($(this).attr("cardIndex"), $(this).attr("cardName"));
             }
             $(this).click(function() {
                 var cardIndex = $(this).attr("cardIndex");
-                var cardId = $(this).attr("cardId");
+                var cardName = $(this).attr("cardName");
                 var fromClass = "cardAction";
                 var toClass = "cardActionSelected";
                 if(selectedCards[cardIndex]){
                     fromClass = "cardActionSelected";
                     toClass = "cardAction";
-                    cardId = null;
+                    cardName = null;
                 }
                 $(this).removeClass(fromClass).addClass(toClass);
-                selectCard(cardIndex, cardId);
+                selectCard(cardIndex, cardName);
             });
         }
     });

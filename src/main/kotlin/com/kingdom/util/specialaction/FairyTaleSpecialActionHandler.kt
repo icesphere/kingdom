@@ -20,8 +20,8 @@ object FairyTaleSpecialActionHandler {
                 cardAction.numCards = 1
                 cardAction.instructions = "Select the card you want to place a troll token on and then click Done."
                 for (c in game.supplyMap.values) {
-                    val numTrollTokens = game.trollTokens[card.cardId]!!
-                    if (game.supply[c.cardId]!! > 0 && numTrollTokens <= 2) {
+                    val numTrollTokens = game.trollTokens[card.name]!!
+                    if (game.supply[c.name]!! > 0 && numTrollTokens <= 2) {
                         cardAction.cards.add(c)
                     }
                 }

@@ -1,7 +1,8 @@
 package com.kingdom.util.computercardaction
 
-import com.kingdom.model.cards.Card
 import com.kingdom.model.OldCardAction
+import com.kingdom.model.cards.supply.Copper
+import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.computer.ComputerPlayer
 import com.kingdom.util.cardaction.CardActionHandler
 import java.util.*
@@ -18,29 +19,29 @@ object IntrigueComputerCardActionHandler {
         when (cardName) {
             "Baron" -> CardActionHandler.handleSubmittedCardAction(game, player, null!!, "yes", null, -1)
             "Courtyard" -> {
-                val cardIds = ArrayList<Int>()
-                cardIds.add(computer.getCardToPutOnTopOfDeck(oldCardAction.cards)!!.cardId)
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = ArrayList<String>()
+                cardNames.add(computer.getCardToPutOnTopOfDeck(oldCardAction.cards)!!.name)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Ironworks" -> {
                 //todo determine which card would be best to get
                 val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                val cardIds = ArrayList<Int>()
-                cardIds.add(cardToGain!!.cardId)
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = ArrayList<String>()
+                cardNames.add(cardToGain!!.name)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Masquerade" -> when (type) {
                 OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND -> {
-                    val cardIds = ArrayList<Int>()
+                    val cardNames = ArrayList<String>()
                     if (computer.getNumCardsWorthTrashing(oldCardAction.cards) > 0) {
-                        cardIds.addAll(computer.getCardsToTrash(oldCardAction.cards, 1))
+                        cardNames.addAll(computer.getCardsToTrash(oldCardAction.cards, 1))
                     }
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
                 else -> {
-                    val cardIds = ArrayList<Int>()
-                    cardIds.add(computer.getCardToPass(oldCardAction.cards)!!)
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    val cardNames = ArrayList<String>()
+                    cardNames.add(computer.getCardToPass(oldCardAction.cards)!!)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
             }
             "Mining Village" -> {
@@ -73,26 +74,26 @@ object IntrigueComputerCardActionHandler {
             "Pawn" -> //todo determine when other choices would be better
                 CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, "cardAndAction", -1)
             "Saboteur" -> {
-                val cardIds = ArrayList<Int>()
+                val cardNames = ArrayList<String>()
                 val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
                 if (cardToGain!!.cost > 2) {
-                    cardIds.add(cardToGain.cardId)
+                    cardNames.add(cardToGain.name)
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Scout" -> {
                 //todo determine when to reorder
-                val cardIds = ArrayList<Int>()
+                val cardNames = ArrayList<String>()
                 for (card in oldCardAction.cards) {
-                    cardIds.add(card.cardId)
+                    cardNames.add(card.name)
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Secret Chamber" -> when (type) {
                 OldCardAction.TYPE_DISCARD_UP_TO_FROM_HAND -> {
                     val cardsToDiscard = oldCardAction.cards
                             .filter { computer.isCardToDiscard(it) }
-                            .mapTo(ArrayList()) { it.cardId }
+                            .mapTo(ArrayList()) { it.name }
                     CardActionHandler.handleSubmittedCardAction(game, player, cardsToDiscard, null, null, -1)
                 }
                 else -> //todo determine when putting cards on top of deck is a good idea
@@ -112,19 +113,19 @@ object IntrigueComputerCardActionHandler {
                 else -> CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToTrash(oldCardAction.cards, oldCardAction.numCards), null, null, -1)
             }
             "Swindler" -> {
-                val cardIds = ArrayList<Int>()
-                if (oldCardAction.cards[0].cost == 0 && game.supply[Card.CURSE_ID]!! > 0) {
-                    cardIds.add(Card.CURSE_ID)
+                val cardNames = ArrayList<String>()
+                if (oldCardAction.cards[0].cost == 0 && game.supply[Curse.NAME]!! > 0) {
+                    cardNames.add(Curse.NAME)
                 } else {
                     Collections.shuffle(oldCardAction.cards)
-                    cardIds.add(oldCardAction.cards[0].cardId)
+                    cardNames.add(oldCardAction.cards[0].name)
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Torturer" -> when (type) {
                 OldCardAction.TYPE_CHOICES -> {
                     //todo determine other situations where getting a curse would be best
-                    val choice = if (game.supply[Card.CURSE_ID] == 0) {
+                    val choice = if (game.supply[Curse.NAME] == 0) {
                         "curse"
                     } else {
                         "discard"
@@ -141,16 +142,16 @@ object IntrigueComputerCardActionHandler {
                 OldCardAction.TYPE_TRASH_CARDS_FROM_HAND -> CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToTrash(oldCardAction.cards, oldCardAction.numCards), null, null, -1)
                 else -> {
                     val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                    val cardIds = ArrayList<Int>()
-                    cardIds.add(cardToGain!!.cardId)
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    val cardNames = ArrayList<String>()
+                    cardNames.add(cardToGain!!.name)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
             }
             "Wishing Well" -> {
                 //todo determine which card is most likely to show up
-                val cardIds = ArrayList<Int>()
-                cardIds.add(Card.COPPER_ID)
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = ArrayList<String>()
+                cardNames.add(Copper.NAME)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             else -> throw RuntimeException("Intrigue Card Action not handled for card: " + oldCardAction.cardName + " and type: " + oldCardAction.type)
         }

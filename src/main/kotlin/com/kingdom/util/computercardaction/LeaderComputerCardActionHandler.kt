@@ -18,20 +18,20 @@ object LeaderComputerCardActionHandler {
                 val cards = ArrayList(oldCardAction.cards)
                 Collections.shuffle(cards)
 
-                val cardIds = (0 until oldCardAction.numCards).map { cards[it].cardId }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = (0 until oldCardAction.numCards).map { cards[it].name }
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Bilkis" -> {
                 val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                val cardIds = ArrayList<Int>()
-                cardIds.add(cardToGain!!.cardId)
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = ArrayList<String>()
+                cardNames.add(cardToGain!!.name)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Plato" -> {
-                val cardsToTrash = ArrayList<Int>()
+                val cardsToTrash = ArrayList<String>()
                 for (card in oldCardAction.cards) {
                     if (computer.isCardToTrash(card)) {
-                        cardsToTrash.add(card.cardId)
+                        cardsToTrash.add(card.name)
                     }
                     if (cardsToTrash.size == 2) {
                         break

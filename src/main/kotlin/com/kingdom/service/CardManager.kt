@@ -31,10 +31,6 @@ class CardManager(private val cardRepository: CardRepository,
         return getCardsByDeck(deck, includeTesting)
     }
 
-    fun getCard(cardId: Int): Card {
-        return cardRepository.findById(cardId).get()
-    }
-
     fun getCard(cardName: String): Card {
         return cardRepository.findByName(cardName)
     }
@@ -47,12 +43,12 @@ class CardManager(private val cardRepository: CardRepository,
         cardRandomizer.setRandomKingdomCards(game, game.randomizingOptions!!)
     }
 
-    fun swapRandomCard(game: Game, cardId: Int) {
-        cardRandomizer.swapRandomCard(game, cardId)
+    fun swapRandomCard(game: Game, cardName: String) {
+        cardRandomizer.swapRandomCard(game, cardName)
     }
 
-    fun swapForTypeOfCard(game: Game, cardId: Int, cardType: String) {
-        cardRandomizer.swapCard(game, cardId, cardType)
+    fun swapForTypeOfCard(game: Game, cardName: String, cardType: String) {
+        cardRandomizer.swapCard(game, cardName, cardType)
     }
 
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {

@@ -103,7 +103,7 @@ object ProletariatSpecialActionHandler {
                 game.addHistory(player!!.username, " returned ", KingdomUtil.getCardWithBackgroundColor(card), " to the supply")
                 game.removePlayedCard(card)
                 game.playerLostCard(player, card)
-                game.addToSupply(card.cardId)
+                game.addToSupply(card.name)
             }
             "Trainee" -> if (!player!!.hand.isEmpty()) {
                 val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)

@@ -124,11 +124,11 @@ object ChoicesHandler {
                 }
             }
             "Explorer" -> when (choice) {
-                "gold" -> if (game.isCardInSupply(Card.GOLD_ID)) {
+                "gold" -> if (game.isCardInSupply(Gold.NAME)) {
                     game.playerGainedCardToHand(player, game.goldCard)
                     game.refreshHand(player)
                 }
-                "silver" -> if (game.isCardInSupply(Card.SILVER_ID)) {
+                "silver" -> if (game.isCardInSupply(Silver.NAME)) {
                     game.playerGainedCardToHand(player, game.silverCard)
                     game.refreshHand(player)
                 }
@@ -146,13 +146,13 @@ object ChoicesHandler {
                 }
                 "money" -> {
                     game.addHistory(player.username, " chose Silver and Gold")
-                    if (game.supply[Card.GOLD_ID]!! > 0) {
+                    if (game.supply[Gold.NAME]!! > 0) {
                         game.playerGainedCard(player, game.goldCard)
                     }
                     var playerIndex = game.calculateNextPlayerIndex(game.currentPlayerIndex)
                     while (playerIndex != game.currentPlayerIndex) {
                         val nextPlayer = players[playerIndex]
-                        if (game.supply[Card.SILVER_ID]!! > 0) {
+                        if (game.supply[Silver.NAME]!! > 0) {
                             game.playerGainedCard(nextPlayer, game.silverCard)
                         }
                         playerIndex = game.calculateNextPlayerIndex(playerIndex)
@@ -329,7 +329,7 @@ object ChoicesHandler {
                         game.addHistory(player.username, " chose to return ", KingdomUtil.getCardWithBackgroundColor(card), " to the supply")
                         game.removePlayedCard(card)
                         game.playerLostCard(player, card)
-                        game.addToSupply(card.cardId)
+                        game.addToSupply(card.name)
                     }
                 }
 
@@ -386,15 +386,15 @@ object ChoicesHandler {
             }
             "Mountebank" -> when (choice) {
                 "discard" -> {
-                    player.discardCardFromHand(Card.CURSE_ID)
+                    player.discardCardFromHand(Curse.NAME)
                     game.addHistory(player.username, " discarded a ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " card")
                     game.refreshHandArea(player)
                 }
                 "gain" -> {
-                    if (game.isCardInSupply(Card.CURSE_ID)) {
+                    if (game.isCardInSupply(Curse.NAME)) {
                         game.playerGainedCard(player, game.curseCard)
                     }
-                    if (game.isCardInSupply(Card.COPPER_ID)) {
+                    if (game.isCardInSupply(Copper.NAME)) {
                         game.playerGainedCard(player, game.copperCard)
                     }
                     game.refreshDiscard(player)
@@ -682,7 +682,7 @@ object ChoicesHandler {
                     }
                 }
 
-                val cursesRemaining = game.supply[Card.CURSE_ID]!!
+                val cursesRemaining = game.supply[Curse.NAME]!!
                 if (cursesRemaining > 0 && oldCardAction.phase > 1) {
                     game.playerGainedCard(player, game.curseCard)
                 }
@@ -825,7 +825,7 @@ object ChoicesHandler {
                 }
                 "curse" -> {
                     game.addHistory(player.username, " chose to gain a ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR))
-                    if (game.isCardInSupply(Card.CURSE_ID)) {
+                    if (game.isCardInSupply(Curse.NAME)) {
                         game.playerGainedCardToHand(player, game.curseCard)
                         player.addCardToHand(game.curseCard)
                         game.refreshHand(player)
@@ -852,7 +852,7 @@ object ChoicesHandler {
                     }
                 }
                 "duchy" -> when {
-                    game.isCardInSupply(Card.DUCHY_ID) -> {
+                    game.isCardInSupply(Duchy.NAME) -> {
                         game.playerGainedCardToTopOfDeck(player, game.duchyCard)
                         game.addHistory(player.username, " chose to gain a ", KingdomUtil.getCardWithBackgroundColor(game.duchyCard))
                     }
@@ -864,7 +864,7 @@ object ChoicesHandler {
                 when (choice) {
                     "silver" -> {
                         game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Trader", Card.ACTION_REACTION_COLOR), " to gain ", KingdomUtil.getArticleWithCardName(game.silverCard), " instead")
-                        if (game.supply[Card.SILVER_ID]!! > 0) {
+                        if (game.supply[Silver.NAME]!! > 0) {
                             game.playerGainedCard(player, game.silverCard)
                         }
                     }
@@ -895,7 +895,7 @@ object ChoicesHandler {
             }
             "Young Witch" -> when (choice) {
                 "reveal" -> game.addHistory(player.username, " revealed a Bane card")
-                "curse" -> if (game.supply[Card.CURSE_ID]!! > 0) {
+                "curse" -> if (game.supply[Curse.NAME]!! > 0) {
                     game.playerGainedCard(player, game.curseCard)
                 }
             }

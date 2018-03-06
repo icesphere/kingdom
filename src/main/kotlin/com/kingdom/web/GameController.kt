@@ -255,7 +255,7 @@ class GameController(private var cardManager: CardManager,
                     val kingdomCards = ArrayList<Card>()
                     for (cardString in cards.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
                         val card = if (generateType == "annotatedGame") {
-                            cardManager.getCard(Integer.parseInt(cardString))
+                            cardManager.getCard(cardString)
                         } else {
                             cardManager.getCard(cardString)
                         }
@@ -315,13 +315,13 @@ class GameController(private var cardManager: CardManager,
                     }
                 }
                 name.startsWith("card_") -> {
-                    val cardId = Integer.parseInt(name.substring(5))
-                    val card = cardManager.getCard(cardId)
+                    val cardName = name.substring(5)
+                    val card = cardManager.getCard(cardName)
                     customSelection.add(card)
                 }
                 name.startsWith("excluded_card_") -> {
-                    val cardId = Integer.parseInt(name.substring(14))
-                    val card = cardManager.getCard(cardId)
+                    val cardName = name.substring(14)
+                    val card = cardManager.getCard(cardName)
                     excludedCards.add(card)
                 }
             }
@@ -455,7 +455,7 @@ class GameController(private var cardManager: CardManager,
         }
         try {
             return if (game.status == Game.STATUS_GAME_BEING_CONFIGURED) {
-                cardManager.swapRandomCard(game, Integer.parseInt(request.getParameter("cardId")))
+                cardManager.swapRandomCard(game, request.getParameter("cardName"))
                 confirmCards(request, response)
             } else {
                 if (game.status == Game.STATUS_GAME_IN_PROGRESS) {
@@ -479,7 +479,7 @@ class GameController(private var cardManager: CardManager,
         }
         try {
             return if (game.status == Game.STATUS_GAME_BEING_CONFIGURED) {
-                cardManager.swapForTypeOfCard(game, Integer.parseInt(request.getParameter("cardId")), request.getParameter("cardType"))
+                cardManager.swapForTypeOfCard(game, request.getParameter("cardName"), request.getParameter("cardType"))
                 confirmCards(request, response)
             } else {
                 if (game.status == Game.STATUS_GAME_IN_PROGRESS) {
@@ -956,14 +956,14 @@ class GameController(private var cardManager: CardManager,
         }
         try {
             val clickType = request.getParameter("clickType")
-            if (request.getParameter("cardId") != null) {
-                val cardId = Integer.parseInt(request.getParameter("cardId"))
+            val cardName = request.getParameter("cardName")
+            if (cardName != null) {
                 val player = game.playerMap[user.userId]
                 if (player == null) {
                     model.put("redirectToLobby", true)
                     return model
                 }
-                game.cardClicked(player, clickType, cardId)
+                game.cardClicked(player, clickType, cardName)
                 game.closeLoadingDialog(player)
             }
         } catch (t: Throwable) {
@@ -1071,9 +1071,9 @@ class GameController(private var cardManager: CardManager,
                         val selectedCardsString = request.getParameter("selectedCards")
                         val selectedCardsStrings = selectedCardsString.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                         val selectedCardIds = ArrayList<Int>()
-                        for (cardId in selectedCardsStrings) {
-                            if (cardId != "") {
-                                selectedCardIds.add(Integer.parseInt(cardId))
+                        for (cardName in selectedCardsStrings) {
+                            if (cardName != "") {
+                                selectedCardIds.add(Integer.parseInt(cardName))
                             }
                         }
                         game.cardActionSubmitted(player, selectedCardIds, null, null, -1)
@@ -2115,13 +2115,13 @@ class GameController(private var cardManager: CardManager,
             return KingdomUtil.getLoginModelAndView(request)
         }
 
-        val cardsIds = ArrayList<String>()
+        val cardsNames = ArrayList<String>()
         val parameterNames = request.parameterNames
         while (parameterNames.hasMoreElements()) {
             val name = parameterNames.nextElement() as String
             if (name.startsWith("card_")) {
-                val cardId = Integer.parseInt(name.substring(5))
-                cardsIds.add(cardId.toString())
+                val cardName = name.substring(5)
+                cardsNames.add(cardName)
             }
         }
         val game: AnnotatedGame
@@ -2132,7 +2132,7 @@ class GameController(private var cardManager: CardManager,
             game = gameManager.getAnnotatedGame(Integer.parseInt(id))
         }
         game.title = request.getParameter("title")
-        game.cards = KingdomUtil.implode(cardsIds, ",")
+        game.cards = KingdomUtil.implode(cardsNames, ",")
         game.includeColonyAndPlatinum = KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")
         gameManager.saveAnnotatedGame(game)
         return annotatedGames(request, response)
@@ -2165,8 +2165,8 @@ class GameController(private var cardManager: CardManager,
             game = AnnotatedGame()
         } else {
             game = gameManager.getAnnotatedGame(Integer.parseInt(id))
-            for (cardId in game.cards.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                val card = cardManager.getCard(Integer.parseInt(cardId))
+            for (cardName in game.cards.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+                val card = cardManager.getCard(cardName)
                 selectedCards.add(card.name)
             }
         }
@@ -2234,8 +2234,8 @@ class GameController(private var cardManager: CardManager,
                 val name = parameterNames.nextElement() as String
                 if (name.startsWith("card_") && name.endsWith("_" + player.userId)) {
                     val ids = name.substring(5)
-                    val cardId = Integer.parseInt(ids.substring(0, ids.indexOf("_")))
-                    val card = game.supplyMap[cardId]!!
+                    val cardName = ids.substring(0, ids.indexOf("_"))
+                    val card = game.supplyMap[cardName]!!
                     val numCards = KingdomUtil.getRequestInt(request, name, 0)
                     for (i in 0 until numCards) {
                         player.addCardToHand(card)

@@ -3,6 +3,7 @@ package com.kingdom.model.computer
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.supply.*
 import com.kingdom.util.CardCostComparator
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.computercardaction.*
@@ -36,7 +37,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
     private var dukesBought = 0
     private var kingsCourtsBought = 0
     private var throneRoomsBought = 0
-    private var cardsGained: MutableMap<Int, Int> = HashMap()
+    private var cardsGained: MutableMap<String, Int> = HashMap()
     private var playAllTreasureCards = true
     private var actionsBought = 0
     private var treasureCardsBought = 0
@@ -213,7 +214,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
     }
 
     fun gainedCard(card: Card) {
-        var numBought: Int? = cardsGained[card.cardId]
+        var numBought: Int? = cardsGained[card.name]
         if (numBought == null) {
             numBought = 0
         }
@@ -246,7 +247,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
                 duchiesBought++
             }
         }
-        cardsGained.put(card.cardId, numBought)
+        cardsGained.put(card.name, numBought)
     }
 
     private fun playAction() {
@@ -371,14 +372,14 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
 
     fun onlyBuyVictoryCards(): Boolean {
         var onlyBuyVictoryCards = false
-        val provincesInSupply = game.supply[Card.PROVINCE_ID]
+        val provincesInSupply = game.supply[Province.NAME]
         if (provincesInSupply == null) {
             val error = GameError(GameError.COMPUTER_ERROR, "Supply was null for Province")
             game.logError(error)
         }
-        if (game.numPlayers == 2 && game.supply[Card.PROVINCE_ID]!! <= 2 || game.numPlayers > 2 && game.supply[Card.PROVINCE_ID]!! <= 3) {
+        if (game.numPlayers == 2 && game.supply[Province.NAME]!! <= 2 || game.numPlayers > 2 && game.supply[Province.NAME]!! <= 3) {
             onlyBuyVictoryCards = true
-        } else if (game.isIncludeColonyCards && (game.numPlayers == 2 && game.supply[Card.COLONY_ID]!! <= 2 || game.numPlayers > 2 && game.supply[Card.COLONY_ID]!! <= 3)) {
+        } else if (game.isIncludeColonyCards && (game.numPlayers == 2 && game.supply[Colony.NAME]!! <= 2 || game.numPlayers > 2 && game.supply[Colony.NAME]!! <= 3)) {
             onlyBuyVictoryCards = true
         } else if (difficulty >= 2) {
             var pilesWithOneCard = 0
@@ -410,12 +411,12 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return null
         }
 
-        if (game.isUsePotions && player.coins == 4 && potionsBought == 0 && !kingdomCardMap.containsKey("Black Market") && (!game.isShowTrollTokens || game.numTrollTokens(Card.POTION_ID) == 0)) {
+        if (game.isUsePotions && player.coins == 4 && potionsBought == 0 && !kingdomCardMap.containsKey("Black Market") && (!game.isShowTrollTokens || game.numTrollTokens(Potion.NAME) == 0)) {
             potionsBought++
-            return game.cardMap[Card.POTION_ID]
+            return game.cardMap[Potion.NAME]
         }
 
-        if (chapelStrategy && cardsGained[getKingdomCard("Chapel").cardId] == null && (player.coins == 3 && silversBought > 0 || player.coins == 2) && (!game.isTrackContrabandCards || !game.contrabandCards.contains(getKingdomCard("Chapel")))) {
+        if (chapelStrategy && cardsGained[getKingdomCard("Chapel").name] == null && (player.coins == 3 && silversBought > 0 || player.coins == 2) && (!game.isTrackContrabandCards || !game.contrabandCards.contains(getKingdomCard("Chapel")))) {
             return getKingdomCard("Chapel")
         }
         if (chapelStrategy && player.coins <= 3 && silversBought < 2 && goldsBought == 0 && game.canBuyCard(player, game.silverCard)) {
@@ -437,7 +438,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             }
         }
         if (dukeStrategy) {
-            val duchiesInSupply = game.supply[Card.DUCHY_ID]!!
+            val duchiesInSupply = game.supply[Duchy.NAME]!!
             if (duchiesInSupply > 0 && (player.turns > 8 || duchiesInSupply <= 6) && player.coins >= game.getCardCostBuyPhase(game.duchyCard)) {
                 if (duchiesBought < 4 || duchiesBought <= dukesBought && (!game.isTrackContrabandCards || !game.contrabandCards.contains(game.duchyCard))) {
                     return game.duchyCard
@@ -493,9 +494,9 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         val winning = game.currentlyWinning(player.userId)
 
         if (onlyBuyVictoryCards() && (winning || losingMargin < 6)) {
-            for (cardId in game.supply.keys) {
-                val card = game.supplyMap[cardId]!!
-                if (game.buyingCardWillEndGame(cardId) && game.canBuyCard(player, card)
+            for (cardName in game.supply.keys) {
+                val card = game.supplyMap[cardName]!!
+                if (game.buyingCardWillEndGame(cardName) && game.canBuyCard(player, card)
                         && (winning || card.victoryPoints > losingMargin)) {
                     return card
                 }
@@ -503,13 +504,13 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         }
 
         if (game.isIncludeColonyCards && player.coins >= game.getCardCostBuyPhase(game.colonyCard) && game.canBuyCard(player, game.colonyCard)) {
-            if (!game.buyingCardWillEndGame(Card.COLONY_ID) || game.currentlyWinning(player.userId) || losingMargin < 10) {
+            if (!game.buyingCardWillEndGame(Colony.NAME) || game.currentlyWinning(player.userId) || losingMargin < 10) {
                 return game.colonyCard
             }
         }
 
         if (game.isIncludePlatinumCards && platinumsBought <= 1 && !onlyBuyVictoryCards() && player.coins >= game.getCardCostBuyPhase(game.platinumCard) && game.canBuyCard(player, game.platinumCard)) {
-            if (!game.buyingCardWillEndGame(Card.PLATINUM_ID) || game.currentlyWinning(player.userId)) {
+            if (!game.buyingCardWillEndGame(Platinum.NAME) || game.currentlyWinning(player.userId)) {
                 return game.platinumCard
             }
         }
@@ -524,49 +525,49 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         }
 
         if (goldsBought >= 1 && player.coins >= game.getCardCostBuyPhase(game.provinceCard) && game.canBuyCard(player, game.provinceCard)) {
-            if (!game.buyingCardWillEndGame(Card.PROVINCE_ID) || game.currentlyWinning(player.userId) || losingMargin < 6) {
+            if (!game.buyingCardWillEndGame(Province.NAME) || game.currentlyWinning(player.userId) || losingMargin < 6) {
                 return game.provinceCard
             }
         }
 
         if (haremStrategy && goldsBought >= 2 && player.coins >= game.getCardCostBuyPhase(game.goldCard) && game.canBuyCard(player, getKingdomCard("Harem"))) {
-            if (!game.buyingCardWillEndGame(getKingdomCard("Harem").cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
+            if (!game.buyingCardWillEndGame("Harem") || game.currentlyWinning(player.userId) || losingMargin < 2) {
                 return getKingdomCard("Harem")
             }
         }
 
-        if (kingdomCardMap.containsKey("Farmland") && game.supply[Card.PROVINCE_ID]!! <= 5 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Farmland")) && game.canBuyCard(player, getKingdomCard("Farmland"))) {
-            if (!game.buyingCardWillEndGame(getKingdomCard("Farmland").cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
+        if (kingdomCardMap.containsKey("Farmland") && game.supply[Province.NAME]!! <= 5 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Farmland")) && game.canBuyCard(player, getKingdomCard("Farmland"))) {
+            if (!game.buyingCardWillEndGame("Farmland") || game.currentlyWinning(player.userId) || losingMargin < 2) {
                 return getKingdomCard("Farmland")
             }
         }
 
-        if (game.supply[Card.PROVINCE_ID]!! <= 5 && player.coins >= game.getCardCostBuyPhase(game.duchyCard) && game.canBuyCard(player, game.duchyCard)) {
-            if (!game.buyingCardWillEndGame(Card.DUCHY_ID) || game.currentlyWinning(player.userId) || losingMargin < 3) {
+        if (game.supply[Province.NAME]!! <= 5 && player.coins >= game.getCardCostBuyPhase(game.duchyCard) && game.canBuyCard(player, game.duchyCard)) {
+            if (!game.buyingCardWillEndGame(Duchy.NAME) || game.currentlyWinning(player.userId) || losingMargin < 3) {
                 return game.duchyCard
             }
         }
 
-        if (kingdomCardMap.containsKey("Nobles") && game.supply[Card.PROVINCE_ID]!! <= 3 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Nobles")) && game.canBuyCard(player, getKingdomCard("Nobles"))) {
-            if (!game.buyingCardWillEndGame(getKingdomCard("Nobles").cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
+        if (kingdomCardMap.containsKey("Nobles") && game.supply[Province.NAME]!! <= 3 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Nobles")) && game.canBuyCard(player, getKingdomCard("Nobles"))) {
+            if (!game.buyingCardWillEndGame("Nobles") || game.currentlyWinning(player.userId) || losingMargin < 2) {
                 return getKingdomCard("Nobles")
             }
         }
 
-        if (kingdomCardMap.containsKey("Island") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Island")) && game.canBuyCard(player, getKingdomCard("Island"))) {
-            if (!game.buyingCardWillEndGame(getKingdomCard("Island").cardId) || game.currentlyWinning(player.userId) || losingMargin < 2) {
+        if (kingdomCardMap.containsKey("Island") && game.supply[Province.NAME]!! <= 2 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Island")) && game.canBuyCard(player, getKingdomCard("Island"))) {
+            if (!game.buyingCardWillEndGame("Island") || game.currentlyWinning(player.userId) || losingMargin < 2) {
                 return getKingdomCard("Island")
             }
         }
 
-        if (kingdomCardMap.containsKey("Great Hall") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Great Hall")) && game.canBuyCard(player, getKingdomCard("Great Hall"))) {
-            if (!game.buyingCardWillEndGame(getKingdomCard("Great Hall").cardId) || game.currentlyWinning(player.userId)) {
+        if (kingdomCardMap.containsKey("Great Hall") && game.supply[Province.NAME]!! <= 2 && player.coins >= game.getCardCostBuyPhase(getKingdomCard("Great Hall")) && game.canBuyCard(player, getKingdomCard("Great Hall"))) {
+            if (!game.buyingCardWillEndGame("Great Hall") || game.currentlyWinning(player.userId)) {
                 return getKingdomCard("Great Hall")
             }
         }
 
-        if (game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= game.getCardCostBuyPhase(game.estateCard) && game.canBuyCard(player, game.estateCard)) {
-            if (!game.buyingCardWillEndGame(Card.ESTATE_ID) || game.currentlyWinning(player.userId) || losingMargin < 2) {
+        if (game.supply[Province.NAME]!! <= 2 && player.coins >= game.getCardCostBuyPhase(game.estateCard) && game.canBuyCard(player, game.estateCard)) {
+            if (!game.buyingCardWillEndGame(Estate.NAME) || game.currentlyWinning(player.userId) || losingMargin < 2) {
                 return game.estateCard
             }
         }
@@ -575,7 +576,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return buyCardBigMoneyUltimate()
         }
 
-        if (trashingStrategy && cardsGained[trashingCard!!.cardId] == null && player.coins == game.getCardCostBuyPhase(trashingCard!!) && game.canBuyCard(player, trashingCard!!)) {
+        if (trashingStrategy && cardsGained[trashingCard!!.name] == null && player.coins == game.getCardCostBuyPhase(trashingCard!!) && game.canBuyCard(player, trashingCard!!)) {
             return trashingCard
         }
 
@@ -615,19 +616,19 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return game.provinceCard
         }
 
-        if (game.supply[Card.PROVINCE_ID]!! <= 5 && player.coins >= 5 && game.canBuyCard(player, game.duchyCard)) {
+        if (game.supply[Province.NAME]!! <= 5 && player.coins >= 5 && game.canBuyCard(player, game.duchyCard)) {
             return game.duchyCard
         }
 
-        if (kingdomCardMap.containsKey("Island") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= 4 && game.canBuyCard(player, getKingdomCard("Island"))) {
+        if (kingdomCardMap.containsKey("Island") && game.supply[Province.NAME]!! <= 2 && player.coins >= 4 && game.canBuyCard(player, getKingdomCard("Island"))) {
             return getKingdomCard("Island")
         }
 
-        if (kingdomCardMap.containsKey("Great Hall") && game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= 3 && game.canBuyCard(player, getKingdomCard("Great Hall"))) {
+        if (kingdomCardMap.containsKey("Great Hall") && game.supply[Province.NAME]!! <= 2 && player.coins >= 3 && game.canBuyCard(player, getKingdomCard("Great Hall"))) {
             return getKingdomCard("Great Hall")
         }
 
-        if (game.supply[Card.PROVINCE_ID]!! <= 2 && player.coins >= 2 && game.canBuyCard(player, game.estateCard)) {
+        if (game.supply[Province.NAME]!! <= 2 && player.coins >= 2 && game.canBuyCard(player, game.estateCard)) {
             return game.estateCard
         }
 
@@ -660,7 +661,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             if (cards != null) {
                 val availableCards = ArrayList<Card>()
                 for (card in cards) {
-                    val numInSupply = game.supply[card.cardId]
+                    val numInSupply = game.supply[card.name]
                     if (numInSupply == null) {
                         val error = GameError(GameError.COMPUTER_ERROR, "Supply was null for " + card.name)
                         game.logError(error, false)
@@ -694,7 +695,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
 
         if (card.name == "Grand Market") {
             for (treasureCard in game.treasureCardsPlayed) {
-                if (treasureCard.cardId == Card.COPPER_ID) {
+                if (treasureCard.isCopper) {
                     return true
                 }
             }
@@ -723,14 +724,14 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         }
 
         if (game.isShowEmbargoTokens ) {
-            val embargoTokens = game.embargoTokens[card.cardId]!!
+            val embargoTokens = game.embargoTokens[card.name]!!
             if (embargoTokens > 0) {
                 if (embargoTokens > 2 || !card.isProvince && !card.isColony) {
                     return true
                 }
             }
         }
-        if (!card.isVictory && !card.isTreasure && card.cost < 5 && cardsGained[card.cardId] != null && cardsGained[card.cardId]!! >= 3) {
+        if (!card.isVictory && !card.isTreasure && card.cost < 5 && cardsGained[card.name] != null && cardsGained[card.name]!! >= 3) {
             return true
         } else if (chapelStrategy && card.name == "Counting House") {
             return true
@@ -784,7 +785,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return true
         }
 
-        if (game.buyingCardWillEndGame(card.cardId) && !game.currentlyWinning(player.userId)) {
+        if (game.buyingCardWillEndGame(card.name) && !game.currentlyWinning(player.userId)) {
             return true
         } else if (card.isVictoryOnly) {
             return true
@@ -804,7 +805,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             return true
         } else if (!bigActionsStrategy && card.isAction && !card.isVictory && actionsBought >= 5) {
             return true
-        } else if (card.name == "Expand" && cardsGained[getKingdomCard("Expand").cardId] != null) {
+        } else if (card.name == "Expand" && cardsGained["Expand"] != null) {
             return true
         } else if (bigMoneyStrategy && card.isExtraActionsCard) {
             return true
@@ -968,7 +969,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         return topDeckCard
     }
 
-    fun getCardToPass(cards: List<Card>): Int? {
+    fun getCardToPass(cards: List<Card>): String? {
         return getCardsToTrash(cards, 1)[0]
     }
 
@@ -1018,19 +1019,19 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
 
     fun isCardToTrash(card: Card): Boolean {
         var shouldTrash = false
-        if (card.isCurseOnly || card.isCopper && shouldTrashCopper() || card.cardId == Card.ESTATE_ID && player.turns <= 10) {
+        if (card.isCurseOnly || card.isCopper && shouldTrashCopper() || card.name == Estate.NAME && player.turns <= 10) {
             shouldTrash = true
         }
         return shouldTrash
     }
 
     @JvmOverloads
-    fun getCardsToDiscard(cards: List<Card>, numCardsToDiscard: Int, includeVictoryCards: Boolean = true): List<Int> {
-        val cardsToDiscard = ArrayList<Int>()
+    fun getCardsToDiscard(cards: List<Card>, numCardsToDiscard: Int, includeVictoryCards: Boolean = true): List<String> {
+        val cardsToDiscard = ArrayList<String>()
         //discard Curses first
         for (card in cards) {
             if (card.isCurseOnly) {
-                cardsToDiscard.add(Card.CURSE_ID)
+                cardsToDiscard.add(Curse.NAME)
                 if (cardsToDiscard.size == numCardsToDiscard) {
                     break
                 }
@@ -1040,7 +1041,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         if (includeVictoryCards && cardsToDiscard.size < numCardsToDiscard) {
             for (card in cards) {
                 if (card.isVictoryOnly) {
-                    cardsToDiscard.add(card.cardId)
+                    cardsToDiscard.add(card.name)
                 }
                 if (cardsToDiscard.size == numCardsToDiscard) {
                     break
@@ -1051,7 +1052,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         if (cardsToDiscard.size < numCardsToDiscard) {
             for (card in cards) {
                 if (card.isCopper) {
-                    cardsToDiscard.add(Card.COPPER_ID)
+                    cardsToDiscard.add(Copper.NAME)
                 }
                 if (cardsToDiscard.size == numCardsToDiscard) {
                     break
@@ -1062,14 +1063,14 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         if (cardsToDiscard.size < numCardsToDiscard) {
             val uselessAction = getUselessAction(cards)
             if (uselessAction != null) {
-                cardsToDiscard.add(uselessAction.cardId)
+                cardsToDiscard.add(uselessAction.name)
             }
         }
         //next discard lowest cost cards
         if (cardsToDiscard.size < numCardsToDiscard) {
             val extraCards = ArrayList<Card>()
             for (card in cards) {
-                if (!cardsToDiscard.contains(card.cardId)) {
+                if (!cardsToDiscard.contains(card.name)) {
                     extraCards.add(card)
                 }
             }
@@ -1077,7 +1078,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             val ccc = CardCostComparator()
             Collections.sort(extraCards, ccc)
             for (card in extraCards) {
-                cardsToDiscard.add(card.cardId)
+                cardsToDiscard.add(card.name)
                 if (cardsToDiscard.size == numCardsToDiscard) {
                     break
                 }
@@ -1086,12 +1087,12 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         return cardsToDiscard
     }
 
-    fun getCardsToTrash(cards: List<Card>, numCardsToTrash: Int): List<Int> {
-        val cardsToTrash = ArrayList<Int>()
+    fun getCardsToTrash(cards: List<Card>, numCardsToTrash: Int): List<String> {
+        val cardsToTrash = ArrayList<String>()
         //trash Curses first
         for (card in cards) {
             if (card.isCurseOnly) {
-                cardsToTrash.add(Card.CURSE_ID)
+                cardsToTrash.add(Curse.NAME)
                 if (cardsToTrash.size == numCardsToTrash) {
                     break
                 }
@@ -1101,7 +1102,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         if (cardsToTrash.size < numCardsToTrash) {
             for (card in cards) {
                 if (card.isEstate && player.turns < 10) {
-                    cardsToTrash.add(card.cardId)
+                    cardsToTrash.add(card.name)
                 }
                 if (cardsToTrash.size == numCardsToTrash) {
                     break
@@ -1112,7 +1113,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         if (cardsToTrash.size < numCardsToTrash) {
             for (card in cards) {
                 if (card.isCopper) {
-                    cardsToTrash.add(Card.COPPER_ID)
+                    cardsToTrash.add(Copper.NAME)
                 }
                 if (cardsToTrash.size == numCardsToTrash) {
                     break
@@ -1123,7 +1124,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         if (cardsToTrash.size < numCardsToTrash) {
             val extraCards = ArrayList<Card>()
             for (card in cards) {
-                if (!cardsToTrash.contains(card.cardId)) {
+                if (!cardsToTrash.contains(card.name)) {
                     extraCards.add(card)
                 }
             }
@@ -1131,7 +1132,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             val ccc = CardCostComparator()
             Collections.sort(extraCards, ccc)
             for (card in extraCards) {
-                cardsToTrash.add(card.cardId)
+                cardsToTrash.add(card.name)
                 if (cardsToTrash.size == numCardsToTrash) {
                     break
                 }
@@ -1140,15 +1141,15 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         return cardsToTrash
     }
 
-    fun getCardsNotNeeded(cards: List<Card>, numCardsNotNeeded: Int): List<Int> {
-        val cardsNotNeeded = ArrayList<Int>()
+    fun getCardsNotNeeded(cards: List<Card>, numCardsNotNeeded: Int): List<String> {
+        val cardsNotNeeded = ArrayList<String>()
         val cardsCopy = ArrayList<Card>()
         cardsCopy.addAll(cards)
         val remainingCards = ArrayList<Card>()
         //add Curses first
         for (card in cardsCopy) {
             if (card.isCurseOnly) {
-                cardsNotNeeded.add(Card.CURSE_ID)
+                cardsNotNeeded.add(Curse.NAME)
                 if (cardsNotNeeded.size == numCardsNotNeeded) {
                     break
                 }
@@ -1163,7 +1164,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             remainingCards.clear()
             for (card in cardsCopy) {
                 if (card.isVictoryOnly) {
-                    cardsNotNeeded.add(card.cardId)
+                    cardsNotNeeded.add(card.name)
                     if (cardsNotNeeded.size == numCardsNotNeeded) {
                         break
                     }
@@ -1179,7 +1180,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             remainingCards.clear()
             var uselessAction = getUselessAction(cardsCopy)
             while (uselessAction != null) {
-                cardsNotNeeded.add(uselessAction.cardId)
+                cardsNotNeeded.add(uselessAction.name)
                 if (cardsNotNeeded.size == numCardsNotNeeded) {
                     break
                 }
@@ -1191,7 +1192,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         if (cardsNotNeeded.size < numCardsNotNeeded) {
             for (card in cardsCopy) {
                 if (card.isCopper) {
-                    cardsNotNeeded.add(Card.COPPER_ID)
+                    cardsNotNeeded.add(Copper.NAME)
                     if (cardsNotNeeded.size == numCardsNotNeeded) {
                         break
                     }
@@ -1205,7 +1206,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             val ccc = CardCostComparator()
             Collections.sort(remainingCards, ccc)
             for (card in remainingCards) {
-                cardsNotNeeded.add(card.cardId)
+                cardsNotNeeded.add(card.name)
                 if (cardsNotNeeded.size == numCardsNotNeeded) {
                     break
                 }

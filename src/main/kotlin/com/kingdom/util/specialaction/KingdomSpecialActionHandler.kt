@@ -378,7 +378,7 @@ object KingdomSpecialActionHandler {
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
                         game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
-                        if (game.isCardInSupply(Card.CURSE_ID)) {
+                        if (game.isCardInSupply(Curse.NAME)) {
                             game.playerGainedCard(nextPlayer, game.curseCard)
                             game.refreshDiscard(nextPlayer)
                         }

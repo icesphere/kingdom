@@ -2,6 +2,7 @@ package com.kingdom.model
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.supply.*
 import com.kingdom.model.computer.*
 import com.kingdom.service.GameManager
 import com.kingdom.service.LoggedInUsers
@@ -34,19 +35,19 @@ class Game(val gameId: Int) {
     var kingdomCards: MutableList<Card> = ArrayList()
         set(value) {
             if (value.size == 11) {
-                baneCardId = value[10].cardId
+                baneCardName = value[10].name
             } else {
-                baneCardId = 0
+                baneCardName = ""
             }
             field = value
         }
     val kingdomCardMap = HashMap<String, Card>(10)
     val supplyCards = ArrayList<Card>()
-    val cardMap = HashMap<Int, Card>()
-    val supplyMap = HashMap<Int, Card>()
-    val supply = HashMap<Int, Int>()
-    val embargoTokens = HashMap<Int, Int>()
-    val trollTokens = HashMap<Int, Int>()
+    val cardMap = HashMap<String, Card>()
+    val supplyMap = HashMap<String, Card>()
+    val supply = HashMap<String, Int>()
+    val embargoTokens = HashMap<String, Int>()
+    val trollTokens = HashMap<String, Int>()
     var currentPlayerIndex = 0
         private set
     var currentPlayerId = -1
@@ -177,7 +178,7 @@ class Game(val gameId: Int) {
         private set
     private var refreshPeddler: Boolean = false
     private var royalSealCardPlayed: Boolean = false
-    val tradeRouteTokenMap = HashMap<Int, Boolean>(0)
+    val tradeRouteTokenMap = HashMap<String, Boolean>(0)
     var isTrackTradeRouteTokens: Boolean = false
         private set
     var tradeRouteTokensOnMat: Int = 0
@@ -223,7 +224,7 @@ class Game(val gameId: Int) {
         private set
     var isGainTournamentBonus: Boolean = false
     private var princessCardPlayed: Boolean = false
-    var baneCardId: Int = 0
+    var baneCardName: String = ""
         private set
     var horseTradersCard: Card? = null
         private set
@@ -252,7 +253,7 @@ class Game(val gameId: Int) {
     private var checkTrader: Boolean = false
     var crossroadsPlayed: Int = 0
         private set
-    private val cardsWithGainCardActions = HashMap<Int, Card>(0)
+    private val cardsWithGainCardActions = HashMap<String, Card>(0)
     private var trackHighway: Boolean = false
     private var highwayCardsInPlay: Int = 0
     private var trackGoons: Boolean = false
@@ -335,37 +336,37 @@ class Game(val gameId: Int) {
         get() = KingdomUtil.getTimeAgo(lastActivity!!)
 
     val estateCard: Card
-        get() = cardMap[Card.ESTATE_ID]!!
+        get() = cardMap[Estate.NAME]!!
 
     val duchyCard: Card
-        get() = cardMap[Card.DUCHY_ID]!!
+        get() = cardMap[Duchy.NAME]!!
 
     val provinceCard: Card
-        get() = cardMap[Card.PROVINCE_ID]!!
+        get() = cardMap[Province.NAME]!!
 
     val colonyCard: Card
-        get() = cardMap[Card.COLONY_ID]!!
+        get() = cardMap[Colony.NAME]!!
 
     val copperCard: Card
-        get() = cardMap[Card.COPPER_ID]!!
+        get() = cardMap[Copper.NAME]!!
 
     val silverCard: Card
-        get() = cardMap[Card.SILVER_ID]!!
+        get() = cardMap[Silver.NAME]!!
 
     val goldCard: Card
-        get() = cardMap[Card.GOLD_ID]!!
+        get() = cardMap[Gold.NAME]!!
 
     val platinumCard: Card
-        get() = cardMap[Card.PLATINUM_ID]!!
+        get() = cardMap[Platinum.NAME]!!
 
     val curseCard: Card
-        get() = cardMap[Card.CURSE_ID]!!
+        get() = cardMap[Curse.NAME]!!
 
     val availableTreasureCardsInSupply: List<Card>
         get() {
             val cards = ArrayList<Card>()
             for (card in supplyMap.values) {
-                val numInSupply = getNumInSupply(card.cardId)
+                val numInSupply = getNumInSupply(card.name)
                 if (numInSupply > 0 && card.isTreasure) {
                     cards.add(card)
                 }
@@ -408,12 +409,12 @@ class Game(val gameId: Int) {
         get() = nextActionQueue.peek()
 
     val numProvincesLeft: Int
-        get() = getNumInSupply(Card.PROVINCE_ID)
+        get() = getNumInSupply(Province.NAME)
 
     val numColoniesLeft: Int
         get() = if (!isIncludeColonyCards) {
             0
-        } else getNumInSupply(Card.COLONY_ID)
+        } else getNumInSupply(Colony.NAME)
 
     val cardWithUnfinishedGainCardActions: Card
         get() {
@@ -447,18 +448,18 @@ class Game(val gameId: Int) {
 
     private fun setupTokens() {
         if (isShowEmbargoTokens) {
-            for (cardId in cardMap.keys) {
-                embargoTokens[cardId] = 0
+            for (cardName in cardMap.keys) {
+                embargoTokens[cardName] = 0
             }
         }
         if (isShowTrollTokens) {
-            for (cardId in cardMap.keys) {
-                trollTokens[cardId] = 0
+            for (cardName in cardMap.keys) {
+                trollTokens[cardName] = 0
             }
         }
         if (isTrackTradeRouteTokens || !blackMarketCards.isEmpty()) {
             for (card in supplyMap.values) {
-                tradeRouteTokenMap[card.cardId] = card.isVictory
+                tradeRouteTokenMap[card.name] = card.isVictory
             }
         }
     }
@@ -473,77 +474,77 @@ class Game(val gameId: Int) {
                     numEachCard = 12
                 }
             }
-            supply[card.cardId] = numEachCard
+            supply[card.name] = numEachCard
         }
         if (numPlayers > 4) {
-            supply[Card.COPPER_ID] = 120
+            supply[Copper.NAME] = 120
         } else {
-            supply[Card.COPPER_ID] = 60
+            supply[Copper.NAME] = 60
         }
         if (numPlayers > 4) {
-            supply[Card.SILVER_ID] = 80
+            supply[Silver.NAME] = 80
         } else {
-            supply[Card.SILVER_ID] = 40
+            supply[Silver.NAME] = 40
         }
         if (numPlayers > 4) {
-            supply[Card.GOLD_ID] = 60
+            supply[Gold.NAME] = 60
         } else {
-            supply[Card.GOLD_ID] = 30
+            supply[Gold.NAME] = 30
         }
         if (isIncludePlatinumCards) {
-            supply[Card.PLATINUM_ID] = 12
+            supply[Platinum.NAME] = 12
         }
         if (numPlayers == 2) {
-            supply[Card.ESTATE_ID] = 8
-            supply[Card.DUCHY_ID] = 8
-            supply[Card.PROVINCE_ID] = 8
+            supply[Estate.NAME] = 8
+            supply[Duchy.NAME] = 8
+            supply[Province.NAME] = 8
             if (isIncludeColonyCards) {
-                supply[Card.COLONY_ID] = 8
+                supply[Colony.NAME] = 8
             }
-            supply[Card.CURSE_ID] = 10
+            supply[Curse.NAME] = 10
         } else if (numPlayers > 4) {
-            supply[Card.ESTATE_ID] = 12
-            supply[Card.DUCHY_ID] = 12
+            supply[Estate.NAME] = 12
+            supply[Duchy.NAME] = 12
             if (isIncludeColonyCards) {
-                supply[Card.COLONY_ID] = 12
+                supply[Colony.NAME] = 12
             }
             if (numPlayers == 5) {
-                supply[Card.PROVINCE_ID] = 15
-                supply[Card.CURSE_ID] = 40
+                supply[Province.NAME] = 15
+                supply[Curse.NAME] = 40
             } else {
-                supply[Card.PROVINCE_ID] = 18
-                supply[Card.CURSE_ID] = 50
+                supply[Province.NAME] = 18
+                supply[Curse.NAME] = 50
             }
         } else {
-            supply[Card.ESTATE_ID] = 12
-            supply[Card.DUCHY_ID] = 12
-            supply[Card.PROVINCE_ID] = 12
+            supply[Estate.NAME] = 12
+            supply[Duchy.NAME] = 12
+            supply[Province.NAME] = 12
             if (isIncludeColonyCards) {
-                supply[Card.COLONY_ID] = 12
+                supply[Colony.NAME] = 12
             }
             if (numPlayers == 3) {
-                supply[Card.CURSE_ID] = 20
+                supply[Curse.NAME] = 20
             } else {
-                supply[Card.CURSE_ID] = 30
+                supply[Curse.NAME] = 30
             }
         }
         if (isUsePotions) {
-            supply[Card.POTION_ID] = 16
+            supply[Potion.NAME] = 16
         }
     }
 
     private fun populateCardMaps() {
         for (card in kingdomCards) {
             checkCardName(card, false)
-            supplyMap[card.cardId] = card
-            cardMap[card.cardId] = card
+            supplyMap[card.name] = card
+            cardMap[card.name] = card
             if (card.cost == 2) {
                 twoCostKingdomCards++
             }
             kingdomCardMap[card.name] = card
         }
         for (card in blackMarketCards) {
-            cardMap[card.cardId] = card
+            cardMap[card.name] = card
             if (card.costIncludesPotion) {
                 isUsePotions = true
             }
@@ -555,12 +556,12 @@ class Game(val gameId: Int) {
         }
         if (isShowPrizeCards || !blackMarketCards.isEmpty()) {
             for (card in prizeCards) {
-                cardMap[card.cardId] = card
+                cardMap[card.name] = card
             }
         }
         if (isUsingLeaders) {
             for (card in availableLeaders) {
-                cardMap[card.cardId] = card
+                cardMap[card.name] = card
             }
         }
         setupSupply()
@@ -581,8 +582,8 @@ class Game(val gameId: Int) {
         }
         supplyCards.add(Card.curseCard)
         for (supplyCard in supplyCards) {
-            cardMap[supplyCard.cardId] = supplyCard
-            supplyMap[supplyCard.cardId] = supplyCard
+            cardMap[supplyCard.name] = supplyCard
+            supplyMap[supplyCard.name] = supplyCard
         }
     }
 
@@ -640,7 +641,7 @@ class Game(val gameId: Int) {
 
     private fun sortKingdomCards() {
         val ccc = CardCostComparator()
-        if (baneCardId != 0) {
+        if (baneCardName != "") {
             val baneCard = kingdomCards[10]
             val otherCards = kingdomCards.subList(0, 10)
             Collections.sort(otherCards, ccc)
@@ -715,13 +716,13 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun numTrollTokens(cardId: Int): Int {
-        return trollTokens[cardId]!!
+    fun numTrollTokens(cardName: String): Int {
+        return trollTokens[cardName]!!
     }
 
     fun canBuyCard(player: Player, card: Card): Boolean {
         val cost = getCardCost(card, player, true)
-        val numInSupply = supply[card.cardId]
+        val numInSupply = supply[card.name]
         return player.coins >= cost && (!card.costIncludesPotion || player.potions > 0) && (!isTrackContrabandCards || !contrabandCards.contains(card)) && numInSupply != null && numInSupply > 0
     }
 
@@ -750,7 +751,7 @@ class Game(val gameId: Int) {
             cost -= 2 * actionCardsInPlay
         }
         if (buyPhase && isShowTrollTokens) {
-            cost += trollTokens[card.cardId]!!
+            cost += trollTokens[card.name]!!
         }
         if (checkPlantation && card.name == "Plantation" && fruitTokensPlayed > 0) {
             cost -= fruitTokensPlayed
@@ -853,7 +854,7 @@ class Game(val gameId: Int) {
             isShowHedgeWizard = false
             isShowGoldenTouch = false
             isIdenticalStartingHands = false
-            baneCardId = 0
+            baneCardName = ""
             creatorId = 0
             creatorName = ""
             title = ""
@@ -1093,8 +1094,8 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun cardClicked(player: Player, clickType: String, cardId: Int) {
-        val card = cardMap[cardId]!!
+    fun cardClicked(player: Player, clickType: String, cardName: String) {
+        val card = cardMap[cardName]!!
         cardClicked(player, clickType, card)
     }
 
@@ -1132,7 +1133,7 @@ class Game(val gameId: Int) {
                 } else if (clickType == "supply") {
                     cardBought = buyCard(player, card, confirm)
                 } else if (clickType == "leader") {
-                    leaderActivated = activateLeader(player, card.cardId)
+                    leaderActivated = activateLeader(player, card.name)
                 }
 
                 if ((cardBought || leaderActivated) && !player.isComputer && player.buys == 0 && !player.isShowCardAction && player.extraOldCardActions.isEmpty() && !hasUnfinishedGainCardActions()) {
@@ -1152,8 +1153,8 @@ class Game(val gameId: Int) {
         }
     }
 
-    private fun activateLeader(player: Player, cardId: Int): Boolean {
-        val card = player.getLeaderCard(cardId) ?: return false
+    private fun activateLeader(player: Player, cardName: String): Boolean {
+        val card = player.getLeaderCard(cardName) ?: return false
         val cost = getCardCost(card, player, true)
         if (player.coins >= cost && player.buys > 0 && !card.isActivated && player.turns > 1) {
             if (card.isVictory) {
@@ -1206,7 +1207,7 @@ class Game(val gameId: Int) {
             removeIncompleteCard()
         }
         val cost = getCardCostBuyPhase(card)
-        if (supply[card.cardId] == null) {
+        if (supply[card.name] == null) {
             println("supply card null")
         }
         val numInSupply = getNumInSupply(card)
@@ -1243,7 +1244,7 @@ class Game(val gameId: Int) {
             }
             if (card.name == "Grand Market") {
                 for (treasureCard in treasureCardsPlayed) {
-                    if (treasureCard.cardId == Card.COPPER_ID) {
+                    if (treasureCard.isCopper) {
                         setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You can't buy this card when you have a Copper in play."))
                         return false
                     }
@@ -1285,7 +1286,7 @@ class Game(val gameId: Int) {
             playerGainedCard(player, card, "discard", true, true)
             if (card.isVictory && hoardCardsPlayed > 0) {
                 var goldsToGain = hoardCardsPlayed
-                val goldsInSupply = getNumInSupply(Card.GOLD_ID)
+                val goldsInSupply = getNumInSupply(Gold.NAME)
                 if (goldsInSupply < goldsToGain) {
                     goldsToGain = goldsInSupply
                 }
@@ -1307,11 +1308,11 @@ class Game(val gameId: Int) {
                 addHistory(player.username, " gained ", KingdomUtil.getPlural(goodwillCardsInPlay, "fruit token"))
             }
             if (isShowEmbargoTokens) {
-                val numEmbargoTokens = embargoTokens[card.cardId]!!
+                val numEmbargoTokens = embargoTokens[card.name]!!
                 if (numEmbargoTokens > 0) {
                     var curseCardsGained = 0
                     for (i in 0 until numEmbargoTokens) {
-                        val cursesInSupply = getNumInSupply(Card.CURSE_ID)
+                        val cursesInSupply = getNumInSupply(Curse.NAME)
                         if (cursesInSupply > 0) {
                             playerGainedCard(player, curseCard)
                             curseCardsGained++
@@ -1657,24 +1658,24 @@ class Game(val gameId: Int) {
         refreshAllPlayersPlayingArea()
     }
 
-    fun takeFromSupply(cardId: Int): Boolean {
-        if (supply[cardId] != null) {
-            val numInSupply = getNumInSupply(cardId) - 1
+    fun takeFromSupply(cardName: String): Boolean {
+        if (supply[cardName] != null) {
+            val numInSupply = getNumInSupply(cardName) - 1
             if (numInSupply < 0) {
                 return false
             }
-            supply[cardId] = numInSupply
+            supply[cardName] = numInSupply
             if (numInSupply == 0) {
-                val card = supplyMap[cardId]!!
+                val card = supplyMap[cardName]!!
                 emptyPiles.add(card)
                 if (card.cost == 2 && kingdomCards.contains(card)) {
                     twoCostKingdomCards--
                 }
-                if (numPlayers < 5 && emptyPiles.size == 3 || emptyPiles.size == 4 || cardId == Card.PROVINCE_ID || cardId == Card.COLONY_ID) {
+                if (numPlayers < 5 && emptyPiles.size == 3 || emptyPiles.size == 4 || cardName == Province.NAME || cardName == Colony.NAME) {
                     finishGameOnNextEndTurn = true
-                    if (cardId == Card.PROVINCE_ID) {
+                    if (cardName == Province.NAME) {
                         gameEndReason = "Province pile gone"
-                    } else if (cardId == Card.COLONY_ID) {
+                    } else if (cardName == Colony.NAME) {
                         gameEndReason = "Colony pile gone"
                     } else {
                         gameEndReason = emptyPiles.size.toString() + " piles empty (" + KingdomUtil.getCardNames(emptyPiles) + ")"
@@ -1687,15 +1688,15 @@ class Game(val gameId: Int) {
         return false
     }
 
-    fun buyingCardWillEndGame(cardId: Int): Boolean {
-        if (supply[cardId] != null) {
-            val numInSupply = getNumInSupply(cardId) - 1
+    fun buyingCardWillEndGame(cardName: String): Boolean {
+        if (supply[cardName] != null) {
+            val numInSupply = getNumInSupply(cardName) - 1
             if (numInSupply < 0) {
                 return false
             }
             if (numInSupply == 0) {
                 val numEmptyPiles = emptyPiles.size + 1
-                if (numPlayers < 5 && numEmptyPiles == 3 || numEmptyPiles == 4 || cardId == Card.PROVINCE_ID || cardId == Card.COLONY_ID) {
+                if (numPlayers < 5 && numEmptyPiles == 3 || numEmptyPiles == 4 || cardName == Province.NAME || cardName == Colony.NAME) {
                     return true
                 }
             }
@@ -1703,27 +1704,27 @@ class Game(val gameId: Int) {
         return false
     }
 
-    fun addEmbargoToken(cardId: Int) {
-        val numTokens = embargoTokens[cardId]!! + 1
-        embargoTokens[cardId] = numTokens
+    fun addEmbargoToken(cardName: String) {
+        val numTokens = embargoTokens[cardName]!! + 1
+        embargoTokens[cardName] = numTokens
         refreshAllPlayersSupply()
     }
 
-    fun addTrollToken(cardId: Int) {
-        val numTokens = trollTokens[cardId]!! + 1
-        trollTokens[cardId] = numTokens
+    fun addTrollToken(cardName: String) {
+        val numTokens = trollTokens[cardName]!! + 1
+        trollTokens[cardName] = numTokens
         refreshAllPlayersSupply()
     }
 
-    fun addToSupply(cardId: Int) {
-        if (supply[cardId] == null) {
-            val error = GameError(GameError.COMPUTER_ERROR, "Supply does not have an entry for cardId: " + cardId)
+    fun addToSupply(cardName: String) {
+        if (supply[cardName] == null) {
+            val error = GameError(GameError.COMPUTER_ERROR, "Supply does not have an entry for cardName: " + cardName)
             logError(error, false)
         }
-        val numInSupply = getNumInSupply(cardId) + 1
-        supply[cardId] = numInSupply
+        val numInSupply = getNumInSupply(cardName) + 1
+        supply[cardName] = numInSupply
         if (numInSupply == 1) {
-            val card = supplyMap[cardId]!!
+            val card = supplyMap[cardName]!!
             emptyPiles.remove(card)
             if (card.cost == 2 && kingdomCards.contains(card)) {
                 twoCostKingdomCards++
@@ -1739,11 +1740,11 @@ class Game(val gameId: Int) {
     }
 
     private fun checkTradeRouteToken(card: Card) {
-        val hasTradeRouteToken = tradeRouteTokenMap[card.cardId]
+        val hasTradeRouteToken = tradeRouteTokenMap[card.name]
         if (hasTradeRouteToken != null && hasTradeRouteToken) {
             tradeRouteTokensOnMat++
             addHistory("Trade Route Mat now has ", KingdomUtil.getPlural(tradeRouteTokensOnMat, "Token"))
-            tradeRouteTokenMap[card.cardId] = false
+            tradeRouteTokenMap[card.name] = false
         }
     }
 
@@ -1791,7 +1792,7 @@ class Game(val gameId: Int) {
                 waitIfNotCurrentPlayer(player)
                 setPlayerGainCardAction(player, card)
             } else {
-                gainCardFinished(player, cardMap[card.cardId]!!)
+                gainCardFinished(player, cardMap[card.name]!!)
             }
         } else {
             val cardCopy: Card
@@ -1848,7 +1849,7 @@ class Game(val gameId: Int) {
                 checkTradeRouteToken(card)
             }
             if (takeFromSupply) {
-                takeFromSupply(card.cardId)
+                takeFromSupply(card.name)
                 refreshAllPlayersSupply()
             }
             if (card.name == "Nomad Camp") {
@@ -1921,7 +1922,7 @@ class Game(val gameId: Int) {
 
     fun moveGainedCard(player: Player, card: Card, destination: String) {
         removeGainedCard(player, card)
-        addCardToDestination(player, cardMap[card.cardId]!!, destination)
+        addCardToDestination(player, cardMap[card.name]!!, destination)
         gainCardFinished(player, card)
     }
 
@@ -1947,10 +1948,10 @@ class Game(val gameId: Int) {
         val firstReaction = card.gainOldCardActions.values.iterator().next()
         if (card.gainOldCardActions.size == 1) {
             card.gainOldCardActions.clear()
-            cardsWithGainCardActions.remove(card.cardId)
+            cardsWithGainCardActions.remove(card.name)
             setPlayerCardAction(player, firstReaction)
         } else {
-            cardsWithGainCardActions[card.cardId] = card
+            cardsWithGainCardActions[card.name] = card
             val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
             cardAction.deck = Deck.Reaction
             cardAction.cardName = "Choose Reaction"
@@ -2165,7 +2166,7 @@ class Game(val gameId: Int) {
             if (copiedPlayedCard) {
                 for (card in cardsPlayed) {
                     if (card.isCopied) {
-                        player.addCardToDiscard(cardMap[card.cardId]!!)
+                        player.addCardToDiscard(cardMap[card.name]!!)
                         if (card.name == "Storybook") {
                             player.discard.addAll(card.associatedCards)
                         }
@@ -2807,12 +2808,12 @@ class Game(val gameId: Int) {
         this.gameManager = gameManager
     }
 
-    fun cardActionSubmitted(player: Player, selectedCardIds: List<Int>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
+    fun cardActionSubmitted(player: Player, selectedCardNames: List<String>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
         if (allowClick(player)) {
             updateLastActivity()
             try {
                 val coinsBefore = player.coins
-                CardActionHandler.handleSubmittedCardAction(this, player, selectedCardIds, yesNoAnswer, choice, numberChosen)
+                CardActionHandler.handleSubmittedCardAction(this, player, selectedCardNames, yesNoAnswer, choice, numberChosen)
                 if (coinsBefore != player.coins && player.userId == currentPlayerId) {
                     refreshSupply(player)
                 }
@@ -2954,7 +2955,7 @@ class Game(val gameId: Int) {
     fun finishedGainCardAction(player: Player, oldCardAction: OldCardAction) {
         val card = oldCardAction.associatedCard!!
         if (card.gainOldCardActions.isEmpty()) {
-            cardsWithGainCardActions.remove(card.cardId)
+            cardsWithGainCardActions.remove(card.name)
         }
         if (!isCurrentPlayer(player) && !player.isShowCardAction && player.extraOldCardActions.isEmpty() && !hasUnfinishedGainCardActions()) {
             playersWithCardActions.remove(player.userId)
@@ -2978,19 +2979,19 @@ class Game(val gameId: Int) {
     }
 
     fun isCardInSupply(card: Card?): Boolean {
-        return isCardInSupply(card!!.cardId)
+        return isCardInSupply(card!!.name)
     }
 
-    fun isCardInSupply(cardId: Int): Boolean {
-        return supply[cardId] != null && getNumInSupply(cardId) > 0
+    fun isCardInSupply(cardName: String): Boolean {
+        return supply[cardName] != null && getNumInSupply(cardName) > 0
     }
 
     fun getNumInSupply(card: Card?): Int {
-        return getNumInSupply(card!!.cardId)
+        return getNumInSupply(card!!.name)
     }
 
-    fun getNumInSupply(cardId: Int): Int {
-        return supply[cardId]!!
+    fun getNumInSupply(cardName: String): Int {
+        return supply[cardName]!!
     }
 
     fun playerDiscardedCard(player: Player, card: Card) {

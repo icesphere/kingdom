@@ -16,45 +16,45 @@ object ProsperityComputerCardActionHandler {
 
         when (cardName) {
             "Bishop" -> {
-                val cardIds = if (computer.getNumCardsWorthTrashing(oldCardAction.cards) > 0) {
+                val cardNames = if (computer.getNumCardsWorthTrashing(oldCardAction.cards) > 0) {
                     computer.getCardsToTrash(oldCardAction.cards, 1)
                 } else {
                     computer.getCardsToDiscard(oldCardAction.cards, 1, false)
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Bishop 2" -> {
-                val cardIds = if (computer.getNumCardsWorthTrashing(oldCardAction.cards) > 0) {
+                val cardNames = if (computer.getNumCardsWorthTrashing(oldCardAction.cards) > 0) {
                     computer.getCardsToTrash(oldCardAction.cards, 1)
                 } else {
                     ArrayList()
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Contraband" -> {
                 //todo better logic for determining card
-                val cardIds = ArrayList<Int>()
+                val cardNames = ArrayList<String>()
                 val card = computer.getHighestCostCard(oldCardAction.cards)
-                cardIds.add(card!!.cardId)
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                cardNames.add(card!!.name)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Counting House" -> CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, null, oldCardAction.endNumber)
             "Expand" -> when (type) {
                 OldCardAction.TYPE_TRASH_CARDS_FROM_HAND -> {
                     val cardToTrash = computer.getLowestCostCard(oldCardAction.cards)
-                    val cardIds = ArrayList<Int>()
+                    val cardNames = ArrayList<String>()
                     if (cardToTrash != null) {
-                        cardIds.add(cardToTrash.cardId)
+                        cardNames.add(cardToTrash.name)
                     }
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
                 else -> {
                     val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                    val cardIds = ArrayList<Int>()
+                    val cardNames = ArrayList<String>()
                     if (cardToGain != null) {
-                        cardIds.add(cardToGain.cardId)
+                        cardNames.add(cardToGain.name)
                     }
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
             }
             "Forge" -> //todo need way better logic for this card
@@ -68,11 +68,11 @@ object ProsperityComputerCardActionHandler {
                     }
                     else -> {
                         val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                        val cardIds = ArrayList<Int>()
+                        val cardNames = ArrayList<String>()
                         if (cardToGain != null) {
-                            cardIds.add(cardToGain.cardId)
+                            cardNames.add(cardToGain.name)
                         }
-                        CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                        CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                     }
                 }
             "Goons" -> {
@@ -84,9 +84,9 @@ object ProsperityComputerCardActionHandler {
                 if (cardToPlay == null) {
                     cardToPlay = oldCardAction.cards[0]
                 }
-                val cardIds = ArrayList<Int>()
-                cardIds.add(cardToPlay.cardId)
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = ArrayList<String>()
+                cardNames.add(cardToPlay.name)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Loan" -> {
                 val choice = if (oldCardAction.cards[0].isCopper) {
@@ -98,18 +98,18 @@ object ProsperityComputerCardActionHandler {
             }
             "Mint" -> {
                 val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                val cardIds = ArrayList<Int>()
+                val cardNames = ArrayList<String>()
                 if (cardToGain != null) {
-                    cardIds.add(cardToGain.cardId)
+                    cardNames.add(cardToGain.name)
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Mountebank" -> //todo determine when it would be good to get curse and copper
                 CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, "discard", -1)
             "Rabble" -> {
                 //todo determine when to reorder
-                val cardIds = oldCardAction.cards.map { it.cardId }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = oldCardAction.cards.map { it.name }
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Royal Seal" -> {
                 val yesNoAnswer = if (computer.isCardToDiscard(oldCardAction.cards[0])) {
@@ -124,7 +124,7 @@ object ProsperityComputerCardActionHandler {
                 OldCardAction.TYPE_DISCARD_UP_TO_FROM_HAND -> {
                     val cardsToDiscard = oldCardAction.cards
                             .filter { computer.isCardToDiscard(it) }
-                            .map { it.cardId }
+                            .map { it.name }
                     CardActionHandler.handleSubmittedCardAction(game, player, cardsToDiscard, null, null, -1)
                 }
                 else -> {

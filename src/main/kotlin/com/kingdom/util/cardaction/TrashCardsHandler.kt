@@ -3,25 +3,29 @@ package com.kingdom.util.cardaction
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.supply.Curse
+import com.kingdom.model.cards.supply.Duchy
+import com.kingdom.model.cards.supply.Gold
+import com.kingdom.model.cards.supply.Silver
 import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object TrashCardsHandler {
-    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardIds: List<Int>): IncompleteCard? {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardNames: List<String>): IncompleteCard? {
 
         var incompleteCard: IncompleteCard? = null
 
         val cardMap = game.cardMap
         val supplyMap = game.supplyMap
 
-        if (selectedCardIds.isEmpty()) {
+        if (selectedCardNames.isEmpty()) {
             game.addHistory(player.username, " did not trash a card")
             return null
         }
 
         val cardsTrashed = ArrayList<Card>()
-        for (selectedCardId in selectedCardIds) {
-            val cardToTrash = player.getCardFromHandById(selectedCardId)
+        for (selectedCardName in selectedCardNames) {
+            val cardToTrash = player.getCardFromHandById(selectedCardName)
             player.removeCardFromHand(cardToTrash!!)
             game.trashedCards.add(cardToTrash)
             game.playerLostCard(player, cardToTrash)
@@ -31,7 +35,7 @@ object TrashCardsHandler {
             game.addHistory(player.username, " trashed ", KingdomUtil.groupCards(cardsTrashed, true))
         }
 
-        val trashedCard = cardMap[selectedCardIds[0]]!!
+        val trashedCard = cardMap[selectedCardNames[0]]!!
 
         when (oldCardAction.cardName) {
             "Alms" -> {
@@ -179,8 +183,8 @@ object TrashCardsHandler {
                 }
             }
             "Forge" -> when {
-                selectedCardIds.isNotEmpty() -> {
-                    val cost = selectedCardIds
+                selectedCardNames.isNotEmpty() -> {
+                    val cost = selectedCardNames
                             .mapNotNull { cardMap[it] }
                             .sumBy { game.getCardCost(it) }
 
@@ -288,7 +292,7 @@ object TrashCardsHandler {
             }
             "Salvager" -> player.addCoins(game.getCardCost(trashedCard))
             "Sorceress" -> {
-                val cursesRemaining = game.supply[Card.CURSE_ID]!!
+                val cursesRemaining = game.supply[Curse.NAME]!!
                 if (cursesRemaining > 0 || oldCardAction.phase == 1 && oldCardAction.choices.size > 1) {
                     val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                     nextCardAction.deck = Deck.FairyTale
@@ -305,7 +309,7 @@ object TrashCardsHandler {
                     game.setPlayerCardAction(player, nextCardAction)
                 }
             }
-            "Spice Merchant" -> if (!selectedCardIds.isEmpty()) {
+            "Spice Merchant" -> if (!selectedCardNames.isEmpty()) {
                 val choicesAction = OldCardAction(OldCardAction.TYPE_CHOICES).apply {
                     deck = Deck.Hinterlands
                     cardName = oldCardAction.cardName
@@ -317,29 +321,29 @@ object TrashCardsHandler {
             }
             "Trader" -> {
                 var numSilversToGain = game.getCardCost(trashedCard)
-                while (game.isCardInSupply(Card.SILVER_ID) && numSilversToGain > 0) {
+                while (game.isCardInSupply(Silver.NAME) && numSilversToGain > 0) {
                     game.playerGainedCard(player, game.silverCard)
                     numSilversToGain--
                 }
             }
-            "Trading Post" -> if (game.isCardInSupply(Card.SILVER_ID)) {
+            "Trading Post" -> if (game.isCardInSupply(Silver.NAME)) {
                 game.playerGainedCardToHand(player, game.silverCard)
             } else {
                 game.addHistory("There were no more ", KingdomUtil.getCardWithBackgroundColor(game.silverCard), " cards in the supply")
             }
             "Transmute" -> {
                 if (trashedCard.isAction) {
-                    if (game.isCardInSupply(Card.DUCHY_ID)) {
+                    if (game.isCardInSupply(Duchy.NAME)) {
                         game.playerGainedCard(player, game.duchyCard)
                     }
                 }
                 if (trashedCard.isTreasure) {
-                    if (game.isCardInSupply(oldCardAction.cardId)) {
-                        game.playerGainedCard(player, cardMap[oldCardAction.cardId]!!)
+                    if (game.isCardInSupply(oldCardAction.cardName)) {
+                        game.playerGainedCard(player, cardMap[oldCardAction.cardName]!!)
                     }
                 }
                 if (trashedCard.isVictory) {
-                    if (game.isCardInSupply(Card.GOLD_ID)) {
+                    if (game.isCardInSupply(Gold.NAME)) {
                         game.playerGainedCard(player, game.goldCard)
                     }
                 }

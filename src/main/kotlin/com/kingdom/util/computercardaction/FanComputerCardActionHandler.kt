@@ -19,8 +19,8 @@ object FanComputerCardActionHandler {
                 CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, "draw", -1)
             "Museum" -> {
                 //todo add logic for when to use museum
-                val cardIds = ArrayList<Int>()
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = ArrayList<String>()
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
         }
     }

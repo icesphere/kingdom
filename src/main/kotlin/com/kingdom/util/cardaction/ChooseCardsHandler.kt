@@ -8,12 +8,12 @@ import com.kingdom.util.KingdomUtil
 import java.util.ArrayList
 
 object ChooseCardsHandler {
-    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardIds: List<Int>): IncompleteCard? {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardNames: List<String>): IncompleteCard? {
 
         val cardMap = game.cardMap
         val playerMap = game.playerMap
         val incompleteCard: IncompleteCard? = null
-        val selectedCard = cardMap[selectedCardIds[0]]!!
+        val selectedCard = cardMap[selectedCardNames[0]]!!
 
         when (oldCardAction.cardName) {
             "Ambassador" -> {
@@ -27,7 +27,7 @@ object ChooseCardsHandler {
                     if (addToSupplyCardAction.cards.size == 2) {
                         break
                     }
-                    if (card.cardId == selectedCard.cardId) {
+                    if (card.name == selectedCard.name) {
                         addToSupplyCardAction.cards.add(card)
                     }
                 }
@@ -51,7 +51,7 @@ object ChooseCardsHandler {
                     game.addHistory("Baptistry revealed ", KingdomUtil.groupCards(revealedCards, true))
                     var cardsTrashed = 0
                     for (revealedCard in revealedCards) {
-                        if (revealedCard.cardId == selectedCard.cardId) {
+                        if (revealedCard.name == selectedCard.name) {
                             game.trashedCards.add(revealedCard)
                             game.playerLostCard(player, revealedCard)
                             cardsTrashed++
@@ -73,7 +73,7 @@ object ChooseCardsHandler {
                 game.playerGainedCardToTopOfDeck(player, selectedCard)
             }
             "Bridge Troll" -> {
-                game.addTrollToken(selectedCard.cardId)
+                game.addTrollToken(selectedCard.name)
                 game.addHistory(player.username, " added a troll token to the ", KingdomUtil.getCardWithBackgroundColor(selectedCard), " card")
             }
             "Catacombs" -> {
@@ -96,7 +96,7 @@ object ChooseCardsHandler {
                 game.addHistory(player.username, " played an Edict on ", KingdomUtil.getCardWithBackgroundColor(selectedCard))
             }
             "Embargo" -> {
-                game.addEmbargoToken(selectedCard.cardId)
+                game.addEmbargoToken(selectedCard.name)
                 game.addHistory(player.username, " added an embargo token to the ", KingdomUtil.getCardWithBackgroundColor(selectedCard), " card")
             }
             "Envoy" -> {
@@ -112,9 +112,9 @@ object ChooseCardsHandler {
                 game.addHistory(player.username, " chose to discard ", currentPlayer.username, "'s ", KingdomUtil.getCardWithBackgroundColor(selectedCard))
             }
             "Golem" -> {
-                val firstAction = cardMap[selectedCardIds[0]]!!
+                val firstAction = cardMap[selectedCardNames[0]]!!
                 val secondAction: Card
-                secondAction = if (oldCardAction.cards[0].cardId == firstAction.cardId) {
+                secondAction = if (oldCardAction.cards[0].name == firstAction.name) {
                     oldCardAction.cards[1]
                 } else {
                     oldCardAction.cards[0]
@@ -160,8 +160,8 @@ object ChooseCardsHandler {
                 game.playerGainedCard(player, selectedCard)
             }
             "Museum Trash Cards" -> {
-                for (selectedCardId in selectedCardIds) {
-                    val card = cardMap[selectedCardId]!!
+                for (selectedCardName in selectedCardNames) {
+                    val card = cardMap[selectedCardName]!!
                     game.trashedCards.add(card)
                     player.museumCards.remove(card)
                 }
@@ -188,15 +188,15 @@ object ChooseCardsHandler {
             "Pirate Ship" -> {
                 val currentPlayer = game.currentPlayer
                 val affectedPlayer = playerMap[oldCardAction.playerId]!!
-                var selectedCardId = 0
-                if (selectedCardIds.isNotEmpty()) {
-                    selectedCardId = selectedCardIds[0]
+                var selectedCardName = ""
+                if (selectedCardNames.isNotEmpty()) {
+                    selectedCardName = selectedCardNames[0]
                 }
                 var foundSelectedCard = false
                 game.addHistory("The top two cards from ", affectedPlayer.username, "'s deck were ", oldCardAction.cards[0].name, " and ", oldCardAction.cards[1].name)
                 for (card in oldCardAction.cards) {
                     card.isDisableSelect = false
-                    if (!foundSelectedCard && card.cardId == selectedCardId) {
+                    if (!foundSelectedCard && card.name == selectedCardName) {
                         foundSelectedCard = true
                         game.trashedTreasureCards.add(card)
                         game.trashedCards.add(card)
@@ -221,11 +221,11 @@ object ChooseCardsHandler {
                 oldCardAction.associatedCard!!.associatedCards.add(selectedCard)
                 game.addHistory(player.username, " named ", KingdomUtil.getCardWithBackgroundColor(selectedCard), " for ", player.pronoun, " ", KingdomUtil.getCardWithBackgroundColor(oldCardAction.associatedCard!!))
             }
-            "Setup Leaders" -> for (selectedCardId in selectedCardIds) {
+            "Setup Leaders" -> for (selectedCardName in selectedCardNames) {
                 player.leaders.add(Card(selectedCard))
             }
             "Swindler" -> {
-                if (game.supply[selectedCard.cardId] == 0) {
+                if (game.supply[selectedCard.name] == 0) {
                     val chooseAgainCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS).apply {
                         deck = Deck.Intrigue
                         numCards = 1
@@ -237,7 +237,7 @@ object ChooseCardsHandler {
                     val card = oldCardAction.cards[0]
                     val cost = card.cost
                     game.supplyMap.values
-                            .filterTo (chooseAgainCardAction.cards) { game.getCardCost(it) == cost && it.costIncludesPotion == card.costIncludesPotion && game.supply[it.cardId]!! > 0 }
+                            .filterTo (chooseAgainCardAction.cards) { game.getCardCost(it) == cost && it.costIncludesPotion == card.costIncludesPotion && game.supply[it.name]!! > 0 }
                     if (chooseAgainCardAction.cards.size > 0) {
                         game.setPlayerCardAction(game.currentPlayer!!, chooseAgainCardAction)
                     } else {
@@ -253,9 +253,9 @@ object ChooseCardsHandler {
             "Thief" -> {
                 val currentPlayer = game.currentPlayer!!
                 val affectedPlayer = playerMap[oldCardAction.playerId]!!
-                var selectedCardId = 0
-                if (selectedCardIds.isNotEmpty()) {
-                    selectedCardId = selectedCardIds[0]
+                var selectedCardName = ""
+                if (selectedCardNames.isNotEmpty()) {
+                    selectedCardName = selectedCardNames[0]
                 }
                 var foundSelectedCard = false
                 when {
@@ -265,7 +265,7 @@ object ChooseCardsHandler {
                 }
                 for (card in oldCardAction.cards) {
                     card.isDisableSelect = false
-                    if (!foundSelectedCard && card.cardId == selectedCardId) {
+                    if (!foundSelectedCard && card.name == selectedCardName) {
                         foundSelectedCard = true
                         game.trashedTreasureCards.add(card)
                         game.addHistory(currentPlayer.username, " trashed ", affectedPlayer.username, "'s ", KingdomUtil.getCardWithBackgroundColor(card))
@@ -293,7 +293,7 @@ object ChooseCardsHandler {
                 }
             }
             "Throne Room" -> {
-                val actionCard = player.getCardFromHandById(selectedCardIds[0])!!
+                val actionCard = player.getCardFromHandById(selectedCardNames[0])!!
                 val cardCopy: Card
                 if (game.isCheckQuest && actionCard.name == "Quest") {
                     cardCopy = Card(actionCard)
@@ -316,8 +316,8 @@ object ChooseCardsHandler {
                 val combinedCost = game.getCardCost(selectedCard) + game.getCardCost(oldCardAction.associatedCard!!)
                 player.removeCardFromHand(selectedCard)
                 game.removePlayedCard(oldCardAction.associatedCard!!)
-                game.addToSupply(selectedCard.cardId)
-                game.addToSupply(oldCardAction.associatedCard!!.cardId)
+                game.addToSupply(selectedCard.name)
+                game.addToSupply(oldCardAction.associatedCard!!.name)
                 game.refreshAllPlayersCardsPlayed()
                 game.refreshAllPlayersSupply()
                 game.addHistory(player.username, " returned ", KingdomUtil.getCardWithBackgroundColor(oldCardAction.associatedCard!!), " and ", KingdomUtil.getCardWithBackgroundColor(selectedCard), " to the supply")
@@ -337,7 +337,7 @@ object ChooseCardsHandler {
             "Wishing Well" -> {
                 val topDeckCard = player.lookAtTopDeckCard()
                 if (topDeckCard != null) {
-                    val guessedRight = selectedCard.cardId == topDeckCard.cardId
+                    val guessedRight = selectedCard.name == topDeckCard.name
                     if (guessedRight) {
                         player.drawCards(1)
                         game.addHistory(player.username, " correctly guessed the top card of ", player.pronoun, " deck was ", KingdomUtil.getArticleWithCardName(selectedCard))

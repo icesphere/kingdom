@@ -28,7 +28,7 @@
                                         <#list kingdomCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -46,7 +46,7 @@
                                         <#list intrigueCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -64,7 +64,7 @@
                                         <#list seasideCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -82,7 +82,7 @@
                                         <#list alchemyCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -100,7 +100,7 @@
                                         <#list prosperityCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -118,7 +118,7 @@
                                         <#list cornucopiaCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -136,7 +136,7 @@
                                         <#list hinterlandsCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -154,7 +154,7 @@
                                         <#list prizeCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -172,7 +172,7 @@
                                         <#list promoCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -190,7 +190,7 @@
                                         <#list salvationCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -208,7 +208,7 @@
                                         <#list fairyTaleCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -226,7 +226,7 @@
                                         <#list leadersCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -244,7 +244,7 @@
                                         <#list proletariatCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
                                                 </td>
                                             </tr>
                                         </#list>
@@ -262,7 +262,7 @@
                                         <#list fanCards as card>
                                             <tr>
                                                 <td>
-                                                    <a href="showCard.html?id=${card.cardId}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
+                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
                                                 </td>
                                             </tr>
                                         </#list>

@@ -29,7 +29,7 @@
                             <table cellpadding="0" cellspacing="0">
                                 <#if gameStatus == 3>
                                     <tr>
-                                        <td style="font-size:10px;">${supply(card.cardId)}<#if showEmbargoTokens && embargoTokens(card.cardId) != 0> (${embargoTokens(card.cardId)} embargo token<#if embargoTokens(card.cardId) != 1>s</#if>)</#if><#if showTrollTokens && trollTokens(card.cardId) != 0> (${trollTokens(card.cardId)} troll token<#if trollTokens(card.cardId) != 1>s</#if>)</#if><#if showTradeRouteTokens && tradeRouteTokenMap(card.cardId)> (trade route token)</#if></td>
+                                        <td style="font-size:10px;">${supply(card.name)}<#if showEmbargoTokens && embargoTokens(card.name) != 0> (${embargoTokens(card.name)} embargo token<#if embargoTokens(card.name) != 1>s</#if>)</#if><#if showTrollTokens && trollTokens(card.name) != 0> (${trollTokens(card.name)} troll token<#if trollTokens(card.name) != 1>s</#if>)</#if><#if showTradeRouteTokens && tradeRouteTokenMap(card.name)> (trade route token)</#if></td>
                                     </tr>
                                 </#if>
                                 <tr><td><#include "gameCard.ftl"></td></tr>
@@ -51,7 +51,7 @@
                         <td>
                             <table cellpadding="0" cellspacing="0">
                                 <#if gameStatus == 3>
-                                    <tr><td style="font-size:10px;">${supply(card.cardId)}<#if showEmbargoTokens && embargoTokens(card.cardId) != 0> (${embargoTokens(card.cardId)} embargo token<#if embargoTokens(card.cardId) != 1>s</#if>)</#if><#if showTrollTokens && trollTokens(card.cardId) != 0> (${trollTokens(card.cardId)} troll token<#if trollTokens(card.cardId) != 1>s</#if>)</#if><#if showTradeRouteTokens && tradeRouteTokenMap(card.cardId)> (trade route token)</#if></td></tr>
+                                    <tr><td style="font-size:10px;">${supply(card.name)}<#if showEmbargoTokens && embargoTokens(card.name) != 0> (${embargoTokens(card.name)} embargo token<#if embargoTokens(card.name) != 1>s</#if>)</#if><#if showTrollTokens && trollTokens(card.name) != 0> (${trollTokens(card.name)} troll token<#if trollTokens(card.name) != 1>s</#if>)</#if><#if showTradeRouteTokens && tradeRouteTokenMap(card.name)> (trade route token)</#if></td></tr>
                                 </#if>
                                 <tr><td><#include "gameCard.ftl"></td></tr>
                             </table>

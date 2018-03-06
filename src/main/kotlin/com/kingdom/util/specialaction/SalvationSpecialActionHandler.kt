@@ -167,7 +167,7 @@ object SalvationSpecialActionHandler {
                                         nextOldCardAction.buttonValue = "Continue"
                                         nextOldCardAction.instructions = "The graverobber revealed this non-treasure card from " + otherPlayer.username + "'s discard pile. Click Continue."
                                     }
-                                    nextOldCardAction.cardId = index
+                                    nextOldCardAction.name = index
                                     nextOldCardAction.deck = Deck.Salvation
                                     nextOldCardAction.playerId = otherPlayer.userId
                                     nextOldCardAction.cardName = card.name
@@ -206,7 +206,7 @@ object SalvationSpecialActionHandler {
                             game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
                         } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse()) {
                             if (otherPlayer.sins >= 2) {
-                                val cursesInSupply = game.supply[Card.CURSE_ID]!!
+                                val cursesInSupply = game.supply[Curse.NAME]!!
                                 when {
                                     cursesInSupply >= 2 -> {
                                         otherPlayer.addSins(-2)

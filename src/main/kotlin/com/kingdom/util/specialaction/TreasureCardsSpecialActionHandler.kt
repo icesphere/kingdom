@@ -50,7 +50,7 @@ object TreasureCardsSpecialActionHandler {
                         .map { it.name }
                         .toSet()
                 for (c in game.supplyMap.values) {
-                    if (game.getCardCost(c) <= cardNames.size && !c.costIncludesPotion && game.supply[c.cardId]!! > 0) {
+                    if (game.getCardCost(c) <= cardNames.size && !c.costIncludesPotion && game.supply[c.name]!! > 0) {
                         cardAction.cards.add(c)
                     }
                 }

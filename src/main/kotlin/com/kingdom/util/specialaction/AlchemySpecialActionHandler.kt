@@ -3,6 +3,7 @@ package com.kingdom.util.specialaction
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.supply.Curse
 import com.kingdom.util.KingdomUtil
 
 import java.util.ArrayList
@@ -81,7 +82,7 @@ object AlchemySpecialActionHandler {
                         if (topCard != null) {
                             player.addCardToDiscard(topCard)
                             game.playerDiscardedCard(player, topCard)
-                            if (game.isCardInSupply(Card.CURSE_ID)) {
+                            if (game.isCardInSupply(Curse.NAME)) {
                                 game.playerGainedCard(player, game.curseCard)
                                 game.refreshDiscard(player)
                             }
@@ -203,7 +204,6 @@ object AlchemySpecialActionHandler {
                     val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                     cardAction.deck = Deck.Alchemy
                     cardAction.cardName = card.name
-                    cardAction.cardId = card.cardId
                     cardAction.buttonValue = "Done"
                     cardAction.numCards = 1
                     cardAction.instructions = "Select a card to trash."

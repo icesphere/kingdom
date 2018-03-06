@@ -7,13 +7,13 @@ import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object GainCardsHandler {
-    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardIds: List<Int>) {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardNames: List<String>) {
 
         val type = oldCardAction.type
         val cardMap = game.cardMap
 
         if (oldCardAction.cardName != "Tournament" && oldCardAction.cardName != "Museum" && oldCardAction.cardName != "Artisan") {
-            selectedCardIds
+            selectedCardNames
                     .map { cardMap[it]!! }
                     .forEach {
                         when (type) {
@@ -26,7 +26,7 @@ object GainCardsHandler {
 
         when (oldCardAction.cardName) {
             "Artisan" -> {
-                val card = cardMap[selectedCardIds[0]]!!
+                val card = cardMap[selectedCardNames[0]]!!
 
                 game.playerGainedCardToHand(player, card)
 
@@ -43,7 +43,7 @@ object GainCardsHandler {
                 game.setPlayerCardAction(player, putCardOnTopOfDeckAction)
             }
             "Black Market" -> {
-                val cardBought = cardMap[selectedCardIds[0]]!!
+                val cardBought = cardMap[selectedCardNames[0]]!!
                 game.boughtBlackMarketCard(cardBought)
                 game.blackMarketCardsToBuy.remove(cardBought)
                 val chooseOrderCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER).apply {
@@ -79,14 +79,14 @@ object GainCardsHandler {
                 game.supplyMap.values.filterTo(cards) {
                     game.getCardCost(it) == cost &&
                             oldCardAction.associatedCard!!.costIncludesPotion == it.costIncludesPotion &&
-                            game.supply[it.cardId]!! > 0
+                            game.supply[it.name]!! > 0
                 }
 
                 gainCardAction.cards = cards
                 game.setPlayerCardAction(player, gainCardAction)
             }
             "Horn of Plenty" -> {
-                val card = cardMap[selectedCardIds[0]]!!
+                val card = cardMap[selectedCardNames[0]]!!
                 if (card.isVictory) {
                     (game.cardsPlayed as LinkedList<*>).removeLastOccurrence(oldCardAction.associatedCard)
                     game.treasureCardsPlayed.remove(oldCardAction.associatedCard)
@@ -97,7 +97,7 @@ object GainCardsHandler {
                 }
             }
             "Ironworks" -> {
-                val card = cardMap[selectedCardIds[0]]!!
+                val card = cardMap[selectedCardNames[0]]!!
                 when {
                     card.isAction -> {
                         player.addActions(1)
@@ -108,16 +108,16 @@ object GainCardsHandler {
                 }
             }
             "Museum" -> {
-                val card = cardMap[selectedCardIds[0]]!!
+                val card = cardMap[selectedCardNames[0]]!!
                 game.playerGainedCard(player, card, false)
                 game.prizeCards.remove(card)
             }
             "Tournament" -> {
-                val card = cardMap[selectedCardIds[0]]!!
+                val card = cardMap[selectedCardNames[0]]!!
                 game.playerGainedCardToTopOfDeck(player, card, false)
                 game.prizeCards.remove(card)
             }
-            "University" -> if (selectedCardIds.isEmpty()) {
+            "University" -> if (selectedCardNames.isEmpty()) {
                 game.addHistory(player.username, " chose not to gain a card with ", KingdomUtil.getWordWithBackgroundColor("University", Card.ACTION_COLOR))
             }
         }

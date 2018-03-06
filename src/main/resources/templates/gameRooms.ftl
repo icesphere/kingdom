@@ -137,8 +137,8 @@
             }
 
             var specialDialog;
-            function openSpecialDialog(cardId) {
-                specialDialog = $("#specialDialog_"+cardId);
+            function openSpecialDialog(cardName) {
+                specialDialog = $("#specialDialog_"+cardName);
                 specialDialog.dialog(
                     {modal: true, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
                 });

@@ -42,7 +42,7 @@ object ProsperitySpecialActionHandler {
                 val player = game.currentPlayer
                 var numCoppersInDiscard = 0
                 for (c in player!!.discard) {
-                    if (c.cardId == Card.COPPER_ID) {
+                    if (c.isCopper) {
                         numCoppersInDiscard++
                     }
                 }
@@ -163,10 +163,10 @@ object ProsperitySpecialActionHandler {
                                 game.setPlayerCardAction(player, cardAction)
                             } else {
                                 incompleteCard.setPlayerActionCompleted(player.userId)
-                                if (game.isCardInSupply(Card.CURSE_ID)) {
+                                if (game.isCardInSupply(Curse.NAME)) {
                                     game.playerGainedCard(player, game.curseCard)
                                 }
-                                if (game.isCardInSupply(Card.COPPER_ID)) {
+                                if (game.isCardInSupply(Copper.NAME)) {
                                     game.playerGainedCard(player, game.copperCard)
                                 }
                                 game.refreshDiscard(player)

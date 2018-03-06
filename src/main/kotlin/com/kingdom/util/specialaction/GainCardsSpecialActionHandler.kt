@@ -43,7 +43,7 @@ object GainCardsSpecialActionHandler {
                 }
             }
             "Cache" -> for (i in 0..1) {
-                if (game.supply[Card.COPPER_ID]!! > 0) {
+                if (game.supply[Copper.NAME]!! > 0) {
                     game.playerGainedCard(player, game.copperCard)
                 }
             }
@@ -64,7 +64,7 @@ object GainCardsSpecialActionHandler {
                 var playerIndex = game.calculateNextPlayerIndex(game.currentPlayerIndex)
                 while (playerIndex != game.currentPlayerIndex) {
                     val nextPlayer = game.players[playerIndex]
-                    if (game.isCardInSupply(Card.SILVER_ID)) {
+                    if (game.isCardInSupply(Silver.NAME)) {
                         game.playerGainedCard(nextPlayer, game.silverCard)
                         game.refreshDiscard(nextPlayer)
                     }
@@ -94,7 +94,7 @@ object GainCardsSpecialActionHandler {
                 var playerIndex = game.calculateNextPlayerIndex(game.currentPlayerIndex)
                 while (playerIndex != game.currentPlayerIndex) {
                     val nextPlayer = game.players[playerIndex]
-                    if (game.isCardInSupply(Card.CURSE_ID)) {
+                    if (game.isCardInSupply(Curse.NAME)) {
                         game.playerGainedCard(nextPlayer, game.curseCard)
                         game.refreshDiscard(nextPlayer)
                     }

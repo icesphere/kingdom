@@ -17,31 +17,31 @@ object SeasideComputerCardActionHandler {
 
         when (cardName) {
             "Ambassador" -> {
-                val cardIds = ArrayList<Int>()
+                val cardNames = ArrayList<String>()
                 when (type) {
-                    OldCardAction.TYPE_CHOOSE_CARDS -> cardIds.add(computer.getCardToPass(oldCardAction.cards)!!)
+                    OldCardAction.TYPE_CHOOSE_CARDS -> cardNames.add(computer.getCardToPass(oldCardAction.cards)!!)
                     else -> //todo decide when not to add cards back into supply
-                        oldCardAction.cards.mapTo(cardIds) { it.cardId }
+                        oldCardAction.cards.mapTo(cardNames) { it.name }
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Embargo" -> {
                 //todo better algorithm for deciding which card to embargo
-                val cardIds = ArrayList<Int>()
+                val cardNames = ArrayList<String>()
                 val card = computer.getRandomHighestCostCardFromCostMap(5, false)
                 if (card != null) {
-                    cardIds.add(card.cardId)
+                    cardNames.add(card.name)
                 } else {
-                    cardIds.add(oldCardAction.cards[0].cardId)
+                    cardNames.add(oldCardAction.cards[0].name)
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Explorer" -> CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, "gold", -1)
             "Ghost Ship" -> when (type) {
                 OldCardAction.TYPE_CHOOSE_IN_ORDER -> {
                     //todo determine when to reorder
-                    val cardIds = oldCardAction.cards.map { it.cardId }
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    val cardNames = oldCardAction.cards.map { it.name }
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
                 else -> {
                     val numCardsNotNeeded = player.hand.size - 3
@@ -52,13 +52,13 @@ object SeasideComputerCardActionHandler {
             }
             "Haven" -> CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsNotNeeded(oldCardAction.cards, 1), null, null, -1)
             "Island" -> {
-                val cardIds = ArrayList<Int>()
+                val cardNames = ArrayList<String>()
                 var islandCard: Card? = oldCardAction.cards.firstOrNull { it.isVictoryOnly }
                 if (islandCard == null) {
                     islandCard = computer.getLowestCostCard(oldCardAction.cards)
                 }
-                cardIds.add(islandCard!!.cardId)
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                cardNames.add(islandCard!!.name)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Lookout" -> //todo need better way to determine cards
                 CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToTrash(oldCardAction.cards, oldCardAction.numCards), null, null, -1)
@@ -83,8 +83,8 @@ object SeasideComputerCardActionHandler {
                 }
                 else -> {
                     //todo determine when to reorder
-                    val cardIds = oldCardAction.cards.map { it.cardId }
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    val cardNames = oldCardAction.cards.map { it.name }
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
             }
             "Pearl Diver" -> {
@@ -104,35 +104,35 @@ object SeasideComputerCardActionHandler {
                     CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, choice, -1)
                 }
                 else -> {
-                    val cardIds = ArrayList<Int>()
+                    val cardNames = ArrayList<String>()
                     if (oldCardAction.numCards == 1) {
                         when {
                             oldCardAction.cards[0].isTreasure && oldCardAction.cards[1].isTreasure -> {
                                 val cardToTrash = computer.getHighestCostCard(oldCardAction.cards)
                                 if (cardToTrash != null) {
-                                    cardIds.add(cardToTrash.cardId)
+                                    cardNames.add(cardToTrash.name)
                                 }
                             }
-                            oldCardAction.cards[0].isTreasure -> cardIds.add(oldCardAction.cards[0].cardId)
-                            else -> cardIds.add(oldCardAction.cards[1].cardId)
+                            oldCardAction.cards[0].isTreasure -> cardNames.add(oldCardAction.cards[0].name)
+                            else -> cardNames.add(oldCardAction.cards[1].name)
                         }
                     }
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
             }
             "Salvager" -> //todo better logic for determining which card to trash
                 CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToTrash(oldCardAction.cards, 1), null, null, -1)
             "Smugglers" -> {
-                val cardIds = ArrayList<Int>()
+                val cardNames = ArrayList<String>()
                 if (oldCardAction.numCards > 0) {
                     val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                    cardIds.add(cardToGain!!.cardId)
+                    cardNames.add(cardToGain!!.name)
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Treasury" -> {
-                val cardIds = oldCardAction.cards.map { it.cardId }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = oldCardAction.cards.map { it.name }
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Warehouse" -> CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToDiscard(oldCardAction.cards, oldCardAction.numCards), null, null, -1)
             else -> throw RuntimeException("Seaside Card Action not handled for card: " + oldCardAction.cardName + " and type: " + oldCardAction.type)

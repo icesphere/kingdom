@@ -53,9 +53,9 @@ object CornucopiaComputerCardActionHandler {
             }
             "Horn of Plenty" -> {
                 val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                val cardIds = ArrayList<Int>()
-                cardIds.add(cardToGain!!.cardId)
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = ArrayList<String>()
+                cardNames.add(cardToGain!!.name)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Jester" -> {
                 var choice = "them"
@@ -68,9 +68,9 @@ object CornucopiaComputerCardActionHandler {
                 OldCardAction.TYPE_TRASH_CARDS_FROM_HAND -> CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToTrash(oldCardAction.cards, oldCardAction.numCards), null, null, -1)
                 else -> {
                     val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                    val cardIds = ArrayList<Int>()
-                    cardIds.add(cardToGain!!.cardId)
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    val cardNames = ArrayList<String>()
+                    cardNames.add(cardToGain!!.name)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
             }
             "Tournament" -> when (type) {
@@ -84,9 +84,9 @@ object CornucopiaComputerCardActionHandler {
                 }
                 OldCardAction.TYPE_GAIN_CARDS -> {
                     val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                    val cardIds = ArrayList<Int>()
-                    cardIds.add(cardToGain!!.cardId)
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    val cardNames = ArrayList<String>()
+                    cardNames.add(cardToGain!!.name)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
             }
             "Trusty Steed" -> {

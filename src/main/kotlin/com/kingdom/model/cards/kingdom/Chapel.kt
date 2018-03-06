@@ -1,13 +1,13 @@
 package com.kingdom.model.cards.kingdom
 
-import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 
-class Chapel: Card() {
+class Chapel: KingdomCard(NAME, CardType.Action, 2) {
     init {
-        name = "Chapel"
-        type = CardType.Action
-        cost = 2
         special = "Trash up to 4 cards from your hand."
+    }
+
+    companion object {
+        const val NAME: String = "Chapel"
     }
 }

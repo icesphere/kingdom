@@ -14,12 +14,12 @@
         <script type="text/javascript">
             var addingTypeOfCard = false;
             var cardType;
-            function swapCard(cardId) {
+            function swapCard(cardName) {
                 if(addingTypeOfCard) {
-                    document.location = "swapForTypeOfCard.html?cardId="+cardId+"&cardType="+cardType;
+                    document.location = "swapForTypeOfCard.html?cardName="+cardName+"&cardType="+cardType;
                 }
                 else {
-                    document.location = "swapRandomCard.html?cardId="+cardId;
+                    document.location = "swapRandomCard.html?cardName="+cardName;
                 }
             }
             function addTypeOfCard() {

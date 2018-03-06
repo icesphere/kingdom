@@ -3,6 +3,7 @@ package com.kingdom.util.cardaction
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.supply.Estate
 import com.kingdom.util.KingdomUtil
 
 import java.util.ArrayList
@@ -16,11 +17,11 @@ object YesNoHandler {
         when (oldCardAction.cardName) {
             "Baron" -> when (yesNoAnswer) {
                 "yes" -> {
-                    player.discardCardFromHand(Card.ESTATE_ID)
+                    player.discardCardFromHand(Estate.NAME)
                     player.addCoins(4)
                     game.addHistory(player.username, " discarded an ", KingdomUtil.getWordWithBackgroundColor("Estate", Card.VICTORY_COLOR), " and got +4 coins")
                 }
-                else -> if (game.isCardInSupply(Card.ESTATE_ID)) {
+                else -> if (game.isCardInSupply(Estate.NAME)) {
                     game.playerGainedCard(player, game.estateCard)
                     game.refreshDiscard(player)
                 }
@@ -126,8 +127,9 @@ object YesNoHandler {
                 game.addHistory("The Graverobber revealed ", KingdomUtil.getArticleWithCardName(oldCardAction.cards[0]), " from ", affectedPlayer.username, "'s discard pile")
                 if (yesNoAnswer == "yes") {
                     game.addHistory(player.username, " chose to gain the revealed treasure card")
-                    if (affectedPlayer.discard[oldCardAction.cardId].cardId == oldCardAction.cards[0].cardId) {
-                        affectedPlayer.discard.removeAt(oldCardAction.cardId)
+                    //todo discard[0] is probably wrong
+                    if (affectedPlayer.discard[0].name == oldCardAction.cards[0].name) {
+                        affectedPlayer.discard.removeAt(0)
                     } else {
                         val error = GameError(GameError.GAME_ERROR, "Card in discard pile does not match expected Graverobber revealed card")
                         game.logError(error, false)
@@ -139,9 +141,10 @@ object YesNoHandler {
                 if (!game.incompleteCard!!.extraOldCardActions.isEmpty()) {
                     val nextPlayerCardAction = game.incompleteCard!!.extraOldCardActions.peek()
                     //need to update index if card removed index was before next card's index
-                    if (yesNoAnswer == "yes" && nextPlayerCardAction.playerId == oldCardAction.playerId && oldCardAction.cardId < nextPlayerCardAction.cardId) {
-                        nextPlayerCardAction.cardId = nextPlayerCardAction.cardId - 1
-                    }
+                    //todo the below if comparison doesn't make sense
+                    //if (yesNoAnswer == "yes" && nextPlayerCardAction.playerId == oldCardAction.playerId && oldCardAction.name < nextPlayerCardAction.name) {
+                    //    nextPlayerCardAction.cardName = nextPlayerCardAction.cardName - 1
+                    //}
                 }
             }
             "Hamlet" -> if (yesNoAnswer == "yes") {
@@ -378,7 +381,7 @@ object YesNoHandler {
                     while (playerIndex != game.currentPlayerIndex) {
                         val nextPlayer = game.players[playerIndex]
                         if (game.isCardInSupply(squatterCard)) {
-                            game.playerGainedCard(nextPlayer, game.cardMap[squatterCard.cardId]!!)
+                            game.playerGainedCard(nextPlayer, game.cardMap[squatterCard.name]!!)
                             game.refreshDiscard(nextPlayer)
                         }
                         playerIndex = game.calculateNextPlayerIndex(playerIndex)

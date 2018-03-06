@@ -1,15 +1,15 @@
 package com.kingdom.model.cards.kingdom
 
-import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 
-class Village : Card() {
+class Village : KingdomCard(NAME, CardType.Action, 4) {
     init {
-        name = "Village"
-        type = CardType.Action
-        cost = 3
         addCards = 1
         addActions = 2
+    }
+
+    companion object {
+        const val NAME: String = "Village"
     }
 }
 

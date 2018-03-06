@@ -113,7 +113,7 @@ object HinterlandsSpecialActionHandler {
                 }
             }
             "Jack of all Trades" -> {
-                if (game.isCardInSupply(Card.SILVER_ID)) {
+                if (game.isCardInSupply(Silver.NAME)) {
                     game.playerGainedCard(player!!, game.silverCard)
                 }
                 val topDeckCard = player!!.removeTopDeckCard()

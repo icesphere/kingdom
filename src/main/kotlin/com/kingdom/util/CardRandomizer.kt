@@ -161,7 +161,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
                 val baneCard: Card = selectedCards.first { it.cost == 2 || it.cost == 3 }
                 selectedCards.remove(baneCard)
                 for (card in cards) {
-                    if (canAddCard(card) && card.cardId != baneCard.cardId) {
+                    if (canAddCard(card) && card.name != baneCard.name) {
                         selectedCards.add(card)
                     }
                     if (selectedCards.size == 10) {
@@ -261,16 +261,16 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         }
     }
 
-    fun swapRandomCard(game: Game, cardId: Int) {
-        swapCard(game, cardId, null)
+    fun swapRandomCard(game: Game, cardName: String) {
+        swapCard(game, cardName, null)
     }
 
-    fun swapCard(game: Game, cardId: Int, cardType: String?) {
+    fun swapCard(game: Game, cardName: String, cardType: String?) {
         var cardToReplaceIndex = 0
         var cardToReplace: Card? = null
         val cards = game.kingdomCards
         for (i in cards.indices) {
-            if (cards[i].cardId == cardId) {
+            if (cards[i].name == cardName) {
                 cardToReplace = cards[i]
                 cardToReplaceIndex = i
                 break

@@ -1,6 +1,7 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.supply.*
 import com.kingdom.util.KingdomUtil
 
 import java.util.*
@@ -144,7 +145,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
     val lastTurnEdictCards: MutableList<Card> = ArrayList(0)
     private var provinceCardsInHand: Int = 0
     private var baneCardsInHand: Int = 0
-    private val baneCardId: Int
+    private val baneCardName: String
     private var horseTradersInHand: Int = 0
     private var bellTowersInHand: Int = 0
     var enchantedPalacesInHand: Int = 0
@@ -272,7 +273,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
         actions = 1
         buys = 1
         playTreasureCards = game.isPlayTreasureCards
-        baneCardId = game.baneCardId
+        baneCardName = game.baneCardName
         isUsingLeaders = game.isUsingLeaders
         userId = user.userId
         gender = user.gender
@@ -446,7 +447,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
         if (card.isTreasure) {
             treasureCards.add(card)
             coinsInHand += card.addCoins
-            if (card.cardId == Card.COPPER_ID) {
+            if (card.isCopper) {
                 coinsInHand += copperSmithsPlayed
                 copperCardsInHand++
             }
@@ -457,7 +458,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
         if (card.isAction) {
             actionCards.add(card)
         }
-        if (card.cardId == Card.CURSE_ID) {
+        if (card.name == Curse.NAME) {
             curseCardsInHand++
         }
         if (card.isVictory) {
@@ -465,7 +466,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
             victoryCards.add(card)
         }
 
-        if (card.cardId == baneCardId) {
+        if (card.name == baneCardName) {
             baneCardsInHand++
         }
 
@@ -481,7 +482,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
             "Trader" -> traderCardsInHand++
         }
 
-        if (card.cardId == Card.POTION_ID) {
+        if (card.name == Potion.NAME) {
             potionsInHand++
         }
     }
@@ -495,7 +496,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
                     autoPlayCoins -= card.addCoins
                 }
             }
-            if (card.cardId == Card.COPPER_ID) {
+            if (card.isCopper) {
                 coinsInHand -= copperSmithsPlayed
                 copperCardsInHand--
             }
@@ -503,7 +504,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
         if (card.isAction) {
             actionCards.remove(card)
         }
-        if (card.cardId == Card.CURSE_ID) {
+        if (card.name == Curse.NAME) {
             curseCardsInHand--
         }
         if (card.isVictory) {
@@ -511,7 +512,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
             victoryCards.remove(card)
         }
 
-        if (card.cardId == baneCardId) {
+        if (card.name == baneCardName) {
             baneCardsInHand--
         }
 
@@ -538,7 +539,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
     }
 
     fun treasureCardPlayed(card: Card, removeFromHand: Boolean) {
-        if (card.cardId == Card.COPPER_ID) {
+        if (card.isCopper) {
             addCoins(copperSmithsPlayed)
             isPlayedCopper = true
         }
@@ -548,8 +549,8 @@ class Player(user: User, game: Game) : Comparable<Player> {
         }
     }
 
-    fun getCardFromHandById(cardId: Int): Card? {
-        return hand.firstOrNull { it.cardId == cardId }
+    fun getCardFromHandById(cardName: String): Card? {
+        return hand.firstOrNull { it.name == cardName }
     }
 
     fun discardCardFromHand(card: Card) {
@@ -558,8 +559,8 @@ class Player(user: User, game: Game) : Comparable<Player> {
         hand.remove(card)
     }
 
-    fun discardCardFromHand(cardId: Int) {
-        val card = getCardFromHandById(cardId)
+    fun discardCardFromHand(cardName: String) {
+        val card = getCardFromHandById(cardName)
         if (card != null) {
             discardCardFromHand(card)
         }
@@ -724,12 +725,12 @@ class Player(user: User, game: Game) : Comparable<Player> {
                     "Golden Touch" -> goldenTouches++
                 }
 
-                when(card.cardId) {
-                    Card.ESTATE_ID -> estates++
-                    Card.DUCHY_ID -> duchies++
-                    Card.PROVINCE_ID -> provinces++
-                    Card.COLONY_ID -> colonies++
-                    Card.CURSE_ID -> {
+                when(card.name) {
+                    Estate.NAME -> estates++
+                    Duchy.NAME -> duchies++
+                    Province.NAME -> provinces++
+                    Colony.NAME -> colonies++
+                    Curse.NAME -> {
                         curses++
                         if (curseCard == null) {
                             curseCard = card
@@ -966,9 +967,9 @@ class Player(user: User, game: Game) : Comparable<Player> {
         }
     }
 
-    fun getLeaderCard(cardId: Int): Card? {
+    fun getLeaderCard(cardName: String): Card? {
         for (leader in leaders) {
-            if (leader.cardId == cardId) {
+            if (leader.name == cardName) {
                 return leader
             }
         }

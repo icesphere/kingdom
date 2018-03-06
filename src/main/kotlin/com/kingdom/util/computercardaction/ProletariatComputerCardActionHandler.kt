@@ -25,30 +25,30 @@ object ProletariatComputerCardActionHandler {
             "City Planner" -> when (type) {
                 OldCardAction.TYPE_CHOOSE_CARDS -> {
                     val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                    val cardIds = ArrayList<Int>()
-                    cardIds.add(cardToGain!!.cardId)
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    val cardNames = ArrayList<String>()
+                    cardNames.add(cardToGain!!.name)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
                 OldCardAction.TYPE_YES_NO -> CardActionHandler.handleSubmittedCardAction(game, player, null!!, "yes", null, -1)
                 OldCardAction.TYPE_DISCARD_FROM_HAND -> CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToDiscard(oldCardAction.cards, oldCardAction.numCards), null, null, -1)
             }
             "Fruit Merchant" -> {
-                val cardIds = ArrayList<Int>()
+                val cardNames = ArrayList<String>()
                 var numCardsWorthDiscarding = computer.getNumCardsWorthDiscarding(oldCardAction.cards)
                 if (numCardsWorthDiscarding > 2) {
                     numCardsWorthDiscarding = 2
                 }
                 if (numCardsWorthDiscarding > 0) {
-                    cardIds.addAll(computer.getCardsToDiscard(oldCardAction.cards, numCardsWorthDiscarding))
+                    cardNames.addAll(computer.getCardsToDiscard(oldCardAction.cards, numCardsWorthDiscarding))
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Hooligans" -> when (type) {
                 OldCardAction.TYPE_CHOOSE_CARDS -> {
-                    val cardIds = ArrayList<Int>()
+                    val cardNames = ArrayList<String>()
                     val cardToPutOnTopOfDeck = computer.getCardToPutOnTopOfDeck(oldCardAction.cards)
-                    cardIds.add(cardToPutOnTopOfDeck!!.cardId)
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    cardNames.add(cardToPutOnTopOfDeck!!.name)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
                 OldCardAction.TYPE_CHOICES -> {
                     val choice = if (computer.isCardToDiscard(oldCardAction.associatedCard!!)) {
@@ -63,15 +63,15 @@ object ProletariatComputerCardActionHandler {
             "Rancher" -> when (type) {
                 OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY -> {
                     val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                    val cardIds = ArrayList<Int>()
-                    cardIds.add(cardToGain!!.cardId)
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    val cardNames = ArrayList<String>()
+                    cardNames.add(cardToGain!!.name)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
                 OldCardAction.TYPE_CHOOSE_UP_TO -> {
-                    val cardIds = ArrayList<Int>()
+                    val cardNames = ArrayList<String>()
                     Collections.shuffle(oldCardAction.cards)
-                    cardIds.add(oldCardAction.cards[0].cardId)
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    cardNames.add(oldCardAction.cards[0].name)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
                 OldCardAction.TYPE_CHOICES -> //todo choice should usually be "cattle" once the computer knows how to use cattle tokens
                     CardActionHandler.handleSubmittedCardAction(game, player, null!!, null, "buy", -1)
@@ -87,9 +87,9 @@ object ProletariatComputerCardActionHandler {
             "Trainee" -> when (type) {
                 OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY -> {
                     val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                    val cardIds = ArrayList<Int>()
-                    cardIds.add(cardToGain!!.cardId)
-                    CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                    val cardNames = ArrayList<String>()
+                    cardNames.add(cardToGain!!.name)
+                    CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
                 }
                 OldCardAction.TYPE_CHOOSE_CARDS -> CardActionHandler.handleSubmittedCardAction(game, player, computer.getCardsToDiscard(oldCardAction.cards, 1), null, null, -1)
             }

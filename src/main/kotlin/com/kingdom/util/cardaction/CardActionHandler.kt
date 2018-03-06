@@ -5,7 +5,7 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 
 object CardActionHandler {
-    fun handleSubmittedCardAction(game: Game, player: Player, selectedCardIds: List<Int>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
+    fun handleSubmittedCardAction(game: Game, player: Player, selectedCardNames: List<String>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
 
         player.isShowCardAction = false
 
@@ -15,23 +15,23 @@ object CardActionHandler {
         var incompleteCard: IncompleteCard? = null
 
         when {
-            cardAction.isDiscard -> incompleteCard = DiscardCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
-            type == OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == OldCardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY || type == OldCardAction.TYPE_GAIN_CARDS || type == OldCardAction.TYPE_GAIN_CARDS_UP_TO -> GainCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
-            type == OldCardAction.TYPE_TRASH_CARDS_FROM_HAND || type == OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND -> incompleteCard = TrashCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            cardAction.isDiscard -> incompleteCard = DiscardCardsHandler.handleCardAction(game, player, cardAction, selectedCardNames)
+            type == OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY || type == OldCardAction.TYPE_GAIN_UP_TO_FROM_SUPPLY || type == OldCardAction.TYPE_GAIN_CARDS || type == OldCardAction.TYPE_GAIN_CARDS_UP_TO -> GainCardsHandler.handleCardAction(game, player, cardAction, selectedCardNames)
+            type == OldCardAction.TYPE_TRASH_CARDS_FROM_HAND || type == OldCardAction.TYPE_TRASH_UP_TO_FROM_HAND -> incompleteCard = TrashCardsHandler.handleCardAction(game, player, cardAction, selectedCardNames)
             type == OldCardAction.TYPE_GAIN_CARDS_INTO_HAND_FROM_SUPPLY -> {
-                selectedCardIds
+                selectedCardNames
                         .mapNotNull { supplyMap[it] }
                         .forEach { game.playerGainedCardToHand(player, it) }
                 game.refreshPlayingArea(player)
             }
             type == OldCardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK -> when {
-                selectedCardIds.size > 1 && cardAction.cardName == "Ghost Ship" -> {
+                selectedCardNames.size > 1 && cardAction.cardName == "Ghost Ship" -> {
                     val reorderCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER)
                     reorderCardAction.deck = Deck.Seaside
                     reorderCardAction.isHideOnSelect = true
-                    reorderCardAction.numCards = selectedCardIds.size
+                    reorderCardAction.numCards = selectedCardNames.size
                     reorderCardAction.cardName = cardAction.cardName
-                    for (selectedCardId in selectedCardIds) {
+                    for (selectedCardId in selectedCardNames) {
                         val card = supplyMap[selectedCardId]!!
                         player.removeCardFromHand(card)
                         reorderCardAction.cards.add(card)
@@ -41,22 +41,22 @@ object CardActionHandler {
                     game.setPlayerCardAction(player, reorderCardAction)
                 }
                 cardAction.cardName == "Bureaucrat" -> {
-                    val card = supplyMap[selectedCardIds[0]]!!
+                    val card = supplyMap[selectedCardNames[0]]!!
                     game.addHistory(player.username, " added 1 Victory card on top of ", player.pronoun, " deck")
                     player.putCardFromHandOnTopOfDeck(card)
                 }
                 else -> {
-                    selectedCardIds
+                    selectedCardNames
                             .map { player.getCardFromHandById(it) }
                             .forEach { player.putCardFromHandOnTopOfDeck(it!!) }
-                    game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardIds.size, "card"), " on top of ", player.pronoun, " deck")
+                    game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardNames.size, "card"), " on top of ", player.pronoun, " deck")
                 }
             }
-            type == OldCardAction.TYPE_CHOOSE_CARDS || type == OldCardAction.TYPE_SETUP_LEADERS -> incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == OldCardAction.TYPE_CHOOSE_CARDS || type == OldCardAction.TYPE_SETUP_LEADERS -> incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardNames)
             type == OldCardAction.TYPE_YES_NO -> incompleteCard = YesNoHandler.handleCardAction(game, player, cardAction, yesNoAnswer!!)
             type == OldCardAction.TYPE_CHOICES -> incompleteCard = ChoicesHandler.handleCardAction(game, player, cardAction, choice!!)
-            type == OldCardAction.TYPE_CHOOSE_IN_ORDER -> incompleteCard = ChooseInOrderHandler.handleCardAction(game, player, cardAction, selectedCardIds)
-            type == OldCardAction.TYPE_CHOOSE_UP_TO -> incompleteCard = ChooseUpToHandler.handleCardAction(game, player, cardAction, selectedCardIds)
+            type == OldCardAction.TYPE_CHOOSE_IN_ORDER -> incompleteCard = ChooseInOrderHandler.handleCardAction(game, player, cardAction, selectedCardNames)
+            type == OldCardAction.TYPE_CHOOSE_UP_TO -> incompleteCard = ChooseUpToHandler.handleCardAction(game, player, cardAction, selectedCardNames)
             type == OldCardAction.TYPE_CHOOSE_NUMBER_BETWEEN || type == OldCardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN -> ChooseNumberBetweenHandler.handleCardAction(game, player, cardAction, numberChosen)
         }
 

@@ -4,6 +4,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.OldCardAction
 import com.kingdom.model.Game
 import com.kingdom.model.Player
+import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.computer.ComputerPlayer
 import com.kingdom.util.cardaction.CardActionHandler
 
@@ -30,21 +31,21 @@ object KingdomComputerCardActionHandler {
                 }
             }
             "Bureaucrat" -> {
-                val cardIds = computer.getCardsNotNeeded(oldCardAction.cards, 1)
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = computer.getCardsNotNeeded(oldCardAction.cards, 1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Cellar" -> {
                 val cardsToDiscard = oldCardAction.cards
                         .filter { computer.isCardToDiscard(it) }
-                        .map { it.cardId }
+                        .map { it.name }
                 CardActionHandler.handleSubmittedCardAction(game, player, cardsToDiscard, null, null, -1)
             }
             "Chancellor" -> CardActionHandler.handleSubmittedCardAction(game, player, null!!, "yes", null, -1)
             "Chapel" -> {
-                val cardsToTrash = ArrayList<Int>()
+                val cardsToTrash = ArrayList<String>()
                 for (card in oldCardAction.cards) {
                     if (computer.isCardToTrash(card)) {
-                        cardsToTrash.add(card.cardId)
+                        cardsToTrash.add(card.name)
                     }
                     if (cardsToTrash.size == 4) {
                         break
@@ -69,7 +70,7 @@ object KingdomComputerCardActionHandler {
             "Spy" -> {
                 var yesNoAnswer = "yes"
                 val topCard = oldCardAction.cards[0]
-                if (topCard.cardId == Card.CURSE_ID || topCard.cardId == Card.COPPER_ID) {
+                if (topCard.name == Curse.NAME || topCard.isCopper) {
                     yesNoAnswer = "no"
                 }
                 player.getVictoryCards()
@@ -85,7 +86,7 @@ object KingdomComputerCardActionHandler {
                 CardActionHandler.handleSubmittedCardAction(game, player, null!!, yesNoAnswer, null, -1)
             }
             "Thief" -> {
-                val cardIds = ArrayList<Int>()
+                val cardNames = ArrayList<String>()
                 when (type) {
                     OldCardAction.TYPE_CHOOSE_CARDS -> when {
                         oldCardAction.numCards >= 1 -> {
@@ -95,24 +96,24 @@ object KingdomComputerCardActionHandler {
                                     val card2 = oldCardAction.cards[1]
                                     when {
                                         card1.isTreasure && card2.isTreasure -> when {
-                                            card1.cost > card2.cost -> cardIds.add(card1.cardId)
-                                            else -> cardIds.add(card2.cardId)
+                                            card1.cost > card2.cost -> cardNames.add(card1.name)
+                                            else -> cardNames.add(card2.name)
                                         }
-                                        card1.isTreasure -> cardIds.add(card1.cardId)
-                                        else -> cardIds.add(card2.cardId)
+                                        card1.isTreasure -> cardNames.add(card1.name)
+                                        else -> cardNames.add(card2.name)
                                     }
                                 }
-                                else -> cardIds.add(card1.cardId)
+                                else -> cardNames.add(card1.name)
                             }
                         }
                     }
                     else -> when {
                         oldCardAction.numCards > 0 -> oldCardAction.cards
                                 .filter { it.cost > 0 }
-                                .mapTo(cardIds) { it.cardId }
+                                .mapTo(cardNames) { it.name }
                     }
                 }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             "Throne Room" -> {
                 val cardToPlay = computer.getActionToDuplicate(oldCardAction.cards, 2)
@@ -120,9 +121,9 @@ object KingdomComputerCardActionHandler {
             }
             "Workshop" -> {
                 val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
-                val cardIds = ArrayList<Int>()
-                cardIds.add(cardToGain!!.cardId)
-                CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+                val cardNames = ArrayList<String>()
+                cardNames.add(cardToGain!!.name)
+                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
             }
             else -> throw RuntimeException("Kingdom Card Action not handled for card: " + oldCardAction.cardName + " and type: " + oldCardAction.type)
         }
@@ -143,8 +144,8 @@ object KingdomComputerCardActionHandler {
         if (cardToChoose == null) {
             cardToChoose = oldCardAction.cards[0]
         }
-        val cardIds = ArrayList<Int>()
-        cardIds.add(cardToChoose.cardId)
-        CardActionHandler.handleSubmittedCardAction(game, player, cardIds, null, null, -1)
+        val cardNames = ArrayList<String>()
+        cardNames.add(cardToChoose.name)
+        CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
     }
 }

@@ -22,7 +22,7 @@ object IntrigueSpecialActionHandler {
                 val player = game.currentPlayer
                 var hasEstate = false
                 for (c in player!!.hand) {
-                    if (c.cardId == Card.ESTATE_ID) {
+                    if (c.name == Estate.NAME) {
                         hasEstate = true
                         break
                     }
@@ -34,7 +34,7 @@ object IntrigueSpecialActionHandler {
                     cardAction.instructions = "Do you want to discard an Estate card from your hand? If you do then you get +4 coins, otherwise you gain an Estate card."
                     game.setPlayerCardAction(player, cardAction)
                 } else {
-                    if (game.isCardInSupply(Card.ESTATE_ID)) {
+                    if (game.isCardInSupply(Estate.NAME)) {
                         game.playerGainedCard(player, game.estateCard)
                         game.refreshDiscard(player)
                     }

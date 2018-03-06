@@ -23,7 +23,7 @@ object LeaderSpecialActionHandler {
                 cardAction.numCards = 1
                 cardAction.instructions = "Select one of the following cards to gain on top of your deck and then click Done."
                 for (c in game.supplyMap.values) {
-                    if (game.getCardCost(c) <= 6 && !c.costIncludesPotion && game.supply[c.cardId]!! > 0) {
+                    if (game.getCardCost(c) <= 6 && !c.costIncludesPotion && game.supply[c.name]!! > 0) {
                         cardAction.cards.add(c)
                     }
                 }
@@ -54,7 +54,7 @@ object LeaderSpecialActionHandler {
                 var nextPlayerIndex = game.calculateNextPlayerIndex(game.currentPlayerIndex)
                 while (nextPlayerIndex != game.currentPlayerIndex) {
                     val nextPlayer = game.players[nextPlayerIndex]
-                    val numInSupply = game.supply[Card.CURSE_ID]!!
+                    val numInSupply = game.supply[Curse.NAME]!!
                     if (numInSupply > 0) {
                         game.playerGainedCard(nextPlayer, game.curseCard)
                         game.refreshDiscard(nextPlayer)

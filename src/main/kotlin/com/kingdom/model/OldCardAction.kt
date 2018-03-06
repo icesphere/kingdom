@@ -10,7 +10,6 @@ class OldCardAction(var type: Int) {
     var instructions = ""
     var buttonValue = ""
     var cardName = ""
-    var cardId: Int = 0
     var phase: Int = 0
     var playerId: Int = 0
     var width = 0

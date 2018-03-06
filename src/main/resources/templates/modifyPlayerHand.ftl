@@ -17,7 +17,7 @@
     </div>
     <#list cards as card>
         <div>
-            <select name="card_${card.cardId}_${player.userId}">
+            <select name="card_${card.name}_${player.userId}">
                 <option value="0">0</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
