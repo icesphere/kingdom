@@ -2,6 +2,7 @@ package com.kingdom.util.computercardaction
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.OldCardAction
+import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.computer.ComputerPlayer
 import com.kingdom.util.cardaction.CardActionHandler
 import java.util.*

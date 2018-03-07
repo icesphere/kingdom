@@ -28,11 +28,6 @@
             </tr>
 			<tr>
 				<td>
-					<a href="listCards.html">Cards</a>
-				</td>
-			</tr>
-			<tr>
-				<td>
 					<a href="listUsers.html">Users</a>
 				</td>
 			</tr>

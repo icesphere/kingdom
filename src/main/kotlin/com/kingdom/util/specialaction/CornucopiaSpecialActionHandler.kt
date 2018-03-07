@@ -3,6 +3,9 @@ package com.kingdom.util.specialaction
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.supply.Curse
+import com.kingdom.model.cards.supply.Estate
+import com.kingdom.model.cards.supply.Gold
 import com.kingdom.util.KingdomUtil
 
 import java.util.ArrayList

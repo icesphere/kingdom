@@ -5,7 +5,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.util.KingdomUtil
 
 object ChooseInOrderHandler {
-    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardIds: List<Int>): IncompleteCard? {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardNames: List<String>): IncompleteCard? {
 
         var incompleteCard: IncompleteCard? = null
 
@@ -13,13 +13,13 @@ object ChooseInOrderHandler {
 
         when (oldCardAction.cardName) {
             "Apothecary", "Navigator", "Scout", "Rabble", "Ghost Ship", "Mandarin", "Cartographer", "Oracle" -> {
-                val cards = selectedCardIds.map { cardMap[it]!! }
+                val cards: List<Card> = selectedCardNames.map { cardMap[it]!! }
                 player.deck.addAll(0, cards)
 
                 when (oldCardAction.cardName) {
-                    "Ghost Ship" -> game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardIds.size, "card"), " on top of ", player.pronoun, " deck")
+                    "Ghost Ship" -> game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardNames.size, "card"), " on top of ", player.pronoun, " deck")
                     "Mandarin" -> {
-                        game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardIds.size, "treasure card"), " from play on top of ", player.pronoun, " deck")
+                        game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardNames.size, "treasure card"), " from play on top of ", player.pronoun, " deck")
                         game.cardsPlayed.removeAll(game.treasureCardsPlayed)
                         game.treasureCardsPlayed.clear()
                         game.refreshAllPlayersCardsPlayed()
@@ -30,13 +30,13 @@ object ChooseInOrderHandler {
                 }
             }
             "Black Market" -> {
-                val cards = selectedCardIds.map { cardMap[it]!! }
+                val cards: List<Card> = selectedCardNames.map { cardMap[it]!! }
                 game.blackMarketCards.addAll(cards)
             }
             "Black Market Treasure" -> {
                 var queueTreasureCards = false
-                for (selectedCardId in selectedCardIds) {
-                    val card = cardMap[selectedCardId]!!
+                for (selectedCardName in selectedCardNames) {
+                    val card = cardMap[selectedCardName]!!
                     if (!queueTreasureCards && card.isAutoPlayTreasure) {
                         game.playTreasureCard(player, card, true, true, false, true, true)
                     } else {
@@ -49,16 +49,16 @@ object ChooseInOrderHandler {
                 incompleteCard.setPlayerActionCompleted(player.userId)
             }
             "Lookout" -> {
-                val cardToTrash = cardMap[selectedCardIds[0]]!!
+                val cardToTrash = cardMap[selectedCardNames[0]]!!
                 game.trashedCards.add(cardToTrash)
                 game.playerLostCard(player, cardToTrash)
                 game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " trashed ", player.username, "'s ", cardToTrash.name)
-                val cardToDiscard = cardMap[selectedCardIds[1]]!!
+                val cardToDiscard = cardMap[selectedCardNames[1]]!!
                 player.addCardToDiscard(cardToDiscard)
                 game.playerDiscardedCard(player, cardToDiscard)
                 game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " discarded ", player.username, "'s ", cardToDiscard.name)
-                if (selectedCardIds.size == 3) {
-                    val cardToPutBack = cardMap[selectedCardIds[2]]!!
+                if (selectedCardNames.size == 3) {
+                    val cardToPutBack = cardMap[selectedCardNames[2]]!!
                     player.addCardToTopOfDeck(cardToPutBack)
                 }
             }

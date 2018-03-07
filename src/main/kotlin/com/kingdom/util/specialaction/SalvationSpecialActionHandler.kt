@@ -3,6 +3,7 @@ package com.kingdom.util.specialaction
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.supply.Curse
 import com.kingdom.util.KingdomUtil
 
 import java.util.ArrayList
@@ -167,7 +168,6 @@ object SalvationSpecialActionHandler {
                                         nextOldCardAction.buttonValue = "Continue"
                                         nextOldCardAction.instructions = "The graverobber revealed this non-treasure card from " + otherPlayer.username + "'s discard pile. Click Continue."
                                     }
-                                    nextOldCardAction.name = index
                                     nextOldCardAction.deck = Deck.Salvation
                                     nextOldCardAction.playerId = otherPlayer.userId
                                     nextOldCardAction.cardName = card.name

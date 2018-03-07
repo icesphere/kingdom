@@ -6,23 +6,23 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 
 object DiscardCardsHandler {
-    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardIds: List<Int>): IncompleteCard? {
+    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardNames: List<String>): IncompleteCard? {
 
         var incompleteCard: IncompleteCard? = null
 
-        if (selectedCardIds.isEmpty()) {
+        if (selectedCardNames.isEmpty()) {
             game.addHistory(player.username, " did not discard a card")
         } else {
-            game.addHistory(player.username, " discarded ", KingdomUtil.getPlural(selectedCardIds.size, "card"))
+            game.addHistory(player.username, " discarded ", KingdomUtil.getPlural(selectedCardNames.size, "card"))
         }
 
-        for (selectedCardId in selectedCardIds) {
-            val selectedCard = game.cardMap[selectedCardId]!!
+        for (selectedCardName in selectedCardNames) {
+            val selectedCard = game.cardMap[selectedCardName]!!
             if (oldCardAction.type == OldCardAction.TYPE_DISCARD_UP_TO) {
                 player.addCardToDiscard(selectedCard)
                 game.playerDiscardedCard(player, selectedCard)
             } else {
-                player.discardCardFromHand(selectedCardId)
+                player.discardCardFromHand(selectedCardName)
                 game.playerDiscardedCard(player, selectedCard)
             }
         }
@@ -30,7 +30,7 @@ object DiscardCardsHandler {
         when (oldCardAction.cardName) {
             "Cartographer" -> {
                 val cards = oldCardAction.cards
-                selectedCardIds
+                selectedCardNames
                         .map { game.cardMap[it] }
                         .forEach { cards.remove(it) }
 
@@ -51,11 +51,11 @@ object DiscardCardsHandler {
                     }
                 }
             }
-            "Cellar" -> player.drawCards(selectedCardIds.size)
-            "Druid" -> player.addCoins(2 * selectedCardIds.size)
-            "Fruit Merchant" -> if (selectedCardIds.isNotEmpty()) {
-                player.addFruitTokens(selectedCardIds.size)
-                game.addHistory(player.username, " gained ", KingdomUtil.getPlural(selectedCardIds.size, "fruit token"))
+            "Cellar" -> player.drawCards(selectedCardNames.size)
+            "Druid" -> player.addCoins(2 * selectedCardNames.size)
+            "Fruit Merchant" -> if (selectedCardNames.isNotEmpty()) {
+                player.addFruitTokens(selectedCardNames.size)
+                game.addHistory(player.username, " gained ", KingdomUtil.getPlural(selectedCardNames.size, "fruit token"))
             }
             "Hamlet" -> {
                 player.addActions(1)
@@ -74,11 +74,11 @@ object DiscardCardsHandler {
                 game.addHistory(player.username, " gained +1 Buy")
             }
             "Scriptorium" -> {
-                val selectedCard = game.cardMap[selectedCardIds[0]]!!
+                val selectedCard = game.cardMap[selectedCardNames[0]]!!
                 game.playerGainedCard(player, selectedCard)
             }
-            "Secret Chamber" -> player.addCoins(selectedCardIds.size)
-            "Stables" -> if (!selectedCardIds.isEmpty()) {
+            "Secret Chamber" -> player.addCoins(selectedCardNames.size)
+            "Stables" -> if (!selectedCardNames.isEmpty()) {
                 game.addHistory(player.username, " gained +3 Cards and +1 Action")
                 player.drawCards(3)
                 player.addActions(1)
@@ -86,8 +86,8 @@ object DiscardCardsHandler {
             }
             "Vault" -> {
                 incompleteCard = MultiPlayerIncompleteCard(oldCardAction.cardName, game, false)
-                player.addCoins(selectedCardIds.size)
-                game.addHistory(player.username, " gained +", KingdomUtil.getPlural(selectedCardIds.size, "Coin"), " from playing ", KingdomUtil.getWordWithBackgroundColor("Vault", Card.ACTION_COLOR), "")
+                player.addCoins(selectedCardNames.size)
+                game.addHistory(player.username, " gained +", KingdomUtil.getPlural(selectedCardNames.size, "Coin"), " from playing ", KingdomUtil.getWordWithBackgroundColor("Vault", Card.ACTION_COLOR), "")
 
                 for (otherPlayer in game.players) {
                     if (otherPlayer.userId != game.currentPlayerId) {

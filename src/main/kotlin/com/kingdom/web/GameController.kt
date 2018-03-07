@@ -1070,13 +1070,13 @@ class GameController(private var cardManager: CardManager,
                     } else {
                         val selectedCardsString = request.getParameter("selectedCards")
                         val selectedCardsStrings = selectedCardsString.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                        val selectedCardIds = ArrayList<Int>()
+                        val selectedCardNames = ArrayList<String>()
                         for (cardName in selectedCardsStrings) {
                             if (cardName != "") {
-                                selectedCardIds.add(Integer.parseInt(cardName))
+                                selectedCardNames.add(cardName)
                             }
                         }
-                        game.cardActionSubmitted(player, selectedCardIds, null, null, -1)
+                        game.cardActionSubmitted(player, selectedCardNames, null, null, -1)
                     }
                 }
             }
