@@ -6,7 +6,7 @@ import com.kingdom.util.KingdomUtil
 
 import java.util.*
 
-class Player(user: User, game: Game) : Comparable<Player> {
+class Player(user: User, val game: Game) : Comparable<Player> {
 
     var userId: Int = 0
     var deck: MutableList<Card> = LinkedList()
@@ -470,7 +470,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
             baneCardsInHand++
         }
 
-        when(card.name) {
+        when (card.name) {
             "Moat" -> moatCardsInHand++
             "Secret Chamber" -> secretChamberCardsInHand++
             "Watchtower" -> watchtowerCardsInHand++
@@ -516,7 +516,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
             baneCardsInHand--
         }
 
-        when(card.name) {
+        when (card.name) {
             "Moat" -> moatCardsInHand--
             "Secret Chamber" -> secretChamberCardsInHand--
             "Watchtower" -> watchtowerCardsInHand--
@@ -574,19 +574,23 @@ class Player(user: User, game: Game) : Comparable<Player> {
         hand.clear()
     }
 
-    fun drawCardAndAddToHand() {
+    fun drawCardAndAddToHand(): Card? {
         val card = removeTopDeckCard()
         if (card != null) {
             addCardToHand(card)
         }
+        return card
     }
 
-    fun drawCards(numCards: Int) {
+    fun drawCards(numCards: Int): List<Card> {
+        val cards: MutableList<Card> = ArrayList()
         var cardsDrawn = 0
         while (cardsDrawn < numCards) {
-            drawCardAndAddToHand()
+            val card = drawCardAndAddToHand()
+            card?.let { cards.add(card) }
             cardsDrawn++
         }
+        return cards
     }
 
     fun endTurn(cardsToDraw: Int) {
@@ -707,7 +711,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
             if (card.isVictory || card.isCurse) {
                 victoryPoints += card.victoryPoints
 
-                when(card.name) {
+                when (card.name) {
                     "Gardens" -> gardens++
                     "Farmland" -> farmlands++
                     "Vineyard" -> vineyards++
@@ -725,7 +729,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
                     "Golden Touch" -> goldenTouches++
                 }
 
-                when(card.name) {
+                when (card.name) {
                     Estate.NAME -> estates++
                     Duchy.NAME -> duchies++
                     Province.NAME -> provinces++
@@ -825,7 +829,7 @@ class Player(user: User, game: Game) : Comparable<Player> {
     private fun getLeaderPoints(leader: Card): Int {
         var points = leader.victoryPoints
 
-        when(leader.name) {
+        when (leader.name) {
             "Hatshepsut" -> if (numGold == 0) {
                 points += 6
             }
@@ -982,5 +986,21 @@ class Player(user: User, game: Game) : Comparable<Player> {
 
     fun hasFoolsGoldInHand(): Boolean {
         return foolsGoldInHand > 0
+    }
+
+    fun scrapCardFromDiscard(card: Card) {
+        game.addHistory("$username scrapped ${card.name} from discard")
+        discard.remove(card)
+        playerCardScrapped(card)
+    }
+
+    fun scrapCardFromHand(card: Card) {
+        game.addHistory("$username scrapped ${card.name} from hand")
+        hand.remove(card)
+        playerCardScrapped(card)
+    }
+
+    private fun playerCardScrapped(card: Card) {
+        game.trashedCards.add(card);
     }
 }

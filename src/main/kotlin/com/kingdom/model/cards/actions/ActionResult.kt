@@ -3,13 +3,13 @@ package com.kingdom.model.cards.actions
 import com.kingdom.model.cards.Card
 
 class ActionResult {
-    val selectedCard: Card? = null
+    var selectedCard: Card? = null
 
-    val choiceSelected: Int? = null
+    var choiceSelected: Int? = null
 
-    val cardLocation: String? = null
+    var cardLocation: String? = null
 
-    val doNotUse: Boolean = false
+    var isDoNotUse: Boolean = false
 
-    val doneWithAction: Boolean = false
+    var isDoneWithAction: Boolean = false
 }

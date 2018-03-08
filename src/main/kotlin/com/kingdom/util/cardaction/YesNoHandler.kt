@@ -2,6 +2,7 @@ package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.Estate
 import com.kingdom.util.KingdomUtil
@@ -284,11 +285,11 @@ object YesNoHandler {
                 when (yesNoAnswer) {
                     "yes" -> {
                         game.addHistory(player.username, " used ", KingdomUtil.getWordWithBackgroundColor("Royal Seal", Card.TREASURE_COLOR), " to add the gained card to the top of ", player.pronoun, " deck")
-                        game.moveGainedCard(player, cardToGain, "deck")
+                        game.moveGainedCard(player, cardToGain, CardLocation.Deck)
                     }
                     else -> when (oldCardAction.destination) {
-                        "hand" -> game.playerGainedCardToHand(player, cardToGain)
-                        "discard" -> game.playerGainedCard(player, cardToGain)
+                        CardLocation.Hand -> game.playerGainedCardToHand(player, cardToGain)
+                        CardLocation.Discard -> game.playerGainedCard(player, cardToGain)
                     }
                 }
                 if (player.buys == 0 && !player.isComputer && !player.isShowCardAction && player.extraOldCardActions.isEmpty() && !game.hasUnfinishedGainCardActions()) {
@@ -394,12 +395,12 @@ object YesNoHandler {
                     "yes" -> {
                         game.addHistory(player.username, " put ", KingdomUtil.getArticleWithCardName(cardToGain), " under ", player.pronoun, " ", KingdomUtil.getWordWithBackgroundColor("Tinker", Card.ACTION_DURATION_COLOR))
                         player.tinkerCards.add(cardToGain)
-                        game.moveGainedCard(player, cardToGain, "tinker")
+                        game.moveGainedCard(player, cardToGain, CardLocation.Tinker)
                     }
                     else -> when (oldCardAction.destination) {
-                        "hand" -> game.playerGainedCardToHand(player, cardToGain)
-                        "deck" -> game.playerGainedCardToTopOfDeck(player, cardToGain)
-                        "discard" -> game.playerGainedCard(player, cardToGain)
+                        CardLocation.Hand -> game.playerGainedCardToHand(player, cardToGain)
+                        CardLocation.Deck -> game.playerGainedCardToTopOfDeck(player, cardToGain)
+                        CardLocation.Discard -> game.playerGainedCard(player, cardToGain)
                     }
                 }
             }

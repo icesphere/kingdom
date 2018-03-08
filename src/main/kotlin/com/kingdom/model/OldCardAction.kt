@@ -1,6 +1,7 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
 import java.util.*
 
@@ -25,7 +26,7 @@ class OldCardAction(var type: Int) {
         }
     var choices: MutableList<CardActionChoice> = ArrayList()
     var isHideOnSelect: Boolean = false
-    var destination: String? = null
+    var destination: CardLocation? = null
     var startNumber: Int = 0
     var endNumber: Int = 0
     var deck: Deck? = null

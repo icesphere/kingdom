@@ -2,6 +2,7 @@ package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.*
 import com.kingdom.util.KingdomUtil
@@ -870,9 +871,9 @@ object ChoicesHandler {
                         }
                     }
                     else -> when (oldCardAction.destination) {
-                        "hand" -> game.playerGainedCardToHand(player, cardToGain)
-                        "deck" -> game.playerGainedCardToTopOfDeck(player, cardToGain)
-                        "discard" -> game.playerGainedCard(player, cardToGain)
+                        CardLocation.Hand -> game.playerGainedCardToHand(player, cardToGain)
+                        CardLocation.Deck -> game.playerGainedCardToTopOfDeck(player, cardToGain)
+                        CardLocation.Discard -> game.playerGainedCard(player, cardToGain)
                     }
                 }
             }
@@ -881,16 +882,16 @@ object ChoicesHandler {
                 when (choice) {
                     "trash" -> {
                         game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to trash ", KingdomUtil.getArticleWithCardName(cardToGain))
-                        game.moveGainedCard(player, cardToGain, "trash")
+                        game.moveGainedCard(player, cardToGain, CardLocation.Trash)
                     }
                     "deck" -> {
                         game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to put ", KingdomUtil.getArticleWithCardName(cardToGain), " on top of ", player.pronoun, " deck")
-                        game.moveGainedCard(player, cardToGain, "deck")
+                        game.moveGainedCard(player, cardToGain, CardLocation.Deck)
                     }
                     else -> when (oldCardAction.destination) {
-                        "hand" -> game.playerGainedCardToHand(player, cardToGain)
-                        "deck" -> game.playerGainedCardToTopOfDeck(player, cardToGain)
-                        "discard" -> game.playerGainedCard(player, cardToGain)
+                        CardLocation.Hand -> game.playerGainedCardToHand(player, cardToGain)
+                        CardLocation.Deck -> game.playerGainedCardToTopOfDeck(player, cardToGain)
+                        CardLocation.Discard -> game.playerGainedCard(player, cardToGain)
                     }
                 }
             }

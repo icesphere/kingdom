@@ -1,6 +1,7 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.computer.*
@@ -1283,7 +1284,7 @@ class Game(val gameId: Int) {
                 talismanCardsPlayed = 0
                 addHistory("The Mint trashed all the treasure cards played by ", player.username)
             }
-            playerGainedCard(player, card, "discard", true, true)
+            playerGainedCard(player, card, CardLocation.Discard, true, true)
             if (card.isVictory && hoardCardsPlayed > 0) {
                 var goldsToGain = hoardCardsPlayed
                 val goldsInSupply = getNumInSupply(Gold.NAME)
@@ -1763,17 +1764,17 @@ class Game(val gameId: Int) {
 
     @JvmOverloads
     fun playerGainedCard(player: Player, card: Card, takeFromSupply: Boolean = true) {
-        playerGainedCard(player, card, "discard", takeFromSupply, false)
+        playerGainedCard(player, card, CardLocation.Discard, takeFromSupply, false)
     }
 
     @JvmOverloads
     fun playerGainedCardToHand(player: Player, card: Card, takeFromSupply: Boolean = true) {
-        playerGainedCard(player, card, "hand", takeFromSupply, false)
+        playerGainedCard(player, card, CardLocation.Hand, takeFromSupply, false)
     }
 
     @JvmOverloads
     fun playerGainedCardToTopOfDeck(player: Player, card: Card, takeFromSupply: Boolean = true) {
-        playerGainedCard(player, card, "deck", takeFromSupply, false)
+        playerGainedCard(player, card, CardLocation.Deck, takeFromSupply, false)
     }
 
     fun victoryPointsNeedRefresh(card: Card?): Boolean {
@@ -1785,7 +1786,7 @@ class Game(val gameId: Int) {
         return card.isVictory || card.isCurse || isShowGardens || isShowFarmlands || isShowFairgrounds || isShowVineyard && card.isAction || isShowCathedral && card.isSalvation
     }
 
-    fun playerGainedCard(player: Player, card: Card, cardDestination: String, takeFromSupply: Boolean, gainedFromBuy: Boolean) {
+    fun playerGainedCard(player: Player, card: Card, cardDestination: CardLocation, takeFromSupply: Boolean, gainedFromBuy: Boolean) {
         var destination = cardDestination
         if (card.isCopied && !card.isCardNotGained) {
             if (!card.gainOldCardActions.isEmpty()) {
@@ -1832,7 +1833,7 @@ class Game(val gameId: Int) {
                     return
                 }
             }
-            if (checkTrader && !card.isTraderProcessed && player.hasTrader() && (!card.isSilver || destination != "discard" || !takeFromSupply)) {
+            if (checkTrader && !card.isTraderProcessed && player.hasTrader() && (!card.isSilver || destination != CardLocation.Discard || !takeFromSupply)) {
                 cardCopy.isTraderProcessed = true
                 cardCopy.isCardNotGained = true
                 val cardAction = GainCardsReactionHandler.getCardAction("Trader", this, player, cardCopy, destination)
@@ -1853,7 +1854,7 @@ class Game(val gameId: Int) {
                 refreshAllPlayersSupply()
             }
             if (card.name == "Nomad Camp") {
-                destination = "deck"
+                destination = CardLocation.Deck
             }
             cardCopy.isCardNotGained = false
             addCardToDestination(player, card, destination)
@@ -1867,7 +1868,7 @@ class Game(val gameId: Int) {
             if (victoryPointsNeedRefresh(card)) {
                 refreshAllPlayersPlayers()
             }
-            cardCopy.destination = destination
+            cardCopy.location = destination
             setGainedCardActions(player, cardCopy, destination)
             if (!cardCopy.gainOldCardActions.isEmpty()) {
                 waitIfNotCurrentPlayer(player)
@@ -1889,24 +1890,24 @@ class Game(val gameId: Int) {
         }
     }
 
-    private fun addGainedCardToDestinationHistory(player: Player, card: Card, destination: String) {
+    private fun addGainedCardToDestinationHistory(player: Player, card: Card, destination: CardLocation) {
         when (destination) {
-            "hand" -> addHistory(player.username, " gained ", KingdomUtil.getArticleWithCardName(card), " into ", player.pronoun, " hand")
-            "deck" -> addHistory(player.username, " gained ", KingdomUtil.getArticleWithCardName(card), " on top of ", player.pronoun, " deck")
-            "discard" -> addHistory(player.username, " gained ", KingdomUtil.getArticleWithCardName(card))
+            CardLocation.Hand -> addHistory(player.username, " gained ", KingdomUtil.getArticleWithCardName(card), " into ", player.pronoun, " hand")
+            CardLocation.Deck -> addHistory(player.username, " gained ", KingdomUtil.getArticleWithCardName(card), " on top of ", player.pronoun, " deck")
+            CardLocation.Discard -> addHistory(player.username, " gained ", KingdomUtil.getArticleWithCardName(card))
         }
     }
 
-    private fun addCardToDestination(player: Player, card: Card, destination: String) {
+    private fun addCardToDestination(player: Player, card: Card, destination: CardLocation) {
         when (destination) {
-            "hand" -> {
+            CardLocation.Hand -> {
                 if (player.userId == currentPlayerId && card.addCoins != 0) {
                     refreshAllPlayersCardsBought()
                 }
                 player.addCardToHand(card)
             }
-            "deck" -> player.addCardToTopOfDeck(card)
-            "discard" -> player.addCardToDiscard(card)
+            CardLocation.Deck -> player.addCardToTopOfDeck(card)
+            CardLocation.Discard -> player.addCardToDiscard(card)
         }
     }
 
@@ -1920,19 +1921,25 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun moveGainedCard(player: Player, card: Card, destination: String) {
+    fun moveGainedCard(player: Player, card: Card, destination: CardLocation) {
         removeGainedCard(player, card)
         addCardToDestination(player, cardMap[card.name]!!, destination)
         gainCardFinished(player, card)
     }
 
     private fun removeGainedCard(player: Player, gainedCard: Card) {
-        when(gainedCard.destination) {
-            "discard" -> player.discard.removeLastOccurrence(gainedCard)
-            "deck" -> player.deck.remove(gainedCard)
-            "tinker" -> player.tinkerCards.remove(gainedCard)
-            "hand" -> player.hand.remove(gainedCard)
+        when(gainedCard.location) {
+            CardLocation.Discard -> player.discard.removeLastOccurrence(gainedCard)
+            CardLocation.Deck -> player.deck.remove(gainedCard)
+            CardLocation.Tinker -> player.tinkerCards.remove(gainedCard)
+            CardLocation.Hand -> player.hand.remove(gainedCard)
         }
+    }
+
+    fun trashCardFromSupply(card: Card) {
+        card.location = CardLocation.Trash
+        trashedCards.add(card)
+        takeFromSupply(card.name)
     }
 
     private fun waitIfNotCurrentPlayer(player: Player) {
@@ -1966,14 +1973,14 @@ class Game(val gameId: Int) {
         }
     }
 
-    private fun setGainedCardActions(player: Player, cardCopy: Card, destination: String) {
+    private fun setGainedCardActions(player: Player, cardCopy: Card, destination: CardLocation) {
         val gainCardActions = getGainCardActions(player, cardCopy, destination)
         cardCopy.gainOldCardActions = gainCardActions
     }
 
-    private fun getGainCardActions(player: Player, cardCopy: Card, destination: String): MutableMap<String, OldCardAction> {
+    private fun getGainCardActions(player: Player, cardCopy: Card, destination: CardLocation): MutableMap<String, OldCardAction> {
         val gainCardActions = HashMap<String, OldCardAction>()
-        if (royalSealCardPlayed && player.userId == currentPlayerId && destination != "deck") {
+        if (royalSealCardPlayed && player.userId == currentPlayerId && destination != CardLocation.Deck) {
             val cardAction = GainCardsReactionHandler.getCardAction("Royal Seal", this, player, cardCopy, destination)
             if (cardAction != null) {
                 gainCardActions["Royal Seal"] = cardAction

@@ -3,6 +3,7 @@ package com.kingdom.model.cards.actions
 import com.kingdom.model.Choice
 import com.kingdom.model.Player
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 
 class ChoiceAction : Action {
     private var card: ChoiceActionCard? = null
@@ -17,7 +18,7 @@ class ChoiceAction : Action {
         this.choices = choices.toList()
     }
 
-    override fun isCardActionable(card: Card, cardLocation: String, player: Player): Boolean = false
+    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean = false
 
     override fun processAction(player: Player): Boolean = true
 

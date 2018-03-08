@@ -2,11 +2,12 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
 
 object GainCardsReactionHandler {
 
-    fun getCardAction(action: String, game: Game, player: Player, card: Card, destination: String): OldCardAction? {
+    fun getCardAction(action: String, game: Game, player: Player, card: Card, destination: CardLocation): OldCardAction? {
 
         when (action) {
             "Royal Seal" -> {
@@ -15,7 +16,7 @@ object GainCardsReactionHandler {
                 cardAction.deck = Deck.Prosperity
                 cardAction.cardName = "Royal Seal"
                 cardAction.associatedCard = card
-                if (destination == "hand") {
+                if (destination == CardLocation.Hand) {
                     cardAction.instructions = "Do you want to put this card on top of your deck instead of in your hand?"
                 } else {
                     cardAction.instructions = "Do you want to put this card on top of your deck instead of in your discard pile?"

@@ -5,8 +5,6 @@ import com.kingdom.model.cards.supply.*
 import com.kingdom.util.KingdomUtil
 import java.util.*
 
-import javax.persistence.*
-
 open class Card(val name: String, val deck: Deck, val type: CardType, val cost: Int) {
 
     var special: String = ""
@@ -47,34 +45,24 @@ open class Card(val name: String, val deck: Deck, val type: CardType, val cost: 
 
     var cattleTokens: Int = 0
 
-    @Transient
     val associatedCards: MutableList<Card> = ArrayList(0)
 
-    @Transient
     var isDisableSelect: Boolean = false
-    
-    @Transient
+
     var isAutoSelect: Boolean = false
 
-    @Transient
     var isActivated: Boolean = false
 
-    @Transient
     var isCopied: Boolean = false
 
-    @Transient
     var gainOldCardActions: MutableMap<String, OldCardAction> = HashMap(0)
 
-    @Transient
-    var destination = ""
+    var location: CardLocation? = null
 
-    @Transient
     var isTraderProcessed: Boolean = false
 
-    @Transient
     var isCardNotGained: Boolean = false
 
-    @Transient
     var isGainedFromBuy: Boolean = false
 
     val typeAsString: String
