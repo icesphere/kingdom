@@ -42,7 +42,7 @@ class GameUserHistory {
 
     constructor()
 
-    constructor(gameId: Int, player: Player) {
+    constructor(gameId: Int, player: OldPlayer) {
         this.gameId = gameId
         this.userId = player.userId
         this.points = player.victoryPoints

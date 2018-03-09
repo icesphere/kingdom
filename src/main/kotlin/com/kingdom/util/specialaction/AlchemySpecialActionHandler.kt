@@ -9,7 +9,7 @@ import com.kingdom.util.KingdomUtil
 import java.util.ArrayList
 
 object AlchemySpecialActionHandler {
-    fun handleSpecialAction(game: Game, card: Card): IncompleteCard? {
+    fun handleSpecialAction(game: OldGame, card: Card): IncompleteCard? {
 
         val supplyMap = game.supplyMap
         val players = game.players

@@ -10,7 +10,7 @@ import java.util.ArrayList
 
 object HinterlandsSpecialActionHandler {
 
-    fun handleSpecialAction(game: Game, card: Card): IncompleteCard? {
+    fun handleSpecialAction(game: OldGame, card: Card): IncompleteCard? {
         val player = game.currentPlayer
         var incompleteCard: IncompleteCard? = null
 

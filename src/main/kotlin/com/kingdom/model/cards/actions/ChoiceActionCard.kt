@@ -1,11 +1,11 @@
 package com.kingdom.model.cards.actions
 
-import com.kingdom.model.Player
+import com.kingdom.model.OldPlayer
 
 interface ChoiceActionCard {
 
     val name: String
 
-    fun actionChoiceMade(player: Player, choice: Int)
+    fun actionChoiceMade(player: OldPlayer, choice: Int)
 
 }

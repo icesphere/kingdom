@@ -1,6 +1,6 @@
 package com.kingdom.model.cards.actions
 
-import com.kingdom.model.Player
+import com.kingdom.model.OldPlayer
 
 class DiscardCardsFromHandForBenefit : DiscardCardsFromHand {
     private var discardCardsForBenefitActionCard: DiscardCardsForBenefitActionCard? = null
@@ -13,7 +13,7 @@ class DiscardCardsFromHandForBenefit : DiscardCardsFromHand {
         this.discardCardsForBenefitActionCard = card
     }
 
-    override fun processActionResult(player: Player, result: ActionResult): Boolean {
+    override fun processActionResult(player: OldPlayer, result: ActionResult): Boolean {
         val doneWithAction = super.processActionResult(player, result)
 
         if (doneWithAction) {
@@ -23,7 +23,7 @@ class DiscardCardsFromHandForBenefit : DiscardCardsFromHand {
         return doneWithAction
     }
 
-    override fun onNotUsed(player: Player) {
+    override fun onNotUsed(player: OldPlayer) {
         discardCardsForBenefitActionCard!!.onChoseDoNotUse(player)
     }
 }

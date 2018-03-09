@@ -2,7 +2,7 @@ package com.kingdom.service
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
-import com.kingdom.model.Game
+import com.kingdom.model.OldGame
 import com.kingdom.repository.CardRepository
 import com.kingdom.util.CardRandomizer
 import org.springframework.stereotype.Service
@@ -39,15 +39,15 @@ class CardManager(private val cardRepository: CardRepository,
         cardRepository.save(card)
     }
 
-    fun setRandomKingdomCards(game: Game) {
+    fun setRandomKingdomCards(game: OldGame) {
         cardRandomizer.setRandomKingdomCards(game, game.randomizingOptions!!)
     }
 
-    fun swapRandomCard(game: Game, cardName: String) {
+    fun swapRandomCard(game: OldGame, cardName: String) {
         cardRandomizer.swapRandomCard(game, cardName)
     }
 
-    fun swapForTypeOfCard(game: Game, cardName: String, cardType: String) {
+    fun swapForTypeOfCard(game: OldGame, cardName: String, cardType: String) {
         cardRandomizer.swapCard(game, cardName, cardType)
     }
 

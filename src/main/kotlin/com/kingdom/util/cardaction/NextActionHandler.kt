@@ -7,7 +7,7 @@ import com.kingdom.util.KingdomUtil
 import com.kingdom.util.specialaction.SpecialActionHandler
 
 object NextActionHandler {
-    fun handleAction(game: Game, cardName: String) {
+    fun handleAction(game: OldGame, cardName: String) {
 
         var nextAction = game.nextAction
         if (nextAction == null) {

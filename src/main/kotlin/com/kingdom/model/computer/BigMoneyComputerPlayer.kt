@@ -1,10 +1,10 @@
 package com.kingdom.model.computer
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.Game
-import com.kingdom.model.Player
+import com.kingdom.model.OldGame
+import com.kingdom.model.OldPlayer
 
-class BigMoneyComputerPlayer(player: Player, game: Game) : HardComputerPlayer(player, game) {
+class BigMoneyComputerPlayer(player: OldPlayer, game: OldGame) : HardComputerPlayer(player, game) {
     init {
         isBigMoneyUltimate = true
     }

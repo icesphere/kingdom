@@ -1,13 +1,13 @@
 package com.kingdom.util.specialaction
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.Game
+import com.kingdom.model.OldGame
 import com.kingdom.model.IncompleteCard
 
 object SpecialActionHandler {
 
     @JvmOverloads
-    fun handleSpecialAction(game: Game, card: Card, repeatedAction: Boolean = false) {
+    fun handleSpecialAction(game: OldGame, card: Card, repeatedAction: Boolean = false) {
         var incompleteCard: IncompleteCard? = null
         when {
             card.isKingdom -> incompleteCard = KingdomSpecialActionHandler.handleSpecialAction(game, card, repeatedAction)

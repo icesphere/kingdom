@@ -1,11 +1,11 @@
 package com.kingdom.util
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.Game
-import com.kingdom.model.Player
+import com.kingdom.model.OldGame
+import com.kingdom.model.OldPlayer
 
 object DurationHandler {
-    fun applyDurationCards(game: Game, player: Player) {
+    fun applyDurationCards(game: OldGame, player: OldPlayer) {
         var numTimesCardCopied = 0
         for (card in player.durationCards) {
             var action: DurationAction? = null
@@ -50,7 +50,7 @@ object DurationHandler {
         fun apply(numTimesApplied: Int)
     }
 
-    internal class CaravanDurationAction(private val game: Game, private val player: Player) : DurationAction {
+    internal class CaravanDurationAction(private val game: OldGame, private val player: OldPlayer) : DurationAction {
 
         override fun apply(numTimesApplied: Int) {
             player.drawCards(1)
@@ -58,7 +58,7 @@ object DurationHandler {
         }
     }
 
-    internal class FishingVillageDurationAction(private val game: Game, private val player: Player) : DurationAction {
+    internal class FishingVillageDurationAction(private val game: OldGame, private val player: OldPlayer) : DurationAction {
 
         override fun apply(numTimesApplied: Int) {
             player.addActions(1)
@@ -67,7 +67,7 @@ object DurationHandler {
         }
     }
 
-    internal class HavenDurationAction(private val game: Game, private val player: Player) : DurationAction {
+    internal class HavenDurationAction(private val game: OldGame, private val player: OldPlayer) : DurationAction {
 
         override fun apply(numTimesApplied: Int) {
             for (c in player.havenCards) {
@@ -78,7 +78,7 @@ object DurationHandler {
         }
     }
 
-    internal class HedgeWizardDurationAction(private val game: Game, private val player: Player) : DurationAction {
+    internal class HedgeWizardDurationAction(private val game: OldGame, private val player: OldPlayer) : DurationAction {
 
         override fun apply(numTimesApplied: Int) {
             player.drawCards(1)
@@ -86,7 +86,7 @@ object DurationHandler {
         }
     }
 
-    internal class LighthouseDurationAction(private val game: Game, private val player: Player) : DurationAction {
+    internal class LighthouseDurationAction(private val game: OldGame, private val player: OldPlayer) : DurationAction {
 
         override fun apply(numTimesApplied: Int) {
             player.addCoins(1)
@@ -94,7 +94,7 @@ object DurationHandler {
         }
     }
 
-    internal class MerchantShipDurationAction(private val game: Game, private val player: Player) : DurationAction {
+    internal class MerchantShipDurationAction(private val game: OldGame, private val player: OldPlayer) : DurationAction {
 
         override fun apply(numTimesApplied: Int) {
             player.addCoins(2)
@@ -102,7 +102,7 @@ object DurationHandler {
         }
     }
 
-    internal class QuestDurationAction(private val game: Game, private val player: Player, private val card: Card) : DurationAction {
+    internal class QuestDurationAction(private val game: OldGame, private val player: OldPlayer, private val card: Card) : DurationAction {
 
         override fun apply(numTimesApplied: Int) {
             val questCard = card.associatedCards[numTimesApplied]
@@ -119,7 +119,7 @@ object DurationHandler {
         }
     }
 
-    internal class WharfDurationAction(private val game: Game, private val player: Player) : DurationAction {
+    internal class WharfDurationAction(private val game: OldGame, private val player: OldPlayer) : DurationAction {
 
         override fun apply(numTimesApplied: Int) {
             player.drawCards(2)

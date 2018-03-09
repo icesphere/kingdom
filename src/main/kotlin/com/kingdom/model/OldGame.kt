@@ -16,7 +16,7 @@ import com.kingdom.util.specialaction.*
 
 import java.util.*
 
-class Game(val gameId: Int) {
+class OldGame(val gameId: Int) {
 
     var status: Int = 0
         set(value) {
@@ -31,8 +31,8 @@ class Game(val gameId: Int) {
     var numBMUComputerPlayers: Int = 0
     var isAllComputerOpponents: Boolean = false
         private set
-    val players: MutableList<Player> = ArrayList(6)
-    val playerMap: MutableMap<Int, Player> = HashMap(6)
+    val players: MutableList<OldPlayer> = ArrayList(6)
+    val playerMap: MutableMap<Int, OldPlayer> = HashMap(6)
     var kingdomCards: MutableList<Card> = ArrayList()
         set(value) {
             if (value.size == 11) {
@@ -234,7 +234,7 @@ class Game(val gameId: Int) {
     var isEndingTurn: Boolean = false
     var isShowVictoryPoints: Boolean = false
     var isIdenticalStartingHands: Boolean = false
-    val playersWaitingForBellTowerBonus = ArrayList<Player>(0)
+    val playersWaitingForBellTowerBonus = ArrayList<OldPlayer>(0)
     var incompleteCard: IncompleteCard? = null
     protected var nextActionQueue: Queue<String> = LinkedList()
     private val enchantedPalaceRevealed = ArrayList<Int>()
@@ -310,10 +310,10 @@ class Game(val gameId: Int) {
             0
         } else currentPlayerIndex + 1
 
-    val previousPlayer: Player?
+    val previousPlayer: OldPlayer?
         get() = playerMap[previousPlayerId]
 
-    val currentPlayer: Player?
+    val currentPlayer: OldPlayer?
         get() = playerMap[currentPlayerId]
 
     val nextColor: String
@@ -678,7 +678,7 @@ class Game(val gameId: Int) {
 
     @JvmOverloads
     fun addPlayer(user: User, computer: Boolean = false, bigMoneyUltimate: Boolean = false, difficulty: Int = 0) {
-        val player = Player(user, this)
+        val player = OldPlayer(user, this)
         player.isComputer = computer
         player.chatColor = nextColor
         players.add(player)
@@ -721,13 +721,13 @@ class Game(val gameId: Int) {
         return trollTokens[cardName]!!
     }
 
-    fun canBuyCard(player: Player, card: Card): Boolean {
+    fun canBuyCard(player: OldPlayer, card: Card): Boolean {
         val cost = getCardCost(card, player, true)
         val numInSupply = supply[card.name]
         return player.coins >= cost && (!card.costIncludesPotion || player.potions > 0) && (!isTrackContrabandCards || !contrabandCards.contains(card)) && numInSupply != null && numInSupply > 0
     }
 
-    fun canBuyCardNotInSupply(player: Player, card: Card): Boolean {
+    fun canBuyCardNotInSupply(player: OldPlayer, card: Card): Boolean {
         val cost = getCardCost(card, player, true)
         return player.coins >= cost && (!card.costIncludesPotion || player.potions > 0) && (!isTrackContrabandCards || !contrabandCards.contains(card))
     }
@@ -740,7 +740,7 @@ class Game(val gameId: Int) {
         return getCardCost(card, currentPlayer!!, true)
     }
 
-    private fun getCardCost(card: Card, player: Player, buyPhase: Boolean): Int {
+    private fun getCardCost(card: Card, player: OldPlayer, buyPhase: Boolean): Int {
         var cost = card.cost - costDiscount
         if (buyPhase) {
             cost -= player.getCardDiscount(card)
@@ -785,7 +785,7 @@ class Game(val gameId: Int) {
     @JvmOverloads
     fun reset(repeatingGame: Boolean = false) {
         if (!repeatingGame) {
-            status = Game.STATUS_NO_GAMES
+            status = OldGame.STATUS_NO_GAMES
             for (player in players) {
                 LoggedInUsers.gameReset(player.userId)
             }
@@ -971,7 +971,7 @@ class Game(val gameId: Int) {
     private fun start() {
         Collections.shuffle(players)
         currentPlayerId = players[currentPlayerIndex].userId
-        status = Game.STATUS_GAME_IN_PROGRESS
+        status = OldGame.STATUS_GAME_IN_PROGRESS
         refreshAllPlayersPlayers()
         refreshAllPlayersGameStatus()
         refreshAllPlayersSupply()
@@ -1095,13 +1095,13 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun cardClicked(player: Player, clickType: String, cardName: String) {
+    fun cardClicked(player: OldPlayer, clickType: String, cardName: String) {
         val card = cardMap[cardName]!!
         cardClicked(player, clickType, card)
     }
 
     @JvmOverloads
-    fun cardClicked(player: Player, clickType: String, card: Card, confirm: Boolean = true) {
+    fun cardClicked(player: OldPlayer, clickType: String, card: Card, confirm: Boolean = true) {
         if (allowClick(player)) {
             val coinsBefore = player.coins
             val potionsBefore = player.potions
@@ -1154,7 +1154,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    private fun activateLeader(player: Player, cardName: String): Boolean {
+    private fun activateLeader(player: OldPlayer, cardName: String): Boolean {
         val card = player.getLeaderCard(cardName) ?: return false
         val cost = getCardCost(card, player, true)
         if (player.coins >= cost && player.buys > 0 && !card.isActivated && player.turns > 1) {
@@ -1191,7 +1191,7 @@ class Game(val gameId: Int) {
         return false
     }
 
-    private fun buyCard(player: Player, card: Card, confirm: Boolean): Boolean {
+    private fun buyCard(player: OldPlayer, card: Card, confirm: Boolean): Boolean {
         var cardBought = false
         if (isTrackContrabandCards && contrabandCards.contains(card)) {
             setPlayerInfoDialog(player, InfoDialog.getErrorDialog("This card was banned by Contraband this turn."))
@@ -1356,7 +1356,7 @@ class Game(val gameId: Int) {
         refreshAllPlayersHandArea()
     }
 
-    private fun addCardBonuses(player: Player, card: Card) {
+    private fun addCardBonuses(player: OldPlayer, card: Card) {
         if (card.addActions != 0) {
             player.addActions(card.addActions)
         }
@@ -1388,7 +1388,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    private fun actionCardPlayed(player: Player, card: Card, repeatedAction: Boolean = false) {
+    private fun actionCardPlayed(player: OldPlayer, card: Card, repeatedAction: Boolean = false) {
         addCardBonuses(player, card)
         if (card.name == "Coppersmith") {
             player.copperSmithPlayed()
@@ -1462,7 +1462,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    private fun playActionCard(player: Player, card: Card) {
+    private fun playActionCard(player: OldPlayer, card: Card) {
         val cardCopy: Card
         if (isCheckQuest && !card.isCopied && card.name == "Quest") {
             cardCopy = Card(card)
@@ -1490,7 +1490,7 @@ class Game(val gameId: Int) {
     }
 
     @JvmOverloads
-    fun playTreasureCard(player: Player, card: Card, removeFromHand: Boolean, playSpecialAction: Boolean, confirmPlay: Boolean = true, showHistory: Boolean = true, blackMarketTreasure: Boolean = false) {
+    fun playTreasureCard(player: OldPlayer, card: Card, removeFromHand: Boolean, playSpecialAction: Boolean, confirmPlay: Boolean = true, showHistory: Boolean = true, blackMarketTreasure: Boolean = false) {
         var confirm = confirmPlay
         if (confirm && !player.isComputer && player.actions > 0 && player.actionCards.size > 0 && !isBuyPhase) {
             if (player.actionCards.size == 1) {
@@ -1566,7 +1566,7 @@ class Game(val gameId: Int) {
     }
 
     @JvmOverloads
-    fun playAllTreasureCards(player: Player, confirmPlay: Boolean = true) {
+    fun playAllTreasureCards(player: OldPlayer, confirmPlay: Boolean = true) {
         var confirm = confirmPlay
 
         updateLastActivity()
@@ -1618,7 +1618,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun playRepeatedAction(player: Player, firstAction: Boolean) {
+    fun playRepeatedAction(player: OldPlayer, firstAction: Boolean) {
         val repeatedAction = repeatedActions.pop()
         val card = repeatedAction.card
         numActionsCardsPlayed++
@@ -1640,7 +1640,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun playGolemActionCard(player: Player?) {
+    fun playGolemActionCard(player: OldPlayer?) {
         val card = golemActions.pop()
         addHistory(player!!.username, "'s Golem played ", KingdomUtil.getArticleWithCardName(card))
         cardsPlayed.add(card)
@@ -1749,11 +1749,11 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun isCurrentPlayer(player: Player): Boolean {
+    fun isCurrentPlayer(player: OldPlayer): Boolean {
         return player.userId == currentPlayerId
     }
 
-    fun playerLostCard(player: Player, card: Card) {
+    fun playerLostCard(player: OldPlayer, card: Card) {
         if (player.userId == currentPlayerId && card.addCoins != 0) {
             refreshAllPlayersCardsBought()
         }
@@ -1763,17 +1763,17 @@ class Game(val gameId: Int) {
     }
 
     @JvmOverloads
-    fun playerGainedCard(player: Player, card: Card, takeFromSupply: Boolean = true) {
+    fun playerGainedCard(player: OldPlayer, card: Card, takeFromSupply: Boolean = true) {
         playerGainedCard(player, card, CardLocation.Discard, takeFromSupply, false)
     }
 
     @JvmOverloads
-    fun playerGainedCardToHand(player: Player, card: Card, takeFromSupply: Boolean = true) {
+    fun playerGainedCardToHand(player: OldPlayer, card: Card, takeFromSupply: Boolean = true) {
         playerGainedCard(player, card, CardLocation.Hand, takeFromSupply, false)
     }
 
     @JvmOverloads
-    fun playerGainedCardToTopOfDeck(player: Player, card: Card, takeFromSupply: Boolean = true) {
+    fun playerGainedCardToTopOfDeck(player: OldPlayer, card: Card, takeFromSupply: Boolean = true) {
         playerGainedCard(player, card, CardLocation.Deck, takeFromSupply, false)
     }
 
@@ -1786,7 +1786,7 @@ class Game(val gameId: Int) {
         return card.isVictory || card.isCurse || isShowGardens || isShowFarmlands || isShowFairgrounds || isShowVineyard && card.isAction || isShowCathedral && card.isSalvation
     }
 
-    fun playerGainedCard(player: Player, card: Card, cardDestination: CardLocation, takeFromSupply: Boolean, gainedFromBuy: Boolean) {
+    fun playerGainedCard(player: OldPlayer, card: Card, cardDestination: CardLocation, takeFromSupply: Boolean, gainedFromBuy: Boolean) {
         var destination = cardDestination
         if (card.isCopied && !card.isCardNotGained) {
             if (!card.gainOldCardActions.isEmpty()) {
@@ -1890,7 +1890,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    private fun addGainedCardToDestinationHistory(player: Player, card: Card, destination: CardLocation) {
+    private fun addGainedCardToDestinationHistory(player: OldPlayer, card: Card, destination: CardLocation) {
         when (destination) {
             CardLocation.Hand -> addHistory(player.username, " gained ", KingdomUtil.getArticleWithCardName(card), " into ", player.pronoun, " hand")
             CardLocation.Deck -> addHistory(player.username, " gained ", KingdomUtil.getArticleWithCardName(card), " on top of ", player.pronoun, " deck")
@@ -1898,7 +1898,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    private fun addCardToDestination(player: Player, card: Card, destination: CardLocation) {
+    private fun addCardToDestination(player: OldPlayer, card: Card, destination: CardLocation) {
         when (destination) {
             CardLocation.Hand -> {
                 if (player.userId == currentPlayerId && card.addCoins != 0) {
@@ -1911,7 +1911,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun gainCardFinished(player: Player, card: Card) {
+    fun gainCardFinished(player: OldPlayer, card: Card) {
         if (!player.isShowCardAction && hasUnfinishedGainCardActions()) {
             if (!card.gainOldCardActions.isEmpty()) {
                 setPlayerGainCardAction(player, card)
@@ -1921,13 +1921,13 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun moveGainedCard(player: Player, card: Card, destination: CardLocation) {
+    fun moveGainedCard(player: OldPlayer, card: Card, destination: CardLocation) {
         removeGainedCard(player, card)
         addCardToDestination(player, cardMap[card.name]!!, destination)
         gainCardFinished(player, card)
     }
 
-    private fun removeGainedCard(player: Player, gainedCard: Card) {
+    private fun removeGainedCard(player: OldPlayer, gainedCard: Card) {
         when(gainedCard.location) {
             CardLocation.Discard -> player.discard.removeLastOccurrence(gainedCard)
             CardLocation.Deck -> player.deck.remove(gainedCard)
@@ -1942,7 +1942,7 @@ class Game(val gameId: Int) {
         takeFromSupply(card.name)
     }
 
-    private fun waitIfNotCurrentPlayer(player: Player) {
+    private fun waitIfNotCurrentPlayer(player: OldPlayer) {
         if (!isCurrentPlayer(player)) {
             playersWithCardActions.add(player.userId)
             if (!hasIncompleteCard() && !currentPlayer!!.isShowCardAction) {
@@ -1951,7 +1951,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun setPlayerGainCardAction(player: Player, card: Card) {
+    fun setPlayerGainCardAction(player: OldPlayer, card: Card) {
         val firstReaction = card.gainOldCardActions.values.iterator().next()
         if (card.gainOldCardActions.size == 1) {
             card.gainOldCardActions.clear()
@@ -1973,12 +1973,12 @@ class Game(val gameId: Int) {
         }
     }
 
-    private fun setGainedCardActions(player: Player, cardCopy: Card, destination: CardLocation) {
+    private fun setGainedCardActions(player: OldPlayer, cardCopy: Card, destination: CardLocation) {
         val gainCardActions = getGainCardActions(player, cardCopy, destination)
         cardCopy.gainOldCardActions = gainCardActions
     }
 
-    private fun getGainCardActions(player: Player, cardCopy: Card, destination: CardLocation): MutableMap<String, OldCardAction> {
+    private fun getGainCardActions(player: OldPlayer, cardCopy: Card, destination: CardLocation): MutableMap<String, OldCardAction> {
         val gainCardActions = HashMap<String, OldCardAction>()
         if (royalSealCardPlayed && player.userId == currentPlayerId && destination != CardLocation.Deck) {
             val cardAction = GainCardsReactionHandler.getCardAction("Royal Seal", this, player, cardCopy, destination)
@@ -2006,7 +2006,7 @@ class Game(val gameId: Int) {
     }
 
     @JvmOverloads
-    fun endPlayerTurn(player: Player, confirm: Boolean = true) {
+    fun endPlayerTurn(player: OldPlayer, confirm: Boolean = true) {
         if (allowEndTurn()) {
             endTurn(player, confirm)
             isEndingTurn = false
@@ -2022,7 +2022,7 @@ class Game(val gameId: Int) {
         return false
     }
 
-    private fun endTurn(player: Player, confirm: Boolean) {
+    private fun endTurn(player: OldPlayer, confirm: Boolean) {
         updateLastActivity()
         if (player.userId == currentPlayerId) {
             if (hasIncompleteCard()) {
@@ -2512,7 +2512,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun playerExitedGame(player: Player) {
+    fun playerExitedGame(player: OldPlayer) {
         updateLastActivity()
         if (!player.isComputer) {
             addGameChat(player.username + " exited the game")
@@ -2523,7 +2523,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun playerQuitGame(player: Player) {
+    fun playerQuitGame(player: OldPlayer) {
         updateLastActivity()
         player.isQuit = true
         gameEndReason = player.username + " quit the game"
@@ -2541,52 +2541,52 @@ class Game(val gameId: Int) {
         } else playerIndex + 1
     }
 
-    fun refreshPlayingArea(player: Player) {
+    fun refreshPlayingArea(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshPlayingArea = true
     }
 
-    fun refreshCardsBought(player: Player) {
+    fun refreshCardsBought(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshCardsBoughtDiv = true
     }
 
-    fun refreshSupply(player: Player) {
+    fun refreshSupply(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshSupply = true
     }
 
-    fun refreshHand(player: Player) {
+    fun refreshHand(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshHand = true
     }
 
-    fun refreshHandArea(player: Player) {
+    fun refreshHandArea(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshHandArea = true
     }
 
-    fun refreshDiscard(player: Player) {
+    fun refreshDiscard(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshDiscard = true
     }
 
-    fun refreshCardAction(player: Player) {
+    fun refreshCardAction(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshCardAction = true
     }
 
-    fun refreshInfoDialog(player: Player) {
+    fun refreshInfoDialog(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshInfoDialog = true
     }
 
-    fun refreshGameStatus(player: Player) {
+    fun refreshGameStatus(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshGameStatus = true
     }
 
-    fun refreshTitle(player: Player) {
+    fun refreshTitle(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshTitle = true
     }
@@ -2596,19 +2596,19 @@ class Game(val gameId: Int) {
         refresh.isRefreshChat = true
     }
 
-    fun closeCardActionDialog(player: Player) {
+    fun closeCardActionDialog(player: OldPlayer) {
         player.isShowCardAction = false
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshCardAction = false
         refresh.isCloseCardActionDialog = true
     }
 
-    fun closeLoadingDialog(player: Player) {
+    fun closeLoadingDialog(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isCloseLoadingDialog = true
     }
 
-    fun refreshAll(player: Player) {
+    fun refreshAll(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshGameStatus = true
         if (player.isShowCardAction && player.oldCardAction != null) {
@@ -2716,7 +2716,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun playBeep(player: Player) {
+    fun playBeep(player: OldPlayer) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isPlayBeep = true
     }
@@ -2731,7 +2731,7 @@ class Game(val gameId: Int) {
         refreshAllPlayersHistory()
     }
 
-    fun addChat(player: Player, message: String) {
+    fun addChat(player: OldPlayer, message: String) {
         updateLastActivity()
         chats.add(ChatMessage(player.username + ": " + message, player.chatColor!!))
         refreshAllPlayersChat()
@@ -2764,7 +2764,7 @@ class Game(val gameId: Int) {
     }
 
     @Synchronized
-    fun allowClick(player: Player): Boolean {
+    fun allowClick(player: OldPlayer): Boolean {
         if (player.isComputer) {
             return true
         }
@@ -2776,11 +2776,11 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun removeProcessingClick(player: Player) {
+    fun removeProcessingClick(player: OldPlayer) {
         processingClick.remove(player.userId)
     }
 
-    fun setPlayerCardAction(player: Player, oldCardAction: OldCardAction?) {
+    fun setPlayerCardAction(player: OldPlayer, oldCardAction: OldCardAction?) {
         if (oldCardAction == null) {
             val error = GameError(GameError.GAME_ERROR, "setPlayerCardAction, oldCardAction is null for user: " + player.username)
             logError(error, false)
@@ -2799,7 +2799,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun setPlayerInfoDialog(player: Player, infoDialog: InfoDialog) {
+    fun setPlayerInfoDialog(player: OldPlayer, infoDialog: InfoDialog) {
         if (!player.isComputer) {
             player.isShowInfoDialog = true
             player.infoDialog = infoDialog
@@ -2815,7 +2815,7 @@ class Game(val gameId: Int) {
         this.gameManager = gameManager
     }
 
-    fun cardActionSubmitted(player: Player, selectedCardNames: List<String>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
+    fun cardActionSubmitted(player: OldPlayer, selectedCardNames: List<String>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
         if (allowClick(player)) {
             updateLastActivity()
             try {
@@ -2899,7 +2899,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    private fun startPlayerTurn(player: Player) {
+    private fun startPlayerTurn(player: OldPlayer) {
         if (recentTurnHistory.size == maxHistoryTurnSize) {
             recentTurnHistory.removeFirst()
         }
@@ -2959,7 +2959,7 @@ class Game(val gameId: Int) {
         start()
     }
 
-    fun finishedGainCardAction(player: Player, oldCardAction: OldCardAction) {
+    fun finishedGainCardAction(player: OldPlayer, oldCardAction: OldCardAction) {
         val card = oldCardAction.associatedCard!!
         if (card.gainOldCardActions.isEmpty()) {
             cardsWithGainCardActions.remove(card.name)
@@ -2973,7 +2973,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun finishTunnelCardAction(player: Player) {
+    fun finishTunnelCardAction(player: OldPlayer) {
         playersWithCardActions.remove(player.userId)
         if (playersWithCardActions.isEmpty() && currentPlayer!!.isShowCardAction && currentPlayer!!.oldCardAction!!.isWaitingForPlayers) {
             closeCardActionDialog(currentPlayer!!)
@@ -3001,7 +3001,7 @@ class Game(val gameId: Int) {
         return supply[cardName]!!
     }
 
-    fun playerDiscardedCard(player: Player, card: Card) {
+    fun playerDiscardedCard(player: OldPlayer, card: Card) {
         if (checkTunnel && card.name == "Tunnel" && isCardInSupply(goldCard)) {
             waitIfNotCurrentPlayer(player)
             val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
@@ -3014,7 +3014,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun showUseFruitTokensCardAction(player: Player) {
+    fun showUseFruitTokensCardAction(player: OldPlayer) {
         if (isCurrentPlayer(player)) {
             val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_NUMBER_BETWEEN)
             cardAction.deck = Deck.Proletariat
@@ -3027,7 +3027,7 @@ class Game(val gameId: Int) {
         }
     }
 
-    fun showUseCattleTokensCardAction(player: Player) {
+    fun showUseCattleTokensCardAction(player: OldPlayer) {
         if (isCurrentPlayer(player)) {
             val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN)
             cardAction.deck = Deck.Proletariat

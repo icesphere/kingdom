@@ -1,10 +1,10 @@
 package com.kingdom.model.computer
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.Game
-import com.kingdom.model.Player
+import com.kingdom.model.OldGame
+import com.kingdom.model.OldPlayer
 
-class MediumComputerPlayer(player: Player, game: Game) : ComputerPlayer(player, game) {
+class MediumComputerPlayer(player: OldPlayer, game: OldGame) : ComputerPlayer(player, game) {
     init {
         difficulty = 2
     }

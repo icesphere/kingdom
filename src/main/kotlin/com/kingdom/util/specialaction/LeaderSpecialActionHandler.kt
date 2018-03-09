@@ -7,7 +7,7 @@ import com.kingdom.model.cards.supply.Curse
 
 object LeaderSpecialActionHandler {
 
-    fun handleSpecialAction(game: Game, card: Card) {
+    fun handleSpecialAction(game: OldGame, card: Card) {
         val player = game.currentPlayer
 
         when (card.name) {

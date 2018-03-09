@@ -9,7 +9,7 @@ import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object ChoicesHandler {
-    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, choice: String): IncompleteCard? {
+    fun handleCardAction(game: OldGame, player: OldPlayer, oldCardAction: OldCardAction, choice: String): IncompleteCard? {
 
         val players = game.players
         var incompleteCard: IncompleteCard? = null

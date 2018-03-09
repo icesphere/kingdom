@@ -91,7 +91,7 @@ class GameManager(private val gameErrorRepository: GameErrorRepository,
         gameHistoryRepository.save(history)
     }
 
-    fun saveGameUserHistory(gameId: Int, player: Player) {
+    fun saveGameUserHistory(gameId: Int, player: OldPlayer) {
         val gameUserHistory = GameUserHistory(gameId, player)
         gameUserHistoryRepository.save(gameUserHistory)
         if (!player.isQuit) {

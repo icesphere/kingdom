@@ -26,7 +26,7 @@ class MultiPlayerIncompleteCard : IncompleteCard {
 
     override var isAllActionsSet: Boolean = true
 
-    constructor(cardName: String, game: Game, currentPlayerHasAction: Boolean) : super(cardName, game) {
+    constructor(cardName: String, game: OldGame, currentPlayerHasAction: Boolean) : super(cardName, game) {
         this.currentPlayerHasAction = currentPlayerHasAction
         for (player in game.playerMap.values) {
             var markCompleted = false
@@ -37,7 +37,7 @@ class MultiPlayerIncompleteCard : IncompleteCard {
         }
     }
 
-    constructor(cardName: String, game: Game, userId: Int) : super(cardName, game) {
+    constructor(cardName: String, game: OldGame, userId: Int) : super(cardName, game) {
         this.currentPlayerHasAction = false
         for (player in game.playerMap.values) {
             var markCompleted = true

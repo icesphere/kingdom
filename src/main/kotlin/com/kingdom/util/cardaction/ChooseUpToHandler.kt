@@ -7,7 +7,7 @@ import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object ChooseUpToHandler {
-    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardNames: List<String>): IncompleteCard? {
+    fun handleCardAction(game: OldGame, player: OldPlayer, oldCardAction: OldCardAction, selectedCardNames: List<String>): IncompleteCard? {
 
         var incompleteCard: IncompleteCard? = null
 

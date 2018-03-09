@@ -9,7 +9,7 @@ import java.util.ArrayList
 
 object BuySpecialActionHandler {
 
-    fun getCardAction(game: Game, player: Player, card: Card): OldCardAction? {
+    fun getCardAction(game: OldGame, player: OldPlayer, card: Card): OldCardAction? {
 
         when (card.name) {
             "Botanical Gardens" -> when {
@@ -106,7 +106,7 @@ object BuySpecialActionHandler {
         return null
     }
 
-    fun getHagglerCardAction(game: Game, card: Card): OldCardAction? {
+    fun getHagglerCardAction(game: OldGame, card: Card): OldCardAction? {
         val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
         cardAction.deck = Deck.Hinterlands
         cardAction.cardName = "Haggler"
@@ -122,7 +122,7 @@ object BuySpecialActionHandler {
         } else null
     }
 
-    fun setNobleBrigandCardAction(game: Game, player: Player) {
+    fun setNobleBrigandCardAction(game: OldGame, player: OldPlayer) {
         var playerIndex = game.calculateNextPlayerIndex(game.currentPlayerIndex)
         while (playerIndex != game.currentPlayerIndex) {
             val nextPlayer = game.players[playerIndex]

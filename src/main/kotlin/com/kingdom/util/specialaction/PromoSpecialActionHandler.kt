@@ -8,7 +8,7 @@ import com.kingdom.util.KingdomUtil
 import java.util.ArrayList
 
 object PromoSpecialActionHandler {
-    fun handleSpecialAction(game: Game, card: Card): IncompleteCard? {
+    fun handleSpecialAction(game: OldGame, card: Card): IncompleteCard? {
 
         val players = game.players
         var incompleteCard: IncompleteCard? = null

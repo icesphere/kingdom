@@ -2,8 +2,8 @@ package com.kingdom.util.computercardaction
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.OldCardAction
-import com.kingdom.model.Game
-import com.kingdom.model.Player
+import com.kingdom.model.OldGame
+import com.kingdom.model.OldPlayer
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.computer.ComputerPlayer
 import com.kingdom.util.cardaction.CardActionHandler
@@ -129,17 +129,17 @@ object KingdomComputerCardActionHandler {
         }
     }
 
-    private fun chooseLowestCostCard(oldCardAction: OldCardAction, computer: ComputerPlayer, game: Game, player: Player) {
+    private fun chooseLowestCostCard(oldCardAction: OldCardAction, computer: ComputerPlayer, game: OldGame, player: OldPlayer) {
         val card = computer.getLowestCostCard(oldCardAction.cards)
         chooseCard(oldCardAction, game, player, card)
     }
 
-    private fun chooseHighestCostCard(oldCardAction: OldCardAction, computer: ComputerPlayer, game: Game, player: Player) {
+    private fun chooseHighestCostCard(oldCardAction: OldCardAction, computer: ComputerPlayer, game: OldGame, player: OldPlayer) {
         val card = computer.getHighestCostCard(oldCardAction.cards)
         chooseCard(oldCardAction, game, player, card)
     }
 
-    private fun chooseCard(oldCardAction: OldCardAction, game: Game, player: Player, card: Card?) {
+    private fun chooseCard(oldCardAction: OldCardAction, game: OldGame, player: OldPlayer, card: Card?) {
         var cardToChoose = card
         if (cardToChoose == null) {
             cardToChoose = oldCardAction.cards[0]

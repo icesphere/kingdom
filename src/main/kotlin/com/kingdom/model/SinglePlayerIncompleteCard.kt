@@ -2,7 +2,7 @@ package com.kingdom.model
 
 import com.kingdom.util.cardaction.NextActionHandler
 
-class SinglePlayerIncompleteCard(cardName: String, game: Game) : IncompleteCard(cardName, game) {
+class SinglePlayerIncompleteCard(cardName: String, game: OldGame) : IncompleteCard(cardName, game) {
 
     override var isCompleted: Boolean = false
         private set

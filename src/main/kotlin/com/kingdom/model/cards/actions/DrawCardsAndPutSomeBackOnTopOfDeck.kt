@@ -1,6 +1,6 @@
 package com.kingdom.model.cards.actions
 
-import com.kingdom.model.Player
+import com.kingdom.model.OldPlayer
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import java.util.*
@@ -18,11 +18,11 @@ class DrawCardsAndPutSomeBackOnTopOfDeck(private var numCardsToDraw: Int, privat
         this.text = "You have drawn $numCardsToDraw cards and need to put $numCardsToPutBack of those cards back on top of your deck"
     }
 
-    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
+    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: OldPlayer): Boolean {
         return cardLocation == CardLocation.Hand && cardsDrawn.contains(card)
     }
 
-    override fun processAction(player: Player): Boolean {
+    override fun processAction(player: OldPlayer): Boolean {
         cardsDrawn = player.drawCards(numCardsToDraw)
         if (cardsDrawn.size < 3) {
             cardsDrawn.forEach { c ->
@@ -35,7 +35,7 @@ class DrawCardsAndPutSomeBackOnTopOfDeck(private var numCardsToDraw: Int, privat
         }
     }
 
-    override fun processActionResult(player: Player, result: ActionResult): Boolean {
+    override fun processActionResult(player: OldPlayer, result: ActionResult): Boolean {
         if (result.isDoneWithAction) {
             selectedCards.forEach { c ->
                 player.hand.remove(c)

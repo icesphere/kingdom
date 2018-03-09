@@ -10,7 +10,7 @@ import com.kingdom.util.computercardaction.*
 
 import java.util.*
 
-abstract class ComputerPlayer(var player: Player, var game: Game) {
+abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
     var stopped: Boolean = false
 
     private var playAction = true
@@ -77,7 +77,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
         setupStartingStrategies()
     }
 
-    private fun analyzeKingdomCards(game: Game) {
+    private fun analyzeKingdomCards(game: OldGame) {
         for (card in game.kingdomCards) {
             if (card.addBuys > 0 || card.name == "Workshop" || card.name == "Ironworks") {
                 hasExtraBuys = true
@@ -114,13 +114,13 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
     protected abstract fun setupStartingStrategies()
 
     fun doNextAction() {
-        if (stopped || game.status != Game.STATUS_GAME_IN_PROGRESS) {
+        if (stopped || game.status != OldGame.STATUS_GAME_IN_PROGRESS) {
             return
         }
         try {
             var loopIterations = 0
             while (player.isShowCardAction && player.oldCardAction!!.type == OldCardAction.TYPE_WAITING_FOR_PLAYERS) {
-                if (stopped || game.status != Game.STATUS_GAME_IN_PROGRESS) {
+                if (stopped || game.status != OldGame.STATUS_GAME_IN_PROGRESS) {
                     return
                 }
                 try {
@@ -139,7 +139,7 @@ abstract class ComputerPlayer(var player: Player, var game: Game) {
             }
             loopIterations = 0
             while (!player.isShowCardAction && game.hasIncompleteCard()) {
-                if (stopped || game.status != Game.STATUS_GAME_IN_PROGRESS) {
+                if (stopped || game.status != OldGame.STATUS_GAME_IN_PROGRESS) {
                     return
                 }
                 try {

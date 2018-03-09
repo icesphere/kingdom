@@ -6,7 +6,7 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 
 object FairyTaleSpecialActionHandler {
-    fun handleSpecialAction(game: Game, card: Card, repeatedAction: Boolean): IncompleteCard? {
+    fun handleSpecialAction(game: OldGame, card: Card, repeatedAction: Boolean): IncompleteCard? {
 
         var incompleteCard: IncompleteCard? = null
         val player = game.currentPlayer

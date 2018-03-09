@@ -3,7 +3,7 @@ package com.kingdom.model
 import java.util.LinkedList
 import java.util.Queue
 
-abstract class IncompleteCard protected constructor(val cardName: String, val game: Game) {
+abstract class IncompleteCard protected constructor(val cardName: String, val game: OldGame) {
 
     var extraOldCardActions: Queue<OldCardAction> = LinkedList()
         protected set
@@ -23,7 +23,7 @@ abstract class IncompleteCard protected constructor(val cardName: String, val ga
     abstract fun setPlayerActionCompleted(playerId: Int)
 
     @Synchronized
-    fun actionFinished(player: Player) {
+    fun actionFinished(player: OldPlayer) {
         if (!player.isShowCardAction) {
             setPlayerActionCompleted(player.userId)
             if (!extraOldCardActions.isEmpty()) {

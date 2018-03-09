@@ -6,7 +6,7 @@ import com.kingdom.util.KingdomUtil
 
 import java.util.*
 
-class Player(user: User, val game: Game) : Comparable<Player> {
+class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
 
     var userId: Int = 0
     var deck: MutableList<Card> = LinkedList()
@@ -301,7 +301,7 @@ class Player(user: User, val game: Game) : Comparable<Player> {
         }
     }
 
-    override fun compareTo(other: Player): Int {
+    override fun compareTo(other: OldPlayer): Int {
         return when {
             victoryPoints == other.victoryPoints -> when {
                 this.turns == other.turns -> 0

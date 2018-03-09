@@ -8,7 +8,7 @@ import com.kingdom.util.KingdomUtil
 import java.util.ArrayList
 
 object ChooseCardsHandler {
-    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardNames: List<String>): IncompleteCard? {
+    fun handleCardAction(game: OldGame, player: OldPlayer, oldCardAction: OldCardAction, selectedCardNames: List<String>): IncompleteCard? {
 
         val cardMap = game.cardMap
         val playerMap = game.playerMap

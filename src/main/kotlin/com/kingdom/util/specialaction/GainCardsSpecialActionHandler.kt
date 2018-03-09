@@ -22,7 +22,7 @@ object GainCardsSpecialActionHandler {
             return cardAction
         }
 
-    fun getCardAction(game: Game, player: Player, card: Card): OldCardAction? {
+    fun getCardAction(game: OldGame, player: OldPlayer, card: Card): OldCardAction? {
         val supplyMap = game.supplyMap
 
         when (card.name) {

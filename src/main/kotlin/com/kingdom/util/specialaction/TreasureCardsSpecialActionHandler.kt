@@ -7,7 +7,7 @@ import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object TreasureCardsSpecialActionHandler {
-    fun handleSpecialAction(game: Game, card: Card): IncompleteCard? {
+    fun handleSpecialAction(game: OldGame, card: Card): IncompleteCard? {
 
         var incompleteCard: IncompleteCard? = null
         val player = game.currentPlayer

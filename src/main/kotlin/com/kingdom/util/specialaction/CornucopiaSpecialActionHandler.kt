@@ -12,7 +12,7 @@ import java.util.ArrayList
 import java.util.HashSet
 
 object CornucopiaSpecialActionHandler {
-    fun handleSpecialAction(game: Game, card: Card): IncompleteCard? {
+    fun handleSpecialAction(game: OldGame, card: Card): IncompleteCard? {
 
         val players = game.players
         val player = game.currentPlayer

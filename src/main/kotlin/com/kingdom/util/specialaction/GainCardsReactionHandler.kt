@@ -7,7 +7,7 @@ import com.kingdom.model.cards.Deck
 
 object GainCardsReactionHandler {
 
-    fun getCardAction(action: String, game: Game, player: Player, card: Card, destination: CardLocation): OldCardAction? {
+    fun getCardAction(action: String, game: OldGame, player: OldPlayer, card: Card, destination: CardLocation): OldCardAction? {
 
         when (action) {
             "Royal Seal" -> {

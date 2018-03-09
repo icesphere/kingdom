@@ -1,6 +1,6 @@
 package com.kingdom.service
 
-import com.kingdom.model.Game
+import com.kingdom.model.OldGame
 import com.kingdom.model.GameRoom
 import com.kingdom.util.GameRoomComparator
 import org.springframework.stereotype.Service
@@ -10,7 +10,7 @@ import java.util.*
 @Service
 class GameRoomManager {
 
-    private val games = HashMap<Int, Game>()
+    private val games = HashMap<Int, OldGame>()
 
     var isUpdatingWebsite: Boolean = false
     var updatingMessage: String? = null
@@ -18,7 +18,7 @@ class GameRoomManager {
     var isShowNews: Boolean = false
     var news = ""
 
-    val nextAvailableGame: Game?
+    val nextAvailableGame: OldGame?
         get() {
             if (games.size >= MAX_GAME_ROOMS) {
                 return null
@@ -28,8 +28,8 @@ class GameRoomManager {
                 i++
             }
 
-            return Game(i).apply {
-                status = Game.STATUS_GAME_BEING_CONFIGURED
+            return OldGame(i).apply {
+                status = OldGame.STATUS_GAME_BEING_CONFIGURED
                 games[i] = this
             }
         }
@@ -40,7 +40,7 @@ class GameRoomManager {
     val gamesInProgress: List<GameRoom>
         get() = getGameRooms(false)
 
-    fun getGame(gameId: Int): Game? {
+    fun getGame(gameId: Int): OldGame? {
         return games[gameId]
     }
 
@@ -53,9 +53,9 @@ class GameRoomManager {
             checkLastActivity(game)
 
             var addGame = false
-            if (lobbyGameRooms && (game.status == Game.STATUS_GAME_BEING_CONFIGURED || game.status == Game.STATUS_GAME_WAITING_FOR_PLAYERS)) {
+            if (lobbyGameRooms && (game.status == OldGame.STATUS_GAME_BEING_CONFIGURED || game.status == OldGame.STATUS_GAME_WAITING_FOR_PLAYERS)) {
                 addGame = true
-            } else if (!lobbyGameRooms && game.status == Game.STATUS_GAME_IN_PROGRESS) {
+            } else if (!lobbyGameRooms && game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
                 addGame = true
             }
 
@@ -64,7 +64,7 @@ class GameRoomManager {
                 gameRooms.add(gameRoom)
             }
 
-            if (game.status == Game.STATUS_NO_GAMES) {
+            if (game.status == OldGame.STATUS_NO_GAMES) {
                 games.remove(game.gameId)
             }
         }
@@ -75,7 +75,7 @@ class GameRoomManager {
         return gameRooms
     }
 
-    private fun checkLastActivity(game: Game) {
+    private fun checkLastActivity(game: OldGame) {
         val minute = 60000
 
         val now = System.currentTimeMillis()
@@ -83,25 +83,25 @@ class GameRoomManager {
         var resetGame = false
 
         when(game.status) {
-            Game.STATUS_GAME_BEING_CONFIGURED -> if (now - 15 * minute > game.lastActivity!!.time) {
+            OldGame.STATUS_GAME_BEING_CONFIGURED -> if (now - 15 * minute > game.lastActivity!!.time) {
                 resetGame = true
             }
-            Game.STATUS_GAME_WAITING_FOR_PLAYERS -> if (now - 15 * minute > game.lastActivity!!.time) {
+            OldGame.STATUS_GAME_WAITING_FOR_PLAYERS -> if (now - 15 * minute > game.lastActivity!!.time) {
                 game.addGameChat("This game was reset due to inactivity.")
                 resetGame = true
             }
-            Game.STATUS_GAME_IN_PROGRESS -> if (now - 30 * minute > game.lastActivity!!.time) {
+            OldGame.STATUS_GAME_IN_PROGRESS -> if (now - 30 * minute > game.lastActivity!!.time) {
                 game.addGameChat("This game was reset due to inactivity.")
                 resetGame = true
             }
-            Game.STATUS_GAME_FINISHED -> if (now - 2 * minute > game.lastActivity!!.time) {
+            OldGame.STATUS_GAME_FINISHED -> if (now - 2 * minute > game.lastActivity!!.time) {
                 game.addGameChat("This game was reset due to inactivity.")
                 resetGame = true
             }
         }
 
         if (resetGame) {
-            if (game.status == Game.STATUS_GAME_IN_PROGRESS) {
+            if (game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
                 game.gameEndReason = "Game Abandoned"
                 game.isAbandonedGame = true
                 game.saveGameHistory()

@@ -5,7 +5,7 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 
 object CardActionHandler {
-    fun handleSubmittedCardAction(game: Game, player: Player, selectedCardNames: List<String>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
+    fun handleSubmittedCardAction(game: OldGame, player: OldPlayer, selectedCardNames: List<String>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
 
         player.isShowCardAction = false
 

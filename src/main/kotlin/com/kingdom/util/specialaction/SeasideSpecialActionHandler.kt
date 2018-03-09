@@ -12,7 +12,7 @@ import com.kingdom.util.KingdomUtil
 import java.util.ArrayList
 
 object SeasideSpecialActionHandler {
-    fun handleSpecialAction(game: Game, card: Card, repeatedAction: Boolean): IncompleteCard? {
+    fun handleSpecialAction(game: OldGame, card: Card, repeatedAction: Boolean): IncompleteCard? {
 
         val supplyMap = game.supplyMap
         val supply = game.supply

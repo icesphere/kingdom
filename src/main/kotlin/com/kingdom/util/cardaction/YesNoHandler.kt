@@ -10,7 +10,7 @@ import com.kingdom.util.KingdomUtil
 import java.util.ArrayList
 
 object YesNoHandler {
-    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, yesNoAnswer: String): IncompleteCard? {
+    fun handleCardAction(game: OldGame, player: OldPlayer, oldCardAction: OldCardAction, yesNoAnswer: String): IncompleteCard? {
 
         val playerMap = game.playerMap
         var incompleteCard: IncompleteCard? = null

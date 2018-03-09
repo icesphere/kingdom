@@ -1,11 +1,11 @@
 package com.kingdom.model.computer
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.Game
-import com.kingdom.model.Player
+import com.kingdom.model.OldGame
+import com.kingdom.model.OldPlayer
 import java.util.*
 
-open class HardComputerPlayer(player: Player, game: Game) : ComputerPlayer(player, game) {
+open class HardComputerPlayer(player: OldPlayer, game: OldGame) : ComputerPlayer(player, game) {
     init {
         difficulty = 3
     }

@@ -1,10 +1,10 @@
 package com.kingdom.model.cards.actions
 
-import com.kingdom.model.Player
+import com.kingdom.model.OldPlayer
 
 class TrashCardsFromHandForBenefit(private val trashCardsForBenefitActionCard: TrashCardsForBenefitActionCard, numCardsToScrap: Int, text: String) : TrashCardsFromHand(numCardsToScrap, text) {
 
-    override fun processActionResult(player: Player, result: ActionResult): Boolean {
+    override fun processActionResult(player: OldPlayer, result: ActionResult): Boolean {
         val doneWithAction = super.processActionResult(player, result)
 
         if (doneWithAction) {

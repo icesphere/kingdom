@@ -1,6 +1,6 @@
 package com.kingdom.model.cards.actions
 
-import com.kingdom.model.Player
+import com.kingdom.model.OldPlayer
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 
@@ -16,11 +16,11 @@ class CardFromDiscardToTopOfDeck(private val maxCost: Int?) : Action(""), Select
         text += "to put on top of your deck"
     }
 
-    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
+    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: OldPlayer): Boolean {
         return cardLocation == CardLocation.Discard && (maxCost == null || card.cost <= maxCost)
     }
 
-    override fun processAction(player: Player): Boolean {
+    override fun processAction(player: OldPlayer): Boolean {
         return if (maxCost == null) {
             !player.discard.isEmpty()
         } else {
@@ -28,7 +28,7 @@ class CardFromDiscardToTopOfDeck(private val maxCost: Int?) : Action(""), Select
         }
     }
 
-    override fun processActionResult(player: Player, result: ActionResult): Boolean {
+    override fun processActionResult(player: OldPlayer, result: ActionResult): Boolean {
         val card = result.selectedCard
         player.discard.remove(card)
         player.addCardToTopOfDeck(card!!)

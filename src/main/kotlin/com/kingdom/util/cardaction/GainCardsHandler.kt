@@ -7,7 +7,7 @@ import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object GainCardsHandler {
-    fun handleCardAction(game: Game, player: Player, oldCardAction: OldCardAction, selectedCardNames: List<String>) {
+    fun handleCardAction(game: OldGame, player: OldPlayer, oldCardAction: OldCardAction, selectedCardNames: List<String>) {
 
         val type = oldCardAction.type
         val cardMap = game.cardMap

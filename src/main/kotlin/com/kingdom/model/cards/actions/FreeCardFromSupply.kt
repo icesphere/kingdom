@@ -1,17 +1,17 @@
 package com.kingdom.model.cards.actions
 
-import com.kingdom.model.Player
+import com.kingdom.model.OldPlayer
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 
 class FreeCardFromSupply(val maxCost: Int?, text: String, val destination: CardLocation = CardLocation.Discard) : Action(text) {
 
-    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
+    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: OldPlayer): Boolean {
         return ((cardLocation == CardLocation.Supply)
                 && (maxCost == null || player.game.getCardCost(card) <= maxCost))
     }
 
-    override fun processAction(player: Player): Boolean {
+    override fun processAction(player: OldPlayer): Boolean {
         if (player.game.supply.isEmpty()) {
             return false
         } else {
@@ -20,7 +20,7 @@ class FreeCardFromSupply(val maxCost: Int?, text: String, val destination: CardL
         }
     }
 
-    override fun processActionResult(player: Player, result: ActionResult): Boolean {
+    override fun processActionResult(player: OldPlayer, result: ActionResult): Boolean {
         val card = result.selectedCard!!
 
         player.game.addHistory(player.username + " acquired a free card from the trade row: " + card.name)
