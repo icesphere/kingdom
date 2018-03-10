@@ -1,31 +1,37 @@
 package com.kingdom.model.cards.actions
 
-import com.kingdom.model.OldPlayer
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
+import com.kingdom.model.cards.CardType
+import com.kingdom.model.players.Player
 
-class FreeCardFromSupply(val maxCost: Int?, text: String, val destination: CardLocation = CardLocation.Discard) : Action(text) {
+class FreeCardFromSupply(private val maxCost: Int?, text: String, private val destination: CardLocation = CardLocation.Discard, val cardType: CardType? = null) : Action(text) {
 
-    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: OldPlayer): Boolean {
+    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
         return ((cardLocation == CardLocation.Supply)
-                && (maxCost == null || player.game.getCardCost(card) <= maxCost))
+                && (maxCost == null || player.getCardCostWithModifiers(card) <= maxCost))
+                && (cardType == null || card.type == cardType)
     }
 
-    override fun processAction(player: OldPlayer): Boolean {
-        if (player.game.supply.isEmpty()) {
-            return false
-        } else {
-            player.game.addHistory(player.username + " is choosing a free card from the trade row")
-            return true
-        }
+    override fun processAction(player: Player): Boolean {
+        player.game.gameLog(player.playerName + " is choosing a free card from the supply")
+        return true
     }
 
-    override fun processActionResult(player: OldPlayer, result: ActionResult): Boolean {
+    override fun processActionResult(player: Player, result: ActionResult): Boolean {
         val card = result.selectedCard!!
 
-        player.game.addHistory(player.username + " acquired a free card from the trade row: " + card.name)
+        player.game.removeCardFromSupply(card)
 
-        player.game.playerGainedCard(player, card, destination, true, false)
+        player.addGameLog(player.playerName + " acquired a free card from the supply: " + card.name)
+
+        if (destination == CardLocation.Hand) {
+            player.acquireCardToHand(card)
+        } else if (destination == CardLocation.Deck) {
+            player.acquireCardToTopOfDeck(card)
+        } else {
+            player.cardAcquired(card)
+        }
 
         return true
     }

@@ -57,7 +57,7 @@ object ChooseUpToHandler {
                 game.addHistory(player.username, " shuffled ", KingdomUtil.getPlural(selectedCardNames.size, " Action card"), " into ", player.pronoun, " deck")
             }
             "King's Court" -> if (selectedCardNames.isNotEmpty()) {
-                val actionCard = player.getCardFromHandById(selectedCardNames[0])!!
+                /*val actionCard = player.getCardFromHandById(selectedCardNames[0])!!
                 val cardCopy: Card
                 if (game.isCheckQuest && actionCard.name == "Quest") {
                     cardCopy = Card(actionCard)
@@ -75,7 +75,7 @@ object ChooseUpToHandler {
                     game.durationCardsPlayed.add(game.kingsCourtCard!!)
                 }
                 game.addHistory(player.username, " used ", KingdomUtil.getWordWithBackgroundColor("King's Court", Card.ACTION_COLOR), " on ", KingdomUtil.getArticleWithCardName(actionCard))
-                game.playRepeatedAction(player, true)
+                game.playRepeatedAction(player, true)*/
             } else {
                 game.addHistory(player.username, " chose not to play an action with ", KingdomUtil.getWordWithBackgroundColor("King's Court", Card.ACTION_COLOR))
             }

@@ -566,22 +566,22 @@ class OldGame(val gameId: Int) {
             }
         }
         setupSupply()
-        supplyCards.add(Card.copperCard)
-        supplyCards.add(Card.silverCard)
-        supplyCards.add(Card.goldCard)
+        supplyCards.add(Copper())
+        supplyCards.add(Silver())
+        supplyCards.add(Gold())
         if (isIncludePlatinumCards) {
-            supplyCards.add(Card.platinumCard)
+            supplyCards.add(Platinum())
         }
         if (isUsePotions) {
-            supplyCards.add(Card.potionCard)
+            supplyCards.add(Potion())
         }
-        supplyCards.add(Card.estateCard)
-        supplyCards.add(Card.duchyCard)
-        supplyCards.add(Card.provinceCard)
+        supplyCards.add(Estate())
+        supplyCards.add(Duchy())
+        supplyCards.add(Province())
         if (isIncludeColonyCards) {
-            supplyCards.add(Card.colonyCard)
+            supplyCards.add(Colony())
         }
-        supplyCards.add(Card.curseCard)
+        supplyCards.add(Curse())
         for (supplyCard in supplyCards) {
             cardMap[supplyCard.name] = supplyCard
             supplyMap[supplyCard.name] = supplyCard
@@ -1465,7 +1465,7 @@ class OldGame(val gameId: Int) {
     private fun playActionCard(player: OldPlayer, card: Card) {
         val cardCopy: Card
         if (isCheckQuest && !card.isCopied && card.name == "Quest") {
-            cardCopy = Card(card)
+            //cardCopy = Card(card)
             copiedPlayedCard = true
         } else {
             cardCopy = card
@@ -1476,13 +1476,13 @@ class OldGame(val gameId: Int) {
         }
         actionCardsInPlay++
         addHistory(player.username, " played ", KingdomUtil.getArticleWithCardName(card))
-        cardsPlayed.add(cardCopy)
+        //cardsPlayed.add(cardCopy)
         player.removeCardFromHand(card)
         player.addActions(-1)
         if (card.isDuration) {
-            durationCardsPlayed.add(cardCopy)
+            //durationCardsPlayed.add(cardCopy)
         }
-        actionCardPlayed(player, cardCopy)
+        //actionCardPlayed(player, cardCopy)
         refreshAllPlayersPlayingArea()
         if (refreshPeddler) {
             refreshAllPlayersSupply()
@@ -1512,17 +1512,17 @@ class OldGame(val gameId: Int) {
         val cardCopy: Card
         when(card.name) {
             "Philosopher's Stone" -> {
-                cardCopy = Card(card)
+                //cardCopy = Card(card)
                 copiedPlayedCard = true
-                cardCopy.addCoins = player.philosophersStoneCoins
+                //cardCopy.addCoins = player.philosophersStoneCoins
             }
             "Bank" -> {
-                cardCopy = Card(card)
+                //cardCopy = Card(card)
                 copiedPlayedCard = true
-                cardCopy.addCoins = treasureCardsPlayed.size + 1
+                //cardCopy.addCoins = treasureCardsPlayed.size + 1
             }
             "Storybook" -> {
-                cardCopy = Card(card)
+                //cardCopy = Card(card)
                 copiedPlayedCard = true
             }
             else -> cardCopy = card
@@ -1536,12 +1536,12 @@ class OldGame(val gameId: Int) {
         }
 
         if (blackMarketTreasure) {
-            blackMarketTreasureCardsPlayed.add(cardCopy)
+            //blackMarketTreasureCardsPlayed.add(cardCopy)
         } else {
-            treasureCardsPlayed.add(cardCopy)
+            //treasureCardsPlayed.add(cardCopy)
         }
 
-        cardsPlayed.add(cardCopy)
+       /* cardsPlayed.add(cardCopy)
 
         if (cardCopy.isPotion) {
             potionsPlayed++
@@ -1560,7 +1560,7 @@ class OldGame(val gameId: Int) {
             if (hasIncompleteCard()) {
                 incompleteCard!!.actionFinished(player)
             }
-        }
+        }*/
 
         refreshAllPlayersPlayingArea()
     }
@@ -1787,7 +1787,7 @@ class OldGame(val gameId: Int) {
     }
 
     fun playerGainedCard(player: OldPlayer, card: Card, cardDestination: CardLocation, takeFromSupply: Boolean, gainedFromBuy: Boolean) {
-        var destination = cardDestination
+        /*var destination = cardDestination
         if (card.isCopied && !card.isCardNotGained) {
             if (!card.gainOldCardActions.isEmpty()) {
                 waitIfNotCurrentPlayer(player)
@@ -1800,10 +1800,10 @@ class OldGame(val gameId: Int) {
             if (card.isCopied) {
                 cardCopy = card
             } else {
-                cardCopy = Card(card)
+                //cardCopy = Card(card)
             }
             if (gainedFromBuy) {
-                cardCopy.isGainedFromBuy = true
+                //cardCopy.isGainedFromBuy = true
                 if (checkNobleBrigand && card.name == "Noble Brigand") {
                     BuySpecialActionHandler.setNobleBrigandCardAction(this, player)
                 }
@@ -1887,7 +1887,7 @@ class OldGame(val gameId: Int) {
                     }
                 }
             }
-        }
+        }*/
     }
 
     private fun addGainedCardToDestinationHistory(player: OldPlayer, card: Card, destination: CardLocation) {

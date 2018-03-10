@@ -222,7 +222,7 @@ object ChooseCardsHandler {
                 game.addHistory(player.username, " named ", KingdomUtil.getCardWithBackgroundColor(selectedCard), " for ", player.pronoun, " ", KingdomUtil.getCardWithBackgroundColor(oldCardAction.associatedCard!!))
             }
             "Setup Leaders" -> for (selectedCardName in selectedCardNames) {
-                player.leaders.add(Card(selectedCard))
+                //player.leaders.add(Card(selectedCard))
             }
             "Swindler" -> {
                 if (game.supply[selectedCard.name] == 0) {
@@ -293,10 +293,10 @@ object ChooseCardsHandler {
                 }
             }
             "Throne Room" -> {
-                val actionCard = player.getCardFromHandById(selectedCardNames[0])!!
+                /*val actionCard = player.getCardFromHandById(selectedCardNames[0])!!
                 val cardCopy: Card
                 if (game.isCheckQuest && actionCard.name == "Quest") {
-                    cardCopy = Card(actionCard)
+                    //cardCopy = Card(actionCard)
                     game.copiedPlayedCard = true
                 } else {
                     cardCopy = actionCard
@@ -310,7 +310,7 @@ object ChooseCardsHandler {
                     game.durationCardsPlayed.add(game.throneRoomCard!!)
                 }
                 game.addHistory(player.username, " throne roomed ", KingdomUtil.getArticleWithCardName(actionCard))
-                game.playRepeatedAction(player, true)
+                game.playRepeatedAction(player, true)*/
             }
             "Trainee" -> {
                 val combinedCost = game.getCardCost(selectedCard) + game.getCardCost(oldCardAction.associatedCard!!)

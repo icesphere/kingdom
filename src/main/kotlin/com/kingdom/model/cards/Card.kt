@@ -4,8 +4,11 @@ import com.kingdom.model.OldCardAction
 import com.kingdom.model.cards.supply.*
 import com.kingdom.util.KingdomUtil
 import java.util.*
+import com.kingdom.model.players.Player
 
-open class Card(val name: String, val deck: Deck, val type: CardType, val cost: Int) {
+abstract class Card(val name: String, val deck: Deck, val type: CardType, val cost: Int) {
+
+    val id: String = UUID.randomUUID().toString()
 
     var special: String = ""
 
@@ -318,6 +321,23 @@ open class Card(val name: String, val deck: Deck, val type: CardType, val cost: 
         return Objects.hash(name)
     }
 
+    fun removedFromPlay(player: Player) {}
+
+    fun cardPlayed(player: Player) {
+        player.actions += addActions
+        player.buys += addBuys
+        player.trade += addCoins
+        if (addCards > 0) {
+            player.drawCards(addCards)
+        }
+        if (special.isNotBlank()) {
+            cardPlayedSpecialAction(player)
+        }
+    }
+
+    open fun cardPlayedSpecialAction(player: Player) {
+    }
+
     companion object {
 
         const val TREASURE_COLOR = "#F6DC51"
@@ -334,35 +354,5 @@ open class Card(val name: String, val deck: Deck, val type: CardType, val cost: 
         const val TREASURE_AND_CURSE_IMAGE = "gold_purple.gif"
         const val DURATION_AND_VICTORY_IMAGE = "orange_green.gif"
         const val TREASURE_REACTION_IMAGE = "gold_blue.gif"
-
-        val estateCard: Card
-            get() = Estate()
-
-        val duchyCard: Card
-            get() = Duchy()
-
-        val provinceCard: Card
-            get() = Province()
-
-        val colonyCard: Card
-            get() = Colony()
-
-        val copperCard: Card
-            get() = Copper()
-
-        val silverCard: Card
-            get() = Silver()
-
-        val goldCard: Card
-            get() = Gold()
-
-        val platinumCard: Card
-            get() = Platinum()
-
-        val curseCard: Card
-            get() = Curse()
-
-        val potionCard: Card
-            get() = Potion()
     }
 }

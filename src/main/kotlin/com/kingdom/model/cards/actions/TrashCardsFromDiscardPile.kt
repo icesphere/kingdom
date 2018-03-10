@@ -1,6 +1,6 @@
 package com.kingdom.model.cards.actions
 
-import com.kingdom.model.OldPlayer
+import com.kingdom.model.players.Player
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import java.util.*
@@ -37,17 +37,17 @@ class TrashCardsFromDiscardPile : Action, SelectFromDiscardAction {
         this.isShowDoNotUse = optional
     }
 
-    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: OldPlayer): Boolean {
+    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
         return cardLocation == CardLocation.Discard
     }
 
-    override fun processAction(player: OldPlayer): Boolean {
+    override fun processAction(player: Player): Boolean {
         return !player.discard.isEmpty()
     }
 
-    override fun processActionResult(player: OldPlayer, result: ActionResult): Boolean {
+    override fun processActionResult(player: Player, result: ActionResult): Boolean {
         if (result.isDoneWithAction) {
-            selectedCards.forEach( { player.scrapCardFromDiscard(it) })
+            selectedCards.forEach( { player.trashCardFromDiscard(it) })
             return true
         } else {
             val selectedCard = result.selectedCard!!

@@ -3,6 +3,7 @@ package com.kingdom.service
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.OldGame
+import com.kingdom.model.cards.kingdom.*
 import com.kingdom.repository.CardRepository
 import com.kingdom.util.CardRandomizer
 import org.springframework.stereotype.Service
@@ -49,6 +50,37 @@ class CardManager(private val cardRepository: CardRepository,
 
     fun swapForTypeOfCard(game: OldGame, cardName: String, cardType: String) {
         cardRandomizer.swapCard(game, cardName, cardType)
+    }
+
+    fun getKingdomCards(): List<Card> {
+        return listOf(
+                Artisan(),
+                Bandit(),
+                Bureaucrat(),
+                Cellar(),
+                Chapel(),
+                CouncilRoom(),
+                Festival(),
+                Gardens(),
+                Harbinger(),
+                Laboratory(),
+                Library(),
+                Market(),
+                Merchant(),
+                Militia(),
+                Mine(),
+                Moat(),
+                Moneylender(),
+                Poacher(),
+                Remodel(),
+                Sentry(),
+                Smithy(),
+                ThroneRoom(),
+                Vassal(),
+                Village(),
+                Witch(),
+                Workshop()
+        )
     }
 
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {

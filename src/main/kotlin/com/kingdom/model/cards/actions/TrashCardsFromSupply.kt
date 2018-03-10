@@ -1,8 +1,8 @@
 package com.kingdom.model.cards.actions
 
-import com.kingdom.model.OldPlayer
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
+import com.kingdom.model.players.Player
 import java.util.*
 
 class TrashCardsFromSupply(protected var numCardsToScrap: Int, optional: Boolean) : Action("") {
@@ -37,15 +37,15 @@ class TrashCardsFromSupply(protected var numCardsToScrap: Int, optional: Boolean
         setTextFromNumCards()
     }
 
-    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: OldPlayer): Boolean {
+    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
         return cardLocation == CardLocation.Supply
     }
 
-    override fun processAction(player: OldPlayer): Boolean {
-        return !player.game.supply.isEmpty()
+    override fun processAction(player: Player): Boolean {
+        return true
     }
 
-    override fun processActionResult(player: OldPlayer, result: ActionResult): Boolean {
+    override fun processActionResult(player: Player, result: ActionResult): Boolean {
         if (result.isDoneWithAction) {
             selectedCards.forEach { c -> player.game.trashCardFromSupply(c) }
             return true

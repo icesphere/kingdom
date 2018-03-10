@@ -1,7 +1,7 @@
 package com.kingdom.model.cards.actions
 
 import com.kingdom.model.Choice
-import com.kingdom.model.OldPlayer
+import com.kingdom.model.players.Player
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 
@@ -18,11 +18,11 @@ class ChoiceAction : Action {
         this.choices = choices.toList()
     }
 
-    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: OldPlayer): Boolean = false
+    override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean = false
 
-    override fun processAction(player: OldPlayer): Boolean = true
+    override fun processAction(player: Player): Boolean = true
 
-    override fun processActionResult(player: OldPlayer, result: ActionResult): Boolean {
+    override fun processActionResult(player: Player, result: ActionResult): Boolean {
         card!!.actionChoiceMade(player, result.choiceSelected!!)
         return true
     }

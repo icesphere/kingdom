@@ -17,6 +17,7 @@ import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+@Suppress("unused")
 @Controller
 class GameController(private var cardManager: CardManager,
                      private var userManager: UserManager,
