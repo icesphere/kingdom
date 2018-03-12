@@ -12,7 +12,6 @@ enum class Deck {
     Cornucopia,
     Hinterlands,
     FairyTale,
-    Leaders,
     Fan,
     Proletariat,
     Reaction

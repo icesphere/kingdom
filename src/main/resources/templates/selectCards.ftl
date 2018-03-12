@@ -159,9 +159,6 @@
                         <input type="checkbox" name="deck_fairytale" id="deck_fairytale" value="FairyTale" onclick="selectDeck(this)" <#if user.fairyTaleChecked>checked</#if>/>  <label for="deck_fairytale">Fairy Tale</label> <a href="http://boardgamegeek.com/boardgameexpansion/68281/fairy-tale-fan-expansion-for-dominion" target="_blank"><img style="border:0px" src="images/help.png" alt="fairy tale info"/></a>
                     </div>
                     <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="include_leaders" id="include_leaders" value="true" <#if user.leadersChecked>checked</#if>/>  <label for="deck_leaders">Leaders</label> <a href="http://www.boardgamegeek.com/article/7451160#7451160" target="_blank"><img style="border:0px" src="images/help.png" alt="leader info"/></a>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
                         <input type="checkbox" name="deck_proletariat" id="deck_proletariat" value="Proletariat" onclick="selectDeck(this)" <#if user.proletariatChecked>checked</#if>/>  <label for="deck_proletariat">Proletariat</label> <a href="http://forum.dominionstrategy.com/index.php?topic=843.0" target="_blank"><img style="border:0px" src="images/help.png" alt="proletariat info"/></a>
                     </div>
                     <div style="float:left;padding-left:10px;">

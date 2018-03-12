@@ -1234,7 +1234,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
             Deck.Promo -> PromoComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Salvation -> SalvationComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.FairyTale -> FairyTaleComputerCardActionHandler.handleCardAction(oldCardAction, this)
-            Deck.Leaders -> LeaderComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Proletariat -> ProletariatComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Fan -> FanComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Reaction -> ReactionComputerCardActionHandler.handleCardAction(oldCardAction, this)

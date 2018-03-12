@@ -101,9 +101,6 @@ class User {
     @Column(name = "fairy_tale_checked")
     var fairyTaleChecked = false
 
-    @Column(name = "leaders_checked")
-    var leadersChecked = false
-
     @Column(name = "proletariat_checked")
     var proletariatChecked = false
 

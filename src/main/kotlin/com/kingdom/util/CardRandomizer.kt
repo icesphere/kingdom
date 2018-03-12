@@ -287,7 +287,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
     }
 
     private fun getCardsByDeck(deck: Deck): MutableList<Card> {
-        return cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false, false).toMutableList()
+        return cardRepository.getCardsByDeck(deck).filterNot { it.testing }.toMutableList()
     }
 
     private inner class RandomCardsSelected {

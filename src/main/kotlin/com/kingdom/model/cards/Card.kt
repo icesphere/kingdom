@@ -226,9 +226,6 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
     val isHinterlands: Boolean
         get() = deck === Deck.Hinterlands
 
-    val isLeader: Boolean
-        get() = deck === Deck.Leaders
-
     val isProletariat: Boolean
         get() = deck === Deck.Proletariat
 

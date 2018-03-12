@@ -660,16 +660,6 @@ function toggleSound() {
     $.get("toggleSound.html");
 }
 
-function showLeadersRules() {
-    $("#showLeadersRulesLink").hide();
-    $("#leadersRules").show();
-}
-
-function showKingdomCardsForLeaders() {
-    $("#showKingdomCardsForLeadersLink").hide();
-    $("#kingdomCardsForLeaders").show();
-}
-
 function useFruitTokens(){
     if(gameStatus == 3){
         refreshingGame = true;

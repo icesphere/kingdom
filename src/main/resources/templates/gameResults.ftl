@@ -125,10 +125,6 @@
                                 <div class="gameResultsPlayerPointsLabel">Sins:</div>
                                 <div class="gameResultsPlayerPoints">${player.sins}</div>
                             </#if>
-                            <#if player.usingLeaders>
-                                <div class="gameResultsPlayerPointsLabel">Points From Leaders:</div>
-                                <div class="gameResultsPlayerPoints">${player.pointsFromLeaders}</div>
-                            </#if>
                         </td>
                     </tr>
                 </#list>

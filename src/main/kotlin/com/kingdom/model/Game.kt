@@ -1,6 +1,7 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
@@ -9,12 +10,14 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
-class Game {
-    var gameId: String? = null
+class Game() {
+    val gameId: String = UUID.randomUUID().toString()
 
     var turn: Int = 0
 
     var players: List<Player>? = null
+
+    var decks: MutableList<Deck> = ArrayList()
 
     var kingdomCards: MutableList<Card> = ArrayList()
 
@@ -54,10 +57,6 @@ class Game {
     var numPlayers: Int = 0
 
     var numComputerPlayers: Int = 0
-
-    init {
-        gameId = UUID.randomUUID().toString()
-    }
 
     fun setupGame() {
         currentPlayerIndex = 0

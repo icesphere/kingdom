@@ -169,16 +169,6 @@
                                 </td>
                             </tr>
                         </#if>
-                        <#if p.usingLeaders>
-                            <tr>
-                                <td class="gameInfoLabel">
-                                    Activated Leaders:
-                                </td>
-                                <td>
-                                    ${p.activatedLeaderCardsString}
-                                </td>
-                            </tr>
-                        </#if>
                     </table>
                 </td>
             </tr>

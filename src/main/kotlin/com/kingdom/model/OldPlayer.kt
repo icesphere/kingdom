@@ -161,10 +161,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
     var isPlayedTinker: Boolean = false
     val tinkerCards: MutableList<Card> = ArrayList(0)
     val extraOldCardActions: Queue<OldCardAction> = LinkedList()
-    val isUsingLeaders: Boolean
-    val leaders: MutableList<Card> = ArrayList(3)
-    var pointsFromLeaders: Int = 0
-        private set
     private var numCopper: Int = 0
     private var numSilver: Int = 0
     private var numGold: Int = 0
@@ -254,27 +250,11 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
 
     val currentHand: String
         get() = KingdomUtil.groupCards(hand, true)
-
-    val activatedLeaders: List<Card>
-        get() {
-            val activatedLeaders = ArrayList<Card>()
-            for (leader in leaders) {
-                if (leader.isActivated) {
-                    activatedLeaders.add(leader)
-                }
-            }
-            return activatedLeaders
-        }
-
-    val activatedLeaderCardsString: String
-        get() = KingdomUtil.groupCards(activatedLeaders, true, false)
-
     init {
         actions = 1
         buys = 1
         playTreasureCards = game.isPlayTreasureCards
         baneCardName = game.baneCardName
-        isUsingLeaders = game.isUsingLeaders
         userId = user.userId
         gender = user.gender
         username = user.username
@@ -624,10 +604,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
         isFoolsGoldPlayed = false
         foolsGoldInHand = 0
 
-        if (isUsingLeaders) {
-            adjustLeaderBonuses()
-        }
-
         drawCards(cardsToDraw)
 
         isShowCardAction = false
@@ -699,7 +675,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
         enchantedPalaces = 0
         hedgeWizards = 0
         goldenTouches = 0
-        pointsFromLeaders = 0
         numCopper = 0
         numSilver = 0
         numGold = 0
@@ -806,15 +781,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
             victoryPoints += (fairgrounds.toDouble() * 2.0 * Math.floor((numDifferentCards / 5).toDouble())).toInt()
         }
         victoryPoints += victoryCoins
-
-        if (isUsingLeaders) {
-            for (leader in leaders) {
-                if (leader.isActivated) {
-                    pointsFromLeaders += getLeaderPoints(leader)
-                }
-            }
-            victoryPoints += pointsFromLeaders
-        }
 
         if (gameOver) {
             finalPointsCalculated = true
@@ -961,23 +927,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
             discount += leaderDiscount
         }
         return discount
-    }
-
-    fun leaderActivated(leader: Card) {
-        if (leader.name == "Varro") {
-            varroActivated = true
-        } else if (varroActivated) {
-            varroPoints += 2
-        }
-    }
-
-    fun getLeaderCard(cardName: String): Card? {
-        for (leader in leaders) {
-            if (leader.name == cardName) {
-                return leader
-            }
-        }
-        return null
     }
 
     fun hasTrader(): Boolean {

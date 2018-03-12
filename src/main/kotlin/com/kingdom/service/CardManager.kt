@@ -1,31 +1,21 @@
 package com.kingdom.service
 
+import com.kingdom.model.OldGame
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
-import com.kingdom.model.OldGame
-import com.kingdom.model.cards.kingdom.*
 import com.kingdom.repository.CardRepository
 import com.kingdom.util.CardRandomizer
 import org.springframework.stereotype.Service
-
-import java.util.Collections
 
 @Service
 class CardManager(private val cardRepository: CardRepository,
                   private val cardRandomizer: CardRandomizer) {
 
-    val prizeCards: MutableList<Card>
-        get() = cardRepository.findByPrizeCardOrderByNameAsc(true).toMutableList()
+    //todo
+    val prizeCards: MutableList<Card> = emptyList<Card>().toMutableList()
 
-    val availableLeaderCards: MutableList<Card>
-        get() {
-            val cards = getCardsByDeck(Deck.Leaders, false)
-            Collections.shuffle(cards)
-            return cards.subList(0, 7).toMutableList()
-        }
-
-    fun getAllCards(includeFanExpansionCards: Boolean): List<Card> {
-        return cardRepository.findByFanExpansionCardAndDisabledAndPrizeCardOrderByNameAsc(includeFanExpansionCards, false, false)
+    fun getAllCards(): List<Card> {
+        return cardRepository.getAllCards()
     }
 
     fun getCards(deck: Deck, includeTesting: Boolean): List<Card> {
@@ -33,11 +23,7 @@ class CardManager(private val cardRepository: CardRepository,
     }
 
     fun getCard(cardName: String): Card {
-        return cardRepository.findByName(cardName)
-    }
-
-    fun saveCard(card: Card) {
-        cardRepository.save(card)
+        return getAllCards().first { it.name == cardName }
     }
 
     fun setRandomKingdomCards(game: OldGame) {
@@ -52,42 +38,11 @@ class CardManager(private val cardRepository: CardRepository,
         cardRandomizer.swapCard(game, cardName, cardType)
     }
 
-    fun getKingdomCards(): List<Card> {
-        return listOf(
-                Artisan(),
-                Bandit(),
-                Bureaucrat(),
-                Cellar(),
-                Chapel(),
-                CouncilRoom(),
-                Festival(),
-                Gardens(),
-                Harbinger(),
-                Laboratory(),
-                Library(),
-                Market(),
-                Merchant(),
-                Militia(),
-                Mine(),
-                Moat(),
-                Moneylender(),
-                Poacher(),
-                Remodel(),
-                Sentry(),
-                Smithy(),
-                ThroneRoom(),
-                Vassal(),
-                Village(),
-                Witch(),
-                Workshop()
-        )
-    }
-
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {
-        return if (!includeTesting) {
-            cardRepository.findByDeckAndTestingAndDisabledAndPrizeCardOrderByNameAsc(deck, false, false, false)
-        } else {
-            cardRepository.findByDeckAndPrizeCardOrderByNameAsc(deck, false)
+        var cards = cardRepository.getCardsByDeck(deck)
+        if (!includeTesting) {
+            cards = cards.filterNot { it.testing }
         }
+        return cards
     }
 }

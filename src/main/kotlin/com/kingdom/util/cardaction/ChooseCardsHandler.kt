@@ -221,9 +221,6 @@ object ChooseCardsHandler {
                 oldCardAction.associatedCard!!.associatedCards.add(selectedCard)
                 game.addHistory(player.username, " named ", KingdomUtil.getCardWithBackgroundColor(selectedCard), " for ", player.pronoun, " ", KingdomUtil.getCardWithBackgroundColor(oldCardAction.associatedCard!!))
             }
-            "Setup Leaders" -> for (selectedCardName in selectedCardNames) {
-                //player.leaders.add(Card(selectedCard))
-            }
             "Swindler" -> {
                 if (game.supply[selectedCard.name] == 0) {
                     val chooseAgainCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS).apply {

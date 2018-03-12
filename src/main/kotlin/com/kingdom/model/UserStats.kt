@@ -13,7 +13,6 @@ class UserStats {
     var promoDeck: Int = 0
     var salvationDeck: Int = 0
     var fairyTaleDeck: Int = 0
-    var leadersDeck: Int = 0
     var proletariatDeck: Int = 0
     var fanDeck: Int = 0
 

@@ -216,24 +216,6 @@
                                 </div>
                             </td>
                             <td style="vertical-align:top">
-                                <div id="leadersCardsDiv" style="width:200px;">
-                                    <table>
-                                        <tr>
-                                            <td>
-                                                Leaders
-                                            </td>
-                                        </tr>
-                                        <#list leadersCards as card>
-                                            <tr>
-                                                <td>
-                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if><#if card.disabled> (disabled)</#if>
-                                                </td>
-                                            </tr>
-                                        </#list>
-                                    </table>
-                                </div>
-                            </td>
-                            <td style="vertical-align:top">
                                 <div id="proletariatCardsDiv" style="width:200px;">
                                     <table>
                                         <tr>

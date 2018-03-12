@@ -1,11 +1,6 @@
 <div>
     <a href="showGameCards.html" target="_blank">Card Details</a>
 </div>
-<#if player.usingLeaders>
-    <div>
-        <a href="showLeaders.html" target="_blank">Leader Details</a>
-    </div>
-</#if>
 <div style="clear:both;float:left;">
     <#assign clickType="supply">
     <#list kingdomCards as card>

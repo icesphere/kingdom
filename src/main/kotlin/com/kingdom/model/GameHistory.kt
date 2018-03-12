@@ -52,8 +52,6 @@ class GameHistory {
 
     var mobile: Boolean = false
 
-    var leaders: Boolean = false
-
     @Column(name = "recent_game")
     var recentGame: Boolean = false
 

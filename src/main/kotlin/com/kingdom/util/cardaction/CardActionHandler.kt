@@ -52,7 +52,7 @@ object CardActionHandler {
                     game.addHistory(player.username, " added ", KingdomUtil.getPlural(selectedCardNames.size, "card"), " on top of ", player.pronoun, " deck")
                 }
             }
-            type == OldCardAction.TYPE_CHOOSE_CARDS || type == OldCardAction.TYPE_SETUP_LEADERS -> incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardNames)
+            type == OldCardAction.TYPE_CHOOSE_CARDS -> incompleteCard = ChooseCardsHandler.handleCardAction(game, player, cardAction, selectedCardNames)
             type == OldCardAction.TYPE_YES_NO -> incompleteCard = YesNoHandler.handleCardAction(game, player, cardAction, yesNoAnswer!!)
             type == OldCardAction.TYPE_CHOICES -> incompleteCard = ChoicesHandler.handleCardAction(game, player, cardAction, choice!!)
             type == OldCardAction.TYPE_CHOOSE_IN_ORDER -> incompleteCard = ChooseInOrderHandler.handleCardAction(game, player, cardAction, selectedCardNames)

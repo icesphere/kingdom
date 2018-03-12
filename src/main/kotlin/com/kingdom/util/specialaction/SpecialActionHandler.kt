@@ -20,7 +20,6 @@ object SpecialActionHandler {
             card.isPromo -> incompleteCard = PromoSpecialActionHandler.handleSpecialAction(game, card)
             card.isSalvation -> incompleteCard = SalvationSpecialActionHandler.handleSpecialAction(game, card)
             card.isFairyTale -> incompleteCard = FairyTaleSpecialActionHandler.handleSpecialAction(game, card, repeatedAction)
-            card.isLeader -> LeaderSpecialActionHandler.handleSpecialAction(game, card)
             card.isProletariat -> incompleteCard = ProletariatSpecialActionHandler.handleSpecialAction(game, card)
             card.isFan -> FanSpecialActionHandler.handleSpecialAction(game, card)
         }

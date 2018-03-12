@@ -98,14 +98,6 @@
     </tr>
     <tr>
         <td class="label">
-            <a href="showUsersForStat.html?stat=leadersChecked">Leaders Deck:</a>
-        </td>
-        <td>
-            ${stats.leadersDeck}
-        </td>
-    </tr>  
-    <tr>
-        <td class="label">
             <a href="showUsersForStat.html?stat=proletariatChecked">Proletariat Deck:</a>
         </td>
         <td>

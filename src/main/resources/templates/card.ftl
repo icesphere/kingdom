@@ -32,7 +32,6 @@
                             <option value="Promo" <#if card.deck == "Promo">selected="true"</#if>>Promo Card</option>
                             <option value="Salvation" <#if card.deck == "Salvation">selected="true"</#if>>Salvation</option>
                             <option value="FairyTale" <#if card.deck == "FairyTale">selected="true"</#if>>Fairy Tale</option>
-                            <option value="Leaders" <#if card.deck == "Leaders">selected="true"</#if>>Leaders</option>
                             <option value="Proletariat" <#if card.deck == "Proletariat">selected="true"</#if>>Proletariat</option>
                             <option value="Fan" <#if card.deck == "Fan">selected="true"</#if>>Other Fan Card</option>
                         </select>

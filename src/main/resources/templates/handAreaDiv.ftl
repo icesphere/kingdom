@@ -56,7 +56,7 @@
 </table>
 <table style="width:100%">
     <tr>
-        <td style="width:<#if player.usingLeaders && showDuration>40<#elseif player.usingLeaders || showDuration>50<#else>80</#if>%">
+        <td style="width:<#if showDuration>50<#else>80</#if>%">
             <table>
                 <tr>
                     <td style="padding-right:5px;">
@@ -71,7 +71,7 @@
             </table>
         </td>
         <#if showDuration>
-            <td style="width:<#if player.usingLeaders>20<#else>35</#if>%">
+            <td style="width:35%">
                 <table>
                     <tr>
                         <td style="padding-right:5px;">
@@ -86,7 +86,7 @@
                 </table>
             </td>
         </#if>
-        <td style="width:<#if player.usingLeaders && showDuration>10<#elseif player.usingLeaders || showDuration>15<#else>20</#if>%">
+        <td style="width:<#if showDuration>15<#else>20</#if>%">
             <table>
                 <tr>
                     <td>
@@ -100,22 +100,6 @@
                 </tr>
             </table>
         </td>
-        <#if player.usingLeaders>
-            <td style="width:<#if showDuration>30<#else>35</#if>%">
-                <table>
-                    <tr>
-                        <td style="padding-right:5px;">
-                            <img src="images/Leaders.png" alt="Leaders"/>
-                        </td>
-                        <td>
-                            <div id="leadersDiv">
-                                <#include "leadersDiv.ftl">
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </#if>
     </tr>
 </table>
 <#if showIslandCards>

@@ -105,15 +105,9 @@ class GameController(private var cardManager: CardManager,
     @Throws(TemplateModelException::class)
     fun generateCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = User()
-        val game = OldGame(-1)
+        val game = Game()
 
         val generateType = request.getParameter("generateType")
-        val includeLeaders = KingdomUtil.getRequestBoolean(request, "include_leaders")
-
-        if (includeLeaders) {
-            game.isUsingLeaders = true
-            game.availableLeaders = cardManager.availableLeaderCards
-        }
 
         val decks = ArrayList<Deck>()
         val customSelection = ArrayList<Card>()
@@ -150,8 +144,6 @@ class GameController(private var cardManager: CardManager,
                 var numHardComputerPlayers = 0
                 var numBMUComputerPlayers = 0
 
-                val includeLeaders = KingdomUtil.getRequestBoolean(request, "include_leaders")
-
                 user.baseChecked = request.getParameter("deck_kingdom") != null
                 user.intrigueChecked = request.getParameter("deck_intrigue") != null
                 user.seasideChecked = request.getParameter("deck_seaside") != null
@@ -164,7 +156,6 @@ class GameController(private var cardManager: CardManager,
                 user.fairyTaleChecked = request.getParameter("deck_fairytale") != null
                 user.proletariatChecked = request.getParameter("deck_proletariat") != null
                 user.otherFanCardsChecked = request.getParameter("other_fan_cards") != null
-                user.leadersChecked = includeLeaders
                 user.alwaysPlayTreasureCards = KingdomUtil.getRequestBoolean(request, "playTreasureCards")
                 user.showVictoryPoints = KingdomUtil.getRequestBoolean(request, "showVictoryPoints")
                 user.identicalStartingHands = KingdomUtil.getRequestBoolean(request, "identicalStartingHands")
@@ -264,11 +255,6 @@ class GameController(private var cardManager: CardManager,
                     }
 
                     game.isAlwaysIncludeColonyAndPlatinum = includePlatinumAndColony
-                }
-
-                if (includeLeaders) {
-                    game.isUsingLeaders = true
-                    game.availableLeaders = cardManager.availableLeaderCards
                 }
 
                 setRandomizingOptions(request, game, customSelection, excludedCards, generateType)
@@ -575,7 +561,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     private fun setBlackMarketCards(game: OldGame) {
-        val allCards = cardManager.getAllCards(false)
+        val allCards = cardManager.getAllCards()
         val blackMarketCards = CollectionUtils.subtract(allCards, game.kingdomCards) as MutableList<Card>
         Collections.shuffle(blackMarketCards)
         game.blackMarketCards = blackMarketCards
@@ -1520,10 +1506,6 @@ class GameController(private var cardManager: CardManager,
             addTrollTokenObjects(game, modelAndView)
             modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            if (player.oldCardAction!!.type == OldCardAction.TYPE_SETUP_LEADERS) {
-                modelAndView.addObject("kingdomCards", game.kingdomCards)
-                modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
-            }
             return modelAndView
         } catch (t: Throwable) {
             return logErrorAndReturnEmpty(t, game)
@@ -2424,20 +2406,6 @@ class GameController(private var cardManager: CardManager,
         }
         val modelAndView = ModelAndView("gameCards")
         modelAndView.addObject("cards", game.kingdomCards)
-        modelAndView.addObject("prizeCards", game.prizeCards)
-        modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
-        return modelAndView
-    }
-
-    @RequestMapping("/showLeaders.html")
-    fun showLeaders(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        val modelAndView = ModelAndView("gameCards")
-        modelAndView.addObject("cards", game.availableLeaders)
         modelAndView.addObject("prizeCards", game.prizeCards)
         modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
         return modelAndView

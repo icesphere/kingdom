@@ -54,7 +54,6 @@
                 <td style="font-weight:bold;padding-left:10px;">Promo</td>
                 <td style="font-weight:bold;padding-left:10px;">Salvation</td>
                 <td style="font-weight:bold;padding-left:10px;">Fairy Tale</td>
-                <td style="font-weight:bold;padding-left:10px;">Leaders</td>  
                 <td style="font-weight:bold;padding-left:10px;">Proletariat</td>
                 <td style="font-weight:bold;padding-left:10px;">Fan Cards</td>
                 <td style="font-weight:bold;padding-left:10px;">Excluded Cards</td>
@@ -125,9 +124,6 @@
                     <td style="padding-left:10px;">
                         fairy tale <#if user.fairyTaleChecked>(${user.fairyTaleWeight})</#if>
                     </td>
-                    <td style="padding-left:10px;">
-                        leaders <#if user.leadersChecked>(yes)</#if>
-                    </td>    
                     <td style="padding-left:10px;">
                         proletariat <#if user.proletariatChecked>(${user.proletariatWeight})</#if>
                     </td>

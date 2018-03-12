@@ -14,13 +14,6 @@ object LeaderComputerCardActionHandler {
         val cardName = oldCardAction.cardName
 
         when (cardName) {
-            "Setup Leaders" -> {
-                val cards = ArrayList(oldCardAction.cards)
-                Collections.shuffle(cards)
-
-                val cardNames = (0 until oldCardAction.numCards).map { cards[it].name }
-                CardActionHandler.handleSubmittedCardAction(game, player, cardNames, null, null, -1)
-            }
             "Bilkis" -> {
                 val cardToGain = computer.getHighestCostCard(oldCardAction.cards)
                 val cardNames = ArrayList<String>()

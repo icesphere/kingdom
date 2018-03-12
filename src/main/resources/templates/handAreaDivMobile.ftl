@@ -63,14 +63,6 @@
     <div id="discardDiv">
         <#include "discardDivMobile.ftl">
     </div>
-    <#if player.usingLeaders>
-        <div style="clear:both;" class="label">
-            Leaders:
-        </div>
-        <div id="leadersDiv">
-            <#include "leadersDiv.ftl">
-        </div>
-    </#if>
 </div>
 <#if showIslandCards>
     <div id="islandCardsDiv">

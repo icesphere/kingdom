@@ -171,12 +171,4 @@
             ${stats.mobileGames}
         </td>
     </tr>
-    <tr>
-        <td class="label">
-            Games with Leaders:
-        </td>
-        <td>
-            ${stats.gamesWithLeaders}
-        </td>
-    </tr>
 </table>

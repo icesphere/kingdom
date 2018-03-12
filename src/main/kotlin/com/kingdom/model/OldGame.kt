@@ -247,8 +247,6 @@ class OldGame(val gameId: Int) {
         private set
     val previousPlayerCardsPlayed = ArrayList<Card>()
     val previousPlayerCardsBought = ArrayList<Card>()
-    var isUsingLeaders: Boolean = false
-    var availableLeaders: MutableList<Card> = ArrayList(0)
     var isCheckQuest: Boolean = false
         private set
     private var checkTrader: Boolean = false
@@ -279,19 +277,6 @@ class OldGame(val gameId: Int) {
     var fruitTokensPlayed: Int = 0
         private set
     private var checkPlantation: Boolean = false
-
-    private val setupLeadersOldCardAction: OldCardAction
-        get() {
-            val cardAction = OldCardAction(OldCardAction.TYPE_SETUP_LEADERS)
-            cardAction.numCards = 3
-            cardAction.cards = availableLeaders
-            cardAction.deck = Deck.Leaders
-            cardAction.buttonValue = "Done"
-            cardAction.cardName = "Setup Leaders"
-            val instructions = "Choose 3 Leader cards and then click Done"
-            cardAction.instructions = instructions
-            return cardAction
-        }
 
     val groupedCardsPlayed: List<Card>
         get() {
@@ -560,11 +545,6 @@ class OldGame(val gameId: Int) {
                 cardMap[card.name] = card
             }
         }
-        if (isUsingLeaders) {
-            for (card in availableLeaders) {
-                cardMap[card.name] = card
-            }
-        }
         setupSupply()
         supplyCards.add(Copper())
         supplyCards.add(Silver())
@@ -691,9 +671,6 @@ class OldGame(val gameId: Int) {
                 difficulty == 2 -> computerPlayers[player.userId] = MediumComputerPlayer(player, this)
                 else -> computerPlayers[player.userId] = HardComputerPlayer(player, this)
             }
-        }
-        if (isUsingLeaders) {
-            setPlayerCardAction(player, setupLeadersOldCardAction)
         }
         if (!repeated && players.size == numPlayers) {
             start()
@@ -868,8 +845,6 @@ class OldGame(val gameId: Int) {
             checkWatchtower = false
             checkTinker = false
             mobile = false
-            isUsingLeaders = false
-            availableLeaders.clear()
             isCheckQuest = false
             checkTrader = false
             trackHighway = false
@@ -2301,16 +2276,6 @@ class OldGame(val gameId: Int) {
             DurationHandler.applyDurationCards(this, nextPlayer)
             actionCardsInPlay += nextPlayer.durationCards.size
         }
-        if (isUsingLeaders && nextPlayer.cardBonusTurns > 0) {
-            nextPlayer.drawCards(1)
-            nextPlayer.cardBonusTurns = nextPlayer.cardBonusTurns - 1
-            addHistory(nextPlayer.username, " gained +1 Card from ", nextPlayer.pronoun, " leader")
-        }
-        if (isUsingLeaders && nextPlayer.buyBonusTurns > 0) {
-            nextPlayer.addBuys(1)
-            nextPlayer.buyBonusTurns = nextPlayer.buyBonusTurns - 1
-            addHistory(nextPlayer.username, " gained +1 Buy from ", nextPlayer.pronoun, " leader")
-        }
         if (checkHorseTraders && !nextPlayer.setAsideCards.isEmpty()) {
             val numHorseTraders = nextPlayer.setAsideCards.size
             for (card in nextPlayer.setAsideCards) {
@@ -2481,7 +2446,6 @@ class OldGame(val gameId: Int) {
             history.identicalStartingHands = isIdenticalStartingHands
             history.repeated = repeated
             history.mobile = mobile
-            history.leaders = isUsingLeaders
             val cardNames = ArrayList<String>()
             for (kingdomCard in kingdomCards) {
                 cardNames.add(kingdomCard.name)

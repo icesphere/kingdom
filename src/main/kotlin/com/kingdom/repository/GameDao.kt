@@ -96,9 +96,6 @@ class GameDao//todo
         query = session.createSQLQuery("select count(distinct g.gameid) from games g where g.mobile = 1");
         stats.setMobileGames(((BigInteger) query.uniqueResult()).intValue());
 
-        query = session.createSQLQuery("select count(distinct g.gameid) from games g where g.leaders = 1");
-        stats.setGamesWithLeaders(((BigInteger) query.uniqueResult()).intValue());
-
         query = session.createSQLQuery("select count(distinct g.gameid) from games g where g.abandoned_game = 1");
         stats.setGamesAbandoned(((BigInteger) query.uniqueResult()).intValue());
 
@@ -203,10 +200,6 @@ class GameDao//todo
         result = getStatsResultFromQuery(query, startDate, endDate, session);
         stats.setMobileGames(result);
 
-        query = "select count(distinct g.gameid) from games g where g.leaders = 1";
-        result = getStatsResultFromQuery(query, startDate, endDate, session);
-        stats.setGamesWithLeaders(result);
-
         query = "select count(distinct g.gameid) from games g where g.abandoned_game = 1";
         result = getStatsResultFromQuery(query, startDate, endDate, session);
         stats.setGamesAbandoned(result);
@@ -287,9 +280,6 @@ class GameDao//todo
 
         query = session.createSQLQuery("select count(*) from users u where u.fairy_tale_checked = 1 and u.active = 1 and u.admin = 0");
         stats.setFairyTaleDeck(((BigInteger) query.uniqueResult()).intValue());
-
-        query = session.createSQLQuery("select count(*) from users u where u.leaders_checked = 1 and u.active = 1 and u.admin = 0");
-        stats.setLeadersDeck(((BigInteger) query.uniqueResult()).intValue());
 
         query = session.createSQLQuery("select count(*) from users u where u.proletariat_checked = 1 and u.active = 1 and u.admin = 0");
         stats.setProletariatDeck(((BigInteger) query.uniqueResult()).intValue());
