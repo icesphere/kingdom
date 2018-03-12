@@ -83,7 +83,6 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
                 CardType.VictoryReaction -> "Victory - Reaction"
                 CardType.TreasureCurse -> "Treasure - Curse"
                 CardType.DurationVictory -> "Duration - Victory"
-                CardType.Leader -> "Leader"
                 CardType.TreasureReaction -> "Treasure - Reaction"
                 CardType.ActionSummon -> "Action - Summon"
             }
@@ -245,7 +244,6 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
             type == CardType.ActionReaction -> ACTION_REACTION_COLOR
             type == CardType.Curse -> CURSE_COLOR
             type == CardType.ActionDuration -> ACTION_DURATION_COLOR
-            type == CardType.Leader -> LEADER_COLOR
             else -> ACTION_COLOR
         }
 
@@ -343,7 +341,6 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
         const val ACTION_REACTION_COLOR = "#7FAED8"
         const val ACTION_DURATION_COLOR = "#F09954"
         const val ACTION_COLOR = "#CBC6B3"
-        const val LEADER_COLOR = "#BB0000"
 
         const val ACTION_AND_VICTORY_IMAGE = "grey_green.gif"
         const val TREASURE_AND_VICTORY_IMAGE = "gold_green.gif"

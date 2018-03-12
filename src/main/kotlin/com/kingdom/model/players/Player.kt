@@ -11,7 +11,7 @@ import com.kingdom.model.cards.modifiers.CardCostModifier
 import java.util.*
 import java.util.function.Function
 
-abstract class Player protected constructor() {
+abstract class Player protected constructor(val game: Game) {
     var deck: MutableList<Card> = ArrayList()
     val hand: MutableList<Card> = ArrayList()
     val discard: MutableList<Card> = ArrayList()
@@ -32,7 +32,6 @@ abstract class Player protected constructor() {
 
     var actions: Int = 0
 
-    lateinit var game: Game
     lateinit var opponents: List<Player>
 
     var isNextCardToTopOfDeck: Boolean = false

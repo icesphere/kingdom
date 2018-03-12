@@ -15,6 +15,18 @@ class Game() {
 
     var turn: Int = 0
 
+    var status: GameStatus = GameStatus.None
+
+    var creatorId: Int = 0
+    var creatorName = ""
+
+    var title = ""
+
+    var mobile: Boolean = false
+
+    var isPrivateGame = false
+    var password = ""
+
     var players: List<Player>? = null
 
     var decks: MutableList<Deck> = ArrayList()
@@ -50,6 +62,12 @@ class Game() {
 
     var lastActivity = Date()
 
+    var isAnnotatedGame: Boolean = false
+
+    var isRecentGame: Boolean = false
+
+    var isRecommendedSet: Boolean = false
+
     var isIncludePlatinumCards: Boolean = false
 
     var isIncludeColonyCards: Boolean = false
@@ -57,6 +75,24 @@ class Game() {
     var numPlayers: Int = 0
 
     var numComputerPlayers: Int = 0
+    var numEasyComputerPlayers: Int = 0
+    var numMediumComputerPlayers: Int = 0
+    var numHardComputerPlayers: Int = 0
+    var numBMUComputerPlayers: Int = 0
+
+    var custom: Boolean = false
+
+    var isPlayTreasureCards = false
+
+    var isShowVictoryPoints: Boolean = false
+    var isIdenticalStartingHands: Boolean = false
+
+    var isAlwaysIncludeColonyAndPlatinum: Boolean = false
+    var isNeverIncludeColonyAndPlatinum: Boolean = false
+
+    var randomizingOptions: RandomizingOptions? = null
+
+    var isRandomizerReplacementCardNotFound: Boolean = false
 
     fun setupGame() {
         currentPlayerIndex = 0

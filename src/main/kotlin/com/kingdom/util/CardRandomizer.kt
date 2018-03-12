@@ -1,15 +1,12 @@
 package com.kingdom.util
 
+import com.kingdom.model.Game
+import com.kingdom.model.RandomizingOptions
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
-import com.kingdom.model.OldGame
-import com.kingdom.model.RandomizingOptions
 import com.kingdom.repository.CardRepository
 import org.springframework.stereotype.Service
-
-import java.util.ArrayList
-import java.util.Collections
-import java.util.LinkedList
+import java.util.*
 
 @Service
 class CardRandomizer(private val cardRepository: CardRepository) {
@@ -23,7 +20,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
     private var changingBaneCard: Boolean = false
     private var replacingCardWithSpecificType: Boolean = false
 
-    fun setRandomKingdomCards(game: OldGame, options: RandomizingOptions) {
+    fun setRandomKingdomCards(game: Game, options: RandomizingOptions) {
         game.isRandomizerReplacementCardNotFound = false
         this.options = options
         val decks = game.decks
@@ -261,11 +258,11 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         }
     }
 
-    fun swapRandomCard(game: OldGame, cardName: String) {
+    fun swapRandomCard(game: Game, cardName: String) {
         swapCard(game, cardName, null)
     }
 
-    fun swapCard(game: OldGame, cardName: String, cardType: String?) {
+    fun swapCard(game: Game, cardName: String, cardType: String?) {
         var cardToReplaceIndex = 0
         var cardToReplace: Card? = null
         val cards = game.kingdomCards

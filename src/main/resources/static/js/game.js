@@ -362,7 +362,7 @@ function closeLoadingDialog() {
 }
 
 function clickCard(clickType, cardName, special){
-    if(!clickingCard && currentPlayer && gameStatus == 3 && (clickType == "supply" || clickType == "hand" || clickType == "leader")){
+    if(!clickingCard && currentPlayer && gameStatus == 3 && (clickType == "supply" || clickType == "hand")){
         clickingCard = true;
         refreshingGame = true;
         showLoadingDialog();

@@ -1,6 +1,6 @@
 package com.kingdom.service
 
-import com.kingdom.model.OldGame
+import com.kingdom.model.Game
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.repository.CardRepository
@@ -26,15 +26,15 @@ class CardManager(private val cardRepository: CardRepository,
         return getAllCards().first { it.name == cardName }
     }
 
-    fun setRandomKingdomCards(game: OldGame) {
+    fun setRandomKingdomCards(game: Game) {
         cardRandomizer.setRandomKingdomCards(game, game.randomizingOptions!!)
     }
 
-    fun swapRandomCard(game: OldGame, cardName: String) {
+    fun swapRandomCard(game: Game, cardName: String) {
         cardRandomizer.swapRandomCard(game, cardName)
     }
 
-    fun swapForTypeOfCard(game: OldGame, cardName: String, cardType: String) {
+    fun swapForTypeOfCard(game: Game, cardName: String, cardType: String) {
         cardRandomizer.swapCard(game, cardName, cardType)
     }
 

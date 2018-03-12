@@ -1,7 +1,9 @@
 package com.kingdom.service
 
+import com.kingdom.model.Game
 import com.kingdom.model.OldGame
 import com.kingdom.model.GameRoom
+import com.kingdom.model.GameStatus
 import com.kingdom.util.GameRoomComparator
 import org.springframework.stereotype.Service
 
@@ -10,7 +12,7 @@ import java.util.*
 @Service
 class GameRoomManager {
 
-    private val games = HashMap<Int, OldGame>()
+    private val games = HashMap<String, Game>()
 
     var isUpdatingWebsite: Boolean = false
     var updatingMessage: String? = null
@@ -18,7 +20,7 @@ class GameRoomManager {
     var isShowNews: Boolean = false
     var news = ""
 
-    val nextAvailableGame: OldGame?
+    val nextAvailableGame: Game?
         get() {
             if (games.size >= MAX_GAME_ROOMS) {
                 return null
@@ -29,7 +31,7 @@ class GameRoomManager {
             }
 
             return OldGame(i).apply {
-                status = OldGame.STATUS_GAME_BEING_CONFIGURED
+                status = GameStatus.BeingConfigured
                 games[i] = this
             }
         }
@@ -40,7 +42,7 @@ class GameRoomManager {
     val gamesInProgress: List<GameRoom>
         get() = getGameRooms(false)
 
-    fun getGame(gameId: Int): OldGame? {
+    fun getGame(gameId: String): Game? {
         return games[gameId]
     }
 
@@ -53,9 +55,9 @@ class GameRoomManager {
             checkLastActivity(game)
 
             var addGame = false
-            if (lobbyGameRooms && (game.status == OldGame.STATUS_GAME_BEING_CONFIGURED || game.status == OldGame.STATUS_GAME_WAITING_FOR_PLAYERS)) {
+            if (lobbyGameRooms && (game.status == GameStatus.BeingConfigured || game.status == GameStatus.WaitingForPlayers)) {
                 addGame = true
-            } else if (!lobbyGameRooms && game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
+            } else if (!lobbyGameRooms && game.status == GameStatus.InProgress) {
                 addGame = true
             }
 
@@ -64,7 +66,7 @@ class GameRoomManager {
                 gameRooms.add(gameRoom)
             }
 
-            if (game.status == OldGame.STATUS_NO_GAMES) {
+            if (game.status == GameStatus.None) {
                 games.remove(game.gameId)
             }
         }
@@ -75,7 +77,7 @@ class GameRoomManager {
         return gameRooms
     }
 
-    private fun checkLastActivity(game: OldGame) {
+    private fun checkLastActivity(game: Game) {
         val minute = 60000
 
         val now = System.currentTimeMillis()
@@ -83,25 +85,25 @@ class GameRoomManager {
         var resetGame = false
 
         when(game.status) {
-            OldGame.STATUS_GAME_BEING_CONFIGURED -> if (now - 15 * minute > game.lastActivity!!.time) {
+            GameStatus.BeingConfigured -> if (now - 15 * minute > game.lastActivity!!.time) {
                 resetGame = true
             }
-            OldGame.STATUS_GAME_WAITING_FOR_PLAYERS -> if (now - 15 * minute > game.lastActivity!!.time) {
+            GameStatus.WaitingForPlayers -> if (now - 15 * minute > game.lastActivity!!.time) {
                 game.addGameChat("This game was reset due to inactivity.")
                 resetGame = true
             }
-            OldGame.STATUS_GAME_IN_PROGRESS -> if (now - 30 * minute > game.lastActivity!!.time) {
+            GameStatus.InProgress -> if (now - 30 * minute > game.lastActivity!!.time) {
                 game.addGameChat("This game was reset due to inactivity.")
                 resetGame = true
             }
-            OldGame.STATUS_GAME_FINISHED -> if (now - 2 * minute > game.lastActivity!!.time) {
+            GameStatus.Finished -> if (now - 2 * minute > game.lastActivity!!.time) {
                 game.addGameChat("This game was reset due to inactivity.")
                 resetGame = true
             }
         }
 
         if (resetGame) {
-            if (game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
+            if (game.status == GameStatus.InProgress) {
                 game.gameEndReason = "Game Abandoned"
                 game.isAbandonedGame = true
                 game.saveGameHistory()

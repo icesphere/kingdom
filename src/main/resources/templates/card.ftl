@@ -58,7 +58,6 @@
                             <option value="10" <#if card.type.typeId == 10>selected="true"</#if>>Treasure - Curse</option>
                             <option value="11" <#if card.type.typeId == 11>selected="true"</#if>>Victory - Reaction</option>
                             <option value="12" <#if card.type.typeId == 12>selected="true"</#if>>Duration - Victory</option>
-                            <option value="13" <#if card.type.typeId == 13>selected="true"</#if>>Leader</option>
                             <option value="14" <#if card.type.typeId == 14>selected="true"</#if>>Treasure - Reaction</option>
                             <option value="15" <#if card.type.typeId == 15>selected="true"</#if>>Action - Summon</option>
                         </select>

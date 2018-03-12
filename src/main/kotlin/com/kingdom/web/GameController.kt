@@ -3,6 +3,8 @@ package com.kingdom.web
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.players.HumanPlayer
+import com.kingdom.model.players.Player
 import com.kingdom.service.*
 import com.kingdom.util.KingdomUtil
 import freemarker.ext.beans.BeansWrapper
@@ -112,7 +114,7 @@ class GameController(private var cardManager: CardManager,
         val decks = ArrayList<Deck>()
         val customSelection = ArrayList<Card>()
         val excludedCards = ArrayList<Card>(0)
-        parseCardSelectionRequest(request, user, game, decks, customSelection, excludedCards, generateType)
+        parseCardSelectionRequest(request, user, decks, customSelection, excludedCards, generateType)
 
         setRandomizingOptions(request, game, customSelection, excludedCards, generateType)
 
@@ -133,7 +135,7 @@ class GameController(private var cardManager: CardManager,
             return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            if (game.status == OldGame.STATUS_GAME_BEING_CONFIGURED) {
+            if (game.status == GameStatus.BeingConfigured) {
 
                 val generateType = request.getParameter("generateType")
 
@@ -221,7 +223,7 @@ class GameController(private var cardManager: CardManager,
                 val decks = ArrayList<Deck>()
                 val customSelection = ArrayList<Card>()
                 val excludedCards = ArrayList<Card>(0)
-                parseCardSelectionRequest(request, user, game, decks, customSelection, excludedCards, generateType)
+                parseCardSelectionRequest(request, user, decks, customSelection, excludedCards, generateType)
 
                 if (generateType == "annotatedGame" || generateType == "recentGame" || generateType == "recommendedSet") {
                     var cards: String
@@ -274,7 +276,7 @@ class GameController(private var cardManager: CardManager,
 
     }
 
-    private fun parseCardSelectionRequest(request: HttpServletRequest, user: User, game: OldGame, decks: MutableList<Deck>, customSelection: MutableList<Card>, excludedCards: MutableList<Card>, generateType: String) {
+    private fun parseCardSelectionRequest(request: HttpServletRequest, user: User, decks: MutableList<Deck>, customSelection: MutableList<Card>, excludedCards: MutableList<Card>, generateType: String) {
         val parameterNames = request.parameterNames
         while (parameterNames.hasMoreElements()) {
             val name = parameterNames.nextElement() as String
@@ -328,13 +330,13 @@ class GameController(private var cardManager: CardManager,
         }
     }
 
-    private fun setRandomizingOptions(request: HttpServletRequest, game: OldGame, customSelection: List<Card>, excludedCards: List<Card>, generateType: String) {
+    private fun setRandomizingOptions(request: HttpServletRequest, game: Game, customSelection: List<Card>, excludedCards: List<Card>, generateType: String) {
         val options = RandomizingOptions()
 
         options.excludedCards = excludedCards
 
         if (generateType == "custom" || generateType == "annotatedGame" || generateType == "recentGame" || generateType == "recommendedSet") {
-            game.setCustom(true)
+            game.custom = true
             options.isThreeToFiveAlchemy = true
             options.customSelection = customSelection
             if (KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")) {
@@ -359,10 +361,10 @@ class GameController(private var cardManager: CardManager,
             return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            return if (game.status == OldGame.STATUS_GAME_BEING_CONFIGURED) {
+            return if (game.status == GameStatus.BeingConfigured) {
                 showRandomConfirmPage(request, user, game)
             } else {
-                if (game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
+                if (game.status == GameStatus.InProgress) {
                     ModelAndView("redirect:/showGame.html")
                 } else {
                     ModelAndView("redirect:/showGameRooms.html")
@@ -375,7 +377,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @Throws(TemplateModelException::class)
-    private fun showRandomConfirmPage(request: HttpServletRequest, user: User, game: OldGame): ModelAndView {
+    private fun showRandomConfirmPage(request: HttpServletRequest, user: User, game: Game): ModelAndView {
         val includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].isProsperity && !game.isNeverIncludeColonyAndPlatinum
         var playTreasureCardsRequired = false
         for (card in game.kingdomCards) {
@@ -385,7 +387,7 @@ class GameController(private var cardManager: CardManager,
         }
         val modelAndView = ModelAndView("randomConfirm")
         modelAndView.addObject("createGame", KingdomUtil.getRequestBoolean(request, "createGame"))
-        modelAndView.addObject("player", OldPlayer(user, game))
+        modelAndView.addObject("player", HumanPlayer(user, game))
         modelAndView.addObject("currentPlayerId", game.currentPlayerId)
         modelAndView.addObject("costDiscount", game.costDiscount)
         modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
@@ -417,11 +419,11 @@ class GameController(private var cardManager: CardManager,
             return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            return if (game.status == OldGame.STATUS_GAME_BEING_CONFIGURED) {
+            return if (game.status == GameStatus.BeingConfigured) {
                 cardManager.setRandomKingdomCards(game)
                 confirmCards(request, response)
             } else {
-                if (game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
+                if (game.status == GameStatus.InProgress) {
                     ModelAndView("redirect:/showGame.html")
                 } else {
                     ModelAndView("redirect:/showGameRooms.html")
@@ -441,11 +443,11 @@ class GameController(private var cardManager: CardManager,
             return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            return if (game.status == OldGame.STATUS_GAME_BEING_CONFIGURED) {
+            return if (game.status == GameStatus.BeingConfigured) {
                 cardManager.swapRandomCard(game, request.getParameter("cardName"))
                 confirmCards(request, response)
             } else {
-                if (game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
+                if (game.status == GameStatus.InProgress) {
                     ModelAndView("redirect:/showGame.html")
                 } else {
                     ModelAndView("redirect:/showGameRooms.html")
@@ -465,11 +467,11 @@ class GameController(private var cardManager: CardManager,
             return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            return if (game.status == OldGame.STATUS_GAME_BEING_CONFIGURED) {
+            return if (game.status == GameStatus.BeingConfigured) {
                 cardManager.swapForTypeOfCard(game, request.getParameter("cardName"), request.getParameter("cardType"))
                 confirmCards(request, response)
             } else {
-                if (game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
+                if (game.status == GameStatus.InProgress) {
                     ModelAndView("redirect:/showGame.html")
                 } else {
                     ModelAndView("redirect:/showGameRooms.html")
@@ -490,13 +492,13 @@ class GameController(private var cardManager: CardManager,
             return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            return if (game.status == OldGame.STATUS_GAME_BEING_CONFIGURED) {
+            return if (game.status == GameStatus.BeingConfigured) {
                 val include = KingdomUtil.getRequestBoolean(request, "include")
                 game.isAlwaysIncludeColonyAndPlatinum = include
                 game.isNeverIncludeColonyAndPlatinum = !include
                 confirmCards(request, response)
             } else {
-                if (game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
+                if (game.status == GameStatus.InProgress) {
                     ModelAndView("redirect:/showGame.html")
                 } else {
                     ModelAndView("redirect:/showGameRooms.html")
@@ -516,8 +518,8 @@ class GameController(private var cardManager: CardManager,
             return KingdomUtil.getLoginModelAndView(request)
         }
         try {
-            if (game.status == OldGame.STATUS_GAME_BEING_CONFIGURED) {
-                game.status = OldGame.STATUS_GAME_WAITING_FOR_PLAYERS
+            if (game.status == GameStatus.BeingConfigured) {
+                game.status = GameStatus.WaitingForPlayers
                 LoggedInUsers.refreshLobbyGameRooms()
                 var hasBlackMarket = false
                 var playTreasureCardsRequired = false
@@ -549,7 +551,7 @@ class GameController(private var cardManager: CardManager,
                 game.init()
                 addPlayerToGame(game, user)
             }
-            return if (game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
+            return if (game.status == GameStatus.InProgress) {
                 ModelAndView("redirect:/showGame.html")
             } else {
                 ModelAndView("redirect:/showGameRooms.html")
@@ -560,7 +562,7 @@ class GameController(private var cardManager: CardManager,
 
     }
 
-    private fun setBlackMarketCards(game: OldGame) {
+    private fun setBlackMarketCards(game: Game) {
         val allCards = cardManager.getAllCards()
         val blackMarketCards = CollectionUtils.subtract(allCards, game.kingdomCards) as MutableList<Card>
         Collections.shuffle(blackMarketCards)
@@ -570,11 +572,10 @@ class GameController(private var cardManager: CardManager,
     @RequestMapping("/cancelGame.html")
     fun cancelGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
-        val gameIdParam = request.getParameter("gameId")
-        if (user == null || gameIdParam == null) {
+        val gameId = request.getParameter("gameId")
+        if (user == null || gameId == null) {
             return KingdomUtil.getLoginModelAndView(request)
         }
-        val gameId = Integer.parseInt(gameIdParam)
         val game = gameRoomManager.getGame(gameId)
         if (game != null && (user.admin || game.creatorId == user.userId)) {
             game.reset()
@@ -604,7 +605,7 @@ class GameController(private var cardManager: CardManager,
         }
         val game = getGame(request)
         try {
-            if (game != null && game.status != OldGame.STATUS_GAME_WAITING_FOR_PLAYERS && game.status != OldGame.STATUS_GAME_FINISHED && game.playerMap.containsKey(user.userId)) {
+            if (game != null && game.status != GameStatus.WaitingForPlayers && game.status != GameStatus.Finished && game.playerMap.containsKey(user.userId)) {
                 return ModelAndView("redirect:/showGame.html")
             }
             user.refreshLobby.isRefreshPlayers = false
@@ -635,7 +636,7 @@ class GameController(private var cardManager: CardManager,
 
     }
 
-    private fun addPlayerToGame(game: OldGame, user: User) {
+    private fun addPlayerToGame(game: Game, user: User) {
         user.gameId = game.gameId
         user.status = ""
         game.addPlayer(user)
@@ -644,7 +645,7 @@ class GameController(private var cardManager: CardManager,
         LoggedInUsers.refreshLobbyGameRooms()
     }
 
-    private fun removePlayerFromGame(game: OldGame, user: User) {
+    private fun removePlayerFromGame(game: Game, user: User) {
         user.gameId = 0
         game.removePlayer(user)
         LoggedInUsers.updateUser(user)
@@ -659,7 +660,7 @@ class GameController(private var cardManager: CardManager,
             return ModelAndView("redirect:/showGameRooms.html")
         }
         val game = gameRoomManager.getGame(user.gameId)
-        if (game == null || game.status != OldGame.STATUS_GAME_WAITING_FOR_PLAYERS) {
+        if (game == null || game.status != GameStatus.WaitingForPlayers) {
             return ModelAndView("redirect:/showGameRooms.html")
         } else {
             removePlayerFromGame(game, user)
@@ -673,10 +674,9 @@ class GameController(private var cardManager: CardManager,
         if (user.gameId != 0) {
             return ModelAndView("redirect:/showGameRooms.html")
         }
-        val gameIdParam = request.getParameter("gameId")
-        val game: OldGame?
-        if (gameIdParam != null) {
-            val gameId = Integer.parseInt(gameIdParam)
+        val gameId = request.getParameter("gameId")
+        val game: Game?
+        if (gameId != null) {
             game = gameRoomManager.getGame(gameId)
         } else {
             game = getGame(request)
@@ -689,12 +689,12 @@ class GameController(private var cardManager: CardManager,
                 return showGameRooms(request, response)
             } else {
                 if (!game.playerMap.containsKey(user.userId)) {
-                    if (gameIdParam != null) {
-                        request.session.setAttribute("gameId", Integer.parseInt(gameIdParam))
+                    if (gameId != null) {
+                        request.session.setAttribute("gameId", gameId)
                     }
                     addPlayerToGame(game, user)
                 }
-                return if (game.status == OldGame.STATUS_GAME_IN_PROGRESS) {
+                return if (game.status == GameStatus.InProgress) {
                     ModelAndView("redirect:/showGame.html")
                 } else {
                     ModelAndView("redirect:/showGameRooms.html")
@@ -715,10 +715,9 @@ class GameController(private var cardManager: CardManager,
             model.put("redirectToLogin", true)
             return model
         }
-        val gameIdParam = request.getParameter("gameId")
-        val game: OldGame?
-        if (gameIdParam != null) {
-            val gameId = Integer.parseInt(gameIdParam)
+        val gameId = request.getParameter("gameId")
+        val game: Game?
+        if (gameId != null) {
             game = gameRoomManager.getGame(gameId)
         } else {
             game = getGame(request)
@@ -735,14 +734,14 @@ class GameController(private var cardManager: CardManager,
             } else if (game.players.size == game.numPlayers) {
                 message = "Game Room Full"
             } else if (!game.playerMap.containsKey(user.userId)) {
-                if (gameIdParam != null) {
-                    request.session.setAttribute("gameId", Integer.parseInt(gameIdParam))
+                if (gameId != null) {
+                    request.session.setAttribute("gameId", Integer.parseInt(gameId))
                 }
                 addPlayerToGame(game, user)
             }
 
             model.put("message", message)
-            model.put("start", game.status == OldGame.STATUS_GAME_IN_PROGRESS)
+            model.put("start", game.status == GameStatus.InProgress)
 
             return model
         } catch (t: Throwable) {
@@ -812,7 +811,7 @@ class GameController(private var cardManager: CardManager,
             if (refresh.isRefreshGameStatus) {
                 refresh.isRefreshGameStatus = false
                 model.put("gameStatus", game.status)
-                val currentPlayer = (game.status == OldGame.STATUS_GAME_IN_PROGRESS && user.userId == game.currentPlayerId).toString()
+                val currentPlayer = (game.status == GameStatus.InProgress && user.userId == game.currentPlayerId).toString()
                 model.put("currentPlayer", currentPlayer)
             }
             model.put("closeCardActionDialog", refresh.isCloseCardActionDialog)
@@ -911,7 +910,7 @@ class GameController(private var cardManager: CardManager,
             model.put("refreshTitle", refresh.isRefreshTitle)
             if (refresh.isRefreshTitle) {
                 refresh.isRefreshTitle = false
-                if (game.status == OldGame.STATUS_GAME_FINISHED) {
+                if (game.status == GameStatus.Finished) {
                     model.put("title", "Game Over")
                 } else if (game.currentPlayerId == user.userId) {
                     model.put("title", "Your Turn")
@@ -1650,12 +1649,12 @@ class GameController(private var cardManager: CardManager,
             return model
         }
         try {
-            if (game.status == OldGame.STATUS_GAME_WAITING_FOR_PLAYERS) {
+            if (game.status == GameStatus.WaitingForPlayers) {
                 game.reset()
                 model.put("redirectToLobby", true)
                 return model
             }
-            if (game.status != OldGame.STATUS_GAME_FINISHED) {
+            if (game.status != GameStatus.Finished) {
                 val player = game.playerMap[user.userId]!!
                 game.playerQuitGame(player)
             }
@@ -1798,7 +1797,7 @@ class GameController(private var cardManager: CardManager,
 
     }
 
-    private fun logErrorAndReturnEmpty(t: Throwable, game: OldGame): ModelAndView {
+    private fun logErrorAndReturnEmpty(t: Throwable, game: Game): ModelAndView {
         t.printStackTrace()
         val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
         game.logError(error)
@@ -1825,7 +1824,7 @@ class GameController(private var cardManager: CardManager,
         return loadPlayerDialogContainingCards(request, response, "cityPlannerCardsDialog")
     }
 
-    private fun addGameObjects(game: OldGame, player: OldPlayer, modelAndView: ModelAndView, request: HttpServletRequest) {
+    private fun addGameObjects(game: Game, player: OldPlayer, modelAndView: ModelAndView, request: HttpServletRequest) {
         val bw = BeansWrapper()
         modelAndView.addObject("player", player)
         modelAndView.addObject("kingdomCards", game.kingdomCards)
@@ -1921,9 +1920,9 @@ class GameController(private var cardManager: CardManager,
         return KingdomUtil.getUser(request)
     }
 
-    private fun getGame(request: HttpServletRequest): OldGame? {
+    private fun getGame(request: HttpServletRequest): Game? {
         val gameId = request.session.getAttribute("gameId") ?: return null
-        return gameRoomManager.getGame(gameId as Int)
+        return gameRoomManager.getGame(gameId as String)
     }
 
     @RequestMapping("/gameHistory.html")
@@ -2230,8 +2229,8 @@ class GameController(private var cardManager: CardManager,
         return ModelAndView("redirect:/showGame.html")
     }
 
-    private fun showGame(game: OldGame?, user: User?): Boolean {
-        return game != null && game.status != OldGame.STATUS_GAME_WAITING_FOR_PLAYERS && game.status != OldGame.STATUS_GAME_FINISHED && game.playerMap.containsKey(user!!.userId)
+    private fun showGame(game: Game?, user: User?): Boolean {
+        return game != null && game.status != GameStatus.WaitingForPlayers && game.status != GameStatus.Finished && game.playerMap.containsKey(user!!.userId)
     }
 
     @ResponseBody

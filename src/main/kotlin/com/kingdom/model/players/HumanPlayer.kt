@@ -1,12 +1,13 @@
 package com.kingdom.model.players
 
 import com.kingdom.model.Choice
+import com.kingdom.model.Game
 import com.kingdom.model.User
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 
-class HumanPlayer(val user: User) : Player() {
+class HumanPlayer(val user: User, game: Game) : Player(game) {
 
     init {
         playerName = user.username

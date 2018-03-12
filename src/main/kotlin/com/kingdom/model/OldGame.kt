@@ -1085,7 +1085,6 @@ class OldGame(val gameId: Int) {
                 var actionPlayed = false
                 var cardBought = false
                 var treasurePlayed = false
-                var leaderActivated = false
                 if (clickType == "hand") {
                     if (card.isAction) {
                         if (player.hasBoughtCard()) {
@@ -1108,14 +1107,12 @@ class OldGame(val gameId: Int) {
                     }
                 } else if (clickType == "supply") {
                     cardBought = buyCard(player, card, confirm)
-                } else if (clickType == "leader") {
-                    leaderActivated = activateLeader(player, card.name)
                 }
 
-                if ((cardBought || leaderActivated) && !player.isComputer && player.buys == 0 && !player.isShowCardAction && player.extraOldCardActions.isEmpty() && !hasUnfinishedGainCardActions()) {
+                if (cardBought && !player.isComputer && player.buys == 0 && !player.isShowCardAction && player.extraOldCardActions.isEmpty() && !hasUnfinishedGainCardActions()) {
                     endPlayerTurn(player, false)
                 } else {
-                    if (actionPlayed || cardBought || treasurePlayed || leaderActivated) {
+                    if (actionPlayed || cardBought || treasurePlayed) {
                         refreshAllPlayersPlayingArea()
                         refreshHandArea(player)
                     }
@@ -1127,43 +1124,6 @@ class OldGame(val gameId: Int) {
                 processingClick.remove(player.userId)
             }
         }
-    }
-
-    private fun activateLeader(player: OldPlayer, cardName: String): Boolean {
-        val card = player.getLeaderCard(cardName) ?: return false
-        val cost = getCardCost(card, player, true)
-        if (player.coins >= cost && player.buys > 0 && !card.isActivated && player.turns > 1) {
-            if (card.isVictory) {
-                boughtVictoryCard = true
-            }
-            if (!isPlayTreasureCards && !player.hasBoughtCard()) {
-                playAllTreasureCards(player, false)
-            }
-            player.setHasBoughtCard(true)
-            addHistory(player.username, " activated the leader ", KingdomUtil.getCardWithBackgroundColor(card))
-            player.addCoins(cost * -1)
-            player.addBuys(-1)
-            card.isActivated = true
-            player.leaderActivated(card)
-            SpecialActionHandler.handleSpecialAction(this, card)
-            refreshAllPlayersPlayers()
-            return true
-        } else {
-            if (player.buys == 0) {
-                setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have any more buys."))
-            } else if (player.turns < 2) {
-                setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You can't activate a leader until your third turn."))
-            } else if (player.coins < cost) {
-                if (player.isComputer) {
-                    setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have enough coins. Card: " + card.name + " Coins: " + player.coins))
-                } else {
-                    setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have enough coins to activate the leader."))
-                }
-            } else if (card.isActivated) {
-                setPlayerInfoDialog(player, InfoDialog.getErrorDialog("Leader has already been activated."))
-            }
-        }
-        return false
     }
 
     private fun buyCard(player: OldPlayer, card: Card, confirm: Boolean): Boolean {

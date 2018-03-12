@@ -13,7 +13,6 @@ enum class CardType(val typeId: Int) {
     TreasureCurse(10),
     VictoryReaction(11),
     DurationVictory(12),
-    Leader(13),
     TreasureReaction(14),
     ActionSummon(15);
 

@@ -186,8 +186,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
     var buyBonusTurns = 0
     var cardBonusTurns = 0
 
-    private var leaderDiscount: Int = 0
-
     var isMobile: Boolean = false
 
     val groupedHand: List<Card>
@@ -616,30 +614,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
         }
     }
 
-    private fun adjustLeaderBonuses() {
-        if (victoryCardDiscountTurns > 0) {
-            victoryCardDiscountTurns--
-        }
-        if (actionCardDiscountTurns > 0) {
-            actionCardDiscountTurns--
-        }
-        if (treasureCardDiscountTurns > 0) {
-            treasureCardDiscountTurns--
-        }
-        if (enableVictoryCardDiscount) {
-            victoryCardDiscountTurns = 2
-            enableVictoryCardDiscount = false
-        }
-        if (enableActionCardDiscount) {
-            actionCardDiscountTurns = 2
-            enableActionCardDiscount = false
-        }
-        if (enableTreasureCardDiscount) {
-            treasureCardDiscountTurns = 2
-            enableTreasureCardDiscount = false
-        }
-    }
-
     fun getFinalVictoryPoints(): Int {
         return getVictoryPoints(true)
     }
@@ -792,39 +766,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
         return victoryPoints
     }
 
-    private fun getLeaderPoints(leader: Card): Int {
-        var points = leader.victoryPoints
-
-        when (leader.name) {
-            "Hatshepsut" -> if (numGold == 0) {
-                points += 6
-            }
-            "Hypatia" -> points += Math.floor((numVictoryCards / 2).toDouble()).toInt()
-            "Justinian" -> {
-                var least = numActions
-                if (numVictoryCards < least) {
-                    least = numVictoryCards
-                }
-                if (numTreasureCards < least) {
-                    least = numTreasureCards
-                }
-                points += least
-            }
-            "Midas" -> points += Math.floor((numTreasureCards / 4).toDouble()).toInt()
-            "Pericles" -> points += Math.floor((numActions / 2).toDouble()).toInt()
-            "Solomon" -> {
-                var solomonPoints = Math.floor((100 / numCards).toDouble()).toInt()
-                if (solomonPoints > 10) {
-                    solomonPoints = 10
-                }
-                points += solomonPoints
-            }
-            "Varro" -> points += varroPoints
-        }
-
-        return points
-    }
-
     fun addPotions(potions: Int) {
         this.potions += potions
     }
@@ -908,10 +849,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
         this.enableTreasureCardDiscount = enableTreasureCardDiscount
     }
 
-    fun setLeaderDiscount(leaderDiscount: Int) {
-        this.leaderDiscount = leaderDiscount
-    }
-
     fun getCardDiscount(card: Card): Int {
         var discount = 0
         if (card.isVictory && victoryCardDiscountTurns > 0) {
@@ -922,9 +859,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
         }
         if (card.isTreasure && treasureCardDiscountTurns > 0) {
             discount += 2
-        }
-        if (card.isLeader && leaderDiscount > 0) {
-            discount += leaderDiscount
         }
         return discount
     }
