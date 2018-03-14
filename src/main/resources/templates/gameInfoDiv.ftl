@@ -98,23 +98,13 @@
                                 </td>
                             </tr>
                         </#if>
-                        <#if showFruitTokens>
+                        <#if showCoinTokens>
                             <tr>
                                 <td class="gameInfoLabel">
-                                    Fruit Tokens:
+                                    Coin Tokens:
                                 </td>
                                 <td>
-                                    ${p.fruitTokens}
-                                </td>
-                            </tr>
-                        </#if>
-                        <#if showCattleTokens>
-                            <tr>
-                                <td class="gameInfoLabel">
-                                    Cattle Tokens:
-                                </td>
-                                <td>
-                                    ${p.cattleTokens}
+                                    ${p.coinTokens}
                                 </td>
                             </tr>
                         </#if>

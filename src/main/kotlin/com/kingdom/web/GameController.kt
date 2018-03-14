@@ -2,7 +2,9 @@ package com.kingdom.web
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.actions.ActionResult
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
 import com.kingdom.service.*
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView
 import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+
 
 @Suppress("unused")
 @Controller
@@ -390,9 +393,8 @@ class GameController(private var cardManager: CardManager,
         modelAndView.addObject("player", HumanPlayer(user, game))
         modelAndView.addObject("currentPlayerId", game.currentPlayerId)
         modelAndView.addObject("costDiscount", game.costDiscount)
-        modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+//        modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
         modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-        addTrollTokenObjects(game, modelAndView)
         modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
         modelAndView.addObject("cards", game.kingdomCards)
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
@@ -400,15 +402,6 @@ class GameController(private var cardManager: CardManager,
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         modelAndView.addObject("randomizerReplacementCardNotFound", game.isRandomizerReplacementCardNotFound)
         return modelAndView
-    }
-
-    @Throws(TemplateModelException::class)
-    private fun addTrollTokenObjects(game: OldGame, modelAndView: ModelAndView) {
-        modelAndView.addObject("showTrollTokens", game.isShowTrollTokens)
-        if (game.isShowTrollTokens) {
-            val bw = BeansWrapper()
-            modelAndView.addObject("trollTokens", bw.wrap(game.trollTokens))
-        }
     }
 
     @RequestMapping("/changeRandomCards.html")
@@ -547,8 +540,7 @@ class GameController(private var cardManager: CardManager,
                 if (includePrizes || hasBlackMarket) {
                     game.prizeCards = cardManager.prizeCards
                 }
-                game.setGameManager(gameManager)
-                game.init()
+                game.setupGame()
                 addPlayerToGame(game, user)
             }
             return if (game.status == GameStatus.InProgress) {
@@ -646,7 +638,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     private fun removePlayerFromGame(game: Game, user: User) {
-        user.gameId = 0
+        user.gameId = null
         game.removePlayer(user)
         LoggedInUsers.updateUser(user)
         LoggedInUsers.refreshLobbyPlayers()
@@ -656,10 +648,10 @@ class GameController(private var cardManager: CardManager,
     @RequestMapping("/leaveGame.html")
     fun leaveGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
-        if (user.gameId == 0) {
+        if (user.gameId == null) {
             return ModelAndView("redirect:/showGameRooms.html")
         }
-        val game = gameRoomManager.getGame(user.gameId)
+        val game = gameRoomManager.getGame(user.gameId!!)
         if (game == null || game.status != GameStatus.WaitingForPlayers) {
             return ModelAndView("redirect:/showGameRooms.html")
         } else {
@@ -671,7 +663,7 @@ class GameController(private var cardManager: CardManager,
     @RequestMapping("/joinGame.html")
     fun joinGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
-        if (user.gameId != 0) {
+        if (user.gameId != null) {
             return ModelAndView("redirect:/showGameRooms.html")
         }
         val gameId = request.getParameter("gameId")
@@ -873,7 +865,8 @@ class GameController(private var cardManager: CardManager,
                 divsToLoad++
                 refresh.isRefreshChat = false
             }
-            model.put("refreshCardAction", refresh.isRefreshCardAction)
+            //todo
+            /*model.put("refreshCardAction", refresh.isRefreshCardAction)
             if (refresh.isRefreshCardAction) {
                 val player = game.playerMap[user.userId]!!
                 if (player.oldCardAction == null) {
@@ -892,8 +885,9 @@ class GameController(private var cardManager: CardManager,
                     divsToLoad++
                 }
                 refresh.isRefreshCardAction = false
-            }
-            model.put("refreshInfoDialog", refresh.isRefreshInfoDialog)
+            }*/
+            //todo
+            /*model.put("refreshInfoDialog", refresh.isRefreshInfoDialog)
             if (refresh.isRefreshInfoDialog) {
                 val player = game.playerMap[user.userId]!!
                 model.put("infoDialogHideMethod", player.infoDialog!!.hideMethod!!)
@@ -902,7 +896,7 @@ class GameController(private var cardManager: CardManager,
                 model.put("infoDialogTimeout", player.infoDialog!!.timeout)
                 divsToLoad++
                 refresh.isRefreshInfoDialog = false
-            }
+            }*/
             model.put("playBeep", refresh.isPlayBeep)
             if (refresh.isPlayBeep) {
                 refresh.isPlayBeep = false
@@ -915,7 +909,7 @@ class GameController(private var cardManager: CardManager,
                 } else if (game.currentPlayerId == user.userId) {
                     model.put("title", "Your Turn")
                 } else {
-                    model.put("title", game.currentPlayer!!.username + "'s Turn")
+                    model.put("title", game.currentPlayer.username + "'s Turn")
                 }
             }
             model.put("divsToLoad", divsToLoad)
@@ -949,7 +943,9 @@ class GameController(private var cardManager: CardManager,
                     model.put("redirectToLobby", true)
                     return model
                 }
-                game.cardClicked(player, clickType, cardName)
+                //todo pass cardId
+                val cardId = ""
+                cardClicked(game, player, getCardLocationFromSource(clickType), cardName, cardId)
                 game.closeLoadingDialog(player)
             }
         } catch (t: Throwable) {
@@ -961,880 +957,286 @@ class GameController(private var cardManager: CardManager,
         return refreshGame(request, response)
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/playAllTreasureCards", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun playAllTreasureCards(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            val model = HashMap<String, Any>()
-            model.put("redirectToLogin", true)
-            return model
+    fun getCardLocationFromSource(source: String): CardLocation {
+        return when (source) {
+            "supply" -> CardLocation.Supply
+            "hand" -> CardLocation.Hand
+            "discard" -> CardLocation.Discard
+            "playArea" -> CardLocation.PlayArea
+            else -> CardLocation.Unknown
         }
-        val player = game.playerMap[user.userId]
-        if (player == null) {
-            val model = HashMap<String, Any>()
-            model.put("redirectToLobby", true)
-            return model
-        }
-        try {
-            game.playAllTreasureCards(player)
-            game.closeLoadingDialog(player)
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-        }
-
-        return refreshGame(request, response)
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/endTurn", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun endTurn(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            val model = HashMap<String, Any>()
-            model.put("redirectToLogin", true)
-            return model
-        }
-        try {
-            val player = game.playerMap[user.userId]!!
-            game.endPlayerTurn(player)
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
+    fun cardClicked(game: Game, player: Player, source: CardLocation, cardName: String, cardId: String) {
+        if (!player.isYourTurn) {
+            return
         }
 
-        return refreshGame(request, response)
-    }
+        val action = player.currentAction
 
-    @RequestMapping("/submitCardAction.html")
-    fun submitCardAction(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            //todo error handling if choice is null
-            val player = game.playerMap[user.userId]!!
-            if (player.oldCardAction != null) {
-                if (player.oldCardAction!!.type == OldCardAction.TYPE_INFO) {
-                    game.cardActionSubmitted(player, emptyList(), null, null, -1)
-                } else if (player.oldCardAction!!.type == OldCardAction.TYPE_YES_NO) {
-                    if (request.getParameter("answer") == null) {
-                        val error = GameError(GameError.GAME_ERROR, "Card Action answer was null")
-                        game.logError(error, false)
-                        //todo
+        when (source) {
+            CardLocation.Supply -> {
+                //todo
+                val card = game.getSupplyCard(cardName)
+
+                if (highlightSupplyCard(player, card)) {
+                    if (action != null) {
+                        handleCardClickedForAction(player, card, source)
                     } else {
-                        game.cardActionSubmitted(player, emptyList(), request.getParameter("answer"), null, -1)
-                    }
-                } else if (player.oldCardAction!!.type == OldCardAction.TYPE_CHOICES) {
-                    if (request.getParameter("choice") == null) {
-                        val error = GameError(GameError.GAME_ERROR, "Card Action choice was null")
-                        game.logError(error, false)
-                        //todo
-                    } else {
-                        game.cardActionSubmitted(player, emptyList(), null, request.getParameter("choice"), -1)
-                    }
-                } else if (player.oldCardAction!!.type == OldCardAction.TYPE_CHOOSE_NUMBER_BETWEEN || player.oldCardAction!!.type == OldCardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
-                    if (request.getParameter("numberChosen") == null) {
-                        val error = GameError(GameError.GAME_ERROR, "Card Action number chosen was null")
-                        game.logError(error, false)
-                        //todo
-                    } else {
-                        game.cardActionSubmitted(player, emptyList(), null, null, Integer.parseInt(request.getParameter("numberChosen")))
-                    }
-                } else {
-                    if (request.getParameter("selectedCards") == null) {
-                        val error = GameError(GameError.GAME_ERROR, "Card Action selected cards string was null")
-                        game.logError(error, false)
-                        //todo
-                    } else {
-                        val selectedCardsString = request.getParameter("selectedCards")
-                        val selectedCardsStrings = selectedCardsString.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                        val selectedCardNames = ArrayList<String>()
-                        for (cardName in selectedCardsStrings) {
-                            if (cardName != "") {
-                                selectedCardNames.add(cardName)
-                            }
-                        }
-                        game.cardActionSubmitted(player, selectedCardNames, null, null, -1)
+                        player.buyCard(card)
+                        game.refreshAllPlayersPlayingArea()
                     }
                 }
             }
-            game.closeLoadingDialog(player)
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-        }
-
-        return ModelAndView("empty")
-    }
-
-    @RequestMapping("/getPlayersDiv.html")
-    fun getPlayersDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            var template = "playersDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "playersDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-            modelAndView.addObject("players", game.players)
-            modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getSupplyDiv.html")
-    fun getSupplyDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        return if (user == null || game == null) {
-            ModelAndView("redirect:/login.html")
-        } else getSupplyDiv(request, user, game, game.currentPlayerId)
-    }
-
-    @RequestMapping("/getSupplyDivOnEndTurn.html")
-    fun getSupplyDivOnEndTurn(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        return if (user == null || game == null) {
-            ModelAndView("redirect:/login.html")
-        } else getSupplyDiv(request, user, game, 0)
-    }
-
-    private fun getSupplyDiv(request: HttpServletRequest, user: User, game: OldGame, currentPlayerId: Int): ModelAndView {
-        try {
-            var supplyDivTemplate = "supplyDiv"
-            if (KingdomUtil.isMobile(request)) {
-                supplyDivTemplate = "supplyDivMobile"
-            }
-            val modelAndView = ModelAndView(supplyDivTemplate)
-            val player = game.playerMap[user.userId]
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", currentPlayerId)
-            modelAndView.addObject("kingdomCards", game.kingdomCards)
-            modelAndView.addObject("supplyCards", game.supplyCards)
-            try {
-                val bw = BeansWrapper()
-                modelAndView.addObject("supply", bw.wrap(game.supply))
-                if (game.isShowEmbargoTokens) {
-                    modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
+            CardLocation.Hand -> {
+                val card = findCardById(player.hand, cardId)!!
+                if (highlightCard(player, card, source)) {
+                    if (action != null) {
+                        handleCardClickedForAction(player, card, source)
+                    } else {
+                        player.playCard(card)
+                        //todo
+                        //refreshGamePageForAll()
+                    }
                 }
-                addTrollTokenObjects(game, modelAndView)
-                if (game.isTrackTradeRouteTokens) {
-                    modelAndView.addObject("tradeRouteTokenMap", bw.wrap(game.tradeRouteTokenMap))
+            }
+            CardLocation.Discard -> {
+                val card = findCardById(player.discard, cardId)!!
+                if (highlightCard(player, card, source)) {
+                    if (action != null) {
+                        handleCardClickedForAction(player, card, source)
+                    }
                 }
-            } catch (e: TemplateModelException) {
-                //
             }
-
-            modelAndView.addObject("gameStatus", game.status)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
-            modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
-            modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
         }
 
+        if (action != null) {
+            //todo refresh game page for player
+        }
     }
+}
 
-    @RequestMapping("/getPreviousPlayerPlayingAreaDiv.html")
-    fun getPreviousPlayerPlayingAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            var template = "playingAreaDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "playingAreaDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]!!
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", game.previousPlayerId)
-            modelAndView.addObject("gameStatus", game.status)
-            modelAndView.addObject("currentPlayer", game.previousPlayer!!)
-            modelAndView.addObject("user", user)
-            modelAndView.addObject("cardsPlayed", game.previousPlayerCardsPlayed)
-            modelAndView.addObject("cardsBought", game.previousPlayerCardsBought)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            addTrollTokenObjects(game, modelAndView)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("showPotions", game.isUsePotions)
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
-        }
+fun handleCardClickedForAction(player: Player, card: Card, cardLocation: CardLocation) {
+    val action = player.currentAction
+    val result = ActionResult()
+    result.cardLocation = cardLocation
 
+    result.selectedCard = card
+
+    player.actionResult(action!!, result)
+
+    //todo
+    //refreshGamePageForAll()
+}
+
+fun highlightCard(player: Player, card: Card?, cardLocation: CardLocation): Boolean {
+    val action = player.currentAction
+
+    if (card == null) {
+        println("Error highlighting card for location")
+        return false
     }
-
-    @RequestMapping("/getPlayingAreaDiv.html")
-    fun getPlayingAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            var template = "playingAreaDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "playingAreaDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]!!
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
-            modelAndView.addObject("gameStatus", game.status)
-            modelAndView.addObject("currentPlayer", game.currentPlayer!!)
-            modelAndView.addObject("user", user)
-            modelAndView.addObject("cardsPlayed", game.cardsPlayed)
-            modelAndView.addObject("cardsBought", game.cardsBought)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            addTrollTokenObjects(game, modelAndView)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("showPotions", game.isUsePotions)
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
-        }
-
+    if (!player.isYourTurn) {
+        return false
+    } else if (action != null) {
+        return action.isCardActionable(card, cardLocation, player)
+    } else {
+        return card.isActionable(player, cardLocation)
     }
+}
 
-    @RequestMapping("/getCardsPlayedDiv.html")
-    fun getCardsPlayedDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            var template = "cardsPlayedDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "cardsPlayedDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]!!
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
-            modelAndView.addObject("gameStatus", game.status)
-            modelAndView.addObject("currentPlayer", game.currentPlayer!!)
-            modelAndView.addObject("user", user)
-            modelAndView.addObject("cardsPlayed", game.cardsPlayed)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            addTrollTokenObjects(game, modelAndView)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
-        }
+fun findCardById(cards: List<Card>, cardId: String): Card? {
+    return cards.firstOrNull { it.id == cardId }
+}
 
+fun highlightSupplyCard(player: Player, card: Card?): Boolean {
+    val action = player.currentAction
+
+    return if (!player.isYourTurn || card == null) {
+        false
+    } else if (action != null) {
+        action.isCardActionable(card, CardLocation.Supply, player)
+    } else {
+        player.isCardBuyable(card)
     }
+}
 
-    @RequestMapping("/getCardsBoughtDiv.html")
-    fun getCardsBoughtDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            var template = "cardsBoughtDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "cardsBoughtDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]!!
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
-            modelAndView.addObject("gameStatus", game.status)
-            modelAndView.addObject("currentPlayer", game.currentPlayer!!)
-            modelAndView.addObject("user", user)
-            modelAndView.addObject("cardsBought", game.cardsBought)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            addTrollTokenObjects(game, modelAndView)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("showPotions", game.isUsePotions)
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getHistoryDiv.html")
-    fun getHistoryDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            var template = "historyDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "historyDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-            modelAndView.addObject("turnHistory", game.recentTurnHistory)
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getHandDiv.html")
-    fun getHandDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            val modelAndView = ModelAndView("handDiv")
-            val player = game.playerMap[user.userId]
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            addTrollTokenObjects(game, modelAndView)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getHandAreaDiv.html")
-    fun getHandAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        return if (user == null || game == null) {
-            ModelAndView("redirect:/login.html")
-        } else getHandAreaDiv(request, user, game, game.currentPlayerId)
-    }
-
-    @RequestMapping("/getHandAreaDivOnEndTurn.html")
-    fun getHandAreaDivOnEndTurn(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        return if (user == null || game == null) {
-            ModelAndView("redirect:/login.html")
-        } else getHandAreaDiv(request, user, game, 0)
-    }
-
-    private fun getHandAreaDiv(request: HttpServletRequest, user: User, game: OldGame, currentPlayerId: Int): ModelAndView {
-        try {
-            var template = "handAreaDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "handAreaDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            addTrollTokenObjects(game, modelAndView)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("showDuration", game.isShowDuration)
-            modelAndView.addObject("showIslandCards", game.isShowIslandCards)
-            modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
-            modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
-            modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
-            modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-            modelAndView.addObject("showFruitTokens", game.isShowFruitTokens)
-            modelAndView.addObject("showCattleTokens", game.isShowCattleTokens)
-            modelAndView.addObject("showSins", game.isShowSins)
-            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-            modelAndView.addObject("currentPlayerId", currentPlayerId)
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getDurationDiv.html")
-    fun getDurationDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            val modelAndView = ModelAndView("durationDiv")
-            val player = game.playerMap[user.userId]
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            addTrollTokenObjects(game, modelAndView)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getDiscardDiv.html")
-    fun getDiscardDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            var template = "discardDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "discardDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]!!
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            addTrollTokenObjects(game, modelAndView)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getChatDiv.html")
-    fun getChatDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            val chats = game.chats
-            var template = "chatDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "chatDivMobile"
-                //Collections.reverse(chats);
-            }
-            val modelAndView = ModelAndView(template)
-            modelAndView.addObject("chats", chats)
-            return modelAndView
-        } catch (t: Throwable) {
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getCardActionDiv.html")
-    fun getCardActionDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            var template = "cardActionDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "cardActionDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]!!
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            addTrollTokenObjects(game, modelAndView)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getGameInfoDiv.html")
-    fun getGameInfoDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            val modelAndView = ModelAndView("gameInfoDiv")
-            val player = game.playerMap[user.userId]
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("players", game.players)
-            modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
-            modelAndView.addObject("showIslandCards", game.isShowIslandCards)
-            modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
-            modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
-            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-            modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
-            modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-            modelAndView.addObject("showFruitTokens", game.isShowFruitTokens)
-            modelAndView.addObject("showCattleTokens", game.isShowCattleTokens)
-            modelAndView.addObject("showSins", game.isShowSins)
-            modelAndView.addObject("showDuration", game.isShowDuration)
-            modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
-            modelAndView.addObject("prizeCards", game.prizeCardsString)
-            return modelAndView
-        } catch (t: Throwable) {
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/showGameResults.html")
-    fun showGameResults(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        val modelAndView = ModelAndView("gameResults")
-        try {
-            modelAndView.addObject("user", user)
-            modelAndView.addObject("gameStatus", game.status)
-            modelAndView.addObject("gameEndReason", game.gameEndReason)
-            modelAndView.addObject("winnerString", game.winnerString)
-            modelAndView.addObject("players", game.players)
-            modelAndView.addObject("turnHistory", game.recentTurnHistory)
-
-            modelAndView.addObject("showGarden", game.isShowGardens)
-            modelAndView.addObject("showFarmlands", game.isShowFarmlands)
-            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-            modelAndView.addObject("showVineyard", game.isShowVineyard)
-            modelAndView.addObject("showSilkRoads", game.isShowSilkRoads)
-            modelAndView.addObject("showCathedral", game.isShowCathedral)
-            modelAndView.addObject("showFairgrounds", game.isShowFairgrounds)
-            modelAndView.addObject("showGreatHall", game.isShowGreatHall)
-            modelAndView.addObject("showHarem", game.isShowHarem)
-            modelAndView.addObject("showDuke", game.isShowDuke)
-            modelAndView.addObject("showNobles", game.isShowNobles)
-            modelAndView.addObject("showArchbishops", game.isShowArchbishops)
-            modelAndView.addObject("showIslandCards", game.isShowIslandCards)
-            modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
-            modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
-            modelAndView.addObject("showColony", game.isIncludeColonyCards)
-            modelAndView.addObject("showSins", game.isShowSins)
-            modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
-            modelAndView.addObject("showEnchantedPalace", game.isCheckEnchantedPalace)
-            modelAndView.addObject("showHedgeWizard", game.isShowHedgeWizard)
-            modelAndView.addObject("showGoldenTouch", game.isShowGoldenTouch)
-
-            modelAndView.addObject("chats", game.chats)
-            modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
-
-            modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
-
-            modelAndView.addObject("logId", game.logId)
-
-            modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents)
-
-            return modelAndView
-        } catch (t: Throwable) {
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getInfoDialogDiv.html")
-    fun getInfoDialogDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            val modelAndView = ModelAndView("infoDialogDiv")
-            val player = game.playerMap[user.userId]
-            modelAndView.addObject("player", player)
-            return modelAndView
-        } catch (t: Throwable) {
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/exitGame.html")
-    fun exitGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            user.gameId = 0
-            user.stats = null
-            LoggedInUsers.updateUser(user)
-            LoggedInUsers.refreshLobbyPlayers()
-            val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGame.html")
-            game.playerExitedGame(player)
-        } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-        }
-
-        return ModelAndView("empty")
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/quitGame", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun quitGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+@ResponseBody
+@RequestMapping(value = "/playAllTreasureCards", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+fun playAllTreasureCards(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
         val model = HashMap<String, Any>()
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            model.put("redirectToLogin", true)
-            return model
-        }
-        try {
-            if (game.status == GameStatus.WaitingForPlayers) {
-                game.reset()
-                model.put("redirectToLobby", true)
-                return model
-            }
-            if (game.status != GameStatus.Finished) {
-                val player = game.playerMap[user.userId]!!
-                game.playerQuitGame(player)
-            }
-            return refreshGame(request, response)
-        } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return model
-        }
-
+        model.put("redirectToLogin", true)
+        return model
     }
-
-    private fun processChatCommand(user: User, commandString: String) {
-        try {
-            val command = commandString.substring(1, commandString.indexOf(" "))
-            val remainingString = commandString.substring(command.length + 2)
-            if (command.equals("lobby", ignoreCase = true)) {
-                sendLobbyChat(user, remainingString)
-            } else if (command.equals("whisper", ignoreCase = true) || command.equals("w", ignoreCase = true)) {
-                val username = remainingString.substring(0, remainingString.indexOf(" "))
-                val message = remainingString.substring(username.length + 1)
-                val receivingUser = userManager.getUser(username)
-                if (receivingUser != null) {
-                    sendPrivateChat(user, message, receivingUser.userId)
-                }
-            }
-            //todo help command
-        } catch (e: Exception) {
-            //todo display invalid command message
-        }
-
-    }
-
-    private fun sendLobbyChat(user: User, message: String?) {
-        if (message != null && message != "") {
-            lobbyChats.addChat(user, message)
-        }
-    }
-
-    private fun sendPrivateChat(user: User, message: String?, receivingUserId: Int) {
-        if (message != null && message != "" && receivingUserId > 0) {
-            val receivingUser = LoggedInUsers.getUser(receivingUserId)
-            if (receivingUser != null) {
-                if (receivingUser.gameId > 0) {
-                    val game = gameRoomManager.getGame(receivingUser.gameId)!!
-                    game.addPrivateChat(user, receivingUser, message)
-                } else {
-                    lobbyChats.addPrivateChat(user, receivingUser, message)
-                    LoggedInUsers.refreshLobbyChat()
-                }
-            }
-        }
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/sendChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun sendChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    val player = game.playerMap[user.userId]
+    if (player == null) {
         val model = HashMap<String, Any>()
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            model.put("redirectToLogin", true)
-            return model
-        }
-        try {
-            val player = game.playerMap[user.userId]!!
-            val message = request.getParameter("message")
-            if (message != null && message != "") {
-                if (message.startsWith("/")) {
-                    processChatCommand(user, message)
-                } else {
-                    game.addChat(player, message)
-                }
-            }
-            return refreshGame(request, response)
-        } catch (t: Throwable) {
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-            return model
-        }
-
+        model.put("redirectToLobby", true)
+        return model
     }
-
-    @ResponseBody
-    @RequestMapping(value = "/sendLobbyChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun sendLobbyChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
-        val user = getUser(request)
-        if (user == null) {
-            val model = HashMap<String, Any>()
-            model.put("redirectToLogin", true)
-            return model
-        }
-        LoggedInUsers.updateUser(user)
-        val message = request.getParameter("message")
-        if (message != null && message.startsWith("/")) {
-            processChatCommand(user, message)
-        } else {
-            sendLobbyChat(user, message)
-        }
-        LoggedInUsers.refreshLobbyChat()
-        return refreshLobby(request, response)
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/sendPrivateChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun sendPrivateChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
-        val user = getUser(request)
-        if (user == null) {
-            val model = HashMap<String, Any>()
-            model.put("redirectToLogin", true)
-            return model
-        }
-        val message = request.getParameter("message")
-        val receivingUserId = KingdomUtil.getRequestInt(request, "receivingUserId", 0)
-        sendPrivateChat(user, message, receivingUserId)
-        return refreshLobby(request, response)
-    }
-
-    private fun loadPlayerDialogContainingCards(request: HttpServletRequest, response: HttpServletResponse, templateFile: String): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            val modelAndView = ModelAndView(templateFile)
-            val player = game.playerMap[user.userId]
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", game.currentPlayerId)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            addTrollTokenObjects(game, modelAndView)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    private fun logErrorAndReturnEmpty(t: Throwable, game: Game): ModelAndView {
+    try {
+        //todo
+        //game.playAllTreasureCards(player)
+        game.closeLoadingDialog(player)
+    } catch (t: Throwable) {
         t.printStackTrace()
         val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
         game.logError(error)
-        return ModelAndView("empty")
     }
 
-    @RequestMapping("/loadNativeVillageDialog.html")
-    fun loadNativeVillageDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        return loadPlayerDialogContainingCards(request, response, "nativeVillageDialog")
+    return refreshGame(request, response)
+}
+
+@ResponseBody
+@RequestMapping(value = "/endTurn", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+fun endTurn(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        val model = HashMap<String, Any>()
+        model.put("redirectToLogin", true)
+        return model
+    }
+    try {
+        val player = game.playerMap[user.userId]!!
+        game.endPlayerTurn(player)
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+        game.logError(error)
     }
 
-    @RequestMapping("/loadIslandCardsDialog.html")
-    fun loadIslandCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        return loadPlayerDialogContainingCards(request, response, "islandCardsDialog")
+    return refreshGame(request, response)
+}
+
+@RequestMapping("/submitCardAction.html")
+fun submitCardAction(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    //todo
+    /*val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        //todo error handling if choice is null
+        val player = game.playerMap[user.userId]!!
+        if (player.oldCardAction != null) {
+            if (player.oldCardAction!!.type == OldCardAction.TYPE_INFO) {
+                game.cardActionSubmitted(player, emptyList(), null, null, -1)
+            } else if (player.oldCardAction!!.type == OldCardAction.TYPE_YES_NO) {
+                if (request.getParameter("answer") == null) {
+                    val error = GameError(GameError.GAME_ERROR, "Card Action answer was null")
+                    game.logError(error, false)
+                    //todo
+                } else {
+                    game.cardActionSubmitted(player, emptyList(), request.getParameter("answer"), null, -1)
+                }
+            } else if (player.oldCardAction!!.type == OldCardAction.TYPE_CHOICES) {
+                if (request.getParameter("choice") == null) {
+                    val error = GameError(GameError.GAME_ERROR, "Card Action choice was null")
+                    game.logError(error, false)
+                    //todo
+                } else {
+                    game.cardActionSubmitted(player, emptyList(), null, request.getParameter("choice"), -1)
+                }
+            } else if (player.oldCardAction!!.type == OldCardAction.TYPE_CHOOSE_NUMBER_BETWEEN || player.oldCardAction!!.type == OldCardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
+                if (request.getParameter("numberChosen") == null) {
+                    val error = GameError(GameError.GAME_ERROR, "Card Action number chosen was null")
+                    game.logError(error, false)
+                    //todo
+                } else {
+                    game.cardActionSubmitted(player, emptyList(), null, null, Integer.parseInt(request.getParameter("numberChosen")))
+                }
+            } else {
+                if (request.getParameter("selectedCards") == null) {
+                    val error = GameError(GameError.GAME_ERROR, "Card Action selected cards string was null")
+                    game.logError(error, false)
+                    //todo
+                } else {
+                    val selectedCardsString = request.getParameter("selectedCards")
+                    val selectedCardsStrings = selectedCardsString.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    val selectedCardNames = ArrayList<String>()
+                    for (cardName in selectedCardsStrings) {
+                        if (cardName != "") {
+                            selectedCardNames.add(cardName)
+                        }
+                    }
+                    game.cardActionSubmitted(player, selectedCardNames, null, null, -1)
+                }
+            }
+        }
+        game.closeLoadingDialog(player)
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+        game.logError(error)
+    }*/
+
+    return ModelAndView("empty")
+}
+
+@RequestMapping("/getPlayersDiv.html")
+fun getPlayersDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        var template = "playersDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "playersDivMobile"
+        }
+        val modelAndView = ModelAndView(template)
+        modelAndView.addObject("players", game.players)
+        modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
+        return modelAndView
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return logErrorAndReturnEmpty(t, game)
     }
 
-    @RequestMapping("/loadMuseumCardsDialog.html")
-    fun loadMuseumCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        return loadPlayerDialogContainingCards(request, response, "museumCardsDialog")
-    }
+}
 
-    @RequestMapping("/loadCityPlannerCardsDialog.html")
-    fun loadCityPlannerCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        return loadPlayerDialogContainingCards(request, response, "cityPlannerCardsDialog")
-    }
+@RequestMapping("/getSupplyDiv.html")
+fun getSupplyDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    return if (user == null || game == null) {
+        ModelAndView("redirect:/login.html")
+    } else getSupplyDiv(request, user, game, game.currentPlayerId)
+}
 
-    private fun addGameObjects(game: Game, player: OldPlayer, modelAndView: ModelAndView, request: HttpServletRequest) {
-        val bw = BeansWrapper()
+@RequestMapping("/getSupplyDivOnEndTurn.html")
+fun getSupplyDivOnEndTurn(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    return if (user == null || game == null) {
+        ModelAndView("redirect:/login.html")
+    } else getSupplyDiv(request, user, game, 0)
+}
+
+private fun getSupplyDiv(request: HttpServletRequest, user: User, game: Game, currentPlayerId: Int): ModelAndView {
+    try {
+        var supplyDivTemplate = "supplyDiv"
+        if (KingdomUtil.isMobile(request)) {
+            supplyDivTemplate = "supplyDivMobile"
+        }
+        val modelAndView = ModelAndView(supplyDivTemplate)
+        val player = game.playerMap[user.userId]
         modelAndView.addObject("player", player)
+        modelAndView.addObject("currentPlayerId", currentPlayerId)
         modelAndView.addObject("kingdomCards", game.kingdomCards)
         modelAndView.addObject("supplyCards", game.supplyCards)
         try {
-            modelAndView.addObject("supply", bw.wrap(game.supply))
+            val bw = BeansWrapper()
+            modelAndView.addObject("supply", bw.wrap(game.supplyAmounts))
             if (game.isShowEmbargoTokens) {
                 modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
             }
-            addTrollTokenObjects(game, modelAndView)
             if (game.isTrackTradeRouteTokens) {
                 modelAndView.addObject("tradeRouteTokenMap", bw.wrap(game.tradeRouteTokenMap))
             }
@@ -1842,42 +1244,412 @@ class GameController(private var cardManager: CardManager,
             //
         }
 
-        modelAndView.addObject("supplySize", game.supply.size)
-        modelAndView.addObject("players", game.players)
-        modelAndView.addObject("currentPlayer", game.currentPlayer!!)
+        modelAndView.addObject("gameStatus", game.status)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
+        modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
+        modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getPreviousPlayerPlayingAreaDiv.html")
+fun getPreviousPlayerPlayingAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        var template = "playingAreaDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "playingAreaDivMobile"
+        }
+        val modelAndView = ModelAndView(template)
+        val player = game.playerMap[user.userId]!!
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("currentPlayerId", game.previousPlayerId)
+        modelAndView.addObject("gameStatus", game.status)
+        modelAndView.addObject("currentPlayer", game.previousPlayer!!)
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("cardsPlayed", game.previousPlayerCardsPlayed)
+        modelAndView.addObject("cardsBought", game.previousPlayerCardsBought)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getPlayingAreaDiv.html")
+fun getPlayingAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        var template = "playingAreaDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "playingAreaDivMobile"
+        }
+        val modelAndView = ModelAndView(template)
+        val player = game.playerMap[user.userId]!!
+        modelAndView.addObject("player", player)
         modelAndView.addObject("currentPlayerId", game.currentPlayerId)
         modelAndView.addObject("gameStatus", game.status)
+        modelAndView.addObject("currentPlayer", game.currentPlayer!!)
+        modelAndView.addObject("user", user)
         modelAndView.addObject("cardsPlayed", game.cardsPlayed)
         modelAndView.addObject("cardsBought", game.cardsBought)
-        modelAndView.addObject("turnHistory", game.recentTurnHistory)
-        modelAndView.addObject("chats", game.chats)
-        modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
         modelAndView.addObject("costDiscount", game.costDiscount)
-        modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getCardsPlayedDiv.html")
+fun getCardsPlayedDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        var template = "cardsPlayedDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "cardsPlayedDivMobile"
+        }
+        val modelAndView = ModelAndView(template)
+        val player = game.playerMap[user.userId]!!
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+        modelAndView.addObject("gameStatus", game.status)
+        modelAndView.addObject("currentPlayer", game.currentPlayer!!)
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("cardsPlayed", game.cardsPlayed)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getCardsBoughtDiv.html")
+fun getCardsBoughtDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        var template = "cardsBoughtDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "cardsBoughtDivMobile"
+        }
+        val modelAndView = ModelAndView(template)
+        val player = game.playerMap[user.userId]!!
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+        modelAndView.addObject("gameStatus", game.status)
+        modelAndView.addObject("currentPlayer", game.currentPlayer!!)
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("cardsBought", game.cardsBought)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getHistoryDiv.html")
+fun getHistoryDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        var template = "historyDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "historyDivMobile"
+        }
+        val modelAndView = ModelAndView(template)
+        modelAndView.addObject("turnHistory", game.recentTurnHistory)
+        return modelAndView
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getHandDiv.html")
+fun getHandDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        val modelAndView = ModelAndView("handDiv")
+        val player = game.playerMap[user.userId]
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getHandAreaDiv.html")
+fun getHandAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    return if (user == null || game == null) {
+        ModelAndView("redirect:/login.html")
+    } else getHandAreaDiv(request, user, game, game.currentPlayerId)
+}
+
+@RequestMapping("/getHandAreaDivOnEndTurn.html")
+fun getHandAreaDivOnEndTurn(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    return if (user == null || game == null) {
+        ModelAndView("redirect:/login.html")
+    } else getHandAreaDiv(request, user, game, 0)
+}
+
+private fun getHandAreaDiv(request: HttpServletRequest, user: User, game: Game, currentPlayerId: Int): ModelAndView {
+    try {
+        var template = "handAreaDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "handAreaDivMobile"
+        }
+        val modelAndView = ModelAndView(template)
+        val player = game.playerMap[user.userId]
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
         modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
         modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
         modelAndView.addObject("showDuration", game.isShowDuration)
-        modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
         modelAndView.addObject("showIslandCards", game.isShowIslandCards)
         modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
         modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
         modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
         modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-        modelAndView.addObject("showFruitTokens", game.isShowFruitTokens)
-        modelAndView.addObject("showCattleTokens", game.isShowCattleTokens)
+        modelAndView.addObject("showCoinTokens", game.isShowCoinTokens)
+        modelAndView.addObject("showSins", game.isShowSins)
         modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-        modelAndView.addObject("showPotions", game.isUsePotions)
+        modelAndView.addObject("currentPlayerId", currentPlayerId)
         modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
-        modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
-        modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
-        modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getDurationDiv.html")
+fun getDurationDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        val modelAndView = ModelAndView("durationDiv")
+        val player = game.playerMap[user.userId]
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getDiscardDiv.html")
+fun getDiscardDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        var template = "discardDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "discardDivMobile"
+        }
+        val modelAndView = ModelAndView(template)
+        val player = game.playerMap[user.userId]!!
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    } catch (t: Throwable) {
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getChatDiv.html")
+fun getChatDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        val chats = game.chats
+        var template = "chatDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "chatDivMobile"
+            //Collections.reverse(chats);
+        }
+        val modelAndView = ModelAndView(template)
+        modelAndView.addObject("chats", chats)
+        return modelAndView
+    } catch (t: Throwable) {
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getCardActionDiv.html")
+fun getCardActionDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        var template = "cardActionDiv"
+        if (KingdomUtil.isMobile(request)) {
+            template = "cardActionDivMobile"
+        }
+        val modelAndView = ModelAndView(template)
+        val player = game.playerMap[user.userId]!!
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    } catch (t: Throwable) {
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/getGameInfoDiv.html")
+fun getGameInfoDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        val modelAndView = ModelAndView("gameInfoDiv")
+        val player = game.playerMap[user.userId]
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("players", game.players)
         modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
+        modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+        modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
+        modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
+        modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
+        modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
+        modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
+//            modelAndView.addObject("showFruitTokens", game.isShowFruitTokens)
+        modelAndView.addObject("showSins", game.isShowSins)
+        modelAndView.addObject("showDuration", game.isShowDuration)
+        modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
         modelAndView.addObject("prizeCards", game.prizeCardsString)
+        return modelAndView
+    } catch (t: Throwable) {
+        return logErrorAndReturnEmpty(t, game)
+    }
+
+}
+
+@RequestMapping("/showGameResults.html")
+fun showGameResults(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    val modelAndView = ModelAndView("gameResults")
+    try {
+        modelAndView.addObject("user", user)
+        modelAndView.addObject("gameStatus", game.status)
+        modelAndView.addObject("gameEndReason", game.gameEndReason)
+        modelAndView.addObject("winnerString", game.winnerString)
+        modelAndView.addObject("players", game.players)
+        modelAndView.addObject("turnHistory", game.recentTurnHistory)
 
         modelAndView.addObject("showGarden", game.isShowGardens)
         modelAndView.addObject("showFarmlands", game.isShowFarmlands)
         modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-        modelAndView.addObject("showSins", game.isShowSins)
         modelAndView.addObject("showVineyard", game.isShowVineyard)
         modelAndView.addObject("showSilkRoads", game.isShowSilkRoads)
         modelAndView.addObject("showCathedral", game.isShowCathedral)
@@ -1891,642 +1663,932 @@ class GameController(private var cardManager: CardManager,
         modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
         modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
         modelAndView.addObject("showColony", game.isIncludeColonyCards)
-        modelAndView.addObject("showEnchantedPalace", game.isCheckEnchantedPalace)
+        modelAndView.addObject("showSins", game.isShowSins)
+        modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
         modelAndView.addObject("showHedgeWizard", game.isShowHedgeWizard)
         modelAndView.addObject("showGoldenTouch", game.isShowGoldenTouch)
 
-        modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
+        modelAndView.addObject("chats", game.chats)
+        modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
 
-        modelAndView.addObject("gameEndReason", game.gameEndReason)
-        modelAndView.addObject("winnerString", game.winnerString)
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-        modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents)
+        modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
+
         modelAndView.addObject("logId", game.logId)
-    }
 
-    fun setCardManager(cardManager: CardManager) {
-        this.cardManager = cardManager
-    }
+        modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents)
 
-    fun setUserManager(userManager: UserManager) {
-        this.userManager = userManager
-    }
-
-    fun setGameManager(gameManager: GameManager) {
-        this.gameManager = gameManager
-    }
-
-    private fun getUser(request: HttpServletRequest): User? {
-        return KingdomUtil.getUser(request)
-    }
-
-    private fun getGame(request: HttpServletRequest): Game? {
-        val gameId = request.session.getAttribute("gameId") ?: return null
-        return gameRoomManager.getGame(gameId as String)
-    }
-
-    @RequestMapping("/gameHistory.html")
-    fun gameHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("gameHistory")
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("games", gameManager.gameHistoryList)
         return modelAndView
+    } catch (t: Throwable) {
+        return logErrorAndReturnEmpty(t, game)
     }
 
-    @RequestMapping("/gamePlayersHistory.html")
-    fun gamePlayersHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val gameId = Integer.parseInt(request.getParameter("gameId"))
-        val modelAndView = ModelAndView("gamePlayersHistory")
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("players", gameManager.getGamePlayersHistory(gameId))
-        modelAndView.addObject("gameId", gameId)
+}
+
+@RequestMapping("/getInfoDialogDiv.html")
+fun getInfoDialogDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        val modelAndView = ModelAndView("infoDialogDiv")
+        val player = game.playerMap[user.userId]
+        modelAndView.addObject("player", player)
         return modelAndView
+    } catch (t: Throwable) {
+        return logErrorAndReturnEmpty(t, game)
     }
 
-    @RequestMapping("/playerGameHistory.html")
-    fun playerGameHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("gameHistory")
-        modelAndView.addObject("user", user)
-        val userId = Integer.parseInt(request.getParameter("userId"))
-        modelAndView.addObject("games", gameManager.getGameHistoryList(userId))
-        return modelAndView
+}
+
+@RequestMapping("/exitGame.html")
+fun exitGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        user.gameId = null
+        user.stats = null
+        LoggedInUsers.updateUser(user)
+        LoggedInUsers.refreshLobbyPlayers()
+        val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGame.html")
+        game.playerExitedGame(player)
+    } catch (t: Throwable) {
+        val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+        game.logError(error)
     }
 
-    @RequestMapping("/gameErrors.html")
-    fun gameErrors(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("gameErrors")
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("errors", gameManager.gameErrors)
-        return modelAndView
-    }
+    return ModelAndView("empty")
+}
 
-    @RequestMapping("/deleteGameError.html")
-    fun deleteGameError(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val errorId = Integer.parseInt(request.getParameter("errorId"))
-        gameManager.deleteGameError(errorId)
-        return gameErrors(request, response)
+@ResponseBody
+@RequestMapping(value = "/quitGame", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+fun quitGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    val model = HashMap<String, Any>()
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        model.put("redirectToLogin", true)
+        return model
     }
-
-    @RequestMapping("/showGameLog.html")
-    fun showGameLog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val modelAndView = ModelAndView("gameLog")
-        val logId = KingdomUtil.getRequestInt(request, "logId", -1)
-        val gameId = KingdomUtil.getRequestInt(request, "gameId", -1)
-        var logs = arrayOfNulls<String>(0)
-        var log: GameLog? = null
-        if (logId > 0) {
-            log = gameManager.getGameLog(logId)
-        } else if (gameId > 0) {
-            log = gameManager.getGameLogByGameId(gameId)
-        }
-        val logNotFound: Boolean
-        if (log != null) {
-            logNotFound = false
-            logs = log.log!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        } else {
-            logNotFound = true
-        }
-        modelAndView.addObject("logs", logs)
-        modelAndView.addObject("logNotFound", logNotFound)
-        return modelAndView
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/changeStatus", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun changeStatus(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
-        val user = getUser(request)
-        if (user == null) {
-            val model = HashMap<String, Any>()
-            model.put("redirectToLogin", true)
+    try {
+        if (game.status == GameStatus.WaitingForPlayers) {
+            game.reset()
+            model.put("redirectToLobby", true)
             return model
         }
-        val status = request.getParameter("status")
-        if (status != null) {
-            user.status = status
+        if (game.status != GameStatus.Finished) {
+            val player = game.playerMap[user.userId]!!
+            game.playerQuitGame(player)
         }
-        LoggedInUsers.updateUserStatus(user)
-        LoggedInUsers.refreshLobbyPlayers()
-        return refreshLobby(request, response)
-    }
-
-    @RequestMapping("/showLobbyPlayers.html")
-    fun showLobbyPlayers(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val modelAndView = ModelAndView("lobbyPlayers")
-        modelAndView.addObject("user", getUser(request)!!)
-        modelAndView.addObject("players", LoggedInUsers.getUsers())
-        return modelAndView
-    }
-
-    @RequestMapping("/getPlayerStatsDiv")
-    fun getPlayerStatsDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request) ?: return ModelAndView("redirect:/login.html")
-        val modelAndView = ModelAndView("playerStatsDiv")
-        userManager.calculateGameStats(user)
-        modelAndView.addObject("user", user)
-        return modelAndView
-    }
-
-    @RequestMapping("/overallGameStats.html")
-    fun overallGameStats(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("overallStats")
-        val stats = gameManager.overallStats
-        val todayStats = gameManager.overallStatsForToday
-        val yesterdayStats = gameManager.overallStatsForYesterday
-        val weekStats = gameManager.overallStatsForPastWeek
-        val monthStats = gameManager.overallStatsForPastMonth
-        modelAndView.addObject("overallStats", stats)
-        modelAndView.addObject("todayStats", todayStats)
-        modelAndView.addObject("yesterdayStats", yesterdayStats)
-        modelAndView.addObject("weekStats", weekStats)
-        modelAndView.addObject("monthStats", monthStats)
-        return modelAndView
-    }
-
-    @RequestMapping("/userStats.html")
-    fun userStats(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("userStats")
-        val stats = gameManager.userStats
-        modelAndView.addObject("stats", stats)
-        return modelAndView
-    }
-
-    @RequestMapping("/annotatedGames.html")
-    fun annotatedGames(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("annotatedGames")
-        val games = gameManager.annotatedGames
-        modelAndView.addObject("games", games)
-        return modelAndView
-    }
-
-    @RequestMapping("/saveAnnotatedGame.html")
-    fun saveAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-
-        val cardsNames = ArrayList<String>()
-        val parameterNames = request.parameterNames
-        while (parameterNames.hasMoreElements()) {
-            val name = parameterNames.nextElement() as String
-            if (name.startsWith("card_")) {
-                val cardName = name.substring(5)
-                cardsNames.add(cardName)
-            }
-        }
-        val game: AnnotatedGame
-        val id = request.getParameter("id")
-        if (id == "0") {
-            game = AnnotatedGame()
-        } else {
-            game = gameManager.getAnnotatedGame(Integer.parseInt(id))
-        }
-        game.title = request.getParameter("title")
-        game.cards = KingdomUtil.implode(cardsNames, ",")
-        game.includeColonyAndPlatinum = KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")
-        gameManager.saveAnnotatedGame(game)
-        return annotatedGames(request, response)
-    }
-
-    @RequestMapping("/deleteAnnotatedGame.html")
-    fun deleteAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val id = request.getParameter("id")
-        val game = gameManager.getAnnotatedGame(Integer.parseInt(id))
-        gameManager.deleteAnnotatedGame(game)
-        return annotatedGames(request, response)
-    }
-
-    @RequestMapping("/showAnnotatedGame.html")
-    fun showAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("annotatedGame")
-        val id = request.getParameter("id")
-
-        val game: AnnotatedGame
-        val selectedCards = ArrayList<String>()
-        if (id == "0") {
-            game = AnnotatedGame()
-        } else {
-            game = gameManager.getAnnotatedGame(Integer.parseInt(id))
-            for (cardName in game.cards.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                val card = cardManager.getCard(cardName)
-                selectedCards.add(card.name)
-            }
-        }
-
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("selectedCards", selectedCards)
-        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, true))
-        modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, true))
-        modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, true))
-        modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, true))
-        modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, true))
-        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, true))
-        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, true))
-        modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, true))
-        modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, true))
-        modelAndView.addObject("game", game)
-        return modelAndView
-    }
-
-    @RequestMapping("/showModifyHand.html")
-    fun showModifyHand(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        if (!game.isTestGame && !user.admin) {
-            return ModelAndView("redirect:/showGame.html")
-        }
-        val player = game.playerMap[user.userId]
-        val modelAndView = ModelAndView("modifyHand")
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("cards", game.supplyMap.values)
-        modelAndView.addObject("myPlayer", player)
-        modelAndView.addObject("players", game.players)
-        return modelAndView
-    }
-
-    @RequestMapping("/modifyHand.html")
-    fun modifyHand(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        if (!game.isTestGame && !user.admin) {
-            return ModelAndView("redirect:/showGame.html")
-        }
-
-        for (player in game.players) {
-            val currentHandChoice = request.getParameter("currentHandChoice_" + player.userId)
-            val currentCards = ArrayList(player.hand)
-            if (currentHandChoice == "discard") {
-                for (card in currentCards) {
-                    player.discardCardFromHand(card)
-                }
-            } else if (currentHandChoice == "trash") {
-                for (card in currentCards) {
-                    player.removeCardFromHand(card)
-                }
-            }
-
-            val parameterNames = request.parameterNames
-            while (parameterNames.hasMoreElements()) {
-                val name = parameterNames.nextElement() as String
-                if (name.startsWith("card_") && name.endsWith("_" + player.userId)) {
-                    val ids = name.substring(5)
-                    val cardName = ids.substring(0, ids.indexOf("_"))
-                    val card = game.supplyMap[cardName]!!
-                    val numCards = KingdomUtil.getRequestInt(request, name, 0)
-                    for (i in 0 until numCards) {
-                        player.addCardToHand(card)
-                    }
-                }
-            }
-            game.refreshHand(player)
-        }
-        return ModelAndView("redirect:/showGame.html")
-    }
-
-    private fun showGame(game: Game?, user: User?): Boolean {
-        return game != null && game.status != GameStatus.WaitingForPlayers && game.status != GameStatus.Finished && game.playerMap.containsKey(user!!.userId)
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/refreshLobby", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun refreshLobby(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
-        val user = getUser(request)
-        val refresh: RefreshLobby
-        if (user == null) {
-            refresh = RefreshLobby()
-            refresh.isRedirectToLogin = true
-        } else {
-            refresh = user.refreshLobby
-            if (user.isExpired) {
-                KingdomUtil.logoutUser(user, request)
-                refresh.isRedirectToLogin = true
-            }
-        }
-        val game = getGame(request)
-        if (showGame(game, user)) {
-            refresh.isStartGame = true
-        }
-        val model = HashMap<String, Any>()
-        model.put("redirectToLogin", refresh.isRedirectToLogin)
-        if (refresh.isRedirectToLogin) {
-            refresh.isRedirectToLogin = false
-        }
-        model.put("startGame", refresh.isStartGame)
-        if (refresh.isStartGame) {
-            refresh.isStartGame = false
-        }
-        var divsToLoad = 0
-        model.put("refreshPlayers", refresh.isRefreshPlayers)
-        if (refresh.isRefreshPlayers) {
-            divsToLoad++
-            refresh.isRefreshPlayers = false
-        }
-        model.put("refreshGameRooms", refresh.isRefreshGameRooms)
-        if (refresh.isRefreshGameRooms) {
-            divsToLoad++
-            refresh.isRefreshGameRooms = false
-        }
-        model.put("refreshChat", refresh.isRefreshChat)
-        if (refresh.isRefreshChat) {
-            divsToLoad++
-            refresh.isRefreshChat = false
-        }
-        model.put("divsToLoad", divsToLoad)
-
+        return refreshGame(request, response)
+    } catch (t: Throwable) {
+        val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+        game.logError(error)
         return model
     }
 
-    @RequestMapping("/getLobbyPlayersDiv")
-    fun getLobbyPlayersDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val refresh: RefreshLobby
-        if (user == null) {
-            refresh = RefreshLobby()
-            refresh.isRedirectToLogin = true
-        } else {
-            refresh = user.refreshLobby
-            if (user.isExpired) {
-                KingdomUtil.logoutUser(user, request)
-                refresh.isRedirectToLogin = true
+}
+
+private fun processChatCommand(user: User, commandString: String) {
+    try {
+        val command = commandString.substring(1, commandString.indexOf(" "))
+        val remainingString = commandString.substring(command.length + 2)
+        if (command.equals("lobby", ignoreCase = true)) {
+            sendLobbyChat(user, remainingString)
+        } else if (command.equals("whisper", ignoreCase = true) || command.equals("w", ignoreCase = true)) {
+            val username = remainingString.substring(0, remainingString.indexOf(" "))
+            val message = remainingString.substring(username.length + 1)
+            val receivingUser = userManager.getUser(username)
+            if (receivingUser != null) {
+                sendPrivateChat(user, message, receivingUser.userId)
             }
         }
-        val game = getGame(request)
-        if (showGame(game, user)) {
-            refresh.isStartGame = true
-        }
-        LoggedInUsers.refreshLobby(user!!)
-        val modelAndView = ModelAndView("lobbyPlayersDiv")
-        modelAndView.addObject("players", LoggedInUsers.getUsers())
-        return modelAndView
+        //todo help command
+    } catch (e: Exception) {
+        //todo display invalid command message
     }
 
-    @RequestMapping("/getLobbyChatDiv")
-    fun getLobbyChatDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val refresh: RefreshLobby
-        if (user == null) {
-            refresh = RefreshLobby()
-            refresh.isRedirectToLogin = true
-        } else {
-            refresh = user.refreshLobby
-            if (user.isExpired) {
-                KingdomUtil.logoutUser(user, request)
-                refresh.isRedirectToLogin = true
+}
+
+private fun sendLobbyChat(user: User, message: String?) {
+    if (message != null && message != "") {
+        lobbyChats.addChat(user, message)
+    }
+}
+
+private fun sendPrivateChat(user: User, message: String?, receivingUserId: Int) {
+    if (message != null && message != "" && receivingUserId > 0) {
+        val receivingUser = LoggedInUsers.getUser(receivingUserId)
+        if (receivingUser != null) {
+            if (receivingUser.gameId > 0) {
+                val game = gameRoomManager.getGame(receivingUser.gameId)!!
+                game.addPrivateChat(user, receivingUser, message)
+            } else {
+                lobbyChats.addPrivateChat(user, receivingUser, message)
+                LoggedInUsers.refreshLobbyChat()
             }
         }
-        val game = getGame(request)
-        if (showGame(game, user)) {
-            refresh.isStartGame = true
+    }
+}
+
+@ResponseBody
+@RequestMapping(value = "/sendChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+fun sendChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    val model = HashMap<String, Any>()
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        model.put("redirectToLogin", true)
+        return model
+    }
+    try {
+        val player = game.playerMap[user.userId]!!
+        val message = request.getParameter("message")
+        if (message != null && message != "") {
+            if (message.startsWith("/")) {
+                processChatCommand(user, message)
+            } else {
+                game.addChat(player, message)
+            }
         }
-        LoggedInUsers.refreshLobby(user!!)
-        var template = "lobbyChatDiv"
-        if (KingdomUtil.isMobile(request)) {
-            template = "lobbyChatDivMobile"
-        }
-        val modelAndView = ModelAndView(template)
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("chats", lobbyChats.chats)
-        return modelAndView
+        return refreshGame(request, response)
+    } catch (t: Throwable) {
+        val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+        game.logError(error)
+        return model
     }
 
-    @RequestMapping("/getLobbyGameRoomsDiv")
-    fun getLobbyGameRoomsDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val refresh: RefreshLobby
-        if (user == null) {
-            refresh = RefreshLobby()
-            refresh.isRedirectToLogin = true
-        } else {
-            refresh = user.refreshLobby
-            if (user.isExpired) {
-                KingdomUtil.logoutUser(user, request)
-                refresh.isRedirectToLogin = true
-            }
-        }
-        val game = getGame(request)
-        if (showGame(game, user)) {
-            refresh.isStartGame = true
-        }
-        LoggedInUsers.refreshLobby(user!!)
-        val modelAndView = ModelAndView("lobbyGameRoomsDiv")
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("gameRooms", gameRoomManager.lobbyGameRooms)
-        modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached())
-        modelAndView.addObject("numGamesInProgress", gameRoomManager.gamesInProgress.size)
-        modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
-        modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage!!)
-        modelAndView.addObject("showNews", gameRoomManager.isShowNews)
-        modelAndView.addObject("news", gameRoomManager.news)
+}
+
+@ResponseBody
+@RequestMapping(value = "/sendLobbyChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+fun sendLobbyChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    val user = getUser(request)
+    if (user == null) {
+        val model = HashMap<String, Any>()
+        model.put("redirectToLogin", true)
+        return model
+    }
+    LoggedInUsers.updateUser(user)
+    val message = request.getParameter("message")
+    if (message != null && message.startsWith("/")) {
+        processChatCommand(user, message)
+    } else {
+        sendLobbyChat(user, message)
+    }
+    LoggedInUsers.refreshLobbyChat()
+    return refreshLobby(request, response)
+}
+
+@ResponseBody
+@RequestMapping(value = "/sendPrivateChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+fun sendPrivateChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    val user = getUser(request)
+    if (user == null) {
+        val model = HashMap<String, Any>()
+        model.put("redirectToLogin", true)
+        return model
+    }
+    val message = request.getParameter("message")
+    val receivingUserId = KingdomUtil.getRequestInt(request, "receivingUserId", 0)
+    sendPrivateChat(user, message, receivingUserId)
+    return refreshLobby(request, response)
+}
+
+private fun loadPlayerDialogContainingCards(request: HttpServletRequest, response: HttpServletResponse, templateFile: String): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    try {
+        val modelAndView = ModelAndView(templateFile)
+        val player = game.playerMap[user.userId]
+        modelAndView.addObject("player", player)
+        modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+        modelAndView.addObject("costDiscount", game.costDiscount)
+//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         return modelAndView
+    } catch (t: Throwable) {
+        return logErrorAndReturnEmpty(t, game)
     }
 
-    @RequestMapping("/showGamesInProgress.html")
-    fun showGamesInProgress(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val modelAndView = ModelAndView("gamesInProgress")
-        modelAndView.addObject("games", gameRoomManager.gamesInProgress)
-        return modelAndView
-    }
+}
 
-    @RequestMapping("/toggleSound.html")
-    fun toggleSound(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        user!!.toggleSoundDefault()
-        userManager.saveUser(user)
-        return ModelAndView("empty")
-    }
+private fun logErrorAndReturnEmpty(t: Throwable, game: Game): ModelAndView {
+    t.printStackTrace()
+    val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+    game.logError(error)
+    return ModelAndView("empty")
+}
 
-    @RequestMapping("/repeatGame.html")
-    fun repeatGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
+@RequestMapping("/loadNativeVillageDialog.html")
+fun loadNativeVillageDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    return loadPlayerDialogContainingCards(request, response, "nativeVillageDialog")
+}
+
+@RequestMapping("/loadIslandCardsDialog.html")
+fun loadIslandCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    return loadPlayerDialogContainingCards(request, response, "islandCardsDialog")
+}
+
+@RequestMapping("/loadMuseumCardsDialog.html")
+fun loadMuseumCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    return loadPlayerDialogContainingCards(request, response, "museumCardsDialog")
+}
+
+@RequestMapping("/loadCityPlannerCardsDialog.html")
+fun loadCityPlannerCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    return loadPlayerDialogContainingCards(request, response, "cityPlannerCardsDialog")
+}
+
+private fun addGameObjects(game: Game, player: Player, modelAndView: ModelAndView, request: HttpServletRequest) {
+    val bw = BeansWrapper()
+    modelAndView.addObject("player", player)
+    modelAndView.addObject("kingdomCards", game.kingdomCards)
+    modelAndView.addObject("supplyCards", game.supplyCards)
+    try {
+        modelAndView.addObject("supply", bw.wrap(game.supplyAmounts))
+        if (game.isShowEmbargoTokens) {
+            modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
         }
-        if (gameRoomManager.isUpdatingWebsite) {
-            return ModelAndView("redirect:/showGameRooms.html")
+        if (game.isTrackTradeRouteTokens) {
+            modelAndView.addObject("tradeRouteTokenMap", bw.wrap(game.tradeRouteTokenMap))
         }
-        game.repeat()
+    } catch (e: TemplateModelException) {
+        //
+    }
+
+    modelAndView.addObject("supplySize", game.supplyAmounts.size)
+    modelAndView.addObject("players", game.players)
+    modelAndView.addObject("currentPlayer", game.currentPlayer)
+    modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+    modelAndView.addObject("gameStatus", game.status)
+    modelAndView.addObject("cardsPlayed", game.cardsPlayed)
+    modelAndView.addObject("cardsBought", game.cardsBought)
+    modelAndView.addObject("turnHistory", game.recentTurnHistory)
+    modelAndView.addObject("chats", game.chats)
+    modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
+    modelAndView.addObject("costDiscount", game.costDiscount)
+//        modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+    modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
+    modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
+    modelAndView.addObject("showDuration", game.isShowDuration)
+    modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
+    modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+    modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
+    modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
+    modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
+    modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
+    modelAndView.addObject("showCoinTokens", game.isShowCoinTokens)
+    modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
+    modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+    modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
+    modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
+    modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
+    modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
+    modelAndView.addObject("prizeCards", game.prizeCardsString)
+
+    modelAndView.addObject("showGarden", game.isShowGardens)
+    modelAndView.addObject("showFarmlands", game.isShowFarmlands)
+    modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
+    modelAndView.addObject("showSins", game.isShowSins)
+    modelAndView.addObject("showVineyard", game.isShowVineyard)
+    modelAndView.addObject("showSilkRoads", game.isShowSilkRoads)
+    modelAndView.addObject("showCathedral", game.isShowCathedral)
+    modelAndView.addObject("showFairgrounds", game.isShowFairgrounds)
+    modelAndView.addObject("showGreatHall", game.isShowGreatHall)
+    modelAndView.addObject("showHarem", game.isShowHarem)
+    modelAndView.addObject("showDuke", game.isShowDuke)
+    modelAndView.addObject("showNobles", game.isShowNobles)
+    modelAndView.addObject("showArchbishops", game.isShowArchbishops)
+    modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+    modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
+    modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
+    modelAndView.addObject("showColony", game.isIncludeColonyCards)
+    modelAndView.addObject("showHedgeWizard", game.isShowHedgeWizard)
+    modelAndView.addObject("showGoldenTouch", game.isShowGoldenTouch)
+
+    modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
+
+    modelAndView.addObject("gameEndReason", game.gameEndReason)
+    modelAndView.addObject("winnerString", game.winnerString)
+    modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+    modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents)
+    modelAndView.addObject("logId", game.logId)
+}
+
+fun setCardManager(cardManager: CardManager) {
+    this.cardManager = cardManager
+}
+
+fun setUserManager(userManager: UserManager) {
+    this.userManager = userManager
+}
+
+fun setGameManager(gameManager: GameManager) {
+    this.gameManager = gameManager
+}
+
+private fun getUser(request: HttpServletRequest): User? {
+    return KingdomUtil.getUser(request)
+}
+
+private fun getGame(request: HttpServletRequest): Game? {
+    val gameId = request.session.getAttribute("gameId") ?: return null
+    return gameRoomManager.getGame(gameId as String)
+}
+
+@RequestMapping("/gameHistory.html")
+fun gameHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val modelAndView = ModelAndView("gameHistory")
+    modelAndView.addObject("user", user)
+    modelAndView.addObject("games", gameManager.gameHistoryList)
+    return modelAndView
+}
+
+@RequestMapping("/gamePlayersHistory.html")
+fun gamePlayersHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val gameId = Integer.parseInt(request.getParameter("gameId"))
+    val modelAndView = ModelAndView("gamePlayersHistory")
+    modelAndView.addObject("user", user)
+    modelAndView.addObject("players", gameManager.getGamePlayersHistory(gameId))
+    modelAndView.addObject("gameId", gameId)
+    return modelAndView
+}
+
+@RequestMapping("/playerGameHistory.html")
+fun playerGameHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val modelAndView = ModelAndView("gameHistory")
+    modelAndView.addObject("user", user)
+    val userId = Integer.parseInt(request.getParameter("userId"))
+    modelAndView.addObject("games", gameManager.getGameHistoryList(userId))
+    return modelAndView
+}
+
+@RequestMapping("/gameErrors.html")
+fun gameErrors(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val modelAndView = ModelAndView("gameErrors")
+    modelAndView.addObject("user", user)
+    modelAndView.addObject("errors", gameManager.gameErrors)
+    return modelAndView
+}
+
+@RequestMapping("/deleteGameError.html")
+fun deleteGameError(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val errorId = Integer.parseInt(request.getParameter("errorId"))
+    gameManager.deleteGameError(errorId)
+    return gameErrors(request, response)
+}
+
+@RequestMapping("/showGameLog.html")
+fun showGameLog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val modelAndView = ModelAndView("gameLog")
+    val logId = KingdomUtil.getRequestInt(request, "logId", -1)
+    val gameId = KingdomUtil.getRequestInt(request, "gameId", -1)
+    var logs = arrayOfNulls<String>(0)
+    var log: GameLog? = null
+    if (logId > 0) {
+        log = gameManager.getGameLog(logId)
+    } else if (gameId > 0) {
+        log = gameManager.getGameLogByGameId(gameId)
+    }
+    val logNotFound: Boolean
+    if (log != null) {
+        logNotFound = false
+        logs = log.log!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    } else {
+        logNotFound = true
+    }
+    modelAndView.addObject("logs", logs)
+    modelAndView.addObject("logNotFound", logNotFound)
+    return modelAndView
+}
+
+@ResponseBody
+@RequestMapping(value = "/changeStatus", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+fun changeStatus(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    val user = getUser(request)
+    if (user == null) {
+        val model = HashMap<String, Any>()
+        model.put("redirectToLogin", true)
+        return model
+    }
+    val status = request.getParameter("status")
+    if (status != null) {
+        user.status = status
+    }
+    LoggedInUsers.updateUserStatus(user)
+    LoggedInUsers.refreshLobbyPlayers()
+    return refreshLobby(request, response)
+}
+
+@RequestMapping("/showLobbyPlayers.html")
+fun showLobbyPlayers(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val modelAndView = ModelAndView("lobbyPlayers")
+    modelAndView.addObject("user", getUser(request)!!)
+    modelAndView.addObject("players", LoggedInUsers.getUsers())
+    return modelAndView
+}
+
+@RequestMapping("/getPlayerStatsDiv")
+fun getPlayerStatsDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request) ?: return ModelAndView("redirect:/login.html")
+    val modelAndView = ModelAndView("playerStatsDiv")
+    userManager.calculateGameStats(user)
+    modelAndView.addObject("user", user)
+    return modelAndView
+}
+
+@RequestMapping("/overallGameStats.html")
+fun overallGameStats(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val modelAndView = ModelAndView("overallStats")
+    val stats = gameManager.overallStats
+    val todayStats = gameManager.overallStatsForToday
+    val yesterdayStats = gameManager.overallStatsForYesterday
+    val weekStats = gameManager.overallStatsForPastWeek
+    val monthStats = gameManager.overallStatsForPastMonth
+    modelAndView.addObject("overallStats", stats)
+    modelAndView.addObject("todayStats", todayStats)
+    modelAndView.addObject("yesterdayStats", yesterdayStats)
+    modelAndView.addObject("weekStats", weekStats)
+    modelAndView.addObject("monthStats", monthStats)
+    return modelAndView
+}
+
+@RequestMapping("/userStats.html")
+fun userStats(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val modelAndView = ModelAndView("userStats")
+    val stats = gameManager.userStats
+    modelAndView.addObject("stats", stats)
+    return modelAndView
+}
+
+@RequestMapping("/annotatedGames.html")
+fun annotatedGames(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val modelAndView = ModelAndView("annotatedGames")
+    val games = gameManager.annotatedGames
+    modelAndView.addObject("games", games)
+    return modelAndView
+}
+
+@RequestMapping("/saveAnnotatedGame.html")
+fun saveAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+
+    val cardsNames = ArrayList<String>()
+    val parameterNames = request.parameterNames
+    while (parameterNames.hasMoreElements()) {
+        val name = parameterNames.nextElement() as String
+        if (name.startsWith("card_")) {
+            val cardName = name.substring(5)
+            cardsNames.add(cardName)
+        }
+    }
+    val game: AnnotatedGame
+    val id = request.getParameter("id")
+    if (id == "0") {
+        game = AnnotatedGame()
+    } else {
+        game = gameManager.getAnnotatedGame(Integer.parseInt(id))
+    }
+    game.title = request.getParameter("title")
+    game.cards = KingdomUtil.implode(cardsNames, ",")
+    game.includeColonyAndPlatinum = KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")
+    gameManager.saveAnnotatedGame(game)
+    return annotatedGames(request, response)
+}
+
+@RequestMapping("/deleteAnnotatedGame.html")
+fun deleteAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val id = request.getParameter("id")
+    val game = gameManager.getAnnotatedGame(Integer.parseInt(id))
+    gameManager.deleteAnnotatedGame(game)
+    return annotatedGames(request, response)
+}
+
+@RequestMapping("/showAnnotatedGame.html")
+fun showAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val modelAndView = ModelAndView("annotatedGame")
+    val id = request.getParameter("id")
+
+    val game: AnnotatedGame
+    val selectedCards = ArrayList<String>()
+    if (id == "0") {
+        game = AnnotatedGame()
+    } else {
+        game = gameManager.getAnnotatedGame(Integer.parseInt(id))
+        for (cardName in game.cards.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+            val card = cardManager.getCard(cardName)
+            selectedCards.add(card.name)
+        }
+    }
+
+    modelAndView.addObject("user", user)
+    modelAndView.addObject("selectedCards", selectedCards)
+    modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, true))
+    modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, true))
+    modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, true))
+    modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, true))
+    modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, true))
+    modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, true))
+    modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, true))
+    modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, true))
+    modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, true))
+    modelAndView.addObject("game", game)
+    return modelAndView
+}
+
+@RequestMapping("/showModifyHand.html")
+fun showModifyHand(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    if (!game.isTestGame && !user.admin) {
+        return ModelAndView("redirect:/showGame.html")
+    }
+    val player = game.playerMap[user.userId]!!
+    val modelAndView = ModelAndView("modifyHand")
+    modelAndView.addObject("user", user)
+    modelAndView.addObject("cards", game.supplyCards)
+    modelAndView.addObject("myPlayer", player)
+    modelAndView.addObject("players", game.players)
+    return modelAndView
+}
+
+@RequestMapping("/modifyHand.html")
+fun modifyHand(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    //todo
+    /*val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    if (!game.isTestGame && !user.admin) {
         return ModelAndView("redirect:/showGame.html")
     }
 
-    @RequestMapping("/showGameCards.html")
-    fun showGameCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
+    for (player in game.players) {
+        val currentHandChoice = request.getParameter("currentHandChoice_" + player.userId)
+        val currentCards = ArrayList(player.hand)
+        if (currentHandChoice == "discard") {
+            for (card in currentCards) {
+                player.discardCardFromHand(card)
+            }
+        } else if (currentHandChoice == "trash") {
+            for (card in currentCards) {
+                player.removeCardFromHand(card)
+            }
         }
-        val modelAndView = ModelAndView("gameCards")
-        modelAndView.addObject("cards", game.kingdomCards)
-        modelAndView.addObject("prizeCards", game.prizeCards)
-        modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
-        return modelAndView
-    }
 
-    @ResponseBody
-    @RequestMapping(value = "/useFruitTokens", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun useFruitTokens(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
-        val model = HashMap<String, Any>()
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            model.put("redirectToLogin", true)
+        val parameterNames = request.parameterNames
+        while (parameterNames.hasMoreElements()) {
+            val name = parameterNames.nextElement() as String
+            if (name.startsWith("card_") && name.endsWith("_" + player.userId)) {
+                val ids = name.substring(5)
+                val cardName = ids.substring(0, ids.indexOf("_"))
+                val card = game.supplyMap[cardName]!!
+                val numCards = KingdomUtil.getRequestInt(request, name, 0)
+                for (i in 0 until numCards) {
+                    player.addCardToHand(card)
+                }
+            }
+        }
+        game.refreshHand(player)
+    }*/
+    return ModelAndView("redirect:/showGame.html")
+}
+
+private fun showGame(game: Game?, user: User?): Boolean {
+    return game != null && game.status != GameStatus.WaitingForPlayers && game.status != GameStatus.Finished && game.playerMap.containsKey(user!!.userId)
+}
+
+@ResponseBody
+@RequestMapping(value = "/refreshLobby", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+fun refreshLobby(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    val user = getUser(request)
+    val refresh: RefreshLobby
+    if (user == null) {
+        refresh = RefreshLobby()
+        refresh.isRedirectToLogin = true
+    } else {
+        refresh = user.refreshLobby
+        if (user.isExpired) {
+            KingdomUtil.logoutUser(user, request)
+            refresh.isRedirectToLogin = true
+        }
+    }
+    val game = getGame(request)
+    if (showGame(game, user)) {
+        refresh.isStartGame = true
+    }
+    val model = HashMap<String, Any>()
+    model.put("redirectToLogin", refresh.isRedirectToLogin)
+    if (refresh.isRedirectToLogin) {
+        refresh.isRedirectToLogin = false
+    }
+    model.put("startGame", refresh.isStartGame)
+    if (refresh.isStartGame) {
+        refresh.isStartGame = false
+    }
+    var divsToLoad = 0
+    model.put("refreshPlayers", refresh.isRefreshPlayers)
+    if (refresh.isRefreshPlayers) {
+        divsToLoad++
+        refresh.isRefreshPlayers = false
+    }
+    model.put("refreshGameRooms", refresh.isRefreshGameRooms)
+    if (refresh.isRefreshGameRooms) {
+        divsToLoad++
+        refresh.isRefreshGameRooms = false
+    }
+    model.put("refreshChat", refresh.isRefreshChat)
+    if (refresh.isRefreshChat) {
+        divsToLoad++
+        refresh.isRefreshChat = false
+    }
+    model.put("divsToLoad", divsToLoad)
+
+    return model
+}
+
+@RequestMapping("/getLobbyPlayersDiv")
+fun getLobbyPlayersDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val refresh: RefreshLobby
+    if (user == null) {
+        refresh = RefreshLobby()
+        refresh.isRedirectToLogin = true
+    } else {
+        refresh = user.refreshLobby
+        if (user.isExpired) {
+            KingdomUtil.logoutUser(user, request)
+            refresh.isRedirectToLogin = true
+        }
+    }
+    val game = getGame(request)
+    if (showGame(game, user)) {
+        refresh.isStartGame = true
+    }
+    LoggedInUsers.refreshLobby(user!!)
+    val modelAndView = ModelAndView("lobbyPlayersDiv")
+    modelAndView.addObject("players", LoggedInUsers.getUsers())
+    return modelAndView
+}
+
+@RequestMapping("/getLobbyChatDiv")
+fun getLobbyChatDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val refresh: RefreshLobby
+    if (user == null) {
+        refresh = RefreshLobby()
+        refresh.isRedirectToLogin = true
+    } else {
+        refresh = user.refreshLobby
+        if (user.isExpired) {
+            KingdomUtil.logoutUser(user, request)
+            refresh.isRedirectToLogin = true
+        }
+    }
+    val game = getGame(request)
+    if (showGame(game, user)) {
+        refresh.isStartGame = true
+    }
+    LoggedInUsers.refreshLobby(user!!)
+    var template = "lobbyChatDiv"
+    if (KingdomUtil.isMobile(request)) {
+        template = "lobbyChatDivMobile"
+    }
+    val modelAndView = ModelAndView(template)
+    modelAndView.addObject("user", user)
+    modelAndView.addObject("chats", lobbyChats.chats)
+    return modelAndView
+}
+
+@RequestMapping("/getLobbyGameRoomsDiv")
+fun getLobbyGameRoomsDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val refresh: RefreshLobby
+    if (user == null) {
+        refresh = RefreshLobby()
+        refresh.isRedirectToLogin = true
+    } else {
+        refresh = user.refreshLobby
+        if (user.isExpired) {
+            KingdomUtil.logoutUser(user, request)
+            refresh.isRedirectToLogin = true
+        }
+    }
+    val game = getGame(request)
+    if (showGame(game, user)) {
+        refresh.isStartGame = true
+    }
+    LoggedInUsers.refreshLobby(user!!)
+    val modelAndView = ModelAndView("lobbyGameRoomsDiv")
+    modelAndView.addObject("user", user)
+    modelAndView.addObject("gameRooms", gameRoomManager.lobbyGameRooms)
+    modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached())
+    modelAndView.addObject("numGamesInProgress", gameRoomManager.gamesInProgress.size)
+    modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
+    modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage!!)
+    modelAndView.addObject("showNews", gameRoomManager.isShowNews)
+    modelAndView.addObject("news", gameRoomManager.news)
+    modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+    return modelAndView
+}
+
+@RequestMapping("/showGamesInProgress.html")
+fun showGamesInProgress(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val modelAndView = ModelAndView("gamesInProgress")
+    modelAndView.addObject("games", gameRoomManager.gamesInProgress)
+    return modelAndView
+}
+
+@RequestMapping("/toggleSound.html")
+fun toggleSound(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    user!!.toggleSoundDefault()
+    userManager.saveUser(user)
+    return ModelAndView("empty")
+}
+
+@RequestMapping("/repeatGame.html")
+fun repeatGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    if (gameRoomManager.isUpdatingWebsite) {
+        return ModelAndView("redirect:/showGameRooms.html")
+    }
+    game.repeat()
+    return ModelAndView("redirect:/showGame.html")
+}
+
+@RequestMapping("/showGameCards.html")
+fun showGameCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        return ModelAndView("redirect:/login.html")
+    }
+    val modelAndView = ModelAndView("gameCards")
+    modelAndView.addObject("cards", game.kingdomCards)
+    modelAndView.addObject("prizeCards", game.prizeCards)
+    modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
+    return modelAndView
+}
+
+@ResponseBody
+@RequestMapping(value = "/useCoinTokens", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+fun useCoinTokens(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    val model = HashMap<String, Any>()
+    val user = getUser(request)
+    val game = getGame(request)
+    if (user == null || game == null) {
+        model.put("redirectToLogin", true)
+        return model
+    }
+    try {
+        val player = game.playerMap[user.userId]
+        if (player == null) {
+            model.put("redirectToLobby", true)
             return model
         }
-        try {
-            val player = game.playerMap[user.userId]
-            if (player == null) {
-                model.put("redirectToLobby", true)
-                return model
-            }
-            game.showUseFruitTokensCardAction(player)
-            game.closeLoadingDialog(player)
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-        }
-
-        return refreshGame(request, response)
+        //todo
+//            game.showUseFruitTokensCardAction(player)
+//            game.closeLoadingDialog(player)
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+        game.logError(error)
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/useCattleTokens", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun useCattleTokens(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
-        val model = HashMap<String, Any>()
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            model.put("redirectToLogin", true)
-            return model
-        }
-        try {
-            val player = game.playerMap[user.userId]
-            if (player == null) {
-                model.put("redirectToLobby", true)
-                return model
-            }
-            game.showUseCattleTokensCardAction(player)
-            game.closeLoadingDialog(player)
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-        }
+    return refreshGame(request, response)
+}
 
-        return refreshGame(request, response)
+fun refreshGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+    //todo
+    val model = HashMap<String, Any>()
+    return model
+}
+
+@RequestMapping("/recommendedSets.html")
+fun recommendedSets(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val modelAndView = ModelAndView("recommendedSets")
+    val recommendedSets = gameManager.recommendedSets
+    modelAndView.addObject("recommendedSets", recommendedSets)
+    return modelAndView
+}
+
+@RequestMapping("/saveRecommendedSet.html")
+fun saveRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
     }
 
-    @RequestMapping("/recommendedSets.html")
-    fun recommendedSets(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("recommendedSets")
-        val recommendedSets = gameManager.recommendedSets
-        modelAndView.addObject("recommendedSets", recommendedSets)
-        return modelAndView
+    val set: RecommendedSet
+    val id = request.getParameter("id")
+    if (id == "0") {
+        set = RecommendedSet()
+    } else {
+        set = gameManager.getRecommendedSet(Integer.parseInt(id))
+    }
+    set.name = request.getParameter("name")
+    set.deck = request.getParameter("deck")
+    set.cards = request.getParameter("cards")
+    gameManager.saveRecommendedSet(set)
+    return recommendedSets(request, response)
+}
+
+@RequestMapping("/deleteRecommendedSet.html")
+fun deleteRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val id = request.getParameter("id")
+    val set = gameManager.getRecommendedSet(Integer.parseInt(id))
+    gameManager.deleteRecommendedSet(set)
+    return recommendedSets(request, response)
+}
+
+@RequestMapping("/showRecommendedSet.html")
+fun showRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    val user = getUser(request)
+    if (user == null || !user.admin) {
+        return KingdomUtil.getLoginModelAndView(request)
+    }
+    val modelAndView = ModelAndView("recommendedSet")
+    val id = request.getParameter("id")
+
+    val set: RecommendedSet
+    val selectedCards = ArrayList<String>()
+    if (id == "0") {
+        set = RecommendedSet()
+    } else {
+        set = gameManager.getRecommendedSet(Integer.parseInt(id))
     }
 
-    @RequestMapping("/saveRecommendedSet.html")
-    fun saveRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-
-        val set: RecommendedSet
-        val id = request.getParameter("id")
-        if (id == "0") {
-            set = RecommendedSet()
-        } else {
-            set = gameManager.getRecommendedSet(Integer.parseInt(id))
-        }
-        set.name = request.getParameter("name")
-        set.deck = request.getParameter("deck")
-        set.cards = request.getParameter("cards")
-        gameManager.saveRecommendedSet(set)
-        return recommendedSets(request, response)
-    }
-
-    @RequestMapping("/deleteRecommendedSet.html")
-    fun deleteRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val id = request.getParameter("id")
-        val set = gameManager.getRecommendedSet(Integer.parseInt(id))
-        gameManager.deleteRecommendedSet(set)
-        return recommendedSets(request, response)
-    }
-
-    @RequestMapping("/showRecommendedSet.html")
-    fun showRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("recommendedSet")
-        val id = request.getParameter("id")
-
-        val set: RecommendedSet
-        val selectedCards = ArrayList<String>()
-        if (id == "0") {
-            set = RecommendedSet()
-        } else {
-            set = gameManager.getRecommendedSet(Integer.parseInt(id))
-        }
-
-        modelAndView.addObject("set", set)
-        return modelAndView
-    }
+    modelAndView.addObject("set", set)
+    return modelAndView
+}
 }

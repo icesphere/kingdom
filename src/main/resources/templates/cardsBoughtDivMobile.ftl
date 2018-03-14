@@ -8,12 +8,6 @@
                 ${currentPlayer.coins}
                 <span style="position:relative; top:2px;"><img src="images/coin.png" alt="Coins" style="height:16px; width:16px;"/></span>
             </div>
-            <#if showPotions>
-                <div style="float:left;position:relative; top:-6px;">
-                    ${currentPlayer.potions}
-                    <span style="position:relative; left:-4px; top:5px;"><img src="images/bluepotion.png" alt="Potions" style="height:22px; width:22px;"/></span>
-                </div>
-            </#if>
         </#if>
     </#if>
 </div>

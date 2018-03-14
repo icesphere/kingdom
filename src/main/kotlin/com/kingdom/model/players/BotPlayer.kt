@@ -1,6 +1,7 @@
 package com.kingdom.model.players
 
 import com.kingdom.model.Choice
+import com.kingdom.model.Game
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
@@ -8,10 +9,12 @@ import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Estate
 import java.util.*
 
-abstract class BotPlayer : Player() {
+abstract class BotPlayer(game: Game, override val userId: Int) : Player(game) {
     init {
         playerName = javaClass.getSimpleName()
     }
+
+    override val username = playerName
 
     private val random = Random()
 

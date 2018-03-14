@@ -8,10 +8,6 @@
                         <#if currentPlayer.userId == user.userId>
                             <td style="padding-left:10px;">${currentPlayer.coins}</td>
                             <td><span style="position:relative; top:2px;"><img src="images/coin.png" alt="Coins" style="height:16px; width:16px;"/></span></td>
-                            <#if showPotions>
-                                <td style="padding-left:10px;">${currentPlayer.potions}</td>
-                                <td><img src="images/bluepotion.png" alt="Potions" style="height:20px; width:20px;"/></td>
-                            </#if>
                         </#if>
                     <#else>
                         <td>&#160;</td>

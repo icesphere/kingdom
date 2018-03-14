@@ -13,6 +13,10 @@ class HumanPlayer(val user: User, game: Game) : Player(game) {
         playerName = user.username
     }
 
+    override val userId = user.userId
+
+    override val username = user.username
+
     override fun takeTurn() {
 
     }

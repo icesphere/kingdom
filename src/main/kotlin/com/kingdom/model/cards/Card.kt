@@ -44,9 +44,7 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
 
     var textSize: Int = 0
 
-    var fruitTokens: Int = 0
-
-    var cattleTokens: Int = 0
+    var coinsTokens: Int = 0
 
     val associatedCards: MutableList<Card> = ArrayList(0)
 
@@ -331,6 +329,10 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
     }
 
     open fun cardPlayedSpecialAction(player: Player) {
+    }
+
+    open fun isActionable(player: Player, cardLocation: CardLocation): Boolean {
+        return player.isYourTurn && cardLocation == CardLocation.Hand
     }
 
     companion object {

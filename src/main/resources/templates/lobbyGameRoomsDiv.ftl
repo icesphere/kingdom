@@ -70,9 +70,8 @@
     <div id="cardsDialog_${room.gameId}" style="display:none" title="Kingdom Cards" class="oldCardAction">
         <#assign clickType="gameRoom">
         <#assign costDiscount = room.game.costDiscount>
-        <#assign fruitTokensPlayed = 0>
+        <#assign coinTokensPlayed = 0>
         <#assign actionCardDiscount = room.game.actionCardDiscount>
-        <#assign showTrollTokens = false>
         <#assign actionCardsInPlay = room.game.actionCardsInPlay>
         <#if mobile>
             <div>

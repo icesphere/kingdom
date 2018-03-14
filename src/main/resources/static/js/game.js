@@ -660,21 +660,11 @@ function toggleSound() {
     $.get("toggleSound.html");
 }
 
-function useFruitTokens(){
+function useCoinTokens(){
     if(gameStatus == 3){
         refreshingGame = true;
         showLoadingDialog();
-        $.post("useFruitTokens", function(data) {
-            refreshParts(data);
-        });
-    }
-}
-
-function useCattleTokens(){
-    if(gameStatus == 3){
-        refreshingGame = true;
-        showLoadingDialog();
-        $.post("useCattleTokens", function(data) {
+        $.post("useCoinTokens", function(data) {
             refreshParts(data);
         });
     }

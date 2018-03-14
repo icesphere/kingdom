@@ -166,7 +166,7 @@ class User {
     var location = ""
 
     @Transient
-    var gameId: Int = 0
+    var gameId: String? = null
 
     @Transient
     var lastActivity = Date()
@@ -188,7 +188,7 @@ class User {
 
     val isExpired: Boolean
         get() {
-            if (gameId > 0) {
+            if (gameId != null) {
                 return false
             }
             val thirtyMinutes = (60 * 1000 * 30).toLong()
@@ -202,7 +202,7 @@ class User {
 
     val isIdle: Boolean
         get() {
-            if (gameId > 0) {
+            if (gameId != null) {
                 return false
             }
             val threeMinutes = (60 * 1000 * 3).toLong()

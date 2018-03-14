@@ -769,8 +769,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
             return true
         } else if (card.isPotion && kingdomCardMap.containsKey("Black Market")) {
             return true
-        } else if (card.fruitTokens > 0 || card.cattleTokens > 0 || card.name == "Goodwill") {
-            return true
         } else if (card.name == "Rancher") {
             return true
         } else if (card.name == "Farmland" && player.hand.all { it.isProvince }) {

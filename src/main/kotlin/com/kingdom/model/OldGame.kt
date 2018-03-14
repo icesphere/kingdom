@@ -1062,11 +1062,8 @@ class OldGame(val gameId: Int) {
         if (card.isSalvation) {
             isShowSins = true
         }
-        if (card.fruitTokens > 0 || card.name == "Orchard" || card.name == "Goodwill") {
+        if (card.coinsTokens > 0 || card.name == "Orchard" || card.name == "Goodwill") {
             isShowFruitTokens = true
-        }
-        if (card.cattleTokens > 0 || card.name == "Rancher") {
-            isShowCattleTokens = true
         }
     }
 
@@ -1315,11 +1312,8 @@ class OldGame(val gameId: Int) {
         if (card.isPotion) {
             player.addPotions(1)
         }
-        if (card.fruitTokens != 0) {
-            player.addFruitTokens(card.fruitTokens)
-        }
-        if (card.cattleTokens != 0) {
-            player.addCattleTokens(card.cattleTokens)
+        if (card.coinsTokens != 0) {
+            player.addFruitTokens(card.coinsTokens)
         }
     }
 

@@ -115,12 +115,7 @@
                 </tr>
                 <tr>
                     <td>
-                        Fruit Tokens:  <input type="text" name="fruitTokens" value="${card.fruitTokens}"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Cattle Tokens:  <input type="text" name="cattleTokens" value="${card.cattleTokens}"/>
+                        Coin Tokens:  <input type="text" name="coinTokens" value="${card.coinTokens}"/>
                     </td>
                 </tr>
                 <tr>
@@ -170,9 +165,8 @@
                     <#assign gameStatus = 3>
                     <#assign clickType="admin">
                     <#assign costDiscount = 0>
-                    <#assign fruitTokensPlayed = 0>
+                    <#assign coinTokensPlayed = 0>
                     <#assign actionCardDiscount = 0>
-                    <#assign showTrollTokens = false>
                     <#assign actionCardsInPlay = 0>
                     <#assign card_index = 1>
                     <div style="padding-top:10px;">

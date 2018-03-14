@@ -32,11 +32,8 @@
     <#if showPirateShipCoins>
         <div class="handAreaTopRowLeft" style="clear:both;">${player.pirateShipCoins} Pirate Ship Coin<#if player.pirateShipCoins != 1>s</#if></div>
     </#if>   
-    <#if showFruitTokens>
-        <div class="handAreaTopRowLeft" style="clear:both;"><a href="javascript:useFruitTokens()">${player.fruitTokens} Fruit Token<#if player.fruitTokens != 1>s</#if></a></div>
-    </#if>   
-    <#if showCattleTokens>
-        <div class="handAreaTopRowLeft" style="clear:both;"><a href="javascript:useCattleTokens()">${player.cattleTokens} Cattle Token<#if player.cattleTokens != 1>s</#if></a></div>
+    <#if showCoinTokens>
+        <div class="handAreaTopRowLeft" style="clear:both;"><a href="javascript:useCoinTokens()">${player.coinTokens} Coin Token<#if player.coinTokens != 1>s</#if></a></div>
     </#if>
     <#if showVictoryCoins>
         <div class="handAreaTopRowLeft" style="clear:both;">${player.victoryCoins} Victory Coin<#if player.victoryCoins != 1>s</#if></div>

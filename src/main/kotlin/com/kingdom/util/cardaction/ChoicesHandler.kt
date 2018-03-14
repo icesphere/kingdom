@@ -623,17 +623,6 @@ object ChoicesHandler {
                     game.addHistory(player.username, " used ", KingdomUtil.getPlural(player.pirateShipCoins, "Pirate Ship Coin"))
                 }
             }
-            "Rancher" -> when (choice) {
-                "cattle" -> {
-                    player.addCattleTokens(1)
-                    game.addHistory(player.username, " chose +1 cattle token")
-                }
-                "buy" -> {
-                    player.addBuys(1)
-                    game.addHistory(player.username, " chose +1 Buy")
-                    game.refreshAllPlayersCardsBought()
-                }
-            }
             "Sorceress" -> if (choice != "none") {
                 var showTrashCardAction = false
                 when (choice) {

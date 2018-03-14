@@ -5,6 +5,7 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
+import com.kingdom.util.KingdomUtil
 import org.apache.commons.lang3.StringUtils
 import java.io.File
 import java.io.IOException
@@ -27,7 +28,8 @@ class Game() {
     var isPrivateGame = false
     var password = ""
 
-    var players: List<Player>? = null
+    lateinit var players: List<Player>
+    val playerMap: MutableMap<Int, Player> = HashMap(6)
 
     var decks: MutableList<Deck> = ArrayList()
 
@@ -36,9 +38,18 @@ class Game() {
     val supplyCards = ArrayList<Card>()
     val supplyAmounts = HashMap<String, Int>()
 
+    var blackMarketCards: MutableList<Card> = ArrayList(0)
+
     var trashedCards: MutableList<Card> = ArrayList()
 
     var currentPlayerIndex: Int = 0
+    var currentPlayerId = -1
+
+    //todo maybe get rid of these?
+    var costDiscount = 0
+    var actionCardDiscount: Int = 0
+    var actionCardsInPlay = 0
+    var numActionsCardsPlayed = 0
 
     var isGameOver: Boolean = false
         private set
@@ -52,7 +63,19 @@ class Game() {
     var quitGamePlayer: Player? = null
         private set
 
-    val chatMessages: List<ChatMessage> = ArrayList()
+    val chats = ArrayList<ChatMessage>()
+
+    val needsRefresh: MutableMap<Int, Refresh> = HashMap(6)
+
+    var gameEndReason = ""
+    var winnerString = ""
+
+    var isAbandonedGame: Boolean = false
+
+    val showGameLog = false
+    var logId: Int = 0
+
+    var isTestGame: Boolean = false
 
     private val recentTurnLogs = ArrayList<String>()
 
@@ -74,6 +97,7 @@ class Game() {
 
     var numPlayers: Int = 0
 
+    var isAllComputerOpponents: Boolean = false
     var numComputerPlayers: Int = 0
     var numEasyComputerPlayers: Int = 0
     var numMediumComputerPlayers: Int = 0
@@ -94,6 +118,45 @@ class Game() {
 
     var isRandomizerReplacementCardNotFound: Boolean = false
 
+    var isShowCoinTokens: Boolean = false
+    var isShowGardens: Boolean = false
+    var isShowFarmlands: Boolean = false
+    var isShowVictoryCoins: Boolean = false
+    var isShowVineyard: Boolean = false
+    var isShowSilkRoads: Boolean = false
+    var isShowCathedral: Boolean = false
+    var isShowFairgrounds: Boolean = false
+    var isShowGreatHall: Boolean = false
+    var isShowHarem: Boolean = false
+    var isShowDuke: Boolean = false
+    var isShowNobles: Boolean = false
+    var isShowArchbishops: Boolean = false
+    var isShowDuration: Boolean = false
+    var isShowEmbargoTokens: Boolean = false
+    var isShowIslandCards: Boolean = false
+    var isShowMuseumCards: Boolean = false
+    var isShowCityPlannerCards: Boolean = false
+    var isShowNativeVillage: Boolean = false
+    var isShowPirateShipCoins: Boolean = false
+    var isShowHedgeWizard: Boolean = false
+    var isShowGoldenTouch: Boolean = false
+    var isShowSins: Boolean = false
+    
+    val tradeRouteTokenMap = HashMap<String, Boolean>(0)
+    var isTrackTradeRouteTokens: Boolean = false
+    var tradeRouteTokensOnMat: Int = 0
+    
+    val embargoTokens = HashMap<String, Int>()
+
+    val cardsPlayed = LinkedList<Card>()
+    val cardsBought = ArrayList<Card>()
+
+    val recentTurnHistory = LinkedList<PlayerTurn>()
+
+    var isShowPrizeCards: Boolean = false
+    var prizeCards: MutableList<Card> = ArrayList(0)
+
+
     fun setupGame() {
         currentPlayerIndex = 0
 
@@ -106,7 +169,7 @@ class Game() {
         setupSupply()
     }
 
-    fun setupSupply() {
+    private fun setupSupply() {
         setupSupplyAmounts()
 
         supplyCards.add(Copper())
@@ -323,7 +386,7 @@ class Game() {
     }
 
     private fun gameLog(log: String, simulationInfo: Boolean) {
-        if (SHOW_GAME_LOG) {
+        if (showGameLog) {
             println(log)
         }
         if (isCreateGameLog) {
@@ -370,8 +433,192 @@ class Game() {
     val emptySupplyPiles
         get() = supplyCards.size - nonEmptySupplyCards.size
 
-    companion object {
+    fun addGameChat(message: String) {
+        chats.add(ChatMessage(message, "black"))
+        refreshAllPlayersChat()
+    }
 
-        val SHOW_GAME_LOG = false
+    fun saveGameHistory() {
+        //todo
+    }
+
+    fun reset() {
+        //todo
+    }
+
+    fun logError(error: GameError) {
+        //todo
+    }
+
+    val prizeCardsString: String
+        get() = if (prizeCards.isEmpty()) {
+            "None"
+        } else {
+            KingdomUtil.getCardNames(prizeCards)
+        }
+
+
+    fun refreshAll(player: Player) {
+        val refresh = needsRefresh[player.userId]!!
+        refresh.isRefreshGameStatus = true
+        //todo
+        /*if (player.isShowCardAction && player.oldCardAction != null) {
+            refresh.isRefreshCardAction = true
+        }*/
+        refresh.isRefreshHandArea = true
+        refresh.isRefreshPlayers = true
+        refresh.isRefreshPlayingArea = true
+        refresh.isRefreshSupply = true
+
+        //todo
+        /*if (status == GameStatus.InProgress && !hasIncompleteCard() && !currentPlayer!!.isShowCardAction) {
+            if (!repeatedActions.isEmpty()) {
+                playRepeatedAction(currentPlayer!!, false)
+            } else if (!golemActions.isEmpty()) {
+                playGolemActionCard(currentPlayer)
+            }
+        }*/
+    }
+
+    fun refreshAllPlayersPlayingArea() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshPlayingArea = true
+        }
+    }
+
+    fun refreshAllPlayersCardsPlayed() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshCardsPlayedDiv = true
+        }
+    }
+
+    fun refreshAllPlayersCardsBought() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshCardsBoughtDiv = true
+        }
+    }
+
+    fun refreshAllPlayersHistory() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshHistory = true
+        }
+    }
+
+    fun refreshAllPlayersSupply() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshSupply = true
+        }
+    }
+
+    fun refreshAllPlayersHand() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshHand = true
+        }
+    }
+
+    fun refreshAllPlayersHandArea() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshHandArea = true
+        }
+    }
+
+    fun refreshAllPlayersDiscard() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshDiscard = true
+        }
+    }
+
+    fun refreshAllPlayersPlayers() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshPlayers = true
+        }
+    }
+
+    fun refreshAllPlayersGameStatus() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshGameStatus = true
+        }
+    }
+
+    fun refreshEndTurn(currentPlayerId: Int) {
+        for (userId in needsRefresh.keys) {
+            if (userId != currentPlayerId) {
+                val refresh = needsRefresh[userId]!!
+                refresh.isRefreshEndTurn = true
+                val refreshHandArea = refresh.isRefreshHand || refresh.isRefreshHandArea || refresh.isRefreshDiscard
+                if (refreshHandArea) {
+                    refresh.isRefreshHandOnEndTurn = true
+                }
+                if (refresh.isRefreshSupply) {
+                    refresh.isRefreshSupply = true
+                }
+            }
+        }
+    }
+
+    fun refreshAllPlayersChat() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshChat = true
+        }
+    }
+
+    fun refreshAllPlayersTitle() {
+        for (refresh in needsRefresh.values) {
+            refresh.isRefreshTitle = true
+        }
+    }
+
+    fun refreshPlayingArea(player: Player) {
+        val refresh = needsRefresh[player.userId]!!
+        refresh.isRefreshPlayingArea = true
+    }
+
+    fun refreshCardsBought(player: Player) {
+        val refresh = needsRefresh[player.userId]!!
+        refresh.isRefreshCardsBoughtDiv = true
+    }
+
+    fun refreshSupply(player: Player) {
+        val refresh = needsRefresh[player.userId]!!
+        refresh.isRefreshSupply = true
+    }
+
+    fun refreshHand(player: Player) {
+        val refresh = needsRefresh[player.userId]!!
+        refresh.isRefreshHand = true
+    }
+
+    fun refreshHandArea(player: Player) {
+        val refresh = needsRefresh[player.userId]!!
+        refresh.isRefreshHandArea = true
+    }
+
+    fun refreshDiscard(player: Player) {
+        val refresh = needsRefresh[player.userId]!!
+        refresh.isRefreshDiscard = true
+    }
+
+    fun refreshCardAction(player: Player) {
+        val refresh = needsRefresh[player.userId]!!
+        refresh.isRefreshCardAction = true
+    }
+
+    fun refreshInfoDialog(player: Player) {
+        val refresh = needsRefresh[player.userId]!!
+        refresh.isRefreshInfoDialog = true
+    }
+
+    fun closeLoadingDialog(player: Player) {
+        val refresh = needsRefresh[player.userId]!!
+        refresh.isCloseLoadingDialog = true
+    }
+
+    fun repeat() {
+        //todo
+    }
+
+    fun getSupplyCard(cardName: String): Card {
+        //todo
+        return Copper()
     }
 }

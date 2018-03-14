@@ -11,9 +11,8 @@
     <#assign clickType="info">
     <#assign gameStatus = 3>
     <#assign costDiscount = 0>
-    <#assign fruitTokensPlayed = 0>
+    <#assign coinTokensPlayed = 0>
     <#assign actionCardDiscount = 0>
-    <#assign showTrollTokens = false>
     <#assign actionCardsInPlay = 0>
     <#assign card_index = 1>
     <#assign mobile = false>

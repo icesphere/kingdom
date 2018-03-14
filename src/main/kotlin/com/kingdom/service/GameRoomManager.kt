@@ -1,12 +1,10 @@
 package com.kingdom.service
 
 import com.kingdom.model.Game
-import com.kingdom.model.OldGame
 import com.kingdom.model.GameRoom
 import com.kingdom.model.GameStatus
 import com.kingdom.util.GameRoomComparator
 import org.springframework.stereotype.Service
-
 import java.util.*
 
 @Service
@@ -25,14 +23,10 @@ class GameRoomManager {
             if (games.size >= MAX_GAME_ROOMS) {
                 return null
             }
-            var i = 1
-            while (games[i] != null) {
-                i++
-            }
 
-            return OldGame(i).apply {
+            return Game().apply {
                 status = GameStatus.BeingConfigured
-                games[i] = this
+                games[gameId] = this
             }
         }
 

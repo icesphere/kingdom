@@ -18,6 +18,10 @@ abstract class Player protected constructor(val game: Game) {
     val played: MutableList<Card> = ArrayList()
     val inPlay: MutableList<Card> = ArrayList()
 
+    abstract val userId: Int
+
+    abstract val username: String
+
     protected var actionsQueue: MutableList<Action> = ArrayList()
 
     var currentAction: Action? = null
@@ -31,6 +35,8 @@ abstract class Player protected constructor(val game: Game) {
     var buys: Int = 0
 
     var actions: Int = 0
+
+    var coinTokens: Int = 0
 
     lateinit var opponents: List<Player>
 

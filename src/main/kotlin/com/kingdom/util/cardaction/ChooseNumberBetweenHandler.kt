@@ -16,15 +16,6 @@ object ChooseNumberBetweenHandler {
                     player.addCardToHand(game.copperCard)
                 }
             }
-            "Use Cattle Tokens" -> if (numberChosen > 0 && player.cattleTokens >= numberChosen) {
-                player.addCattleTokens(numberChosen * -1)
-                val timesToApplyBonus = numberChosen / 2
-                player.drawCards(timesToApplyBonus)
-                player.addActions(timesToApplyBonus)
-                game.refreshHandArea(player)
-                game.refreshAllPlayersCardsPlayed()
-                game.addHistory(player.username, " used ", KingdomUtil.getPlural(numberChosen, "Cattle Token"))
-            }
             "Use Fruit Tokens" -> if (numberChosen > 0 && player.fruitTokens >= numberChosen) {
                 player.addFruitTokens(numberChosen * -1)
                 player.addCoins(numberChosen)
