@@ -77,7 +77,7 @@ class MainController(private var userManager: UserManager,
         val modelAndView = ModelAndView("admin")
         val user = getUser(request)!!
         val loggedInUser = LoggedInUsers.getUser(user.userId)
-        val showCancelGame = loggedInUser != null && loggedInUser.gameId > 0
+        val showCancelGame = loggedInUser?.gameId != null
         modelAndView.addObject("showCancelGame", showCancelGame)
         modelAndView.addObject("numErrors", userManager.errorCount)
         modelAndView.addObject("loggedInUsersCount", LoggedInUsers.getUsers().size)
@@ -237,7 +237,6 @@ class MainController(private var userManager: UserManager,
             return ModelAndView("redirect:/login.html")
         }
         val user = userManager.getUser(KingdomUtil.getRequestInt(request, "userId", -1))
-                ?: return ModelAndView("redirect:/listUsers.html")
         val modelAndView = ModelAndView("playerStatsDiv")
         userManager.calculateGameStats(user)
         modelAndView.addObject("user", user)

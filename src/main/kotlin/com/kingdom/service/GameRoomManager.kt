@@ -79,21 +79,22 @@ class GameRoomManager {
         var resetGame = false
 
         when(game.status) {
-            GameStatus.BeingConfigured -> if (now - 15 * minute > game.lastActivity!!.time) {
+            GameStatus.BeingConfigured -> if (now - 15 * minute > game.lastActivity.time) {
                 resetGame = true
             }
-            GameStatus.WaitingForPlayers -> if (now - 15 * minute > game.lastActivity!!.time) {
+            GameStatus.WaitingForPlayers -> if (now - 15 * minute > game.lastActivity.time) {
                 game.addGameChat("This game was reset due to inactivity.")
                 resetGame = true
             }
-            GameStatus.InProgress -> if (now - 30 * minute > game.lastActivity!!.time) {
+            GameStatus.InProgress -> if (now - 30 * minute > game.lastActivity.time) {
                 game.addGameChat("This game was reset due to inactivity.")
                 resetGame = true
             }
-            GameStatus.Finished -> if (now - 2 * minute > game.lastActivity!!.time) {
+            GameStatus.Finished -> if (now - 2 * minute > game.lastActivity.time) {
                 game.addGameChat("This game was reset due to inactivity.")
                 resetGame = true
             }
+            else -> {}
         }
 
         if (resetGame) {

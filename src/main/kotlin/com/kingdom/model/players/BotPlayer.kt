@@ -2,6 +2,7 @@ package com.kingdom.model.players
 
 import com.kingdom.model.Choice
 import com.kingdom.model.Game
+import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
@@ -9,12 +10,7 @@ import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Estate
 import java.util.*
 
-abstract class BotPlayer(game: Game, override val userId: Int) : Player(game) {
-    init {
-        playerName = javaClass.getSimpleName()
-    }
-
-    override val username = playerName
+abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     private val random = Random()
 
@@ -137,7 +133,7 @@ abstract class BotPlayer(game: Game, override val userId: Int) : Player(game) {
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addGameLog(playerName + " acquired a free card from the supply: " + card.name)
+            addGameLog(username + " acquired a free card from the supply: " + card.name)
 
             cardAcquired(card)
         }
@@ -455,7 +451,7 @@ abstract class BotPlayer(game: Game, override val userId: Int) : Player(game) {
     }
 
     override fun drawCardsAndPutSomeBackOnTop(cardsToDraw: Int, cardsToPutBack: Int) {
-        var cardsToPutBack = cardsToPutBack
+        var numCardsToPutBack = cardsToPutBack
         val cards = drawCards(cardsToDraw)
 
         if (!cards.isEmpty()) {
@@ -464,10 +460,10 @@ abstract class BotPlayer(game: Game, override val userId: Int) : Player(game) {
             val sortedCards = cards.sortedByDescending { getReturnCardToTopOfDeckScore(it) }
 
             for (card in sortedCards) {
-                if (cardsPutBack <= cardsToPutBack) {
+                if (cardsPutBack <= numCardsToPutBack) {
                     hand.remove(card)
                     addCardToTopOfDeck(card, false)
-                    cardsToPutBack++
+                    numCardsToPutBack++
                 }
             }
         }
@@ -484,7 +480,7 @@ abstract class BotPlayer(game: Game, override val userId: Int) : Player(game) {
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addGameLog(playerName + " acquired a free card from the supply: " + card.name)
+            addGameLog(username + " acquired a free card from the supply: " + card.name)
 
             cardAcquired(card)
         }

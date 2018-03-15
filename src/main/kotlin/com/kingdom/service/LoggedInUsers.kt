@@ -1,8 +1,6 @@
 package com.kingdom.service
 
 import com.kingdom.model.User
-import org.springframework.stereotype.Service
-
 import java.util.*
 
 object LoggedInUsers {
@@ -20,7 +18,7 @@ object LoggedInUsers {
     fun gameReset(userId: Int) {
         val user = users[userId]
         if (user != null) {
-            user.gameId = 0
+            user.gameId = null
             user.lastActivity = Date()
         }
     }

@@ -14,7 +14,7 @@ class FreeCardFromSupply(private val maxCost: Int?, text: String, private val de
     }
 
     override fun processAction(player: Player): Boolean {
-        player.game.gameLog(player.playerName + " is choosing a free card from the supply")
+        player.game.gameLog(player.username + " is choosing a free card from the supply")
         return true
     }
 
@@ -23,7 +23,7 @@ class FreeCardFromSupply(private val maxCost: Int?, text: String, private val de
 
         player.game.removeCardFromSupply(card)
 
-        player.addGameLog(player.playerName + " acquired a free card from the supply: " + card.name)
+        player.addGameLog(player.username + " acquired a free card from the supply: " + card.name)
 
         if (destination == CardLocation.Hand) {
             player.acquireCardToHand(card)

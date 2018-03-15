@@ -7,15 +7,7 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 
-class HumanPlayer(val user: User, game: Game) : Player(game) {
-
-    init {
-        playerName = user.username
-    }
-
-    override val userId = user.userId
-
-    override val username = user.username
+class HumanPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun takeTurn() {
 

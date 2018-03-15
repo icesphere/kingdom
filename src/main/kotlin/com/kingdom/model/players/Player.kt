@@ -3,6 +3,7 @@ package com.kingdom.model.players
 import com.kingdom.model.Choice
 import com.kingdom.model.Game
 import com.kingdom.model.TurnSummary
+import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardCopier
 import com.kingdom.model.cards.CardType
@@ -11,16 +12,15 @@ import com.kingdom.model.cards.modifiers.CardCostModifier
 import java.util.*
 import java.util.function.Function
 
-abstract class Player protected constructor(val game: Game) {
+abstract class Player protected constructor(val user: User, val game: Game) {
     var deck: MutableList<Card> = ArrayList()
     val hand: MutableList<Card> = ArrayList()
     val discard: MutableList<Card> = ArrayList()
     val played: MutableList<Card> = ArrayList()
     val inPlay: MutableList<Card> = ArrayList()
 
-    abstract val userId: Int
-
-    abstract val username: String
+    val userId = user.userId
+    val username = user.username
 
     protected var actionsQueue: MutableList<Action> = ArrayList()
 
@@ -48,8 +48,6 @@ abstract class Player protected constructor(val game: Game) {
         protected set
 
     var isFirstPlayer: Boolean = false
-
-    lateinit var playerName: String
 
     var turns: Int = 0
 
@@ -79,6 +77,19 @@ abstract class Player protected constructor(val game: Game) {
 
     var cardCostModifier: CardCostModifier? = null
 
+    lateinit var chatColor: String
+
+    var isQuit: Boolean = false
+
+    var victoryCoins: Int = 0
+
+    private var finalPointsCalculated = false
+    var finalVictoryPoints = 0
+    var finalCards: List<Card>? = null
+
+    var isWinner: Boolean = false
+    var marginOfVictory: Int = 0
+
     fun drawCard() {
         drawCards(1)
     }
@@ -95,7 +106,7 @@ abstract class Player protected constructor(val game: Game) {
         }
 
         val cardsDrawn = ArrayList<Card>()
-        var log = playerName + " drawing " + numCards
+        var log = username + " drawing " + numCards
         if (numCards == 1) {
             log += " card"
         } else {
@@ -356,9 +367,7 @@ abstract class Player protected constructor(val game: Game) {
         }
 
     fun addGameLog(log: String) {
-        if (game != null) {
-            game!!.gameLog(log)
-        }
+        game.gameLog(log)
     }
 
     fun addCardToDiscard(card: Card) {
@@ -372,7 +381,7 @@ abstract class Player protected constructor(val game: Game) {
     fun discardCardFromHand(card: Card) {
         hand.remove(card)
         addCardToDiscard(card)
-        addGameLog(playerName + " discarded " + card.name + " from hand")
+        addGameLog(username + " discarded " + card.name + " from hand")
     }
 
     abstract fun discardCardsFromHand(cards: Int)
@@ -435,7 +444,7 @@ abstract class Player protected constructor(val game: Game) {
         isYourTurn = true
         turn++
         addGameLog("")
-        addGameLog("*** $playerName's Turn $turn ***")
+        addGameLog("*** $username's Turn $turn ***")
         addGameLog("Deck: " + currentDeckNumber)
 
         currentTurnSummary = TurnSummary()
@@ -457,7 +466,7 @@ abstract class Player protected constructor(val game: Game) {
     val isBot: Boolean = this is BotPlayer
 
     override fun hashCode(): Int {
-        return Objects.hash(playerName)
+        return Objects.hash(userId)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -467,8 +476,8 @@ abstract class Player protected constructor(val game: Game) {
         if (other == null || javaClass != other.javaClass) {
             return false
         }
-        val other = other as Player
-        return this.playerName == other.playerName
+        val otherPlayer = other as Player
+        return this.userId == otherPlayer.userId
     }
 
     fun revealTopCardsOfDeck(cards: Int): List<Card> {
@@ -480,14 +489,14 @@ abstract class Player protected constructor(val game: Game) {
         }
 
         if (deck.isEmpty()) {
-            addGameLog(playerName + " had no cards to reveal")
+            addGameLog(username + " had no cards to reveal")
         } else {
             for (i in 0..cards - 1) {
                 if (deck.size < i + 1) {
                     addGameLog("No more cards to reveal")
                 } else {
                     val card = deck[i]
-                    addGameLog(playerName + " revealed " + card.name + " from top of deck")
+                    addGameLog(username + " revealed " + card.name + " from top of deck")
                     revealedCards.add(card)
                 }
             }
@@ -505,7 +514,7 @@ abstract class Player protected constructor(val game: Game) {
         }
 
     open val infoForGameLogName: String
-        get() = playerName.replace("\\s".toRegex(), "_")
+        get() = username.replace("\\s".toRegex(), "_")
 
     fun getCardCostWithModifiers(card: Card): Int {
         if (cardCostModifier != null) {
@@ -524,5 +533,35 @@ abstract class Player protected constructor(val game: Game) {
             addCardToDiscard(discardedCard)
             return discardedCard
         }
+    }
+
+    fun getVictoryPoints(gameOver: Boolean): Int {
+        if (finalPointsCalculated) {
+            return finalVictoryPoints
+        }
+
+        var victoryPoints = 0
+
+        val allCards = allCards
+
+        val cardNames = HashSet<String>()
+
+        for (card in allCards) {
+            cardNames.add(card.name)
+            if (card.isVictory || card.isCurse) {
+                victoryPoints += card.victoryPoints
+            }
+        }
+
+        victoryPoints += victoryCoins
+
+        if (gameOver) {
+            finalPointsCalculated = true
+            finalVictoryPoints = victoryPoints
+        }
+
+        finalCards = allCards
+
+        return victoryPoints
     }
 }

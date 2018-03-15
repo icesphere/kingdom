@@ -5,6 +5,11 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
+import com.kingdom.model.players.bots.BigMoneyBotPlayer
+import com.kingdom.model.players.bots.EasyBotPlayer
+import com.kingdom.model.players.bots.HardBotPlayer
+import com.kingdom.model.players.bots.MediumBotPlayer
+import com.kingdom.service.LoggedInUsers
 import com.kingdom.util.KingdomUtil
 import org.apache.commons.lang3.StringUtils
 import java.io.File
@@ -28,12 +33,18 @@ class Game() {
     var isPrivateGame = false
     var password = ""
 
-    lateinit var players: List<Player>
+    lateinit var players: MutableList<Player>
     val playerMap: MutableMap<Int, Player> = HashMap(6)
+    private val playersExited = HashSet<Int>(6)
+
+    val computerPlayers: List<Player>
+        get() = players.filter{ it.isBot }
 
     var decks: MutableList<Deck> = ArrayList()
 
     var kingdomCards: MutableList<Card> = ArrayList()
+
+    private var twoCostKingdomCards = 0
 
     val supplyCards = ArrayList<Card>()
     val supplyAmounts = HashMap<String, Int>()
@@ -70,10 +81,15 @@ class Game() {
     var gameEndReason = ""
     var winnerString = ""
 
+    private var determinedWinner = false
+    private var savedGameHistory = false
+
     var isAbandonedGame: Boolean = false
 
     val showGameLog = false
     var logId: Int = 0
+
+    private var historyEntriesAddedThisTurn = 0
 
     var isTestGame: Boolean = false
 
@@ -151,11 +167,26 @@ class Game() {
     val cardsPlayed = LinkedList<Card>()
     val cardsBought = ArrayList<Card>()
 
+    private val turnHistory = ArrayList<PlayerTurn>()
     val recentTurnHistory = LinkedList<PlayerTurn>()
 
     var isShowPrizeCards: Boolean = false
     var prizeCards: MutableList<Card> = ArrayList(0)
 
+    private val colors = ArrayList<String>(6)
+
+    private var currentColorIndex = 0
+
+    val nextColor: String
+        get() {
+            val color = colors[currentColorIndex]
+            if (currentColorIndex == colors.size - 1) {
+                currentColorIndex = 0
+            } else {
+                currentColorIndex++
+            }
+            return color
+        }
 
     fun setupGame() {
         currentPlayerIndex = 0
@@ -285,7 +316,7 @@ class Game() {
     fun turnEnded() {
         gameLog("End of turn " + turn)
 
-        for (player in players!!) {
+        for (player in players) {
             //todo calculate if game over
             if (false) {
                 gameOver()
@@ -293,7 +324,7 @@ class Game() {
             }
         }
 
-        if (currentPlayerIndex == players!!.size - 1) {
+        if (currentPlayerIndex == players.size - 1) {
             currentPlayerIndex = 0
         } else {
             currentPlayerIndex++
@@ -319,14 +350,14 @@ class Game() {
         gameLog("-----------------------------")
         gameLog("Game over")
         gameLog("Turns: " + turn)
-        for (player in players!!) {
+        for (player in players) {
             player.isWaitingForComputer = false
-            val playerName = player.playerName
+            val playerName = player.username
             //todo show score
         }
-        for (player in players!!) {
+        for (player in players) {
             gameLog("----")
-            val playerName = player.playerName
+            val playerName = player.username
             gameLog(playerName + "'s cards: ")
             player.allCards.forEach { c -> gameLog(c.name) }
         }
@@ -396,7 +427,7 @@ class Game() {
     }
 
     val currentPlayer: Player
-        get() = players!![currentPlayerIndex]
+        get() = players[currentPlayerIndex]
 
     fun trashCardFromSupply(card: Card) {
         //todo
@@ -406,7 +437,7 @@ class Game() {
 
     fun quitGame(player: Player) {
         quitGamePlayer = player
-        gameLog(player.playerName + " quit the game")
+        gameLog(player.username + " quit the game")
         gameOver()
     }
 
@@ -438,12 +469,113 @@ class Game() {
         refreshAllPlayersChat()
     }
 
+    fun addChat(player: Player, message: String) {
+        updateLastActivity()
+        chats.add(ChatMessage(player.username + ": " + message, player.chatColor))
+        refreshAllPlayersChat()
+    }
+
+    fun addPrivateChat(sender: User, receiver: User, message: String) {
+        updateLastActivity()
+        chats.add(ChatMessage("Private chat from " + sender.username + ": " + message, "black", receiver.userId))
+        refreshChat(receiver.userId)
+    }
+
     fun saveGameHistory() {
         //todo
     }
 
-    fun reset() {
-        //todo
+    fun reset(repeatingGame: Boolean = false) {
+        if (!repeatingGame) {
+            status = GameStatus.None
+            for (player in players) {
+                LoggedInUsers.gameReset(player.userId)
+            }
+            LoggedInUsers.refreshLobbyPlayers()
+            numPlayers = 0
+            numComputerPlayers = 0
+            numEasyComputerPlayers = 0
+            numMediumComputerPlayers = 0
+            numHardComputerPlayers = 0
+            numBMUComputerPlayers = 0
+            isAllComputerOpponents = false
+            isPlayTreasureCards = false
+            isIncludePlatinumCards = false
+            isIncludeColonyCards = false
+            supplyCards.clear()
+            kingdomCards.clear()
+            blackMarketCards.clear()
+            isShowDuke = false
+            isShowGardens = false
+            isShowFarmlands = false
+            isShowVictoryCoins = false
+            isShowVineyard = false
+            isShowSilkRoads = false
+            isShowCathedral = false
+            isShowFairgrounds = false
+            isShowGreatHall = false
+            isShowHarem = false
+            isShowNobles = false
+            isShowArchbishops = false
+            isShowDuration = false
+            isShowEmbargoTokens = false
+            isShowIslandCards = false
+            isShowMuseumCards = false
+            isShowCityPlannerCards = false
+            isShowNativeVillage = false
+            isShowPirateShipCoins = false
+            isShowSins = false
+            isTrackTradeRouteTokens = false
+            isAlwaysIncludeColonyAndPlatinum = false
+            isNeverIncludeColonyAndPlatinum = false
+            isAnnotatedGame = false
+            isRecommendedSet = false
+            isTestGame = false
+            isShowPrizeCards = false
+            isShowHedgeWizard = false
+            isShowGoldenTouch = false
+            isIdenticalStartingHands = false
+            creatorId = 0
+            creatorName = ""
+            title = ""
+            isPrivateGame = false
+            password = ""
+            twoCostKingdomCards = 0
+            custom = false
+            mobile = false
+        }
+        players.clear()
+        playerMap.clear()
+        supplyAmounts.clear()
+        embargoTokens.clear()
+        trashedCards.clear()
+        cardsPlayed.clear()
+        cardsBought.clear()
+        needsRefresh.clear()
+        recentTurnHistory.clear()
+        turnHistory.clear()
+        chats.clear()
+        currentPlayerIndex = 0
+        currentPlayerId = -1
+        currentColorIndex = 0
+        playersExited.clear()
+        costDiscount = 0
+        numActionsCardsPlayed = 0
+        actionCardsInPlay = 0
+        actionCardDiscount = 0
+        tradeRouteTokenMap.clear()
+        tradeRouteTokensOnMat = 0
+        determinedWinner = false
+        savedGameHistory = false
+        gameEndReason = ""
+        winnerString = ""
+        historyEntriesAddedThisTurn = 0
+        logId = 0
+        prizeCards.clear()
+        isAbandonedGame = false
+        isRecentGame = false
+        isRandomizerReplacementCardNotFound = false
+        LoggedInUsers.refreshLobbyGameRooms()
     }
 
     fun logError(error: GameError) {
@@ -556,6 +688,11 @@ class Game() {
         }
     }
 
+    fun refreshChat(userId: Int) {
+        val refresh = needsRefresh[userId]!!
+        refresh.isRefreshChat = true
+    }
+
     fun refreshAllPlayersChat() {
         for (refresh in needsRefresh.values) {
             refresh.isRefreshChat = true
@@ -620,5 +757,134 @@ class Game() {
     fun getSupplyCard(cardName: String): Card {
         //todo
         return Copper()
+    }
+
+    fun addComputerPlayer(i: Int, bigMoneyUltimate: Boolean, difficulty: Int) {
+        val userId = i * -1
+        val user = User()
+        user.gender = User.COMPUTER
+        if (bigMoneyUltimate) {
+            user.userId = userId - 40
+            user.username = "C$i (BMU)"
+            addPlayer(user, true, true, 3)
+        } else if (difficulty == 1) {
+            user.userId = userId - 10
+            user.username = "C$i (easy)"
+            addPlayer(user, true, false, 1)
+        } else if (difficulty == 2) {
+            user.userId = userId - 20
+            user.username = "C$i (medium)"
+            addPlayer(user, true, false, 2)
+        } else if (difficulty == 3) {
+            user.userId = userId - 30
+            user.username = "C$i (hard)"
+            addPlayer(user, true, false, 3)
+        }
+    }
+
+    fun addPlayer(user: User, computer: Boolean = false, bigMoneyUltimate: Boolean = false, difficulty: Int = 0) {
+        val player: Player
+        if (computer) {
+            player = when {
+                bigMoneyUltimate -> BigMoneyBotPlayer(user, this)
+                difficulty == 1 -> EasyBotPlayer(user, this)
+                difficulty == 2 -> MediumBotPlayer(user, this)
+                else -> HardBotPlayer(user, this)
+            }
+        } else {
+            player = HumanPlayer(user, this)
+        }
+        player.chatColor = nextColor
+        players.add(player)
+        playerMap[player.userId] = player
+        needsRefresh[player.userId] = Refresh()
+    }
+
+    fun removePlayer(user: User) {
+        val player = playerMap[user.userId]!!
+        players.remove(player)
+        playerMap.remove(player.userId)
+        needsRefresh.remove(player.userId)
+        if (player.userId == creatorId) {
+            if (players.isEmpty()) {
+                creatorId = 0
+            } else {
+                creatorId = players[0].userId
+            }
+        }
+        if (players.isEmpty()) {
+            reset()
+        }
+    }
+
+    fun updateLastActivity() {
+        lastActivity = Date()
+    }
+
+    fun playerExitedGame(player: Player) {
+        updateLastActivity()
+        if (!player.isBot) {
+            addGameChat(player.username + " exited the game")
+        }
+        playersExited.add(player.userId)
+        if (playersExited.size == players.size) {
+            reset()
+        }
+    }
+
+    fun playerQuitGame(player: Player) {
+        updateLastActivity()
+        status = GameStatus.Finished
+        player.isQuit = true
+        gameEndReason = player.username + " quit the game"
+        determineWinner()
+        winnerString = ""
+        refreshAllPlayersGameStatus()
+        refreshAllPlayersTitle()
+        addGameChat(gameEndReason)
+    }
+
+    @Synchronized
+    private fun determineWinner() {
+        if (!determinedWinner) {
+            determinedWinner = true
+            players.sortByDescending { it.getVictoryPoints(true) }
+            val firstPlayer = players[0]
+            val highScore = firstPlayer.finalVictoryPoints
+            val leastTurns = firstPlayer.turns
+            val marginOfVictory = players[0].finalVictoryPoints - players[1].finalVictoryPoints
+            val winners = ArrayList<String>()
+            for (player in players) {
+                if (player.finalVictoryPoints == highScore && leastTurns == player.turns) {
+                    player.isWinner = true
+                    player.marginOfVictory = marginOfVictory
+                    winners.add(player.username)
+                } else {
+                    break
+                }
+            }
+
+            if (winners.size == 1) {
+                winnerString = winners[0] + " wins!"
+            } else {
+                val sb = StringBuilder()
+                for (i in winners.indices) {
+                    if (i != 0) {
+                        sb.append(", ")
+                    }
+                    if (i == winners.size - 1) {
+                        sb.append("and ")
+                    }
+                    sb.append(winners[i])
+                }
+                winnerString = sb.toString() + " tie for the win!"
+            }
+
+            saveGameHistory()
+
+            for (computerPlayer in computerPlayers) {
+                playerExitedGame(computerPlayer)
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@
 <div style="padding-bottom: 10px;">
     <#if maxGameRoomLimitReached>
         Max Game Room Limit Reached
-    <#elseif user.gameId == 0>
+    <#elseif !(user.gameId??)>
         <#if updatingWebsite>
             <div>
                 ${updatingMessage}
@@ -46,7 +46,7 @@
                             <#assign openPositions = room.game.numPlayers - room.game.players?size>
                             <#if openPositions != 0>
                                 <tr><td>Waiting for ${openPositions?string} more Player<#if openPositions != 1>s</#if></td></tr>
-                                <#if user.gameId == 0>
+                                <#if !(user.gameId??)>
                                     <#if room.game.privateGame>
                                         <tr><td>Private Game Password: <input type="password" name="gamePassword_${room.gameId}" id="gamePassword_${room.gameId}"/> <a href="javascript:joinPrivateGame('${room.gameId}')">Join Game</a></td></tr>
                                     <#else>

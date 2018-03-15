@@ -314,7 +314,7 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
         return Objects.hash(name)
     }
 
-    fun removedFromPlay(player: Player) {}
+    open fun removedFromPlay(player: Player) {}
 
     fun cardPlayed(player: Player) {
         player.actions += addActions

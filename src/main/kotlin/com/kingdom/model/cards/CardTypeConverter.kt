@@ -11,6 +11,6 @@ class CardTypeConverter : AttributeConverter<CardType, Int> {
     }
 
     override fun convertToEntityAttribute(i: Int): CardType {
-        return CardType.fromCardTypeId(i)!!
+        return CardType.fromCardTypeId(i)
     }
 }

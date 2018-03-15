@@ -3,9 +3,10 @@ package com.kingdom.repository
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.kingdom.*
-import org.springframework.data.repository.CrudRepository
+import org.springframework.stereotype.Service
 
-interface CardRepository : CrudRepository<Card, Int> {
+@Service
+class CardRepository {
 
     fun getKingdomCards(): List<Card> {
         return listOf(
