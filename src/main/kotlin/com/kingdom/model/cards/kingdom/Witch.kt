@@ -8,6 +8,7 @@ class Witch : KingdomCard(NAME, CardType.ActionAttack, 5) {
     init {
         addCards = 2
         special = "Each other player gains a Curse card."
+        fontSize = 13
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

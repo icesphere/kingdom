@@ -26,9 +26,9 @@
             <#assign gameStatus = room.game.status>
             <tr>
                 <td>
-                    <#if gameStatus == 1>
+                    <#if gameStatus == "BeingConfigured">
                         A game is being created by ${room.game.creatorName}
-                    <#elseif gameStatus == 2>
+                    <#elseif gameStatus == "WaitingForPlayers">
                         <table>
                             <#if room.game.title != "">
                                 <tr><td class="gameTitle">${room.game.title}</td></tr>
@@ -39,7 +39,7 @@
                             <#if room.game.identicalStartingHands>
                                 <tr><td>Identical Starting Hands</td></tr>
                             </#if>
-                            <tr><td><a href="javascript:openCardsDialog(${room.gameId})">Show Cards</a></td></tr>
+                            <tr><td><a href="javascript:openCardsDialog('${room.gameId}')">Show Cards</a></td></tr>
                             <#list room.game.players as player>
                                 <tr><td>${player.username}<#if user.userId == player.userId>&#160;-&#160;<a href="leaveGame.html">Leave Game</a></#if></td></tr>
                             </#list>

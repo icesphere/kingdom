@@ -3,7 +3,7 @@
         <td style="height:20px;">
             <table>
                 <tr>
-                    <#if gameStatus == 3>
+                    <#if gameStatus == "InProgress">
                         <#if currentPlayer.userId == user.userId>
                             <td>Your Turn</td>
                         <#else>
@@ -13,7 +13,7 @@
                         <#if currentPlayer.userId == user.userId>
                             <td style="padding-left:15px;"><a href="javascript:endTurn()">End Turn</a></td>
                         </#if>
-                    <#elseif gameStatus == 4>
+                    <#elseif gameStatus == "Finished">
                         Game Finished
                     <#else>
                         <td>Waiting for Players to Join the Game</td>

@@ -91,7 +91,7 @@ class GameManager(private val gameErrorRepository: GameErrorRepository,
         gameHistoryRepository.save(history)
     }
 
-    fun saveGameUserHistory(gameId: Int, player: OldPlayer) {
+    fun saveGameUserHistory(gameId: String, player: OldPlayer) {
         val gameUserHistory = GameUserHistory(gameId, player)
         gameUserHistoryRepository.save(gameUserHistory)
         if (!player.isQuit) {
@@ -103,7 +103,7 @@ class GameManager(private val gameErrorRepository: GameErrorRepository,
         }
     }
 
-    fun getGamePlayersHistory(gameId: Int): List<GameUserHistory> {
+    fun getGamePlayersHistory(gameId: String): List<GameUserHistory> {
         return gameUserHistoryRepository.findByGameId(gameId)
     }
 
@@ -123,7 +123,7 @@ class GameManager(private val gameErrorRepository: GameErrorRepository,
         return gameLogRepository.findById(logId).get()
     }
 
-    fun getGameLogByGameId(gameId: Int): GameLog {
+    fun getGameLogByGameId(gameId: String): GameLog {
         return gameLogRepository.findByGameId(gameId)
     }
 

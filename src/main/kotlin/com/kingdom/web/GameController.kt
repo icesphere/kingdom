@@ -2031,7 +2031,7 @@ class GameController(private var cardManager: CardManager,
         if (user == null || !user.admin) {
             return KingdomUtil.getLoginModelAndView(request)
         }
-        val gameId = Integer.parseInt(request.getParameter("gameId"))
+        val gameId = request.getParameter("gameId")
         val modelAndView = ModelAndView("gamePlayersHistory")
         modelAndView.addObject("user", user)
         modelAndView.addObject("players", gameManager.getGamePlayersHistory(gameId))
@@ -2079,12 +2079,12 @@ class GameController(private var cardManager: CardManager,
     fun showGameLog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val modelAndView = ModelAndView("gameLog")
         val logId = KingdomUtil.getRequestInt(request, "logId", -1)
-        val gameId = KingdomUtil.getRequestInt(request, "gameId", -1)
+        val gameId = request.getParameter("gameId")
         var logs = arrayOfNulls<String>(0)
         var log: GameLog? = null
         if (logId > 0) {
             log = gameManager.getGameLog(logId)
-        } else if (gameId > 0) {
+        } else if (gameId != null) {
             log = gameManager.getGameLogByGameId(gameId)
         }
         val logNotFound: Boolean
@@ -2449,7 +2449,7 @@ class GameController(private var cardManager: CardManager,
         modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached())
         modelAndView.addObject("numGamesInProgress", gameRoomManager.gamesInProgress.size)
         modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
-        modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage!!)
+        modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage ?: "")
         modelAndView.addObject("showNews", gameRoomManager.isShowNews)
         modelAndView.addObject("news", gameRoomManager.news)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))

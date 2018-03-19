@@ -18,6 +18,8 @@ class Mine : KingdomCard(NAME, CardType.Action, 5), TrashCardsForBenefitActionCa
 
     init {
         special = "You may trash a Treasure from your hand. Gain a Treasure to your hand costing up to \$3 more than it."
+        fontSize = 13
+        textSize = 99
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

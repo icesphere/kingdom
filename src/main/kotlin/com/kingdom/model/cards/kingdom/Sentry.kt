@@ -8,6 +8,7 @@ class Sentry : KingdomCard(NAME, CardType.Action, 5) {
         addCards = 1
         addActions = 1
         special = "Look at the top 2 cards of your deck. Trash and/or discard any number of them. Put the rest back on top in any order."
+        textSize = 70
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

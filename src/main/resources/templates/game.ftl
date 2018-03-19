@@ -30,7 +30,7 @@
 	<body>
         <div class="topGradient"></div>
         <div id="gameDiv">
-            <#if gameStatus == 4>
+            <#if gameStatus == "Finished">
                 <#include "gameResults.ftl">
             <#else>
                 <#include "gameDiv.ftl">

@@ -1,5 +1,5 @@
 <div style="clear:both;float:left;">
-    <#if gameStatus == 3>
+    <#if gameStatus == "InProgress">
         <div style="float:left;padding-right:10px;">
             ${currentPlayer.buys} Buy<#if currentPlayer.buys != 1>s</#if>
         </div>

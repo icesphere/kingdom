@@ -45,7 +45,7 @@ class GameRoomManager {
 
         val currentGames = ArrayList(games.values)
 
-        for (game in currentGames) {
+        for ((index, game) in currentGames.withIndex()) {
             checkLastActivity(game)
 
             var addGame = false
@@ -56,7 +56,7 @@ class GameRoomManager {
             }
 
             if (addGame) {
-                val gameRoom = GameRoom("Game Room " + game.gameId, game.gameId, game)
+                val gameRoom = GameRoom("Game Room " + index + 1, game.gameId, game)
                 gameRooms.add(gameRoom)
             }
 

@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils
 import java.io.File
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Game() {
     val gameId: String = UUID.randomUUID().toString()
@@ -33,7 +34,7 @@ class Game() {
     var isPrivateGame = false
     var password = ""
 
-    lateinit var players: MutableList<Player>
+    var players: MutableList<Player> = ArrayList()
     val playerMap: MutableMap<Int, Player> = HashMap(6)
     private val playersExited = HashSet<Int>(6)
 
@@ -177,7 +178,7 @@ class Game() {
 
     private var currentColorIndex = 0
 
-    val nextColor: String
+    private val nextColor: String
         get() {
             val color = colors[currentColorIndex]
             if (currentColorIndex == colors.size - 1) {
@@ -191,6 +192,8 @@ class Game() {
     fun setupGame() {
         currentPlayerIndex = 0
 
+        setupPlayerColors()
+
         turn = 1
 
         kingdomCards.sortBy { it.cost }
@@ -198,6 +201,15 @@ class Game() {
         lastActivity = Date()
 
         setupSupply()
+    }
+
+    private fun setupPlayerColors() {
+        colors.add("red")
+        colors.add("#001090") //dark blue
+        colors.add("green")
+        colors.add("#0E80DF") //light blue
+        colors.add("purple")
+        colors.add("#EF7C00") //dark orange
     }
 
     private fun setupSupply() {
@@ -401,7 +413,7 @@ class Game() {
 
     }
 
-    //todo
+    //todob
     /*val winner: Player
         get() {
             return players!!.stream().max { p1, p2 -> Integer.compare(p1.authority, p2.authority) }.get()

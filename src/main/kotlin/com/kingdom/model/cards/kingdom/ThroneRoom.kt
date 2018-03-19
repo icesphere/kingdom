@@ -6,6 +6,7 @@ import com.kingdom.model.players.Player
 class ThroneRoom : KingdomCard(NAME, CardType.Action, 4) {
     init {
         special = "You may play an Action card from your hand twice."
+        fontSize = 9
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

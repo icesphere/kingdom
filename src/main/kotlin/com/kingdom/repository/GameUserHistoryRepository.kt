@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository
 
 interface GameUserHistoryRepository : CrudRepository<GameUserHistory, Int> {
 
-    fun findByGameId(gameId: Int): List<GameUserHistory>
+    fun findByGameId(gameId: String): List<GameUserHistory>
 }

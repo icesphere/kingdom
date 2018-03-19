@@ -6,6 +6,7 @@ class Laboratory : KingdomCard(NAME, CardType.Action, 5) {
     init {
         addCards = 2
         addActions = 1
+        fontSize = 11
     }
 
     companion object {

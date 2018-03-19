@@ -34,12 +34,14 @@
                 </tr>
             </#list>
         </table>
+        <!-- todo
         <div style="padding-top:10px;">
             <a href="gamePlayersHistory.html?gameId=${gameId - 1}">Previous Game</a>
         </div>
         <div style="padding-top:10px;">
             <a href="gamePlayersHistory.html?gameId=${gameId + 1}">Next Game</a>
         </div>
+        -->
         <div style="padding-top:10px;">
             <a href="gameHistory.html">Return to Game History</a>
         </div>

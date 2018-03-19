@@ -14,7 +14,7 @@ class GameUserHistory {
     var gameUserId: Int = 0
 
     @Column(name = "gameid")
-    var gameId: Int = 0
+    lateinit var gameId: String
 
     @Column(name = "userid")
     var userId: Int = 0
@@ -42,7 +42,7 @@ class GameUserHistory {
 
     constructor()
 
-    constructor(gameId: Int, player: OldPlayer) {
+    constructor(gameId: String, player: OldPlayer) {
         this.gameId = gameId
         this.userId = player.userId
         this.points = player.victoryPoints

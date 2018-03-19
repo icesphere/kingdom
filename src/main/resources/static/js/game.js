@@ -1,5 +1,5 @@
 var currentPlayer = "false";
-var gameStatus = 2;
+var gameStatus = 'WaitingForPlayers';
 var timeout = 1500;
 var reloadTimer;
 var refreshTimer;
@@ -222,7 +222,7 @@ function refreshParts(data){
     if(data.refreshGameStatus){
         gameStatus = data.gameStatus;
         currentPlayer = data.currentPlayer;
-        if(gameStatus == "4") {
+        if(gameStatus == "Finished") {
             $('#gameDiv').load('showGameResults.html', function() {
                 refreshFinished();
                 return;
@@ -350,7 +350,7 @@ function refreshParts(data){
 }
 
 function showLoadingDialog() {
-    if(gameStatus != 4) {
+    if(gameStatus != "Finished") {
         reloadTimer = setTimeout("reloadPage()", reloadTimeout);
     }
     loadingDialog.dialog("open");
@@ -362,7 +362,7 @@ function closeLoadingDialog() {
 }
 
 function clickCard(clickType, cardName, special){
-    if(!clickingCard && currentPlayer && gameStatus == 3 && (clickType == "supply" || clickType == "hand")){
+    if(!clickingCard && currentPlayer && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand")){
         clickingCard = true;
         refreshingGame = true;
         showLoadingDialog();
@@ -374,7 +374,7 @@ function clickCard(clickType, cardName, special){
 }
 
 function endTurn(){
-    if(gameStatus == 3 && currentPlayer){
+    if(gameStatus == "InProgress" && currentPlayer){
         refreshingGame = true;
         $.get("endTurn", function(data) {
             refreshParts(data);
@@ -383,7 +383,7 @@ function endTurn(){
 }
 
 function playAllTreasureCards(){
-    if(gameStatus == 3 && currentPlayer){
+    if(gameStatus == "InProgress" && currentPlayer){
         refreshingGame = true;
         showLoadingDialog();
         $.get("playAllTreasureCards", function(data) {
@@ -603,11 +603,11 @@ function exitGame(){
 }
 
 function quitGame(){
-    if(gameStatus != 4){
+    if(gameStatus != 'Finished'){
         if(confirm("Are you sure you want to quit this game?")){
             refreshingGame = true;
             $.get("quitGame", function(data) {
-                if(gameStatus == 2){
+                if(gameStatus == "WaitingForPlayers"){
                     document.location = "showGameRooms.html";
                 }
                 else {
@@ -661,7 +661,7 @@ function toggleSound() {
 }
 
 function useCoinTokens(){
-    if(gameStatus == 3){
+    if(gameStatus == "InProgress"){
         refreshingGame = true;
         showLoadingDialog();
         $.post("useCoinTokens", function(data) {

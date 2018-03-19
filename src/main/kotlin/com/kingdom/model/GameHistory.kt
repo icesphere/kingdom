@@ -8,9 +8,8 @@ import javax.persistence.*
 class GameHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "gameid")
-    var gameId: Int = 0
+    lateinit var gameId: String
 
     @Column(name = "start_date")
     var startDate: Date? = null

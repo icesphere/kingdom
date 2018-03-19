@@ -9,7 +9,7 @@
 <div class="topGradient"></div>
 <div style="padding:15px;float:left;">
     <#assign clickType="info">
-    <#assign gameStatus = 3>
+    <#assign gameStatus = "InProgress">
     <#assign costDiscount = 0>
     <#assign coinTokensPlayed = 0>
     <#assign actionCardDiscount = 0>

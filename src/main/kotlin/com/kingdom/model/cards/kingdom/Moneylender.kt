@@ -16,6 +16,7 @@ class Moneylender : KingdomCard(NAME, CardType.Action, 4), ChoiceActionCard {
 
     init {
         special = "You may trash a Copper from your hand. If you do, +\$3."
+        fontSize = 10
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

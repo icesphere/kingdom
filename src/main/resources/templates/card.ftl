@@ -162,7 +162,7 @@
             </table>
             <#if card.name != "">
                 <div>
-                    <#assign gameStatus = 3>
+                    <#assign gameStatus = "InProgress">
                     <#assign clickType="admin">
                     <#assign costDiscount = 0>
                     <#assign coinTokensPlayed = 0>

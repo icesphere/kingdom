@@ -35,7 +35,7 @@
                     <#if !player.expired && !player.invisible>
                         <tr>
                             <td>
-                                <#if player.gameId != 0>
+                                <#if player.gameId??>
                                     ${player.gameId}
                                 <#else>
                                     &#160;

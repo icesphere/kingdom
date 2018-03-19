@@ -17,6 +17,7 @@ class Cellar : KingdomCard(NAME, CardType.Action, 2), DiscardCardsForBenefitActi
     init {
         addActions = 1
         special = "Discard any number of cards, then draw that many."
+        fontSize = 13
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

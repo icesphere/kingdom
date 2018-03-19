@@ -3,7 +3,7 @@
         <td style="height:20px;">
             <table>
                 <tr>
-                    <#if gameStatus == 3>
+                    <#if gameStatus == "InProgress">
                         <td style="padding-left:10px;">${currentPlayer.buys} Buy<#if currentPlayer.buys != 1>s</#if></td>
                         <#if currentPlayer.userId == user.userId>
                             <td style="padding-left:10px;">${currentPlayer.coins}</td>
