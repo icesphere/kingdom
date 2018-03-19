@@ -113,7 +113,7 @@
             </div>
         </#if>
         <div style="clear:both; padding-top:10px; text-align:center">
-            <input type="button" onclick="closeCardsDialog(${room.gameId})" value="Close">
+            <input type="button" onclick="closeCardsDialog('${room.gameId}')" value="Close">
         </div>
     </div>
 </#list>
