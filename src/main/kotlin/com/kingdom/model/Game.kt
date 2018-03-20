@@ -16,6 +16,7 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.reflect.full.createInstance
 
 class Game() {
     val gameId: String = UUID.randomUUID().toString()
@@ -325,15 +326,20 @@ class Game() {
         return cardString
     }
 
-    fun turnEnded() {
-        gameLog("End of turn " + turn)
 
-        for (player in players) {
-            //todo calculate if game over
-            if (false) {
-                gameOver()
-                return
-            }
+
+    fun turnEnded() {
+        gameLog("End of turn $turn")
+
+        if (emptySupplyPiles >= 3
+                || supplyAmounts[Province.NAME] == 0
+                || (isIncludeColonyCards && supplyAmounts[Colony.NAME] == 0)) {
+            isGameOver = true
+        }
+
+        if (isGameOver) {
+            gameOver()
+            return
         }
 
         if (currentPlayerIndex == players.size - 1) {
@@ -352,9 +358,7 @@ class Game() {
             recentTurnLogs.removeAt(0)
         }
 
-        if (!isGameOver) {
-            startTurnInNewThreadIfComputerVsHuman()
-        }
+        startTurnInNewThreadIfComputerVsHuman()
     }
 
     private fun gameOver() {
@@ -442,7 +446,7 @@ class Game() {
         get() = players[currentPlayerIndex]
 
     fun trashCardFromSupply(card: Card) {
-        //todo
+        removeCardFromSupply(card)
         gameLog("Trashed " + card.name + " from supply")
         trashedCards.add(card)
     }
@@ -467,7 +471,7 @@ class Game() {
     }
 
     fun removeCardFromSupply(card: Card) {
-        //todo
+        supplyAmounts[card.name] = supplyAmounts[card.name]!!.minus(1)
     }
 
     val nonEmptySupplyCards
@@ -767,8 +771,8 @@ class Game() {
     }
 
     fun getSupplyCard(cardName: String): Card {
-        //todo
-        return Copper()
+        val card = supplyCards.first { it.name == cardName }
+        return card.javaClass.kotlin.createInstance()
     }
 
     fun addComputerPlayer(i: Int, bigMoneyUltimate: Boolean, difficulty: Int) {

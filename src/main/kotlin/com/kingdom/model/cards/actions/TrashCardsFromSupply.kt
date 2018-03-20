@@ -11,7 +11,7 @@ class TrashCardsFromSupply(protected var numCardsToScrap: Int, optional: Boolean
 
     override val isShowDone: Boolean
         get() =
-            selectedCards.size > 0 && selectedCards.size <= numCardsToScrap && (this.isShowDoNotUse || selectedCards.size == numCardsToScrap)
+            selectedCards.size in 1..numCardsToScrap && (this.isShowDoNotUse || selectedCards.size == numCardsToScrap)
 
     override val doneText: String
         get() = if (selectedCards.size == 1) {

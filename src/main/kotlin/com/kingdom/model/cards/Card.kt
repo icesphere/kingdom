@@ -1,70 +1,38 @@
 package com.kingdom.model.cards
 
-import com.kingdom.model.OldCardAction
 import com.kingdom.model.cards.supply.*
+import com.kingdom.model.players.Player
 import com.kingdom.util.KingdomUtil
 import java.util.*
-import com.kingdom.model.players.Player
 
-abstract class Card(val name: String, val deck: Deck, val type: CardType, val cost: Int) {
+abstract class Card(
+        val name: String,
+        val deck: Deck,
+        val type: CardType,
+        val cost: Int,
+        var special: String = "",
+        var addActions: Int = 0,
+        var addCoins: Int = 0,
+        var addCards: Int = 0,
+        var addBuys: Int = 0,
+        var victoryPoints: Int = 0,
+        var testing: Boolean = false,
+        var costIncludesPotion: Boolean = false,
+        var addVictoryCoins: Int = 0,
+        var playTreasureCards: Boolean = false,
+        var disabled: Boolean = false,
+        var fontSize: Int = 0,
+        var nameLines: Int = 1,
+        var textSize: Int = 0,
+        var coinsTokens: Int = 0,
+        val associatedCards: MutableList<Card> = ArrayList(0),
+        var isDisableSelect: Boolean = false,
+        var isAutoSelect: Boolean = false,
+        var isActivated: Boolean = false,
+        var isCopied: Boolean = false,
+        var location: CardLocation? = null) {
 
     val id: String = UUID.randomUUID().toString()
-
-    var special: String = ""
-
-    var addActions: Int = 0
-
-    var addCoins: Int = 0
-
-    var addCards: Int = 0
-
-    var addBuys: Int = 0
-
-    var victoryPoints: Int = 0
-
-    var testing: Boolean = false
-
-    var costIncludesPotion: Boolean = false
-
-    var addVictoryCoins: Int = 0
-
-    var playTreasureCards: Boolean = false
-
-    var disabled: Boolean = false
-
-    var fanExpansionCard: Boolean = false
-
-    var sins: Int = 0
-
-    var prizeCard: Boolean = false
-
-    var fontSize: Int = 0
-
-    var nameLines = 1
-
-    var textSize: Int = 0
-
-    var coinsTokens: Int = 0
-
-    val associatedCards: MutableList<Card> = ArrayList(0)
-
-    var isDisableSelect: Boolean = false
-
-    var isAutoSelect: Boolean = false
-
-    var isActivated: Boolean = false
-
-    var isCopied: Boolean = false
-
-    var gainOldCardActions: MutableMap<String, OldCardAction> = HashMap(0)
-
-    var location: CardLocation? = null
-
-    var isTraderProcessed: Boolean = false
-
-    var isCardNotGained: Boolean = false
-
-    var isGainedFromBuy: Boolean = false
 
     val typeAsString: String
         get() {
@@ -119,9 +87,6 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
             }
             if (addBuys != 0) {
                 sb.append(getAmountSymbol(addBuys)).append(KingdomUtil.getPlural(addBuys, "buy")).append(". ")
-            }
-            if (sins != 0) {
-                sb.append(getAmountSymbol(sins)).append(KingdomUtil.getPlural(sins, "sin")).append(". ")
             }
             if (addVictoryCoins != 0) {
                 sb.append(getAmountSymbol(addVictoryCoins)).append(KingdomUtil.getPlural(addVictoryCoins, "victory coin")).append(". ")
@@ -273,23 +238,6 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
                 else -> 9
             }
         }
-
-    constructor(card: Card) : this(card.name, card.deck, card.type, card.cost) {
-        this.special = card.special
-        this.addActions = card.addActions
-        this.addCoins = card.addCoins
-        this.addCards = card.addCards
-        this.addBuys = card.addBuys
-        this.addVictoryCoins = card.addVictoryCoins
-        this.victoryPoints = card.victoryPoints
-        this.testing = card.testing
-        this.costIncludesPotion = card.costIncludesPotion
-        this.sins = card.sins
-        this.fontSize = card.fontSize
-        this.nameLines = card.nameLines
-        this.textSize = card.textSize
-        this.isCopied = true
-    }
 
     private fun getAmountSymbol(amount: Int): String {
         return if (amount < 0) {

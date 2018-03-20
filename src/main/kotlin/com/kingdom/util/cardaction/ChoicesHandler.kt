@@ -82,11 +82,11 @@ object ChoicesHandler {
                 }
             }
             "Choose Reaction" -> {
-                val cardToGain = oldCardAction.associatedCard
+                /*val cardToGain = oldCardAction.associatedCard
                 val reaction = cardToGain!!.gainOldCardActions.remove(choice)
                 if (reaction != null) {
                     game.setPlayerCardAction(player, reaction)
-                }
+                }*/
             }
             "Develop" -> {
                 val gainCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)

@@ -1306,10 +1306,6 @@ class OldGame(val gameId: Int) {
             player.addVictoryCoins(card.addVictoryCoins)
             refreshAllPlayersPlayers()
         }
-        if (card.sins != 0) {
-            player.addSins(card.sins)
-            refreshAllPlayersPlayers()
-        }
         if (card.isPotion) {
             player.addPotions(1)
         }
@@ -1842,13 +1838,13 @@ class OldGame(val gameId: Int) {
     }
 
     fun gainCardFinished(player: OldPlayer, card: Card) {
-        if (!player.isShowCardAction && hasUnfinishedGainCardActions()) {
+        /*if (!player.isShowCardAction && hasUnfinishedGainCardActions()) {
             if (!card.gainOldCardActions.isEmpty()) {
                 setPlayerGainCardAction(player, card)
             } else {
                 setPlayerGainCardAction(player, cardWithUnfinishedGainCardActions)
             }
-        }
+        }*/
     }
 
     fun moveGainedCard(player: OldPlayer, card: Card, destination: CardLocation) {
@@ -1882,7 +1878,7 @@ class OldGame(val gameId: Int) {
     }
 
     fun setPlayerGainCardAction(player: OldPlayer, card: Card) {
-        val firstReaction = card.gainOldCardActions.values.iterator().next()
+        /*val firstReaction = card.gainOldCardActions.values.iterator().next()
         if (card.gainOldCardActions.size == 1) {
             card.gainOldCardActions.clear()
             cardsWithGainCardActions.remove(card.name)
@@ -1900,12 +1896,12 @@ class OldGame(val gameId: Int) {
                 cardAction.choices.add(CardActionChoice(action, action))
             }
             setPlayerCardAction(player, cardAction)
-        }
+        }*/
     }
 
     private fun setGainedCardActions(player: OldPlayer, cardCopy: Card, destination: CardLocation) {
         val gainCardActions = getGainCardActions(player, cardCopy, destination)
-        cardCopy.gainOldCardActions = gainCardActions
+//        cardCopy.gainOldCardActions = gainCardActions
     }
 
     private fun getGainCardActions(player: OldPlayer, cardCopy: Card, destination: CardLocation): MutableMap<String, OldCardAction> {
@@ -2880,9 +2876,9 @@ class OldGame(val gameId: Int) {
 
     fun finishedGainCardAction(player: OldPlayer, oldCardAction: OldCardAction) {
         val card = oldCardAction.associatedCard!!
-        if (card.gainOldCardActions.isEmpty()) {
-            cardsWithGainCardActions.remove(card.name)
-        }
+//        if (card.gainOldCardActions.isEmpty()) {
+//            cardsWithGainCardActions.remove(card.name)
+//        }
         if (!isCurrentPlayer(player) && !player.isShowCardAction && player.extraOldCardActions.isEmpty() && !hasUnfinishedGainCardActions()) {
             playersWithCardActions.remove(player.userId)
             if (playersWithCardActions.isEmpty() && currentPlayer!!.isShowCardAction && currentPlayer!!.oldCardAction!!.isWaitingForPlayers) {
