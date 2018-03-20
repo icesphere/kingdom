@@ -2,6 +2,7 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.util.KingdomUtil
@@ -26,7 +27,7 @@ object KingdomSpecialActionHandler {
                     game.addHistory(player.username, " revealed ", KingdomUtil.getArticleWithCardName(revealedCard))
                     if (revealedCard.isTreasure) {
                         player.addCardToHand(revealedCard)
-                        game.addHistory(player.username, " got a ", revealedCard.name, " from the ", KingdomUtil.getWordWithBackgroundColor("Adventurer", Card.ACTION_COLOR), " action")
+                        game.addHistory(player.username, " got a ", revealedCard.name, " from the ", KingdomUtil.getWordWithBackgroundColor("Adventurer", CardColor.Action), " action")
                         treasureCardsFound++
                     } else {
                         setAsideCards.add(revealedCard)
@@ -61,7 +62,7 @@ object KingdomSpecialActionHandler {
                     if (player.userId != currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(player.userId)) {
                             incompleteCard.setPlayerActionCompleted(player.userId)
-                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!player.hasMoat() && player.hasVictoryCard() && !player.hasLighthouse()) {
                             val victoryCards = KingdomUtil.uniqueCardList(player.getVictoryCards())
                             if (victoryCards.size == 1) {
@@ -82,9 +83,9 @@ object KingdomSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             if (player.hasLighthouse()) {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                             } else if (player.hasMoat()) {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                             } else {
                                 game.addHistory(player.username, " did not have a Victory card")
                             }
@@ -182,7 +183,7 @@ object KingdomSpecialActionHandler {
                     if (player.userId != currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(player.userId)) {
                             incompleteCard.setPlayerActionCompleted(player.userId)
-                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!player.hasMoat() && player.hand.size > 3 && !player.hasLighthouse()) {
                             val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND)
                             cardAction.deck = Deck.Kingdom
@@ -195,9 +196,9 @@ object KingdomSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             if (player.hasLighthouse()) {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                             } else if (player.hasMoat()) {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                             } else {
                                 game.addHistory(player.username, " had 3 or less cards")
                             }
@@ -268,7 +269,7 @@ object KingdomSpecialActionHandler {
                 while (nextPlayerIndex != currentPlayerIndex) {
                     val nextPlayer = players[nextPlayerIndex]
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
-                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         if (nextPlayer.lookAtTopDeckCard() != null) {
                             val nextCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
@@ -283,9 +284,9 @@ object KingdomSpecialActionHandler {
                         }
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                     if (nextPlayerIndex == players.size - 1) {
@@ -306,7 +307,7 @@ object KingdomSpecialActionHandler {
                 while (nextPlayerIndex != currentPlayerIndex) {
                     val nextPlayer = players[nextPlayerIndex]
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
-                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                         nextCardAction.deck = Deck.Kingdom
@@ -343,9 +344,9 @@ object KingdomSpecialActionHandler {
                         incompleteCard.extraOldCardActions.add(nextCardAction)
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                     if (nextPlayerIndex == players.size - 1) {
@@ -377,7 +378,7 @@ object KingdomSpecialActionHandler {
                 while (nextPlayerIndex != game.currentPlayerIndex) {
                     val nextPlayer = players[nextPlayerIndex]
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
-                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         if (game.isCardInSupply(Curse.NAME)) {
                             game.playerGainedCard(nextPlayer, game.curseCard)
@@ -385,9 +386,9 @@ object KingdomSpecialActionHandler {
                         }
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                     nextPlayerIndex = game.calculateNextPlayerIndex(nextPlayerIndex)

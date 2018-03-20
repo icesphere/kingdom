@@ -2,6 +2,7 @@ package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.cards.supply.Duchy
@@ -63,7 +64,7 @@ object TrashCardsHandler {
             }
             "Bishop" -> {
                 val victoryCoinsGained = Math.floor((game.getCardCost(trashedCard) / 2).toDouble()).toInt()
-                game.addHistory(player.username, " gained ", KingdomUtil.getPlural(victoryCoinsGained, "Victory Coin"), " from the ", KingdomUtil.getWordWithBackgroundColor("Bishop", Card.ACTION_COLOR), " card")
+                game.addHistory(player.username, " gained ", KingdomUtil.getPlural(victoryCoinsGained, "Victory Coin"), " from the ", KingdomUtil.getWordWithBackgroundColor("Bishop", CardColor.Action), " card")
                 player.addVictoryCoins(victoryCoinsGained)
                 game.refreshAllPlayersPlayers()
 

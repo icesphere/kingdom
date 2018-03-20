@@ -2,6 +2,7 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 
@@ -74,7 +75,7 @@ object FairyTaleSpecialActionHandler {
                     if (otherPlayer.userId != game.currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(otherPlayer.userId)) {
                             incompleteCard.setPlayerActionCompleted(otherPlayer.userId)
-                            game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse() && otherPlayer.hand.size >= 4 && !otherPlayer.actionCards.isEmpty()) {
                             val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_FROM_HAND)
                             cardAction.deck = Deck.FairyTale
@@ -87,8 +88,8 @@ object FairyTaleSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(otherPlayer.userId)
                             when {
-                                otherPlayer.hasLighthouse() -> game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
-                                otherPlayer.hasMoat() -> game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                otherPlayer.hasLighthouse() -> game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
+                                otherPlayer.hasMoat() -> game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                                 otherPlayer.hand.size < 4 -> game.addHistory(otherPlayer.username, " had less than 4 cards")
                                 else -> game.addHistory(otherPlayer.username, " did not have any action cards")
                             }

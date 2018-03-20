@@ -1,7 +1,7 @@
 package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
-import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 
@@ -87,7 +87,7 @@ object DiscardCardsHandler {
             "Vault" -> {
                 incompleteCard = MultiPlayerIncompleteCard(oldCardAction.cardName, game, false)
                 player.addCoins(selectedCardNames.size)
-                game.addHistory(player.username, " gained +", KingdomUtil.getPlural(selectedCardNames.size, "Coin"), " from playing ", KingdomUtil.getWordWithBackgroundColor("Vault", Card.ACTION_COLOR), "")
+                game.addHistory(player.username, " gained +", KingdomUtil.getPlural(selectedCardNames.size, "Coin"), " from playing ", KingdomUtil.getWordWithBackgroundColor("Vault", CardColor.Action), "")
 
                 for (otherPlayer in game.players) {
                     if (otherPlayer.userId != game.currentPlayerId) {

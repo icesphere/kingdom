@@ -2,6 +2,7 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.Estate
 import com.kingdom.util.KingdomUtil
@@ -51,7 +52,7 @@ object IntrigueSpecialActionHandler {
                 val player = game.currentPlayer
                 player!!.drawCards(1)
                 player.addActions(1)
-                game.addHistory(player.username, " gained +1 Card, +1 Action from ", KingdomUtil.getWordWithBackgroundColor("Conspirator", Card.ACTION_COLOR))
+                game.addHistory(player.username, " gained +1 Card, +1 Action from ", KingdomUtil.getWordWithBackgroundColor("Conspirator", CardColor.Action))
             }
             "Courtyard" -> {
                 val player = game.currentPlayer
@@ -152,7 +153,7 @@ object IntrigueSpecialActionHandler {
                     if (player.userId != currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(player.userId)) {
                             incompleteCard.setPlayerActionCompleted(player.userId)
-                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!player.hasMoat() && !player.hasLighthouse()) {
                             val setAsideCards = ArrayList<Card>()
                             var c = player.removeTopDeckCard()
@@ -173,7 +174,7 @@ object IntrigueSpecialActionHandler {
                                 cardAction.buttonValue = "Done"
                                 cardAction.numCards = 1
                                 cardAction.instructions = "The Saboteur trashed your " + c.name + ". Select one of the following cards to gain and then click Done. If you don't want to gain a card just click Done."
-                                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Saboteur", Card.ACTION_COLOR), " trashed ", player.username, "'s ", c.name)
+                                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Saboteur", CardColor.Action), " trashed ", player.username, "'s ", c.name)
                                 val highestCost = game.getCardCost(c) - 2
                                 for (cardToGain in supplyMap.values) {
                                     if (game.getCardCost(cardToGain) <= highestCost && (c.costIncludesPotion || !cardToGain.costIncludesPotion) && game.isCardInSupply(cardToGain)) {
@@ -192,9 +193,9 @@ object IntrigueSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             if (player.hasLighthouse()) {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                             } else {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                             }
                         }
                     }
@@ -281,13 +282,13 @@ object IntrigueSpecialActionHandler {
                 while (nextPlayerIndex != currentPlayerIndex) {
                     val nextPlayer = players[nextPlayerIndex]
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
-                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         val topCard = nextPlayer.removeTopDeckCard()
                         if (topCard != null) {
                             game.trashedCards.add(topCard)
                             game.playerLostCard(nextPlayer, topCard)
-                            game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Swindler", Card.ACTION_COLOR), " trashed ", nextPlayer.username, "'s ", KingdomUtil.getCardWithBackgroundColor(topCard))
+                            game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Swindler", CardColor.Action), " trashed ", nextPlayer.username, "'s ", KingdomUtil.getCardWithBackgroundColor(topCard))
                             val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                             nextCardAction.deck = Deck.Intrigue
                             nextCardAction.numCards = 1
@@ -311,9 +312,9 @@ object IntrigueSpecialActionHandler {
                         }
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                     if (nextPlayerIndex == players.size - 1) {
@@ -334,7 +335,7 @@ object IntrigueSpecialActionHandler {
                     if (player.userId != currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(player.userId)) {
                             incompleteCard.setPlayerActionCompleted(player.userId)
-                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!player.hasMoat() && !player.hasLighthouse()) {
                             val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                             cardAction.deck = Deck.Intrigue
@@ -346,9 +347,9 @@ object IntrigueSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             if (player.hasLighthouse()) {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                             } else {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                             }
                         }
                     }

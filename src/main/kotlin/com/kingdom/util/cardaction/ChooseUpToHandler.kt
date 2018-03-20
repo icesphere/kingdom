@@ -2,6 +2,7 @@ package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 import java.util.*
@@ -28,7 +29,7 @@ object ChooseUpToHandler {
                 while (playerIndex != game.currentPlayerIndex) {
                     val nextPlayer = players[playerIndex]
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
-                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         if (game.isCardInSupply(selectedCard)) {
                             game.playerGainedCard(nextPlayer, selectedCard)
@@ -36,9 +37,9 @@ object ChooseUpToHandler {
                         }
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                     playerIndex = game.calculateNextPlayerIndex(playerIndex)
@@ -74,10 +75,10 @@ object ChooseUpToHandler {
                 if (actionCard.isDuration) {
                     game.durationCardsPlayed.add(game.kingsCourtCard!!)
                 }
-                game.addHistory(player.username, " used ", KingdomUtil.getWordWithBackgroundColor("King's Court", Card.ACTION_COLOR), " on ", KingdomUtil.getArticleWithCardName(actionCard))
+                game.addHistory(player.username, " used ", KingdomUtil.getWordWithBackgroundColor("King's Court", CardColor.Action), " on ", KingdomUtil.getArticleWithCardName(actionCard))
                 game.playRepeatedAction(player, true)*/
             } else {
-                game.addHistory(player.username, " chose not to play an action with ", KingdomUtil.getWordWithBackgroundColor("King's Court", Card.ACTION_COLOR))
+                game.addHistory(player.username, " chose not to play an action with ", KingdomUtil.getWordWithBackgroundColor("King's Court", CardColor.Action))
             }
             "Mendicant" -> if (selectedCardNames.isNotEmpty()) {
                 val selectedCard = cardMap[selectedCardNames[0]]!!

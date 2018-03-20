@@ -2,6 +2,7 @@ package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.*
@@ -65,7 +66,7 @@ object ChoicesHandler {
             "Bell Tower" -> when (choice) {
                 "before" -> {
                     player.drawCards(2)
-                    game.addHistory(player.username, " revealed " + player.pronoun + " " + KingdomUtil.getWordWithBackgroundColor("Bell Tower", Card.ACTION_REACTION_COLOR) + " to gain +2 Cards before the attack")
+                    game.addHistory(player.username, " revealed " + player.pronoun + " " + KingdomUtil.getWordWithBackgroundColor("Bell Tower", CardColor.ActionReaction) + " to gain +2 Cards before the attack")
                 }
                 "after" -> game.playersWaitingForBellTowerBonus.add(player)
             }
@@ -366,7 +367,7 @@ object ChoicesHandler {
                             .filter { it.userId != player.userId }
                             .forEach {
                                 if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(it.userId)) {
-                                    game.addHistory(it.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                                    game.addHistory(it.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                                 } else if (!it.hasMoat() && !it.hasLighthouse() && it.hand.size >= 5) {
                                     for (c in it.hand) {
                                         game.playerDiscardedCard(it, c)
@@ -375,8 +376,8 @@ object ChoicesHandler {
                                     it.drawCards(4)
                                 } else {
                                     when {
-                                        it.hasLighthouse() -> game.addHistory(it.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
-                                        it.hasMoat() -> game.addHistory(it.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                        it.hasLighthouse() -> game.addHistory(it.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
+                                        it.hasMoat() -> game.addHistory(it.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                                         else -> game.addHistory(it.username, " had less than 5 cards")
                                     }
                                 }
@@ -389,7 +390,7 @@ object ChoicesHandler {
             "Mountebank" -> when (choice) {
                 "discard" -> {
                     player.discardCardFromHand(Curse.NAME)
-                    game.addHistory(player.username, " discarded a ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " card")
+                    game.addHistory(player.username, " discarded a ", KingdomUtil.getWordWithBackgroundColor("Curse", CardColor.Curse), " card")
                     game.refreshHandArea(player)
                 }
                 "gain" -> {
@@ -407,7 +408,7 @@ object ChoicesHandler {
                 when {
                     topDeckCard != null -> {
                         player.nativeVillageCards.add(topDeckCard)
-                        game.addHistory(player.username, " added ", player.pronoun, " top deck card to ", player.pronoun, " ", KingdomUtil.getWordWithBackgroundColor("Native Village", Card.ACTION_COLOR))
+                        game.addHistory(player.username, " added ", player.pronoun, " top deck card to ", player.pronoun, " ", KingdomUtil.getWordWithBackgroundColor("Native Village", CardColor.Action))
                     }
                     else -> game.addHistory(player.username, " did not have any cards to draw")
                 }
@@ -416,7 +417,7 @@ object ChoicesHandler {
                     player.addCardToHand(card)
                 }
                 player.nativeVillageCards.clear()
-                game.addHistory(player.username, " added ", KingdomUtil.getWordWithBackgroundColor("Native Village", Card.ACTION_COLOR), " cards to ", player.pronoun, " hand")
+                game.addHistory(player.username, " added ", KingdomUtil.getWordWithBackgroundColor("Native Village", CardColor.Action), " cards to ", player.pronoun, " hand")
             }
             "Navigator" -> when (choice) {
                 "discard" -> {
@@ -559,7 +560,7 @@ object ChoicesHandler {
                     while (nextPlayerIndex != game.currentPlayerIndex) {
                         val nextPlayer = players[nextPlayerIndex]
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
-                            game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                             val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                             nextCardAction.deck = Deck.Seaside
@@ -592,7 +593,7 @@ object ChoicesHandler {
                                 } else {
                                     game.addHistory("The top card from ", nextPlayer.username, "'s deck was ", KingdomUtil.getArticleWithCardName(card1))
                                     if (card1.isTreasure) {
-                                        game.addHistory(player.username, " trashed ", nextPlayer.username, "'s ", KingdomUtil.getWordWithBackgroundColor(card1.name, Card.TREASURE_COLOR))
+                                        game.addHistory(player.username, " trashed ", nextPlayer.username, "'s ", KingdomUtil.getWordWithBackgroundColor(card1.name, CardColor.Treasure))
                                         game.trashedCards.add(card1)
                                         game.playerLostCard(player, card1)
                                     }
@@ -602,9 +603,9 @@ object ChoicesHandler {
                             }
                         } else {
                             if (nextPlayer.hasLighthouse()) {
-                                game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                             } else {
-                                game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                             }
                         }
                         if (nextPlayerIndex == players.size - 1) {
@@ -815,7 +816,7 @@ object ChoicesHandler {
                     }
                 }
                 "curse" -> {
-                    game.addHistory(player.username, " chose to gain a ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR))
+                    game.addHistory(player.username, " chose to gain a ", KingdomUtil.getWordWithBackgroundColor("Curse", CardColor.Curse))
                     if (game.isCardInSupply(Curse.NAME)) {
                         game.playerGainedCardToHand(player, game.curseCard)
                         player.addCardToHand(game.curseCard)
@@ -854,7 +855,7 @@ object ChoicesHandler {
                 val cardToGain = oldCardAction.associatedCard!!
                 when (choice) {
                     "silver" -> {
-                        game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Trader", Card.ACTION_REACTION_COLOR), " to gain ", KingdomUtil.getArticleWithCardName(game.silverCard), " instead")
+                        game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Trader", CardColor.ActionReaction), " to gain ", KingdomUtil.getArticleWithCardName(game.silverCard), " instead")
                         if (game.supply[Silver.NAME]!! > 0) {
                             game.playerGainedCard(player, game.silverCard)
                         }
@@ -870,11 +871,11 @@ object ChoicesHandler {
                 val cardToGain = oldCardAction.cards[0]
                 when (choice) {
                     "trash" -> {
-                        game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to trash ", KingdomUtil.getArticleWithCardName(cardToGain))
+                        game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", CardColor.ActionReaction), " to trash ", KingdomUtil.getArticleWithCardName(cardToGain))
                         game.moveGainedCard(player, cardToGain, CardLocation.Trash)
                     }
                     "deck" -> {
-                        game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", Card.ACTION_REACTION_COLOR), " to put ", KingdomUtil.getArticleWithCardName(cardToGain), " on top of ", player.pronoun, " deck")
+                        game.addHistory(player.username, " revealed ", KingdomUtil.getWordWithBackgroundColor("Watchtower", CardColor.ActionReaction), " to put ", KingdomUtil.getArticleWithCardName(cardToGain), " on top of ", player.pronoun, " deck")
                         game.moveGainedCard(player, cardToGain, CardLocation.Deck)
                     }
                     else -> when (oldCardAction.destination) {

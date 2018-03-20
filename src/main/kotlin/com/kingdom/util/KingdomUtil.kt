@@ -2,6 +2,7 @@ package com.kingdom.util
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.User
+import com.kingdom.model.cards.CardColor
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.service.UAgentInfo
 import com.sun.jersey.api.client.Client
@@ -34,12 +35,11 @@ object KingdomUtil {
         } else "a " + cardNameString
     }
 
-    fun getWordWithBackgroundColor(word: String, color: String): String {
-        return if (color == Card.ACTION_AND_VICTORY_IMAGE || color == Card.TREASURE_AND_VICTORY_IMAGE || color == Card.TREASURE_AND_CURSE_IMAGE || color == Card.VICTORY_AND_REACTION_IMAGE || color == Card.DURATION_AND_VICTORY_IMAGE || color == Card.TREASURE_REACTION_IMAGE) {
-            "<span class=\"cardColor\" style=\"background-image:url(images/$color);background-repeat:repeat-x;\">$word</span>"
-        } else {
-            "<span class=\"cardColor\" style=\"background-color:$color\">$word</span>"
+    fun getWordWithBackgroundColor(word: String, color: CardColor): String {
+        if (color.isImage) {
+            return "<span class=\"cardColor\" style=\"background-image:url(images/${color.color});background-repeat:repeat-x;\">$word</span>"
         }
+        return "<span class=\"cardColor\" style=\"background-color:${color.color}\">$word</span>"
     }
 
     @JvmOverloads

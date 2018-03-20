@@ -2,6 +2,7 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.cards.supply.Estate
@@ -64,7 +65,7 @@ object CornucopiaSpecialActionHandler {
                     val nextPlayer = players[nextPlayerIndex]
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
                         incompleteCard.setPlayerActionCompleted(nextPlayer.userId)
-                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         val cursesInSupply = game.supply[Curse.NAME]!!
                         if (cursesInSupply > 0) {
@@ -87,9 +88,9 @@ object CornucopiaSpecialActionHandler {
                     } else {
                         incompleteCard.setPlayerActionCompleted(nextPlayer.userId)
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else if (nextPlayer.hasMoat()) {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                     nextPlayerIndex = game.calculateNextPlayerIndex(nextPlayerIndex)
@@ -99,7 +100,7 @@ object CornucopiaSpecialActionHandler {
             "Fortune Teller" -> for (p in players) {
                 if (p.userId != player!!.userId) {
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(p.userId)) {
-                        game.addHistory(p.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(p.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!p.hasMoat() && !p.hasLighthouse()) {
                         val revealedCards = ArrayList<Card>()
                         val setAsideCards = ArrayList<Card>()
@@ -133,9 +134,9 @@ object CornucopiaSpecialActionHandler {
                         }
                     } else {
                         if (p.hasLighthouse()) {
-                            game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else if (p.hasMoat()) {
-                            game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                 }
@@ -240,7 +241,7 @@ object CornucopiaSpecialActionHandler {
                 while (nextPlayerIndex != game.currentPlayerIndex) {
                     val nextPlayer = players[nextPlayerIndex]
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
-                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         val topDeckCard = nextPlayer.removeTopDeckCard()
                         if (topDeckCard != null) {
@@ -272,9 +273,9 @@ object CornucopiaSpecialActionHandler {
                         }
                     } else {
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                     nextPlayerIndex = game.calculateNextPlayerIndex(nextPlayerIndex)
@@ -399,7 +400,7 @@ object CornucopiaSpecialActionHandler {
                     val nextPlayer = players[nextPlayerIndex]
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
                         incompleteCard.setPlayerActionCompleted(nextPlayer.userId)
-                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                         if (nextPlayer.hasBaneCardInHand()) {
                             val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
@@ -419,9 +420,9 @@ object CornucopiaSpecialActionHandler {
                     } else {
                         incompleteCard.setPlayerActionCompleted(nextPlayer.userId)
                         if (nextPlayer.hasLighthouse()) {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else {
-                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                     nextPlayerIndex = game.calculateNextPlayerIndex(nextPlayerIndex)

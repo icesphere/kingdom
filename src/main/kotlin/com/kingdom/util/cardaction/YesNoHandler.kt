@@ -2,6 +2,7 @@ package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.Estate
@@ -20,7 +21,7 @@ object YesNoHandler {
                 "yes" -> {
                     player.discardCardFromHand(Estate.NAME)
                     player.addCoins(4)
-                    game.addHistory(player.username, " discarded an ", KingdomUtil.getWordWithBackgroundColor("Estate", Card.VICTORY_COLOR), " and got +4 coins")
+                    game.addHistory(player.username, " discarded an ", KingdomUtil.getWordWithBackgroundColor("Estate", CardColor.Victory), " and got +4 coins")
                 }
                 else -> if (game.isCardInSupply(Estate.NAME)) {
                     game.playerGainedCard(player, game.estateCard)
@@ -175,7 +176,7 @@ object YesNoHandler {
                 game.addHistory(player.username, " chose not to discard a card for +1 Buy")
             }
             "Horse Traders" -> if (yesNoAnswer == "yes") {
-                game.addHistory(player.username, " set aside ", KingdomUtil.getWordWithBackgroundColor("Horse Traders", Card.ACTION_REACTION_COLOR))
+                game.addHistory(player.username, " set aside ", KingdomUtil.getWordWithBackgroundColor("Horse Traders", CardColor.ActionReaction))
                 player.setAsideCardFromHand(game.horseTradersCard!!)
             }
             "Ill-Gotten Gains" -> if (yesNoAnswer == "yes") {
@@ -225,7 +226,7 @@ object YesNoHandler {
                 game.trashedCards.add(miningVillageCard)
                 game.playerLostCard(player, miningVillageCard)
                 player.addCoins(2)
-                game.addHistory(player.username, " trashed a ", KingdomUtil.getWordWithBackgroundColor("Mining Village", Card.ACTION_COLOR), " to get +2 coins")
+                game.addHistory(player.username, " trashed a ", KingdomUtil.getWordWithBackgroundColor("Mining Village", CardColor.Action), " to get +2 coins")
                 game.refreshAllPlayersCardsPlayed()
             }
             "Museum Trash Cards" -> if (yesNoAnswer == "yes") {
@@ -284,7 +285,7 @@ object YesNoHandler {
                 val cardToGain = oldCardAction.cards[0]
                 when (yesNoAnswer) {
                     "yes" -> {
-                        game.addHistory(player.username, " used ", KingdomUtil.getWordWithBackgroundColor("Royal Seal", Card.TREASURE_COLOR), " to add the gained card to the top of ", player.pronoun, " deck")
+                        game.addHistory(player.username, " used ", KingdomUtil.getWordWithBackgroundColor("Royal Seal", CardColor.Treasure), " to add the gained card to the top of ", player.pronoun, " deck")
                         game.moveGainedCard(player, cardToGain, CardLocation.Deck)
                     }
                     else -> when (oldCardAction.destination) {
@@ -336,7 +337,7 @@ object YesNoHandler {
                 }
             }
             "Secret Chamber" -> if (yesNoAnswer == "yes") {
-                game.addHistory(player.username, " is using a ", KingdomUtil.getWordWithBackgroundColor("Secret Chamber", Card.ACTION_REACTION_COLOR))
+                game.addHistory(player.username, " is using a ", KingdomUtil.getWordWithBackgroundColor("Secret Chamber", CardColor.ActionReaction))
                 player.drawCards(2)
                 val secretChamberAction = OldCardAction(OldCardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK)
                 secretChamberAction.deck = Deck.Intrigue
@@ -393,7 +394,7 @@ object YesNoHandler {
                 val cardToGain = oldCardAction.cards[0]
                 when (yesNoAnswer) {
                     "yes" -> {
-                        game.addHistory(player.username, " put ", KingdomUtil.getArticleWithCardName(cardToGain), " under ", player.pronoun, " ", KingdomUtil.getWordWithBackgroundColor("Tinker", Card.ACTION_DURATION_COLOR))
+                        game.addHistory(player.username, " put ", KingdomUtil.getArticleWithCardName(cardToGain), " under ", player.pronoun, " ", KingdomUtil.getWordWithBackgroundColor("Tinker", CardColor.ActionDuration))
                         player.tinkerCards.add(cardToGain)
                         game.moveGainedCard(player, cardToGain, CardLocation.Tinker)
                     }

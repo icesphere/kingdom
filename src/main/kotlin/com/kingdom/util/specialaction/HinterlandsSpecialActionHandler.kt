@@ -2,6 +2,7 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.Silver
 import com.kingdom.util.KingdomUtil
@@ -165,7 +166,7 @@ object HinterlandsSpecialActionHandler {
                     if (!game.isCurrentPlayer(p)) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(p.userId)) {
                             incompleteCard.setPlayerActionCompleted(p.userId)
-                            game.addHistory(p.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(p.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!p.hasMoat() && !p.hasLighthouse()) {
                             p.drawCards(1)
                             game.addHistory(p.username, " drew 1 card")
@@ -186,9 +187,9 @@ object HinterlandsSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(p.userId)
                             if (p.hasLighthouse()) {
-                                game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                             } else if (p.hasMoat()) {
-                                game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                             }
                         }
                     }

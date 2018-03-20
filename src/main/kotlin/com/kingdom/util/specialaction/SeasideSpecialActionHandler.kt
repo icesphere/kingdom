@@ -2,6 +2,7 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.cards.supply.Gold
@@ -51,27 +52,27 @@ object SeasideSpecialActionHandler {
             "Cutpurse" -> for (player in players) {
                 if (player.userId != currentPlayerId) {
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(player.userId)) {
-                        game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!player.hasMoat() && !player.hasLighthouse()) {
                         var hasCopper = false
                         for (handCard in player.hand) {
                             if (handCard.name == "Copper") {
                                 hasCopper = true
                                 player.discardCardFromHand(handCard)
-                                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Cutpurse", Card.ACTION_COLOR), " discarded ", player.username, "'s ", KingdomUtil.getWordWithBackgroundColor("Copper", Card.TREASURE_COLOR))
+                                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Cutpurse", CardColor.Action), " discarded ", player.username, "'s ", KingdomUtil.getWordWithBackgroundColor("Copper", CardColor.Treasure))
                                 game.refreshHand(player)
                                 game.refreshDiscard(player)
                                 break
                             }
                         }
                         if (!hasCopper) {
-                            game.addHistory(player.username, " did not have a ", KingdomUtil.getWordWithBackgroundColor("Copper", Card.TREASURE_COLOR))
+                            game.addHistory(player.username, " did not have a ", KingdomUtil.getWordWithBackgroundColor("Copper", CardColor.Treasure))
                         }
                     } else {
                         if (player.hasLighthouse()) {
-                            game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else {
-                            game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                 }
@@ -128,7 +129,7 @@ object SeasideSpecialActionHandler {
                     if (player.userId != currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(player.userId)) {
                             incompleteCard.setPlayerActionCompleted(player.userId)
-                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!player.hasMoat() && player.hand.size >= 4 && !player.hasLighthouse()) {
                             val cardAction = OldCardAction(OldCardAction.TYPE_CARDS_FROM_HAND_TO_TOP_OF_DECK)
                             cardAction.deck = Deck.Seaside
@@ -141,8 +142,8 @@ object SeasideSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             when {
-                                player.hasLighthouse() -> game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
-                                player.hasMoat() -> game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                player.hasLighthouse() -> game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
+                                player.hasMoat() -> game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                                 else -> game.addHistory(player.username, " had 3 or less cards")
                             }
                         }
@@ -196,7 +197,7 @@ object SeasideSpecialActionHandler {
                     cards.size == 1 -> {
                         game.trashedCards.add(cards[0])
                         game.playerLostCard(player!!, cards[0])
-                        game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " trashed ", player.username, "'s ", cards[0].name)
+                        game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", CardColor.Action), " trashed ", player.username, "'s ", cards[0].name)
                     }
                     cards.size > 0 -> {
                         game.refreshHand(player!!)
@@ -288,7 +289,7 @@ object SeasideSpecialActionHandler {
             "Sea Hag" -> for (player in players) {
                 if (player.userId != currentPlayerId) {
                     if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(player.userId)) {
-                        game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                        game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                     } else if (!player.hasMoat() && !player.hasLighthouse()) {
                         val topCard = player.removeTopDeckCard()
                         if (topCard != null) {
@@ -300,9 +301,9 @@ object SeasideSpecialActionHandler {
                         }
                     } else {
                         if (player.hasLighthouse()) {
-                            game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                            game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                         } else {
-                            game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                            game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                         }
                     }
                 }
@@ -368,9 +369,9 @@ object SeasideSpecialActionHandler {
                             break
                         }
                     }
-                    game.addHistory(player.username, " trashed two ", KingdomUtil.getWordWithBackgroundColor("Treasure Maps", Card.ACTION_COLOR), " and gained " + goldCardsGained + " " + KingdomUtil.getCardWithBackgroundColor(game.goldCard) + " cards on top of ", player.pronoun, " deck")
+                    game.addHistory(player.username, " trashed two ", KingdomUtil.getWordWithBackgroundColor("Treasure Maps", CardColor.Action), " and gained " + goldCardsGained + " " + KingdomUtil.getCardWithBackgroundColor(game.goldCard) + " cards on top of ", player.pronoun, " deck")
                 } else {
-                    game.addHistory(player.username, " trashed a ", KingdomUtil.getWordWithBackgroundColor("Treasure Map", Card.ACTION_COLOR))
+                    game.addHistory(player.username, " trashed a ", KingdomUtil.getWordWithBackgroundColor("Treasure Map", CardColor.Action))
                 }
             }
             "Warehouse" -> {

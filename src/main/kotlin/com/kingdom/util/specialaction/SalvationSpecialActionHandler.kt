@@ -2,6 +2,7 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.util.KingdomUtil
@@ -46,7 +47,7 @@ object SalvationSpecialActionHandler {
                     if (otherPlayer.userId != game.currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(otherPlayer.userId)) {
                             incompleteCard.setPlayerActionCompleted(otherPlayer.userId)
-                            game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse()) {
                             val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
                             cardAction.deck = Deck.Salvation
@@ -68,9 +69,9 @@ object SalvationSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(otherPlayer.userId)
                             if (otherPlayer.hasLighthouse()) {
-                                game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                             } else {
-                                game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                             }
                         }
                     }
@@ -136,7 +137,7 @@ object SalvationSpecialActionHandler {
                 for (otherPlayer in game.players) {
                     if (otherPlayer.userId != game.currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(otherPlayer.userId)) {
-                            game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse() && !otherPlayer.discard.isEmpty()) {
                             var randomIndex1 = 0
                             var randomIndex2 = -1
@@ -177,8 +178,8 @@ object SalvationSpecialActionHandler {
                             }
                         } else {
                             when {
-                                otherPlayer.hasLighthouse() -> game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
-                                otherPlayer.hasMoat() -> game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                otherPlayer.hasLighthouse() -> game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
+                                otherPlayer.hasMoat() -> game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                                 else -> game.addHistory(otherPlayer.username, "'s discard pile was empty")
                             }
                         }
@@ -203,20 +204,20 @@ object SalvationSpecialActionHandler {
                 for (otherPlayer in game.players) {
                     if (otherPlayer.userId != game.currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(otherPlayer.userId)) {
-                            game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(otherPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!otherPlayer.hasMoat() && !otherPlayer.hasLighthouse()) {
                             if (otherPlayer.sins >= 2) {
                                 val cursesInSupply = game.supply[Curse.NAME]!!
                                 when {
                                     cursesInSupply >= 2 -> {
                                         otherPlayer.addSins(-2)
-                                        game.addHistory(otherPlayer.username, " removed 2 sins and gained 2 ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " cards from the Inquisitor")
+                                        game.addHistory(otherPlayer.username, " removed 2 sins and gained 2 ", KingdomUtil.getWordWithBackgroundColor("Curse", CardColor.Curse), " cards from the Inquisitor")
                                         game.playerGainedCard(otherPlayer, game.curseCard)
                                         game.playerGainedCard(otherPlayer, game.curseCard)
                                     }
                                     cursesInSupply == 1 -> {
                                         otherPlayer.addSins(-1)
-                                        game.addHistory(otherPlayer.username, " removed 1 sin and gained 1 ", KingdomUtil.getWordWithBackgroundColor("Curse", Card.CURSE_COLOR), " card from the Inquisitor")
+                                        game.addHistory(otherPlayer.username, " removed 1 sin and gained 1 ", KingdomUtil.getWordWithBackgroundColor("Curse", CardColor.Curse), " card from the Inquisitor")
                                         game.playerGainedCard(otherPlayer, game.curseCard)
                                     }
                                     else -> {
@@ -231,9 +232,9 @@ object SalvationSpecialActionHandler {
                             game.refreshHandArea(otherPlayer)
                         } else {
                             if (otherPlayer.hasLighthouse()) {
-                                game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                             } else {
-                                game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                game.addHistory(otherPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                             }
                         }
                     }

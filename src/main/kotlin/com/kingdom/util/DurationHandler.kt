@@ -3,6 +3,7 @@ package com.kingdom.util
 import com.kingdom.model.cards.Card
 import com.kingdom.model.OldGame
 import com.kingdom.model.OldPlayer
+import com.kingdom.model.cards.CardColor
 
 object DurationHandler {
     fun applyDurationCards(game: OldGame, player: OldPlayer) {
@@ -23,7 +24,7 @@ object DurationHandler {
                     player.drawCards(5)
                     player.addBuys(1)
                     player.addActions(1)
-                    game.addHistory(player.username, " gained +5 Cards, +1 Buy, +1 Action from ", KingdomUtil.getWordWithBackgroundColor("Tactician", Card.ACTION_DURATION_COLOR))
+                    game.addHistory(player.username, " gained +5 Cards, +1 Buy, +1 Action from ", KingdomUtil.getWordWithBackgroundColor("Tactician", CardColor.ActionDuration))
                 }
                 "Wharf" -> action = WharfDurationAction(game, player)
             }
@@ -54,7 +55,7 @@ object DurationHandler {
 
         override fun apply(numTimesApplied: Int) {
             player.drawCards(1)
-            game.addHistory(player.username, " gained +1 Card from ", KingdomUtil.getWordWithBackgroundColor("Caravan", Card.ACTION_DURATION_COLOR))
+            game.addHistory(player.username, " gained +1 Card from ", KingdomUtil.getWordWithBackgroundColor("Caravan", CardColor.ActionDuration))
         }
     }
 
@@ -63,7 +64,7 @@ object DurationHandler {
         override fun apply(numTimesApplied: Int) {
             player.addActions(1)
             player.addCoins(1)
-            game.addHistory(player.username, " gained +1 Action, +1 Coin from ", KingdomUtil.getWordWithBackgroundColor("Fishing Village", Card.ACTION_DURATION_COLOR))
+            game.addHistory(player.username, " gained +1 Action, +1 Coin from ", KingdomUtil.getWordWithBackgroundColor("Fishing Village", CardColor.ActionDuration))
         }
     }
 
@@ -74,7 +75,7 @@ object DurationHandler {
                 player.addCardToHand(c)
             }
             player.havenCards.clear()
-            game.addHistory(player.username, " added ", KingdomUtil.getWordWithBackgroundColor("Haven", Card.ACTION_DURATION_COLOR), " cards to hand")
+            game.addHistory(player.username, " added ", KingdomUtil.getWordWithBackgroundColor("Haven", CardColor.ActionDuration), " cards to hand")
         }
     }
 
@@ -82,7 +83,7 @@ object DurationHandler {
 
         override fun apply(numTimesApplied: Int) {
             player.drawCards(1)
-            game.addHistory(player.username, " gained +1 Card from ", KingdomUtil.getWordWithBackgroundColor("Hedge Wizard", Card.DURATION_AND_VICTORY_IMAGE))
+            game.addHistory(player.username, " gained +1 Card from ", KingdomUtil.getWordWithBackgroundColor("Hedge Wizard", CardColor.DurationVictory))
         }
     }
 
@@ -90,7 +91,7 @@ object DurationHandler {
 
         override fun apply(numTimesApplied: Int) {
             player.addCoins(1)
-            game.addHistory(player.username, " gained +1 Coin from ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+            game.addHistory(player.username, " gained +1 Coin from ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
         }
     }
 
@@ -98,7 +99,7 @@ object DurationHandler {
 
         override fun apply(numTimesApplied: Int) {
             player.addCoins(2)
-            game.addHistory(player.username, " gained +2 Coins from ", KingdomUtil.getWordWithBackgroundColor("Merchant Ship", Card.ACTION_DURATION_COLOR))
+            game.addHistory(player.username, " gained +2 Coins from ", KingdomUtil.getWordWithBackgroundColor("Merchant Ship", CardColor.ActionDuration))
         }
     }
 
@@ -124,7 +125,7 @@ object DurationHandler {
         override fun apply(numTimesApplied: Int) {
             player.drawCards(2)
             player.addBuys(1)
-            game.addHistory(player.username, " gained +2 Cards, +1 Buy from ", KingdomUtil.getWordWithBackgroundColor("Wharf", Card.ACTION_DURATION_COLOR))
+            game.addHistory(player.username, " gained +2 Cards, +1 Buy from ", KingdomUtil.getWordWithBackgroundColor("Wharf", CardColor.ActionDuration))
         }
     }
 }

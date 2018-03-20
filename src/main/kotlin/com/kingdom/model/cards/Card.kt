@@ -229,20 +229,20 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
     val isFan: Boolean
         get() = deck === Deck.Fan
 
-    val backgroundColor: String
+    val backgroundColor: CardColor
         get() = when {
-            type == CardType.ActionVictory -> ACTION_AND_VICTORY_IMAGE
-            type == CardType.TreasureVictory -> TREASURE_AND_VICTORY_IMAGE
-            type == CardType.TreasureCurse -> TREASURE_AND_CURSE_IMAGE
-            type == CardType.VictoryReaction -> VICTORY_AND_REACTION_IMAGE
-            type == CardType.DurationVictory -> DURATION_AND_VICTORY_IMAGE
-            type == CardType.TreasureReaction -> TREASURE_REACTION_IMAGE
-            isTreasure -> TREASURE_COLOR
-            isVictory -> VICTORY_COLOR
-            type == CardType.ActionReaction -> ACTION_REACTION_COLOR
-            type == CardType.Curse -> CURSE_COLOR
-            type == CardType.ActionDuration -> ACTION_DURATION_COLOR
-            else -> ACTION_COLOR
+            type == CardType.ActionVictory -> CardColor.ActionVictory
+            type == CardType.TreasureVictory -> CardColor.TreasureVictory
+            type == CardType.TreasureCurse -> CardColor.TreasureCurse
+            type == CardType.VictoryReaction -> CardColor.VictoryReaction
+            type == CardType.DurationVictory -> CardColor.DurationVictory
+            type == CardType.TreasureReaction -> CardColor.TreasureReaction
+            isTreasure -> CardColor.Treasure
+            isVictory -> CardColor.Victory
+            type == CardType.ActionReaction -> CardColor.ActionReaction
+            type == CardType.Curse -> CardColor.Curse
+            type == CardType.ActionDuration -> CardColor.ActionDuration
+            else -> CardColor.Action
         }
 
     val isAutoPlayTreasure: Boolean
@@ -333,22 +333,5 @@ abstract class Card(val name: String, val deck: Deck, val type: CardType, val co
 
     open fun isActionable(player: Player, cardLocation: CardLocation): Boolean {
         return player.isYourTurn && cardLocation == CardLocation.Hand
-    }
-
-    companion object {
-
-        const val TREASURE_COLOR = "#F6DC51"
-        const val CURSE_COLOR = "#A17FBC"
-        const val VICTORY_COLOR = "#80B75A"
-        const val ACTION_REACTION_COLOR = "#7FAED8"
-        const val ACTION_DURATION_COLOR = "#F09954"
-        const val ACTION_COLOR = "#CBC6B3"
-
-        const val ACTION_AND_VICTORY_IMAGE = "grey_green.gif"
-        const val TREASURE_AND_VICTORY_IMAGE = "gold_green.gif"
-        const val VICTORY_AND_REACTION_IMAGE = "green_blue.gif"
-        const val TREASURE_AND_CURSE_IMAGE = "gold_purple.gif"
-        const val DURATION_AND_VICTORY_IMAGE = "orange_green.gif"
-        const val TREASURE_REACTION_IMAGE = "gold_blue.gif"
     }
 }

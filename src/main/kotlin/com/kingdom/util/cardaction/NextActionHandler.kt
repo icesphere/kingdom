@@ -2,6 +2,7 @@ package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.specialaction.SpecialActionHandler
@@ -50,7 +51,7 @@ object NextActionHandler {
                 if (!game.playersWaitingForBellTowerBonus.isEmpty()) {
                     for (player in game.playersWaitingForBellTowerBonus) {
                         player.drawCards(2)
-                        game.addHistory(player.username, " revealed " + player.pronoun + " " + KingdomUtil.getWordWithBackgroundColor("Bell Tower", Card.ACTION_REACTION_COLOR) + " to gain +2 Cards after the attack")
+                        game.addHistory(player.username, " revealed " + player.pronoun + " " + KingdomUtil.getWordWithBackgroundColor("Bell Tower", CardColor.ActionReaction) + " to gain +2 Cards after the attack")
                     }
                     game.playersWaitingForBellTowerBonus.clear()
                 }
@@ -227,7 +228,7 @@ object NextActionHandler {
                     game.currentPlayer!!.drawCards(1)
                     game.currentPlayer!!.addCoins(1)
                     game.refreshAllPlayersCardsBought()
-                    game.addHistory(game.currentPlayer!!.username, " gained +1 Card, +1 Coin from the ", KingdomUtil.getWordWithBackgroundColor("Tournament", Card.ACTION_COLOR))
+                    game.addHistory(game.currentPlayer!!.username, " gained +1 Card, +1 Coin from the ", KingdomUtil.getWordWithBackgroundColor("Tournament", CardColor.Action))
                 }
             }
             else -> {

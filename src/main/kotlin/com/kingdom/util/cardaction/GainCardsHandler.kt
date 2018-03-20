@@ -2,6 +2,7 @@ package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 import java.util.*
@@ -118,7 +119,7 @@ object GainCardsHandler {
                 game.prizeCards.remove(card)
             }
             "University" -> if (selectedCardNames.isEmpty()) {
-                game.addHistory(player.username, " chose not to gain a card with ", KingdomUtil.getWordWithBackgroundColor("University", Card.ACTION_COLOR))
+                game.addHistory(player.username, " chose not to gain a card with ", KingdomUtil.getWordWithBackgroundColor("University", CardColor.Action))
             }
         }
     }

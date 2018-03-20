@@ -2,6 +2,7 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 
@@ -127,7 +128,7 @@ object BuySpecialActionHandler {
         while (playerIndex != game.currentPlayerIndex) {
             val nextPlayer = game.players[playerIndex]
             if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(nextPlayer.userId)) {
-                game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                game.addHistory(nextPlayer.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
             } else if (!nextPlayer.hasMoat() && !nextPlayer.hasLighthouse()) {
                 val cards = ArrayList<Card>()
                 val card1 = nextPlayer.removeTopDeckCard()
@@ -193,9 +194,9 @@ object BuySpecialActionHandler {
                 }
             } else {
                 if (nextPlayer.hasLighthouse()) {
-                    game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                    game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                 } else {
-                    game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                    game.addHistory(nextPlayer.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                 }
             }
             playerIndex = game.calculateNextPlayerIndex(playerIndex)

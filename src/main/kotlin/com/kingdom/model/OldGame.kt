@@ -1,6 +1,7 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.*
@@ -1203,7 +1204,7 @@ class OldGame(val gameId: Int) {
             if (goonsCardsPlayed > 0) {
                 player.addVictoryCoins(goonsCardsPlayed)
                 refreshAllPlayersPlayers()
-                addHistory(player.username, " gained ", KingdomUtil.getPlural(goonsCardsPlayed, "Victory Coin"), " from ", KingdomUtil.getWordWithBackgroundColor("Goons", Card.ACTION_COLOR))
+                addHistory(player.username, " gained ", KingdomUtil.getPlural(goonsCardsPlayed, "Victory Coin"), " from ", KingdomUtil.getWordWithBackgroundColor("Goons", CardColor.Action))
             }
             cardsBought.add(card)
             if (card.name == "Mint") {
@@ -1344,7 +1345,7 @@ class OldGame(val gameId: Int) {
         if (trackEdictCards && edictCards.contains(card)) {
             player.addSins(1)
             refreshAllPlayersPlayers()
-            addHistory(player.username, " gained 1 sin from an ", KingdomUtil.getWordWithBackgroundColor("Edict", Card.ACTION_DURATION_COLOR))
+            addHistory(player.username, " gained 1 sin from an ", KingdomUtil.getWordWithBackgroundColor("Edict", CardColor.ActionDuration))
         }
         if (trackTreasuryCards && card.name == "Treasury") {
             playedTreasuryCard = true
@@ -2223,7 +2224,7 @@ class OldGame(val gameId: Int) {
                     for (card in nextPlayer.tinkerCards) {
                         nextPlayer.addCardToHand(card)
                     }
-                    addHistory(nextPlayer.username, " added ", KingdomUtil.groupCards(nextPlayer.tinkerCards, true), " from ", nextPlayer.pronoun, " ", KingdomUtil.getWordWithBackgroundColor("Tinker", Card.ACTION_DURATION_COLOR), " to ", nextPlayer.pronoun, " hand")
+                    addHistory(nextPlayer.username, " added ", KingdomUtil.groupCards(nextPlayer.tinkerCards, true), " from ", nextPlayer.pronoun, " ", KingdomUtil.getWordWithBackgroundColor("Tinker", CardColor.ActionDuration), " to ", nextPlayer.pronoun, " hand")
                     nextPlayer.tinkerCards.clear()
                 }
             }
@@ -2250,7 +2251,7 @@ class OldGame(val gameId: Int) {
             refreshAllPlayersSupply()
         }
         if (takeOutpostTurn) {
-            addHistory(nextPlayer.username, " is taking an extra turn from the ", KingdomUtil.getWordWithBackgroundColor("Outpost", Card.ACTION_DURATION_COLOR), " Card")
+            addHistory(nextPlayer.username, " is taking an extra turn from the ", KingdomUtil.getWordWithBackgroundColor("Outpost", CardColor.ActionDuration), " Card")
             outpostCardPlayed = false
             outpostTurn = true
         } else {

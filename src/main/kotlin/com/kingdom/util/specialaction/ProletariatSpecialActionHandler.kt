@@ -2,6 +2,7 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.util.KingdomUtil
 
@@ -59,7 +60,7 @@ object ProletariatSpecialActionHandler {
                     if (!game.isCurrentPlayer(p)) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(p.userId)) {
                             incompleteCard.setPlayerActionCompleted(p.userId)
-                            game.addHistory(p.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(p.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!p.hasMoat() && p.hand.size > 3 && !p.hasLighthouse()) {
                             val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
                             cardAction.deck = Deck.Proletariat
@@ -72,8 +73,8 @@ object ProletariatSpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(p.userId)
                             when {
-                                p.hasLighthouse() -> game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
-                                p.hasMoat() -> game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                p.hasLighthouse() -> game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
+                                p.hasMoat() -> game.addHistory(p.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                                 else -> game.addHistory(p.username, " had 3 or less cards")
                             }
                         }

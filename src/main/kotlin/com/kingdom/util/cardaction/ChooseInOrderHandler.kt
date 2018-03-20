@@ -2,6 +2,7 @@ package com.kingdom.util.cardaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.util.KingdomUtil
 
 object ChooseInOrderHandler {
@@ -52,11 +53,11 @@ object ChooseInOrderHandler {
                 val cardToTrash = cardMap[selectedCardNames[0]]!!
                 game.trashedCards.add(cardToTrash)
                 game.playerLostCard(player, cardToTrash)
-                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " trashed ", player.username, "'s ", cardToTrash.name)
+                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", CardColor.Action), " trashed ", player.username, "'s ", cardToTrash.name)
                 val cardToDiscard = cardMap[selectedCardNames[1]]!!
                 player.addCardToDiscard(cardToDiscard)
                 game.playerDiscardedCard(player, cardToDiscard)
-                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", Card.ACTION_COLOR), " discarded ", player.username, "'s ", cardToDiscard.name)
+                game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Lookout", CardColor.Action), " discarded ", player.username, "'s ", cardToDiscard.name)
                 if (selectedCardNames.size == 3) {
                     val cardToPutBack = cardMap[selectedCardNames[2]]!!
                     player.addCardToTopOfDeck(cardToPutBack)

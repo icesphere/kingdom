@@ -2,6 +2,7 @@ package com.kingdom.util.specialaction
 
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardColor
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Curse
@@ -93,7 +94,7 @@ object ProsperitySpecialActionHandler {
                     if (player.userId != currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(player.userId)) {
                             incompleteCard.setPlayerActionCompleted(player.userId)
-                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!player.hasMoat() && player.hand.size > 3 && !player.hasLighthouse()) {
                             val cardAction = OldCardAction(OldCardAction.TYPE_DISCARD_DOWN_TO_FROM_HAND)
                             cardAction.deck = Deck.Prosperity
@@ -106,8 +107,8 @@ object ProsperitySpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             when {
-                                player.hasLighthouse() -> game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
-                                player.hasMoat() -> game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                player.hasLighthouse() -> game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
+                                player.hasMoat() -> game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                                 else -> game.addHistory(player.username, " had 3 or less cards")
                             }
                         }
@@ -153,7 +154,7 @@ object ProsperitySpecialActionHandler {
                     if (player.userId != currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(player.userId)) {
                             incompleteCard.setPlayerActionCompleted(player.userId)
-                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!player.hasMoat() && !player.hasLighthouse()) {
                             if (player.curseCardsInHand > 0) {
                                 val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
@@ -176,9 +177,9 @@ object ProsperitySpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             if (player.hasLighthouse()) {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                             } else {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                             }
                         }
                     }
@@ -191,7 +192,7 @@ object ProsperitySpecialActionHandler {
                     if (player.userId != currentPlayerId) {
                         if (game.isCheckEnchantedPalace && game.revealedEnchantedPalace(player.userId)) {
                             incompleteCard.setPlayerActionCompleted(player.userId)
-                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", Card.VICTORY_AND_REACTION_IMAGE))
+                            game.addHistory(player.username, " revealed an ", KingdomUtil.getWordWithBackgroundColor("Enchanted Palace", CardColor.VictoryReaction))
                         } else if (!player.hasMoat() && !player.hasLighthouse()) {
                             val cardsRevealed = ArrayList<Card>()
                             while (cardsRevealed.size < 3) {
@@ -231,9 +232,9 @@ object ProsperitySpecialActionHandler {
                         } else {
                             incompleteCard.setPlayerActionCompleted(player.userId)
                             if (player.hasLighthouse()) {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", Card.ACTION_DURATION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Lighthouse", CardColor.ActionDuration))
                             } else if (player.hasMoat()) {
-                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", Card.ACTION_REACTION_COLOR))
+                                game.addHistory(player.username, " had a ", KingdomUtil.getWordWithBackgroundColor("Moat", CardColor.ActionReaction))
                             }
                         }
                     }
