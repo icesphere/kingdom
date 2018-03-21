@@ -76,7 +76,7 @@ object IntrigueSpecialActionHandler {
                 cardAction.numCards = 1
                 cardAction.instructions = "Select one of the following cards to gain and then click Done."
                 for (c in supplyMap.values) {
-                    if (game.getCardCost(c) <= 4 && !c.costIncludesPotion && game.isCardInSupply(c)) {
+                    if (game.getCardCost(c) <= 4 && game.isCardInSupply(c)) {
                         cardAction.cards.add(c)
                     }
                 }
@@ -177,7 +177,7 @@ object IntrigueSpecialActionHandler {
                                 game.addHistory("The ", KingdomUtil.getWordWithBackgroundColor("Saboteur", CardColor.Action), " trashed ", player.username, "'s ", c.name)
                                 val highestCost = game.getCardCost(c) - 2
                                 for (cardToGain in supplyMap.values) {
-                                    if (game.getCardCost(cardToGain) <= highestCost && (c.costIncludesPotion || !cardToGain.costIncludesPotion) && game.isCardInSupply(cardToGain)) {
+                                    if (game.getCardCost(cardToGain) <= highestCost && game.isCardInSupply(cardToGain)) {
                                         cardAction.cards.add(cardToGain)
                                     }
                                 }
@@ -298,7 +298,7 @@ object IntrigueSpecialActionHandler {
                             nextCardAction.playerId = nextPlayer.userId
                             val cost = game.getCardCost(topCard)
                             for (c in supplyMap.values) {
-                                if (game.getCardCost(c) == cost && c.costIncludesPotion == topCard.costIncludesPotion && game.isCardInSupply(c)) {
+                                if (game.getCardCost(c) == cost && game.isCardInSupply(c)) {
                                     nextCardAction.cards.add(c)
                                 }
                             }

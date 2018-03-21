@@ -49,13 +49,6 @@ object TrashCardsHandler {
                     }
                 }
             }
-            "Apprentice" -> {
-                val numCardsToDraw = game.getCardCost(trashedCard)
-                player.drawCards(numCardsToDraw)
-                if (trashedCard.costIncludesPotion) {
-                    player.drawCards(2)
-                }
-            }
             "Assassin" -> {
                 game.currentPlayer!!.addSins(2)
                 game.refreshAllPlayersPlayers()
@@ -95,14 +88,14 @@ object TrashCardsHandler {
 
                 val cardsMore = supplyMap.values
                         .filterTo(ArrayList()) {
-                            game.getCardCost(it) == cost && trashedCard.costIncludesPotion == it.costIncludesPotion && game.isCardInSupply(it)
+                            game.getCardCost(it) == cost && game.isCardInSupply(it)
                         }
 
                 cost -= 2
 
                 val cardsLess = supplyMap.values
                         .filterTo(ArrayList()) {
-                            game.getCardCost(it) == cost && trashedCard.costIncludesPotion == it.costIncludesPotion && game.isCardInSupply(it)
+                            game.getCardCost(it) == cost && game.isCardInSupply(it)
                         }
 
                 if (!cardsLess.isEmpty() && !cardsMore.isEmpty()) {
@@ -151,7 +144,7 @@ object TrashCardsHandler {
 
                 supplyMap.values
                         .filterTo(secondCardAction.cards) {
-                            game.getCardCost(it) <= highestCost && (trashedCard.costIncludesPotion || !it.costIncludesPotion) && game.isCardInSupply(it)
+                            game.getCardCost(it) <= highestCost && game.isCardInSupply(it)
                         }
 
                 if (secondCardAction.cards.isNotEmpty()) {
@@ -173,7 +166,7 @@ object TrashCardsHandler {
 
                 supplyMap.values
                         .filterTo(secondCardAction.cards) {
-                            game.getCardCost(it) == cost && trashedCard.costIncludesPotion == it.costIncludesPotion && game.isCardInSupply(it)
+                            game.getCardCost(it) == cost && game.isCardInSupply(it)
                         }
 
                 if (secondCardAction.cards.size == 1) {
@@ -199,7 +192,7 @@ object TrashCardsHandler {
 
                     supplyMap.values
                             .filterTo(secondCardAction.cards) {
-                                game.getCardCost(it) == cost && !it.costIncludesPotion && game.isCardInSupply(it)
+                                game.getCardCost(it) == cost && game.isCardInSupply(it)
                             }
 
                     when {
@@ -225,7 +218,7 @@ object TrashCardsHandler {
                 }
                 supplyMap.values
                         .filterTo(secondCardAction.cards) {
-                            game.getCardCost(it) == cost && trashedCard.costIncludesPotion == it.costIncludesPotion && game.isCardInSupply(it)
+                            game.getCardCost(it) == cost && game.isCardInSupply(it)
                         }
 
                 if (secondCardAction.cards.isNotEmpty()) {
@@ -242,7 +235,7 @@ object TrashCardsHandler {
                 }
                 game.availableTreasureCardsInSupply
                         .filterTo(secondCardAction.cards) {
-                            game.getCardCost(trashedCard) + 3 >= game.getCardCost(it) && (trashedCard.costIncludesPotion || !it.costIncludesPotion)
+                            game.getCardCost(trashedCard) + 3 >= game.getCardCost(it)
                         }
 
                 if (secondCardAction.cards.isNotEmpty()) {
@@ -264,7 +257,7 @@ object TrashCardsHandler {
 
                 supplyMap.values
                         .filterTo(secondCardAction.cards) {
-                            game.getCardCost(it) == cost && trashedCard.costIncludesPotion == it.costIncludesPotion && game.isCardInSupply(it)
+                            game.getCardCost(it) == cost && game.isCardInSupply(it)
                         }
 
                 if (secondCardAction.cards.size > 0) {
@@ -284,7 +277,7 @@ object TrashCardsHandler {
 
                 supplyMap.values
                         .filterTo(secondCardAction.cards) {
-                            game.getCardCost(it) <= highestCost && (trashedCard.costIncludesPotion || !it.costIncludesPotion) && game.isCardInSupply(it)
+                            game.getCardCost(it) <= highestCost && game.isCardInSupply(it)
                         }
 
                 if (secondCardAction.cards.size > 0) {
@@ -344,7 +337,7 @@ object TrashCardsHandler {
 
                 supplyMap.values
                         .filterTo(secondCardAction.cards) {
-                            game.getCardCost(it) == cost && trashedCard.costIncludesPotion == it.costIncludesPotion && game.isCardInSupply(it)
+                            game.getCardCost(it) == cost && game.isCardInSupply(it)
                         }
 
                 if (secondCardAction.cards.size == 1) {

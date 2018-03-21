@@ -85,7 +85,7 @@ object ChoicesHandler {
                     }
                 }
                 val cards = game.supplyMap.values
-                        .filter { game.getCardCost(it) == cost && oldCardAction.associatedCard!!.costIncludesPotion == it.costIncludesPotion && game.isCardInSupply(it) }
+                        .filter { game.getCardCost(it) == cost && game.isCardInSupply(it) }
                         .toMutableList()
 
                 gainCardAction.cards = cards

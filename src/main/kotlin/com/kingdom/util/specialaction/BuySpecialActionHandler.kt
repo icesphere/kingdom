@@ -42,7 +42,7 @@ object BuySpecialActionHandler {
         cardAction.instructions = "Select one of the following cards to gain and then click Done."
         val cost = game.getCardCost(card)
         game.supplyMap.values
-                .filterTo (cardAction.cards) { !it.isVictory && game.getCardCost(it) < cost && (!it.costIncludesPotion || card.costIncludesPotion) && game.isCardInSupply(it) }
+                .filterTo (cardAction.cards) { !it.isVictory && game.getCardCost(it) < cost && game.isCardInSupply(it) }
         return if (cardAction.cards.size > 0) {
             cardAction
         } else null

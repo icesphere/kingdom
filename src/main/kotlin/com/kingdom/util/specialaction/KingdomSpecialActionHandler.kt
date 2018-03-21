@@ -48,7 +48,7 @@ object KingdomSpecialActionHandler {
                 cardAction.numCards = 1
                 cardAction.instructions = "Select one of the following cards to gain to your hand and then click Done."
                 for (c in supplyMap.values) {
-                    if (game.getCardCost(c) <= 5 && !c.costIncludesPotion && game.isCardInSupply(c)) {
+                    if (game.getCardCost(c) <= 5 && game.isCardInSupply(c)) {
                         cardAction.cards.add(c)
                     }
                 }
@@ -145,7 +145,7 @@ object KingdomSpecialActionHandler {
                 cardAction.numCards = 1
                 cardAction.instructions = "Select one of the following cards and then click Done."
                 for (c in supplyMap.values) {
-                    if (game.getCardCost(c) <= 5 && !c.costIncludesPotion && game.isCardInSupply(c)) {
+                    if (game.getCardCost(c) <= 5 && game.isCardInSupply(c)) {
                         cardAction.cards.add(c)
                     }
                 }
@@ -403,7 +403,7 @@ object KingdomSpecialActionHandler {
                 cardAction.numCards = 1
                 cardAction.instructions = "Select one of the following cards to gain and then click Done."
                 for (c in supplyMap.values) {
-                    if (game.getCardCost(c) <= 4 && !c.costIncludesPotion && game.isCardInSupply(c)) {
+                    if (game.getCardCost(c) <= 4 && game.isCardInSupply(c)) {
                         cardAction.cards.add(c)
                     }
                 }

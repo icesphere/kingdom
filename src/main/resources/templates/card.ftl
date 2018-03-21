@@ -62,11 +62,6 @@
                     <td>
                         Cost:  <input type="text" name="cost" value="${card.cost}"/>
                     </td>
-                </tr>   
-                <tr>
-                    <td>
-                        <input type="checkbox" name="costIncludesPotion" value="true" <#if card.costIncludesPotion>checked</#if>/> Cost Includes Potion
-                    </td>
                 </tr>
                 <tr>
                     <td>

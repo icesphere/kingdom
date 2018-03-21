@@ -313,7 +313,7 @@ object SeasideSpecialActionHandler {
                 val oldCardAction: OldCardAction
                 val cards = ArrayList<Card>()
                 for (c in game.smugglersCards) {
-                    if (game.isCardInSupply(c) && !c.costIncludesPotion) {
+                    if (game.isCardInSupply(c)) {
                         cards.add(c)
                     }
                 }

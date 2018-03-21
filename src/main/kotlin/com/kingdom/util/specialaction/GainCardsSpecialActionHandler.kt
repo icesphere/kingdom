@@ -37,7 +37,7 @@ object GainCardsSpecialActionHandler {
                 cardAction.instructions = "Select one of the following cards to gain and then click Done."
                 val cost = game.getCardCost(card)
                 for (c in supplyMap.values) {
-                    if (game.getCardCost(c) < cost && !c.costIncludesPotion && game.isCardInSupply(c)) {
+                    if (game.getCardCost(c) < cost && game.isCardInSupply(c)) {
                         cardAction.cards.add(c)
                     }
                 }

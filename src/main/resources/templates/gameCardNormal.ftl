@@ -27,8 +27,8 @@
             <#if card.treasure>
                 <#if card.special != "">
                     <div style="font-size:14px; padding-top:5px;">${card.addCoins} <img src="images/coin.png" alt="coin" height="16" width="16"/></div>
-                    <#elseif card.name != "Potion">
-                        <div style="font-size:16px; padding-top:5px;">${card.addCoins} <img src="images/coin.png" alt="coin" height="20" width="20"/></div>
+                <#else>
+                    <div style="font-size:16px; padding-top:5px;">${card.addCoins} <img src="images/coin.png" alt="coin" height="20" width="20"/></div>
                 </#if>
                 <#else>
                     <#if card.addCoins &lt; 0>- ${card.addCoins * -1} <#else>+ ${card.addCoins} </#if><img src="images/coin.png" alt="coin" height="12" width="12"/>
@@ -54,12 +54,6 @@
             </#if>
         </div>
     </#if>
-    <#if card.potion>
-        <div class="cardRow">
-            <img src="images/bluepotion.png" alt="potion" style="height:64px; width:64px;"/>
-        </div>
-    </#if>
 </div>
 <div style="position:absolute; right:3px; bottom:0;<#if card.type.typeId == 2>color:#C00;</#if> font-size:<#if card.typeAsString?length &gt; 18>7<#elseif card.typeAsString?length &gt; 14>8<#else>10</#if>px; ">${card.typeAsString}</div>
 <div style="position:absolute; left:2px; bottom:0; font-size:12px;">${cost} <img src="images/coin.png" alt="coin" height="12" width="12"/></div>
-<#if card.costIncludesPotion><div style="position:absolute; left:20px; bottom:-5px;"><img src="images/bluepotion.png" alt="potion" style="height:20px; width:20px;"/></div></#if>

@@ -28,13 +28,11 @@ object PromoSpecialActionHandler {
                     game.addHistory("Black Market cards: " + KingdomUtil.getCardNames(cards))
                     game.blackMarketCardsToBuy = cards
                     var coins = player!!.coins
-                    var potions = player.potions
                     if (game.isPlayTreasureCards) {
                         coins += player.coinsInHand
-                        potions += player.potionsInHand
                     }
                     for (c in cards) {
-                        if (coins >= game.getCardCostBuyPhase(c) && (!c.costIncludesPotion || potions > 0)) {
+                        if (coins >= game.getCardCostBuyPhase(c)) {
                             canAffordAny = true
                             break
                         }
@@ -44,9 +42,6 @@ object PromoSpecialActionHandler {
                         oldCardAction.deck = Deck.Promo
                         val instructions = StringBuffer("You have ")
                         instructions.append(KingdomUtil.getPlural(coins, "coin"))
-                        if (game.isUsePotions) {
-                            instructions.append(" and ").append(KingdomUtil.getPlural(potions, "potion"))
-                        }
                         instructions.append(". Do you want to buy one of these cards?")
                         oldCardAction.instructions = instructions.toString()
                     } else {

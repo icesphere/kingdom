@@ -194,7 +194,7 @@ object ChooseCardsHandler {
                     val card = oldCardAction.cards[0]
                     val cost = card.cost
                     game.supplyMap.values
-                            .filterTo (chooseAgainCardAction.cards) { game.getCardCost(it) == cost && it.costIncludesPotion == card.costIncludesPotion && game.supply[it.name]!! > 0 }
+                            .filterTo (chooseAgainCardAction.cards) { game.getCardCost(it) == cost && game.supply[it.name]!! > 0 }
                     if (chooseAgainCardAction.cards.size > 0) {
                         game.setPlayerCardAction(game.currentPlayer!!, chooseAgainCardAction)
                     } else {

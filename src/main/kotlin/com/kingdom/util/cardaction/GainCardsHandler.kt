@@ -79,7 +79,6 @@ object GainCardsHandler {
 
                 game.supplyMap.values.filterTo(cards) {
                     game.getCardCost(it) == cost &&
-                            oldCardAction.associatedCard!!.costIncludesPotion == it.costIncludesPotion &&
                             game.supply[it.name]!! > 0
                 }
 

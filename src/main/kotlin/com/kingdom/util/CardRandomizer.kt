@@ -203,16 +203,16 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         if (card.isDefense) {
             rcs!!.hasDefenseCard = true
         }
-        if (card.cost == 2 && !card.costIncludesPotion) {
+        if (card.cost == 2) {
             rcs!!.hasTwo = true
         }
-        if (card.cost == 3 && !card.costIncludesPotion) {
+        if (card.cost == 3) {
             rcs!!.hasThree = true
         }
-        if (card.cost == 4 && !card.costIncludesPotion) {
+        if (card.cost == 4) {
             rcs!!.hasFour = true
         }
-        if (card.cost == 5 && !card.costIncludesPotion) {
+        if (card.cost == 5) {
             rcs!!.hasFive = true
         }
     }

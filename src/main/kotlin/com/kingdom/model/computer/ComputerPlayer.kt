@@ -14,7 +14,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
     var stopped: Boolean = false
 
     private var playAction = true
-    private var potionsBought = 0
 
     protected var trashingStrategy = false
     protected var bigMoneyStrategy = false
@@ -85,7 +84,7 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
             if (card.addActions >= 2) {
                 hasExtraActionsCard = true
             }
-            if (card.isTrashingCard && !card.costIncludesPotion && card.name != "Remake" && card.name != "Forge") {
+            if (card.isTrashingCard && card.name != "Remake" && card.name != "Forge") {
                 hasTrashingCard = true
                 trashingCards.add(card)
             }
@@ -231,7 +230,7 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
             }
         }
 
-        if (card.isTreasure && !card.isPotion) {
+        if (card.isTreasure) {
             treasureCardsBought++
             when {
                 card.isSilver -> silversBought++
@@ -411,11 +410,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
             return null
         }
 
-        if (game.isUsePotions && player.coins == 4 && potionsBought == 0 && !kingdomCardMap.containsKey("Black Market") && (!game.isShowTrollTokens || game.numTrollTokens(Potion.NAME) == 0)) {
-            potionsBought++
-            return game.cardMap[Potion.NAME]
-        }
-
         if (chapelStrategy && cardsGained[getKingdomCard("Chapel").name] == null && (player.coins == 3 && silversBought > 0 || player.coins == 2) && (!game.isTrackContrabandCards || !game.contrabandCards.contains(getKingdomCard("Chapel")))) {
             return getKingdomCard("Chapel")
         }
@@ -584,7 +578,7 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
             if (terminalActionsBought > 0) {
                 val cardsWithActions = ArrayList<Card>()
                 for (card in game.kingdomCards) {
-                    if (card.addActions > 0 && card.cost == player.coins && !excludeCardDefault(card) && !card.costIncludesPotion) {
+                    if (card.addActions > 0 && card.cost == player.coins && !excludeCardDefault(card)) {
                         cardsWithActions.add(card)
                     }
                 }
@@ -689,10 +683,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
     }
 
     private fun excludeCardDefault(card: Card): Boolean {
-        if (card.costIncludesPotion && player.potions == 0) {
-            return true
-        }
-
         if (card.name == "Grand Market") {
             for (treasureCard in game.treasureCardsPlayed) {
                 if (treasureCard.isCopper) {
@@ -739,8 +729,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
             return true
         } else if (card.name == "Baptistry" && wantsCoppers()) {
             return true
-        } else if (card.isPotion && potionsBought > 0) {
-            return true
         } else if (card.name == "Throne Room" && (player.turns < 3 || throneRoomsBought >= 2)) {
             return true
         } else if (card.name == "King's Court" && kingsCourtsBought >= 2) {
@@ -766,8 +754,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
         } else if (card.name == "Outpost") {
             return true
         } else if (card.name == "Quest") {
-            return true
-        } else if (card.isPotion && kingdomCardMap.containsKey("Black Market")) {
             return true
         } else if (card.name == "Rancher") {
             return true
@@ -825,14 +811,8 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
         Collections.sort(cards, ccc)
         val lowCards = ArrayList<Card>()
         var lowestCost = cards[0].cost
-        if (cards[0].costIncludesPotion) {
-            lowestCost += 2
-        }
         for (card in cards) {
             var cost = card.cost
-            if (card.costIncludesPotion) {
-                cost += 2
-            }
             if (cost == lowestCost) {
                 if (!excludeCardDefault(card)) {
                     lowCards.add(card)
@@ -865,9 +845,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
         Collections.sort(cards, Collections.reverseOrder(ccc))
         val topCards = ArrayList<Card>()
         var highestCost = cards[0].cost
-        if (cards[0].costIncludesPotion) {
-            highestCost += 2
-        }
         if (includeVictoryOnlyCards && onlyBuyVictoryCards()) {
             for (card in cards) {
                 if (card.isVictory) {
@@ -877,9 +854,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
         }
         for (card in cards) {
             var cost = card.cost
-            if (card.costIncludesPotion) {
-                cost += 2
-            }
             if (cost == highestCost) {
                 if (!excludeCardDefault(card) && (includeVictoryOnlyCards || !card.isVictoryOnly)) {
                     topCards.add(card)

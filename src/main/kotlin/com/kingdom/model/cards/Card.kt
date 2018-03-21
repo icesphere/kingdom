@@ -17,7 +17,6 @@ abstract class Card(
         var addBuys: Int = 0,
         var victoryPoints: Int = 0,
         var testing: Boolean = false,
-        var costIncludesPotion: Boolean = false,
         var addVictoryCoins: Int = 0,
         var playTreasureCards: Boolean = false,
         var disabled: Boolean = false,
@@ -69,9 +68,6 @@ abstract class Card(
             val sb = StringBuilder()
             sb.append(typeAsString)
             sb.append(" (cost ").append(cost)
-            if (costIncludesPotion) {
-                sb.append(" and a potion")
-            }
             sb.append("): ")
             if (victoryPoints != 0) {
                 sb.append(victoryPoints).append(" VP. ")
@@ -148,9 +144,6 @@ abstract class Card(
 
     val isColony: Boolean
         get() = name == Colony.NAME
-
-    val isPotion: Boolean
-        get() = name == Potion.NAME
 
     val isAttack: Boolean
         get() = type == CardType.ActionAttack
