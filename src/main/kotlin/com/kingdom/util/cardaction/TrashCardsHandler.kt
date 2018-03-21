@@ -292,24 +292,6 @@ object TrashCardsHandler {
                 }
             }
             "Salvager" -> player.addCoins(game.getCardCost(trashedCard))
-            "Sorceress" -> {
-                val cursesRemaining = game.supply[Curse.NAME]!!
-                if (cursesRemaining > 0 || oldCardAction.phase == 1 && oldCardAction.choices.size > 1) {
-                    val nextCardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
-                    nextCardAction.deck = Deck.FairyTale
-                    nextCardAction.cardName = oldCardAction.cardName
-
-                    if (cursesRemaining == 0) {
-                        nextCardAction.instructions = "There are no curses remaining so you may only choose one more effect."
-                    } else {
-                        nextCardAction.instructions = "Choose another effect to apply (you will gain a curse), or click None if you don't want to apply any more effects."
-                    }
-
-                    nextCardAction.choices.addAll(oldCardAction.choices)
-                    nextCardAction.phase = oldCardAction.phase + 1
-                    game.setPlayerCardAction(player, nextCardAction)
-                }
-            }
             "Spice Merchant" -> if (!selectedCardNames.isEmpty()) {
                 val choicesAction = OldCardAction(OldCardAction.TYPE_CHOICES).apply {
                     deck = Deck.Hinterlands

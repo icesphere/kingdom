@@ -386,6 +386,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun discardCardsFromHand(cards: Int)
 
+    abstract fun waitForOtherPlayersToResolveActions()
+
     fun resolveActions() {
         if (!actionsQueue.isEmpty()) {
             val action = actionsQueue.removeAt(0)

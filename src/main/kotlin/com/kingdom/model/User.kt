@@ -95,18 +95,6 @@ class User {
     @Column(name = "promo_checked")
     var promoChecked = false
 
-    @Column(name = "salvation_checked")
-    var salvationChecked = false
-
-    @Column(name = "fairy_tale_checked")
-    var fairyTaleChecked = false
-
-    @Column(name = "proletariat_checked")
-    var proletariatChecked = false
-
-    @Column(name = "other_fan_cards_checked")
-    var otherFanCardsChecked = false
-
     @Column(name = "base_weight")
     var baseWeight = 3
 
@@ -130,18 +118,6 @@ class User {
 
     @Column(name = "promo_weight")
     var promoWeight = 3
-
-    @Column(name = "salvation_weight")
-    var salvationWeight = 3
-
-    @Column(name = "fairy_tale_weight")
-    var fairyTaleWeight = 3
-
-    @Column(name = "proletariat_weight")
-    var proletariatWeight = 3
-
-    @Column(name = "fan_weight")
-    var fanWeight = 3
 
     @Column(name = "always_play_treasure_cards")
     var alwaysPlayTreasureCards: Boolean = false

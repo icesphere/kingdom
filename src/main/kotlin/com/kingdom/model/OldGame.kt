@@ -1060,9 +1060,6 @@ class OldGame(val gameId: Int) {
         if (card.addVictoryCoins > 0 || card.name == "Goons") {
             isShowVictoryCoins = true
         }
-        if (card.isSalvation) {
-            isShowSins = true
-        }
         if (card.coinsTokens > 0 || card.name == "Orchard" || card.name == "Goodwill") {
             isShowFruitTokens = true
         }
@@ -1709,7 +1706,7 @@ class OldGame(val gameId: Int) {
             logError(error, false)
             return false
         }
-        return card.isVictory || card.isCurse || isShowGardens || isShowFarmlands || isShowFairgrounds || isShowVineyard && card.isAction || isShowCathedral && card.isSalvation
+        return card.isVictory || card.isCurse || isShowGardens || isShowFarmlands || isShowFairgrounds || isShowVineyard && card.isAction
     }
 
     fun playerGainedCard(player: OldPlayer, card: Card, cardDestination: CardLocation, takeFromSupply: Boolean, gainedFromBuy: Boolean) {
@@ -2925,32 +2922,6 @@ class OldGame(val gameId: Int) {
             cardAction.instructions = "Do you want to reveal your Tunnel to gain a Gold?"
             cardAction.cards.add(goldCard)
             cardAction.associatedCard = card
-            setPlayerCardAction(player, cardAction)
-        }
-    }
-
-    fun showUseFruitTokensCardAction(player: OldPlayer) {
-        if (isCurrentPlayer(player)) {
-            val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_NUMBER_BETWEEN)
-            cardAction.deck = Deck.Proletariat
-            cardAction.cardName = "Use Fruit Tokens"
-            cardAction.buttonValue = "Done"
-            cardAction.startNumber = 0
-            cardAction.endNumber = player.fruitTokens
-            cardAction.instructions = "Click the number of Fruit Tokens you want to use."
-            setPlayerCardAction(player, cardAction)
-        }
-    }
-
-    fun showUseCattleTokensCardAction(player: OldPlayer) {
-        if (isCurrentPlayer(player)) {
-            val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN)
-            cardAction.deck = Deck.Proletariat
-            cardAction.cardName = "Use Cattle Tokens"
-            cardAction.buttonValue = "Done"
-            cardAction.startNumber = 0
-            cardAction.endNumber = player.cattleTokens
-            cardAction.instructions = "Click the number of Cattle Tokens you want to use."
             setPlayerCardAction(player, cardAction)
         }
     }

@@ -100,8 +100,6 @@
                             <#if showCathedral>
                                 <div class="gameResultsPlayerPointsLabel">Cathedrals:</div>
                                 <div class="gameResultsPlayerPoints">${player.cathedrals}</div>
-                                <div class="gameResultsPlayerPointsLabel">Sins Removed:</div>
-                                <div class="gameResultsPlayerPoints">${player.sinsRemoved}</div>
                                 <div class="gameResultsPlayerPointsLabel">Curses Removed:</div>
                                 <div class="gameResultsPlayerPoints">${player.cursesRemoved}</div>
                             </#if>
@@ -120,10 +118,6 @@
                             <#if showVictoryCoins>
                                 <div class="gameResultsPlayerPointsLabel">Victory Coins:</div>
                                 <div class="gameResultsPlayerPoints">${player.victoryCoins}</div>
-                            </#if>
-                            <#if showSins>
-                                <div class="gameResultsPlayerPointsLabel">Sins:</div>
-                                <div class="gameResultsPlayerPoints">${player.sins}</div>
                             </#if>
                         </td>
                     </tr>

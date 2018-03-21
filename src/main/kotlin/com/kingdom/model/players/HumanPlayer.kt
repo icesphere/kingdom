@@ -110,4 +110,8 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     override fun addCardFromHandToTopOfDeck() {
         addAction(CardFromHandToTopOfDeck())
     }
+
+    override fun waitForOtherPlayersToResolveActions() {
+        addAction(WaitForOtherPlayersToResolveActions())
+    }
 }

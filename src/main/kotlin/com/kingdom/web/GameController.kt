@@ -95,10 +95,6 @@ class GameController(private var cardManager: CardManager,
         modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, includeTesting))
         modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, includeTesting))
         modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, includeTesting))
-        modelAndView.addObject("salvationCards", cardManager.getCards(Deck.Salvation, includeTesting))
-        modelAndView.addObject("fairyTaleCards", cardManager.getCards(Deck.FairyTale, includeTesting))
-        modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, includeTesting))
-        modelAndView.addObject("fanCards", cardManager.getCards(Deck.Fan, includeTesting))
         modelAndView.addObject("annotatedGames", gameManager.annotatedGames)
         modelAndView.addObject("recentGames", gameManager.getGameHistoryList(user.userId))
         modelAndView.addObject("excludedCards", user.excludedCardNames)
@@ -156,10 +152,6 @@ class GameController(private var cardManager: CardManager,
                 user.cornucopiaChecked = request.getParameter("deck_cornucopia") != null
                 user.hinterlandsChecked = request.getParameter("deck_hinterlands") != null
                 user.promoChecked = request.getParameter("promo_cards") != null
-                user.salvationChecked = request.getParameter("deck_salvation") != null
-                user.fairyTaleChecked = request.getParameter("deck_fairytale") != null
-                user.proletariatChecked = request.getParameter("deck_proletariat") != null
-                user.otherFanCardsChecked = request.getParameter("other_fan_cards") != null
                 user.alwaysPlayTreasureCards = KingdomUtil.getRequestBoolean(request, "playTreasureCards")
                 user.showVictoryPoints = KingdomUtil.getRequestBoolean(request, "showVictoryPoints")
                 user.identicalStartingHands = KingdomUtil.getRequestBoolean(request, "identicalStartingHands")
@@ -172,10 +164,6 @@ class GameController(private var cardManager: CardManager,
                 user.cornucopiaWeight = KingdomUtil.getRequestInt(request, "deck_weight_cornucopia", 3)
                 user.hinterlandsWeight = KingdomUtil.getRequestInt(request, "deck_weight_hinterlands", 3)
                 user.promoWeight = KingdomUtil.getRequestInt(request, "deck_weight_promo", 3)
-                user.salvationWeight = KingdomUtil.getRequestInt(request, "deck_weight_salvation", 3)
-                user.fairyTaleWeight = KingdomUtil.getRequestInt(request, "deck_weight_fairytale", 3)
-                user.proletariatWeight = KingdomUtil.getRequestInt(request, "deck_weight_proletariat", 3)
-                user.fanWeight = KingdomUtil.getRequestInt(request, "deck_weight_fan", 3)
 
                 for (i in 2..6) {
                     user.setPlayerDefault(i, request.getParameter("player" + i))
@@ -292,9 +280,6 @@ class GameController(private var cardManager: CardManager,
                         Deck.Prosperity -> user.prosperityWeight
                         Deck.Cornucopia -> user.cornucopiaWeight
                         Deck.Hinterlands -> user.hinterlandsWeight
-                        Deck.Salvation -> user.salvationWeight
-                        Deck.FairyTale -> user.fairyTaleWeight
-                        Deck.Proletariat -> user.proletariatWeight
                         else -> 3
                     }
                     if (weight > 5) {
@@ -321,12 +306,6 @@ class GameController(private var cardManager: CardManager,
         if (promoCards != null && promoCards == "true") {
             for (i in 0 until user.promoWeight) {
                 decks.add(Deck.Promo)
-            }
-        }
-        val otherFanCards = request.getParameter("other_fan_cards")
-        if (otherFanCards != null && otherFanCards == "true") {
-            for (i in 0 until user.fanWeight) {
-                decks.add(Deck.Fan)
             }
         }
     }
@@ -1490,7 +1469,6 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
             modelAndView.addObject("showCoinTokens", game.isShowCoinTokens)
-            modelAndView.addObject("showSins", game.isShowSins)
             modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
             modelAndView.addObject("currentPlayerId", currentPlayerId)
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
@@ -1627,7 +1605,6 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
 //            modelAndView.addObject("showFruitTokens", game.isShowFruitTokens)
-            modelAndView.addObject("showSins", game.isShowSins)
             modelAndView.addObject("showDuration", game.isShowDuration)
             modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
             modelAndView.addObject("prizeCards", game.prizeCardsString)
@@ -1670,7 +1647,6 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("showMuseumCards", game.isShowMuseumCards)
             modelAndView.addObject("showCityPlannerCards", game.isShowCityPlannerCards)
             modelAndView.addObject("showColony", game.isIncludeColonyCards)
-            modelAndView.addObject("showSins", game.isShowSins)
             modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
             modelAndView.addObject("showHedgeWizard", game.isShowHedgeWizard)
             modelAndView.addObject("showGoldenTouch", game.isShowGoldenTouch)
@@ -1966,7 +1942,6 @@ class GameController(private var cardManager: CardManager,
         modelAndView.addObject("showGarden", game.isShowGardens)
         modelAndView.addObject("showFarmlands", game.isShowFarmlands)
         modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-        modelAndView.addObject("showSins", game.isShowSins)
         modelAndView.addObject("showVineyard", game.isShowVineyard)
         modelAndView.addObject("showSilkRoads", game.isShowSilkRoads)
         modelAndView.addObject("showCathedral", game.isShowCathedral)
@@ -2250,7 +2225,6 @@ class GameController(private var cardManager: CardManager,
         modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, true))
         modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, true))
         modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, true))
-        modelAndView.addObject("proletariatCards", cardManager.getCards(Deck.Proletariat, true))
         modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, true))
         modelAndView.addObject("game", game)
         return modelAndView

@@ -131,20 +131,6 @@ object ChooseCardsHandler {
                 player.removeCardFromHand(selectedCard)
                 player.havenCards.add(selectedCard)
             }
-            "Hooligans" -> {
-                player.removeCardFromHand(selectedCard)
-                val chooseDestinationCardAction = OldCardAction(OldCardAction.TYPE_CHOICES).apply {
-                    deck = Deck.Proletariat
-                    cardName = oldCardAction.cardName
-                    associatedCard = selectedCard
-                    playerId = player.userId
-                    cards.add(selectedCard)
-                    instructions = player.username + " revealed " + KingdomUtil.getArticleWithCardName(selectedCard) + ". Do you want to discard it, or put it on top of " + player.pronoun + " deck?"
-                    choices.add(CardActionChoice("Discard", "discard"))
-                    choices.add(CardActionChoice("Top of deck", "deck"))
-                }
-                game.setPlayerCardAction(game.currentPlayer!!, chooseDestinationCardAction)
-            }
             "Island" -> {
                 player.removeCardFromHand(selectedCard)
                 player.islandCards.add(selectedCard)
@@ -158,32 +144,6 @@ object ChooseCardsHandler {
             "Mint" -> {
                 game.addHistory(player.username, " minted ", KingdomUtil.getArticleWithCardName(selectedCard))
                 game.playerGainedCard(player, selectedCard)
-            }
-            "Museum Trash Cards" -> {
-                for (selectedCardName in selectedCardNames) {
-                    val card = cardMap[selectedCardName]!!
-                    game.trashedCards.add(card)
-                    player.museumCards.remove(card)
-                }
-                game.playerGainedCard(player, game.duchyCard)
-                when {
-                    game.prizeCards.isEmpty() -> game.addHistory("There were no more prizes available")
-                    game.prizeCards.size == 1 -> {
-                        game.playerGainedCard(player, game.prizeCards[0], false)
-                        game.prizeCards.clear()
-                    }
-                    else -> {
-                        val choosePrizeCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS).apply {
-                            deck = Deck.Fan
-                            cardName = "Museum"
-                            numCards = 1
-                            buttonValue = "Done"
-                            instructions = "Select one of the following prize cards to gain and then click Done."
-                            cards.addAll(game.prizeCards)
-                        }
-                        game.setPlayerCardAction(player, choosePrizeCardAction)
-                    }
-                }
             }
             "Pirate Ship" -> {
                 val currentPlayer = game.currentPlayer
@@ -308,28 +268,6 @@ object ChooseCardsHandler {
                 }
                 game.addHistory(player.username, " throne roomed ", KingdomUtil.getArticleWithCardName(actionCard))
                 game.playRepeatedAction(player, true)*/
-            }
-            "Trainee" -> {
-                val combinedCost = game.getCardCost(selectedCard) + game.getCardCost(oldCardAction.associatedCard!!)
-                player.removeCardFromHand(selectedCard)
-                game.removePlayedCard(oldCardAction.associatedCard!!)
-                game.addToSupply(selectedCard.name)
-                game.addToSupply(oldCardAction.associatedCard!!.name)
-                game.refreshAllPlayersCardsPlayed()
-                game.refreshAllPlayersSupply()
-                game.addHistory(player.username, " returned ", KingdomUtil.getCardWithBackgroundColor(oldCardAction.associatedCard!!), " and ", KingdomUtil.getCardWithBackgroundColor(selectedCard), " to the supply")
-                val gainCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY).apply {
-                    deck = Deck.Proletariat
-                    cardName = oldCardAction.cardName
-                    buttonValue = "Done"
-                    numCards = 1
-                    instructions = "Select one of the following cards to gain and then click Done."
-                }
-                game.supplyMap.values
-                        .filterTo (gainCardAction.cards) { it.isAction && game.getCardCost(it) <= combinedCost && (!it.costIncludesPotion || selectedCard.costIncludesPotion || oldCardAction.associatedCard!!.costIncludesPotion) && game.isCardInSupply(it) }
-                if (gainCardAction.cards.size > 0) {
-                    game.setPlayerCardAction(player, gainCardAction)
-                }
             }
             "Wishing Well" -> {
                 val topDeckCard = player.lookAtTopDeckCard()

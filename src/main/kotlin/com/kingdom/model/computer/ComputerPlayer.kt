@@ -1230,10 +1230,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
             Deck.Cornucopia -> CornucopiaComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Hinterlands -> HinterlandsComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Promo -> PromoComputerCardActionHandler.handleCardAction(oldCardAction, this)
-            Deck.Salvation -> SalvationComputerCardActionHandler.handleCardAction(oldCardAction, this)
-            Deck.FairyTale -> FairyTaleComputerCardActionHandler.handleCardAction(oldCardAction, this)
-            Deck.Proletariat -> ProletariatComputerCardActionHandler.handleCardAction(oldCardAction, this)
-            Deck.Fan -> FanComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Reaction -> ReactionComputerCardActionHandler.handleCardAction(oldCardAction, this)
             else -> throw RuntimeException("OldCardAction with card: " + oldCardAction.cardName + " and type: " + oldCardAction.type + " does not have a deck type")
         }

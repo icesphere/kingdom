@@ -17,7 +17,6 @@
                 <th>Quit</th>
                 <th>Cards</th>
                 <th>Victory Coins</th>
-                <th>Sins</th>
                 <th>Turns</th>
             </tr>
             <#list players as player>
@@ -29,7 +28,6 @@
                     <td>${player.quit?string}</td>
                     <td>${player.cards}</td>
                     <td>${player.victoryCoins}</td>
-                    <td>${player.sins}</td>
                     <td>${player.turns}</td>
                 </tr>
             </#list>

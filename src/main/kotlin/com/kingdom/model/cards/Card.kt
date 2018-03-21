@@ -176,23 +176,11 @@ abstract class Card(
     val isProsperity: Boolean
         get() = deck === Deck.Prosperity
 
-    val isSalvation: Boolean
-        get() = deck === Deck.Salvation
-
-    val isFairyTale: Boolean
-        get() = deck === Deck.FairyTale
-
     val isCornucopia: Boolean
         get() = deck === Deck.Cornucopia
 
     val isHinterlands: Boolean
         get() = deck === Deck.Hinterlands
-
-    val isProletariat: Boolean
-        get() = deck === Deck.Proletariat
-
-    val isFan: Boolean
-        get() = deck === Deck.Fan
 
     val backgroundColor: CardColor
         get() = when {

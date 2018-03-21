@@ -24,10 +24,7 @@ function createGame() {
     }
 }
 function saveOptions() {
-    if(decksSelected == 1 && $('#deck_proletariat').attr('checked')) {
-        alert("Proletariat does not have 10 cards yet, select another deck to go with it");
-    }
-    else if(generateType == "custom" && cardsSelected > 10) {
+    if(generateType == "custom" && cardsSelected > 10) {
         alert("You can't select more than 10 cards");
     }
     else{

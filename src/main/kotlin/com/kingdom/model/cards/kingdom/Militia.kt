@@ -15,6 +15,8 @@ class Militia : KingdomCard(NAME, CardType.ActionAttack, 4) {
                 p.discardCardsFromHand(p.hand.size - 3)
             }
         }
+
+        player.waitForOtherPlayersToResolveActions()
     }
 
     companion object {

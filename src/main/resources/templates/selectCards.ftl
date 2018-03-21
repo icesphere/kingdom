@@ -152,18 +152,6 @@
                     <div style="float:left;padding-left:10px;">
                         <input type="checkbox" name="promo_cards" id="promo_cards" value="true" onclick="selectDeck(this)" <#if user.promoChecked>checked</#if>/>  <label for="promo_cards">Promo Cards</label>
                     </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="deck_salvation" id="deck_salvation" value="Salvation" onclick="selectDeck(this)" <#if user.salvationChecked>checked</#if>/>  <label for="deck_salvation">Salvation</label> <a href="http://www.boardgamegeek.com/boardgame/80435/salvation-fan-expansion-for-dominion" target="_blank"><img style="border:0px" src="images/help.png" alt="salvation info"/></a>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="deck_fairytale" id="deck_fairytale" value="FairyTale" onclick="selectDeck(this)" <#if user.fairyTaleChecked>checked</#if>/>  <label for="deck_fairytale">Fairy Tale</label> <a href="http://boardgamegeek.com/boardgameexpansion/68281/fairy-tale-fan-expansion-for-dominion" target="_blank"><img style="border:0px" src="images/help.png" alt="fairy tale info"/></a>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="deck_proletariat" id="deck_proletariat" value="Proletariat" onclick="selectDeck(this)" <#if user.proletariatChecked>checked</#if>/>  <label for="deck_proletariat">Proletariat</label> <a href="http://forum.dominionstrategy.com/index.php?topic=843.0" target="_blank"><img style="border:0px" src="images/help.png" alt="proletariat info"/></a>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="other_fan_cards" id="other_fan_cards" value="true" onclick="selectDeck(this)" <#if user.otherFanCardsChecked>checked</#if>/>  <label for="other_fan_cards">Other Fan Cards</label>
-                    </div>
                 </div>
                 <div id="decksWeight" style="padding-top:10px;float:left;clear:both;">
                     <div id="decksWeightLabel" style="float:left;"><span class="label">Deck Frequency:</span></div><#if mobile><div style="float:left;padding-left:5px;"><a href="javascript:toggleDeckFrequency()" id="deckFrequencyLink">Show</a></div></#if>
@@ -238,42 +226,6 @@
                                 <option value="3" <#if user.promoWeight == 3>selected</#if>>As Often</option>
                                 <option value="2" <#if user.promoWeight == 2>selected</#if>>Less Often</option>
                                 <option value="1" <#if user.promoWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            Salvation <select name="deck_weight_salvation" id="deck_weight_salvation">
-                                <option value="5" <#if user.salvationWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.salvationWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.salvationWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.salvationWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.salvationWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            Fairy Tale <select name="deck_weight_fairytale" id="deck_weight_fairytale">
-                                <option value="5" <#if user.fairyTaleWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.fairyTaleWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.fairyTaleWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.fairyTaleWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.fairyTaleWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            Proletariat <select name="deck_weight_proletariat" id="deck_weight_proletariat">
-                                <option value="5" <#if user.proletariatWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.proletariatWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.proletariatWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.proletariatWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.proletariatWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            Other Fan Cards <select name="deck_weight_fan" id="deck_weight_fan">
-                                <option value="5" <#if user.fanWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.fanWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.fanWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.fanWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.fanWeight == 1>selected</#if>>Rarely</option>
                             </select>
                         </div>
                     </div>
@@ -368,38 +320,6 @@
                                 </div>
                             </#list>
                         </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Salvation</div>
-                            <#list salvationCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Fairy Tale</div>
-                            <#list fairyTaleCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Proletariat</div>
-                            <#list proletariatCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Other Fan Cards</div>
-                            <#list fanCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
                     </div>
                 </div>
                 <div id="customCards" style="display:none;float:left;clear:both;">
@@ -475,38 +395,6 @@
                         <div id="promoCardsDiv" class="customCardsDeck">
                             <div style="float:left;" class="label">Promo Cards</div>
                             <#list promoCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="salvationCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Salvation</div>
-                            <#list salvationCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="fairyTaleCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Fairy Tale</div>
-                            <#list fairyTaleCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="proletariatCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Proletariat</div>
-                            <#list proletariatCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="fanCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Other Fan Cards</div>
-                            <#list fanCards as card>
                                 <div style="float:left;clear:both;">
                                     <#include "createGameCardRow.ftl">
                                 </div>

@@ -64,7 +64,7 @@ class UserDao {
         Session session = hibernateTemplate.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
 
-        SQLQuery sqlQuery = session.createSQLQuery("select u.* from users u where u.active = 1 and u.admin = 0 and (base_weight != 3 or intrigue_weight != 3 or seaside_weight != 3 or alchemy_weight != 3 or prosperity_weight != 3 or cornucopia_weight != 3 or hinterlands_weight != 3 or promo_weight != 3 or salvation_weight != 3 or fairy_tale_weight != 3 or proletariat_weight != 3) order by u.last_login desc");
+        SQLQuery sqlQuery = session.createSQLQuery("select u.* from users u where u.active = 1 and u.admin = 0 and (base_weight != 3 or intrigue_weight != 3 or seaside_weight != 3 or alchemy_weight != 3 or prosperity_weight != 3 or cornucopia_weight != 3 or hinterlands_weight != 3 or promo_weight != 3) order by u.last_login desc");
         sqlQuery.addEntity(User.class);
         List<User> users = sqlQuery.list();
 

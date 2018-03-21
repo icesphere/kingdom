@@ -82,38 +82,6 @@
     </tr>
     <tr>
         <td class="label">
-            <a href="showUsersForStat.html?stat=salvationChecked">Salvation Deck:</a>
-        </td>
-        <td>
-            ${stats.salvationDeck}
-        </td>
-    </tr>
-    <tr>
-        <td class="label">
-            <a href="showUsersForStat.html?stat=fairyTaleChecked">Fairy Tale Deck:</a>
-        </td>
-        <td>
-            ${stats.fairyTaleDeck}
-        </td>
-    </tr>
-    <tr>
-        <td class="label">
-            <a href="showUsersForStat.html?stat=proletariatChecked">Proletariat Deck:</a>
-        </td>
-        <td>
-            ${stats.proletariatDeck}
-        </td>
-    </tr>
-    <tr>
-        <td class="label">
-            <a href="showUsersForStat.html?stat=otherFanCardsChecked">Other Fan Cards:</a>
-        </td>
-        <td>
-            ${stats.fanDeck}
-        </td>
-    </tr>
-    <tr>
-        <td class="label">
             <a href="showUsersForStat.html?stat=soundDefault&value=2">Sound Off:</a>
         </td>
         <td>

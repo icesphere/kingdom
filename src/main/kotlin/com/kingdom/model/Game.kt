@@ -158,8 +158,7 @@ class Game() {
     var isShowPirateShipCoins: Boolean = false
     var isShowHedgeWizard: Boolean = false
     var isShowGoldenTouch: Boolean = false
-    var isShowSins: Boolean = false
-    
+
     val tradeRouteTokenMap = HashMap<String, Boolean>(0)
     var isTrackTradeRouteTokens: Boolean = false
     var tradeRouteTokensOnMat: Int = 0
@@ -540,7 +539,6 @@ class Game() {
             isShowCityPlannerCards = false
             isShowNativeVillage = false
             isShowPirateShipCoins = false
-            isShowSins = false
             isTrackTradeRouteTokens = false
             isAlwaysIncludeColonyAndPlatinum = false
             isNeverIncludeColonyAndPlatinum = false

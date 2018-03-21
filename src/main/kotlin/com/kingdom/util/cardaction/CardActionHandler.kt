@@ -71,13 +71,13 @@ object CardActionHandler {
         game.refreshHandArea(player)
         game.refreshCardsBought(player)
 
-        when {
+        /*when {
             !player.isShowCardAction && !player.extraOldCardActions.isEmpty() -> game.setPlayerCardAction(player, player.extraOldCardActions.remove())
             !player.isShowCardAction && cardAction.isGainCardAction && game.hasUnfinishedGainCardActions() -> when {
                 !cardAction.associatedCard!!.gainOldCardActions.isEmpty() -> game.setPlayerGainCardAction(player, cardAction.associatedCard!!)
                 else -> game.setPlayerGainCardAction(player, game.cardWithUnfinishedGainCardActions)
             }
-        }
+        }*/
 
         if (cardAction.isGainCardAfterBuyAction) {
             game.playerGainedCard(player, cardAction.associatedCard!!)

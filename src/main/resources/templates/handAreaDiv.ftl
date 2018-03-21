@@ -42,9 +42,6 @@
         <#if showVictoryCoins>
             <td class="handAreaTopRow">${player.victoryCoins} Victory Coin<#if player.victoryCoins != 1>s</#if></td>
         </#if>
-        <#if showSins>
-            <td class="handAreaTopRow">${player.sins} Sin<#if player.sins != 1>s</#if></td>
-        </#if>
     </tr>
 </table>
 <table style="width:100%">

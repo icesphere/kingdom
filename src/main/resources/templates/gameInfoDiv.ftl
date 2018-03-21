@@ -78,16 +78,6 @@
                                 </td>
                             </tr>
                         </#if>
-                        <#if showSins>
-                            <tr>
-                                <td class="gameInfoLabel">
-                                    Sins:
-                                </td>
-                                <td>
-                                    ${p.sins}
-                                </td>
-                            </tr>
-                        </#if>
                         <#if showPirateShipCoins>
                             <tr>
                                 <td class="gameInfoLabel">

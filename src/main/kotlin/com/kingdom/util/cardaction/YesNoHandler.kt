@@ -65,26 +65,6 @@ object YesNoHandler {
                 player.deck.clear()
                 game.addHistory(player.username, " added ", player.pronoun, " deck to ", player.pronoun, " discard")
             }
-            "City Planner" -> if (yesNoAnswer == "yes") {
-                player.subtractCoins(2)
-                game.refreshAllPlayersCardsBought()
-
-                if (KingdomUtil.uniqueCardList(player.getVictoryCards()).size == 1) {
-                    val victoryCard = player.getVictoryCards()[0]
-                    player.removeCardFromHand(victoryCard)
-                    player.cityPlannerCards.add(victoryCard)
-                    game.addHistory(player.username, " paid an extra $2 to set aside ", KingdomUtil.getArticleWithCardName(victoryCard))
-                } else {
-                    val chooseVictoryCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
-                    chooseVictoryCardAction.deck = Deck.Proletariat
-                    chooseVictoryCardAction.cardName = oldCardAction.cardName
-                    chooseVictoryCardAction.cards.addAll(player.getVictoryCards())
-                    chooseVictoryCardAction.numCards = 1
-                    chooseVictoryCardAction.instructions = "Choose a victory card to set aside and then click Done."
-                    chooseVictoryCardAction.buttonValue = "Done"
-                    game.setPlayerCardAction(player, chooseVictoryCardAction)
-                }
-            }
             "Confirm Buy" -> if (yesNoAnswer == "yes") {
                 game.removeProcessingClick(player)
                 game.cardClicked(player, "supply", oldCardAction.cards[0], false)
@@ -228,43 +208,6 @@ object YesNoHandler {
                 player.addCoins(2)
                 game.addHistory(player.username, " trashed a ", KingdomUtil.getWordWithBackgroundColor("Mining Village", CardColor.Action), " to get +2 coins")
                 game.refreshAllPlayersCardsPlayed()
-            }
-            "Museum Trash Cards" -> if (yesNoAnswer == "yes") {
-                when {
-                    player.museumCards.size == 4 -> {
-                        game.trashedCards.addAll(player.museumCards)
-                        player.museumCards.clear()
-                        game.addHistory(player.username, " trashed 4 cards from ", player.pronoun, " Museum mat")
-                        game.playerGainedCard(player, game.duchyCard)
-                        when {
-                            game.prizeCards.isEmpty() -> game.addHistory("There were no more prizes available")
-                            game.prizeCards.size == 1 -> {
-                                game.playerGainedCard(player, game.prizeCards[0], false)
-                                game.prizeCards.clear()
-                            }
-                            else -> {
-                                val choosePrizeCardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS)
-                                choosePrizeCardAction.deck = Deck.Fan
-                                choosePrizeCardAction.cardName = "Museum"
-                                choosePrizeCardAction.numCards = 1
-                                choosePrizeCardAction.buttonValue = "Done"
-                                choosePrizeCardAction.instructions = "Select one of the following prize cards to gain and then click Done."
-                                choosePrizeCardAction.cards.addAll(game.prizeCards)
-                                game.setPlayerCardAction(player, choosePrizeCardAction)
-                            }
-                        }
-                    }
-                    else -> {
-                        val museumCardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_CARDS)
-                        museumCardAction.deck = Deck.Fan
-                        museumCardAction.cardName = "Museum Trash Cards"
-                        museumCardAction.cards.addAll(player.museumCards)
-                        museumCardAction.numCards = 4
-                        museumCardAction.instructions = "Select 4 cards to trash from your Museum mat and then click Done."
-                        museumCardAction.buttonValue = "Done"
-                        game.setPlayerCardAction(player, museumCardAction)
-                    }
-                }
             }
             "Orchard" -> if (yesNoAnswer == "yes") {
                 player.subtractCoins(2)

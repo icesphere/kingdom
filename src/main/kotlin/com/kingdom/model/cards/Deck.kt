@@ -8,11 +8,7 @@ enum class Deck {
     Promo,
     Alchemy,
     Prosperity,
-    Salvation,
     Cornucopia,
     Hinterlands,
-    FairyTale,
-    Fan,
-    Proletariat,
     Reaction
 }

@@ -30,8 +30,6 @@ class GameUserHistory {
     @Column(name = "victory_coins")
     var victoryCoins: Int = 0
 
-    var sins: Int = 0
-
     var turns: Int = 0
 
     @Column(name = "margin_of_victory")
@@ -50,7 +48,6 @@ class GameUserHistory {
         this.quit = player.isQuit
         this.cards = KingdomUtil.groupCards(player.allCards, false)
         this.victoryCoins = player.victoryCoins
-        this.sins = player.sins
         this.turns = player.turns
         this.marginOfVictory = player.marginOfVictory
     }

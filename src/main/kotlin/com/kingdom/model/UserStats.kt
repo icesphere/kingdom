@@ -11,10 +11,6 @@ class UserStats {
     var cornucopiaDeck: Int = 0
     var hinterlandsDeck: Int = 0
     var promoDeck: Int = 0
-    var salvationDeck: Int = 0
-    var fairyTaleDeck: Int = 0
-    var proletariatDeck: Int = 0
-    var fanDeck: Int = 0
 
     var soundOff: Int = 0
     var alwaysPlayTreasureCards: Int = 0

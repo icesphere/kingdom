@@ -18,10 +18,6 @@ object SpecialActionHandler {
             card.isCornucopia -> incompleteCard = CornucopiaSpecialActionHandler.handleSpecialAction(game, card)
             card.isHinterlands -> incompleteCard = HinterlandsSpecialActionHandler.handleSpecialAction(game, card)
             card.isPromo -> incompleteCard = PromoSpecialActionHandler.handleSpecialAction(game, card)
-            card.isSalvation -> incompleteCard = SalvationSpecialActionHandler.handleSpecialAction(game, card)
-            card.isFairyTale -> incompleteCard = FairyTaleSpecialActionHandler.handleSpecialAction(game, card, repeatedAction)
-            card.isProletariat -> incompleteCard = ProletariatSpecialActionHandler.handleSpecialAction(game, card)
-            card.isFan -> FanSpecialActionHandler.handleSpecialAction(game, card)
         }
 
         if (incompleteCard != null) {

@@ -13,37 +13,6 @@ object BuySpecialActionHandler {
     fun getCardAction(game: OldGame, player: OldPlayer, card: Card): OldCardAction? {
 
         when (card.name) {
-            "Botanical Gardens" -> when {
-                player.coins >= 6 -> {
-                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
-                    cardAction.deck = Deck.Proletariat
-                    cardAction.cardName = card.name
-                    cardAction.associatedCard = card
-                    cardAction.instructions = "Do you want to pay an additional 3 coins to gain another Botanical Gardens or an additional 6 coins to gain two more Botanical Gardens?"
-                    cardAction.choices.add(CardActionChoice("3 more coins", "3"))
-                    cardAction.choices.add(CardActionChoice("6 more coins", "6"))
-                    cardAction.choices.add(CardActionChoice("No", "no"))
-                    return cardAction
-                }
-                player.coins >= 3 -> {
-                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
-                    cardAction.deck = Deck.Proletariat
-                    cardAction.cardName = card.name
-                    cardAction.associatedCard = card
-                    cardAction.instructions = "Do you want to pay an additional 3 coins to gain another Botanical Gardens?"
-                    return cardAction
-                }
-            }
-            "City Planner" -> when {
-                player.coins >= 2 && !player.getVictoryCards().isEmpty() -> {
-                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
-                    cardAction.deck = Deck.Proletariat
-                    cardAction.cardName = card.name
-                    cardAction.associatedCard = card
-                    cardAction.instructions = "Do you want to pay an additional 2 coins to set aside a victory card from your hand?"
-                    return cardAction
-                }
-            }
             "Farmland" -> when {
                 !player.hand.isEmpty() -> {
                     val cardAction = OldCardAction(OldCardAction.TYPE_TRASH_CARDS_FROM_HAND)
@@ -57,50 +26,6 @@ object BuySpecialActionHandler {
                     return cardAction
                 }
                 else -> game.addHistory(player.username, " did not have any cards in ", player.pronoun, " hand")
-            }
-            "Orchard" -> when {
-                player.coins > 1 -> {
-                    val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
-                    cardAction.deck = Deck.Proletariat
-                    cardAction.cardName = card.name
-                    cardAction.associatedCard = card
-                    cardAction.instructions = "Do you want to pay an additional 2 coins to gain two fruit tokens?"
-                    return cardAction
-                }
-            }
-            "Rancher" -> {
-                val cardAction = OldCardAction(OldCardAction.TYPE_GAIN_CARDS_FROM_SUPPLY)
-                cardAction.deck = Deck.Proletariat
-                cardAction.cardName = cardAction.cardName
-                cardAction.buttonValue = "Done"
-                cardAction.numCards = 1
-                cardAction.associatedCard = card
-                cardAction.instructions = "Select one of the following cards to gain and then click Done."
-                val maxCost = player.hand.size * 2
-                for (c in game.supplyMap.values) {
-                    if (c.isAction && game.getCardCost(c) <= maxCost && !c.costIncludesPotion && game.isCardInSupply(c)) {
-                        cardAction.cards.add(c)
-                    }
-                }
-                if (cardAction.cards.size > 0) {
-                    return cardAction
-                }
-            }
-            "Squatter" -> {
-                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
-                cardAction.deck = Deck.Proletariat
-                cardAction.cardName = card.name
-                cardAction.associatedCard = card
-                cardAction.instructions = "Do you want to return this card to the supply and have each other player gain a Squatter?"
-                return cardAction
-            }
-            "Shepherd" -> if (player.coins >= 2) {
-                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
-                cardAction.deck = Deck.Proletariat
-                cardAction.cardName = card.name
-                cardAction.associatedCard = card
-                cardAction.instructions = "Do you want to pay an additional 2 coins to gain 2 cattle tokens?"
-                return cardAction
             }
         }
 

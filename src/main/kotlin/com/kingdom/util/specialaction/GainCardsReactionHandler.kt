@@ -25,17 +25,6 @@ object GainCardsReactionHandler {
                 cardAction.cards.add(card)
                 return cardAction
             }
-            "Tinker" -> {
-                val cardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
-                cardAction.isGainCardAction = true
-                cardAction.deck = Deck.FairyTale
-                cardAction.cardName = "Tinker"
-                cardAction.associatedCard = card
-                cardAction.instructions = "Do you want to add this card under your Tinker?"
-                cardAction.destination = destination
-                cardAction.cards.add(card)
-                return cardAction
-            }
             "Trader" -> {
                 val cardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
                 cardAction.isGainCardAction = true

@@ -87,31 +87,6 @@ object ChooseUpToHandler {
             } else {
                 game.addHistory(player.username, " chose to not gain a card from the trash pile")
             }
-            "Museum" -> {
-                if (selectedCardNames.isNotEmpty()) {
-                    val selectedCard = cardMap[selectedCardNames[0]]!!
-                    player.removeCardFromHand(selectedCard)
-                    player.museumCards.add(selectedCard)
-                }
-                if (player.museumCards.size >= 4) {
-                    val museumCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
-                    museumCardAction.deck = Deck.Fan
-                    museumCardAction.cardName = "Museum Trash Cards"
-                    museumCardAction.instructions = "Do you want to trash 4 cards from your Museum mat to gain a Prize and a Duchy?"
-                    game.setPlayerCardAction(player, museumCardAction)
-                }
-            }
-            "Rancher" -> if (selectedCardNames.isNotEmpty()) {
-                val selectedCard = cardMap[selectedCardNames[0]]!!
-                game.addHistory(player.username, " revealed ", KingdomUtil.getArticleWithCardName(selectedCard))
-                val choicesCardAction = OldCardAction(OldCardAction.TYPE_CHOICES)
-                choicesCardAction.deck = Deck.Proletariat
-                choicesCardAction.cardName = oldCardAction.cardName
-                choicesCardAction.instructions = "Choose one: +1 cattle token or +1 Buy."
-                choicesCardAction.choices.add(CardActionChoice("cattle token", "cattle"))
-                choicesCardAction.choices.add(CardActionChoice("+1 Buy", "buy"))
-                game.setPlayerCardAction(player, choicesCardAction)
-            }
             "Storybook" -> if (selectedCardNames.isNotEmpty()) {
                 for (selectedCardId in selectedCardNames) {
                     val selectedCard = cardMap[selectedCardId]!!

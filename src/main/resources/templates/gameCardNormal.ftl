@@ -40,11 +40,6 @@
             + ${card.addVictoryCoins} VC
         </div>
     </#if>
-    <#if card.sins != 0>
-        <div class="cardRow">
-            <#if card.sins &lt; 0>- ${card.sins * -1} <#else>+ ${card.sins} </#if>Sin<#if card.sins != 1>s</#if>
-        </div>
-    </#if>
     <#if card.victoryPoints != 0>
         <div class="cardRow">
             <div style="font-size:16px;padding-top:5px;">${card.victoryPoints} VP</div>

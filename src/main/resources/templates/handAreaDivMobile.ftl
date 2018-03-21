@@ -38,9 +38,6 @@
     <#if showVictoryCoins>
         <div class="handAreaTopRowLeft" style="clear:both;">${player.victoryCoins} Victory Coin<#if player.victoryCoins != 1>s</#if></div>
     </#if>
-    <#if showSins>
-        <div class="handAreaTopRowLeft" style="clear:both;">${player.sins} Sin<#if player.sins != 1>s</#if></div>
-    </#if>
 </div>
 <div style="clear:both;">
     <div class="label">

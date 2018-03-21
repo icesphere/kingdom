@@ -106,17 +106,6 @@ object TreasureCardsSpecialActionHandler {
                 game.refreshAllPlayersPlayingArea()
                 game.refreshAllPlayersHandArea()
             }
-            "Storybook" -> if (!player!!.getVictoryCards().isEmpty()) {
-                val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
-                cardAction.deck = Deck.FairyTale
-                cardAction.cardName = card.name
-                cardAction.cards.addAll(player.getVictoryCards())
-                cardAction.numCards = player.getVictoryCards().size
-                cardAction.instructions = "Choose the victory cards from your hand to put under Storybook and then click Done. +1 coin per victory card added."
-                cardAction.buttonValue = "Done"
-                cardAction.associatedCard = card
-                game.setPlayerCardAction(player, cardAction)
-            }
             "Venture" -> {
                 var treasureCardFound = false
                 val revealedCards = ArrayList<Card>()
