@@ -188,6 +188,9 @@ abstract class Card(
             else -> CardColor.Action
         }
 
+    val backgroundColorColor: String
+        get() = backgroundColor.color
+
     val isAutoPlayTreasure: Boolean
         get() = name != "Bank" && name != "Venture" && name != "Contraband" && name != "Loan" && name != "Horn of Plenty" && name != "Talisman" && name != "Diadem" && name != "Storybook" && name != "Ill-Gotten Gains" && name != "Fool's Gold"
 

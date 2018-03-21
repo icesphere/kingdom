@@ -459,10 +459,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
             "Fool's Gold" -> foolsGoldInHand++
             "Trader" -> traderCardsInHand++
         }
-
-        if (card.name == Potion.NAME) {
-            potionsInHand++
-        }
     }
 
     private fun cardRemoved(card: Card) {
@@ -504,10 +500,6 @@ class OldPlayer(user: User, val game: OldGame) : Comparable<OldPlayer> {
             "Enchanted Palace" -> enchantedPalacesInHand--
             "Fool's Gold" -> foolsGoldInHand--
             "Trader" -> traderCardsInHand--
-        }
-
-        if (card.isPotion) {
-            potionsInHand--
         }
     }
 

@@ -515,9 +515,6 @@ class OldGame(val gameId: Int) {
                 supply[Curse.NAME] = 30
             }
         }
-        if (isUsePotions) {
-            supply[Potion.NAME] = 16
-        }
     }
 
     private fun populateCardMaps() {
@@ -532,9 +529,6 @@ class OldGame(val gameId: Int) {
         }
         for (card in blackMarketCards) {
             cardMap[card.name] = card
-            if (card.costIncludesPotion) {
-                isUsePotions = true
-            }
             if (card.name == "Embargo") {
                 isShowEmbargoTokens = true
             } else if (card.name == "Bridge Troll") {
@@ -552,9 +546,6 @@ class OldGame(val gameId: Int) {
         supplyCards.add(Gold())
         if (isIncludePlatinumCards) {
             supplyCards.add(Platinum())
-        }
-        if (isUsePotions) {
-            supplyCards.add(Potion())
         }
         supplyCards.add(Estate())
         supplyCards.add(Duchy())
@@ -603,21 +594,12 @@ class OldGame(val gameId: Int) {
             i++
         }
         for (card in supplyMap.values) {
-            if (card.costIncludesPotion) {
-                var cards: MutableList<Card>? = potionCostMap[card.cost]
-                if (cards == null) {
-                    cards = ArrayList()
-                }
-                cards.add(card)
-                potionCostMap[card.cost] = cards
-            } else {
-                var cards: MutableList<Card>? = costMap[card.cost]
-                if (cards == null) {
-                    cards = ArrayList()
-                }
-                cards.add(card)
-                costMap[card.cost] = cards
+            var cards: MutableList<Card>? = costMap[card.cost]
+            if (cards == null) {
+                cards = ArrayList()
             }
+            cards.add(card)
+            costMap[card.cost] = cards
         }
     }
 
@@ -702,12 +684,12 @@ class OldGame(val gameId: Int) {
     fun canBuyCard(player: OldPlayer, card: Card): Boolean {
         val cost = getCardCost(card, player, true)
         val numInSupply = supply[card.name]
-        return player.coins >= cost && (!card.costIncludesPotion || player.potions > 0) && (!isTrackContrabandCards || !contrabandCards.contains(card)) && numInSupply != null && numInSupply > 0
+        return player.coins >= cost && (!isTrackContrabandCards || !contrabandCards.contains(card)) && numInSupply != null && numInSupply > 0
     }
 
     fun canBuyCardNotInSupply(player: OldPlayer, card: Card): Boolean {
         val cost = getCardCost(card, player, true)
-        return player.coins >= cost && (!card.costIncludesPotion || player.potions > 0) && (!isTrackContrabandCards || !contrabandCards.contains(card))
+        return player.coins >= cost && (!isTrackContrabandCards || !contrabandCards.contains(card))
     }
 
     fun getCardCost(card: Card): Int {
@@ -1054,9 +1036,6 @@ class OldGame(val gameId: Int) {
         if (card.isDuration) {
             isShowDuration = true
         }
-        if (card.costIncludesPotion) {
-            isUsePotions = true
-        }
         if (card.addVictoryCoins > 0 || card.name == "Goons") {
             isShowVictoryCoins = true
         }
@@ -1142,11 +1121,7 @@ class OldGame(val gameId: Int) {
             println("supply card null")
         }
         val numInSupply = getNumInSupply(card)
-        var missingPotion = false
-        if (card.costIncludesPotion && player.potions == 0) {
-            missingPotion = true
-        }
-        if (player.coins >= cost && player.buys > 0 && numInSupply > 0 && !missingPotion) {
+        if (player.coins >= cost && player.buys > 0 && numInSupply > 0) {
             if (confirm && !player.isComputer && !player.hasBoughtCard() && (!isPlayTreasureCards || treasureCardsPlayed.isEmpty())) {
                 if (isPlayTreasureCards && !player.treasureCards.isEmpty()) {
                     val confirmBuyCardAction = OldCardAction(OldCardAction.TYPE_YES_NO)
@@ -1192,12 +1167,6 @@ class OldGame(val gameId: Int) {
             addHistory(player.username, " bought ", KingdomUtil.getArticleWithCardName(card))
             player.addCoins(cost * -1)
             player.addBuys(-1)
-            if (card.costIncludesPotion) {
-                if (!isPlayTreasureCards) {
-                    potionsPlayed++
-                }
-                player.addPotions(-1)
-            }
             if (goonsCardsPlayed > 0) {
                 player.addVictoryCoins(goonsCardsPlayed)
                 refreshAllPlayersPlayers()
@@ -1267,13 +1236,6 @@ class OldGame(val gameId: Int) {
                         setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You don't have enough coins."))
                     }
                 }
-            } else if (missingPotion) {
-                if (player.isComputer) {
-                    val error = GameError(GameError.COMPUTER_ERROR, player.username + " needs a potion to buy " + card.name)
-                    logError(error, false)
-                } else {
-                    setPlayerInfoDialog(player, InfoDialog.getErrorDialog("You need a potion to buy this card."))
-                }
             }
         }
         return cardBought
@@ -1302,9 +1264,6 @@ class OldGame(val gameId: Int) {
         if (card.addVictoryCoins != 0) {
             player.addVictoryCoins(card.addVictoryCoins)
             refreshAllPlayersPlayers()
-        }
-        if (card.isPotion) {
-            player.addPotions(1)
         }
         if (card.coinsTokens != 0) {
             player.addFruitTokens(card.coinsTokens)

@@ -500,6 +500,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
+    override fun waitForOtherPlayersToResolveActions() {
+        //do nothing
+    }
+
     fun refreshGamePageForOpponent() {
         sendGameMessageToOpponent("refresh_game_page")
     }
