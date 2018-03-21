@@ -72,24 +72,6 @@
                                 </div>
                             </td>
                             <td style="vertical-align:top">
-                                <div id="alchemyCardsDiv" style="width:200px;">
-                                    <table>
-                                        <tr>
-                                            <td>
-                                                Alchemy
-                                            </td>
-                                        </tr>
-                                        <#list alchemyCards as card>
-                                            <tr>
-                                                <td>
-                                                    <a href="showCard.html?id=${card.name}">${card.name}</a><#if card.testing> (testing)</#if>
-                                                </td>
-                                            </tr>
-                                        </#list>
-                                    </table>
-                                </div>
-                            </td>
-                            <td style="vertical-align:top">
                                 <div id="prosperityCardsDiv" style="width:200px;">
                                     <table>
                                         <tr>

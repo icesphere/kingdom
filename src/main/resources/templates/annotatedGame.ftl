@@ -104,20 +104,6 @@
                             </div>
                         </td>
                         <td style="vertical-align:top">
-                            <div id="alchemyCardsDiv" style="width:200px;">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            Alchemy
-                                        </td>
-                                    </tr>
-                                    <#list alchemyCards as card>
-                                        <#include "annotatedGameCardRow.ftl">
-                                    </#list>
-                                </table>
-                            </div>
-                        </td>
-                        <td style="vertical-align:top">
                             <div id="prosperityCardsDiv" style="width:200px;">
                                 <table>
                                     <tr>

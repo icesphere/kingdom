@@ -80,9 +80,6 @@ class User {
     @Column(name = "seaside_checked")
     var seasideChecked = true
 
-    @Column(name = "alchemy_checked")
-    var alchemyChecked = true
-
     @Column(name = "prosperity_checked")
     var prosperityChecked = true
 
@@ -103,9 +100,6 @@ class User {
 
     @Column(name = "seaside_weight")
     var seasideWeight = 3
-
-    @Column(name = "alchemy_weight")
-    var alchemyWeight = 3
 
     @Column(name = "prosperity_weight")
     var prosperityWeight = 3

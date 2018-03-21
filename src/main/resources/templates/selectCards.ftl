@@ -138,9 +138,6 @@
                         <input type="checkbox" name="deck_seaside" id="deck_seaside" value="Seaside" onclick="selectDeck(this)" <#if user.seasideChecked>checked</#if>/>  <label for="deck_seaside">Seaside</label>
                     </div>
                     <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="deck_alchemy" id="deck_alchemy" value="Alchemy" onclick="selectDeck(this)" <#if user.alchemyChecked>checked</#if>/>  <label for="deck_alchemy">Alchemy</label>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
                         <input type="checkbox" name="deck_prosperity" id="deck_prosperity" value="Prosperity" onclick="selectDeck(this)" <#if user.prosperityChecked>checked</#if>/>  <label for="deck_prosperity">Prosperity</label>
                     </div>
                     <div style="float:left;padding-left:10px;">
@@ -184,15 +181,6 @@
                             </select>
                         </div>
                         <div style="float:left;padding-left:10px;">
-                            Alchemy <select name="deck_weight_alchemy" id="deck_weight_alchemy">
-                                <option value="5" <#if user.alchemyWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.alchemyWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.alchemyWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.alchemyWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.alchemyWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
                             Prosperity <select name="deck_weight_prosperity" id="deck_weight_prosperity">
                                 <option value="5" <#if user.prosperityWeight == 5>selected</#if>>Very Often</option>
                                 <option value="4" <#if user.prosperityWeight == 4>selected</#if>>More Often</option>
@@ -233,9 +221,6 @@
                 <div id="randomizingOptions" style="padding-top:10px;float:left;clear:both;">
                     <div style="float:left;"><span class="label">Randomizing Options:</span></div><#if mobile><div style="float:left;padding-left:5px;"><a href="javascript:toggleRandomizingOptions()" id="randomizingOptionsLink">Show</a></div></#if>
                     <div id="randomizingOptionsContent" <#if mobile>style="display:none"</#if>>
-                        <div style="clear:both;float:left;padding-left:10px;">
-                            <input type="checkbox" name="threeToFiveAlchemy" id="threeToFiveAlchemy" value="true"/> <label for="threeToFiveAlchemy">3-5 Alchemy cards when included</label>
-                        </div>
                         <div style="float:left;padding-left:10px;">
                             <input type="checkbox" name="oneOfEachCost" id="oneOfEachCost" value="true"/> <label for="oneOfEachCost">At least one card each of cost 2, 3, 4 and 5</label>
                         </div>
@@ -275,14 +260,6 @@
                         <div class="customCardsDeck">
                             <div style="float:left;" class="label">Seaside</div>
                             <#list seasideCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Alchemy</div>
-                            <#list alchemyCards as card>
                                 <div style="float:left;clear:both;">
                                     <#include "excludedCardRow.ftl">
                                 </div>
@@ -352,14 +329,6 @@
                         <div id="seasideCardsDiv" class="customCardsDeck">
                             <div style="float:left;" class="label">Seaside</div>
                             <#list seasideCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="alchemyCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Alchemy</div>
-                            <#list alchemyCards as card>
                                 <div style="float:left;clear:both;">
                                     <#include "createGameCardRow.ftl">
                                 </div>

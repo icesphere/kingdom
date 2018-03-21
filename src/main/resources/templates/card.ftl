@@ -25,7 +25,6 @@
                             <option value="Kingdom" <#if card.deck == "Kingdom">selected="true"</#if>>Base</option>
                             <option value="Intrigue" <#if card.deck == "Intrigue">selected="true"</#if>>Intrigue</option>
                             <option value="Seaside" <#if card.deck == "Seaside">selected="true"</#if>>Seaside</option>
-                            <option value="Alchemy" <#if card.deck == "Alchemy">selected="true"</#if>>Alchemy</option>
                             <option value="Prosperity" <#if card.deck == "Prosperity">selected="true"</#if>>Prosperity</option>
                             <option value="Cornucopia" <#if card.deck == "Cornucopia">selected="true"</#if>>Cornucopia</option>
                             <option value="Hinterlands" <#if card.deck == "Hinterlands">selected="true"</#if>>Hinterlands</option>

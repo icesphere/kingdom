@@ -167,9 +167,6 @@ abstract class Card(
     val isSeaside: Boolean
         get() = deck === Deck.Seaside
 
-    val isAlchemy: Boolean
-        get() = deck === Deck.Alchemy
-
     val isPromo: Boolean
         get() = deck === Deck.Promo
 

@@ -47,7 +47,6 @@
                 <td style="font-weight:bold;padding-left:10px;">Base Set</td>
                 <td style="font-weight:bold;padding-left:10px;">Intrigue</td>
                 <td style="font-weight:bold;padding-left:10px;">Seaside</td>
-                <td style="font-weight:bold;padding-left:10px;">Alchemy</td>
                 <td style="font-weight:bold;padding-left:10px;">Prosperity</td>
                 <td style="font-weight:bold;padding-left:10px;">Cornucopia</td>
                 <td style="font-weight:bold;padding-left:10px;">Hinterlands</td>
@@ -98,9 +97,6 @@
                     </td>
                     <td style="padding-left:10px;">
                         seaside <#if user.seasideChecked>(${user.seasideWeight})</#if>
-                    </td>
-                    <td style="padding-left:10px;">
-                        alchemy <#if user.alchemyChecked>(${user.alchemyWeight})</#if>
                     </td>
                     <td style="padding-left:10px;">
                         prosperity <#if user.prosperityChecked>(${user.prosperityWeight})</#if>

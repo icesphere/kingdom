@@ -42,14 +42,6 @@
     </tr>
     <tr>
         <td class="label">
-            <a href="showUsersForStat.html?stat=alchemyChecked">Alchemy Deck:</a>
-        </td>
-        <td>
-            ${stats.alchemyDeck}
-        </td>
-    </tr>
-    <tr>
-        <td class="label">
             <a href="showUsersForStat.html?stat=prosperityChecked">Prosperity Deck:</a>
         </td>
         <td>

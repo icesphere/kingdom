@@ -90,7 +90,6 @@ class GameController(private var cardManager: CardManager,
         modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, includeTesting))
         modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, includeTesting))
         modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, includeTesting))
-        modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, includeTesting))
         modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, includeTesting))
         modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, includeTesting))
         modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, includeTesting))
@@ -147,7 +146,6 @@ class GameController(private var cardManager: CardManager,
                 user.baseChecked = request.getParameter("deck_kingdom") != null
                 user.intrigueChecked = request.getParameter("deck_intrigue") != null
                 user.seasideChecked = request.getParameter("deck_seaside") != null
-                user.alchemyChecked = request.getParameter("deck_alchemy") != null
                 user.prosperityChecked = request.getParameter("deck_prosperity") != null
                 user.cornucopiaChecked = request.getParameter("deck_cornucopia") != null
                 user.hinterlandsChecked = request.getParameter("deck_hinterlands") != null
@@ -159,7 +157,6 @@ class GameController(private var cardManager: CardManager,
                 user.baseWeight = KingdomUtil.getRequestInt(request, "deck_weight_kingdom", 3)
                 user.intrigueWeight = KingdomUtil.getRequestInt(request, "deck_weight_intrigue", 3)
                 user.seasideWeight = KingdomUtil.getRequestInt(request, "deck_weight_seaside", 3)
-                user.alchemyWeight = KingdomUtil.getRequestInt(request, "deck_weight_alchemy", 3)
                 user.prosperityWeight = KingdomUtil.getRequestInt(request, "deck_weight_prosperity", 3)
                 user.cornucopiaWeight = KingdomUtil.getRequestInt(request, "deck_weight_cornucopia", 3)
                 user.hinterlandsWeight = KingdomUtil.getRequestInt(request, "deck_weight_hinterlands", 3)
@@ -276,7 +273,6 @@ class GameController(private var cardManager: CardManager,
                         Deck.Kingdom -> user.baseWeight
                         Deck.Intrigue -> user.intrigueWeight
                         Deck.Seaside -> user.seasideWeight
-                        Deck.Alchemy -> user.alchemyWeight
                         Deck.Prosperity -> user.prosperityWeight
                         Deck.Cornucopia -> user.cornucopiaWeight
                         Deck.Hinterlands -> user.hinterlandsWeight
@@ -317,13 +313,11 @@ class GameController(private var cardManager: CardManager,
 
         if (generateType == "custom" || generateType == "annotatedGame" || generateType == "recentGame" || generateType == "recommendedSet") {
             game.custom = true
-            options.isThreeToFiveAlchemy = true
             options.customSelection = customSelection
             if (KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")) {
                 game.isAlwaysIncludeColonyAndPlatinum = true
             }
         } else {
-            options.isThreeToFiveAlchemy = KingdomUtil.getRequestBoolean(request, "threeToFiveAlchemy")
             options.isOneOfEachCost = KingdomUtil.getRequestBoolean(request, "oneOfEachCost")
             options.isOneWithBuy = KingdomUtil.getRequestBoolean(request, "oneWithBuy")
             options.isOneWithActions = KingdomUtil.getRequestBoolean(request, "oneWithActions")
@@ -2221,7 +2215,6 @@ class GameController(private var cardManager: CardManager,
         modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, true))
         modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, true))
         modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, true))
-        modelAndView.addObject("alchemyCards", cardManager.getCards(Deck.Alchemy, true))
         modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, true))
         modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, true))
         modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, true))

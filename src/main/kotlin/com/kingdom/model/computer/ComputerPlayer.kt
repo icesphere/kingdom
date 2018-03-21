@@ -1225,7 +1225,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
             Deck.Kingdom -> KingdomComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Intrigue -> IntrigueComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Seaside -> SeasideComputerCardActionHandler.handleCardAction(oldCardAction, this)
-            Deck.Alchemy -> AlchemyComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Prosperity -> ProsperityComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Cornucopia -> CornucopiaComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Hinterlands -> HinterlandsComputerCardActionHandler.handleCardAction(oldCardAction, this)

@@ -260,9 +260,6 @@ class GameDao//todo
         query = session.createSQLQuery("select count(*) from users u where u.seaside_checked = 1 and u.active = 1 and u.admin = 0");
         stats.setSeasideDeck(((BigInteger) query.uniqueResult()).intValue());
 
-        query = session.createSQLQuery("select count(*) from users u where u.alchemy_checked = 1 and u.active = 1 and u.admin = 0");
-        stats.setAlchemyDeck(((BigInteger) query.uniqueResult()).intValue());
-
         query = session.createSQLQuery("select count(*) from users u where u.prosperity_checked = 1 and u.active = 1 and u.admin = 0");
         stats.setProsperityDeck(((BigInteger) query.uniqueResult()).intValue());
 
@@ -290,7 +287,7 @@ class GameDao//todo
         query = session.createSQLQuery("select count(distinct u.userid) from game_users gu, games g, users u where g.gameid = gu.gameid and gu.userid = u.userid and g.mobile = 1 and gu.userid > 0 and u.active = 1 and u.admin = 0");
         stats.setPlayedMobileGame(((BigInteger) query.uniqueResult()).intValue());
 
-        query = session.createSQLQuery("select count(*) from users u where u.active = 1 and u.admin = 0 and (base_weight != 3 or intrigue_weight != 3 or seaside_weight != 3 or alchemy_weight != 3 or prosperity_weight != 3 or cornucopia_weight != 3 or hinterlands_weight != 3 or promo_weight != 3)");
+        query = session.createSQLQuery("select count(*) from users u where u.active = 1 and u.admin = 0 and (base_weight != 3 or intrigue_weight != 3 or seaside_weight != 3 or prosperity_weight != 3 or cornucopia_weight != 3 or hinterlands_weight != 3 or promo_weight != 3)");
         stats.setUsingDeckFrequencies(((BigInteger) query.uniqueResult()).intValue());
 
         query = session.createSQLQuery("select count(*) from users u where u.active = 1 and u.admin = 0 and excluded_cards != ''");

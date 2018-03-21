@@ -33,54 +33,13 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
         rcs = RandomCardsSelected()
 
-        var cards: MutableList<Card> = ArrayList()
-
-        //special case where they only selected alchemy deck
-        if (decks.size == 1 && decks[0] == Deck.Alchemy) {
-            cards = getCardsByDeck(Deck.Alchemy)
-            Collections.shuffle(cards)
-            if (options.isSwappingCard) {
-                for (card in cards) {
-                    if (canAddCard(card)) {
-                        selectedCards.add(card)
-                        break
-                    }
-                }
-            } else {
-                selectedCards.addAll(cards.subList(0, 10 - options.customSelection.size))
-            }
-            game.kingdomCards = cards.subList(0, 10)
-            return
-        }
-
-        var includeAlchemy = !options.isThreeToFiveAlchemy
-        if (options.isThreeToFiveAlchemy && decks.contains(Deck.Alchemy) && selectedCards.size <= 5) {
-            val rand = 1 + (Math.random() * (decks.size - 1 + 1)).toInt()
-            if (rand == 1) {
-                includeAlchemy = true
-            }
-        }
+        val cards: MutableList<Card> = ArrayList()
 
         for (deck in decks) {
-            if (!options.isThreeToFiveAlchemy || deck != Deck.Alchemy) {
-                cards.addAll(getCardsByDeck(deck))
-            }
+            cards.addAll(getCardsByDeck(deck))
         }
-        Collections.shuffle(cards)
 
-        if (includeAlchemy && options.isThreeToFiveAlchemy) {
-            var alchemyCardsToInclude = 3
-            val alchemyCards = getCardsByDeck(Deck.Alchemy)
-            Collections.shuffle(alchemyCards)
-            if (alchemyCards[0].cost > 3) {
-                alchemyCardsToInclude = 5
-            } else if (alchemyCards[0].cost > 2) {
-                alchemyCardsToInclude = 4
-            }
-            for (i in 0 until alchemyCardsToInclude) {
-                addSelectedCard(alchemyCards[i])
-            }
-        }
+        cards.shuffle()
 
         if (options.isOneWithBuy && !rcs!!.hasAdditionalBuys && needMoreCards()) {
             for (card in cards) {

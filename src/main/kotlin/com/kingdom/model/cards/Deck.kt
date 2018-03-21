@@ -6,7 +6,6 @@ enum class Deck {
     Intrigue,
     Seaside,
     Promo,
-    Alchemy,
     Prosperity,
     Cornucopia,
     Hinterlands,

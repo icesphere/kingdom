@@ -2014,56 +2014,6 @@ class OldGame(val gameId: Int) {
                     return
                 }
             }
-            if (playedAlchemistCard) {
-                playedAlchemistCard = false
-                val hasPotion: Boolean
-                if (isPlayTreasureCards) {
-                    hasPotion = potionsPlayed > 0
-                } else {
-                    hasPotion = player.potions > 0 || potionsPlayed > 0
-                }
-                if (hasPotion) {
-                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
-                    cardAction.deck = Deck.Alchemy
-                    cardAction.cardName = "Alchemist"
-                    for (card in cardsPlayed) {
-                        if (card.name == "Alchemist") {
-                            card.isAutoSelect = true
-                            cardAction.cards.add(card)
-                        }
-                    }
-                    cardAction.numCards = cardAction.cards.size
-                    cardAction.instructions = "All Alchemists played have been selected. Click on any that you do not want to go on top of your deck and then click Done."
-                    cardAction.buttonValue = "Done"
-                    setPlayerCardAction(player, cardAction)
-                    return
-                }
-            }
-            if (playedHerbalistCard) {
-                playedHerbalistCard = false
-                val treasureCards = HashSet(treasureCardsPlayed)
-                if (treasureCards.size > 0) {
-                    val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_UP_TO)
-                    cardAction.deck = Deck.Alchemy
-                    cardAction.cardName = "Herbalist"
-                    var herbalistCardsPlayed = 0
-                    for (card in cardsPlayed) {
-                        if (card.name == "Herbalist") {
-                            herbalistCardsPlayed++
-                        }
-                    }
-                    var numCards = herbalistCardsPlayed
-                    if (treasureCards.size < herbalistCardsPlayed) {
-                        numCards = treasureCards.size
-                    }
-                    cardAction.numCards = numCards
-                    cardAction.cards.addAll(treasureCards)
-                    cardAction.instructions = "Select up to " + KingdomUtil.getPlural(numCards, "Treasure card") + " to go back on top of your deck and then click Done"
-                    cardAction.buttonValue = "Done"
-                    setPlayerCardAction(player, cardAction)
-                    return
-                }
-            }
             if (checkScheme && schemeCardsPlayed > 0) {
                 if (!actionCardsPlayed.isEmpty()) {
                     var numCards = schemeCardsPlayed

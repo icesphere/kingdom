@@ -8,7 +8,6 @@ class RandomizingOptions {
     var isOneWithBuy: Boolean = false
     var isOneWithActions: Boolean = false
     var isDefenseForAttack: Boolean = false
-    var isThreeToFiveAlchemy: Boolean = false
     var customSelection: List<Card> = ArrayList(0)
     var excludedCards: List<Card> = ArrayList(0)
     var isSwappingCard: Boolean = false

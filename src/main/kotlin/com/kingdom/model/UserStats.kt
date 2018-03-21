@@ -6,7 +6,6 @@ class UserStats {
     var baseDeck: Int = 0
     var intrigueDeck: Int = 0
     var seasideDeck: Int = 0
-    var alchemyDeck: Int = 0
     var prosperityDeck: Int = 0
     var cornucopiaDeck: Int = 0
     var hinterlandsDeck: Int = 0
