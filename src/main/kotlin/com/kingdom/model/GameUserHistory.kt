@@ -1,5 +1,6 @@
 package com.kingdom.model
 
+import com.kingdom.model.players.Player
 import com.kingdom.util.KingdomUtil
 
 import javax.persistence.*
@@ -40,7 +41,7 @@ class GameUserHistory {
 
     constructor()
 
-    constructor(gameId: String, player: OldPlayer) {
+    constructor(gameId: String, player: Player) {
         this.gameId = gameId
         this.userId = player.userId
         this.points = player.victoryPoints

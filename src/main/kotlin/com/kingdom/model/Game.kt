@@ -3,22 +3,22 @@ package com.kingdom.model
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.*
+import com.kingdom.model.players.BotPlayer
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
 import com.kingdom.model.players.bots.BigMoneyBotPlayer
 import com.kingdom.model.players.bots.EasyBotPlayer
 import com.kingdom.model.players.bots.HardBotPlayer
 import com.kingdom.model.players.bots.MediumBotPlayer
+import com.kingdom.service.GameManager
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.util.KingdomUtil
 import org.apache.commons.lang3.StringUtils
-import java.io.File
-import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.full.createInstance
 
-class Game() {
+class Game(val gameManager: GameManager) {
     val gameId: String = UUID.randomUUID().toString()
 
     var turn: Int = 0
@@ -40,7 +40,7 @@ class Game() {
     private val playersExited = HashSet<Int>(6)
 
     val computerPlayers: List<Player>
-        get() = players.filter{ it.isBot }
+        get() = players.filter { it.isBot }
 
     var decks: MutableList<Deck> = ArrayList()
 
@@ -124,6 +124,8 @@ class Game() {
 
     var custom: Boolean = false
 
+    private var repeated: Boolean = false
+
     var isPlayTreasureCards = false
 
     var isShowVictoryPoints: Boolean = false
@@ -162,12 +164,13 @@ class Game() {
     val tradeRouteTokenMap = HashMap<String, Boolean>(0)
     var isTrackTradeRouteTokens: Boolean = false
     var tradeRouteTokensOnMat: Int = 0
-    
+
     val embargoTokens = HashMap<String, Int>()
 
     val cardsPlayed = LinkedList<Card>()
     val cardsBought = ArrayList<Card>()
 
+    private var currentTurn: PlayerTurn? = null
     private val turnHistory = ArrayList<PlayerTurn>()
     val recentTurnHistory = LinkedList<PlayerTurn>()
 
@@ -301,7 +304,7 @@ class Game() {
     }
 
     private fun startTurnInNewThreadIfComputerVsHuman() {
-        if (currentPlayer.isBot && currentPlayer.opponents.any{it is HumanPlayer}) {
+        if (currentPlayer.isBot && currentPlayer.opponents.any { it is HumanPlayer }) {
             currentPlayer.opponents.filter { it is HumanPlayer }.forEach { p ->
                 p.isWaitingForComputer = true
             }
@@ -324,7 +327,6 @@ class Game() {
         }
         return cardString
     }
-
 
 
     fun turnEnded() {
@@ -376,56 +378,7 @@ class Game() {
             gameLog(playerName + "'s cards: ")
             player.allCards.forEach { c -> gameLog(c.name) }
         }
-
-        writeGameLog()
     }
-
-    val gameLogFile: File?
-        get() {
-            //todo
-            return null
-            /*val userDirectory = FileUtils.getUserDirectory()
-            val gameLogDirectory = File(userDirectory, "kingdomgamelogs")
-
-            var gameLogFileName = "game_"
-
-            if (quitGamePlayer != null) {
-                gameLogFileName += quitGamePlayer!!.playerName + "_quit_"
-            }
-
-            if (timedOut) {
-                gameLogFileName += "timeout_"
-            }
-
-            gameLogFileName += winner.infoForGameLogName + "_over_" + loser.infoForGameLogName + "_" + gameId
-
-            return File(gameLogDirectory, gameLogFileName)*/
-        }
-
-    private fun writeGameLog() {
-        try {
-            //todo
-            /*val gameLogFile = gameLogFile
-            //gameLog.append("Game log file: ").append(gameLogFile.getAbsolutePath());
-            FileUtils.writeStringToFile(gameLogFile,
-                    gameLog.toString().replace("<br/>".toRegex(), "\n").replace("<b>".toRegex(), "").replace("</b>".toRegex(), ""),
-                    "UTF-8")*/
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-    }
-
-    //todob
-    /*val winner: Player
-        get() {
-            return players!!.stream().max { p1, p2 -> Integer.compare(p1.authority, p2.authority) }.get()
-        }
-
-    val loser: Player
-        get() {
-            return players!!.stream().min { p1, p2 -> Integer.compare(p1.authority, p2.authority) }.get()
-        }*/
 
     fun gameLog(log: String) {
         gameLog(log, false)
@@ -459,12 +412,6 @@ class Game() {
     val recentTurnsLog: String
         get() = currentTurnLog.toString() + StringUtils.join(recentTurnLogs, "")
 
-    fun gameTimedOut() {
-        gameLog("Game timed out")
-        timedOut = true
-        writeGameLog()
-    }
-
     fun isCardAvailableInSupply(card: Card): Boolean {
         return supplyAmounts.containsKey(card.name) && supplyAmounts[card.name]!! > 0
     }
@@ -497,7 +444,53 @@ class Game() {
     }
 
     fun saveGameHistory() {
-        //todo
+        if (!savedGameHistory) {
+            savedGameHistory = true
+            val history = GameHistory()
+            history.startDate = creationTime
+            history.endDate = Date()
+            history.numPlayers = numPlayers
+            history.numComputerPlayers = numComputerPlayers
+            history.custom = custom
+            history.annotatedGame = isAnnotatedGame
+            history.recentGame = isRecentGame
+            history.recommendedSet = isRecommendedSet
+            history.testGame = isTestGame
+            history.abandonedGame = isAbandonedGame
+            history.gameEndReason = gameEndReason
+            history.winner = winnerString
+            history.showVictoryPoints = isShowVictoryPoints
+            history.identicalStartingHands = isIdenticalStartingHands
+            history.repeated = repeated
+            history.mobile = mobile
+            val cardNames = java.util.ArrayList<String>()
+            for (kingdomCard in kingdomCards) {
+                cardNames.add(kingdomCard.name)
+            }
+            if (isIncludePlatinumCards) {
+                cardNames.add("Platinum")
+            }
+            if (isIncludeColonyCards) {
+                cardNames.add("Colony")
+            }
+            history.cards = KingdomUtil.implode(cardNames, ",")
+            gameManager.saveGameHistory(history)
+
+            val sb = StringBuilder()
+            for (playerTurn in turnHistory) {
+                sb.append(KingdomUtil.implode(playerTurn.history, ";"))
+            }
+
+            val log = GameLog()
+            log.gameId = history.gameId
+            log.log = sb.toString()
+            gameManager.saveGameLog(log)
+            logId = log.logId
+
+            for (player in players) {
+                gameManager.saveGameUserHistory(history.gameId, player)
+            }
+        }
     }
 
     fun reset(repeatingGame: Boolean = false) {
@@ -592,8 +585,45 @@ class Game() {
         LoggedInUsers.refreshLobbyGameRooms()
     }
 
-    fun logError(error: GameError) {
-        //todo
+    fun logError(error: GameError, showInChat: Boolean = true) {
+        val cardNames = kingdomCards.map { it.name }.toMutableList()
+
+        if (isIncludePlatinumCards) {
+            cardNames.add("Platinum")
+        }
+
+        if (isIncludeColonyCards) {
+            cardNames.add("Colony")
+        }
+
+        val kingdomCardsString = KingdomUtil.implode(cardNames, ",")
+        val playerNames = players.map { it.username }
+
+        val errorHistory = StringBuilder()
+        if (!playerNames.isEmpty()) {
+            errorHistory.append("Players: ").append(KingdomUtil.implode(playerNames, ",")).append("; ")
+        }
+        if (!kingdomCards.isEmpty()) {
+            errorHistory.append("Kingdom Cards: ").append(kingdomCardsString).append("; ")
+        }
+
+        errorHistory.append("Current Player Hand: ").append(KingdomUtil.getCardNames(currentPlayer.hand, false)).append("; ")
+
+        if (currentTurn != null) {
+            errorHistory.append(KingdomUtil.implode(currentTurn!!.history, ";"))
+        }
+
+        error.history = errorHistory.toString()
+
+        gameManager.logError(error)
+
+        if (showInChat) {
+            if (error.computerError) {
+                addGameChat("The computer encountered an error. This error has been reported and will be fixed as soon as possible. If you would like to keep playing you can quit this game and start a new one with different cards.")
+            } else {
+                addGameChat("The game encountered an error. Try refreshing the page.")
+            }
+        }
     }
 
     val prizeCardsString: String
@@ -607,23 +637,13 @@ class Game() {
     fun refreshAll(player: Player) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshGameStatus = true
-        //todo
-        /*if (player.isShowCardAction && player.oldCardAction != null) {
+        if (player.currentAction != null) {
             refresh.isRefreshCardAction = true
-        }*/
+        }
         refresh.isRefreshHandArea = true
         refresh.isRefreshPlayers = true
         refresh.isRefreshPlayingArea = true
         refresh.isRefreshSupply = true
-
-        //todo
-        /*if (status == GameStatus.InProgress && !hasIncompleteCard() && !currentPlayer!!.isShowCardAction) {
-            if (!repeatedActions.isEmpty()) {
-                playRepeatedAction(currentPlayer!!, false)
-            } else if (!golemActions.isEmpty()) {
-                playGolemActionCard(currentPlayer)
-            }
-        }*/
     }
 
     fun refreshAllPlayersPlayingArea() {
@@ -765,7 +785,25 @@ class Game() {
     }
 
     fun repeat() {
-        //todo
+        val playersCopy = ArrayList(players)
+        val computerPlayersCopy = ArrayList(computerPlayers)
+        reset(true)
+        repeated = true
+        setupSupply()
+        creationTime = Date()
+        updateLastActivity()
+        for (player in playersCopy) {
+            if (player.isBot) {
+                val computerPlayer = computerPlayersCopy[player.userId]!!
+                addPlayer(player.user, true, computerPlayer is BigMoneyBotPlayer, (computerPlayer as BotPlayer).difficulty)
+            } else {
+                addPlayer(player.user)
+            }
+        }
+        playersCopy.clear()
+        computerPlayersCopy.clear()
+
+        startGame()
     }
 
     fun getSupplyCard(cardName: String): Card {

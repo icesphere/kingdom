@@ -104,7 +104,7 @@ class GameController(private var cardManager: CardManager,
     @Throws(TemplateModelException::class)
     fun generateCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = User()
-        val game = Game()
+        val game = Game(gameManager)
 
         val generateType = request.getParameter("generateType")
 
@@ -836,29 +836,31 @@ class GameController(private var cardManager: CardManager,
                 divsToLoad++
                 refresh.isRefreshChat = false
             }
-            //todo
-            /*model.put("refreshCardAction", refresh.isRefreshCardAction)
+            model.put("refreshCardAction", refresh.isRefreshCardAction)
             if (refresh.isRefreshCardAction) {
                 val player = game.playerMap[user.userId]!!
-                if (player.oldCardAction == null) {
-                    val error = GameError(GameError.GAME_ERROR, "Card action is null for user: " + player.username + ", show card action: " + player.isShowCardAction)
-                    game.logError(error, false)
-                    model.put("refreshCardAction", false)
-                } else {
-                    val cardAction = player.oldCardAction!!
-                    model.put("cardActionCardsSize", cardAction.cards.size)
-                    model.put("cardActionNumCards", cardAction.numCards)
-                    model.put("cardActionType", cardAction.type)
-                    model.put("cardActionWidth", cardAction.width)
-                    model.put("cardActionSelectExact", cardAction.isSelectExact)
-                    model.put("cardActionSelectUpTo", cardAction.isSelectUpTo)
-                    model.put("cardActionSelectAtLeast", cardAction.isSelectAtLeast)
+                if (player.currentAction != null) {
+                    model.put("currentAction", player.currentAction!!)
                     divsToLoad++
+                    /*if (player.oldCardAction == null) {
+                        val error = GameError(GameError.GAME_ERROR, "Card action is null for user: " + player.username + ", show card action: " + player.isShowCardAction)
+                        game.logError(error, false)
+                        model.put("refreshCardAction", false)
+                    } else {
+                        val cardAction = player.oldCardAction!!
+                        model.put("cardActionCardsSize", cardAction.cards.size)
+                        model.put("cardActionNumCards", cardAction.numCards)
+                        model.put("cardActionType", cardAction.type)
+                        model.put("cardActionWidth", cardAction.width)
+                        model.put("cardActionSelectExact", cardAction.isSelectExact)
+                        model.put("cardActionSelectUpTo", cardAction.isSelectUpTo)
+                        model.put("cardActionSelectAtLeast", cardAction.isSelectAtLeast)
+                        divsToLoad++
+                    }*/
                 }
                 refresh.isRefreshCardAction = false
-            }*/
-            //todo
-            /*model.put("refreshInfoDialog", refresh.isRefreshInfoDialog)
+            }
+            model.put("refreshInfoDialog", refresh.isRefreshInfoDialog)
             if (refresh.isRefreshInfoDialog) {
                 val player = game.playerMap[user.userId]!!
                 model.put("infoDialogHideMethod", player.infoDialog!!.hideMethod!!)
@@ -867,7 +869,7 @@ class GameController(private var cardManager: CardManager,
                 model.put("infoDialogTimeout", player.infoDialog!!.timeout)
                 divsToLoad++
                 refresh.isRefreshInfoDialog = false
-            }*/
+            }
             model.put("playBeep", refresh.isPlayBeep)
             if (refresh.isPlayBeep) {
                 refresh.isPlayBeep = false
@@ -907,15 +909,14 @@ class GameController(private var cardManager: CardManager,
         }
         try {
             val clickType = request.getParameter("clickType")
+            val cardId = request.getParameter("cardId")
             val cardName = request.getParameter("cardName")
-            if (cardName != null) {
+            if (cardId != null && cardName != null) {
                 val player = game.playerMap[user.userId]
                 if (player == null) {
                     model.put("redirectToLobby", true)
                     return model
                 }
-                //todo pass cardId
-                val cardId = ""
                 cardClicked(game, player, getCardLocationFromSource(clickType), cardName, cardId)
                 game.closeLoadingDialog(player)
             }
@@ -947,7 +948,6 @@ class GameController(private var cardManager: CardManager,
 
         when (source) {
             CardLocation.Supply -> {
-                //todo
                 val card = game.getSupplyCard(cardName)
 
                 if (highlightSupplyCard(player, card)) {
@@ -966,8 +966,7 @@ class GameController(private var cardManager: CardManager,
                         handleCardClickedForAction(player, card, source)
                     } else {
                         player.playCard(card)
-                        //todo
-                        //refreshGamePageForAll()
+                        refreshGamePageForAll(game)
                     }
                 }
             }
@@ -982,7 +981,7 @@ class GameController(private var cardManager: CardManager,
         }
 
         if (action != null) {
-            //todo refresh game page for player
+            game.refreshAll(player)
         }
     }
 
@@ -995,8 +994,7 @@ class GameController(private var cardManager: CardManager,
 
         player.actionResult(action!!, result)
 
-        //todo
-        //refreshGamePageForAll()
+        refreshGamePageForAll(player.game)
     }
 
     fun highlightCard(player: Player, card: Card?, cardLocation: CardLocation): Boolean {
@@ -1077,7 +1075,7 @@ class GameController(private var cardManager: CardManager,
             sendShowActionToPlayer(player)
         } else {
             player.endTurn()
-            refreshGamePageForAll()
+            refreshGamePageForAll(game)
         }
 
         return refreshGame(request, response)
@@ -1087,8 +1085,8 @@ class GameController(private var cardManager: CardManager,
         //todo
     }
 
-    fun refreshGamePageForAll() {
-        //todo
+    fun refreshGamePageForAll(game: Game) {
+        game.players.forEach { game.refreshAll(it) }
     }
 
     @RequestMapping("/submitCardAction.html")

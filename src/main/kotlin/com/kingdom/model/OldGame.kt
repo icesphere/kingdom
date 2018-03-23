@@ -2328,7 +2328,7 @@ class OldGame(val gameId: Int) {
             logId = log.logId
 
             for (player in players) {
-                gameManager!!.saveGameUserHistory(history.gameId, player)
+                //gameManager!!.saveGameUserHistory(history.gameId, player)
             }
         }
     }

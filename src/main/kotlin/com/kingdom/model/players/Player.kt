@@ -1,9 +1,6 @@
 package com.kingdom.model.players
 
-import com.kingdom.model.Choice
-import com.kingdom.model.Game
-import com.kingdom.model.TurnSummary
-import com.kingdom.model.User
+import com.kingdom.model.*
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardCopier
 import com.kingdom.model.cards.CardType
@@ -21,6 +18,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val userId = user.userId
     val username = user.username
+    val gender = user.gender
 
     protected var actionsQueue: MutableList<Action> = ArrayList()
 
@@ -83,12 +81,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var victoryCoins: Int = 0
 
+    var victoryPoints: Int = 0
+
     private var finalPointsCalculated = false
     var finalVictoryPoints = 0
     var finalCards: List<Card>? = null
 
     var isWinner: Boolean = false
     var marginOfVictory: Int = 0
+
+    var isShowInfoDialog: Boolean = false
+    var infoDialog: InfoDialog? = null
 
     fun drawCard() {
         drawCards(1)

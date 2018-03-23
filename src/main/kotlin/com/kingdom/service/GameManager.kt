@@ -1,6 +1,7 @@
 package com.kingdom.service
 
 import com.kingdom.model.*
+import com.kingdom.model.players.Player
 import com.kingdom.repository.*
 import org.springframework.stereotype.Service
 
@@ -91,7 +92,7 @@ class GameManager(private val gameErrorRepository: GameErrorRepository,
         gameHistoryRepository.save(history)
     }
 
-    fun saveGameUserHistory(gameId: String, player: OldPlayer) {
+    fun saveGameUserHistory(gameId: String, player: Player) {
         val gameUserHistory = GameUserHistory(gameId, player)
         gameUserHistoryRepository.save(gameUserHistory)
         if (!player.isQuit) {

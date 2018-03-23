@@ -14,6 +14,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     private val random = Random()
 
+    var difficulty = 3
+
     override fun takeTurn() {
         var endTurn = false
 

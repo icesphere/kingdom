@@ -361,12 +361,12 @@ function closeLoadingDialog() {
     clearTimeout(reloadTimer);
 }
 
-function clickCard(clickType, cardName, special){
+function clickCard(clickType, cardName, cardId, special){
     if(!clickingCard && currentPlayer && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand")){
         clickingCard = true;
         refreshingGame = true;
         showLoadingDialog();
-        $.post("clickCard", {clickType: clickType, cardName: cardName}, function(data) {
+        $.post("clickCard", {clickType: clickType, cardName: cardName, cardId: cardId}, function(data) {
             refreshParts(data);
             clickingCard = false;
         });
