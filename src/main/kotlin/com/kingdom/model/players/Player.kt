@@ -6,6 +6,7 @@ import com.kingdom.model.cards.CardCopier
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.modifiers.CardCostModifier
+import com.kingdom.util.KingdomUtil
 import java.util.*
 import java.util.function.Function
 
@@ -28,7 +29,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var isYourTurn: Boolean = false
         protected set
 
-    var trade: Int = 0
+    var coins: Int = 0
 
     var buys: Int = 0
 
@@ -92,6 +93,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var isShowInfoDialog: Boolean = false
     var infoDialog: InfoDialog? = null
+    val isInfoDialogSet: Boolean
+        get() = infoDialog != null
+
+    val groupedHand: List<Card>
+        get() {
+            KingdomUtil.groupCards(hand)
+            return hand
+        }
 
     fun drawCard() {
         drawCards(1)
@@ -144,7 +153,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun addTrade(trade: Int) {
-        this.trade += trade
+        this.coins += trade
         tradeGainedThisTurn += trade
     }
 
@@ -159,7 +168,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         turns++
 
-        trade = 0
+        coins = 0
         actions = 0
         buys = 0
 
@@ -291,9 +300,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun trashCardFromHand(optional: Boolean)
 
     fun buyCard(card: Card) {
-        if (trade >= this.getCardCostWithModifiers(card)) {
+        if (coins >= this.getCardCostWithModifiers(card)) {
             addGameLog("Bought card: " + card.name)
-            trade -= this.getCardCostWithModifiers(card)
+            coins -= this.getCardCostWithModifiers(card)
             game.removeCardFromSupply(card)
             cardAcquired(card)
         }
@@ -408,7 +417,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun isCardBuyable(card: Card): Boolean {
-        return isYourTurn && this.getCardCostWithModifiers(card) <= trade
+        return isYourTurn && this.getCardCostWithModifiers(card) <= coins
     }
 
     fun addCardToDeck(card: Card) {

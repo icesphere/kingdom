@@ -27,7 +27,7 @@
             <h3>Players</h3>
             <table style="width:100%">
                 <tr>
-                    <td class="mediumLabel" style="width:40px;">Room</td>
+                    <td class="mediumLabel" style="width:40px;">Playing game?</td>
                     <td class="mediumLabel" style="width:50px; text-align:center">Chat</td>
                     <td class="mediumLabel">Player</td>
                 </tr>
@@ -36,9 +36,9 @@
                         <tr>
                             <td>
                                 <#if player.gameId??>
-                                    ${player.gameId}
+                                    Yes
                                 <#else>
-                                    &#160;
+                                    No
                                 </#if>
                             </td>
                             <td style="text-align:center">

@@ -24,7 +24,7 @@
                             <table cellpadding="0" cellspacing="0">
                                 <#if gameStatus == "InProgress">
                                     <tr>
-                                        <td style="font-size:10px;">${supply(card.name)}<#if showEmbargoTokens && embargoTokens(card.name) != 0> (${embargoTokens(card.name)} embargo token<#if embargoTokens(card.name) != 1>s</#if>)</#if>)</#if><#if showTradeRouteTokens && tradeRouteTokenMap(card.name)> (trade route token)</#if></td>
+                                        <td style="font-size:10px;">${supply(card.name)}</td>
                                     </tr>
                                 </#if>
                                 <tr><td><#include "gameCard.ftl"></td></tr>

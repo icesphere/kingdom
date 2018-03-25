@@ -10,7 +10,7 @@ class Moneylender : KingdomCard(NAME, CardType.Action, 4), ChoiceActionCard {
         if (choice == 1) {
             val copper = player.hand.first { it is Copper }
             player.trashCardFromHand(copper)
-            player.trade += 3
+            player.coins += 3
         }
     }
 

@@ -1,5 +1,7 @@
 <div id="cardActionDialog_" class="cardActionDialog" style="display:none" title="">
-    <#if player.showCardAction>
+    <#if player.currentAction??>
+        todo - show card action
+        <!--
         <div style="font-size:14px;"><p>${player.oldCardAction.instructions}</p></div>
         <#if player.oldCardAction.type == 11>
             <div style="padding-bottom:10px;"><table><tr><td><input type="button" onclick="submitCardActionYesNo('yes')" value="Yes"/></td><td style="padding-left:10px;"><input type="button" onclick="submitCardActionYesNo('no')" value="No"/></td></tr></table></div>
@@ -49,5 +51,6 @@
                 </tr>
             </table>
         </#if>
+        -->
     </#if>
 </div>

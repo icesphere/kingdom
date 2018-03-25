@@ -39,7 +39,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
             refreshGamePageForOpponent()
 
-            if (trade > 0) {
+            if (coins > 0) {
                 val cardsToBuy = cardsToBuy
                 if (!cardsToBuy.isEmpty()) {
                     endTurn = false
@@ -166,7 +166,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
             val cards = ArrayList(game.nonEmptySupplyCards)
 
-            val cardsAvailableToBuy = cards.filter { c -> trade >= this.getCardCostWithModifiers(c) }
+            val cardsAvailableToBuy = cards.filter { c -> coins >= this.getCardCostWithModifiers(c) }
 
             if (cardsAvailableToBuy.isEmpty()) {
                 return cardsToBuy
@@ -222,7 +222,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
 
     private fun addTwoCardListIfEnoughTrade(twoCardList: MutableList<List<Card>>, card1: Card, card2: Card): Boolean {
-        if (this.getCardCostWithModifiers(card1) + this.getCardCostWithModifiers(card2) <= trade) {
+        if (this.getCardCostWithModifiers(card1) + this.getCardCostWithModifiers(card2) <= coins) {
             val cards = ArrayList<Card>(2)
             cards.add(card1)
             cards.add(card2)
@@ -368,7 +368,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
         }
 
-        val sortedCards = game.nonEmptySupplyCards.filter { c -> trade + extraTrade >= this.getCardCostWithModifiers(c) }.sortedByDescending { getBuyCardScore(it) }
+        val sortedCards = game.nonEmptySupplyCards.filter { c -> coins + extraTrade >= this.getCardCostWithModifiers(c) }.sortedByDescending { getBuyCardScore(it) }
         if (!sortedCards.isEmpty()) {
             val bestCardScore = getBuyCardScore(sortedCards[0])
             return bestCardScore - cardToBuyScore

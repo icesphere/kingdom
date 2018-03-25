@@ -39,7 +39,7 @@ class Game(val gameManager: GameManager) {
     val playerMap: MutableMap<Int, Player> = HashMap(6)
     private val playersExited = HashSet<Int>(6)
 
-    val computerPlayers: List<Player>
+    private val computerPlayers: List<Player>
         get() = players.filter { it.isBot }
 
     var decks: MutableList<Deck> = ArrayList()
@@ -204,6 +204,10 @@ class Game(val gameManager: GameManager) {
         lastActivity = Date()
 
         setupSupply()
+
+        if (numComputerPlayers > 0) {
+            addComputerPlayers()
+        }
     }
 
     private fun setupPlayerColors() {
@@ -299,7 +303,8 @@ class Game(val gameManager: GameManager) {
         }
     }
 
-    fun startGame() {
+    private fun startGame() {
+        status = GameStatus.InProgress
         startTurnInNewThreadIfComputerVsHuman()
     }
 
@@ -411,6 +416,7 @@ class Game(val gameManager: GameManager) {
 
     val recentTurnsLog: String
         get() = currentTurnLog.toString() + StringUtils.join(recentTurnLogs, "")
+
 
     fun isCardAvailableInSupply(card: Card): Boolean {
         return supplyAmounts.containsKey(card.name) && supplyAmounts[card.name]!! > 0
@@ -811,45 +817,89 @@ class Game(val gameManager: GameManager) {
         return card.javaClass.kotlin.createInstance()
     }
 
+    private fun addComputerPlayers() {
+        isAllComputerOpponents = numComputerPlayers == numPlayers - 1
+        var i = 1
+        run {
+            var j = 1
+            while (j <= numEasyComputerPlayers) {
+                addComputerPlayer(i, false, 1)
+                j++
+                i++
+            }
+        }
+        run {
+            var j = 1
+            while (j <= numMediumComputerPlayers) {
+                addComputerPlayer(i, false, 2)
+                j++
+                i++
+            }
+        }
+        run {
+            var j = 1
+            while (j <= numHardComputerPlayers) {
+                addComputerPlayer(i, false, 3)
+                j++
+                i++
+            }
+        }
+        var j = 1
+        while (j <= numBMUComputerPlayers) {
+            addComputerPlayer(i, true, 3)
+            j++
+            i++
+        }
+    }
+
     fun addComputerPlayer(i: Int, bigMoneyUltimate: Boolean, difficulty: Int) {
         val userId = i * -1
         val user = User()
         user.gender = User.COMPUTER
-        if (bigMoneyUltimate) {
-            user.userId = userId - 40
-            user.username = "C$i (BMU)"
-            addPlayer(user, true, true, 3)
-        } else if (difficulty == 1) {
-            user.userId = userId - 10
-            user.username = "C$i (easy)"
-            addPlayer(user, true, false, 1)
-        } else if (difficulty == 2) {
-            user.userId = userId - 20
-            user.username = "C$i (medium)"
-            addPlayer(user, true, false, 2)
-        } else if (difficulty == 3) {
-            user.userId = userId - 30
-            user.username = "C$i (hard)"
-            addPlayer(user, true, false, 3)
+
+        when {
+            bigMoneyUltimate -> {
+                user.userId = userId - 40
+                user.username = "C$i (BMU)"
+                addPlayer(user, true, true, 3)
+            }
+            difficulty == 1 -> {
+                user.userId = userId - 10
+                user.username = "C$i (easy)"
+                addPlayer(user, true, false, 1)
+            }
+            difficulty == 2 -> {
+                user.userId = userId - 20
+                user.username = "C$i (medium)"
+                addPlayer(user, true, false, 2)
+            }
+            difficulty == 3 -> {
+                user.userId = userId - 30
+                user.username = "C$i (hard)"
+                addPlayer(user, true, false, 3)
+            }
         }
     }
 
     fun addPlayer(user: User, computer: Boolean = false, bigMoneyUltimate: Boolean = false, difficulty: Int = 0) {
-        val player: Player
-        if (computer) {
-            player = when {
+        val player: Player = if (computer) {
+            when {
                 bigMoneyUltimate -> BigMoneyBotPlayer(user, this)
                 difficulty == 1 -> EasyBotPlayer(user, this)
                 difficulty == 2 -> MediumBotPlayer(user, this)
                 else -> HardBotPlayer(user, this)
             }
         } else {
-            player = HumanPlayer(user, this)
+            HumanPlayer(user, this)
         }
         player.chatColor = nextColor
         players.add(player)
         playerMap[player.userId] = player
         needsRefresh[player.userId] = Refresh()
+
+        if (!repeated && players.size == numPlayers) {
+            startGame()
+        }
     }
 
     fun removePlayer(user: User) {

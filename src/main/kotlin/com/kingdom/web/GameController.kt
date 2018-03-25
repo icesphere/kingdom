@@ -1072,17 +1072,13 @@ class GameController(private var cardManager: CardManager,
         val player = game.playerMap[user.userId]!!
 
         if (player.currentAction != null) {
-            sendShowActionToPlayer(player)
+            game.refreshCardAction(player)
         } else {
             player.endTurn()
             refreshGamePageForAll(game)
         }
 
         return refreshGame(request, response)
-    }
-
-    fun sendShowActionToPlayer(player: Player) {
-        //todo
     }
 
     fun refreshGamePageForAll(game: Game) {
