@@ -64,9 +64,6 @@ class Game(val gameManager: GameManager) {
     var actionCardsInPlay = 0
     var numActionsCardsPlayed = 0
 
-    var isGameOver: Boolean = false
-        private set
-
     var isCreateGameLog = true
 
     var gameLog = StringBuilder()
@@ -88,7 +85,6 @@ class Game(val gameManager: GameManager) {
 
     var isAbandonedGame: Boolean = false
 
-    val showGameLog = false
     var logId: Int = 0
 
     private var historyEntriesAddedThisTurn = 0
@@ -335,15 +331,11 @@ class Game(val gameManager: GameManager) {
 
 
     fun turnEnded() {
-        gameLog("End of turn $turn")
+        addHistory("End of turn $turn")
 
         if (emptySupplyPiles >= 3
                 || supplyAmounts[Province.NAME] == 0
                 || (isIncludeColonyCards && supplyAmounts[Colony.NAME] == 0)) {
-            isGameOver = true
-        }
-
-        if (isGameOver) {
             gameOver()
             return
         }
@@ -368,35 +360,11 @@ class Game(val gameManager: GameManager) {
     }
 
     private fun gameOver() {
-        isGameOver = true
-        gameLog("-----------------------------")
-        gameLog("Game over")
-        gameLog("Turns: " + turn)
-        for (player in players) {
-            player.isWaitingForComputer = false
-            val playerName = player.username
-            //todo show score
-        }
-        for (player in players) {
-            gameLog("----")
-            val playerName = player.username
-            gameLog(playerName + "'s cards: ")
-            player.allCards.forEach { c -> gameLog(c.name) }
-        }
-    }
-
-    fun gameLog(log: String) {
-        gameLog(log, false)
-    }
-
-    private fun gameLog(log: String, simulationInfo: Boolean) {
-        if (showGameLog) {
-            println(log)
-        }
-        if (isCreateGameLog) {
-            gameLog.append(log).append("<br/>")
-            currentTurnLog.append(log).append("<br/>")
-        }
+        addHistory("GAME OVER")
+        status = GameStatus.Finished
+        determineWinner()
+        refreshAllPlayersGameStatus()
+        refreshAllPlayersTitle()
     }
 
     val currentPlayer: Player
@@ -404,13 +372,13 @@ class Game(val gameManager: GameManager) {
 
     fun trashCardFromSupply(card: Card) {
         removeCardFromSupply(card)
-        gameLog("Trashed " + card.name + " from supply")
+        addHistory("Trashed ${card.name} from supply")
         trashedCards.add(card)
     }
 
     fun quitGame(player: Player) {
         quitGamePlayer = player
-        gameLog(player.username + " quit the game")
+        addHistory("${player.username} quit the game")
         gameOver()
     }
 
@@ -936,14 +904,11 @@ class Game(val gameManager: GameManager) {
 
     fun playerQuitGame(player: Player) {
         updateLastActivity()
-        status = GameStatus.Finished
         player.isQuit = true
         gameEndReason = player.username + " quit the game"
-        determineWinner()
         winnerString = ""
-        refreshAllPlayersGameStatus()
-        refreshAllPlayersTitle()
         addGameChat(gameEndReason)
+        gameOver()
     }
 
     @Synchronized
@@ -988,5 +953,11 @@ class Game(val gameManager: GameManager) {
                 playerExitedGame(computerPlayer)
             }
         }
+    }
+
+    fun addHistory(history: String) {
+        currentTurn?.addHistory(history)
+        historyEntriesAddedThisTurn++
+        refreshAllPlayersHistory()
     }
 }

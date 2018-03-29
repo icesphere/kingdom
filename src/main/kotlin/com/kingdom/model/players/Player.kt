@@ -331,7 +331,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun playCard(card: Card) {
         if (!card.isCopied) {
-            game.gameLog("Played card: " + card.name)
+            game.addHistory("Played card: ${card.name}")
 
             played.add(card)
             inPlay.add(card)
@@ -379,7 +379,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
     fun addGameLog(log: String) {
-        game.gameLog(log)
+        game.addHistory(log)
     }
 
     fun addCardToDiscard(card: Card) {
@@ -503,14 +503,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (deck.isEmpty()) {
-            addGameLog(username + " had no cards to reveal")
+            addGameLog("$username had no cards to reveal")
         } else {
-            for (i in 0..cards - 1) {
+            for (i in 0 until cards) {
                 if (deck.size < i + 1) {
                     addGameLog("No more cards to reveal")
                 } else {
                     val card = deck[i]
-                    addGameLog(username + " revealed " + card.name + " from top of deck")
+                    addGameLog("$username revealed ${card.name} from top of deck")
                     revealedCards.add(card)
                 }
             }

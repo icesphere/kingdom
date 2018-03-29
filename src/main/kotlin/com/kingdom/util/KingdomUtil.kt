@@ -15,12 +15,6 @@ import java.io.StringWriter
 import java.util.*
 
 object KingdomUtil {
-    fun getArticleWithWord(word: String): String {
-        return if (word.toUpperCase().startsWith("A") || word.toUpperCase().startsWith("E") || word.toUpperCase().startsWith("I") || word.toUpperCase().startsWith("O") || word.toUpperCase().startsWith("U")) {
-            "an " + word
-        } else "a " + word
-    }
-
     fun getArticleWithCardName(card: Card): String {
         val cardName = card.name
         val cardNameString = getCardWithBackgroundColor(card)
@@ -190,13 +184,13 @@ object KingdomUtil {
                 }
                 if (addColor) {
                     if (addNumbers) {
-                        sb.append(getWordWithBackgroundColor(getPlural(numOfEach, currentCard.name), currentCard.backgroundColor))
+                        sb.append(currentCard.getNumberPlusNameWithBackgroundColor(numOfEach))
                     } else {
                         sb.append(getCardWithBackgroundColor(currentCard))
                     }
                 } else {
                     if (addNumbers) {
-                        sb.append(getPlural(numOfEach, currentCard.name))
+                        sb.append(currentCard.name.plural(numOfEach))
                     } else {
                         sb.append(currentCard.name)
                     }
@@ -211,13 +205,13 @@ object KingdomUtil {
         }
         if (addColor) {
             if (addNumbers) {
-                sb.append(getWordWithBackgroundColor(getPlural(numOfEach, currentCard.name), currentCard.backgroundColor))
+                sb.append(currentCard.getNumberPlusNameWithBackgroundColor(numOfEach))
             } else {
                 sb.append(getCardWithBackgroundColor(currentCard))
             }
         } else {
             if (addNumbers) {
-                sb.append(getPlural(numOfEach, currentCard.name))
+                sb.append(currentCard.name.plural(numOfEach))
             } else {
                 sb.append(currentCard.name)
             }
@@ -288,10 +282,10 @@ object KingdomUtil {
         val days = diff / (24 * 60 * 60 * 1000)
 
         when {
-            days > 1 -> gameTime.append(KingdomUtil.getPlural(days.toInt(), "day"))
-            hours > 1 -> gameTime.append(KingdomUtil.getPlural(hours.toInt(), "hour"))
-            minutes > 1 -> gameTime.append(KingdomUtil.getPlural(minutes.toInt(), "minute"))
-            else -> gameTime.append(KingdomUtil.getPlural(seconds.toInt(), "second"))
+            days > 1 -> gameTime.append("day".plural(days.toInt()))
+            hours > 1 -> gameTime.append("hour".plural(hours.toInt()))
+            minutes > 1 -> gameTime.append("minute".plural(minutes.toInt()))
+            else -> gameTime.append("second".plural(seconds.toInt()))
         }
 
         gameTime.append(" ago")

@@ -12,6 +12,9 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5) {
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.acquireFreeCardFromSupply(Gold())
+        player.opponents.forEach {
+            val topCardsOfDeck = it.revealTopCardsOfDeck(2)
+        }
         //todo
     }
 

@@ -14,7 +14,7 @@ class FreeCardFromSupply(private val maxCost: Int?, text: String, private val de
     }
 
     override fun processAction(player: Player): Boolean {
-        player.game.gameLog(player.username + " is choosing a free card from the supply")
+        player.game.addHistory(player.username + " is choosing a free card from the supply")
         return true
     }
 

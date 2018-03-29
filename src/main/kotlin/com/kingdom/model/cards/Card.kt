@@ -3,6 +3,7 @@ package com.kingdom.model.cards
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.Player
 import com.kingdom.util.KingdomUtil
+import com.kingdom.util.plural
 import java.util.*
 
 abstract class Card(
@@ -73,19 +74,19 @@ abstract class Card(
                 sb.append(victoryPoints).append(" VP. ")
             }
             if (addCoins != 0) {
-                sb.append(getAmountSymbol(addCoins)).append(KingdomUtil.getPlural(addCoins, "coin")).append(". ")
+                sb.append(getAmountSymbol(addCoins)).append("coin".plural(addCoins)).append(". ")
             }
             if (addCards != 0) {
-                sb.append(getAmountSymbol(addCards)).append(KingdomUtil.getPlural(addCards, "card")).append(". ")
+                sb.append(getAmountSymbol(addCards)).append("card".plural(addCards)).append(". ")
             }
             if (addActions != 0) {
-                sb.append(getAmountSymbol(addActions)).append(KingdomUtil.getPlural(addActions, "action")).append(". ")
+                sb.append(getAmountSymbol(addActions)).append("action".plural(addActions)).append(". ")
             }
             if (addBuys != 0) {
-                sb.append(getAmountSymbol(addBuys)).append(KingdomUtil.getPlural(addBuys, "buy")).append(". ")
+                sb.append(getAmountSymbol(addBuys)).append("buy".plural(addBuys)).append(". ")
             }
             if (addVictoryCoins != 0) {
-                sb.append(getAmountSymbol(addVictoryCoins)).append(KingdomUtil.getPlural(addVictoryCoins, "victory coin")).append(". ")
+                sb.append(getAmountSymbol(addVictoryCoins)).append("victory coin".plural(addVictoryCoins)).append(". ")
             }
             sb.append(special)
             return sb.toString()
@@ -219,6 +220,29 @@ abstract class Card(
                 else -> 9
             }
         }
+
+    val cardNameWithBackgroundColor
+        get() = KingdomUtil.getWordWithBackgroundColor(name, backgroundColor)
+
+    val cardNameWithArticleAndBackgroundColor
+        get() = KingdomUtil.getWordWithBackgroundColor(nameWithArticle(), backgroundColor)
+
+    fun getNumberPlusNameWithBackgroundColor(num: Int) {
+        KingdomUtil.getWordWithBackgroundColor(name.plural(num), backgroundColor)
+    }
+
+    private fun nameWithArticle(): String {
+        if (name == "Goons" || name == "Nobles") {
+            return cardNameWithBackgroundColor
+        }
+        if (name == "University") {
+            return "a $cardNameWithBackgroundColor"
+        }
+        return when (name.toUpperCase().first()) {
+            'A', 'E', 'I', 'O', 'U' -> "an $cardNameWithBackgroundColor"
+            else -> "a $cardNameWithBackgroundColor"
+        }
+    }
 
     private fun getAmountSymbol(amount: Int): String {
         return if (amount < 0) {
