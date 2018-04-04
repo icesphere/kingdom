@@ -25,7 +25,7 @@ object PromoSpecialActionHandler {
                 }
                 var canAffordAny = false
                 if (cards.size > 0) {
-                    game.addHistory("Black Market cards: " + KingdomUtil.getCardNames(cards))
+//                    game.addHistory("Black Market cards: " + KingdomUtil.getCardNames(cards))
                     game.blackMarketCardsToBuy = cards
                     var coins = player!!.coins
                     if (game.isPlayTreasureCards) {

@@ -8,5 +8,6 @@ enum class CardLocation {
     Supply,
     Tinker,
     Trash,
+    CardAction,
     Unknown
 }

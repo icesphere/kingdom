@@ -358,6 +358,32 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return cardsToTrashFromHand
     }
 
+    fun getCardsToTrashFromDeck(cards: List<Card>, numCardsToTrash: Int, optional: Boolean): List<Card> {
+        val cardsToTrashFromDeck = ArrayList<Card>()
+
+        if (cards.isNotEmpty()) {
+            val sortedCards = cards.sortedByDescending { getTrashCardScore(it) }
+
+            for (i in 0 until numCardsToTrash) {
+                if (sortedCards.size <= i) {
+                    break
+                }
+                val card = sortedCards[i]
+
+                if (optional && getTrashCardScore(card) < 20) {
+                    break;
+                }
+
+                cardsToTrashFromDeck.add(card)
+                if (cardsToTrashFromDeck.size == numCardsToTrash) {
+                    break
+                }
+            }
+        }
+
+        return cardsToTrashFromDeck
+    }
+
     fun getBuyScoreIncrease(extraTrade: Int): Int {
         var cardToBuyScore = 0
 
@@ -493,17 +519,27 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         choiceActionCard.actionChoiceMade(this, 1)
     }
 
-    override fun addCardFromHandToTopOfDeck() {
-        //todo
-        if (hand.isNotEmpty()) {
-            val firstCard = this.hand.first()
-            this.hand.remove(firstCard)
+    override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?) {
+        //todo better logic
+
+        val cards =
+        if (cardFilter != null) {
+            hand.filter(cardFilter)
+        } else hand
+
+        if (cards.isNotEmpty()) {
+            val firstCard = cards.first()
+            hand.remove(firstCard)
             addCardToTopOfDeck(firstCard, false)
         }
     }
 
     override fun waitForOtherPlayersToResolveActions() {
         //do nothing
+    }
+
+    override fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler) {
+        //todo
     }
 
     fun refreshGamePageForOpponent() {
@@ -517,5 +553,13 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     fun sendGameMessage(recipient: String, message: String) {
         //todo
+    }
+
+    override fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean) {
+        val cardsToTrashFromDeck = getCardsToTrashFromDeck(cardsThatCanBeTrashed, numCardsToTrash, optional)
+        for (card in cardsToTrashFromDeck) {
+            removeCardFromDeck(card)
+            cardTrashed(card)
+        }
     }
 }

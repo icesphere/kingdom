@@ -4,16 +4,17 @@ import com.kingdom.model.players.Player
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 
-class CardFromHandToTopOfDeck() : Action("Choose a card from your hand to put on top of your deck") {
+//todo change text if cardFilter specified
+class CardFromHandToTopOfDeck(private val cardFilter: ((Card) -> Boolean)?) : Action("Choose a card from your hand to put on top of your deck") {
 
     override var isShowDoNotUse: Boolean = true
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
-        return cardLocation == CardLocation.Hand
+        return cardLocation == CardLocation.Hand && cardFilter?.invoke(card) ?: true
     }
 
     override fun processAction(player: Player): Boolean {
-        return !player.hand.isEmpty()
+        return player.hand.any { cardFilter == null || cardFilter.invoke(it) }
     }
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {

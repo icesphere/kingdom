@@ -1,18 +1,46 @@
 package com.kingdom.util
 
-import com.kingdom.model.cards.Card
 import com.kingdom.model.User
+import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardColor
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.service.UAgentInfo
 import com.sun.jersey.api.client.Client
 import com.sun.jersey.core.util.MultivaluedMapImpl
 import org.springframework.web.servlet.ModelAndView
-
-import javax.servlet.http.HttpServletRequest
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
+import javax.servlet.http.HttpServletRequest
+
+fun List<Card>?.toCardNames(addColor: Boolean = true): String {
+    if (this == null || this.isEmpty()) {
+        return ""
+    }
+
+    if (this.size == 1) {
+        return if (addColor) {
+            KingdomUtil.getCardWithBackgroundColor(this[0])
+        } else {
+            this[0].name
+        }
+    }
+    val sb = StringBuffer()
+    for (i in this.indices) {
+        if (i != 0) {
+            sb.append(", ")
+        }
+        if (i == this.size - 1) {
+            sb.append("and ")
+        }
+        if (addColor) {
+            sb.append(KingdomUtil.getCardWithBackgroundColor(this[i]))
+        } else {
+            sb.append(this[i].name)
+        }
+    }
+    return sb.toString()
+}
 
 object KingdomUtil {
     fun getArticleWithCardName(card: Card): String {
@@ -89,35 +117,6 @@ object KingdomUtil {
             }
             return sb.toString()
         }
-    }
-
-    @JvmOverloads
-    fun getCardNames(cards: List<Card>?, addColor: Boolean = true): String {
-        if (cards == null || cards.isEmpty()) {
-            return ""
-        }
-        if (cards.size == 1) {
-            return if (addColor) {
-                getCardWithBackgroundColor(cards[0])
-            } else {
-                cards[0].name
-            }
-        }
-        val sb = StringBuffer()
-        for (i in cards.indices) {
-            if (i != 0) {
-                sb.append(", ")
-            }
-            if (i == cards.size - 1) {
-                sb.append("and ")
-            }
-            if (addColor) {
-                sb.append(getCardWithBackgroundColor(cards[i]))
-            } else {
-                sb.append(cards[i].name)
-            }
-        }
-        return sb.toString()
     }
 
     fun getCommaSeparatedCardNames(cards: List<Card>): String {

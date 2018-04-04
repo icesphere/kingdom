@@ -13,6 +13,7 @@ import com.kingdom.model.players.bots.MediumBotPlayer
 import com.kingdom.service.GameManager
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.util.KingdomUtil
+import com.kingdom.util.toCardNames
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 import kotlin.collections.ArrayList
@@ -581,7 +582,7 @@ class Game(val gameManager: GameManager) {
             errorHistory.append("Kingdom Cards: ").append(kingdomCardsString).append("; ")
         }
 
-        errorHistory.append("Current Player Hand: ").append(KingdomUtil.getCardNames(currentPlayer.hand, false)).append("; ")
+        errorHistory.append("Current Player Hand: ").append(currentPlayer.hand.toCardNames(false)).append("; ")
 
         if (currentTurn != null) {
             errorHistory.append(KingdomUtil.implode(currentTurn!!.history, ";"))
@@ -604,7 +605,7 @@ class Game(val gameManager: GameManager) {
         get() = if (prizeCards.isEmpty()) {
             "None"
         } else {
-            KingdomUtil.getCardNames(prizeCards)
+            prizeCards.toCardNames()
         }
 
 

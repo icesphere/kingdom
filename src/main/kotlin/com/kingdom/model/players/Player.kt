@@ -7,6 +7,7 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.util.KingdomUtil
+import com.kingdom.util.toCardNames
 import java.util.*
 import java.util.function.Function
 
@@ -210,16 +211,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun trashCardFromDiscard(card: Card) {
         addGameLog("Trashed " + card.name + " from discard")
         discard.remove(card)
-        playerCardTrashed(card)
+        cardTrashed(card)
     }
 
     fun trashCardFromHand(card: Card) {
         addGameLog("Trashed " + card.name + " from hand")
         hand.remove(card)
-        playerCardTrashed(card)
+        cardTrashed(card)
     }
 
-    private fun playerCardTrashed(card: Card) {
+    fun cardTrashed(card: Card) {
         game.trashedCards.add(card)
         cardRemovedFromPlay(card)
         numCardsTrashpedThisTurn++
@@ -242,7 +243,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         }
 
-        playerCardTrashed(cardToTrash)
+        cardTrashed(cardToTrash)
     }
 
     fun acquireCardToTopOfDeck(card: Card) {
@@ -400,6 +401,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun waitForOtherPlayersToResolveActions()
 
+    abstract fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler)
+
     fun resolveActions() {
         if (!actionsQueue.isEmpty()) {
             val action = actionsQueue.removeAt(0)
@@ -441,6 +444,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     currentAction!!.onNotUsed(this)
                 }
                 currentAction = null
+
+                for (opponent in opponents) {
+                    if (opponent.currentAction is WaitForOtherPlayersActions) {
+                        opponent.currentAction!!.processActionResult(this, result)
+                    }
+                }
+
                 resolveActions()
             }
         }
@@ -475,7 +485,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun addCardFromDiscardToTopOfDeck(maxCost: Int?)
 
-    abstract fun addCardFromHandToTopOfDeck()
+    abstract fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)? = null)
 
     val isBot: Boolean = this is BotPlayer
 
@@ -492,6 +502,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
         val otherPlayer = other as Player
         return this.userId == otherPlayer.userId
+    }
+
+    fun revealHand() {
+        hand.forEach {
+            addGameLog("$username revealed their hand: ${hand.toCardNames()}")
+        }
+    }
+
+    fun revealCardFromHand(card: Card) {
+        addGameLog("$username revealed ${card.cardNameWithBackgroundColor} from their hand")
     }
 
     fun revealTopCardsOfDeck(cards: Int): List<Card> {
@@ -517,6 +537,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         return revealedCards
+    }
+
+    fun removeCardFromDeck(card: Card) {
+        deck.remove(card)
     }
 
     val cardOnTopOfDiscard: Card?
@@ -578,4 +602,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         return victoryPoints
     }
+
+    abstract fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean)
 }

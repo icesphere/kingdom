@@ -385,12 +385,12 @@ class OldGame(val gameId: Int) {
             return KingdomUtil.implode(cardNames, ", ")
         }
 
-    val prizeCardsString: String
-        get() = if (prizeCards.isEmpty()) {
-            "None"
-        } else {
-            KingdomUtil.getCardNames(prizeCards)
-        }
+    val prizeCardsString: String = ""
+//        get() = if (prizeCards.isEmpty()) {
+//            "None"
+//        } else {
+////            KingdomUtil.getCardNames(prizeCards)
+//        }
 
     val nextAction: String?
         get() = nextActionQueue.peek()
@@ -1561,7 +1561,7 @@ class OldGame(val gameId: Int) {
                     } else if (cardName == Colony.NAME) {
                         gameEndReason = "Colony pile gone"
                     } else {
-                        gameEndReason = emptyPiles.size.toString() + " piles empty (" + KingdomUtil.getCardNames(emptyPiles) + ")"
+//                        gameEndReason = emptyPiles.size.toString() + " piles empty (" + KingdomUtil.getCardNames(emptyPiles) + ")"
                     }
                 }
             }
@@ -2682,7 +2682,7 @@ class OldGame(val gameId: Int) {
             errorHistory.append("Kingdom Cards: ").append(kingdomCardsString).append("; ")
         }
         if (currentPlayer != null) {
-            errorHistory.append("Current Player Hand: ").append(KingdomUtil.getCardNames(currentPlayer!!.hand, false)).append("; ")
+//            errorHistory.append("Current Player Hand: ").append(KingdomUtil.getCardNames(currentPlayer!!.hand, false)).append("; ")
         }
         if (currentTurn != null) {
             errorHistory.append(KingdomUtil.implode(currentTurn!!.history, ";"))

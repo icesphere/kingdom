@@ -3,6 +3,7 @@ package com.kingdom.model.players
 import com.kingdom.model.Choice
 import com.kingdom.model.Game
 import com.kingdom.model.User
+import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
@@ -107,11 +108,19 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(CardFromDiscardToTopOfDeck(maxCost))
     }
 
-    override fun addCardFromHandToTopOfDeck() {
-        addAction(CardFromHandToTopOfDeck())
+    override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?) {
+        addAction(CardFromHandToTopOfDeck(cardFilter))
     }
 
     override fun waitForOtherPlayersToResolveActions() {
-        addAction(WaitForOtherPlayersToResolveActions())
+        addAction(WaitForOtherPlayersActions(this))
+    }
+
+    override fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler) {
+        addAction(WaitForOtherPlayersActionsWithResults(this, resultHandler))
+    }
+
+    override fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean) {
+        addAction(SelectCardsToTrashFromDeck(cardsThatCanBeTrashed, numCardsToTrash, optional))
     }
 }

@@ -14,7 +14,26 @@ class Bureaucrat : KingdomCard(NAME, CardType.ActionAttack, 4) {
     override fun cardPlayedSpecialAction(player: Player) {
         player.isNextCardToTopOfDeck = true
         player.acquireFreeCardFromSupply(Silver())
-        //todo
+
+        var addWaitingAction = false
+
+        player.opponents.forEach {
+            val victoryCards = it.hand.filter { it.isVictory }
+            if (victoryCards.isNotEmpty()) {
+                if (victoryCards.size == 1) {
+                    it.revealCardFromHand(victoryCards[0])
+                } else {
+                    it.addCardFromHandToTopOfDeck({ c -> c.isVictory })
+                    addWaitingAction = true
+                }
+            } else {
+                it.revealHand()
+            }
+        }
+
+        if (addWaitingAction) {
+            player.waitForOtherPlayersToResolveActions()
+        }
     }
 
     companion object {

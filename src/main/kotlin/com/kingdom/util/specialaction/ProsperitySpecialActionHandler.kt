@@ -200,7 +200,7 @@ object ProsperitySpecialActionHandler {
                                 cardsRevealed.add(topDeckCard)
                             }
                             if (cardsRevealed.size > 0) {
-                                game.addHistory("The top cards from ", player.username, "'s deck were ", KingdomUtil.getCardNames(cardsRevealed))
+//                                game.addHistory("The top cards from ", player.username, "'s deck were ", KingdomUtil.getCardNames(cardsRevealed))
                                 val cardAction = OldCardAction(OldCardAction.TYPE_CHOOSE_IN_ORDER)
                                 cardAction.deck = Deck.Prosperity
                                 for (c in cardsRevealed) {

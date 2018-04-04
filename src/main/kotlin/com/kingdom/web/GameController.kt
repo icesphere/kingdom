@@ -432,7 +432,7 @@ class GameController(private var cardManager: CardManager,
         }
         try {
             return if (game.status == GameStatus.BeingConfigured) {
-                cardManager.swapForTypeOfCard(game, request.getParameter("cardName"), request.getParameter("cardType"))
+                cardManager.swapForTypeOfCard(game, request.getParameter("cardName"), request.getParameter("cardFilter"))
                 confirmCards(request, response)
             } else {
                 if (game.status == GameStatus.InProgress) {
