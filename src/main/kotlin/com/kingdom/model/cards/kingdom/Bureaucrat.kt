@@ -21,7 +21,10 @@ class Bureaucrat : KingdomCard(NAME, CardType.ActionAttack, 4) {
             val victoryCards = it.hand.filter { it.isVictory }
             if (victoryCards.isNotEmpty()) {
                 if (victoryCards.size == 1) {
-                    it.revealCardFromHand(victoryCards[0])
+                    val victoryCard = victoryCards[0]
+                    it.revealCardFromHand(victoryCard)
+                    it.hand.remove(victoryCard)
+                    it.addCardToTopOfDeck(victoryCard)
                 } else {
                     it.addCardFromHandToTopOfDeck({ c -> c.isVictory })
                     addWaitingAction = true

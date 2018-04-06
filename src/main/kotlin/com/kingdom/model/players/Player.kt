@@ -539,6 +539,18 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         return revealedCards
     }
 
+    fun removeTopCardOfDeck(): Card? {
+        if (deck.isEmpty()) {
+            shuffleDiscardIntoDeck()
+        }
+
+        if (deck.isEmpty()) {
+            return null
+        }
+
+        return deck.removeAt(0)
+    }
+
     fun removeCardFromDeck(card: Card) {
         deck.remove(card)
     }
