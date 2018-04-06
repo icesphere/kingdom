@@ -5,6 +5,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardCopier
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
+import com.kingdom.model.cards.listeners.CardPlayedListener
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.toCardNames
@@ -55,7 +56,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var numCardsTrashpedThisTurn: Int = 0
         private set
-    var tradeGainedThisTurn: Int = 0
+    var coinsGainedThisTurn: Int = 0
         private set
     var combatGainedThisTurn: Int = 0
         private set
@@ -153,9 +154,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         card.removedFromPlay(this)
     }
 
-    fun addTrade(trade: Int) {
-        this.coins += trade
-        tradeGainedThisTurn += trade
+    fun addCoins(coins: Int) {
+        this.coins += coins
+        coinsGainedThisTurn += coins
     }
 
     fun endTurn() {
@@ -177,7 +178,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         isNextCardToHand = false
 
         numCardsTrashpedThisTurn = 0
-        tradeGainedThisTurn = 0
+        coinsGainedThisTurn = 0
         combatGainedThisTurn = 0
         authorityGainedThisTurn = 0
         shipsPlayedThisTurn.clear()
@@ -335,6 +336,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             game.addHistory("Played card: ${card.name}")
 
             played.add(card)
+
+            inPlay.filter { it is CardPlayedListener }
+                    .forEach { (it as CardPlayedListener).onCardPlayed(card, this) }
+
             inPlay.add(card)
             hand.remove(card)
         }
