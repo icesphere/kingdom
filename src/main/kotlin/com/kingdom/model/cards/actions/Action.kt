@@ -23,5 +23,7 @@ abstract class Action(open var text: String?) {
 
     open fun isCardSelected(card: Card): Boolean = false
 
+    open var isAttackAction: Boolean = false
+
     open fun onNotUsed(player: Player) {}
 }

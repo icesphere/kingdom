@@ -10,11 +10,13 @@ class Militia : KingdomCard(NAME, CardType.ActionAttack, 4) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.opponents.forEach { p ->
-            if (p.hand.size > 3) {
-                p.discardCardsFromHand(p.hand.size - 3)
-            }
-        }
+        player.opponents
+                .filter { !playersExcludedFromCardEffects.contains(it) }
+                .forEach { p ->
+                    if (p.hand.size > 3) {
+                        p.discardCardsFromHand(p.hand.size - 3)
+                    }
+                }
 
         player.waitForOtherPlayersToResolveActions()
     }

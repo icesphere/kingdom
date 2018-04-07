@@ -16,21 +16,23 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5) {
 
         var addWaitingAction = false
 
-        player.opponents.forEach {
-            val topCardsOfDeck = it.revealTopCardsOfDeck(2)
-            val cardsThatCanBeTrashed = topCardsOfDeck.filter { it.isTreasure && !it.isCopper }
-            if (cardsThatCanBeTrashed.isNotEmpty()) {
-                if (cardsThatCanBeTrashed.size == 1) {
-                    val card = cardsThatCanBeTrashed.first()
-                    it.removeCardFromDeck(card)
-                    it.cardTrashed(card)
-                    it.addGameLog("${this.cardNameWithBackgroundColor} trashed ${it.username}'s ${card.cardNameWithBackgroundColor}")
-                } else {
-                    it.selectCardsToTrashFromDeck(cardsThatCanBeTrashed, 1, false)
-                    addWaitingAction = true
+        player.opponents
+                .filter { !playersExcludedFromCardEffects.contains(it) }
+                .forEach {
+                    val topCardsOfDeck = it.revealTopCardsOfDeck(2)
+                    val cardsThatCanBeTrashed = topCardsOfDeck.filter { it.isTreasure && !it.isCopper }
+                    if (cardsThatCanBeTrashed.isNotEmpty()) {
+                        if (cardsThatCanBeTrashed.size == 1) {
+                            val card = cardsThatCanBeTrashed.first()
+                            it.removeCardFromDeck(card)
+                            it.cardTrashed(card)
+                            it.addGameLog("${this.cardNameWithBackgroundColor} trashed ${it.username}'s ${card.cardNameWithBackgroundColor}")
+                        } else {
+                            it.selectCardsToTrashFromDeck(cardsThatCanBeTrashed, 1, false)
+                            addWaitingAction = true
+                        }
+                    }
                 }
-            }
-        }
 
         if (addWaitingAction) {
             player.waitForOtherPlayersToResolveActions()

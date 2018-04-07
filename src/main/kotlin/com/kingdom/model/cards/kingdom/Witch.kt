@@ -12,7 +12,9 @@ class Witch : KingdomCard(NAME, CardType.ActionAttack, 5) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.opponents.forEach { it.acquireFreeCardFromSupply(Curse()) }
+        player.opponents
+                .filter { !playersExcludedFromCardEffects.contains(it) }
+                .forEach { it.acquireFreeCardFromSupply(Curse()) }
     }
 
     companion object {

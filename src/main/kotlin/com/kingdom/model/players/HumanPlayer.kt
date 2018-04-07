@@ -10,12 +10,13 @@ import com.kingdom.model.cards.actions.*
 
 class HumanPlayer(user: User, game: Game) : Player(user, game) {
 
-    override fun takeTurn() {
+    override fun takeTurn() {}
 
-    }
+    private fun addAction(action: Action, isAttackAction: Boolean = !isYourTurn) {
+        action.isAttackAction = isAttackAction
 
-    private fun addAction(action: Action) {
         actionsQueue.add(action)
+
         if (isYourTurn && currentAction == null) {
             resolveActions()
         }
@@ -79,6 +80,10 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun drawCardsAndPutSomeBackOnTop(cardsToDraw: Int, cardsToPutBack: Int) {
         addAction(DrawCardsAndPutSomeBackOnTopOfDeck(cardsToDraw, cardsToPutBack))
+    }
+
+    override fun putCardsOnTopOfDeckInAnyOrder(cards: List<Card>) {
+        addAction(PutCardsOnTopOfDeckInAnyOrder(cards))
     }
 
     override fun discardCardsFromHand(cards: Int) {

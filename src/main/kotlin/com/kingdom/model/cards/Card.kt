@@ -1,5 +1,6 @@
 package com.kingdom.model.cards
 
+import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.Player
 import com.kingdom.util.KingdomUtil
@@ -30,7 +31,8 @@ abstract class Card(
         var isAutoSelect: Boolean = false,
         var isActivated: Boolean = false,
         var isCopied: Boolean = false,
-        var location: CardLocation? = null) {
+        var location: CardLocation? = null,
+        var playersExcludedFromCardEffects: MutableSet<Player> = mutableSetOf()) {
 
     val id: String = UUID.randomUUID().toString()
 
@@ -267,7 +269,9 @@ abstract class Card(
         return Objects.hash(name)
     }
 
-    open fun removedFromPlay(player: Player) {}
+    open fun removedFromPlay(player: Player) {
+        playersExcludedFromCardEffects.clear()
+    }
 
     fun cardPlayed(player: Player) {
         player.actions += addActions
@@ -277,6 +281,10 @@ abstract class Card(
             player.drawCards(addCards)
         }
         if (special.isNotBlank()) {
+            player.opponents.forEach { opponent ->
+                opponent.hand.filter { it is BeforeOpponentCardPlayedListener }
+                        .forEach { (it as BeforeOpponentCardPlayedListener).onBeforeOpponentCardPlayed(this, opponent, player) }
+            }
             cardPlayedSpecialAction(player)
         }
     }

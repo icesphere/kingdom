@@ -497,6 +497,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
+    override fun putCardsOnTopOfDeckInAnyOrder(cards: List<Card>) {
+        cards.forEach { addCardToTopOfDeck(it, false) }
+    }
+
     override fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String) {
         val cards = getCardsToTrashFromHand(numCardsToTrash)
         cards.forEach { this.trashCardFromHand(it) }

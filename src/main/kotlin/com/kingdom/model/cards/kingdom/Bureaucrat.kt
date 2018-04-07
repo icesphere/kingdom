@@ -17,22 +17,24 @@ class Bureaucrat : KingdomCard(NAME, CardType.ActionAttack, 4) {
 
         var addWaitingAction = false
 
-        player.opponents.forEach {
-            val victoryCards = it.hand.filter { it.isVictory }
-            if (victoryCards.isNotEmpty()) {
-                if (victoryCards.size == 1) {
-                    val victoryCard = victoryCards[0]
-                    it.revealCardFromHand(victoryCard)
-                    it.hand.remove(victoryCard)
-                    it.addCardToTopOfDeck(victoryCard)
-                } else {
-                    it.addCardFromHandToTopOfDeck({ c -> c.isVictory })
-                    addWaitingAction = true
+        player.opponents
+                .filter { !playersExcludedFromCardEffects.contains(it) }
+                .forEach {
+                    val victoryCards = it.hand.filter { it.isVictory }
+                    if (victoryCards.isNotEmpty()) {
+                        if (victoryCards.size == 1) {
+                            val victoryCard = victoryCards[0]
+                            it.revealCardFromHand(victoryCard)
+                            it.hand.remove(victoryCard)
+                            it.addCardToTopOfDeck(victoryCard)
+                        } else {
+                            it.addCardFromHandToTopOfDeck({ c -> c.isVictory })
+                            addWaitingAction = true
+                        }
+                    } else {
+                        it.revealHand()
+                    }
                 }
-            } else {
-                it.revealHand()
-            }
-        }
 
         if (addWaitingAction) {
             player.waitForOtherPlayersToResolveActions()

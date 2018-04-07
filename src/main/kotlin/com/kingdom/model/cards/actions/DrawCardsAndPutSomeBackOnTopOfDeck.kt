@@ -12,7 +12,7 @@ class DrawCardsAndPutSomeBackOnTopOfDeck(private var numCardsToDraw: Int, privat
     protected var selectedCards: MutableList<Card> = ArrayList()
 
     override val isShowDone: Boolean
-        get() = selectedCards.size > 0 && selectedCards.size <= numCardsToPutBack && selectedCards.size == numCardsToPutBack
+        get() = selectedCards.size in 1..numCardsToPutBack && selectedCards.size == numCardsToPutBack
 
     init {
         this.text = "You have drawn $numCardsToDraw cards and need to put $numCardsToPutBack of those cards back on top of your deck"
