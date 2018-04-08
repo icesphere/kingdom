@@ -1,10 +1,13 @@
 package com.kingdom.model.cards.kingdom
 
+import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.players.Player
 
 class Vassal : KingdomCard(NAME, CardType.Action, 3), ChoiceActionCard {
+
+    lateinit var cardDiscarded: Card
 
     init {
         special = "Discard the top card of your deck. If it’s an Action card, you may play it."
@@ -14,6 +17,7 @@ class Vassal : KingdomCard(NAME, CardType.Action, 3), ChoiceActionCard {
         val card = player.discardTopCardOfDeck()
         card?.let {
             if (card.isAction) {
+                cardDiscarded = card
                 player.yesNoChoice(this, "Play discarded ${card.name}?")
             }
         }
@@ -21,10 +25,9 @@ class Vassal : KingdomCard(NAME, CardType.Action, 3), ChoiceActionCard {
 
     override fun actionChoiceMade(player: Player, choice: Int) {
         if (choice == 1) {
-            val cardOnTopOfDiscard = player.cardOnTopOfDiscard!!
-            player.discard.remove(cardOnTopOfDiscard)
-            //todo add action first?
-            player.playCard(cardOnTopOfDiscard)
+            if (player.discard.remove(cardDiscarded)) {
+                player.playCard(cardDiscarded)
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
+import com.kingdom.model.cards.kingdom.ThroneRoom
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Estate
 import java.util.*
@@ -56,9 +57,18 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun addCardAction(card: CardActionCard, text: String) {
-        val result = ActionResult()
-        //todo
+        if (!card.processCardAction(this)) {
+            return
+        }
+
+        if (card is ThroneRoom) {
+            val sortedCards = hand.sortedByDescending { getBuyCardScore(it) }
+            val result = ActionResult().apply { selectedCard = sortedCards.first() }
+            card.processCardActionResult(CardAction(card, ""), this, result)
+        }
     }
+
+
 
     override fun addCardFromDiscardToTopOfDeck(maxCost: Int?) {
         val card = chooseCardFromDiscardToAddToTopOfDeck()
