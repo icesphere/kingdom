@@ -57,7 +57,12 @@ class Game(val gameManager: GameManager) {
     var trashedCards: MutableList<Card> = ArrayList()
 
     var currentPlayerIndex: Int = 0
-    var currentPlayerId = -1
+
+    val currentPlayerId
+        get() = currentPlayer.userId
+
+    val currentPlayer: Player
+        get() = players[currentPlayerIndex]
 
     //todo maybe get rid of these?
     var costDiscount = 0
@@ -301,6 +306,7 @@ class Game(val gameManager: GameManager) {
     }
 
     private fun startGame() {
+        players.shuffle()
         status = GameStatus.InProgress
         startTurnInNewThreadIfComputerVsHuman()
     }
@@ -367,9 +373,6 @@ class Game(val gameManager: GameManager) {
         refreshAllPlayersGameStatus()
         refreshAllPlayersTitle()
     }
-
-    val currentPlayer: Player
-        get() = players[currentPlayerIndex]
 
     fun trashCardFromSupply(card: Card) {
         removeCardFromSupply(card)
@@ -538,7 +541,6 @@ class Game(val gameManager: GameManager) {
         turnHistory.clear()
         chats.clear()
         currentPlayerIndex = 0
-        currentPlayerId = -1
         currentColorIndex = 0
         playersExited.clear()
         costDiscount = 0
