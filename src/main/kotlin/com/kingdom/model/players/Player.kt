@@ -39,7 +39,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var coinTokens: Int = 0
 
-    lateinit var opponents: List<Player>
+    val opponents: List<Player> by lazy {
+        game.players.filterNot { it.userId == userId }
+    }
 
     var isNextCardToTopOfDeck: Boolean = false
 
