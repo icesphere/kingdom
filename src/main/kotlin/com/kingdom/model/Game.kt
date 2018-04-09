@@ -577,14 +577,16 @@ class Game(val gameManager: GameManager) {
         val playerNames = players.map { it.username }
 
         val errorHistory = StringBuilder()
-        if (!playerNames.isEmpty()) {
+        if (playerNames.isNotEmpty()) {
             errorHistory.append("Players: ").append(KingdomUtil.implode(playerNames, ",")).append("; ")
         }
-        if (!kingdomCards.isEmpty()) {
+        if (kingdomCards.isNotEmpty()) {
             errorHistory.append("Kingdom Cards: ").append(kingdomCardsString).append("; ")
         }
 
-        errorHistory.append("Current Player Hand: ").append(currentPlayer.hand.toCardNames(false)).append("; ")
+        if (players.isNotEmpty()) {
+            errorHistory.append("Current Player Hand: ").append(currentPlayer.hand.toCardNames(false)).append("; ")
+        }
 
         if (currentTurn != null) {
             errorHistory.append(KingdomUtil.implode(currentTurn!!.history, ";"))

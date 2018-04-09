@@ -362,7 +362,7 @@ class GameController(private var cardManager: CardManager,
         val modelAndView = ModelAndView("randomConfirm")
         modelAndView.addObject("createGame", KingdomUtil.getRequestBoolean(request, "createGame"))
         modelAndView.addObject("player", HumanPlayer(user, game))
-        modelAndView.addObject("currentPlayerId", game.currentPlayerId)
+        modelAndView.addObject("currentPlayerId", -1)
         modelAndView.addObject("costDiscount", game.costDiscount)
 //        modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
         modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
@@ -670,7 +670,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/joinPrivateGame", produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    @RequestMapping(value = ["/joinPrivateGame"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun joinPrivateGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val model = HashMap<String, Any>()
         val user = getUser(request)
@@ -899,7 +899,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/clickCard", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/clickCard"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun clickCard(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val model = HashMap<String, Any>()
         val user = getUser(request)
@@ -1031,7 +1031,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/playAllTreasureCards", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/playAllTreasureCards"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun playAllTreasureCards(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val user = getUser(request)
         val game = getGame(request)
@@ -1060,7 +1060,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/endTurn", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/endTurn"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun endTurn(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val user = getUser(request)
         val game = getGame(request)
@@ -1697,7 +1697,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/quitGame", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/quitGame"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun quitGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val model = HashMap<String, Any>()
         val user = getUser(request)
@@ -1768,7 +1768,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/sendChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/sendChat"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun sendChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val model = HashMap<String, Any>()
         val user = getUser(request)
@@ -1797,7 +1797,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/sendLobbyChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/sendLobbyChat"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun sendLobbyChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val user = getUser(request)
         if (user == null) {
@@ -1817,7 +1817,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/sendPrivateChat", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/sendPrivateChat"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun sendPrivateChat(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val user = getUser(request)
         if (user == null) {
@@ -2064,7 +2064,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/changeStatus", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/changeStatus"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun changeStatus(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val user = getUser(request)
         if (user == null) {
@@ -2285,7 +2285,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/refreshLobby", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/refreshLobby"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun refreshLobby(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val user = getUser(request)
         val refresh: RefreshLobby
@@ -2462,7 +2462,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/useCoinTokens", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/useCoinTokens"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun useCoinTokens(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val model = HashMap<String, Any>()
         val user = getUser(request)
