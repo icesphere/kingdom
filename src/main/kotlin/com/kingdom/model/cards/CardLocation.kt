@@ -6,7 +6,6 @@ enum class CardLocation {
     Deck,
     Discard,
     Supply,
-    Tinker,
     Trash,
     CardAction,
     Unknown

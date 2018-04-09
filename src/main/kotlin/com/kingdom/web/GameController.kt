@@ -527,9 +527,9 @@ class GameController(private var cardManager: CardManager,
 
     private fun setBlackMarketCards(game: Game) {
         val allCards = cardManager.getAllCards()
-        val blackMarketCards = CollectionUtils.subtract(allCards, game.kingdomCards) as MutableList<Card>
+        val blackMarketCards = allCards - game.kingdomCards
         Collections.shuffle(blackMarketCards)
-        game.blackMarketCards = blackMarketCards
+        game.blackMarketCards = blackMarketCards.toMutableList()
     }
 
     @RequestMapping("/cancelGame.html")
@@ -670,7 +670,7 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/joinPrivateGame", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = "/joinPrivateGame", produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun joinPrivateGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val model = HashMap<String, Any>()
         val user = getUser(request)
@@ -740,8 +740,9 @@ class GameController(private var cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = "/refreshGame", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(value = ["/refreshGame"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun refreshGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+        //todo look into a better way to do refresh
         val user = getUser(request)
         val game = getGame(request)
         val model = HashMap<String, Any>()
@@ -1199,7 +1200,7 @@ class GameController(private var cardManager: CardManager,
                 supplyDivTemplate = "supplyDivMobile"
             }
             val modelAndView = ModelAndView(supplyDivTemplate)
-            val player = game.playerMap[user.userId]
+            val player = game.playerMap[user.userId]!!
             modelAndView.addObject("player", player)
             modelAndView.addObject("currentPlayerId", currentPlayerId)
             modelAndView.addObject("kingdomCards", game.kingdomCards)

@@ -1809,7 +1809,7 @@ class OldGame(val gameId: Int) {
         when(gainedCard.location) {
             CardLocation.Discard -> player.discard.removeLastOccurrence(gainedCard)
             CardLocation.Deck -> player.deck.remove(gainedCard)
-            CardLocation.Tinker -> player.tinkerCards.remove(gainedCard)
+//            CardLocation.Tinker -> player.tinkerCards.remove(gainedCard)
             CardLocation.Hand -> player.hand.remove(gainedCard)
         }
     }
