@@ -1,13 +1,13 @@
 package com.kingdom.model.computer
 
-import com.kingdom.model.*
+import com.kingdom.model.GameError
+import com.kingdom.model.OldCardAction
+import com.kingdom.model.OldGame
+import com.kingdom.model.OldPlayer
 import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.supply.*
 import com.kingdom.util.CardCostComparator
 import com.kingdom.util.KingdomUtil
-import com.kingdom.util.computercardaction.*
-
 import java.util.*
 
 abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
@@ -1195,7 +1195,7 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
         if (oldCardAction.isWaitingForPlayers) {
             return
         }
-        when(oldCardAction.deck) {
+        /*when(oldCardAction.deck) {
             Deck.Kingdom -> KingdomComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Intrigue -> IntrigueComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Seaside -> SeasideComputerCardActionHandler.handleCardAction(oldCardAction, this)
@@ -1205,6 +1205,6 @@ abstract class ComputerPlayer(var player: OldPlayer, var game: OldGame) {
             Deck.Promo -> PromoComputerCardActionHandler.handleCardAction(oldCardAction, this)
             Deck.Reaction -> ReactionComputerCardActionHandler.handleCardAction(oldCardAction, this)
             else -> throw RuntimeException("OldCardAction with card: " + oldCardAction.cardName + " and type: " + oldCardAction.type + " does not have a deck type")
-        }
+        }*/
     }
 }

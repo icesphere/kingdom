@@ -11,9 +11,6 @@ import com.kingdom.service.LoggedInUsers
 import com.kingdom.util.CardCostComparator
 import com.kingdom.util.DurationHandler
 import com.kingdom.util.KingdomUtil
-import com.kingdom.util.cardaction.CardActionHandler
-import com.kingdom.util.cardaction.NextActionHandler
-import com.kingdom.util.specialaction.*
 
 import java.util.*
 
@@ -1334,13 +1331,12 @@ class OldGame(val gameId: Int) {
                 addNextAction("check enchanted palace")
             }
             addNextAction("finish attack")
-            NextActionHandler.handleAction(this, "reaction")
+//            NextActionHandler.handleAction(this, "reaction")
 
             if (hasIncompleteCard()) {
                 incompleteCard!!.actionFinished(player)
             }
         } else if (card.isSpecialCard) {
-            SpecialActionHandler.handleSpecialAction(this, card, repeatedAction)
         }
     }
 
@@ -1863,27 +1859,27 @@ class OldGame(val gameId: Int) {
     private fun getGainCardActions(player: OldPlayer, cardCopy: Card, destination: CardLocation): MutableMap<String, OldCardAction> {
         val gainCardActions = HashMap<String, OldCardAction>()
         if (royalSealCardPlayed && player.userId == currentPlayerId && destination != CardLocation.Deck) {
-            val cardAction = GainCardsReactionHandler.getCardAction("Royal Seal", this, player, cardCopy, destination)
+            /*val cardAction = GainCardsReactionHandler.getCardAction("Royal Seal", this, player, cardCopy, destination)
             if (cardAction != null) {
                 gainCardActions["Royal Seal"] = cardAction
-            }
+            }*/
         }
         if (checkWatchtower && player.hasWatchtower()) {
-            val cardAction = GainCardsReactionHandler.getCardAction("Watchtower", this, player, cardCopy, destination)
+            /*val cardAction = GainCardsReactionHandler.getCardAction("Watchtower", this, player, cardCopy, destination)
             if (cardAction != null) {
                 gainCardActions["Watchtower"] = cardAction
-            }
+            }*/
         }
         if (checkTinker && player.isPlayedTinker) {
-            val cardAction = GainCardsReactionHandler.getCardAction("Tinker", this, player, cardCopy, destination)
+            /*val cardAction = GainCardsReactionHandler.getCardAction("Tinker", this, player, cardCopy, destination)
             if (cardAction != null) {
                 gainCardActions["Tinker"] = cardAction
-            }
+            }*/
         }
-        val cardActionForCard = GainCardsSpecialActionHandler.getCardAction(this, player, cardCopy)
+       /* val cardActionForCard = GainCardsSpecialActionHandler.getCardAction(this, player, cardCopy)
         if (cardActionForCard != null) {
             gainCardActions[cardCopy.name] = cardActionForCard
-        }
+        }*/
         return gainCardActions
     }
 
@@ -2637,7 +2633,7 @@ class OldGame(val gameId: Int) {
     }
 
     fun cardActionSubmitted(player: OldPlayer, selectedCardNames: List<String>, yesNoAnswer: String?, choice: String?, numberChosen: Int) {
-        if (allowClick(player)) {
+        /*if (allowClick(player)) {
             updateLastActivity()
             try {
                 val coinsBefore = player.coins
@@ -2648,7 +2644,7 @@ class OldGame(val gameId: Int) {
             } finally {
                 processingClick.remove(player.userId)
             }
-        }
+        }*/
     }
 
     fun setCustom(custom: Boolean) {
