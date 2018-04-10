@@ -7,6 +7,8 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.listeners.CardPlayedListener
 import com.kingdom.model.cards.modifiers.CardCostModifier
+import com.kingdom.model.cards.supply.Copper
+import com.kingdom.model.cards.supply.Estate
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.toCardNames
 import java.util.*
@@ -22,6 +24,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val userId = user.userId
     val username = user.username
     val gender = user.gender
+    val isMobile = user.isMobile
 
     protected var actionsQueue: MutableList<Action> = ArrayList()
 
@@ -106,6 +109,30 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return hand
         }
 
+    val playTreasureCards: Boolean = game.isPlayTreasureCards
+
+    init {
+        if (game.isIdenticalStartingHands && game.players.size > 0) {
+            val firstPlayer = game.players[0]
+            deck.addAll(firstPlayer.deck)
+            for (card in firstPlayer.hand) {
+                addCardToHand(card)
+            }
+        } else {
+            for (i in 1..7) {
+                deck.add(Copper())
+            }
+
+            for (i in 1..3) {
+                deck.add(Estate())
+            }
+
+            deck.shuffle()
+
+            drawCards(5)
+        }
+    }
+
     fun drawCard() {
         drawCards(1)
     }
@@ -144,7 +171,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         return cardsDrawn
     }
 
-    fun shuffleDiscardIntoDeck() {
+    private fun shuffleDiscardIntoDeck() {
         deck.addAll(discard)
         discard.clear()
         addGameLog("Shuffling deck")

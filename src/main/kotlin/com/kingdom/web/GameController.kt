@@ -11,7 +11,6 @@ import com.kingdom.service.*
 import com.kingdom.util.KingdomUtil
 import freemarker.ext.beans.BeansWrapper
 import freemarker.template.TemplateModelException
-import org.apache.commons.collections.CollectionUtils
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
@@ -1207,7 +1206,7 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("supplyCards", game.supplyCards)
             try {
                 val bw = BeansWrapper()
-                modelAndView.addObject("supply", bw.wrap(game.supplyAmounts))
+                modelAndView.addObject("supply", bw.wrap(game.pileAmounts))
                 if (game.isShowEmbargoTokens) {
                     modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
                 }
@@ -1887,7 +1886,7 @@ class GameController(private var cardManager: CardManager,
         modelAndView.addObject("kingdomCards", game.kingdomCards)
         modelAndView.addObject("supplyCards", game.supplyCards)
         try {
-            modelAndView.addObject("supply", bw.wrap(game.supplyAmounts))
+            modelAndView.addObject("supply", bw.wrap(game.pileAmounts))
             if (game.isShowEmbargoTokens) {
                 modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
             }
@@ -1898,7 +1897,7 @@ class GameController(private var cardManager: CardManager,
             //
         }
 
-        modelAndView.addObject("supplySize", game.supplyAmounts.size)
+        modelAndView.addObject("supplySize", game.pileAmounts.size)
         modelAndView.addObject("players", game.players)
         modelAndView.addObject("currentPlayer", game.currentPlayer)
         modelAndView.addObject("currentPlayerId", game.currentPlayerId)

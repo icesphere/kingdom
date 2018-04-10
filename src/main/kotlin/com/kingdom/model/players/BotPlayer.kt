@@ -17,28 +17,32 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     var difficulty = 3
 
+    private val cardsToPlay: List<Card>
+        get() {
+            val actionCards = hand.filter { it.isAction }
+            val treasureCards = hand.filter { it.isTreasure }
+            return if (actions > 0) actionCards else treasureCards
+        }
+
     override fun takeTurn() {
         var endTurn = false
 
         while (!endTurn) {
             endTurn = true
 
-            if (!hand.isEmpty()) {
+            while (cardsToPlay.isNotEmpty()) {
                 endTurn = false
+                val sortedCards = hand.sortedByDescending { getPlayCardScore(it) }
 
-                while (!hand.isEmpty()) {
-                    val sortedCards = hand.sortedByDescending { getPlayCardScore(it) }
-
-                    if (sortedCards.isEmpty()) {
-                        break
-                    }
-
-                    val card = sortedCards[0]
-                    playCard(card)
+                if (sortedCards.isEmpty()) {
+                    break
                 }
+
+                val card = sortedCards[0]
+                playCard(card)
             }
 
-            refreshGamePageForOpponent()
+            refreshGamePageForOpponents()
 
             if (coins > 0) {
                 val cardsToBuy = cardsToBuy
@@ -51,7 +55,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
 
             if (!endTurn) {
-                refreshGamePageForOpponent()
+                refreshGamePageForOpponents()
             }
         }
     }
@@ -67,7 +71,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             card.processCardActionResult(CardAction(card, ""), this, result)
         }
     }
-
 
 
     override fun addCardFromDiscardToTopOfDeck(maxCost: Int?) {
@@ -174,7 +177,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         get() {
             val cardsToBuy = ArrayList<Card>()
 
-            val cards = ArrayList(game.nonEmptySupplyCards)
+            val cards = ArrayList(game.nonEmptyPiles)
 
             val cardsAvailableToBuy = cards.filter { c -> coins >= this.getCardCostWithModifiers(c) }
 
@@ -246,9 +249,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return card.cost
     }
 
-    fun getPlayCardScore(card: Card): Int {
+    private fun getPlayCardScore(card: Card): Int {
         //todo
-        return 20
+        return card.cost
     }
 
     fun getCardToTopOfDeckScore(card: Card): Int {
@@ -381,7 +384,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 val card = sortedCards[i]
 
                 if (optional && getTrashCardScore(card) < 20) {
-                    break;
+                    break
                 }
 
                 cardsToTrashFromDeck.add(card)
@@ -404,7 +407,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
         }
 
-        val sortedCards = game.nonEmptySupplyCards.filter { c -> coins + extraTrade >= this.getCardCostWithModifiers(c) }.sortedByDescending { getBuyCardScore(it) }
+        val sortedCards = game.nonEmptyPiles.filter { c -> coins + extraTrade >= this.getCardCostWithModifiers(c) }.sortedByDescending { getBuyCardScore(it) }
         if (!sortedCards.isEmpty()) {
             val bestCardScore = getBuyCardScore(sortedCards[0])
             return bestCardScore - cardToBuyScore
@@ -414,7 +417,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     fun getHighestBuyScoreForTrade(trade: Int): Int {
-        val sortedCards = game.nonEmptySupplyCards.filter { c -> trade >= this.getCardCostWithModifiers(c) }.sortedByDescending { getBuyCardScore(it) }
+        val sortedCards = game.nonEmptyPiles.filter { c -> trade >= this.getCardCostWithModifiers(c) }.sortedByDescending { getBuyCardScore(it) }
         if (!sortedCards.isEmpty()) {
             return getBuyCardScore(sortedCards[0])
         }
@@ -477,12 +480,12 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     fun chooseFreeCardToAcquire(maxCost: Int?, cardType: CardType? = null): Card? {
-        val cardsToChooseFrom = ArrayList(game.nonEmptySupplyCards)
+        val cardsToChooseFrom = ArrayList(game.nonEmptyPiles)
 
         val cards = cardsToChooseFrom
                 .filter { c ->
                     (maxCost == null || this.getCardCostWithModifiers(c) <= maxCost)
-                    && (cardType == null || cardType == c.type)
+                            && (cardType == null || cardType == c.type)
                 }
 
         return pickCardBasedOnBuyScore(cards)
@@ -537,9 +540,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         //todo better logic
 
         val cards =
-        if (cardFilter != null) {
-            hand.filter(cardFilter)
-        } else hand
+                if (cardFilter != null) {
+                    hand.filter(cardFilter)
+                } else hand
 
         if (cards.isNotEmpty()) {
             val firstCard = cards.first()
@@ -556,17 +559,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         //todo
     }
 
-    fun refreshGamePageForOpponent() {
-        sendGameMessageToOpponent("refresh_game_page")
-    }
-
-    fun sendGameMessageToOpponent(message: String) {
-        //todo
-        //sendGameMessage(opponent.playerName, message)
-    }
-
-    fun sendGameMessage(recipient: String, message: String) {
-        //todo
+    private fun refreshGamePageForOpponents() {
+        opponents.forEach { game.refreshAllPlayersPlayingArea() }
     }
 
     override fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean) {

@@ -50,7 +50,8 @@ class Game(val gameManager: GameManager) {
     private var twoCostKingdomCards = 0
 
     val supplyCards = ArrayList<Card>()
-    val supplyAmounts = HashMap<String, Int>()
+
+    val pileAmounts = HashMap<String, Int>()
 
     var blackMarketCards: MutableList<Card> = ArrayList(0)
 
@@ -70,14 +71,9 @@ class Game(val gameManager: GameManager) {
     var actionCardsInPlay = 0
     var numActionsCardsPlayed = 0
 
-    var isCreateGameLog = true
-
-    var gameLog = StringBuilder()
-
     private val currentTurnLog = StringBuilder()
 
-    var quitGamePlayer: Player? = null
-        private set
+    private var quitGamePlayer: Player? = null
 
     val chats = ArrayList<ChatMessage>()
 
@@ -249,58 +245,58 @@ class Game(val gameManager: GameManager) {
                     numEachCard = 12
                 }
             }
-            supplyAmounts[card.name] = numEachCard
+            pileAmounts[card.name] = numEachCard
         }
         if (numPlayers > 4) {
-            supplyAmounts[Copper.NAME] = 120
+            pileAmounts[Copper.NAME] = 120
         } else {
-            supplyAmounts[Copper.NAME] = 60
+            pileAmounts[Copper.NAME] = 60
         }
         if (numPlayers > 4) {
-            supplyAmounts[Silver.NAME] = 80
+            pileAmounts[Silver.NAME] = 80
         } else {
-            supplyAmounts[Silver.NAME] = 40
+            pileAmounts[Silver.NAME] = 40
         }
         if (numPlayers > 4) {
-            supplyAmounts[Gold.NAME] = 60
+            pileAmounts[Gold.NAME] = 60
         } else {
-            supplyAmounts[Gold.NAME] = 30
+            pileAmounts[Gold.NAME] = 30
         }
         if (isIncludePlatinumCards) {
-            supplyAmounts[Platinum.NAME] = 12
+            pileAmounts[Platinum.NAME] = 12
         }
         if (numPlayers == 2) {
-            supplyAmounts[Estate.NAME] = 8
-            supplyAmounts[Duchy.NAME] = 8
-            supplyAmounts[Province.NAME] = 8
+            pileAmounts[Estate.NAME] = 8
+            pileAmounts[Duchy.NAME] = 8
+            pileAmounts[Province.NAME] = 8
             if (isIncludeColonyCards) {
-                supplyAmounts[Colony.NAME] = 8
+                pileAmounts[Colony.NAME] = 8
             }
-            supplyAmounts[Curse.NAME] = 10
+            pileAmounts[Curse.NAME] = 10
         } else if (numPlayers > 4) {
-            supplyAmounts[Estate.NAME] = 12
-            supplyAmounts[Duchy.NAME] = 12
+            pileAmounts[Estate.NAME] = 12
+            pileAmounts[Duchy.NAME] = 12
             if (isIncludeColonyCards) {
-                supplyAmounts[Colony.NAME] = 12
+                pileAmounts[Colony.NAME] = 12
             }
             if (numPlayers == 5) {
-                supplyAmounts[Province.NAME] = 15
-                supplyAmounts[Curse.NAME] = 40
+                pileAmounts[Province.NAME] = 15
+                pileAmounts[Curse.NAME] = 40
             } else {
-                supplyAmounts[Province.NAME] = 18
-                supplyAmounts[Curse.NAME] = 50
+                pileAmounts[Province.NAME] = 18
+                pileAmounts[Curse.NAME] = 50
             }
         } else {
-            supplyAmounts[Estate.NAME] = 12
-            supplyAmounts[Duchy.NAME] = 12
-            supplyAmounts[Province.NAME] = 12
+            pileAmounts[Estate.NAME] = 12
+            pileAmounts[Duchy.NAME] = 12
+            pileAmounts[Province.NAME] = 12
             if (isIncludeColonyCards) {
-                supplyAmounts[Colony.NAME] = 12
+                pileAmounts[Colony.NAME] = 12
             }
             if (numPlayers == 3) {
-                supplyAmounts[Curse.NAME] = 20
+                pileAmounts[Curse.NAME] = 20
             } else {
-                supplyAmounts[Curse.NAME] = 30
+                pileAmounts[Curse.NAME] = 30
             }
         }
     }
@@ -340,9 +336,9 @@ class Game(val gameManager: GameManager) {
     fun turnEnded() {
         addHistory("End of turn $turn")
 
-        if (emptySupplyPiles >= 3
-                || supplyAmounts[Province.NAME] == 0
-                || (isIncludeColonyCards && supplyAmounts[Colony.NAME] == 0)) {
+        if (emptyPiles >= 3
+                || pileAmounts[Province.NAME] == 0
+                || (isIncludeColonyCards && pileAmounts[Colony.NAME] == 0)) {
             gameOver()
             return
         }
@@ -391,18 +387,24 @@ class Game(val gameManager: GameManager) {
 
 
     fun isCardAvailableInSupply(card: Card): Boolean {
-        return supplyAmounts.containsKey(card.name) && supplyAmounts[card.name]!! > 0
+        return pileAmounts.containsKey(card.name) && pileAmounts[card.name]!! > 0
     }
 
     fun removeCardFromSupply(card: Card) {
-        supplyAmounts[card.name] = supplyAmounts[card.name]!!.minus(1)
+        pileAmounts[card.name] = pileAmounts[card.name]!!.minus(1)
     }
 
     val nonEmptySupplyCards
-        get() = supplyCards.filter { supplyAmounts[it.name]!! > 0 }
+        get() = supplyCards.filter { pileAmounts[it.name]!! > 0 }
 
-    val emptySupplyPiles
-        get() = supplyCards.size - nonEmptySupplyCards.size
+    val nonEmptyKingdomCards
+        get() = kingdomCards.filter { pileAmounts[it.name]!! > 0 }
+
+    val nonEmptyPiles
+        get() = nonEmptySupplyCards + nonEmptyKingdomCards
+
+    val emptyPiles
+        get() = supplyCards.size + kingdomCards.size - nonEmptyPiles.size
 
     fun addGameChat(message: String) {
         chats.add(ChatMessage(message, "black"))
@@ -531,7 +533,7 @@ class Game(val gameManager: GameManager) {
         }
         players.clear()
         playerMap.clear()
-        supplyAmounts.clear()
+        pileAmounts.clear()
         embargoTokens.clear()
         trashedCards.clear()
         cardsPlayed.clear()
@@ -825,7 +827,7 @@ class Game(val gameManager: GameManager) {
         }
     }
 
-    fun addComputerPlayer(i: Int, bigMoneyUltimate: Boolean, difficulty: Int) {
+    private fun addComputerPlayer(i: Int, bigMoneyUltimate: Boolean, difficulty: Int) {
         val userId = i * -1
         val user = User()
         user.gender = User.COMPUTER
