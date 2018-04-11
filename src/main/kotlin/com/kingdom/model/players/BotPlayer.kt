@@ -58,6 +58,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 refreshGamePageForOpponents()
             }
         }
+
+        endTurn()
     }
 
     override fun addCardAction(card: CardActionCard, text: String) {
