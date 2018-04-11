@@ -674,7 +674,7 @@ class GameController(private var cardManager: CardManager,
         val model = HashMap<String, Any>()
         val user = getUser(request)
         if (user == null) {
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         val gameId = request.getParameter("gameId")
@@ -685,7 +685,7 @@ class GameController(private var cardManager: CardManager,
             game = getGame(request)
         }
         if (game == null) {
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         try {
@@ -702,8 +702,8 @@ class GameController(private var cardManager: CardManager,
                 addPlayerToGame(game, user)
             }
 
-            model.put("message", message)
-            model.put("start", game.status == GameStatus.InProgress)
+            model["message"] = message
+            model["start"] = game.status == GameStatus.InProgress
 
             return model
         } catch (t: Throwable) {
@@ -746,101 +746,101 @@ class GameController(private var cardManager: CardManager,
         val game = getGame(request)
         val model = HashMap<String, Any>()
         if (user == null || game == null) {
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         try {
             val refresh = game.needsRefresh[user.userId]
             if (refresh == null) {
-                model.put("redirectToLobby", true)
+                model["redirectToLobby"] = true
                 return model
             }
-            model.put("refreshEndTurn", refresh.isRefreshEndTurn)
+            model["refreshEndTurn"] = refresh.isRefreshEndTurn
             if (refresh.isRefreshEndTurn) {
                 refresh.isRefreshEndTurn = false
                 val player = game.playerMap[user.userId]!!
                 if (player.turns > 0) {
                     val refreshHandArea = refresh.isRefreshHand || refresh.isRefreshHandArea || refresh.isRefreshDiscard
-                    model.put("refreshHandOnEndTurn", refresh.isRefreshHandOnEndTurn)
+                    model["refreshHandOnEndTurn"] = refresh.isRefreshHandOnEndTurn
                     refresh.isRefreshHandOnEndTurn = false
-                    model.put("refreshSupplyOnEndTurn", refresh.isRefreshSupplyOnEndTurn)
+                    model["refreshSupplyOnEndTurn"] = refresh.isRefreshSupplyOnEndTurn
                     refresh.isRefreshSupplyOnEndTurn = false
                 }
-                model.put("refreshPlayersOnEndTurn", refresh.isRefreshPlayers)
+                model["refreshPlayersOnEndTurn"] = refresh.isRefreshPlayers
                 refresh.isRefreshPlayers = false
                 return model
             }
-            model.put("refreshGameStatus", refresh.isRefreshGameStatus)
+            model["refreshGameStatus"] = refresh.isRefreshGameStatus
             if (refresh.isRefreshGameStatus) {
                 refresh.isRefreshGameStatus = false
-                model.put("gameStatus", game.status)
+                model["gameStatus"] = game.status
                 val currentPlayer = (game.status == GameStatus.InProgress && user.userId == game.currentPlayerId).toString()
-                model.put("currentPlayer", currentPlayer)
+                model["currentPlayer"] = currentPlayer
             }
-            model.put("closeCardActionDialog", refresh.isCloseCardActionDialog)
+            model["closeCardActionDialog"] = refresh.isCloseCardActionDialog
             if (refresh.isCloseCardActionDialog) {
                 refresh.isCloseCardActionDialog = false
             }
-            model.put("closeLoadingDialog", refresh.isCloseLoadingDialog)
+            model["closeLoadingDialog"] = refresh.isCloseLoadingDialog
             if (refresh.isCloseLoadingDialog) {
                 refresh.isCloseLoadingDialog = false
             }
             var divsToLoad = 0
-            model.put("refreshPlayers", refresh.isRefreshPlayers)
+            model["refreshPlayers"] = refresh.isRefreshPlayers
             if (refresh.isRefreshPlayers) {
                 divsToLoad++
                 refresh.isRefreshPlayers = false
             }
-            model.put("refreshSupply", refresh.isRefreshSupply)
+            model["refreshSupply"] = refresh.isRefreshSupply
             if (refresh.isRefreshSupply) {
                 divsToLoad++
                 refresh.isRefreshSupply = false
             }
-            model.put("refreshPlayingArea", refresh.isRefreshPlayingArea)
+            model["refreshPlayingArea"] = refresh.isRefreshPlayingArea
             if (refresh.isRefreshPlayingArea) {
                 divsToLoad++
                 refresh.isRefreshPlayingArea = false
             }
-            model.put("refreshCardsPlayed", refresh.isRefreshCardsPlayedDiv)
+            model["refreshCardsPlayed"] = refresh.isRefreshCardsPlayedDiv
             if (refresh.isRefreshCardsPlayedDiv) {
                 divsToLoad++
                 refresh.isRefreshCardsPlayedDiv = false
             }
-            model.put("refreshCardsBought", refresh.isRefreshCardsBoughtDiv)
+            model["refreshCardsBought"] = refresh.isRefreshCardsBoughtDiv
             if (refresh.isRefreshCardsBoughtDiv) {
                 divsToLoad++
                 refresh.isRefreshCardsBoughtDiv = false
             }
-            model.put("refreshHistory", refresh.isRefreshHistory)
+            model["refreshHistory"] = refresh.isRefreshHistory
             if (refresh.isRefreshHistory) {
                 divsToLoad++
                 refresh.isRefreshHistory = false
             }
-            model.put("refreshHandArea", refresh.isRefreshHandArea)
+            model["refreshHandArea"] = refresh.isRefreshHandArea
             if (refresh.isRefreshHandArea) {
                 divsToLoad++
                 refresh.isRefreshHandArea = false
             }
-            model.put("refreshHand", refresh.isRefreshHand)
+            model["refreshHand"] = refresh.isRefreshHand
             if (refresh.isRefreshHand) {
                 divsToLoad++
                 refresh.isRefreshHand = false
             }
-            model.put("refreshDiscard", refresh.isRefreshDiscard)
+            model["refreshDiscard"] = refresh.isRefreshDiscard
             if (refresh.isRefreshDiscard) {
                 divsToLoad++
                 refresh.isRefreshDiscard = false
             }
-            model.put("refreshChat", refresh.isRefreshChat)
+            model["refreshChat"] = refresh.isRefreshChat
             if (refresh.isRefreshChat) {
                 divsToLoad++
                 refresh.isRefreshChat = false
             }
-            model.put("refreshCardAction", refresh.isRefreshCardAction)
+            model["refreshCardAction"] = refresh.isRefreshCardAction
             if (refresh.isRefreshCardAction) {
                 val player = game.playerMap[user.userId]!!
                 if (player.currentAction != null) {
-                    model.put("currentAction", player.currentAction!!)
+                    model["currentAction"] = player.currentAction!!
                     divsToLoad++
                     /*if (player.oldCardAction == null) {
                         val error = GameError(GameError.GAME_ERROR, "Card action is null for user: " + player.username + ", show card action: " + player.isShowCardAction)
@@ -860,32 +860,32 @@ class GameController(private var cardManager: CardManager,
                 }
                 refresh.isRefreshCardAction = false
             }
-            model.put("refreshInfoDialog", refresh.isRefreshInfoDialog)
+            model["refreshInfoDialog"] = refresh.isRefreshInfoDialog
             if (refresh.isRefreshInfoDialog) {
                 val player = game.playerMap[user.userId]!!
-                model.put("infoDialogHideMethod", player.infoDialog!!.hideMethod!!)
-                model.put("infoDialogWidth", player.infoDialog!!.width)
-                model.put("infoDialogHeight", player.infoDialog!!.height)
-                model.put("infoDialogTimeout", player.infoDialog!!.timeout)
+                model["infoDialogHideMethod"] = player.infoDialog!!.hideMethod!!
+                model["infoDialogWidth"] = player.infoDialog!!.width
+                model["infoDialogHeight"] = player.infoDialog!!.height
+                model["infoDialogTimeout"] = player.infoDialog!!.timeout
                 divsToLoad++
                 refresh.isRefreshInfoDialog = false
             }
-            model.put("playBeep", refresh.isPlayBeep)
+            model["playBeep"] = refresh.isPlayBeep
             if (refresh.isPlayBeep) {
                 refresh.isPlayBeep = false
             }
-            model.put("refreshTitle", refresh.isRefreshTitle)
+            model["refreshTitle"] = refresh.isRefreshTitle
             if (refresh.isRefreshTitle) {
                 refresh.isRefreshTitle = false
                 if (game.status == GameStatus.Finished) {
-                    model.put("title", "Game Over")
+                    model["title"] = "Game Over"
                 } else if (game.currentPlayerId == user.userId) {
-                    model.put("title", "Your Turn")
+                    model["title"] = "Your Turn"
                 } else {
-                    model.put("title", game.currentPlayer.username + "'s Turn")
+                    model["title"] = game.currentPlayer.username + "'s Turn"
                 }
             }
-            model.put("divsToLoad", divsToLoad)
+            model["divsToLoad"] = divsToLoad
 
             return model
         } catch (t: Throwable) {
@@ -904,7 +904,7 @@ class GameController(private var cardManager: CardManager,
         val user = getUser(request)
         val game = getGame(request)
         if (user == null || game == null) {
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         try {
@@ -914,7 +914,7 @@ class GameController(private var cardManager: CardManager,
             if (cardId != null && cardName != null) {
                 val player = game.playerMap[user.userId]
                 if (player == null) {
-                    model.put("redirectToLobby", true)
+                    model["redirectToLobby"] = true
                     return model
                 }
                 cardClicked(game, player, getCardLocationFromSource(clickType), cardName, cardId)
@@ -1036,13 +1036,13 @@ class GameController(private var cardManager: CardManager,
         val game = getGame(request)
         if (user == null || game == null) {
             val model = HashMap<String, Any>()
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         val player = game.playerMap[user.userId]
         if (player == null) {
             val model = HashMap<String, Any>()
-            model.put("redirectToLobby", true)
+            model["redirectToLobby"] = true
             return model
         }
         try {
@@ -1065,7 +1065,7 @@ class GameController(private var cardManager: CardManager,
         val game = getGame(request)
         if (user == null || game == null) {
             val model = HashMap<String, Any>()
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
 
@@ -1702,13 +1702,13 @@ class GameController(private var cardManager: CardManager,
         val user = getUser(request)
         val game = getGame(request)
         if (user == null || game == null) {
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         try {
             if (game.status == GameStatus.WaitingForPlayers) {
                 game.reset()
-                model.put("redirectToLobby", true)
+                model["redirectToLobby"] = true
                 return model
             }
             if (game.status != GameStatus.Finished) {
@@ -1773,7 +1773,7 @@ class GameController(private var cardManager: CardManager,
         val user = getUser(request)
         val game = getGame(request)
         if (user == null || game == null) {
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         try {
@@ -1801,7 +1801,7 @@ class GameController(private var cardManager: CardManager,
         val user = getUser(request)
         if (user == null) {
             val model = HashMap<String, Any>()
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         LoggedInUsers.updateUser(user)
@@ -1821,7 +1821,7 @@ class GameController(private var cardManager: CardManager,
         val user = getUser(request)
         if (user == null) {
             val model = HashMap<String, Any>()
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         val message = request.getParameter("message")
@@ -2068,7 +2068,7 @@ class GameController(private var cardManager: CardManager,
         val user = getUser(request)
         if (user == null) {
             val model = HashMap<String, Any>()
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         val status = request.getParameter("status")
@@ -2303,31 +2303,31 @@ class GameController(private var cardManager: CardManager,
             refresh.isStartGame = true
         }
         val model = HashMap<String, Any>()
-        model.put("redirectToLogin", refresh.isRedirectToLogin)
+        model["redirectToLogin"] = refresh.isRedirectToLogin
         if (refresh.isRedirectToLogin) {
             refresh.isRedirectToLogin = false
         }
-        model.put("startGame", refresh.isStartGame)
+        model["startGame"] = refresh.isStartGame
         if (refresh.isStartGame) {
             refresh.isStartGame = false
         }
         var divsToLoad = 0
-        model.put("refreshPlayers", refresh.isRefreshPlayers)
+        model["refreshPlayers"] = refresh.isRefreshPlayers
         if (refresh.isRefreshPlayers) {
             divsToLoad++
             refresh.isRefreshPlayers = false
         }
-        model.put("refreshGameRooms", refresh.isRefreshGameRooms)
+        model["refreshGameRooms"] = refresh.isRefreshGameRooms
         if (refresh.isRefreshGameRooms) {
             divsToLoad++
             refresh.isRefreshGameRooms = false
         }
-        model.put("refreshChat", refresh.isRefreshChat)
+        model["refreshChat"] = refresh.isRefreshChat
         if (refresh.isRefreshChat) {
             divsToLoad++
             refresh.isRefreshChat = false
         }
-        model.put("divsToLoad", divsToLoad)
+        model["divsToLoad"] = divsToLoad
 
         return model
     }
@@ -2467,13 +2467,13 @@ class GameController(private var cardManager: CardManager,
         val user = getUser(request)
         val game = getGame(request)
         if (user == null || game == null) {
-            model.put("redirectToLogin", true)
+            model["redirectToLogin"] = true
             return model
         }
         try {
             val player = game.playerMap[user.userId]
             if (player == null) {
-                model.put("redirectToLobby", true)
+                model["redirectToLobby"] = true
                 return model
             }
             //todo

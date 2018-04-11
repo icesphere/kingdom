@@ -21,7 +21,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         get() {
             val actionCards = hand.filter { it.isAction }
             val treasureCards = hand.filter { it.isTreasure }
-            return if (actions > 0) actionCards else treasureCards
+            return if (actions > 0 && actionCards.isNotEmpty()) actionCards else treasureCards
         }
 
     override fun takeTurn() {
@@ -173,7 +173,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    val cardsToBuy: List<Card>
+    private val cardsToBuy: List<Card>
         get() {
             val cardsToBuy = ArrayList<Card>()
 
@@ -258,7 +258,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return getBuyCardScore(card)
     }
 
-    fun getDiscardCardScore(card: Card): Int {
+    private fun getDiscardCardScore(card: Card): Int {
         //todo
         if (card.isVictory) {
             return 100
@@ -268,7 +268,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return 20 - card.cost
     }
 
-    fun getTrashCardScore(card: Card): Int {
+    private fun getTrashCardScore(card: Card): Int {
         //todo
         if (card is Estate) {
             return 100
@@ -279,7 +279,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return 20 - card.cost
     }
 
-    fun getReturnCardToTopOfDeckScore(card: Card): Int {
+    private fun getReturnCardToTopOfDeckScore(card: Card): Int {
         return 1000 - getBuyCardScore(card)
     }
 
@@ -288,7 +288,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return 1
     }
 
-    fun getCardsToDiscard(cards: Int, optional: Boolean): List<Card> {
+    private fun getCardsToDiscard(cards: Int, optional: Boolean): List<Card> {
         var numCardsToDiscard = cards
         val cardsToDiscard = ArrayList<Card>()
 
@@ -311,7 +311,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return cardsToDiscard
     }
 
-    fun getCardToTrashFromHand(optional: Boolean): Card? {
+    private fun getCardToTrashFromHand(optional: Boolean): Card? {
         if (!hand.isEmpty()) {
             val sortedCards = hand.sortedByDescending { getTrashCardScore(it) }
             val card = sortedCards[0]
@@ -324,7 +324,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
 
-    fun getCardsToTrashFromHand(cards: Int): List<Card> {
+    private fun getCardsToTrashFromHand(cards: Int): List<Card> {
         val cardsToTrashFromHand = ArrayList<Card>()
 
         if (!hand.isEmpty()) {
@@ -345,7 +345,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return cardsToTrashFromHand
     }
 
-    fun getCardsToOptionallyTrashFromHand(cards: Int): List<Card> {
+    private fun getCardsToOptionallyTrashFromHand(cards: Int): List<Card> {
         val cardsToTrashFromHand = ArrayList<Card>()
 
         if (!hand.isEmpty()) {
@@ -371,7 +371,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return cardsToTrashFromHand
     }
 
-    fun getCardsToTrashFromDeck(cards: List<Card>, numCardsToTrash: Int, optional: Boolean): List<Card> {
+    private fun getCardsToTrashFromDeck(cards: List<Card>, numCardsToTrash: Int, optional: Boolean): List<Card> {
         val cardsToTrashFromDeck = ArrayList<Card>()
 
         if (cards.isNotEmpty()) {
@@ -425,7 +425,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return 0
     }
 
-    fun chooseCardFromDiscardToAddToTopOfDeck(): Card? {
+    private fun chooseCardFromDiscardToAddToTopOfDeck(): Card? {
         return pickCardBasedOnBuyScore(discard)
     }
 
@@ -479,7 +479,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    fun chooseFreeCardToAcquire(maxCost: Int?, cardType: CardType? = null): Card? {
+    private fun chooseFreeCardToAcquire(maxCost: Int?, cardType: CardType? = null): Card? {
         val cardsToChooseFrom = ArrayList(game.nonEmptyPiles)
 
         val cards = cardsToChooseFrom
