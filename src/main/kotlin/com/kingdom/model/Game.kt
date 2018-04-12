@@ -19,7 +19,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.full.createInstance
 
-class Game(val gameManager: GameManager) {
+class Game(private val gameManager: GameManager) {
     val gameId: String = UUID.randomUUID().toString()
 
     var turn: Int = 0
@@ -45,11 +45,13 @@ class Game(val gameManager: GameManager) {
 
     var decks: MutableList<Deck> = ArrayList()
 
-    var kingdomCards: MutableList<Card> = ArrayList()
+    var kingdomCards = ArrayList<Card>()
 
     private var twoCostKingdomCards = 0
 
     val supplyCards = ArrayList<Card>()
+
+    val cardMap = HashMap<String, Card>()
 
     val pileAmounts = HashMap<String, Int>()
 
@@ -57,7 +59,7 @@ class Game(val gameManager: GameManager) {
 
     var trashedCards: MutableList<Card> = ArrayList()
 
-    var currentPlayerIndex: Int = 0
+    private var currentPlayerIndex: Int = 0
 
     val currentPlayerId
         get() = currentPlayer.userId
@@ -69,7 +71,7 @@ class Game(val gameManager: GameManager) {
     var costDiscount = 0
     var actionCardDiscount: Int = 0
     var actionCardsInPlay = 0
-    var numActionsCardsPlayed = 0
+    private var numActionsCardsPlayed = 0
 
     private val currentTurnLog = StringBuilder()
 
@@ -202,6 +204,9 @@ class Game(val gameManager: GameManager) {
         lastActivity = Date()
 
         setupSupply()
+
+        kingdomCards.forEach { cardMap[it.name] = it }
+        supplyCards.forEach { cardMap[it.name] = it }
 
         if (numComputerPlayers > 0) {
             addComputerPlayers()
@@ -394,17 +399,11 @@ class Game(val gameManager: GameManager) {
         pileAmounts[card.name] = pileAmounts[card.name]!!.minus(1)
     }
 
-    val nonEmptySupplyCards
-        get() = supplyCards.filter { pileAmounts[it.name]!! > 0 }
-
-    val nonEmptyKingdomCards
-        get() = kingdomCards.filter { pileAmounts[it.name]!! > 0 }
-
     val nonEmptyPiles
-        get() = nonEmptySupplyCards + nonEmptyKingdomCards
+        get() = cardMap.keys.filter { pileAmounts[it]!! > 0 }
 
     val emptyPiles
-        get() = supplyCards.size + kingdomCards.size - nonEmptyPiles.size
+        get() = cardMap.size - nonEmptyPiles.size
 
     fun addGameChat(message: String) {
         chats.add(ChatMessage(message, "black"))
@@ -492,6 +491,7 @@ class Game(val gameManager: GameManager) {
             isIncludeColonyCards = false
             supplyCards.clear()
             kingdomCards.clear()
+            cardMap.clear()
             blackMarketCards.clear()
             isShowDuke = false
             isShowGardens = false
@@ -645,7 +645,7 @@ class Game(val gameManager: GameManager) {
         }
     }
 
-    fun refreshAllPlayersHistory() {
+    private fun refreshAllPlayersHistory() {
         for (refresh in needsRefresh.values) {
             refresh.isRefreshHistory = true
         }
@@ -681,7 +681,7 @@ class Game(val gameManager: GameManager) {
         }
     }
 
-    fun refreshAllPlayersGameStatus() {
+    private fun refreshAllPlayersGameStatus() {
         for (refresh in needsRefresh.values) {
             refresh.isRefreshGameStatus = true
         }
@@ -703,18 +703,18 @@ class Game(val gameManager: GameManager) {
         }
     }
 
-    fun refreshChat(userId: Int) {
+    private fun refreshChat(userId: Int) {
         val refresh = needsRefresh[userId]!!
         refresh.isRefreshChat = true
     }
 
-    fun refreshAllPlayersChat() {
+    private fun refreshAllPlayersChat() {
         for (refresh in needsRefresh.values) {
             refresh.isRefreshChat = true
         }
     }
 
-    fun refreshAllPlayersTitle() {
+    private fun refreshAllPlayersTitle() {
         for (refresh in needsRefresh.values) {
             refresh.isRefreshTitle = true
         }
@@ -788,7 +788,7 @@ class Game(val gameManager: GameManager) {
     }
 
     fun getSupplyCard(cardName: String): Card {
-        val card = supplyCards.first { it.name == cardName }
+        val card = cardMap[cardName]!!
         return card.javaClass.kotlin.createInstance()
     }
 
@@ -894,7 +894,7 @@ class Game(val gameManager: GameManager) {
         }
     }
 
-    fun updateLastActivity() {
+    private fun updateLastActivity() {
         lastActivity = Date()
     }
 
