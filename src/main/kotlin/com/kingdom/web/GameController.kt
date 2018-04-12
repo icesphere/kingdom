@@ -1592,7 +1592,7 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-//            modelAndView.addObject("showFruitTokens", game.isShowFruitTokens)
+            modelAndView.addObject("showCoinTokens", game.isShowCoinTokens)
             modelAndView.addObject("showDuration", game.isShowDuration)
             modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
             modelAndView.addObject("prizeCards", game.prizeCardsString)

@@ -7,7 +7,7 @@
 </div>
 
 <div id="supplyAreaDiv">
-    <#include "supplyAreaDiv.ftl">
+    <#include "supplyAreaDizv.ftl">
 </div>
 
 <div id="playerAreaDiv">
