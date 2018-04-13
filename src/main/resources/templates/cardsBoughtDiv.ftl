@@ -6,7 +6,7 @@
                     <#if gameStatus == "InProgress">
                         <td style="padding-left:10px;">${currentPlayer.buys} Buy<#if currentPlayer.buys != 1>s</#if></td>
                         <#if currentPlayer.userId == user.userId>
-                            <td style="padding-left:10px;">${currentPlayer.coins}</td>
+                            <td style="padding-left:10px;">${currentPlayer.availableCoins}</td>
                             <td><span style="position:relative; top:2px;"><img src="images/coin.png" alt="Coins" style="height:16px; width:16px;"/></span></td>
                         </#if>
                     <#else>

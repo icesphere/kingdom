@@ -354,7 +354,7 @@ class GameController(private var cardManager: CardManager,
         val includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].isProsperity && !game.isNeverIncludeColonyAndPlatinum
         var playTreasureCardsRequired = false
         for (card in game.kingdomCards) {
-            if (card.playTreasureCards) {
+            if (card.isPlayTreasureCardsRequired) {
                 playTreasureCardsRequired = true
             }
         }
@@ -493,7 +493,7 @@ class GameController(private var cardManager: CardManager,
                     } else if (card.name == "Tournament" || card.name == "Museum") {
                         includePrizes = true
                     }
-                    if (card.playTreasureCards) {
+                    if (card.isPlayTreasureCardsRequired) {
                         playTreasureCardsRequired = true
                     }
                 }
@@ -1202,7 +1202,9 @@ class GameController(private var cardManager: CardManager,
             val player = game.playerMap[user.userId]!!
             modelAndView.addObject("player", player)
             modelAndView.addObject("currentPlayerId", currentPlayerId)
+            game.kingdomCards.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Supply) }
             modelAndView.addObject("kingdomCards", game.kingdomCards)
+            game.supplyCards.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Supply) }
             modelAndView.addObject("supplyCards", game.supplyCards)
             try {
                 val bw = BeansWrapper()
@@ -1404,6 +1406,7 @@ class GameController(private var cardManager: CardManager,
         try {
             val modelAndView = ModelAndView("handDiv")
             val player = game.playerMap[user.userId]!!
+            player.hand.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Hand) }
             modelAndView.addObject("player", player)
             modelAndView.addObject("currentPlayerId", game.currentPlayerId)
             modelAndView.addObject("costDiscount", game.costDiscount)

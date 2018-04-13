@@ -19,7 +19,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val hand: MutableList<Card> = ArrayList()
     val discard: MutableList<Card> = ArrayList()
     val played: MutableList<Card> = ArrayList()
-    val inPlay: MutableList<Card> = ArrayList()
+    private val inPlay: MutableList<Card> = ArrayList()
 
     val userId = user.userId
     val username = user.username
@@ -36,6 +36,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var coins: Int = 0
 
+    private var coinsInHand: Int = 0
+        get() = hand.filter { it.isTreasure }.sumBy { it.addCoins }
+
+    var availableCoins: Int = 0
+        get() = if (game.isPlayTreasureCards) coins else coins + coinsInHand
+
+    var coinsSpent: Int = 0
+
     var buys: Int = 0
 
     var actions: Int = 0
@@ -48,32 +56,23 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var isNextCardToTopOfDeck: Boolean = false
 
-    var isNextCardToHand: Boolean = false
+    private var isNextCardToHand: Boolean = false
 
-    var shuffles: Int = 0
-        protected set
+    private var shuffles: Int = 0
 
-    var isFirstPlayer: Boolean = false
+    private var isFirstPlayer: Boolean = false
 
     var turns: Int = 0
 
     var turn: Int = 0
 
-    var numCardsTrashpedThisTurn: Int = 0
-        private set
-    var coinsGainedThisTurn: Int = 0
-        private set
-    var combatGainedThisTurn: Int = 0
-        private set
-    var authorityGainedThisTurn: Int = 0
-        private set
-    val shipsPlayedThisTurn: MutableList<Card> = ArrayList()
+    private var numCardsTrashedThisTurn: Int = 0
 
-    var lastTurnSummary: TurnSummary? = null
-        private set
+    private var coinsGainedThisTurn: Int = 0
 
-    var currentTurnSummary = TurnSummary()
-        private set
+    private var lastTurnSummary: TurnSummary? = null
+
+    private var currentTurnSummary = TurnSummary()
 
     var isWaitingForComputer: Boolean = false
 
@@ -81,7 +80,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     private var acquireCardToHand: Boolean = false
 
-    var cardCostModifier: CardCostModifier? = null
+    private var cardCostModifier: CardCostModifier? = null
 
     lateinit var chatColor: String
 
@@ -93,7 +92,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     private var finalPointsCalculated = false
     var finalVictoryPoints = 0
-    var finalCards: List<Card>? = null
+    private var finalCards: List<Card>? = null
 
     var isWinner: Boolean = false
     var marginOfVictory: Int = 0
@@ -110,6 +109,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
     val playTreasureCards: Boolean = game.isPlayTreasureCards
+
+    val isTreasureCardsPlayed: Boolean
+        get() = game.cardsPlayed.any { it.isTreasure }
+
+    val isCardsBought: Boolean
+        get() = game.cardsBought.isNotEmpty()
 
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
@@ -143,17 +148,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         return cards
     }
 
-    fun getCardsFromDeck(numCards: Int): List<Card> {
+    private fun getCardsFromDeck(numCards: Int): List<Card> {
         if (numCards == 0) {
             return ArrayList()
         }
 
         val cardsDrawn = ArrayList<Card>()
-        var log = username + " drawing " + numCards
-        if (numCards == 1) {
-            log += " card"
+        var log = "$username drawing $numCards"
+        log += if (numCards == 1) {
+            " card"
         } else {
-            log += " cards"
+            " cards"
         }
         addGameLog(log)
 
@@ -175,7 +180,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         deck.addAll(discard)
         discard.clear()
         addGameLog("Shuffling deck")
-        Collections.shuffle(deck)
+        deck.shuffle()
         shuffles++
     }
 
@@ -200,17 +205,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         turns++
 
         coins = 0
+        coinsSpent = 0
         actions = 0
         buys = 0
 
         isNextCardToTopOfDeck = false
         isNextCardToHand = false
 
-        numCardsTrashpedThisTurn = 0
+        numCardsTrashedThisTurn = 0
         coinsGainedThisTurn = 0
-        combatGainedThisTurn = 0
-        authorityGainedThisTurn = 0
-        shipsPlayedThisTurn.clear()
 
         played.clear()
 
@@ -253,7 +256,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun cardTrashed(card: Card) {
         game.trashedCards.add(card)
         cardRemovedFromPlay(card)
-        numCardsTrashpedThisTurn++
+        numCardsTrashedThisTurn++
 
         if (isYourTurn) {
             currentTurnSummary.trashedCards.add(card)
@@ -267,9 +270,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         var cardToTrash = card
 
         if (card is CardCopier) {
-            val cardCopier = card
-            if (cardCopier.cardBeingCopied != null) {
-                cardToTrash = cardCopier.cardBeingCopied!!
+            if (card.cardBeingCopied != null) {
+                cardToTrash = card.cardBeingCopied!!
             }
         }
 
@@ -286,7 +288,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         cardAcquired(card)
     }
 
-    @JvmOverloads
     fun addCardToTopOfDeck(card: Card, addGameLog: Boolean = true) {
         deck.add(0, card)
         if (addGameLog) {
@@ -294,8 +295,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    @JvmOverloads
-    fun addCardToHand(card: Card, addToGameLog: Boolean = true) {
+    private fun addCardToHand(card: Card, addToGameLog: Boolean = true) {
         hand.add(card)
         if (addToGameLog) {
             addGameLog("Added " + card.name + " to hand")
@@ -303,20 +303,24 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun cardAcquired(card: Card) {
-        if (acquireCardToHand) {
-            acquireCardToHand = false
-            addCardToHand(card)
-        } else if (acquireCardToTopOfDeck) {
-            acquireCardToTopOfDeck = false
-            addCardToTopOfDeck(card)
-        } else if (isNextCardToTopOfDeck) {
-            isNextCardToTopOfDeck = false
-            addCardToTopOfDeck(card)
-        } else if (isNextCardToHand) {
-            isNextCardToHand = false
-            addCardToHand(card)
-        } else {
-            discard.add(card)
+        when {
+            acquireCardToHand -> {
+                acquireCardToHand = false
+                addCardToHand(card)
+            }
+            acquireCardToTopOfDeck -> {
+                acquireCardToTopOfDeck = false
+                addCardToTopOfDeck(card)
+            }
+            isNextCardToTopOfDeck -> {
+                isNextCardToTopOfDeck = false
+                addCardToTopOfDeck(card)
+            }
+            isNextCardToHand -> {
+                isNextCardToHand = false
+                addCardToHand(card)
+            }
+            else -> discard.add(card)
         }
 
         if (isYourTurn) {
@@ -331,7 +335,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun trashCardFromHand(optional: Boolean)
 
     fun buyCard(card: Card) {
-        if (coins >= this.getCardCostWithModifiers(card)) {
+        if (availableCoins >= this.getCardCostWithModifiers(card)) {
             addGameLog("Bought card: " + card.name)
             coins -= this.getCardCostWithModifiers(card)
             game.removeCardFromSupply(card)
@@ -376,11 +380,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         card.cardPlayed(this)
     }
 
-    fun countCardsByType(cards: List<Card>, typeMatcher: Function<Card, Boolean>): Int {
+    private fun countCardsByType(cards: List<Card>, typeMatcher: Function<Card, Boolean>): Int {
         return cards.filter({ typeMatcher.apply(it) }).count()
     }
 
-    val currentDeckNumber: Int
+    private val currentDeckNumber: Int
         get() = shuffles + 1
 
     abstract fun acquireFreeCard(maxCost: Int?)
@@ -454,7 +458,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun isCardBuyable(card: Card): Boolean {
-        return isYourTurn && this.getCardCostWithModifiers(card) <= coins
+        return isYourTurn && this.getCardCostWithModifiers(card) <= availableCoins
     }
 
     fun addCardToDeck(card: Card) {
@@ -462,7 +466,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun setup() {
-        Collections.shuffle(deck)
+        deck.shuffle()
         if (isFirstPlayer) {
             drawCards(3)
         } else {
@@ -503,7 +507,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         turn++
         addGameLog("")
         addGameLog("*** $username's Turn $turn ***")
-        addGameLog("Deck: " + currentDeckNumber)
+        addGameLog("Deck: $currentDeckNumber")
 
         currentTurnSummary = TurnSummary()
         currentTurnSummary.gameTurn = game.turn
@@ -612,11 +616,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         val cardsFromDeck = getCardsFromDeck(1)
         if (cardsFromDeck.isEmpty()) {
             return null
-        } else {
-            val discardedCard = cardsFromDeck.get(0)
-            addCardToDiscard(discardedCard)
-            return discardedCard
         }
+        val discardedCard = cardsFromDeck[0]
+        addCardToDiscard(discardedCard)
+        return discardedCard
     }
 
     fun getVictoryPoints(gameOver: Boolean): Int {

@@ -45,7 +45,7 @@ class Game(private val gameManager: GameManager) {
 
     var decks: MutableList<Deck> = ArrayList()
 
-    var kingdomCards = ArrayList<Card>()
+    var kingdomCards = mutableListOf<Card>()
 
     private var twoCostKingdomCards = 0
 
@@ -404,6 +404,9 @@ class Game(private val gameManager: GameManager) {
 
     val emptyPiles
         get() = cardMap.size - nonEmptyPiles.size
+
+    val availableCards
+        get() = cardMap.values.filter { isCardAvailableInSupply(it) }
 
     fun addGameChat(message: String) {
         chats.add(ChatMessage(message, "black"))

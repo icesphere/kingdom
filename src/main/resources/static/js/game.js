@@ -205,12 +205,13 @@ function refreshParts(data){
         if(data.refreshPlayersOnEndTurn){
             $('#playersDiv').load('getPlayersDiv.html');
         }
-        $('#playingAreaDiv').load('getPreviousPlayerPlayingAreaDiv.html', function() {
-            clearTimeout(refreshTimer);
-            closeLoadingDialog();
-            setTimeout("endTurnRefreshFinished()", endTurnRefreshTimeout);
-            return;
-        });
+        //todo
+//        $('#playingAreaDiv').load('getPreviousPlayerPlayingAreaDiv.html', function() {
+//            clearTimeout(refreshTimer);
+//            closeLoadingDialog();
+//            setTimeout("endTurnRefreshFinished()", endTurnRefreshTimeout);
+//            return;
+//        });
     }
 
     if(data.playBeep) {

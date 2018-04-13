@@ -5,7 +5,7 @@
         </div>
         <#if currentPlayer.userId == user.userId>
             <div style="float:left;padding-right:10px;">
-                ${currentPlayer.coins}
+                ${currentPlayer.availableCoins}
                 <span style="position:relative; top:2px;"><img src="images/coin.png" alt="Coins" style="height:16px; width:16px;"/></span>
             </div>
         </#if>

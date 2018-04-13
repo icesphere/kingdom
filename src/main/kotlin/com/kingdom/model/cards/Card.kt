@@ -20,7 +20,7 @@ abstract class Card(
         var victoryPoints: Int = 0,
         var testing: Boolean = false,
         var addVictoryCoins: Int = 0,
-        var playTreasureCards: Boolean = false,
+        var isPlayTreasureCardsRequired: Boolean = false,
         var disabled: Boolean = false,
         var fontSize: Int = 0,
         var nameLines: Int = 1,
@@ -33,6 +33,8 @@ abstract class Card(
         var isCopied: Boolean = false,
         var location: CardLocation? = null,
         var playersExcludedFromCardEffects: MutableSet<Player> = mutableSetOf()) {
+
+    var isHighlighted: Boolean = false
 
     val id: String = UUID.randomUUID().toString()
 
@@ -293,6 +295,26 @@ abstract class Card(
     }
 
     open fun isActionable(player: Player, cardLocation: CardLocation): Boolean {
-        return player.isYourTurn && cardLocation == CardLocation.Hand
+        if (!player.isYourTurn) {
+            return false
+        }
+
+        return when (cardLocation) {
+            CardLocation.Hand -> isHandCardActionable(player)
+            CardLocation.Supply -> isSupplyCardActionable(player)
+            else -> false
+        }
+    }
+
+    private fun isHandCardActionable(player: Player): Boolean {
+        return when {
+            isAction -> player.actions > 0 && !player.isTreasureCardsPlayed && !player.isCardsBought
+            isTreasure -> player.playTreasureCards && !player.isCardsBought
+            else -> false
+        }
+    }
+
+    private fun isSupplyCardActionable(player: Player): Boolean {
+        return cost <= player.availableCoins && player.buys > 0
     }
 }
