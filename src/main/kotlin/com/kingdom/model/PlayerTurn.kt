@@ -1,8 +1,9 @@
 package com.kingdom.model
 
+import com.kingdom.model.players.Player
 import java.util.ArrayList
 
-class PlayerTurn(player: OldPlayer) {
+class PlayerTurn(player: Player) {
     val userId: Int = player.userId
     var username = player.username
     val history = ArrayList<String>()

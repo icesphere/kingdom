@@ -2717,7 +2717,7 @@ class OldGame(val gameId: Int) {
     }
 
     private fun startPlayerTurn(player: OldPlayer) {
-        if (recentTurnHistory.size == maxHistoryTurnSize) {
+        /*if (recentTurnHistory.size == maxHistoryTurnSize) {
             recentTurnHistory.removeFirst()
         }
         if (currentTurn != null) {
@@ -2727,7 +2727,7 @@ class OldGame(val gameId: Int) {
         recentTurnHistory.add(currentTurn!!)
         turnHistory.add(currentTurn!!)
 
-        refreshAllPlayersHistory()
+        refreshAllPlayersHistory()*/
     }
 
     fun hasNextAction(): Boolean {

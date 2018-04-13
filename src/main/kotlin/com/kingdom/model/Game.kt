@@ -173,6 +173,7 @@ class Game(private val gameManager: GameManager) {
     private var currentTurn: PlayerTurn? = null
     private val turnHistory = ArrayList<PlayerTurn>()
     val recentTurnHistory = LinkedList<PlayerTurn>()
+    private var maxHistoryTurnSize: Int = 0
 
     var isShowPrizeCards: Boolean = false
     var prizeCards: MutableList<Card> = ArrayList(0)
@@ -309,10 +310,25 @@ class Game(private val gameManager: GameManager) {
     private fun startGame() {
         players.shuffle()
         status = GameStatus.InProgress
+
+        maxHistoryTurnSize = players.size + 1
+
         startTurnInNewThreadIfComputerVsHuman()
     }
 
     private fun startTurnInNewThreadIfComputerVsHuman() {
+        if (recentTurnHistory.size == maxHistoryTurnSize) {
+            recentTurnHistory.removeFirst()
+        }
+        if (currentTurn != null) {
+            currentTurn!!.addHistory("")
+        }
+        currentTurn = PlayerTurn(currentPlayer)
+        recentTurnHistory.add(currentTurn!!)
+        turnHistory.add(currentTurn!!)
+
+        refreshAllPlayersHistory()
+
         if (currentPlayer.isBot && currentPlayer.opponents.any { it is HumanPlayer }) {
             currentPlayer.opponents.filter { it is HumanPlayer }.forEach { p ->
                 p.isWaitingForComputer = true
@@ -347,6 +363,8 @@ class Game(private val gameManager: GameManager) {
             gameOver()
             return
         }
+
+        refreshEndTurn()
 
         if (currentPlayerIndex == players.size - 1) {
             currentPlayerIndex = 0
@@ -690,7 +708,7 @@ class Game(private val gameManager: GameManager) {
         }
     }
 
-    fun refreshEndTurn(currentPlayerId: Int) {
+    private fun refreshEndTurn() {
         for (userId in needsRefresh.keys) {
             if (userId != currentPlayerId) {
                 val refresh = needsRefresh[userId]!!
