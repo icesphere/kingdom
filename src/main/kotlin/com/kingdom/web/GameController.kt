@@ -727,7 +727,7 @@ class GameController(private var cardManager: CardManager,
         try {
             val modelAndView = ModelAndView("game")
             val player = game.playerMap[user.userId] ?: return showGameRooms(request, response)
-            game.refreshAll(player)
+            game.refreshAllForPlayer(player)
             game.closeLoadingDialog(player)
             addGameObjects(game, player, modelAndView, request)
             modelAndView.addObject("user", user)
@@ -955,7 +955,7 @@ class GameController(private var cardManager: CardManager,
                         handleCardClickedForAction(player, card, source)
                     } else {
                         player.buyCard(card)
-                        game.refreshAllPlayersPlayingArea()
+                        game.refreshAll()
                     }
                 }
             }
@@ -966,7 +966,7 @@ class GameController(private var cardManager: CardManager,
                         handleCardClickedForAction(player, card, source)
                     } else {
                         player.playCard(card)
-                        refreshGamePageForAll(game)
+                        game.refreshAll()
                     }
                 }
             }
@@ -978,10 +978,13 @@ class GameController(private var cardManager: CardManager,
                     }
                 }
             }
+            else -> {
+                //do nothing
+            }
         }
 
         if (action != null) {
-            game.refreshAll(player)
+            game.refreshAllForPlayer(player)
         }
     }
 
@@ -994,7 +997,7 @@ class GameController(private var cardManager: CardManager,
 
         player.actionResult(action!!, result)
 
-        refreshGamePageForAll(player.game)
+        player.game.refreshAll()
     }
 
     fun highlightCard(player: Player, card: Card?, cardLocation: CardLocation): Boolean {
@@ -1075,14 +1078,10 @@ class GameController(private var cardManager: CardManager,
             game.refreshCardAction(player)
         } else {
             player.endTurn()
-            refreshGamePageForAll(game)
+            game.refreshAll()
         }
 
         return refreshGame(request, response)
-    }
-
-    fun refreshGamePageForAll(game: Game) {
-        game.players.forEach { game.refreshAll(it) }
     }
 
     @RequestMapping("/submitCardAction.html")
@@ -1248,10 +1247,9 @@ class GameController(private var cardManager: CardManager,
             if (KingdomUtil.isMobile(request)) {
                 template = "playingAreaDivMobile"
             }
-            //todo
             val modelAndView = ModelAndView(template)
             val player = game.playerMap[user.userId]!!
-            /*modelAndView.addObject("player", player)
+            modelAndView.addObject("player", player)
             modelAndView.addObject("currentPlayerId", game.previousPlayerId)
             modelAndView.addObject("gameStatus", game.status)
             modelAndView.addObject("currentPlayer", game.previousPlayer!!)
@@ -1263,7 +1261,7 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
             modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))*/
+            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1291,6 +1289,10 @@ class GameController(private var cardManager: CardManager,
             modelAndView.addObject("gameStatus", game.status)
             modelAndView.addObject("currentPlayer", game.currentPlayer)
             modelAndView.addObject("user", user)
+
+            game.cardsPlayed.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.PlayArea) }
+            game.cardsBought.forEach { it.isHighlighted = false }
+
             modelAndView.addObject("cardsPlayed", game.cardsPlayed)
             modelAndView.addObject("cardsBought", game.cardsBought)
             modelAndView.addObject("costDiscount", game.costDiscount)
@@ -1448,6 +1450,9 @@ class GameController(private var cardManager: CardManager,
             }
             val modelAndView = ModelAndView(template)
             val player = game.playerMap[user.userId]!!
+
+            player.hand.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Hand) }
+
             modelAndView.addObject("player", player)
             modelAndView.addObject("costDiscount", game.costDiscount)
 //            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)

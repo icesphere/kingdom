@@ -170,6 +170,12 @@ class Game(private val gameManager: GameManager) {
     val cardsPlayed = LinkedList<Card>()
     val cardsBought = ArrayList<Card>()
 
+    var previousPlayerId = 0
+    val previousPlayerCardsPlayed = ArrayList<Card>()
+    val previousPlayerCardsBought = ArrayList<Card>()
+    val previousPlayer: Player?
+        get() = playerMap[previousPlayerId]
+
     private var currentTurn: PlayerTurn? = null
     private val turnHistory = ArrayList<PlayerTurn>()
     val recentTurnHistory = LinkedList<PlayerTurn>()
@@ -339,21 +345,6 @@ class Game(private val gameManager: GameManager) {
         }
     }
 
-    fun getCardsAsString(cards: List<*>): String {
-        var cardString = ""
-        var first = true
-        for (card in cards) {
-            if (!first) {
-                cardString += ", "
-            } else {
-                first = false
-            }
-            cardString += (card as Card).name
-        }
-        return cardString
-    }
-
-
     fun turnEnded() {
         addHistory("End of turn $turn")
 
@@ -364,7 +355,17 @@ class Game(private val gameManager: GameManager) {
             return
         }
 
+        previousPlayerCardsPlayed.clear()
+        previousPlayerCardsBought.clear()
+        previousPlayerCardsPlayed.addAll(cardsPlayed)
+        previousPlayerCardsBought.addAll(cardsBought)
+
+        cardsPlayed.clear()
+        cardsBought.clear()
+
         refreshEndTurn()
+
+        previousPlayerId = currentPlayerId
 
         if (currentPlayerIndex == players.size - 1) {
             currentPlayerIndex = 0
@@ -399,15 +400,8 @@ class Game(private val gameManager: GameManager) {
         trashedCards.add(card)
     }
 
-    fun quitGame(player: Player) {
-        quitGamePlayer = player
-        addHistory("${player.username} quit the game")
-        gameOver()
-    }
-
     val recentTurnsLog: String
         get() = currentTurnLog.toString() + StringUtils.join(recentTurnLogs, "")
-
 
     fun isCardAvailableInSupply(card: Card): Boolean {
         return pileAmounts.containsKey(card.name) && pileAmounts[card.name]!! > 0
@@ -565,6 +559,9 @@ class Game(private val gameManager: GameManager) {
         chats.clear()
         currentPlayerIndex = 0
         currentColorIndex = 0
+        previousPlayerId = 0
+        previousPlayerCardsPlayed.clear()
+        previousPlayerCardsBought.clear()
         playersExited.clear()
         costDiscount = 0
         numActionsCardsPlayed = 0
@@ -635,8 +632,11 @@ class Game(private val gameManager: GameManager) {
             prizeCards.toCardNames()
         }
 
+    fun refreshAll() {
+        players.forEach { refreshAllForPlayer(it) }
+    }
 
-    fun refreshAll(player: Player) {
+    fun refreshAllForPlayer(player: Player) {
         val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshGameStatus = true
         if (player.currentAction != null) {
@@ -933,7 +933,9 @@ class Game(private val gameManager: GameManager) {
     fun playerQuitGame(player: Player) {
         updateLastActivity()
         player.isQuit = true
-        gameEndReason = player.username + " quit the game"
+        quitGamePlayer = player
+        gameEndReason = "${player.username} quit the game"
+        addHistory(gameEndReason)
         winnerString = ""
         addGameChat(gameEndReason)
         gameOver()

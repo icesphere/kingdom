@@ -18,6 +18,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var deck: MutableList<Card> = ArrayList()
     val hand: MutableList<Card> = ArrayList()
     val discard: MutableList<Card> = ArrayList()
+    val bought: MutableList<Card> = ArrayList()
     val played: MutableList<Card> = ArrayList()
     private val inPlay: MutableList<Card> = ArrayList()
 
@@ -215,6 +216,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         numCardsTrashedThisTurn = 0
         coinsGainedThisTurn = 0
 
+        bought.clear()
         played.clear()
 
         for (card in inPlay) {
@@ -338,6 +340,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (availableCoins >= this.getCardCostWithModifiers(card)) {
             addGameLog("Bought card: " + card.name)
             coins -= this.getCardCostWithModifiers(card)
+            buys -= 1
+            bought.add(card)
+            game.cardsBought.add(card)
             game.removeCardFromSupply(card)
             cardAcquired(card)
         }
@@ -369,6 +374,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             game.addHistory("Played card: ${card.name}")
 
             played.add(card)
+            game.cardsPlayed.add(card)
 
             inPlay.filter { it is CardPlayedListener }
                     .forEach { (it as CardPlayedListener).onCardPlayed(card, this) }
