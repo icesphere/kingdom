@@ -10,12 +10,21 @@
     <#include "supplyAreaDiv.ftl">
 </div>
 
-<div id="playerAreaDiv">
-    <#if mobile>
-        <#include "playerAreaDivMobile.ftl">
-    <#else>
-        <#include "playerAreaDiv.ftl">
-    </#if>
+<div style="position: relative">
+
+    <div id="playerAreaDiv">
+        <#if mobile>
+            <#include "playerAreaDivMobile.ftl">
+        <#else>
+            <#include "playerAreaDiv.ftl">
+        </#if>
+
+    </div>
+
+    <div id="cardActionDiv">
+        <#include "cardActionDiv.ftl">
+    </div>
+
 </div>
 
 <#if mobile>
@@ -41,14 +50,6 @@
         <#include "historyDivMobile.ftl">
     </div>
 </#if>
-
-<div id="cardActionDiv">
-    <#if mobile>
-        <#include "cardActionDivMobile.ftl">
-    <#else>
-        <#include "cardActionDiv.ftl">
-    </#if>
-</div>
 
 <div id="infoDialogDiv">
     <#include "infoDialogDiv.ftl">

@@ -334,17 +334,10 @@ function refreshParts(data){
     }
     if(data.refreshCardAction){
         $('#cardActionDiv').load('getCardActionDiv.html', function() {
-            cardActionWidth = data.cardActionWidth;
-            cardActionCardsSize = data.cardActionCardsSize;
-            selectedCards = [];
-            cardActionNumCards = data.cardActionNumCards;
-            cardActionType = data.cardActionType;
-            cardActionSelectExact = data.cardActionSelectExact;
-            cardActionSelectUpTo = data.cardActionSelectUpTo;
-            cardActionSelectAtLeast = data.cardActionSelectAtLeast;
-            showCardActionDialog();
             divsToLoad--;
-            refreshFinished();
+            if(divsToLoad == 0){
+                refreshFinished();
+            }
         });
     }
 }

@@ -106,6 +106,11 @@
     padding:2px;
 }
 
+#cardActionDiv
+{
+
+}
+
 #playingAreaDiv
 {
     width:100%;
@@ -126,11 +131,6 @@
 }
 
 .infoDialog
-{
-    font-family:"Times New Roman", Times, serif;
-}
-
-.cardActionDialog
 {
     font-family:"Times New Roman", Times, serif;
 }

@@ -44,7 +44,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
             refreshGamePageForOpponents()
 
-            if (availableCoins > 0) {
+            if (availableCoins > 0 && buys > 0) {
                 val cardsToBuy = cardsToBuy
                 if (!cardsToBuy.isEmpty()) {
                     endTurn = false
@@ -197,20 +197,20 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             if (!sortedCards.isEmpty() && getBuyCardScore(sortedCards[0]) > 0) {
                 val cardWithHighestBuyScore = sortedCards[0]
 
-                if (sortedCards.size > 2) {
+                if (sortedCards.size > 2 && buys > 1) {
                     val cardToBuyScoreMap = HashMap<Card, Int>()
 
                     for (card in cardsAvailableToBuy) {
                         if (!cardToBuyScoreMap.containsKey(card)) {
-                            cardToBuyScoreMap.put(card, getBuyCardScore(card))
+                            cardToBuyScoreMap[card] = getBuyCardScore(card)
                         }
                     }
 
                     val twoCardsList = ArrayList<List<Card>>()
 
-                    for (i in 1..sortedCards.size - 1 - 1) {
+                    for (i in 1 until sortedCards.size - 1) {
                         val cardToCompareAgainst = sortedCards[i]
-                        for (j in i + 1..sortedCards.size - 1) {
+                        for (j in i + 1 until sortedCards.size) {
                             if (addTwoCardListIfEnoughTrade(twoCardsList, cardToCompareAgainst, sortedCards[j])) {
                                 break
                             }

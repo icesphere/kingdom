@@ -985,6 +985,11 @@ class GameController(private var cardManager: CardManager,
 
         if (action != null) {
             game.refreshAllForPlayer(player)
+        } else {
+            if (player.buys == 0) {
+                player.endTurn()
+                game.refreshAll()
+            }
         }
     }
 
@@ -1561,11 +1566,7 @@ class GameController(private var cardManager: CardManager,
             return ModelAndView("redirect:/login.html")
         }
         try {
-            var template = "cardActionDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "cardActionDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
+            val modelAndView = ModelAndView("cardActionDiv")
             val player = game.playerMap[user.userId]!!
             modelAndView.addObject("player", player)
             modelAndView.addObject("currentPlayerId", game.currentPlayerId)

@@ -12,9 +12,7 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun takeTurn() {}
 
-    private fun addAction(action: Action, isAttackAction: Boolean = !isYourTurn) {
-        action.isAttackAction = isAttackAction
-
+    private fun addAction(action: Action) {
         actionsQueue.add(action)
 
         if (isYourTurn && currentAction == null) {
