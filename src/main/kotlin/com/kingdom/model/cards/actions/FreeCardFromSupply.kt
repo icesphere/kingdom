@@ -23,7 +23,7 @@ class FreeCardFromSupply(private val maxCost: Int?, text: String, private val de
 
         player.game.removeCardFromSupply(card)
 
-        player.addGameLog(player.username + " acquired a free card from the supply: " + card.name)
+        player.addGameLog(player.username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
 
         if (destination == CardLocation.Hand) {
             player.acquireCardToHand(card)

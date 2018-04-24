@@ -570,10 +570,29 @@ function submitCardActionYesNo(answer){
 function submitCardActionChoice(choice){
     if(!submittingCardAction) {
         submittingCardAction = true;
-        $.get("submitCardAction.html", {choice: choice}, function(data) {
-            closeCardActionDialog();
+        $.get("submitCardActionChoice", {choice: choice}, function(data) {
             submittingCardAction = false;
-            showLoadingDialog();
+            refreshParts(data);
+        });
+    }
+}
+
+function submitDoNotUseAction() {
+    if(!submittingCardAction) {
+        submittingCardAction = true;
+        $.get("submitDoNotUseAction", function(data) {
+            submittingCardAction = false;
+            refreshParts(data);
+        });
+    }
+}
+
+function submitDoneWithAction() {
+    if(!submittingCardAction) {
+        submittingCardAction = true;
+        $.get("submitDoneWithAction", function(data) {
+            submittingCardAction = false;
+            refreshParts(data);
         });
     }
 }

@@ -396,7 +396,7 @@ class Game(private val gameManager: GameManager) {
 
     fun trashCardFromSupply(card: Card) {
         removeCardFromSupply(card)
-        addHistory("Trashed ${card.name} from supply")
+        addHistory("Trashed ${card.cardNameWithBackgroundColor} from supply")
         trashedCards.add(card)
     }
 

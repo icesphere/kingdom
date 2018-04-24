@@ -244,13 +244,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String)
 
     fun trashCardFromDiscard(card: Card) {
-        addGameLog("Trashed " + card.name + " from discard")
+        addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from discard")
         discard.remove(card)
         cardTrashed(card)
     }
 
     fun trashCardFromHand(card: Card) {
-        addGameLog("Trashed " + card.name + " from hand")
+        addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from hand")
         hand.remove(card)
         cardTrashed(card)
     }
@@ -266,7 +266,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun trashCardInPlayForBenefit(card: Card) {
-        addGameLog("Trashed " + card.name + " from in play for benefit")
+        addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from in play for benefit")
         inPlay.remove(card)
 
         var cardToTrash = card
@@ -293,14 +293,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun addCardToTopOfDeck(card: Card, addGameLog: Boolean = true) {
         deck.add(0, card)
         if (addGameLog) {
-            addGameLog("Added " + card.name + " to top of deck")
+            addGameLog("Added " + card.cardNameWithBackgroundColor + " to top of deck")
         }
     }
 
     private fun addCardToHand(card: Card, addToGameLog: Boolean = true) {
         hand.add(card)
         if (addToGameLog) {
-            addGameLog("Added " + card.name + " to hand")
+            addGameLog("Added " + card.cardNameWithBackgroundColor + " to hand")
         }
     }
 
@@ -338,7 +338,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun buyCard(card: Card) {
         if (availableCoins >= this.getCardCostWithModifiers(card)) {
-            addGameLog("Bought card: " + card.name)
+            addGameLog("Bought card: " + card.cardNameWithBackgroundColor)
             coins -= this.getCardCostWithModifiers(card)
             buys -= 1
             bought.add(card)
@@ -371,7 +371,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun playCard(card: Card) {
         if (!card.isCopied) {
-            game.addHistory("Played card: ${card.name}")
+            game.addHistory("Played card: ${card.cardNameWithBackgroundColor}")
 
             played.add(card)
             game.cardsPlayed.add(card)
@@ -438,7 +438,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun discardCardFromHand(card: Card) {
         hand.remove(card)
         addCardToDiscard(card)
-        addGameLog(username + " discarded " + card.name + " from hand")
+        addGameLog(username + " discarded " + card.cardNameWithBackgroundColor + " from hand")
     }
 
     abstract fun discardCardsFromHand(cards: Int)
@@ -574,7 +574,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     addGameLog("No more cards to reveal")
                 } else {
                     val card = deck[i]
-                    addGameLog("$username revealed ${card.name} from top of deck")
+                    addGameLog("$username revealed ${card.cardNameWithBackgroundColor} from top of deck")
                     revealedCards.add(card)
                 }
             }

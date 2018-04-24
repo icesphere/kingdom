@@ -150,7 +150,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addGameLog(username + " acquired a free card from the supply: " + card.name)
+            addGameLog(username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
 
             cardAcquired(card)
         }
@@ -526,7 +526,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addGameLog(username + " acquired a free card from the supply: " + card.name)
+            addGameLog(username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
 
             cardAcquired(card)
         }

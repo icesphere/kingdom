@@ -1069,6 +1069,7 @@ class GameController(private var cardManager: CardManager,
     @ResponseBody
     @RequestMapping(value = ["/endTurn"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun endTurn(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+
         val user = getUser(request)
         val game = getGame(request)
         if (user == null || game == null) {
@@ -1089,70 +1090,67 @@ class GameController(private var cardManager: CardManager,
         return refreshGame(request, response)
     }
 
-    @RequestMapping("/submitCardAction.html")
-    fun submitCardAction(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        //todo
-        /*val user = getUser(request)
+    @ResponseBody
+    @RequestMapping(value = ["/submitCardActionChoice"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun submitCardActionChoice(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+
+        val user = getUser(request)
         val game = getGame(request)
         if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
+            val model = HashMap<String, Any>()
+            model["redirectToLogin"] = true
+            return model
         }
-        try {
-            //todo error handling if choice is null
-            val player = game.playerMap[user.userId]!!
-            if (player.oldCardAction != null) {
-                if (player.oldCardAction!!.type == OldCardAction.TYPE_INFO) {
-                    game.cardActionSubmitted(player, emptyList(), null, null, -1)
-                } else if (player.oldCardAction!!.type == OldCardAction.TYPE_YES_NO) {
-                    if (request.getParameter("answer") == null) {
-                        val error = GameError(GameError.GAME_ERROR, "Card Action answer was null")
-                        game.logError(error, false)
-                        //todo
-                    } else {
-                        game.cardActionSubmitted(player, emptyList(), request.getParameter("answer"), null, -1)
-                    }
-                } else if (player.oldCardAction!!.type == OldCardAction.TYPE_CHOICES) {
-                    if (request.getParameter("choice") == null) {
-                        val error = GameError(GameError.GAME_ERROR, "Card Action choice was null")
-                        game.logError(error, false)
-                        //todo
-                    } else {
-                        game.cardActionSubmitted(player, emptyList(), null, request.getParameter("choice"), -1)
-                    }
-                } else if (player.oldCardAction!!.type == OldCardAction.TYPE_CHOOSE_NUMBER_BETWEEN || player.oldCardAction!!.type == OldCardAction.TYPE_CHOOSE_EVEN_NUMBER_BETWEEN) {
-                    if (request.getParameter("numberChosen") == null) {
-                        val error = GameError(GameError.GAME_ERROR, "Card Action number chosen was null")
-                        game.logError(error, false)
-                        //todo
-                    } else {
-                        game.cardActionSubmitted(player, emptyList(), null, null, Integer.parseInt(request.getParameter("numberChosen")))
-                    }
-                } else {
-                    if (request.getParameter("selectedCards") == null) {
-                        val error = GameError(GameError.GAME_ERROR, "Card Action selected cards string was null")
-                        game.logError(error, false)
-                        //todo
-                    } else {
-                        val selectedCardsString = request.getParameter("selectedCards")
-                        val selectedCardsStrings = selectedCardsString.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                        val selectedCardNames = ArrayList<String>()
-                        for (cardName in selectedCardsStrings) {
-                            if (cardName != "") {
-                                selectedCardNames.add(cardName)
-                            }
-                        }
-                        game.cardActionSubmitted(player, selectedCardNames, null, null, -1)
-                    }
-                }
-            }
-            game.closeLoadingDialog(player)
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
-        }*/
 
-        return ModelAndView("empty")
+        val player = game.playerMap[user.userId]!!
+        if (player.currentAction != null) {
+            val result = ActionResult()
+            result.choiceSelected = request.getParameter("choice").toInt()
+            player.actionResult(player.currentAction!!, result)
+            game.refreshAll()
+        }
+
+        return refreshGame(request, response)
+    }
+
+    @ResponseBody
+    @RequestMapping(value = ["/submitDoNotUseAction"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun submitDoNotUseAction(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            val model = HashMap<String, Any>()
+            model["redirectToLogin"] = true
+            return model
+        }
+
+        val player = game.playerMap[user.userId]!!
+        if (player.currentAction != null) {
+            player.actionResult(player.currentAction!!, ActionResult().apply { isDoNotUse = true })
+        }
+
+        return refreshGame(request, response)
+    }
+
+    @ResponseBody
+    @RequestMapping(value = ["/submitDoneWithAction"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun submitDoneWithAction(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
+
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            val model = HashMap<String, Any>()
+            model["redirectToLogin"] = true
+            return model
+        }
+
+        val player = game.playerMap[user.userId]!!
+        if (player.currentAction != null) {
+            player.actionResult(player.currentAction!!, ActionResult().apply { isDoneWithAction = true })
+        }
+
+        return refreshGame(request, response)
     }
 
     @RequestMapping("/getPlayersDiv.html")

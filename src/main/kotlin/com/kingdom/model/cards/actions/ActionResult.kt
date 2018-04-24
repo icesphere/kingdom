@@ -4,6 +4,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 
 class ActionResult {
+
     var selectedCard: Card? = null
 
     var choiceSelected: Int? = null
@@ -13,4 +14,5 @@ class ActionResult {
     var isDoNotUse: Boolean = false
 
     var isDoneWithAction: Boolean = false
+
 }

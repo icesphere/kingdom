@@ -276,12 +276,18 @@ abstract class Card(
     }
 
     fun cardPlayed(player: Player) {
+        if (isAction) {
+            player.actions -= 1
+        }
+
         player.actions += addActions
         player.buys += addBuys
         player.coins += addCoins
+
         if (addCards > 0) {
             player.drawCards(addCards)
         }
+
         if (special.isNotBlank()) {
             player.opponents.forEach { opponent ->
                 opponent.hand.filter { it is BeforeOpponentCardPlayedListener }
