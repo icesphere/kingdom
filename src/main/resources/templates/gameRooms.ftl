@@ -6,14 +6,11 @@
         <META HTTP-EQUIV="Expires" CONTENT="-1">
 		<title>Kingdom</title>
         <#include "commonIncludes.ftl">
-        <script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
-        <script type="text/javascript" src="js/toggle-select.js"></script>
         <#if mobile>
             <link href="css/gameMobile.css" rel="stylesheet" type="text/css">
         <#else>
             <link href="css/game.css" rel="stylesheet" type="text/css">
         </#if>
-        <link href="css/jquery-ui-1.8.custom.css" rel="stylesheet" type="text/css">
         <script type="text/javascript">
             var timeout = 3000;
             var refreshingLobby = false;

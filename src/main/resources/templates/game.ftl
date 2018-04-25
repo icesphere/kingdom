@@ -6,9 +6,6 @@
         <META HTTP-EQUIV="Expires" CONTENT="-1">
 		<title>Kingdom</title>
         <#include "commonIncludes.ftl">
-        <script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
-        <script type="text/javascript" src="js/toggle-select.js"></script>
-        <script type="text/javascript" src="js/jquery.hotkeys.js"></script>
         <#if mobile>
             <script type="text/javascript" src="js/soundmanager2empty.js"></script>
             <link href="css/gameMobile.css" rel="stylesheet" type="text/css">
@@ -24,7 +21,6 @@
                 var mobile = false;
             </script>
         </#if>
-        <link href="css/jquery-ui-1.8.custom.css" rel="stylesheet" type="text/css">
         <script type="text/javascript" src="js/game.js"></script>
 	</head>
 	<body>

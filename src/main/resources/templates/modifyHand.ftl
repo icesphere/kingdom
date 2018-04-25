@@ -3,10 +3,7 @@
 <head>
     <title>Kingdom</title>
     <#include "commonIncludes.ftl">
-    <script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
-    <script type="text/javascript" src="js/toggle-select.js"></script>
     <link href="css/game.css" rel="stylesheet" type="text/css">
-    <link href="css/jquery-ui-1.8.custom.css" rel="stylesheet" type="text/css">
     <script>
         function cancel() {
             document.location = "showGame.html";

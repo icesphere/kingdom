@@ -3,8 +3,6 @@
 	<head>
 		<title>Users</title>
         <#include "commonIncludes.ftl">
-        <script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
-        <link href="css/jquery-ui-1.8.custom.css" rel="stylesheet" type="text/css">
         <script type="text/javascript">
             function showPlayerStats(userId) {
                 $('#playerStatsDiv').load('getPlayerStatsDivFromAdmin.html', {userId: userId}, function() {
