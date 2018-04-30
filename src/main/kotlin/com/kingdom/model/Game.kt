@@ -12,6 +12,7 @@ import com.kingdom.model.players.bots.HardBotPlayer
 import com.kingdom.model.players.bots.MediumBotPlayer
 import com.kingdom.service.GameManager
 import com.kingdom.service.LoggedInUsers
+import com.kingdom.service.RefreshGameManager
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.toCardNames
 import org.apache.commons.lang3.StringUtils
@@ -19,7 +20,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.full.createInstance
 
-class Game(private val gameManager: GameManager) {
+class Game(private val gameManager: GameManager, private val refreshGameManager: RefreshGameManager) {
     val gameId: String = UUID.randomUUID().toString()
 
     var turn: Int = 0
@@ -382,6 +383,8 @@ class Game(private val gameManager: GameManager) {
         if (recentTurnLogs.size > 1) {
             recentTurnLogs.removeAt(0)
         }
+
+        refreshGameManager.refreshGame(this)
 
         startTurnInNewThreadIfComputerVsHuman()
     }

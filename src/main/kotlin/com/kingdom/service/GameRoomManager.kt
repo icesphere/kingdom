@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class GameRoomManager(val gameManager: GameManager) {
+class GameRoomManager(val gameManager: GameManager, val refreshGameManager: RefreshGameManager) {
 
     private val games = HashMap<String, Game>()
 
@@ -24,7 +24,7 @@ class GameRoomManager(val gameManager: GameManager) {
                 return null
             }
 
-            return Game(gameManager).apply {
+            return Game(gameManager, refreshGameManager).apply {
                 status = GameStatus.BeingConfigured
                 games[gameId] = this
             }

@@ -2,7 +2,6 @@ var currentPlayer = "false";
 var gameStatus = 'WaitingForPlayers';
 var timeout = 1500;
 var reloadTimer;
-var refreshTimer;
 var reloadTimeout = 6000;
 var endTurnRefreshTimeout = 1500;
 var selectedCards = new Array();
@@ -24,14 +23,19 @@ var clickingCard = false;
 var submittingCardAction = false;
 var cardActionOpen = false;
 
+var stompClient = null;
+
 $(document).ready(function() {
     $.ajaxSetup({ cache: false });
+
     loadingDialog = $("#loadingDialog");
     loadingDialog.dialog({
         autoOpen: false, width:250, modal:true, draggable:false, resizable:false, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
     });
     showLoadingDialog();
-    refreshTimer = setTimeout ( "refreshGame()", timeout );
+
+    connect()
+
     resizeSupplyCardsDiv();
 
     soundManager.url="sounds/swf/";
@@ -59,6 +63,40 @@ $(function(){
         resizeSupplyCardsDiv();
     });
 });
+
+function connect() {
+    $.get("getUserId", function(data) {
+
+        if(data.redirectToLogin) {
+            document.location = "login.html";
+            return;
+        }
+
+        var userId = data.userId
+        console.log("connect to game for user id: " + userId)
+
+        var socket = new SockJS('/kingdom-websocket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            closeLoadingDialog()
+            stompClient.subscribe('/queue/refresh-game/' + userId,
+                function(data) {
+                    console.log("got web socket message for refresh-game")
+                    console.log(JSON.parse(data.body));
+                    refreshParts(data.body)
+                }
+            );
+        });
+    });
+}
+
+function disconnect() {
+    if (stompClient !== null) {
+        stompClient.disconnect();
+    }
+    console.log("Disconnected");
+}
 
 function resizeSupplyCardsDiv(){
     var w = $(window).width();
@@ -195,31 +233,30 @@ function refreshParts(data){
         return;
     }
 
-    if(data.refreshEndTurn){
-        if(data.refreshHandOnEndTurn){
+    if(data.refresh.isRefreshEndTurn){
+        if(data.refresh.isRefreshHandOnEndTurn){
             $('#handAreaDiv').load('getHandAreaDivOnEndTurn.html');
         }
-        if(data.refreshSupplyOnEndTurn){
+        if(data.refresh.isRefreshSupplyOnEndTurn){
             $('#supplyDiv').load('getSupplyDivOnEndTurn.html');
         }
-        if(data.refreshPlayersOnEndTurn){
+        if(data.refresh.isRefreshPlayersOnEndTurn){
             $('#playersDiv').load('getPlayersDiv.html');
         }
         $('#playingAreaDiv').load('getPreviousPlayerPlayingAreaDiv.html', function() {
-            clearTimeout(refreshTimer);
             closeLoadingDialog();
             setTimeout("endTurnRefreshFinished()", endTurnRefreshTimeout);
             return;
         });
     }
 
-    if(data.playBeep) {
+    if(data.refresh.isPlayBeep) {
         playBeep();
     }
-    if(data.refreshTitle){
+    if(data.refresh.isRefreshTitle){
         document.title = data.title;
     }
-    if(data.refreshGameStatus){
+    if(data.refresh.isRefreshGameStatus){
         gameStatus = data.gameStatus;
         currentPlayer = data.currentPlayer;
         if(gameStatus == "Finished") {
@@ -229,7 +266,7 @@ function refreshParts(data){
             });
         }
     }
-    if(data.closeCardActionDialog){
+    if(data.refresh.isCloseCardActionDialog){
         closeCardActionDialog();
     }
     divsToLoad = data.divsToLoad;
@@ -237,7 +274,7 @@ function refreshParts(data){
         refreshFinished();
         return;
     }
-    if(data.refreshPlayers){
+    if(data.refresh.isRefreshPlayers){
         $('#playersDiv').load('getPlayersDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -245,7 +282,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshSupply){
+    if(data.refresh.isRefreshSupply){
         $('#supplyDiv').load('getSupplyDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -253,7 +290,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshPlayingArea){
+    if(data.refresh.isRefreshPlayingArea){
         $('#playingAreaDiv').load('getPlayingAreaDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -261,7 +298,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshCardsPlayed){
+    if(data.refresh.isRefreshCardsPlayed){
         $('#cardsPlayedDiv').load('getCardsPlayedDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -269,7 +306,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshCardsBought){
+    if(data.refresh.isRefreshCardsBought){
         $('#cardsBoughtDiv').load('getCardsBoughtDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -277,7 +314,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshHistory){
+    if(data.refresh.isRefreshHistory){
         $('#historyDiv').load('getHistoryDiv.html', function() {
             divsToLoad--;
             if(!mobile) {
@@ -288,7 +325,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshHandArea){
+    if(data.refresh.isRefreshHandArea){
         $('#handAreaDiv').load('getHandAreaDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -296,7 +333,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshHand){
+    if(data.refresh.isRefreshHand){
         $('#handDiv').load('getHandDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -304,7 +341,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshDiscard){
+    if(data.refresh.isRefreshDiscard){
         $('#discardDiv').load('getDiscardDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -312,7 +349,7 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshChat){
+    if(data.refresh.isRefreshChat){
         $('#chatDiv').load('getChatDiv.html', function() {
             divsToLoad--;
             if(!mobile) {
@@ -323,16 +360,16 @@ function refreshParts(data){
             }
         });
     }
-    if(data.refreshInfoDialog){
+    if(data.refresh.isRefreshInfoDialog){
         $('#infoDialogDiv').load('getInfoDialogDiv.html', function() {
-            openInfoDialog(data.infoDialogHideMethod, data.infoDialogWidth, data.infoDialogHeight, data.infoDialogTimeout);
+            openInfoDialog(data.infoDialog.infoDialogHideMethod, data.infoDialog.infoDialogWidth, data.infoDialog.infoDialogHeight, data.infoDialog.infoDialogTimeout);
             divsToLoad--;
             if(divsToLoad == 0){
                 refreshFinished();
             }
         });
     }
-    if(data.refreshCardAction){
+    if(data.refresh.isRefreshCardAction){
         $('#cardActionDiv').load('getCardActionDiv.html', function() {
             divsToLoad--;
             if(divsToLoad == 0){
@@ -343,9 +380,6 @@ function refreshParts(data){
 }
 
 function showLoadingDialog() {
-    if(gameStatus != "Finished") {
-        reloadTimer = setTimeout("reloadPage()", reloadTimeout);
-    }
     loadingDialog.dialog("open");
 }
 
@@ -355,12 +389,11 @@ function closeLoadingDialog() {
 }
 
 function clickCard(clickType, cardName, cardId, special){
-    if(!clickingCard && currentPlayer && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand")){
+    debugger;
+    if (!clickingCard && currentPlayer && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand")){
         clickingCard = true;
-        refreshingGame = true;
         showLoadingDialog();
         $.post("clickCard", {clickType: clickType, cardName: cardName, cardId: cardId}, function(data) {
-            refreshParts(data);
             clickingCard = false;
         });
     }
@@ -368,10 +401,7 @@ function clickCard(clickType, cardName, cardId, special){
 
 function endTurn(){
     if(gameStatus == "InProgress" && currentPlayer){
-        refreshingGame = true;
-        $.get("endTurn", function(data) {
-            refreshParts(data);
-        });
+        $.post("endTurn");
     }
 }
 
@@ -379,9 +409,7 @@ function playAllTreasureCards(){
     if(gameStatus == "InProgress" && currentPlayer){
         refreshingGame = true;
         showLoadingDialog();
-        $.get("playAllTreasureCards", function(data) {
-            refreshParts(data);
-        });
+        $.post("playAllTreasureCards");
     }
 }
 
@@ -572,7 +600,6 @@ function submitCardActionChoice(choice){
         submittingCardAction = true;
         $.get("submitCardActionChoice", {choice: choice}, function(data) {
             submittingCardAction = false;
-            refreshParts(data);
         });
     }
 }
@@ -582,7 +609,6 @@ function submitDoNotUseAction() {
         submittingCardAction = true;
         $.get("submitDoNotUseAction", function(data) {
             submittingCardAction = false;
-            refreshParts(data);
         });
     }
 }
