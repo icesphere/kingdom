@@ -58,17 +58,15 @@ class RefreshGameManager(private val messagingTemplate: SimpMessagingTemplate) {
             divsToLoad++
         }
         if (refresh.isRefreshTitle) {
-            if (game.status == GameStatus.Finished) {
-                data.title = "Game Over"
-            } else if (player.isYourTurn) {
-                data.title = "Your Turn"
-            } else {
-                data.title = game.currentPlayer.username + "'s Turn"
+            data.title = when {
+                game.status == GameStatus.Finished -> "Game Over"
+                player.isYourTurn -> "Your Turn"
+                else -> game.currentPlayer.username + "'s Turn"
             }
         }
 
         data.divsToLoad = divsToLoad
 
-        messagingTemplate.convertAndSend("/queue/refresh-game/" + game.gameId, ObjectMapper().writeValueAsString(data))
+        messagingTemplate.convertAndSend("/queue/refresh-game/" + player.userId, ObjectMapper().writeValueAsString(data))
     }
 }

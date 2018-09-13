@@ -444,6 +444,7 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
         if (!savedGameHistory) {
             savedGameHistory = true
             val history = GameHistory()
+            history.gameId = gameId
             history.startDate = creationTime
             history.endDate = Date()
             history.numPlayers = numPlayers
