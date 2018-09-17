@@ -749,6 +749,7 @@ class GameController(private val cardManager: CardManager,
             val player = game.playerMap[user.userId] ?: return showGameRooms(request, response)
             game.refreshAllForPlayer(player)
             addGameObjects(game, user, modelAndView, request)
+            refreshGame(game)
             return modelAndView
         } catch (t: Throwable) {
             return logErrorAndReturnEmpty(t, game)

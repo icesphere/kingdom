@@ -84,7 +84,7 @@ function connect() {
                 function(data) {
                     console.log("got web socket message for refresh-game")
                     console.log(JSON.parse(data.body));
-                    refreshParts(data.body)
+                    refreshParts(JSON.parse(data.body))
                 }
             );
         });

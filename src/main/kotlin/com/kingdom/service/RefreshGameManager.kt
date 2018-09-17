@@ -67,6 +67,9 @@ class RefreshGameManager(private val messagingTemplate: SimpMessagingTemplate) {
 
         data.divsToLoad = divsToLoad
 
-        messagingTemplate.convertAndSend("/queue/refresh-game/" + player.userId, ObjectMapper().writeValueAsString(data))
+        if (!player.isBot) {
+            messagingTemplate.convertAndSend("/queue/refresh-game/" + player.userId, ObjectMapper().writeValueAsString(data))
+        }
+
     }
 }
