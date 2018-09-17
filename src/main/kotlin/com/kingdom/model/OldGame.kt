@@ -54,7 +54,6 @@ class OldGame(val gameId: Int) {
     val trashedCards = ArrayList<Card>()
     val cardsPlayed = LinkedList<Card>()
     val cardsBought = ArrayList<Card>()
-    val needsRefresh: MutableMap<Int, Refresh> = HashMap(6)
     private var finishGameOnNextEndTurn: Boolean = false
     val repeatedActions: Deque<RepeatedAction> = ArrayDeque(3)
     val golemActions: Deque<Card> = ArrayDeque(0)
@@ -643,7 +642,7 @@ class OldGame(val gameId: Int) {
         player.chatColor = nextColor
         players.add(player)
         playerMap[player.userId] = player
-        needsRefresh[player.userId] = Refresh()
+        //needsRefresh[player.userId] = Refresh()
         if (computer) {
             when {
                 bigMoneyUltimate -> computerPlayers[player.userId] = BigMoneyComputerPlayer(player, this)
@@ -661,7 +660,7 @@ class OldGame(val gameId: Int) {
         val player = playerMap[user.userId]!!
         players.remove(player)
         playerMap.remove(player.userId)
-        needsRefresh.remove(player.userId)
+        //needsRefresh.remove(player.userId)
         if (player.userId == creatorId) {
             if (players.isEmpty()) {
                 creatorId = 0
@@ -855,7 +854,7 @@ class OldGame(val gameId: Int) {
         previousPlayerCardsBought.clear()
         emptyPiles.clear()
         finishGameOnNextEndTurn = false
-        needsRefresh.clear()
+        //needsRefresh.clear()
         repeatedActions.clear()
         golemActions.clear()
         trashedTreasureCards.clear()
@@ -2359,74 +2358,74 @@ class OldGame(val gameId: Int) {
     }
 
     fun refreshPlayingArea(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshPlayingArea = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshPlayingArea = true
     }
 
     fun refreshCardsBought(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshCardsBoughtDiv = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshCardsBoughtDiv = true
     }
 
     fun refreshSupply(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshSupply = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshSupply = true
     }
 
     fun refreshHand(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshHand = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshHand = true
     }
 
     fun refreshHandArea(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshHandArea = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshHandArea = true
     }
 
     fun refreshDiscard(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshDiscard = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshDiscard = true
     }
 
     fun refreshCardAction(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshCardAction = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshCardAction = true
     }
 
     fun refreshInfoDialog(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshInfoDialog = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshInfoDialog = true
     }
 
     fun refreshGameStatus(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshGameStatus = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshGameStatus = true
     }
 
     fun refreshTitle(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshTitle = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshTitle = true
     }
 
     fun refreshChat(userId: Int) {
-        val refresh = needsRefresh[userId]!!
-        refresh.isRefreshChat = true
+//        val refresh = needsRefresh[userId]!!
+//        refresh.isRefreshChat = true
     }
 
     fun closeCardActionDialog(player: OldPlayer) {
         player.isShowCardAction = false
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshCardAction = false
-        refresh.isCloseCardActionDialog = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isRefreshCardAction = false
+//        refresh.isCloseCardActionDialog = true
     }
 
     fun closeLoadingDialog(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isCloseLoadingDialog = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isCloseLoadingDialog = true
     }
 
     fun refreshAll(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
+  /*      val refresh = needsRefresh[player.userId]!!
         refresh.isRefreshGameStatus = true
         if (player.isShowCardAction && player.oldCardAction != null) {
             refresh.isRefreshCardAction = true
@@ -2442,71 +2441,71 @@ class OldGame(val gameId: Int) {
             } else if (!golemActions.isEmpty()) {
                 playGolemActionCard(currentPlayer)
             }
-        }
+        }*/
     }
 
     fun refreshAllPlayersPlayingArea() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshPlayingArea = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshPlayingArea = true
+//        }
     }
 
     fun refreshAllPlayersCardsPlayed() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshCardsPlayedDiv = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshCardsPlayedDiv = true
+//        }
     }
 
     fun refreshAllPlayersCardsBought() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshCardsBoughtDiv = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshCardsBoughtDiv = true
+//        }
     }
 
     fun refreshAllPlayersHistory() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshHistory = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshHistory = true
+//        }
     }
 
     fun refreshAllPlayersSupply() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshSupply = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshSupply = true
+//        }
     }
 
     fun refreshAllPlayersHand() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshHand = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshHand = true
+//        }
     }
 
     fun refreshAllPlayersHandArea() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshHandArea = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshHandArea = true
+//        }
     }
 
     fun refreshAllPlayersDiscard() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshDiscard = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshDiscard = true
+//        }
     }
 
     fun refreshAllPlayersPlayers() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshPlayers = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshPlayers = true
+//        }
     }
 
     fun refreshAllPlayersGameStatus() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshGameStatus = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshGameStatus = true
+//        }
     }
 
     fun refreshEndTurn(currentPlayerId: Int) {
-        for (userId in needsRefresh.keys) {
+/*        for (userId in needsRefresh.keys) {
             if (userId != currentPlayerId) {
                 val refresh = needsRefresh[userId]!!
                 refresh.isRefreshEndTurn = true
@@ -2518,24 +2517,24 @@ class OldGame(val gameId: Int) {
                     refresh.isRefreshSupply = true
                 }
             }
-        }
+        }*/
     }
 
     fun refreshAllPlayersChat() {
-        for (refresh in needsRefresh.values) {
+  /*      for (refresh in needsRefresh.values) {
             refresh.isRefreshChat = true
-        }
+        }*/
     }
 
     fun refreshAllPlayersTitle() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshTitle = true
-        }
+//        for (refresh in needsRefresh.values) {
+//            refresh.isRefreshTitle = true
+//        }
     }
 
     fun playBeep(player: OldPlayer) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isPlayBeep = true
+//        val refresh = needsRefresh[player.userId]!!
+//        refresh.isPlayBeep = true
     }
 
     fun addHistory(vararg eventStrings: String) {

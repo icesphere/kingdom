@@ -747,9 +747,7 @@ class GameController(private val cardManager: CardManager,
         try {
             val modelAndView = ModelAndView("game")
             val player = game.playerMap[user.userId] ?: return showGameRooms(request, response)
-            game.refreshAllForPlayer(player)
             addGameObjects(game, user, modelAndView, request)
-            refreshGame(game)
             return modelAndView
         } catch (t: Throwable) {
             return logErrorAndReturnEmpty(t, game)
@@ -757,24 +755,13 @@ class GameController(private val cardManager: CardManager,
 
     }
 
-    class RefreshGameData(val refresh: Refresh,
-                          val gameStatus: GameStatus,
-                          val isCurrentPlayer: Boolean) {
-
-        var infoDialog: InfoDialog? = null
-        var title: String? = null
-        var divsToLoad: Int = 0
-    }
-
     fun refreshGame(game: Game) {
         refreshGameManager.refreshGame(game)
     }
 
     @ResponseBody
-    @RequestMapping(value = ["/refreshGame"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
-    fun refreshGame(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
-        //todo look into a better way to do refresh
-
+    @RequestMapping(value = ["/getGameInfo"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun getGameInfo(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
         val user = getUser(request)
         val game = getGame(request)
         val model = HashMap<String, Any>()
@@ -782,152 +769,17 @@ class GameController(private val cardManager: CardManager,
             model["redirectToLogin"] = true
             return model
         }
-        try {
-            val refresh = game.needsRefresh[user.userId]
-            if (refresh == null) {
-                model["redirectToLobby"] = true
-                return model
-            }
-            model["refreshEndTurn"] = refresh.isRefreshEndTurn
-            if (refresh.isRefreshEndTurn) {
-                refresh.isRefreshEndTurn = false
-                val player = game.playerMap[user.userId]!!
-                if (player.turns > 0) {
-                    val refreshHandArea = refresh.isRefreshHand || refresh.isRefreshHandArea || refresh.isRefreshDiscard
-                    model["refreshHandOnEndTurn"] = refresh.isRefreshHandOnEndTurn
-                    refresh.isRefreshHandOnEndTurn = false
-                    model["refreshSupplyOnEndTurn"] = refresh.isRefreshSupplyOnEndTurn
-                    refresh.isRefreshSupplyOnEndTurn = false
-                }
-                model["refreshPlayersOnEndTurn"] = refresh.isRefreshPlayers
-                refresh.isRefreshPlayers = false
-                return model
-            }
-            model["refreshGameStatus"] = refresh.isRefreshGameStatus
-            if (refresh.isRefreshGameStatus) {
-                refresh.isRefreshGameStatus = false
-                model["gameStatus"] = game.status
-                val currentPlayer = (game.status == GameStatus.InProgress && user.userId == game.currentPlayerId).toString()
-                model["currentPlayer"] = currentPlayer
-            }
-            model["closeCardActionDialog"] = refresh.isCloseCardActionDialog
-            if (refresh.isCloseCardActionDialog) {
-                refresh.isCloseCardActionDialog = false
-            }
-            model["closeLoadingDialog"] = refresh.isCloseLoadingDialog
-            if (refresh.isCloseLoadingDialog) {
-                refresh.isCloseLoadingDialog = false
-            }
-            var divsToLoad = 0
-            model["refreshPlayers"] = refresh.isRefreshPlayers
-            if (refresh.isRefreshPlayers) {
-                divsToLoad++
-                refresh.isRefreshPlayers = false
-            }
-            model["refreshSupply"] = refresh.isRefreshSupply
-            if (refresh.isRefreshSupply) {
-                divsToLoad++
-                refresh.isRefreshSupply = false
-            }
-            model["refreshPlayingArea"] = refresh.isRefreshPlayingArea
-            if (refresh.isRefreshPlayingArea) {
-                divsToLoad++
-                refresh.isRefreshPlayingArea = false
-            }
-            model["refreshCardsPlayed"] = refresh.isRefreshCardsPlayedDiv
-            if (refresh.isRefreshCardsPlayedDiv) {
-                divsToLoad++
-                refresh.isRefreshCardsPlayedDiv = false
-            }
-            model["refreshCardsBought"] = refresh.isRefreshCardsBoughtDiv
-            if (refresh.isRefreshCardsBoughtDiv) {
-                divsToLoad++
-                refresh.isRefreshCardsBoughtDiv = false
-            }
-            model["refreshHistory"] = refresh.isRefreshHistory
-            if (refresh.isRefreshHistory) {
-                divsToLoad++
-                refresh.isRefreshHistory = false
-            }
-            model["refreshHandArea"] = refresh.isRefreshHandArea
-            if (refresh.isRefreshHandArea) {
-                divsToLoad++
-                refresh.isRefreshHandArea = false
-            }
-            model["refreshHand"] = refresh.isRefreshHand
-            if (refresh.isRefreshHand) {
-                divsToLoad++
-                refresh.isRefreshHand = false
-            }
-            model["refreshDiscard"] = refresh.isRefreshDiscard
-            if (refresh.isRefreshDiscard) {
-                divsToLoad++
-                refresh.isRefreshDiscard = false
-            }
-            model["refreshChat"] = refresh.isRefreshChat
-            if (refresh.isRefreshChat) {
-                divsToLoad++
-                refresh.isRefreshChat = false
-            }
-            model["refreshCardAction"] = refresh.isRefreshCardAction
-            if (refresh.isRefreshCardAction) {
-                val player = game.playerMap[user.userId]!!
-                if (player.currentAction != null) {
-                    model["currentAction"] = player.currentAction!!
-                    divsToLoad++
-                    /*if (player.oldCardAction == null) {
-                        val error = GameError(GameError.GAME_ERROR, "Card action is null for user: " + player.username + ", show card action: " + player.isShowCardAction)
-                        game.logError(error, false)
-                        model.put("refreshCardAction", false)
-                    } else {
-                        val cardAction = player.oldCardAction!!
-                        model.put("cardActionCardsSize", cardAction.cards.size)
-                        model.put("cardActionNumCards", cardAction.numCards)
-                        model.put("cardActionType", cardAction.type)
-                        model.put("cardActionWidth", cardAction.width)
-                        model.put("cardActionSelectExact", cardAction.isSelectExact)
-                        model.put("cardActionSelectUpTo", cardAction.isSelectUpTo)
-                        model.put("cardActionSelectAtLeast", cardAction.isSelectAtLeast)
-                        divsToLoad++
-                    }*/
-                }
-                refresh.isRefreshCardAction = false
-            }
-            model["refreshInfoDialog"] = refresh.isRefreshInfoDialog
-            if (refresh.isRefreshInfoDialog) {
-                val player = game.playerMap[user.userId]!!
-                model["infoDialogHideMethod"] = player.infoDialog!!.hideMethod!!
-                model["infoDialogWidth"] = player.infoDialog!!.width
-                model["infoDialogHeight"] = player.infoDialog!!.height
-                model["infoDialogTimeout"] = player.infoDialog!!.timeout
-                divsToLoad++
-                refresh.isRefreshInfoDialog = false
-            }
-            model["playBeep"] = refresh.isPlayBeep
-            if (refresh.isPlayBeep) {
-                refresh.isPlayBeep = false
-            }
-            model["refreshTitle"] = refresh.isRefreshTitle
-            if (refresh.isRefreshTitle) {
-                refresh.isRefreshTitle = false
-                if (game.status == GameStatus.Finished) {
-                    model["title"] = "Game Over"
-                } else if (game.currentPlayerId == user.userId) {
-                    model["title"] = "Your Turn"
-                } else {
-                    model["title"] = game.currentPlayer.username + "'s Turn"
-                }
-            }
-            model["divsToLoad"] = divsToLoad
 
-            return model
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
-            game.logError(error)
+        val player = game.playerMap[user.userId]
+
+        if (player == null) {
+            model["redirectToLogin"] = true
             return model
         }
 
+        model["refreshGameData"] = refreshGameManager.getRefreshGameData(player)
+
+        return model
     }
 
     @ResponseBody
@@ -945,10 +797,7 @@ class GameController(private val cardManager: CardManager,
             val cardId = request.getParameter("cardId")
             val cardName = request.getParameter("cardName")
             if (cardId != null && cardName != null) {
-                val player = game.playerMap[user.userId]
-                if (player == null) {
-                    return ModelAndView("redirect:/showGameRooms.html")
-                }
+                val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
                 cardClicked(game, player, getCardLocationFromSource(clickType), cardName, cardId)
                 game.closeLoadingDialog(player)
             }
@@ -989,7 +838,7 @@ class GameController(private val cardManager: CardManager,
                         handleCardClickedForAction(player, card, source)
                     } else {
                         player.buyCard(card)
-                        game.refreshAll()
+                        refreshGame(game)
                     }
                 }
             }
@@ -1000,7 +849,7 @@ class GameController(private val cardManager: CardManager,
                         handleCardClickedForAction(player, card, source)
                     } else {
                         player.playCard(card)
-                        game.refreshAll()
+                        refreshGame(game)
                     }
                 }
             }
@@ -1018,11 +867,11 @@ class GameController(private val cardManager: CardManager,
         }
 
         if (action != null) {
-            game.refreshAllForPlayer(player)
+            refreshGame(game)
         } else {
             if (player.buys == 0) {
                 player.endTurn()
-                game.refreshAll()
+                refreshGame(game)
             }
         }
     }
@@ -1036,7 +885,7 @@ class GameController(private val cardManager: CardManager,
 
         player.actionResult(action!!, result)
 
-        player.game.refreshAll()
+        player.game.refreshGame()
     }
 
     fun highlightCard(player: Player, card: Card?, cardLocation: CardLocation): Boolean {
@@ -1116,10 +965,10 @@ class GameController(private val cardManager: CardManager,
         val player = game.playerMap[user.userId]!!
 
         if (player.currentAction != null) {
-            game.refreshCardAction(player)
+            game.refreshGame()
         } else {
             player.endTurn()
-            game.refreshAll()
+            game.refreshGame()
         }
 
         refreshGame(game)
@@ -1145,7 +994,7 @@ class GameController(private val cardManager: CardManager,
             val result = ActionResult()
             result.choiceSelected = request.getParameter("choice").toInt()
             player.actionResult(player.currentAction!!, result)
-            game.refreshAll()
+            game.refreshGame()
         }
 
         refreshGame(game)
@@ -1197,6 +1046,26 @@ class GameController(private val cardManager: CardManager,
         refreshGame(game)
 
         return emptyModelAndView
+    }
+
+
+
+    @RequestMapping("/getGameDiv.html")
+    fun getGameDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return ModelAndView("redirect:/login.html")
+        }
+        try {
+            val modelAndView = ModelAndView("gameDiv")
+            addGameObjects(game, user, modelAndView, request)
+            return modelAndView
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
+        }
+
     }
 
     @RequestMapping("/getPlayersDiv.html")

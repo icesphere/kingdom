@@ -7,7 +7,7 @@ import com.kingdom.model.cards.CardLocation
 //todo change text if cardFilter specified
 class CardFromHandToTopOfDeck(private val cardFilter: ((Card) -> Boolean)?) : Action("Choose a card from your hand to put on top of your deck") {
 
-    override var isShowDoNotUse: Boolean = true
+    override var isShowDoNotUse: Boolean = false
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
         return cardLocation == CardLocation.Hand && cardFilter?.invoke(card) ?: true

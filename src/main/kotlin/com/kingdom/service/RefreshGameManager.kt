@@ -1,10 +1,9 @@
 package com.kingdom.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.kingdom.model.Game
 import com.kingdom.model.GameStatus
+import com.kingdom.model.InfoDialog
 import com.kingdom.model.players.Player
-import com.kingdom.web.GameController
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 
@@ -16,60 +15,40 @@ class RefreshGameManager(private val messagingTemplate: SimpMessagingTemplate) {
     }
 
     fun refreshPlayer(player: Player) {
-        val game = player.game
+        if (!player.isBot) {
 
-        val refresh = player.game.needsRefresh[player.userId]!!
+            val game = player.game
 
-        val data = GameController.RefreshGameData(refresh, game.status, player.isYourTurn)
+            val data = getRefreshGameData(player)
 
-        var divsToLoad = 0
-        if (refresh.isRefreshPlayers) {
-            divsToLoad++
-        }
-        if (refresh.isRefreshSupply) {
-            divsToLoad++
-        }
-        if (refresh.isRefreshPlayingArea) {
-            divsToLoad++
-        }
-        if (refresh.isRefreshCardsPlayedDiv) {
-            divsToLoad++
-        }
-        if (refresh.isRefreshCardsBoughtDiv) {
-            divsToLoad++
-        }
-        if (refresh.isRefreshHistory) {
-            divsToLoad++
-        }
-        if (refresh.isRefreshHandArea) {
-            divsToLoad++
-        }
-        if (refresh.isRefreshHand) {
-            divsToLoad++
-        }
-        if (refresh.isRefreshDiscard) {
-            divsToLoad++
-        }
-        if (refresh.isRefreshChat) {
-            divsToLoad++
-        }
-        if (refresh.isRefreshInfoDialog) {
             data.infoDialog = player.infoDialog
-            divsToLoad++
-        }
-        if (refresh.isRefreshTitle) {
+
             data.title = when {
                 game.status == GameStatus.Finished -> "Game Over"
                 player.isYourTurn -> "Your Turn"
                 else -> game.currentPlayer.username + "'s Turn"
             }
+
+            messagingTemplate.convertAndSend("/queue/refresh-game/" + player.userId, data)
         }
-
-        data.divsToLoad = divsToLoad
-
-        if (!player.isBot) {
-            messagingTemplate.convertAndSend("/queue/refresh-game/" + player.userId, ObjectMapper().writeValueAsString(data))
-        }
-
     }
+
+    fun refreshChat(game: Game) {
+        game.players.forEach { refreshPlayerChat(it) }
+    }
+
+    fun refreshPlayerChat(player: Player) {
+        //todo
+    }
+
+    fun getRefreshGameData(player: Player): RefreshGameData {
+        return RefreshGameData(player.game.status, player.isYourTurn)
+    }
+}
+
+class RefreshGameData(val gameStatus: GameStatus,
+                      val isCurrentPlayer: Boolean) {
+
+    var infoDialog: InfoDialog? = null
+    var title: String? = null
 }

@@ -80,8 +80,6 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
 
     val chats = ArrayList<ChatMessage>()
 
-    val needsRefresh: MutableMap<Int, Refresh> = HashMap(6)
-
     var gameEndReason = ""
     var winnerString = ""
 
@@ -334,7 +332,7 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
         recentTurnHistory.add(currentTurn!!)
         turnHistory.add(currentTurn!!)
 
-        refreshAllPlayersHistory()
+        refreshGame()
 
         if (currentPlayer.isBot && currentPlayer.opponents.any { it is HumanPlayer }) {
             currentPlayer.opponents.filter { it is HumanPlayer }.forEach { p ->
@@ -344,6 +342,10 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
         } else {
             currentPlayer.startTurn()
         }
+    }
+
+    fun refreshGame() {
+        refreshGameManager.refreshGame(this)
     }
 
     fun turnEnded() {
@@ -364,8 +366,6 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
         cardsPlayed.clear()
         cardsBought.clear()
 
-        refreshEndTurn()
-
         previousPlayerId = currentPlayerId
 
         if (currentPlayerIndex == players.size - 1) {
@@ -384,7 +384,7 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
             recentTurnLogs.removeAt(0)
         }
 
-        refreshGameManager.refreshGame(this)
+        refreshGame()
 
         startTurnInNewThreadIfComputerVsHuman()
     }
@@ -393,8 +393,7 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
         addHistory("GAME OVER")
         status = GameStatus.Finished
         determineWinner()
-        refreshAllPlayersGameStatus()
-        refreshAllPlayersTitle()
+        refreshGame()
     }
 
     fun trashCardFromSupply(card: Card) {
@@ -425,19 +424,19 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
 
     fun addGameChat(message: String) {
         chats.add(ChatMessage(message, "black"))
-        refreshAllPlayersChat()
+        refreshChat()
     }
 
     fun addChat(player: Player, message: String) {
         updateLastActivity()
         chats.add(ChatMessage(player.username + ": " + message, player.chatColor))
-        refreshAllPlayersChat()
+        refreshChat()
     }
 
     fun addPrivateChat(sender: User, receiver: User, message: String) {
         updateLastActivity()
         chats.add(ChatMessage("Private chat from " + sender.username + ": " + message, "black", receiver.userId))
-        refreshChat(receiver.userId)
+        refreshChat()
     }
 
     fun saveGameHistory() {
@@ -557,7 +556,6 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
         trashedCards.clear()
         cardsPlayed.clear()
         cardsBought.clear()
-        needsRefresh.clear()
         recentTurnHistory.clear()
         turnHistory.clear()
         chats.clear()
@@ -636,158 +634,12 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
             prizeCards.toCardNames()
         }
 
-    fun refreshAll() {
-        players.forEach { refreshAllForPlayer(it) }
-    }
-
-    fun refreshAllForPlayer(player: Player) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshGameStatus = true
-        if (player.currentAction != null) {
-            refresh.isRefreshCardAction = true
-        }
-        refresh.isRefreshHandArea = true
-        refresh.isRefreshPlayers = true
-        refresh.isRefreshPlayingArea = true
-        refresh.isRefreshSupply = true
-    }
-
-    fun refreshAllPlayersPlayingArea() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshPlayingArea = true
-        }
-    }
-
-    fun refreshAllPlayersCardsPlayed() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshCardsPlayedDiv = true
-        }
-    }
-
-    fun refreshAllPlayersCardsBought() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshCardsBoughtDiv = true
-        }
-    }
-
-    private fun refreshAllPlayersHistory() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshHistory = true
-        }
-    }
-
-    fun refreshAllPlayersSupply() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshSupply = true
-        }
-    }
-
-    fun refreshAllPlayersHand() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshHand = true
-        }
-    }
-
-    fun refreshAllPlayersHandArea() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshHandArea = true
-        }
-    }
-
-    fun refreshAllPlayersDiscard() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshDiscard = true
-        }
-    }
-
-    fun refreshAllPlayersPlayers() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshPlayers = true
-        }
-    }
-
-    private fun refreshAllPlayersGameStatus() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshGameStatus = true
-        }
-    }
-
-    private fun refreshEndTurn() {
-        for (userId in needsRefresh.keys) {
-            if (userId != currentPlayerId) {
-                val refresh = needsRefresh[userId]!!
-                refresh.isRefreshEndTurn = true
-                val refreshHandArea = refresh.isRefreshHand || refresh.isRefreshHandArea || refresh.isRefreshDiscard
-                if (refreshHandArea) {
-                    refresh.isRefreshHandOnEndTurn = true
-                }
-                if (refresh.isRefreshSupply) {
-                    refresh.isRefreshSupply = true
-                }
-            }
-        }
-    }
-
-    private fun refreshChat(userId: Int) {
-        val refresh = needsRefresh[userId]!!
-        refresh.isRefreshChat = true
-    }
-
-    private fun refreshAllPlayersChat() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshChat = true
-        }
-    }
-
-    private fun refreshAllPlayersTitle() {
-        for (refresh in needsRefresh.values) {
-            refresh.isRefreshTitle = true
-        }
-    }
-
-    fun refreshPlayingArea(player: Player) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshPlayingArea = true
-    }
-
-    fun refreshCardsBought(player: Player) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshCardsBoughtDiv = true
-    }
-
-    fun refreshSupply(player: Player) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshSupply = true
-    }
-
-    fun refreshHand(player: Player) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshHand = true
-    }
-
-    fun refreshHandArea(player: Player) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshHandArea = true
-    }
-
-    fun refreshDiscard(player: Player) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshDiscard = true
-    }
-
-    fun refreshCardAction(player: Player) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshCardAction = true
-    }
-
-    fun refreshInfoDialog(player: Player) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isRefreshInfoDialog = true
+    private fun refreshChat() {
+        refreshGameManager.refreshChat(this)
     }
 
     fun closeLoadingDialog(player: Player) {
-        val refresh = needsRefresh[player.userId]!!
-        refresh.isCloseLoadingDialog = true
+        //todo?
     }
 
     fun repeat() {
@@ -895,7 +747,6 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
         player.chatColor = nextColor
         players.add(player)
         playerMap[player.userId] = player
-        needsRefresh[player.userId] = Refresh()
 
         if (!repeated && players.size == numPlayers) {
             startGame()
@@ -906,12 +757,11 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
         val player = playerMap[user.userId]!!
         players.remove(player)
         playerMap.remove(player.userId)
-        needsRefresh.remove(player.userId)
         if (player.userId == creatorId) {
-            if (players.isEmpty()) {
-                creatorId = 0
+            creatorId = if (players.isEmpty()) {
+                0
             } else {
-                creatorId = players[0].userId
+                players[0].userId
             }
         }
         if (players.isEmpty()) {
@@ -992,6 +842,6 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
     fun addHistory(history: String) {
         currentTurn?.addHistory(history)
         historyEntriesAddedThisTurn++
-        refreshAllPlayersHistory()
+        refreshGame()
     }
 }

@@ -42,7 +42,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 playCard(card)
             }
 
-            refreshGamePageForOpponents()
+            refreshGame()
 
             if (availableCoins > 0 && buys > 0) {
                 val cardsToBuy = cardsToBuy
@@ -55,7 +55,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
 
             if (!endTurn) {
-                refreshGamePageForOpponents()
+                refreshGame()
             }
         }
 
@@ -560,8 +560,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         //todo
     }
 
-    private fun refreshGamePageForOpponents() {
-        opponents.forEach { game.refreshAllPlayersPlayingArea() }
+    private fun refreshGame() {
+        game.refreshGame()
     }
 
     override fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean) {

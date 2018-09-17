@@ -26,6 +26,7 @@ class Sentry : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
         topCards.filterNotNull().forEach {
             cardsForAction.add(it)
             player.makeChoice(this,
+                    "Card drawn: ${it.cardNameWithBackgroundColor}",
                     Choice(1, "Trash"),
                     Choice(2, "Discard"),
                     Choice(3, "Top of Deck"))
