@@ -35,6 +35,17 @@
     background-color:#66AAFF;
 }
 
+.selectedCard
+{
+    background-color:#5454e6;
+    cursor: pointer;
+}
+
+.selectedCard:hover
+{
+    background-color:#FF99AA;
+}
+
 .greenClickableCard
 {
     background-color:#BBFFCC;

@@ -36,6 +36,8 @@ abstract class Card(
 
     var isHighlighted: Boolean = false
 
+    var isSelected: Boolean = false
+
     val id: String = UUID.randomUUID().toString()
 
     val typeAsString: String
@@ -263,8 +265,7 @@ abstract class Card(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Card) return false
-        val card = other
-        return name == card.name
+        return id == other.id
     }
 
     override fun hashCode(): Int {

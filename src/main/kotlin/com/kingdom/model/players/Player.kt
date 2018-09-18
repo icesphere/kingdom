@@ -661,4 +661,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean)
 
     abstract fun putCardsOnTopOfDeckInAnyOrder(cards: List<Card>)
+
+    fun cardCountByName(cardName: String): Int {
+        return allCards.count { it.name == cardName }
+    }
 }

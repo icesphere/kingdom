@@ -43,6 +43,7 @@ class CardManager(private val cardRepository: CardRepository,
         if (!includeTesting) {
             cards = cards.filterNot { it.testing }
         }
+        cards = cards.filterNot { it.disabled }
         return cards
     }
 }

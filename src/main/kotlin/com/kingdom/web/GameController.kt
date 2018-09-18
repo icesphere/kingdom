@@ -823,7 +823,7 @@ class GameController(private val cardManager: CardManager,
     }
 
     fun cardClicked(game: Game, player: Player, source: CardLocation, cardName: String, cardId: String) {
-        if (!player.isYourTurn) {
+        if (!player.isYourTurn && player.currentAction == null) {
             return
         }
 
@@ -895,13 +895,12 @@ class GameController(private val cardManager: CardManager,
             println("Error highlighting card for location")
             return false
         }
-        if (!player.isYourTurn) {
+
+        if (!player.isYourTurn && action == null) {
             return false
-        } else if (action != null) {
-            return action.isCardActionable(card, cardLocation, player)
-        } else {
-            return card.isActionable(player, cardLocation)
         }
+
+        return action?.isCardActionable(card, cardLocation, player) ?: card.isActionable(player, cardLocation)
     }
 
     fun findCardById(cards: List<Card>, cardId: String): Card? {
@@ -1330,7 +1329,10 @@ class GameController(private val cardManager: CardManager,
     private fun addPlayerAndGameDataToModelAndView(game: Game, user: User, modelAndView: ModelAndView, request: HttpServletRequest) {
         val player = game.playerMap[user.userId]!!
 
-        player.hand.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Hand) }
+        player.hand.forEach {
+            it.isHighlighted = highlightCard(player, it, CardLocation.Hand)
+            it.isSelected = isCardSelected(player, it)
+        }
 
         modelAndView.addObject("user", user)
         modelAndView.addObject("player", player)
@@ -1343,6 +1345,10 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
         modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+    }
+
+    private fun isCardSelected(player: Player, card: Card): Boolean {
+        return player.currentAction?.isCardSelected(card) ?: false
     }
 
     @RequestMapping("/getHandAreaDiv.html")

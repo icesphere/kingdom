@@ -6,6 +6,7 @@ import com.kingdom.model.cards.actions.DiscardCardsForBenefitActionCard
 import com.kingdom.model.players.Player
 
 class Cellar : KingdomCard(NAME, CardType.Action, 2), DiscardCardsForBenefitActionCard {
+
     override fun cardsDiscarded(player: Player, discardedCards: List<Card>) {
         player.drawCards(discardedCards.size)
     }

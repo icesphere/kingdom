@@ -13,7 +13,7 @@ open class TrashCardsFromHand : Action {
     override//todo handle if not optional and available cards < numCardsToScrap
     val isShowDone: Boolean
         get() =
-            selectedCards.size > 0 && selectedCards.size <= numCardsToScrap && (this.isShowDoNotUse || selectedCards.size == numCardsToScrap)
+            selectedCards.size in 1..numCardsToScrap && (this.isShowDoNotUse || selectedCards.size == numCardsToScrap)
 
     override val doneText: String
         get() = if (selectedCards.size == 1) {

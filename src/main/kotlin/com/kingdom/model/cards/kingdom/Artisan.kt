@@ -9,7 +9,7 @@ class Artisan : KingdomCard(NAME, CardType.Action, 6) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.acquireFreeCard(5)
+        player.acquireFreeCardToHand(5)
         player.addCardFromHandToTopOfDeck()
     }
 

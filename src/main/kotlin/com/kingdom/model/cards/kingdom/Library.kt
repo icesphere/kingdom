@@ -39,9 +39,9 @@ class Library : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
 
     override fun actionChoiceMade(player: Player, choice: Int) {
         if (choice == 1) {
-            skippedActionCards.add(cardToAdd)
-        } else {
             player.hand.add(cardToAdd)
+        } else {
+            skippedActionCards.add(cardToAdd)
         }
 
         drawCardsForLibrary()
