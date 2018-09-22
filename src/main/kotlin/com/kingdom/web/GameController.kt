@@ -565,6 +565,36 @@ class GameController(private val cardManager: CardManager,
         return ModelAndView("redirect:/showGameRooms.html")
     }
 
+    @RequestMapping("/endCurrentPlayersTurn.html")
+    fun endCurrentPlayersTurn(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val gameId = request.getParameter("gameId")
+        if (user == null || gameId == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        }
+        val game = gameRoomManager.getGame(gameId)
+        if (game != null && (user.admin || game.creatorId == user.userId)) {
+            game.currentPlayer.endTurn()
+            game.refreshGame()
+        }
+        return ModelAndView("redirect:/showGame.html")
+    }
+
+    @RequestMapping("/clearAllPlayerActions.html")
+    fun clearAllPlayerActions(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val gameId = request.getParameter("gameId")
+        if (user == null || gameId == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        }
+        val game = gameRoomManager.getGame(gameId)
+        if (game != null && (user.admin || game.creatorId == user.userId)) {
+            game.players.forEach { it.currentAction = null }
+            game.refreshGame()
+        }
+        return ModelAndView("redirect:/showGame.html")
+    }
+
     @RequestMapping("/cancelCreateGame.html")
     fun cancelCreateGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
@@ -1048,7 +1078,6 @@ class GameController(private val cardManager: CardManager,
     }
 
 
-
     @RequestMapping("/getGameDiv.html")
     fun getGameDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
@@ -1178,7 +1207,7 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("cardsPlayed", game.previousPlayerCardsPlayed)
             modelAndView.addObject("cardsBought", game.previousPlayerCardsBought)
             modelAndView.addObject("costDiscount", game.costDiscount)
-    //            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
+            //            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
             modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
             modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)

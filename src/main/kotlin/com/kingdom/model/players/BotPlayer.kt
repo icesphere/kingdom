@@ -32,7 +32,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
             while (cardsToPlay.isNotEmpty()) {
                 endTurn = false
-                val sortedCards = hand.sortedByDescending { getPlayCardScore(it) }
+                val sortedCards = cardsToPlay.sortedByDescending { getPlayCardScore(it) }
 
                 if (sortedCards.isEmpty()) {
                     break
@@ -58,6 +58,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 refreshGame()
             }
         }
+
+        refreshGame()
 
         endTurn()
     }
@@ -246,6 +248,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     open fun getBuyCardScore(card: Card): Int {
+        if (card.isCurseOnly) {
+            return -1
+        }
         return card.cost
     }
 
@@ -562,6 +567,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     private fun refreshGame() {
         game.refreshGame()
+        Thread.sleep(1000)
     }
 
     override fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean) {

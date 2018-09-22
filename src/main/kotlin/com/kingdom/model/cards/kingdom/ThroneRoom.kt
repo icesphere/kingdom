@@ -37,7 +37,10 @@ class ThroneRoom : KingdomCard(NAME, CardType.Action, 4), CardActionCard {
         result.selectedCard?.let {
             copiedCard = it
             player.hand.remove(it)
+            //todo fix queueing up of actions
+            player.actions += 1
             player.playCard(it)
+            player.actions += 1
             player.playCard(it)
         }
     }

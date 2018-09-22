@@ -274,6 +274,7 @@ abstract class Card(
 
     open fun removedFromPlay(player: Player) {
         playersExcludedFromCardEffects.clear()
+        isSelected = false
     }
 
     fun cardPlayed(player: Player) {

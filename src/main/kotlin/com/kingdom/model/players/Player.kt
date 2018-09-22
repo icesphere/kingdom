@@ -30,7 +30,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     protected var actionsQueue: MutableList<Action> = ArrayList()
 
     var currentAction: Action? = null
-        protected set
 
     var isYourTurn: Boolean = false
         protected set
@@ -623,8 +622,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (cardsFromDeck.isEmpty()) {
             return null
         }
+
         val discardedCard = cardsFromDeck[0]
+
+        addGameLog("$username discarded ${discardedCard.cardNameWithBackgroundColor}")
+
         addCardToDiscard(discardedCard)
+
         return discardedCard
     }
 

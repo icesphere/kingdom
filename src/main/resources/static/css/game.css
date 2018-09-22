@@ -37,13 +37,13 @@
 
 .selectedCard
 {
-    background-color:#5454e6;
+    background-color:#00EFFF;
     cursor: pointer;
 }
 
 .selectedCard:hover
 {
-    background-color:#FF99AA;
+    background-color:#99EEF5;
 }
 
 .greenClickableCard

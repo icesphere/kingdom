@@ -77,8 +77,8 @@ class MainController(private var userManager: UserManager,
         val modelAndView = ModelAndView("admin")
         val user = getUser(request)!!
         val loggedInUser = LoggedInUsers.getUser(user.userId)
-        val showCancelGame = loggedInUser?.gameId != null
-        modelAndView.addObject("showCancelGame", showCancelGame)
+        val showGameActions = loggedInUser?.gameId != null
+        modelAndView.addObject("showGameActions", showGameActions)
         modelAndView.addObject("numErrors", userManager.errorCount)
         modelAndView.addObject("loggedInUsersCount", LoggedInUsers.getUsers().size)
         modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)

@@ -61,10 +61,20 @@
                     <a href="recommendedSets.html">Recommended Sets</a>
                 </td>
             </tr>
-            <#if showCancelGame>
+            <#if showGameActions>
                 <tr>
                     <td>
                         <a href="cancelGame.html?gameId=${gameId}">Cancel Current Game</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="clearAllPlayerActions.html?gameId=${gameId}">Clear all player actions</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="endCurrentPlayersTurn.html?gameId=${gameId}">End current players turn</a>
                     </td>
                 </tr>
                 <tr>
