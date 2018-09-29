@@ -13,6 +13,7 @@ class ThroneRoom : KingdomCard(NAME, CardType.Action, 4), CardActionCard {
     var copiedCard: Card? = null
 
     init {
+        testing = true
         special = "You may play an Action card from your hand twice."
         fontSize = 9
     }
@@ -36,12 +37,11 @@ class ThroneRoom : KingdomCard(NAME, CardType.Action, 4), CardActionCard {
     override fun processCardActionResult(cardAction: CardAction, player: Player, result: ActionResult) {
         result.selectedCard?.let {
             copiedCard = it
-            player.hand.remove(it)
             //todo fix queueing up of actions
             player.actions += 1
             player.playCard(it)
             player.actions += 1
-            player.playCard(it)
+            player.playCard(it, true)
         }
     }
 

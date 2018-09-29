@@ -9,6 +9,8 @@ abstract class Action(open var text: String?) {
 
     open var choices: List<Choice>? = null
 
+    var cardChoices: List<Card>? = null
+
     abstract fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean
 
     abstract fun processAction(player: Player): Boolean

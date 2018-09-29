@@ -108,7 +108,7 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun addCardFromDiscardToTopOfDeck(maxCost: Int?) {
-        addAction(CardFromDiscardToTopOfDeck(maxCost))
+        addAction(CardFromDiscardToTopOfDeck(this.discard, maxCost))
     }
 
     override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?) {

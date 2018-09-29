@@ -114,7 +114,7 @@
                                 ${player.username}
                             </td>
                             <td>
-                                ${player.finalCards}
+                                ${player.allCardsString}
                             </td>
                         </tr>
                     </#list>

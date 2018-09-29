@@ -1,1 +1,4 @@
-refresh game on game start
+repeat game is broken
+throne room should wait for all of card to be resolved before continuing to next play of card
+cards overflow weird when too many
+bots needs to be better

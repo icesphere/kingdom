@@ -22,6 +22,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val played: MutableList<Card> = ArrayList()
     private val inPlay: MutableList<Card> = ArrayList()
 
+    val numCards: Int
+        get() = allCards.size
+
     val userId = user.userId
     val username = user.username
     val gender = user.gender
@@ -107,6 +110,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             KingdomUtil.groupCards(hand)
             return hand
         }
+
+    val currentHand: String
+        get() = KingdomUtil.groupCards(hand, true)
+
+    val allCardsString: String
+        get() = KingdomUtil.groupCards(allCards, true)
 
     val playTreasureCards: Boolean = game.isPlayTreasureCards
 
@@ -368,9 +377,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return cards
         }
 
-    fun playCard(card: Card) {
-        if (!card.isCopied) {
-            game.addHistory("Played card: ${card.cardNameWithBackgroundColor}")
+    fun playCard(card: Card, copiedAction: Boolean = false) {
+
+        game.addHistory("Played card: ${card.cardNameWithBackgroundColor}")
+
+        if (!copiedAction) {
 
             played.add(card)
             game.cardsPlayed.add(card)
@@ -428,6 +439,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun addCardToDiscard(card: Card) {
         discard.add(card)
+        cardRemovedFromPlay(card)
     }
 
     fun discardCardFromHand() {

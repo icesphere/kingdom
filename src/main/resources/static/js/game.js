@@ -319,7 +319,7 @@ function closeLoadingDialog() {
 }
 
 function clickCard(clickType, cardName, cardId, special){
-    if (!clickingCard && currentPlayer && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand")){
+    if (!clickingCard && currentPlayer && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand" || clickType == "cardAction")){
         clickingCard = true;
         showLoadingDialog();
         $.post("clickCard", {clickType: clickType, cardName: cardName, cardId: cardId}, function(data) {

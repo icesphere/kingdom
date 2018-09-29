@@ -4,9 +4,11 @@ import com.kingdom.model.players.Player
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 
-class CardFromDiscardToTopOfDeck(private val maxCost: Int?) : Action(""), SelectFromDiscardAction {
+class CardFromDiscardToTopOfDeck(cardsInDiscard: List<Card>, private val maxCost: Int?) : SelectCardsAction("", cardsInDiscard, 1, true), SelectFromDiscardAction {
 
     override var isShowDoNotUse: Boolean = true
+
+    override val isShowDone: Boolean = false
 
     init {
         text = "Choose a card from your discard pile "

@@ -10,6 +10,10 @@ abstract class SelectCardsAction(text: String,
                              protected var numCardsToSelect: Int = 1,
                              protected val optional: Boolean = false) : Action(text) {
 
+    init {
+        cardChoices = cards
+    }
+
     protected var selectedCards: MutableList<Card> = ArrayList()
 
     override val isShowDone: Boolean
@@ -18,7 +22,7 @@ abstract class SelectCardsAction(text: String,
 
     override fun isCardActionable(card: Card,
                                   cardLocation: CardLocation,
-                                  player: Player): Boolean = cardLocation == CardLocation.CardAction
+                                  player: Player): Boolean = cards.contains(card)
 
     override fun processAction(player: Player): Boolean = cards.isNotEmpty()
 

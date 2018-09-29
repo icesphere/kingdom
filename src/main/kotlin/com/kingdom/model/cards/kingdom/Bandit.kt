@@ -21,6 +21,8 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5) {
                 .forEach {
                     val topCardsOfDeck = it.revealTopCardsOfDeck(2)
                     val cardsThatCanBeTrashed = topCardsOfDeck.filter { it.isTreasure && !it.isCopper }
+                    val cardsToDiscard = topCardsOfDeck.filter { !it.isTreasure || it.isCopper }
+                    cardsToDiscard.forEach { player.addCardToDiscard(it) }
                     if (cardsThatCanBeTrashed.isNotEmpty()) {
                         if (cardsThatCanBeTrashed.size == 1) {
                             val card = cardsThatCanBeTrashed.first()

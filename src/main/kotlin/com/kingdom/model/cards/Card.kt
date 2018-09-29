@@ -233,8 +233,8 @@ abstract class Card(
     val cardNameWithArticleAndBackgroundColor
         get() = KingdomUtil.getWordWithBackgroundColor(nameWithArticle(), backgroundColor)
 
-    fun getNumberPlusNameWithBackgroundColor(num: Int) {
-        KingdomUtil.getWordWithBackgroundColor(name.plural(num), backgroundColor)
+    fun getNumberPlusNameWithBackgroundColor(num: Int): String {
+        return KingdomUtil.getWordWithBackgroundColor(name.plural(num), backgroundColor)
     }
 
     private fun nameWithArticle(): String {

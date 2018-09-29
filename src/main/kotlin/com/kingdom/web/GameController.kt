@@ -848,6 +848,7 @@ class GameController(private val cardManager: CardManager,
             "hand" -> CardLocation.Hand
             "discard" -> CardLocation.Discard
             "playArea" -> CardLocation.PlayArea
+            "cardAction" -> CardLocation.CardAction
             else -> CardLocation.Unknown
         }
     }
@@ -889,6 +890,12 @@ class GameController(private val cardManager: CardManager,
                     if (action != null) {
                         handleCardClickedForAction(player, card, source)
                     }
+                }
+            }
+            CardLocation.CardAction -> {
+                val card = findCardById(action?.cardChoices ?: emptyList(), cardId)
+                if (card != null) {
+                    handleCardClickedForAction(player, card, source)
                 }
             }
             else -> {
@@ -1361,6 +1368,10 @@ class GameController(private val cardManager: CardManager,
         player.hand.forEach {
             it.isHighlighted = highlightCard(player, it, CardLocation.Hand)
             it.isSelected = isCardSelected(player, it)
+        }
+
+        player.currentAction?.cardChoices?.forEach {
+            it.isHighlighted = true
         }
 
         modelAndView.addObject("user", user)
@@ -2146,13 +2157,12 @@ class GameController(private val cardManager: CardManager,
 
     @RequestMapping("/modifyHand.html")
     fun modifyHand(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        //todo
-        /*val user = getUser(request)
+        val user = getUser(request)
         val game = getGame(request)
         if (user == null || game == null) {
             return KingdomUtil.getLoginModelAndView(request)
         }
-        if (!game.isTestGame && !user.admin) {
+        if (!user.admin) {
             return ModelAndView("redirect:/showGame.html")
         }
 
@@ -2160,13 +2170,9 @@ class GameController(private val cardManager: CardManager,
             val currentHandChoice = request.getParameter("currentHandChoice_" + player.userId)
             val currentCards = ArrayList(player.hand)
             if (currentHandChoice == "discard") {
-                for (card in currentCards) {
-                    player.discardCardFromHand(card)
-                }
+                currentCards.forEach { player.discardCardFromHand(it) }
             } else if (currentHandChoice == "trash") {
-                for (card in currentCards) {
-                    player.removeCardFromHand(card)
-                }
+                currentCards.forEach { player.trashCardFromHand(it) }
             }
 
             val parameterNames = request.parameterNames
@@ -2175,15 +2181,14 @@ class GameController(private val cardManager: CardManager,
                 if (name.startsWith("card_") && name.endsWith("_" + player.userId)) {
                     val ids = name.substring(5)
                     val cardName = ids.substring(0, ids.indexOf("_"))
-                    val card = game.supplyMap[cardName]!!
                     val numCards = KingdomUtil.getRequestInt(request, name, 0)
                     for (i in 0 until numCards) {
-                        player.addCardToHand(card)
+                        player.hand.add(game.getSupplyCard(cardName))
                     }
                 }
             }
-            game.refreshHand(player)
-        }*/
+            game.refreshGame()
+        }
         return ModelAndView("redirect:/showGame.html")
     }
 

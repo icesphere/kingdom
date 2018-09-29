@@ -19,6 +19,17 @@
                 </div>
             </#if>
 
+            <#if action.cardChoices?has_content>
+                <#assign clickType="cardAction">
+                <div style="clear: both; float: left; padding-top: 10px;">
+                    <#list action.cardChoices as card>
+                        <div style="float:left;padding-right:6px;padding-top:6px;">
+                            <#include "gameCard.ftl">
+                        </div>
+                    </#list>
+                </div>
+            </#if>
+
             <#if action.showDone || action.showDoNotUse>
 
                 <div style="clear: both; float: left; padding-top: 10px;">
