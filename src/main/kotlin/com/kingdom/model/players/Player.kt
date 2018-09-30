@@ -681,4 +681,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun cardCountByName(cardName: String): Int {
         return allCards.count { it.name == cardName }
     }
+
+    fun cardCountByExpression(expression: ((card: Card) -> Boolean)): Int {
+        return allCards.count{ expression(it) }
+    }
+
+    fun canBuyCard(card: Card): Boolean {
+        val cost = getCardCostWithModifiers(card)
+        return game.isCardAvailableInSupply(card) && coins >= cost
+    }
 }

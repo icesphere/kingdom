@@ -45,12 +45,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             refreshGame()
 
             if (availableCoins > 0 && buys > 0) {
-                val cardsToBuy = cardsToBuy
-                if (!cardsToBuy.isEmpty()) {
+                val cardToBuy = getCardToBuy()
+                if (cardToBuy != null) {
                     endTurn = false
-                    for (card in cardsToBuy) {
-                        this.buyCard(card)
-                    }
+                    this.buyCard(game.getSupplyCard(cardToBuy))
                 }
             }
 
@@ -62,6 +60,18 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         refreshGame()
 
         endTurn()
+    }
+
+    val availableCardsToBuy: List<Card>
+        get() = game.supplyCards.filter { canBuyCard(it) && !excludeCard(it) }
+
+    val availableCardsToBuyNames: List<String>
+        get() = availableCardsToBuy.map { it.name }
+
+    abstract fun getCardToBuy(): String?
+
+    open fun excludeCard(card: Card): Boolean {
+        return card.isCurseOnly
     }
 
     override fun addCardAction(card: CardActionCard, text: String) {

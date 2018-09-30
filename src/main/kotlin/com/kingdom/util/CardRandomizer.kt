@@ -99,7 +99,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         }
 
         if (!options.isSwappingCard) {
-            Collections.shuffle(selectedCards)
+            selectedCards.shuffle()
         }
 
         if (options.isSwappingCard && !cardSwapped) {
@@ -174,20 +174,15 @@ class CardRandomizer(private val cardRepository: CardRepository) {
     }
 
     private fun cardMatchesType(card: Card, type: String): Boolean {
-        if (type == "extraBuy") {
-            return card.addBuys > 0
-        } else if (type == "extraActions") {
-            return card.addActions >= 2
-        } else if (type == "treasure") {
-            return card.isTreasure
-        } else if (type == "reaction") {
-            return card.isReaction
-        } else if (type == "attack") {
-            return card.isAttack
-        } else if (type == "trashingCard") {
-            return card.isTrashingCard
+        return when (type) {
+            "extraBuy" -> card.addBuys > 0
+            "extraActions" -> card.addActions >= 2
+            "treasure" -> card.isTreasure
+            "reaction" -> card.isReaction
+            "attack" -> card.isAttack
+            "trashingCard" -> card.isTrashingCard
+            else -> false
         }
-        return false
     }
 
     private fun randomCardSelected(card: Card) {

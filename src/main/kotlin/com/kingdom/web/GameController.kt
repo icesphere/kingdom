@@ -282,6 +282,7 @@ class GameController(private val cardManager: CardManager,
     }
 
     private fun parseCardSelectionRequest(request: HttpServletRequest, user: User, decks: MutableList<Deck>, customSelection: MutableList<Card>, excludedCards: MutableList<Card>, generateType: String) {
+        decks.clear()
         val parameterNames = request.parameterNames
         while (parameterNames.hasMoreElements()) {
             val name = parameterNames.nextElement() as String
