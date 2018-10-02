@@ -168,7 +168,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
     }
 
     private fun canAddCard(card: Card): Boolean {
-        return (!selectedCards.contains(card) && !options!!.excludedCards.contains(card)
+        return (!selectedCards.map { it.name }.contains(card.name) && !options!!.excludedCards.contains(card)
                 && (!changingBaneCard || card.cost == 2 || card.cost == 3)
                 && (!replacingCardWithSpecificType || cardMatchesType(card, options!!.cardTypeToReplaceWith!!)))
     }

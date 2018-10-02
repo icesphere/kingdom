@@ -1,4 +1,15 @@
 repeat game is broken
 throne room should wait for all of card to be resolved before continuing to next play of card
-cards overflow weird when too many
-bots needs to be better
+cards overflow weird when too many on desktop
+bots need to be better
+refresh sometimes has issues after quit game
+problem starting new game after exiting game
+loading dialog looks weird
+better notification of chat on mobile view
+highlighting of mobile card action card
+maybe show card name of card that triggered card action and maybe show who played the card if not you
+hard to select stacked cards on mobile
+don't require "Done" button for Remodel
+considering using embedded database so app can be deployed easily anywhere
+fix play all treasure cards
+figure out how to end turn immediately, but still show to other players what was played/bought that they haven't seen yet

@@ -18,19 +18,22 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5) {
 
         player.opponents
                 .filter { !playersExcludedFromCardEffects.contains(it) }
-                .forEach {
-                    val topCardsOfDeck = it.revealTopCardsOfDeck(2)
+                .forEach { opponent ->
+                    val topCardsOfDeck = opponent.revealTopCardsOfDeck(2)
                     val cardsThatCanBeTrashed = topCardsOfDeck.filter { it.isTreasure && !it.isCopper }
                     val cardsToDiscard = topCardsOfDeck.filter { !it.isTreasure || it.isCopper }
-                    cardsToDiscard.forEach { player.addCardToDiscard(it) }
+                    cardsToDiscard.forEach {
+                        opponent.removeCardFromDeck(it)
+                        opponent.addCardToDiscard(it)
+                    }
                     if (cardsThatCanBeTrashed.isNotEmpty()) {
                         if (cardsThatCanBeTrashed.size == 1) {
                             val card = cardsThatCanBeTrashed.first()
-                            it.removeCardFromDeck(card)
-                            it.cardTrashed(card)
-                            it.addGameLog("${this.cardNameWithBackgroundColor} trashed ${it.username}'s ${card.cardNameWithBackgroundColor}")
+                            opponent.removeCardFromDeck(card)
+                            opponent.cardTrashed(card)
+                            opponent.addGameLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
                         } else {
-                            it.selectCardsToTrashFromDeck(cardsThatCanBeTrashed, 1, false)
+                            opponent.selectCardsToTrashFromDeck(cardsThatCanBeTrashed, 1, false)
                             addWaitingAction = true
                         }
                     }

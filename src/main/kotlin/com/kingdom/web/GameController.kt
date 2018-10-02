@@ -282,7 +282,6 @@ class GameController(private val cardManager: CardManager,
     }
 
     private fun parseCardSelectionRequest(request: HttpServletRequest, user: User, decks: MutableList<Deck>, customSelection: MutableList<Card>, excludedCards: MutableList<Card>, generateType: String) {
-        decks.clear()
         val parameterNames = request.parameterNames
         while (parameterNames.hasMoreElements()) {
             val name = parameterNames.nextElement() as String
@@ -909,7 +908,6 @@ class GameController(private val cardManager: CardManager,
         } else {
             if (player.buys == 0) {
                 player.endTurn()
-                refreshGame(game)
             }
         }
     }
@@ -962,15 +960,15 @@ class GameController(private val cardManager: CardManager,
     fun playAllTreasureCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
         val game = getGame(request)
+
         if (user == null) {
             return KingdomUtil.getLoginModelAndView(request)
         } else if (game == null) {
             return ModelAndView("redirect:/showGameRooms.html")
         }
-        val player = game.playerMap[user.userId]
-        if (player == null) {
-            return ModelAndView("redirect:/showGameRooms.html")
-        }
+
+        val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
+
         try {
             //todo
             //game.playAllTreasureCards(player)
@@ -1005,10 +1003,8 @@ class GameController(private val cardManager: CardManager,
             game.refreshGame()
         } else {
             player.endTurn()
-            game.refreshGame()
+            return ModelAndView("redirect:/showGame.html")
         }
-
-        refreshGame(game)
 
         return emptyModelAndView
     }
@@ -2368,6 +2364,7 @@ class GameController(private val cardManager: CardManager,
             return ModelAndView("redirect:/login.html")
         }
         val modelAndView = ModelAndView("gameCards")
+        game.kingdomCards.forEach { it.isHighlighted = false }
         modelAndView.addObject("cards", game.kingdomCards)
         modelAndView.addObject("prizeCards", game.prizeCards)
         modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
