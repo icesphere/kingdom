@@ -108,26 +108,6 @@
                                 </td>
                             </tr>
                         </#if>
-                        <#if showMuseumCards>
-                            <tr>
-                                <td class="gameInfoLabel">
-                                    Museum Cards:
-                                </td>
-                                <td>
-                                    ${p.museumCardsString}
-                                </td>
-                            </tr>
-                        </#if>
-                        <#if showCityPlannerCards>
-                            <tr>
-                                <td class="gameInfoLabel">
-                                    City Planner Cards:
-                                </td>
-                                <td>
-                                    ${p.cityPlannerCardsString}
-                                </td>
-                            </tr>
-                        </#if>
                         <#if showNativeVillage>
                             <tr>
                                 <td class="gameInfoLabel">

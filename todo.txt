@@ -6,10 +6,7 @@ refresh sometimes has issues after quit game
 problem starting new game after exiting game
 loading dialog looks weird
 better notification of chat on mobile view
-highlighting of mobile card action card
 maybe show card name of card that triggered card action and maybe show who played the card if not you
-hard to select stacked cards on mobile
-don't require "Done" button for Remodel
 considering using embedded database so app can be deployed easily anywhere
 fix play all treasure cards
 refresh issues

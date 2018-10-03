@@ -1561,7 +1561,6 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("victoryCards", game.victoryCards)
 
             modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-            modelAndView.addObject("showColony", game.isIncludeColonyCards)
             modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
 
             modelAndView.addObject("chats", game.chats)
@@ -1822,10 +1821,13 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("turnHistory", game.recentTurnHistory)
         modelAndView.addObject("chats", game.chats)
         modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
+        modelAndView.addObject("showDuration", game.isShowDuration)
+        modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
         modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
         modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
         modelAndView.addObject("showCoinTokens", game.isShowCoinTokens)
         modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
+        modelAndView.addObject("showIslandCards", game.isShowIslandCards)
         modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
         modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
         modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
@@ -1834,7 +1836,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("prizeCards", game.prizeCardsString)
 
         modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-        modelAndView.addObject("showColony", game.isIncludeColonyCards)
 
         modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
 

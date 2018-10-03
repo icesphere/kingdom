@@ -7,7 +7,7 @@
         <#else>
             <#assign zindex = 0>
         </#if>
-        <div style="float:left; margin-right:5px;<#if mobile>margin-top:2px;</#if><#if previousCard == card.name>margin-left:-65px;</#if>z-index:${zindex};">
+        <div style="float:left; margin-right:5px;<#if mobile>margin-top:2px;</#if><#if card.highlighted && player.currentAction??><#elseif previousCard == card.name>margin-left:-65px;</#if>z-index:${zindex};">
             <#include "gameCard.ftl">
             <#assign previousCard = card.name>
         </div>

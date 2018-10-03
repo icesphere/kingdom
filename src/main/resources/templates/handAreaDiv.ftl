@@ -20,12 +20,6 @@
         <#if showIslandCards>
             <td class="handAreaTopRow"><#if player.islandCards?size != 0><a href="javascript:showIslandCardsDialog()"></#if>${player.islandCards?size} Island Card<#if player.islandCards?size != 1>s</#if><#if player.islandCards?size != 0></a></#if></td>
         </#if>
-        <#if showMuseumCards>
-            <td class="handAreaTopRow"><#if player.museumCards?size != 0><a href="javascript:showMuseumCardsDialog()"></#if>${player.museumCards?size} Museum Card<#if player.museumCards?size != 1>s</#if><#if player.museumCards?size != 0></a></#if></td>
-        </#if>
-        <#if showCityPlannerCards>
-            <td class="handAreaTopRow"><#if player.cityPlannerCards?size != 0><a href="javascript:showCityPlannerCardsDialog()"></#if>${player.cityPlannerCards?size} City Planner Card<#if player.cityPlannerCards?size != 1>s</#if><#if player.cityPlannerCards?size != 0></a></#if></td>
-        </#if>
         <#if showNativeVillage>
             <td class="handAreaTopRow"><#if player.nativeVillageCards?size != 0><a href="javascript:showNativeVillageDialog()"></#if>${player.nativeVillageCards?size} Native Village Card<#if player.nativeVillageCards?size != 1>s</#if><#if player.nativeVillageCards?size != 0></a></#if></td>
         </#if>
@@ -94,14 +88,6 @@
 </table>
 <#if showIslandCards>
     <div id="islandCardsDiv">
-    </div>
-</#if>
-<#if showMuseumCards>
-    <div id="museumCardsDiv">
-    </div>
-</#if>
-<#if showCityPlannerCards>
-    <div id="cityPlannerCardsDiv">
     </div>
 </#if>
 <#if showNativeVillage>

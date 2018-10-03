@@ -177,48 +177,6 @@ function showIslandCardsDialog(){
 
 function closeIslandCardsDialog(){
     $("#islandCardsDialog").dialog("destroy").remove();
-}  
-
-function showMuseumCardsDialog(){
-    if(mobile) {
-        $("#museumCardsDiv").load('loadMuseumCardsDialog.html', function() {
-            $("#museumCardsDialog").dialog(
-                {modal: true, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-            });
-        });
-    }
-    else {
-        $("#museumCardsDiv").load('loadMuseumCardsDialog.html', function() {
-            $("#museumCardsDialog").dialog(
-                {modal: true, width: 450, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-            });
-        });
-    }
-}
-
-function closeMuseumCardsDialog(){
-    $("#museumCardsDialog").dialog("destroy").remove();
-}   
-
-function showCityPlannerCardsDialog(){
-    if(mobile) {
-        $("#cityPlannerCardsDiv").load('loadCityPlannerCardsDialog.html', function() {
-            $("#cityPlannerCardsDialog").dialog(
-                {modal: true, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-            });
-        });
-    }
-    else {
-        $("#cityPlannerCardsDiv").load('loadCityPlannerCardsDialog.html', function() {
-            $("#cityPlannerCardsDialog").dialog(
-                {modal: true, width: 450, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-            });
-        });
-    }
-}
-
-function closeCityPlannerCardsDialog(){
-    $("#cityPlannerCardsDialog").dialog("destroy").remove();
 }
 
 function showNativeVillageDialog(){
