@@ -146,7 +146,7 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
     var isShowIslandCards: Boolean = false
 
     val victoryCards: List<Card>
-        get() = supplyCards
+        get() = kingdomCards
                 .filter { it.isVictory }
                 .sortedByDescending { it.cost }
 
