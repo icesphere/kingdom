@@ -9,6 +9,7 @@ import com.kingdom.model.cards.listeners.CardPlayedListener
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Estate
+import com.kingdom.model.cards.supply.VictoryCard
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.toCardNames
 import java.util.*
@@ -662,7 +663,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         for (card in allCards) {
             cardNames.add(card.name)
-            if (card.isVictory || card.isCurse) {
+
+            if (card.isVictory) {
+                val victoryCard = card as VictoryCard
+                victoryPoints += victoryCard.calculatePoints(this)
+            } else if (card.isCurse) {
                 victoryPoints += card.victoryPoints
             }
         }

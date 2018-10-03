@@ -138,27 +138,21 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
     var isRandomizerReplacementCardNotFound: Boolean = false
 
     var isShowCoinTokens: Boolean = false
-    var isShowGardens: Boolean = false
-    var isShowFarmlands: Boolean = false
-    var isShowVictoryCoins: Boolean = false
-    var isShowVineyard: Boolean = false
-    var isShowSilkRoads: Boolean = false
-    var isShowCathedral: Boolean = false
-    var isShowFairgrounds: Boolean = false
-    var isShowGreatHall: Boolean = false
-    var isShowHarem: Boolean = false
-    var isShowDuke: Boolean = false
-    var isShowNobles: Boolean = false
-    var isShowArchbishops: Boolean = false
-    var isShowDuration: Boolean = false
+
     var isShowEmbargoTokens: Boolean = false
+
+    var isShowDuration: Boolean = false
+
     var isShowIslandCards: Boolean = false
-    var isShowMuseumCards: Boolean = false
-    var isShowCityPlannerCards: Boolean = false
+
+    val victoryCards: List<Card>
+        get() = supplyCards
+                .filter { it.isVictory }
+                .sortedByDescending { it.cost }
+
+    var isShowVictoryCoins: Boolean = false
     var isShowNativeVillage: Boolean = false
     var isShowPirateShipCoins: Boolean = false
-    var isShowHedgeWizard: Boolean = false
-    var isShowGoldenTouch: Boolean = false
 
     val tradeRouteTokenMap = HashMap<String, Boolean>(0)
     var isTrackTradeRouteTokens: Boolean = false
@@ -511,23 +505,7 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
             kingdomCards.clear()
             cardMap.clear()
             blackMarketCards.clear()
-            isShowDuke = false
-            isShowGardens = false
-            isShowFarmlands = false
             isShowVictoryCoins = false
-            isShowVineyard = false
-            isShowSilkRoads = false
-            isShowCathedral = false
-            isShowFairgrounds = false
-            isShowGreatHall = false
-            isShowHarem = false
-            isShowNobles = false
-            isShowArchbishops = false
-            isShowDuration = false
-            isShowEmbargoTokens = false
-            isShowIslandCards = false
-            isShowMuseumCards = false
-            isShowCityPlannerCards = false
             isShowNativeVillage = false
             isShowPirateShipCoins = false
             isTrackTradeRouteTokens = false
@@ -537,8 +515,6 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
             isRecommendedSet = false
             isTestGame = false
             isShowPrizeCards = false
-            isShowHedgeWizard = false
-            isShowGoldenTouch = false
             isIdenticalStartingHands = false
             creatorId = 0
             creatorName = ""

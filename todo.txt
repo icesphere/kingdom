@@ -12,5 +12,4 @@ hard to select stacked cards on mobile
 don't require "Done" button for Remodel
 considering using embedded database so app can be deployed easily anywhere
 fix play all treasure cards
-gardens don't add to score
 refresh issues
