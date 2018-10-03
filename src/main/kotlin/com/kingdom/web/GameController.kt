@@ -907,7 +907,7 @@ class GameController(private val cardManager: CardManager,
             refreshGame(game)
         } else {
             if (player.buys == 0) {
-                player.endTurn()
+                player.endTurn(true)
             }
         }
     }
@@ -1002,7 +1002,7 @@ class GameController(private val cardManager: CardManager,
         if (player.currentAction != null) {
             game.refreshGame()
         } else {
-            player.endTurn()
+            player.endTurn(true)
             return ModelAndView("redirect:/showGame.html")
         }
 

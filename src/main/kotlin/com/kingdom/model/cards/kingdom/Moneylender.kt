@@ -12,6 +12,8 @@ class Moneylender : KingdomCard(NAME, CardType.Action, 4), ChoiceActionCard {
         fontSize = 10
     }
 
+    override val isTrashingCard: Boolean = true
+
     override fun cardPlayedSpecialAction(player: Player) {
         if (player.hand.any { it is Copper }) {
             player.yesNoChoice(this, special)

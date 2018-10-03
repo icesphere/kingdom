@@ -202,7 +202,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         coinsGainedThisTurn += coins
     }
 
-    fun endTurn() {
+    fun endTurn(addDelay: Boolean = false) {
+
+        if (addDelay) {
+            Thread.sleep(1000)
+        }
+
         addGameLog("Ending turn")
 
         currentTurnSummary.cardsPlayed.addAll(played)

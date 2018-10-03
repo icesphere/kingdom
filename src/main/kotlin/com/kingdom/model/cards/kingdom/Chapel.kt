@@ -8,6 +8,8 @@ class Chapel: KingdomCard(NAME, CardType.Action, 2) {
         special = "Trash up to 4 cards from your hand."
     }
 
+    override val isTrashingCard: Boolean = true
+
     override fun cardPlayedSpecialAction(player: Player) {
         player.optionallyTrashCardsFromHand(4, special)
     }

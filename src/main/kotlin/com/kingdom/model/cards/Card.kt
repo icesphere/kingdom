@@ -198,17 +198,17 @@ abstract class Card(
     val backgroundColorColor: String
         get() = backgroundColor.color
 
-    val isAutoPlayTreasure: Boolean
-        get() = name != "Bank" && name != "Venture" && name != "Contraband" && name != "Loan" && name != "Horn of Plenty" && name != "Talisman" && name != "Diadem" && name != "Storybook" && name != "Ill-Gotten Gains" && name != "Fool's Gold"
+    open val isAutoPlayTreasure: Boolean = true
+        //get() = name != "Bank" && name != "Venture" && name != "Contraband" && name != "Loan" && name != "Horn of Plenty" && name != "Talisman" && name != "Diadem" && name != "Storybook" && name != "Ill-Gotten Gains" && name != "Fool's Gold"
 
-    val isTrashingCard: Boolean
-        get() = (name == "Chapel" || name == "Mine" || name == "Moneylender" || name == "Remodel"
+    open val isTrashingCard: Boolean = false
+        /*get() = (name == "Chapel" || name == "Mine" || name == "Moneylender" || name == "Remodel"
                 || name == "Masquerade" || name == "Steward" || name == "Trading Post"
                 || name == "Upgrade" || name == "Ambassador" || name == "Island"
                 || name == "Lookout" || name == "Salvager" || name == "Apprentice"
                 || name == "Transmute" || name == "Bishop" || name == "Expand" || name == "Forge"
                 || name == "Loan" || name == "Trade Route" || name == "Remake" || name == "Develop"
-                || name == "Jack of all Trades" || name == "Spice Merchant" || name == "Trader")
+                || name == "Jack of all Trades" || name == "Spice Merchant" || name == "Trader")*/
 
     val isExtraActionsCard: Boolean
         get() = addActions >= 2 || name == "Throne Room" || name == "King's Court"

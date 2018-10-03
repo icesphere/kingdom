@@ -12,4 +12,5 @@ hard to select stacked cards on mobile
 don't require "Done" button for Remodel
 considering using embedded database so app can be deployed easily anywhere
 fix play all treasure cards
-figure out how to end turn immediately, but still show to other players what was played/bought that they haven't seen yet
+gardens don't add to score
+refresh issues

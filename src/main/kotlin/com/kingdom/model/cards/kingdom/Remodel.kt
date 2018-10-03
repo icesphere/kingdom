@@ -14,6 +14,8 @@ class Remodel : KingdomCard(NAME, CardType.Action, 4), TrashCardsForBenefitActio
 
     override fun isCardApplicable(card: Card): Boolean = true
 
+    override val isTrashingCard: Boolean = true
+
     init {
         special = "Trash a card from your hand. Gain a card costing up to \$2 more than the trashed card."
     }
