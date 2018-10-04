@@ -4,7 +4,7 @@ cards overflow weird when too many on desktop
 bots need to be better
 refresh sometimes has issues after quit game
 problem starting new game after exiting game
-loading dialog looks weird
+info dialogs look weird
 better notification of chat on mobile view
 maybe show card name of card that triggered card action and maybe show who played the card if not you
 considering using embedded database so app can be deployed easily anywhere

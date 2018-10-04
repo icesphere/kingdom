@@ -1,4 +1,4 @@
-<div id="playerStatsDialog" class="playerStatsDialog" style="display:none" title="Player Game Stats">
+<div id="playerStatsDialog" class="playerStatsDialog gameDialog" style="display:none" title="Player Game Stats">
     <table cellpadding="3">
         <tr>
             <td style="padding-bottom:10px;">

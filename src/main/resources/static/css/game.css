@@ -145,12 +145,10 @@
 
 .loadingDialog
 {
-    font-family:"Times New Roman", Times, serif;
 }
 
 .infoDialog
 {
-    font-family:"Times New Roman", Times, serif;
 }
 
 .gameResults
@@ -192,12 +190,16 @@
 
 .gameInfoDialog
 {
+}
+
+.gameDialog {
     font-family:"Times New Roman", Times, serif;
+    padding: 16px;
+    background: white;
 }
 
 .playerStatsDialog
 {
-    font-family:"Times New Roman", Times, serif;
 }
 
 .gameInfoLabel

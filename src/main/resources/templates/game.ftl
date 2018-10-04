@@ -33,7 +33,7 @@
             </#if>
         </div>
 
-        <div id="loadingDialog" class="loadingDialog" style="display:none" title="">
+        <div id="loadingDialog" class="loadingDialog gameDialog" style="display:none" title="">
             Loading...
         </div>
         <div id="gameInfoDiv">

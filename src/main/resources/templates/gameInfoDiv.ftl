@@ -1,4 +1,4 @@
-<div id="gameInfoDialog" class="gameInfoDialog" style="display:none" title="Game Info">
+<div id="gameInfoDialog" class="gameInfoDialog gameDialog" style="display:none" title="Game Info">
     <table>
         <tr>
             <td style="padding-bottom:10px;">
