@@ -383,11 +383,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return cards
         }
 
-    fun playCard(card: Card, copiedAction: Boolean = false) {
+    fun playCard(card: Card, repeatedAction: Boolean = false) {
 
         game.addHistory("Played card: ${card.cardNameWithBackgroundColor}")
 
-        if (!copiedAction) {
+        if (!repeatedAction) {
 
             played.add(card)
             game.cardsPlayed.add(card)
@@ -471,8 +471,18 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
+    @Suppress("CascadeIf")
     private fun processNextAction(action: Action) {
-        if (action.processAction(this)) {
+        if (action is SelfResolvingAction) {
+            if (action is RepeatCardAction && actionsQueue.isNotEmpty()) {
+                //previous play of card created action that created another action so that needs to be resolved before repeating action
+                actionsQueue.add(action)
+                resolveActions()
+            } else {
+                action.resolveAction(this)
+                resolveActions()
+            }
+        } else if (action.processAction(this)) {
             currentAction = action
         } else {
             action.onNotUsed(this)
@@ -543,6 +553,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun takeTurn()
 
     abstract fun addCardAction(card: CardActionCard, text: String)
+
+    fun addRepeatCardAction(card: Card) {
+        actionsQueue.add(RepeatCardAction(card))
+    }
 
     abstract fun addCardFromDiscardToTopOfDeck(maxCost: Int?)
 
