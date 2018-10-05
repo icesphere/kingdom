@@ -83,19 +83,112 @@ function connect() {
         var userId = data.userId
         console.log("connect to game for user id: " + userId)
 
-        let debouncedRefresh = debounce(function(data) {
+        let debouncedGameRefresh = debounce(function(data) {
             console.log("run debounced refresh-game")
+            //todo figure out how to cancel all the other refreshes if we get this refresh
             refreshGame(JSON.parse(data.body))
-        }, 300)
+        }, 200)
+
+        let debouncedHandAreaRefresh = debounce(function(data) {
+            console.log("run debounced refresh-hand")
+            refreshHandArea(JSON.parse(data.body))
+        }, 200)
+
+        let debouncedCardsPlayedRefresh = debounce(function(data) {
+            console.log("run debounced refresh-cards-played")
+            refreshCardsPlayed(JSON.parse(data.body))
+        }, 200)
+
+        let debouncedCardsBoughtRefresh = debounce(function(data) {
+            console.log("run debounced refresh-cards-bought")
+            refreshCardsBought(JSON.parse(data.body))
+        }, 200)
+
+        let debouncedSupplyRefresh = debounce(function(data) {
+            console.log("run debounced refresh-supply")
+            refreshSupply(JSON.parse(data.body))
+        }, 200)
+
+        let debouncedCardActionRefresh = debounce(function(data) {
+            console.log("run debounced refresh-card-action")
+            refreshCardAction(JSON.parse(data.body))
+        }, 200)
+
+        let debouncedChatRefresh = debounce(function(data) {
+            console.log("run debounced refresh-chat")
+            refreshChat(JSON.parse(data.body))
+        }, 200)
 
         var socket = new SockJS('/kingdom-websocket');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             closeLoadingDialog()
-            stompClient.subscribe('/queue/refresh-game/' + userId, debouncedRefresh);
+            stompClient.subscribe('/queue/refresh-game/' + userId, debouncedGameRefresh);
+            stompClient.subscribe('/queue/refresh-hand-area/' + userId, debouncedHandAreaRefresh);
+            stompClient.subscribe('/queue/refresh-cards-played/' + userId, debouncedCardsPlayedRefresh);
+            stompClient.subscribe('/queue/refresh-cards-bought/' + userId, debouncedCardsBoughtRefresh);
+            stompClient.subscribe('/queue/refresh-supply/' + userId, debouncedSupplyRefresh);
+            stompClient.subscribe('/queue/refresh-card-action/' + userId, debouncedCardActionRefresh);
+            stompClient.subscribe('/queue/refresh-chat/' + userId, debouncedChatRefresh);
         });
     });
+}
+
+
+function refreshGame(data){
+    if(data.redirectToLogin) {
+        document.location = "login.html";
+        return;
+    }
+
+    if(data.redirectToLobby) {
+        document.location = "showGameRooms.html";
+        return;
+    }
+
+    refreshGameInfo();
+
+    if(gameStatus == "Finished") {
+        $('#gameDiv').load('showGameResults.html', function() {
+            refreshFinished();
+            return;
+        });
+    }
+
+    $('#gameDiv').load('getGameDiv.html');
+
+    if(data.infoDialog) {
+        $('#infoDialogDiv').load('getInfoDialogDiv.html', function() {
+            openInfoDialog(data.infoDialog.infoDialogHideMethod, data.infoDialog.infoDialogWidth, data.infoDialog.infoDialogHeight, data.infoDialog.infoDialogTimeout);
+        });
+    }
+
+    refreshFinished();
+}
+
+function refreshHandArea(data) {
+    //todo
+}
+
+function refreshCardsPlayed(data) {
+    //todo
+}
+
+function refreshCardsBought(data) {
+    //todo
+}
+
+function refreshSupply(data) {
+    //todo
+}
+
+function refreshCardAction(data) {
+    //todo
+}
+
+function refreshChat(data) {
+    //todo
 }
 
 // Credit David Walsh (https://davidwalsh.name/javascript-debounce-function)
@@ -203,61 +296,6 @@ function refreshFinished() {
 
 function endTurnRefreshFinished() {
     refreshingGame = false;
-}
-
-function refreshGame(data){
-    if(data.redirectToLogin) {
-        document.location = "login.html";
-        return;
-    }
-
-    if(data.redirectToLobby) {
-        document.location = "showGameRooms.html";
-        return;
-    }
-
-    refreshGameInfo();
-
-    if(gameStatus == "Finished") {
-        $('#gameDiv').load('showGameResults.html', function() {
-            refreshFinished();
-            return;
-        });
-    }
-
-    $('#gameDiv').load('getGameDiv.html');
-
-    if(data.infoDialog) {
-        $('#infoDialogDiv').load('getInfoDialogDiv.html', function() {
-            openInfoDialog(data.infoDialog.infoDialogHideMethod, data.infoDialog.infoDialogWidth, data.infoDialog.infoDialogHeight, data.infoDialog.infoDialogTimeout);
-        });
-    }
-
-    refreshFinished();
-
-    /*
-    if(data.refresh.isRefreshChat){
-        $('#chatDiv').load('getChatDiv.html', function() {
-            divsToLoad--;
-            if(!mobile) {
-                $("#chatDiv").scrollTop($("#chatDiv")[0].scrollHeight);
-            }
-            if(divsToLoad == 0){
-                refreshFinished();
-            }
-        });
-    }
-
-    if(data.refresh.isRefreshInfoDialog){
-        $('#infoDialogDiv').load('getInfoDialogDiv.html', function() {
-            openInfoDialog(data.infoDialog.infoDialogHideMethod, data.infoDialog.infoDialogWidth, data.infoDialog.infoDialogHeight, data.infoDialog.infoDialogTimeout);
-            divsToLoad--;
-            if(divsToLoad == 0){
-                refreshFinished();
-            }
-        });
-    }
-    */
 }
 
 function showLoadingDialog() {

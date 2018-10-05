@@ -7,6 +7,16 @@ import com.kingdom.model.players.Player
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 
+private const val REFRESH_GAME_QUEUE = "refresh-game"
+private const val REFRESH_HAND_AREA = "refresh-hand-area"
+private const val REFRESH_CARDS_PLAYED = "refresh-cards-played"
+private const val REFRESH_CARDS_BOUGHT = "refresh-cards-bought"
+private const val REFRESH_SUPPLY = "refresh-supply"
+private const val REFRESH_CARD_ACTION = "refresh-card-action"
+private const val REFRESH_CHAT = "refresh-chat"
+
+//todo refresh by section
+
 @Service
 class RefreshGameManager(private val messagingTemplate: SimpMessagingTemplate) {
 
@@ -29,7 +39,7 @@ class RefreshGameManager(private val messagingTemplate: SimpMessagingTemplate) {
                 else -> game.currentPlayer.username + "'s Turn"
             }
 
-            messagingTemplate.convertAndSend("/queue/refresh-game/" + player.userId, data)
+            messagingTemplate.convertAndSend("/queue/$REFRESH_GAME_QUEUE/" + player.userId, data)
         }
     }
 
