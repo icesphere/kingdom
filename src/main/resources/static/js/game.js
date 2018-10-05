@@ -3,12 +3,10 @@ var gameStatus = 'WaitingForPlayers';
 var endTurnRefreshTimeout = 1500;
 var selectedCards = new Array();
 var selectedCardNumber = 0;
-var cardActionDialogOpen = false;
 var cardActionNumCards;
 var cardActionType;
 var cardActionCardsSize;
 var refreshingGame = false;
-var cardActionDialog;
 var cardActionSelectExact;
 var cardActionSelectUpTo;
 var cardActionSelectAtLeast;
@@ -43,18 +41,12 @@ $(document).ready(function() {
     };
 
     $(document).bind('keyup', 't', function(){
-        if(!cardActionDialogOpen) {
-            playAllTreasureCards();
-        }
+        playAllTreasureCards();
     });
 
     $(document).bind('keyup', 'e', function(){
-        if(!cardActionDialogOpen) {
-            endTurn();
-        }
+        endTurn();
     });
-
-    setTimeout(function() { refreshGameInfo(); }, 1000);
 });
 
 $(function(){
@@ -309,60 +301,6 @@ function selectCardInOrder(cardName){
     selectedCardNumber++;
 }
 
-function showCardActionDialog(){
-    cardActionDialogOpen = true;
-    $(".cardAction").each(function(idx) {
-        if($(this).attr("hideOnSelect") == "true"){
-            selectedCardNumber = 0;
-            $(this).click(function() {
-                var cardName = $(this).attr("cardName");
-                $(this).hide();
-                selectCardInOrder(cardName);
-            });
-        }
-        else if($(this).attr("disableSelect") == "false"){
-            if($(this).attr("autoSelect") == "true"){
-                $(this).removeClass("cardAction").addClass("cardActionSelected");
-                selectCard($(this).attr("cardIndex"), $(this).attr("cardName"));
-            }
-            $(this).click(function() {
-                var cardIndex = $(this).attr("cardIndex");
-                var cardName = $(this).attr("cardName");
-                var fromClass = "cardAction";
-                var toClass = "cardActionSelected";
-                if(selectedCards[cardIndex]){
-                    fromClass = "cardActionSelected";
-                    toClass = "cardAction";
-                    cardName = null;
-                }
-                $(this).removeClass(fromClass).addClass(toClass);
-                selectCard(cardIndex, cardName);
-            });
-        }
-    });
-
-    cardActionDialog = $("#cardActionDialog_");
-    if(mobile) {
-        cardActionDialog.dialog({
-            modal: true, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-        });
-    }
-    else {
-        cardActionDialog.dialog({
-            modal: true, width: cardActionWidth, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-        });
-    }
-}
-
-function closeCardActionDialog(){
-    cardActionDialogOpen = false;
-    if(cardActionDialog) {
-        cardActionDialog.dialog("close");
-        cardActionDialogOpen = false;
-        focusChat();
-    }
-}
-
 function showGameInfo() {
     $('#gameInfoDiv').load('getGameInfoDiv.html', function() {
         showGameInfoDialog();
@@ -419,7 +357,6 @@ function submitCardAction(){
         submittingCardAction = true;
         if(cardActionType == 13){
             $.get("submitCardAction.html", function(data) {
-                closeCardActionDialog();
             });
         }
         var canSubmit = true;
@@ -460,7 +397,6 @@ function submitCardAction(){
         if(canSubmit){
             var selectedCardsString = selectedCards.join();
             $.get("submitCardAction.html", {selectedCards: selectedCardsString}, function(data) {
-                closeCardActionDialog();
                 submittingCardAction = false;
                 showLoadingDialog();
             });
@@ -514,7 +450,6 @@ function submitCardActionChooseNumberBetween(numberChosen){
     if(!submittingCardAction) {
         submittingCardAction = true;
         $.get("submitCardAction.html", {numberChosen: numberChosen}, function(data) {
-            closeCardActionDialog();
             submittingCardAction = false;
             showLoadingDialog();
         });

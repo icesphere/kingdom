@@ -969,6 +969,10 @@ class GameController(private val cardManager: CardManager,
 
         val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
 
+        if (player.currentAction != null) {
+            return emptyModelAndView
+        }
+
         try {
             //todo
             //game.playAllTreasureCards(player)
