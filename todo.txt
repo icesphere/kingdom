@@ -8,6 +8,4 @@ better notification of chat on mobile view
 maybe show card name of card that triggered card action and maybe show who played the card if not you
 considering using embedded database so app can be deployed easily anywhere
 fix play all treasure cards
-refresh issues
 figure out how to not have delay before human player turn ended, but still show what they bought
-better game refresh

@@ -358,6 +358,10 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
         refreshGameManager.refreshCardsBought(this)
     }
 
+    fun refreshPlayerCardsBought(player: Player) {
+        refreshGameManager.refreshCardsBought(player)
+    }
+
     fun refreshCardsPlayed() {
         refreshGameManager.refreshCardsPlayed(this)
     }

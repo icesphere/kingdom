@@ -43,6 +43,10 @@ class RefreshGameManager(private val messagingTemplate: SimpMessagingTemplate) {
         }
     }
 
+    fun refreshCardsBought(player: Player) {
+        refreshPlayerQueue(REFRESH_CARDS_BOUGHT_QUEUE, player)
+    }
+
     fun refreshSupply(game: Game) {
         game.humanPlayers.forEach { refreshPlayerQueue(REFRESH_SUPPLY_QUEUE, it) }
     }

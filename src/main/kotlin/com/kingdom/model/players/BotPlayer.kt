@@ -21,7 +21,12 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         get() {
             val actionCards = hand.filter { it.isAction }
             val treasureCards = hand.filter { it.isTreasure }
-            return if (actions > 0 && actionCards.isNotEmpty()) actionCards else treasureCards
+
+            return when {
+                actions > 0 && actionCards.isNotEmpty() -> actionCards
+                game.isPlayTreasureCards -> treasureCards
+                else -> emptyList()
+            }
         }
 
     override fun takeTurn() {

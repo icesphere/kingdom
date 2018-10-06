@@ -867,7 +867,7 @@ class GameController(private val cardManager: CardManager,
                         game.refreshCardsBought()
 
                         if (player.buys == 0) {
-                            player.endTurn(true)
+                            player.endTurn()
                         }
                     }
                 }
@@ -913,6 +913,8 @@ class GameController(private val cardManager: CardManager,
         player.actionResult(action!!, result)
 
         player.game.refreshPlayerCardAction(player)
+        player.game.refreshSupply()
+        player.game.refreshPlayerHandArea(player)
     }
 
     fun highlightCard(player: Player, card: Card?, cardLocation: CardLocation): Boolean {
@@ -995,7 +997,7 @@ class GameController(private val cardManager: CardManager,
         if (player.currentAction != null) {
             game.refreshGame()
         } else {
-            player.endTurn(true)
+            player.endTurn()
             return ModelAndView("redirect:/showGame.html")
         }
 
@@ -1144,16 +1146,11 @@ class GameController(private val cardManager: CardManager,
             if (KingdomUtil.isMobile(request)) {
                 supplyDivTemplate = "supplyDivMobile"
             }
+
             val modelAndView = ModelAndView(supplyDivTemplate)
 
-            val player = game.playerMap[user.userId]!!
+            addGameObjects(game, user, modelAndView, request)
 
-            addPlayerAndGameDataToModelAndView(game, user, modelAndView, request)
-
-            addSupplyDataToModelAndView(game, player, modelAndView)
-
-            modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1171,6 +1168,7 @@ class GameController(private val cardManager: CardManager,
         try {
             val bw = BeansWrapper()
             modelAndView.addObject("supply", bw.wrap(game.pileAmounts))
+            modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
             if (game.isShowEmbargoTokens) {
                 modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
             }

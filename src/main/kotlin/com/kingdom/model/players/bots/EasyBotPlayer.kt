@@ -65,10 +65,10 @@ open class EasyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
         val goldsBought = cardCountByName(Gold.NAME)
 
         when {
-            coins < 2 && !isGardensStrategy && !isHasGoons -> return null
-            chapelStrategy && cardCountByName(Chapel.NAME) == 0 && (coins == 3 && silversBought > 0 || coins == 2) -> return Chapel.NAME
-            chapelStrategy && coins <= 3 && silversBought < 2 && goldsBought == 0 && availableCardsToBuyNames.contains(Silver.NAME) -> return Silver.NAME
-            chapelStrategy && laboratoryStrategy && coins <= 5 && availableCardsToBuyNames.contains(Laboratory.NAME) -> return Laboratory.NAME
+            availableCoins < 2 && !isGardensStrategy && !isHasGoons -> return null
+            chapelStrategy && cardCountByName(Chapel.NAME) == 0 && (availableCoins == 3 && silversBought > 0 || availableCoins == 2) -> return Chapel.NAME
+            chapelStrategy && availableCoins <= 3 && silversBought < 2 && goldsBought == 0 && availableCardsToBuyNames.contains(Silver.NAME) -> return Silver.NAME
+            chapelStrategy && laboratoryStrategy && availableCoins <= 5 && availableCardsToBuyNames.contains(Laboratory.NAME) -> return Laboratory.NAME
             availableCardsToBuyNames.contains(Gold.NAME) && goldsBought == 0 && (!game.isIncludePlatinumCards || !availableCardsToBuyNames.contains(Platinum.NAME)) -> return Gold.NAME
             isGardensStrategy && turns > 4 && availableCardsToBuyNames.contains(Gardens.NAME) -> return Gardens.NAME
             /*dukeStrategy -> {

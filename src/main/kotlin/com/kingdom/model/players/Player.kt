@@ -38,7 +38,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var isYourTurn: Boolean = false
         protected set
 
-    var coins: Int = 0
+    private var coins: Int = 0
 
     private var coinsInHand: Int = 0
         get() = hand.filter { it.isTreasure }.sumBy { it.addCoins }
@@ -201,14 +201,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun addCoins(coins: Int) {
         this.coins += coins
         coinsGainedThisTurn += coins
+        game.refreshSupply()
+        game.refreshPlayerCardsBought(this)
     }
 
-    fun endTurn(addDelay: Boolean = false) {
-
-        if (addDelay) {
-            //todo find a better way to handle this
-            Thread.sleep(1000)
-        }
+    fun endTurn() {
 
         addGameLog("Ending turn")
 
@@ -737,6 +734,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun canBuyCard(card: Card): Boolean {
         val cost = getCardCostWithModifiers(card)
-        return game.isCardAvailableInSupply(card) && coins >= cost
+        return game.isCardAvailableInSupply(card) && availableCoins >= cost
     }
 }

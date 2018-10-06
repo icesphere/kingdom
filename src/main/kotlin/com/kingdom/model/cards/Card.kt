@@ -285,7 +285,7 @@ abstract class Card(
 
         player.actions += addActions
         player.buys += addBuys
-        player.coins += addCoins
+        player.addCoins(addCoins)
 
         if (addCards > 0) {
             player.drawCards(addCards)
