@@ -47,6 +47,8 @@ $(document).ready(function() {
     $(document).bind('keyup', 'e', function(){
         endTurn();
     });
+
+    setTimeout(function() { refreshGameInfo(); }, 1000);
 });
 
 $(function(){
@@ -91,32 +93,37 @@ function connect() {
 
         let debouncedHandAreaRefresh = debounce(function(data) {
             console.log("run debounced refresh-hand")
-            refreshHandArea(JSON.parse(data.body))
+            refreshHandArea()
         }, 200)
 
         let debouncedCardsPlayedRefresh = debounce(function(data) {
             console.log("run debounced refresh-cards-played")
-            refreshCardsPlayed(JSON.parse(data.body))
+            refreshCardsPlayed()
         }, 200)
 
         let debouncedCardsBoughtRefresh = debounce(function(data) {
             console.log("run debounced refresh-cards-bought")
-            refreshCardsBought(JSON.parse(data.body))
+            refreshCardsBought()
         }, 200)
 
         let debouncedSupplyRefresh = debounce(function(data) {
             console.log("run debounced refresh-supply")
-            refreshSupply(JSON.parse(data.body))
+            refreshSupply()
         }, 200)
 
         let debouncedCardActionRefresh = debounce(function(data) {
             console.log("run debounced refresh-card-action")
-            refreshCardAction(JSON.parse(data.body))
+            refreshCardAction()
         }, 200)
 
         let debouncedChatRefresh = debounce(function(data) {
             console.log("run debounced refresh-chat")
-            refreshChat(JSON.parse(data.body))
+            refreshChat()
+        }, 200)
+
+        let debouncedHistoryRefresh = debounce(function(data) {
+            console.log("run debounced refresh-history")
+            refreshHistory()
         }, 200)
 
         var socket = new SockJS('/kingdom-websocket');
@@ -131,6 +138,7 @@ function connect() {
             stompClient.subscribe('/queue/refresh-supply/' + userId, debouncedSupplyRefresh);
             stompClient.subscribe('/queue/refresh-card-action/' + userId, debouncedCardActionRefresh);
             stompClient.subscribe('/queue/refresh-chat/' + userId, debouncedChatRefresh);
+            stompClient.subscribe('/queue/refresh-history/' + userId, debouncedHistoryRefresh);
         });
     });
 }
@@ -167,28 +175,32 @@ function refreshGame(data){
     refreshFinished();
 }
 
-function refreshHandArea(data) {
-    //todo
+function refreshHandArea() {
+    $('#handAreaDiv').load('getHandAreaDiv.html')
 }
 
-function refreshCardsPlayed(data) {
-    //todo
+function refreshCardsPlayed() {
+    $('#cardsPlayedDiv').load('getCardsPlayedDiv.html')
 }
 
-function refreshCardsBought(data) {
-    //todo
+function refreshCardsBought() {
+    $('#cardsBoughtDiv').load('getCardsBoughtDiv.html')
 }
 
-function refreshSupply(data) {
-    //todo
+function refreshSupply() {
+    $('#supplyDiv').load('getSupplyDiv.html')
 }
 
-function refreshCardAction(data) {
-    //todo
+function refreshCardAction() {
+    $('#cardActionDiv').load('getCardActionDiv.html')
 }
 
-function refreshChat(data) {
-    //todo
+function refreshChat() {
+    $('#chatDiv').load('getChatDiv.html')
+}
+
+function refreshHistory() {
+    $('#historyDiv').load('getHistoryDiv.html')
 }
 
 // Credit David Walsh (https://davidwalsh.name/javascript-debounce-function)
@@ -307,9 +319,8 @@ function closeLoadingDialog() {
 }
 
 function clickCard(clickType, cardName, cardId, special){
-    if (!clickingCard && currentPlayer && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand" || clickType == "cardAction")){
+    if (!clickingCard && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand" || clickType == "cardAction")){
         clickingCard = true;
-        showLoadingDialog();
         $.post("clickCard", {clickType: clickType, cardName: cardName, cardId: cardId}, function(data) {
             clickingCard = false;
         });

@@ -25,12 +25,10 @@ class FreeCardFromSupply(private val maxCost: Int?, text: String, private val de
 
         player.addGameLog(player.username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
 
-        if (destination == CardLocation.Hand) {
-            player.acquireCardToHand(card)
-        } else if (destination == CardLocation.Deck) {
-            player.acquireCardToTopOfDeck(card)
-        } else {
-            player.cardAcquired(card)
+        when (destination) {
+            CardLocation.Hand -> player.acquireCardToHand(card)
+            CardLocation.Deck -> player.acquireCardToTopOfDeck(card)
+            else -> player.cardAcquired(card)
         }
 
         return true

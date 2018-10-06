@@ -206,6 +206,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun endTurn(addDelay: Boolean = false) {
 
         if (addDelay) {
+            //todo find a better way to handle this
             Thread.sleep(1000)
         }
 
@@ -261,12 +262,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from discard")
         discard.remove(card)
         cardTrashed(card)
+        game.refreshPlayerHandArea(this)
     }
 
     fun trashCardFromHand(card: Card) {
         addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from hand")
         hand.remove(card)
         cardTrashed(card)
+        game.refreshPlayerHandArea(this)
     }
 
     fun cardTrashed(card: Card) {
@@ -297,11 +300,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun acquireCardToTopOfDeck(card: Card) {
         acquireCardToTopOfDeck = true
         cardAcquired(card)
+        game.refreshPlayerHandArea(this)
     }
 
     fun acquireCardToHand(card: Card) {
         acquireCardToHand = true
         cardAcquired(card)
+        game.refreshPlayerHandArea(this)
     }
 
     fun addCardToTopOfDeck(card: Card, addGameLog: Boolean = true) {
@@ -309,6 +314,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (addGameLog) {
             addGameLog("Added " + card.cardNameWithBackgroundColor + " to top of deck")
         }
+        game.refreshPlayerHandArea(this)
     }
 
     private fun addCardToHand(card: Card, addToGameLog: Boolean = true) {
@@ -316,6 +322,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (addToGameLog) {
             addGameLog("Added " + card.cardNameWithBackgroundColor + " to hand")
         }
+        game.refreshPlayerHandArea(this)
     }
 
     fun cardAcquired(card: Card) {
@@ -336,7 +343,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 isNextCardToHand = false
                 addCardToHand(card)
             }
-            else -> discard.add(card)
+            else -> {
+                addCardToDiscard(card)
+            }
         }
 
         if (isYourTurn) {
@@ -358,6 +367,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             bought.add(card)
             game.cardsBought.add(card)
             game.removeCardFromSupply(card)
+            game.refreshCardsBought()
             cardAcquired(card)
         }
     }
@@ -397,6 +407,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             inPlay.add(card)
             hand.remove(card)
+
+            game.refreshPlayerHandArea(this)
+            game.refreshCardsPlayed()
         }
 
         card.cardPlayed(this)
@@ -446,6 +459,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun addCardToDiscard(card: Card) {
         discard.add(card)
         cardRemovedFromPlay(card)
+        game.refreshPlayerHandArea(this)
     }
 
     fun discardCardFromHand() {
@@ -484,6 +498,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         } else if (action.processAction(this)) {
             currentAction = action
+            game.refreshPlayerCardAction(this)
         } else {
             action.onNotUsed(this)
             resolveActions()
@@ -623,11 +638,21 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return null
         }
 
-        return deck.removeAt(0)
+        val card = deck.removeAt(0)
+
+        game.refreshPlayerHandArea(this)
+
+        return card
     }
 
     fun removeCardFromDeck(card: Card) {
         deck.remove(card)
+        game.refreshPlayerHandArea(this)
+    }
+
+    fun removeCardFromHand(card: Card) {
+        hand.remove(card)
+        game.refreshPlayerHandArea(this)
     }
 
     val cardOnTopOfDiscard: Card?

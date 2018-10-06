@@ -38,6 +38,10 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
     var password = ""
 
     var players: MutableList<Player> = ArrayList()
+
+    val humanPlayers: List<Player>
+        get() = players.filterNot { it.isBot }
+
     val playerMap: MutableMap<Int, Player> = HashMap(6)
     private val playersExited = HashSet<Int>(6)
 
@@ -312,6 +316,10 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
 
         maxHistoryTurnSize = players.size + 1
 
+        if (currentPlayer.isBot) {
+            Thread.sleep(1000)
+        }
+
         startTurnInNewThreadIfComputerVsHuman()
     }
 
@@ -326,7 +334,7 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
         recentTurnHistory.add(currentTurn!!)
         turnHistory.add(currentTurn!!)
 
-        refreshGame()
+        refreshHistory()
 
         if (currentPlayer.isBot && currentPlayer.opponents.any { it is HumanPlayer }) {
             currentPlayer.opponents.filter { it is HumanPlayer }.forEach { p ->
@@ -340,6 +348,34 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
 
     fun refreshGame() {
         refreshGameManager.refreshGame(this)
+    }
+
+    fun refreshSupply() {
+        refreshGameManager.refreshSupply(this)
+    }
+
+    fun refreshCardsBought() {
+        refreshGameManager.refreshCardsBought(this)
+    }
+
+    fun refreshCardsPlayed() {
+        refreshGameManager.refreshCardsPlayed(this)
+    }
+
+    fun refreshHistory() {
+        refreshGameManager.refreshHistory(this)
+    }
+
+    fun refreshPlayerCardAction(player: Player) {
+        refreshGameManager.refreshCardAction(player)
+    }
+
+    fun refreshPlayerHandArea(player: Player) {
+        refreshGameManager.refreshHandArea(player)
+    }
+
+    fun refreshChat() {
+        refreshGameManager.refreshChat(this)
     }
 
     fun turnEnded() {
@@ -405,6 +441,7 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
 
     fun removeCardFromSupply(card: Card) {
         pileAmounts[card.name] = pileAmounts[card.name]!!.minus(1)
+        refreshSupply()
     }
 
     val nonEmptyPiles
@@ -610,10 +647,6 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
             prizeCards.toCardNames()
         }
 
-    private fun refreshChat() {
-        refreshGameManager.refreshChat(this)
-    }
-
     fun closeLoadingDialog(player: Player) {
         //todo?
     }
@@ -818,6 +851,6 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
     fun addHistory(history: String) {
         currentTurn?.addHistory(history)
         historyEntriesAddedThisTurn++
-        refreshGame()
+        refreshHistory()
     }
 }

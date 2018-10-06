@@ -785,10 +785,6 @@ class GameController(private val cardManager: CardManager,
 
     }
 
-    fun refreshGame(game: Game) {
-        refreshGameManager.refreshGame(game)
-    }
-
     @ResponseBody
     @RequestMapping(value = ["/getGameInfo"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun getGameInfo(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
@@ -837,8 +833,6 @@ class GameController(private val cardManager: CardManager,
             game.logError(error)
         }
 
-        refreshGame(game)
-
         return emptyModelAndView
     }
 
@@ -869,7 +863,12 @@ class GameController(private val cardManager: CardManager,
                         handleCardClickedForAction(player, card, source)
                     } else {
                         player.buyCard(card)
-                        refreshGame(game)
+                        game.refreshSupply()
+                        game.refreshCardsBought()
+
+                        if (player.buys == 0) {
+                            player.endTurn(true)
+                        }
                     }
                 }
             }
@@ -880,7 +879,7 @@ class GameController(private val cardManager: CardManager,
                         handleCardClickedForAction(player, card, source)
                     } else {
                         player.playCard(card)
-                        refreshGame(game)
+                        game.refreshPlayerHandArea(player)
                     }
                 }
             }
@@ -902,14 +901,6 @@ class GameController(private val cardManager: CardManager,
                 //do nothing
             }
         }
-
-        if (action != null) {
-            refreshGame(game)
-        } else {
-            if (player.buys == 0) {
-                player.endTurn(true)
-            }
-        }
     }
 
     fun handleCardClickedForAction(player: Player, card: Card, cardLocation: CardLocation) {
@@ -921,7 +912,7 @@ class GameController(private val cardManager: CardManager,
 
         player.actionResult(action!!, result)
 
-        player.game.refreshGame()
+        player.game.refreshPlayerCardAction(player)
     }
 
     fun highlightCard(player: Player, card: Card?, cardLocation: CardLocation): Boolean {
@@ -983,8 +974,6 @@ class GameController(private val cardManager: CardManager,
             game.logError(error)
         }
 
-        refreshGame(game)
-
         return emptyModelAndView
     }
 
@@ -1031,10 +1020,10 @@ class GameController(private val cardManager: CardManager,
             val result = ActionResult()
             result.choiceSelected = request.getParameter("choice").toInt()
             player.actionResult(player.currentAction!!, result)
-            game.refreshGame()
+            player.game.refreshPlayerCardAction(player)
         }
 
-        refreshGame(game)
+        game.refreshPlayerCardAction(player)
 
         return emptyModelAndView
     }
@@ -1057,7 +1046,7 @@ class GameController(private val cardManager: CardManager,
             player.actionResult(player.currentAction!!, ActionResult().apply { isDoNotUse = true })
         }
 
-        refreshGame(game)
+        game.refreshPlayerCardAction(player)
 
         return emptyModelAndView
     }
@@ -1080,7 +1069,7 @@ class GameController(private val cardManager: CardManager,
             player.actionResult(player.currentAction!!, ActionResult().apply { isDoneWithAction = true })
         }
 
-        refreshGame(game)
+        game.refreshPlayerCardAction(player)
 
         return emptyModelAndView
     }
@@ -1645,7 +1634,7 @@ class GameController(private val cardManager: CardManager,
                 game.playerQuitGame(player)
             }
 
-            refreshGame(game)
+            game.refreshGame()
 
             return emptyModelAndView
         } catch (t: Throwable) {
@@ -1721,7 +1710,7 @@ class GameController(private val cardManager: CardManager,
                 }
             }
 
-            refreshGame(game)
+            game.refreshChat()
 
             return emptyModelAndView
         } catch (t: Throwable) {
@@ -2362,8 +2351,6 @@ class GameController(private val cardManager: CardManager,
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
             game.logError(error)
         }
-
-        refreshGame(game)
 
         return emptyModelAndView
     }

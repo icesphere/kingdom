@@ -57,19 +57,19 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun acquireFreeCard(maxCost: Int?) {
-        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply costing up to " + maxCost))
+        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply costing up to $maxCost"))
     }
 
     override fun acquireFreeCardToTopOfDeck(maxCost: Int?) {
-        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to the top of your deck costing up to " + maxCost, CardLocation.Deck))
+        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to the top of your deck costing up to $maxCost", CardLocation.Deck))
     }
 
     override fun acquireFreeCardToHand(maxCost: Int?) {
-        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to your hand costing up to " + maxCost, CardLocation.Hand))
+        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to your hand costing up to $maxCost", CardLocation.Hand))
     }
 
     override fun acquireFreeCardOfTypeToHand(maxCost: Int?, cardType: CardType) {
-        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to your hand costing up to " + maxCost, CardLocation.Hand, cardType))
+        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to your hand costing up to $maxCost", CardLocation.Hand, cardType))
     }
 
     override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String) {

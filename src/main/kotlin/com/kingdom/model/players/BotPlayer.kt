@@ -42,8 +42,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 playCard(card)
             }
 
-            refreshGame()
-
             if (availableCoins > 0 && buys > 0) {
                 val cardToBuy = getCardToBuy()
                 if (cardToBuy != null) {
@@ -51,13 +49,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                     this.buyCard(game.getSupplyCard(cardToBuy))
                 }
             }
-
-            if (!endTurn) {
-                refreshGame()
-            }
         }
-
-        refreshGame()
 
         endTurn()
     }
@@ -573,11 +565,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler) {
         //todo
-    }
-
-    private fun refreshGame() {
-        game.refreshGame()
-        Thread.sleep(1000)
     }
 
     override fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean) {
