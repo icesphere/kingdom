@@ -1,11 +1,11 @@
 repeat game is broken
 cards overflow weird when too many on desktop
 bots need to be better
+support multiple info messages
 refresh sometimes has issues after quit game
 problem starting new game after exiting game
 info dialogs look weird - change how to show info dialogs
-better notification of chat on mobile view
 maybe show card name of card that triggered card action and maybe show who played the card if not you
 considering using embedded database so app can be deployed easily anywhere
 fix play all treasure cards
-figure out how to not have delay before human player turn ended, but still show what they bought
+figure out how to show what previous player(s) bought

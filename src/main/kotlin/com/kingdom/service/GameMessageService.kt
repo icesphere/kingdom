@@ -2,7 +2,6 @@ package com.kingdom.service
 
 import com.kingdom.model.Game
 import com.kingdom.model.GameStatus
-import com.kingdom.model.InfoDialog
 import com.kingdom.model.players.Player
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
@@ -15,11 +14,12 @@ private const val REFRESH_SUPPLY_QUEUE = "refresh-supply"
 private const val REFRESH_CARD_ACTION_QUEUE = "refresh-card-action"
 private const val REFRESH_CHAT_QUEUE = "refresh-chat"
 private const val REFRESH_HISTORY_QUEUE = "refresh-history"
+private const val SHOW_INFO_MESSAGE_QUEUE = "show-info-message"
 
 //todo refresh info dialog
 
 @Service
-class RefreshGameManager(private val messagingTemplate: SimpMessagingTemplate) {
+class GameMessageService(private val messagingTemplate: SimpMessagingTemplate) {
 
     fun refreshGame(game: Game) {
         game.humanPlayers.forEach { refreshPlayerGame(it) }
@@ -63,12 +63,18 @@ class RefreshGameManager(private val messagingTemplate: SimpMessagingTemplate) {
         game.humanPlayers.forEach { refreshPlayerQueue(REFRESH_HISTORY_QUEUE, it) }
     }
 
+    fun showInfoMessage(player: Player, message: String) {
+        refreshPlayerQueue(SHOW_INFO_MESSAGE_QUEUE, player, message)
+    }
+
+    fun showInfoMessageForUserId(userId: Int, message: String) {
+        messagingTemplate.convertAndSend("/queue/$SHOW_INFO_MESSAGE_QUEUE/$userId", message)
+    }
+
     fun refreshPlayerGame(player: Player) {
         val game = player.game
 
         val data = getRefreshGameData(player)
-
-        data.infoDialog = player.infoDialog
 
         data.title = when {
             game.status == GameStatus.Finished -> "Game Over"
@@ -76,12 +82,12 @@ class RefreshGameManager(private val messagingTemplate: SimpMessagingTemplate) {
             else -> game.currentPlayer.username + "'s Turn"
         }
 
-        messagingTemplate.convertAndSend("/queue/$REFRESH_GAME_QUEUE/${player.userId}", data)
+        refreshPlayerQueue(REFRESH_GAME_QUEUE, player, data)
     }
 
-    private fun refreshPlayerQueue(queueName: String, player: Player) {
+    private fun refreshPlayerQueue(queueName: String, player: Player, data: Any = "refresh") {
         if (!player.isBot) {
-            messagingTemplate.convertAndSend("/queue/$queueName/${player.userId}", "refresh")
+            messagingTemplate.convertAndSend("/queue/$queueName/${player.userId}", data)
         }
     }
 
@@ -92,7 +98,5 @@ class RefreshGameManager(private val messagingTemplate: SimpMessagingTemplate) {
 
 class RefreshGameData(val gameStatus: GameStatus,
                       val isCurrentPlayer: Boolean) {
-
-    var infoDialog: InfoDialog? = null
     var title: String? = null
 }

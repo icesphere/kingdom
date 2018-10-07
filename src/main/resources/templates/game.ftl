@@ -8,6 +8,7 @@
         <#include "commonIncludes.ftl">
         <#if mobile>
             <script type="text/javascript" src="js/soundmanager2empty.js"></script>
+            <link href="css/game.css" rel="stylesheet" type="text/css">
             <link href="css/gameMobile.css" rel="stylesheet" type="text/css">
             <script type="text/javascript" >
                 var playSound = false;

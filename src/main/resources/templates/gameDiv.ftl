@@ -25,6 +25,10 @@
         <#include "cardActionDiv.ftl">
     </div>
 
+    <div id="infoMessageDiv" style="display: none;">
+        <#include "infoMessageDiv.ftl">
+    </div>
+
 </div>
 
 <#if mobile>
@@ -50,9 +54,5 @@
         <#include "historyDivMobile.ftl">
     </div>
 </#if>
-
-<div id="infoDialogDiv">
-    <#include "infoDialogDiv.ftl">
-</div>
 
     

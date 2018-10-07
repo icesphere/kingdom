@@ -87,7 +87,6 @@ function connect() {
 
         let debouncedGameRefresh = debounce(function(data) {
             console.log("run debounced refresh-game")
-            //todo figure out how to cancel all the other refreshes if we get this refresh
             refreshGame(JSON.parse(data.body))
         }, 200)
 
@@ -139,10 +138,10 @@ function connect() {
             stompClient.subscribe('/queue/refresh-card-action/' + userId, debouncedCardActionRefresh);
             stompClient.subscribe('/queue/refresh-chat/' + userId, debouncedChatRefresh);
             stompClient.subscribe('/queue/refresh-history/' + userId, debouncedHistoryRefresh);
+            stompClient.subscribe('/queue/show-info-message/' + userId, function(data) { showInfoMessage(data.body) });
         });
     });
 }
-
 
 function refreshGame(data){
     if(data.redirectToLogin) {
@@ -166,13 +165,15 @@ function refreshGame(data){
 
     $('#gameDiv').load('getGameDiv.html');
 
-    if(data.infoDialog) {
-        $('#infoDialogDiv').load('getInfoDialogDiv.html', function() {
-            openInfoDialog(data.infoDialog.infoDialogHideMethod, data.infoDialog.infoDialogWidth, data.infoDialog.infoDialogHeight, data.infoDialog.infoDialogTimeout);
-        });
-    }
-
     refreshFinished();
+}
+
+function showInfoMessage(message) {
+    $('#infoMessageText').html(message)
+    $('#infoMessageDiv').show()
+    setTimeout(function() {
+        $('#infoMessageDiv').hide()
+    }, 5000)
 }
 
 function refreshHandArea() {
@@ -371,27 +372,6 @@ function showGameInfoDialog() {
 
 function closeGameInfoDialog() {
     $("#gameInfoDialog").dialog("destroy").remove();
-}
-
-function openInfoDialog(infoDialogHideMethod, infoDialogWidth, infoDialogHeight, infoDialogTimeout){
-
-    if(mobile && infoDialogWidth > 200) {
-        $("#infoDialog").dialog({
-            modal: false, draggable:false, resizable:false, hide: infoDialogHideMethod, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-        });
-    }
-    else {
-        $("#infoDialog").dialog({
-            modal: false, width: infoDialogWidth, height: infoDialogHeight, draggable:false, resizable:false, hide: infoDialogHideMethod, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-        });
-    }
-
-    setTimeout ( "closeInfoDialog()", infoDialogTimeout);
-}
-
-function closeInfoDialog(){
-    $("#infoDialog").dialog("destroy").remove();
-    focusChat();
 }
 
 function focusChat(){

@@ -12,7 +12,7 @@ import com.kingdom.model.players.bots.HardBotPlayer
 import com.kingdom.model.players.bots.MediumBotPlayer
 import com.kingdom.service.GameManager
 import com.kingdom.service.LoggedInUsers
-import com.kingdom.service.RefreshGameManager
+import com.kingdom.service.GameMessageService
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.toCardNames
 import org.apache.commons.lang3.StringUtils
@@ -20,7 +20,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.full.createInstance
 
-class Game(private val gameManager: GameManager, private val refreshGameManager: RefreshGameManager) {
+class Game(private val gameManager: GameManager, private val gameMessageService: GameMessageService) {
     val gameId: String = UUID.randomUUID().toString()
 
     var turn: Int = 0
@@ -347,39 +347,43 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
     }
 
     fun refreshGame() {
-        refreshGameManager.refreshGame(this)
+        gameMessageService.refreshGame(this)
     }
 
     fun refreshSupply() {
-        refreshGameManager.refreshSupply(this)
+        gameMessageService.refreshSupply(this)
     }
 
     fun refreshCardsBought() {
-        refreshGameManager.refreshCardsBought(this)
+        gameMessageService.refreshCardsBought(this)
     }
 
     fun refreshPlayerCardsBought(player: Player) {
-        refreshGameManager.refreshCardsBought(player)
+        gameMessageService.refreshCardsBought(player)
     }
 
     fun refreshCardsPlayed() {
-        refreshGameManager.refreshCardsPlayed(this)
+        gameMessageService.refreshCardsPlayed(this)
     }
 
     fun refreshHistory() {
-        refreshGameManager.refreshHistory(this)
+        gameMessageService.refreshHistory(this)
     }
 
     fun refreshPlayerCardAction(player: Player) {
-        refreshGameManager.refreshCardAction(player)
+        gameMessageService.refreshCardAction(player)
     }
 
     fun refreshPlayerHandArea(player: Player) {
-        refreshGameManager.refreshHandArea(player)
+        gameMessageService.refreshHandArea(player)
     }
 
     fun refreshChat() {
-        refreshGameManager.refreshChat(this)
+        gameMessageService.refreshChat(this)
+    }
+
+    fun showInfoMessage(player: Player, message: String) {
+        gameMessageService.showInfoMessage(player, message)
     }
 
     fun turnEnded() {
@@ -459,18 +463,21 @@ class Game(private val gameManager: GameManager, private val refreshGameManager:
 
     fun addGameChat(message: String) {
         chats.add(ChatMessage(message, "black"))
+        players.forEach { showInfoMessage(it, message) }
         refreshChat()
     }
 
     fun addChat(player: Player, message: String) {
         updateLastActivity()
         chats.add(ChatMessage(player.username + ": " + message, player.chatColor))
+        players.filterNot { it.userId == player.userId }.forEach { showInfoMessage(it, "Chat from ${player.username}: $message") }
         refreshChat()
     }
 
     fun addPrivateChat(sender: User, receiver: User, message: String) {
         updateLastActivity()
         chats.add(ChatMessage("Private chat from " + sender.username + ": " + message, "black", receiver.userId))
+        gameMessageService.showInfoMessageForUserId(receiver.userId, "Private chat from ${sender.username}: $message")
         refreshChat()
     }
 

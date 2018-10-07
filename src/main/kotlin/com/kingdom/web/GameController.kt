@@ -29,7 +29,7 @@ class GameController(private val cardManager: CardManager,
                      private val gameManager: GameManager,
                      private val gameRoomManager: GameRoomManager,
                      private val lobbyChats: LobbyChats,
-                     private val refreshGameManager: RefreshGameManager) {
+                     private val gameMessageService: GameMessageService) {
 
     @ResponseBody
     @RequestMapping(value = ["/getUserId"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
@@ -123,7 +123,7 @@ class GameController(private val cardManager: CardManager,
     @Throws(TemplateModelException::class)
     fun generateCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = User()
-        val game = Game(gameManager, refreshGameManager)
+        val game = Game(gameManager, gameMessageService)
 
         val generateType = request.getParameter("generateType")
 
@@ -803,7 +803,7 @@ class GameController(private val cardManager: CardManager,
             return model
         }
 
-        model["refreshGameData"] = refreshGameManager.getRefreshGameData(player)
+        model["refreshGameData"] = gameMessageService.getRefreshGameData(player)
 
         return model
     }
@@ -1022,10 +1022,11 @@ class GameController(private val cardManager: CardManager,
             val result = ActionResult()
             result.choiceSelected = request.getParameter("choice").toInt()
             player.actionResult(player.currentAction!!, result)
-            player.game.refreshPlayerCardAction(player)
         }
 
         game.refreshPlayerCardAction(player)
+        game.refreshSupply()
+        game.refreshPlayerHandArea(player)
 
         return emptyModelAndView
     }
@@ -1072,6 +1073,8 @@ class GameController(private val cardManager: CardManager,
         }
 
         game.refreshPlayerCardAction(player)
+        game.refreshSupply()
+        game.refreshPlayerHandArea(player)
 
         return emptyModelAndView
     }
@@ -1563,24 +1566,6 @@ class GameController(private val cardManager: CardManager,
 
             modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents)
 
-            return modelAndView
-        } catch (t: Throwable) {
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
-    @RequestMapping("/getInfoDialogDiv.html")
-    fun getInfoDialogDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            val modelAndView = ModelAndView("infoDialogDiv")
-            val player = game.playerMap[user.userId]!!
-            modelAndView.addObject("player", player)
             return modelAndView
         } catch (t: Throwable) {
             return logErrorAndReturnEmpty(t, game)

@@ -101,11 +101,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var isWinner: Boolean = false
     var marginOfVictory: Int = 0
 
-    var isShowInfoDialog: Boolean = false
-    var infoDialog: InfoDialog? = null
-    val isInfoDialogSet: Boolean
-        get() = infoDialog != null
-
     val groupedHand: List<Card>
         get() {
             KingdomUtil.groupCards(hand)
@@ -550,6 +545,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         buys = 1
         isYourTurn = true
         turn++
+
+        game.showInfoMessage(this, "Your turn")
+
         addGameLog("")
         addGameLog("*** $username's Turn $turn ***")
         addGameLog("Deck: $currentDeckNumber")

@@ -1,28 +1,13 @@
 .card
 {
-    background-color:#FFFFFF;
     width:70px;
     height:34px;
-    border:black 2px solid;
-    text-align:center;
-    position:relative;
-    border-radius:7px;
-    -moz-border-radius:7px;
-    -webkit-border-radius:7px;
-    font-family:"Times New Roman", Times, serif;
-    cursor: default;
 }
 
 .cardName
 {
     width:70px;
     height:34px;
-    border-top-left-radius:5px;
-    border-top-right-radius:5px;
-    -moz-border-radius-topleft:5px;
-    -moz-border-radius-topright:5px;
-    -webkit-border-top-left-radius:5px;
-    -webkit-border-top-right-radius:5px;
     border-bottom-left-radius:5px;
     border-bottom-right-radius:5px;
     -moz-border-radius-bottomleft:5px;
@@ -31,32 +16,15 @@
     -webkit-border-bottom-right-radius:5px;
 }
 
-.clickableCard
-{
-    background-color:#FFFFFF;
-    cursor: pointer;
-}
-
-.clickableCard:hover
-{
-    background-color:#66AAFF;
-}
-
 .selectedCard
 {
-    border: 2px solid #0000FF !important;
-    cursor: pointer;
-}
-
-.selectedCard:hover
-{
-    background-color:#66AAFF;
+    background-color: white;
 }
 
 .greenClickableCard
 {
+    background-color: white;
     border:#44ee66 2px solid;
-    cursor: pointer;
 }
 
 .cardDisabled
@@ -64,37 +32,13 @@
     background-color: #996666;
 }
 
-.cardAction
-{
-    background-color:#FFFFFF;
-    cursor: pointer;
-}
-
-.cardAction:hover
-{
-    background-color:#66AAFF;
-}
-
 .cardActionSelected
 {
+    background-color: white;
     border:#0066ff 2px solid;
     cursor: pointer;
 }
 
-.cardRow
-{
-    font-size: 9px;
-    padding-top: 1px;
-}
-
-.specialRow
-{
-    font-size: 9px;
-    padding-top:2px;
-    padding-left:4px;
-    padding-right:4px;
-    text-align:center;
-}
 .historyDivColumn
 {
     height: 200px;
@@ -103,34 +47,19 @@
 #historyScrollingDiv
 {
     height:200px;
-    overflow:auto;
-}
-
-#gameDiv
-{
-    width:99%;
 }
 
 #supplyAreaDiv
 {
+    overflow: visible;
     clear:both;
     width:100%;
     padding:2px;
 }
 
-.cardActionContent
-{
-    position:absolute;
-    top: 0;
-    z-index: 1;
-    background-color: rgba(220, 240, 255, 0.9);
-    margin-left: 15px;
-    padding: 15px;
-    width: calc(100% - 60px)
-}
-
 #playingAreaDiv
 {
+    overflow: visible;
     vertical-align:top;
     width:100%;
     padding:2px;
@@ -143,6 +72,7 @@
 
 #handAreaDiv
 {
+    overflow: visible;
     width:100%;
     padding:2px;
 }
@@ -154,50 +84,9 @@
     padding-bottom: 5px;
 }
 
-.loadingDialog
-{
-}
-
-.infoDialog
-{
-}
-
-.gameResults
-{
-    font-size:14px;
-}
-
-.gameResultsPlayerPointsLabel
-{
-    float:left;
-    padding-right:5px;
-}
-
-.gameResultsPlayerPoints
-{
-    float:left;
-    padding-right:10px;
-}
-
-.drawPileCard
-{
-    float: left;
-    margin-right: 3px;
-    background-color: #222222;
-    width: 3px;
-}
-
-.discardPile
-{
-    background-color: #222222;
-}
-
 .handAreaTopRow
 {
     float:left;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 35px;
 }
 
 .handAreaTopRowLeft
@@ -207,58 +96,37 @@
     padding-bottom: 5px;
 }
 
-.gameInfoDialog
-{
-}
-
-.gameDialog {
-    font-family:"Times New Roman", Times, serif;
-    padding: 16px;
-    background: white;
-}
-
-.playerStatsDialog
-{
-}
-
-.gameInfoLabel
-{
-    text-align: right;
-}
-
-.cardColor
-{
-    padding: 0 .6ex 1px .5ex;
-}
-
 .lobby
 {
-    float:left;
+    width: auto;
+    overflow: visible;
+    padding-bottom: 0px;
 }
 
 .lobbyGameRooms
 {
-    clear:left;
-    float:left;
-    vertical-align:top;
+    width: auto;
     margin-right:10px;
 }
 
 .lobbyChatOuter
 {
-    float:left;
-    vertical-align:top;
+    float: none;
+    vertical-align: baseline;
+    width: auto;
     margin-right:10px;
 }
 
 .lobbyChatInner
 {
+    margin-right: 0px;
+    margin-left: 0px;
 }
 
 .lobbyPlayers
 {
-    float:left;
-    vertical-align:top;
+    float: none;
+    width: auto;
     padding-bottom:10px;
 }
 
@@ -269,6 +137,6 @@
 
 .customCardsDeck
 {
-    float:left;
+    height: auto;
     padding-right:10px;
 }

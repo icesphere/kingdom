@@ -129,6 +129,17 @@
     width: calc(100% - 60px)
 }
 
+.infoMessageContent
+{
+    position:absolute;
+    top: 0;
+    z-index: 2;
+    background-color: rgba(220, 255, 240, 0.9);
+    margin-left: 15px;
+    padding: 15px;
+    width: calc(100% - 60px)
+}
+
 #playingAreaDiv
 {
     width:100%;
@@ -144,10 +155,6 @@
 }
 
 .loadingDialog
-{
-}
-
-.infoDialog
 {
 }
 
