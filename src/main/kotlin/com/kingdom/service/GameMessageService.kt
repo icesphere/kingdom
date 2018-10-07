@@ -50,6 +50,10 @@ class GameMessageService(private val messagingTemplate: SimpMessagingTemplate) {
         game.humanPlayers.forEach { refreshPlayerQueue(REFRESH_SUPPLY_QUEUE, it) }
     }
 
+    fun refreshSupply(player: Player) {
+        refreshPlayerQueue(REFRESH_SUPPLY_QUEUE, player)
+    }
+
     fun refreshCardAction(player: Player) {
         refreshPlayerQueue(REFRESH_CARD_ACTION_QUEUE, player)
     }

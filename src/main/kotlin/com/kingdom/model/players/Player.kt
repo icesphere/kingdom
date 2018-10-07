@@ -491,6 +491,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         } else if (action.processAction(this)) {
             currentAction = action
             game.refreshPlayerCardAction(this)
+            game.refreshPlayerHandArea(this)
+            game.refreshPlayerSupply(this)
         } else {
             action.onNotUsed(this)
             resolveActions()
@@ -525,7 +527,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
                 for (opponent in opponents) {
                     if (opponent.currentAction is WaitForOtherPlayersActions) {
-                        opponent.currentAction!!.processActionResult(this, result)
+                        if (opponent.currentAction!!.processActionResult(this, result)) {
+                            opponent.currentAction = null
+                            opponent.game.refreshPlayerCardAction(opponent)
+                            opponent.resolveActions()
+                        }
                     }
                 }
 

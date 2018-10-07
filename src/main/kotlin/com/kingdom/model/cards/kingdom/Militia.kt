@@ -10,15 +10,20 @@ class Militia : KingdomCard(NAME, CardType.ActionAttack, 4) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
+        var addWaitingAction = false
+
         player.opponents
                 .filter { !playersExcludedFromCardEffects.contains(it) }
                 .forEach { p ->
                     if (p.hand.size > 3) {
+                        addWaitingAction = true
                         p.discardCardsFromHand(p.hand.size - 3)
                     }
                 }
 
-        player.waitForOtherPlayersToResolveActions()
+        if (addWaitingAction) {
+            player.waitForOtherPlayersToResolveActions()
+        }
     }
 
     companion object {

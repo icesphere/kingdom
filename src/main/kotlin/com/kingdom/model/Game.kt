@@ -354,6 +354,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         gameMessageService.refreshSupply(this)
     }
 
+    fun refreshPlayerSupply(player: Player) {
+        gameMessageService.refreshSupply(player)
+    }
+
     fun refreshCardsBought() {
         gameMessageService.refreshCardsBought(this)
     }

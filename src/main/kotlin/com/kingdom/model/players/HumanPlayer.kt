@@ -15,7 +15,7 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     private fun addAction(action: Action) {
         actionsQueue.add(action)
 
-        if (isYourTurn && currentAction == null) {
+        if (currentAction == null) {
             resolveActions()
         }
     }
