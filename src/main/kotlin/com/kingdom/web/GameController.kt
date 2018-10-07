@@ -803,9 +803,14 @@ class GameController(private val cardManager: CardManager,
             return model
         }
 
-        model["refreshGameData"] = gameMessageService.getRefreshGameData(player)
+        model["refreshGameData"] = RefreshGameData(player.game.status, player.isYourTurn)
 
         return model
+    }
+
+    class RefreshGameData(val gameStatus: GameStatus,
+                          val isCurrentPlayer: Boolean) {
+        var title: String? = null
     }
 
     @ResponseBody

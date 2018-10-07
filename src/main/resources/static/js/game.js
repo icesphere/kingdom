@@ -48,7 +48,7 @@ $(document).ready(function() {
         endTurn();
     });
 
-    setTimeout(function() { refreshGameInfo(); }, 1000);
+    setTimeout(function() { refreshGameInfo(); }, 2000);
 });
 
 $(function(){
@@ -87,7 +87,7 @@ function connect() {
 
         let debouncedGameRefresh = debounce(function(data) {
             console.log("run debounced refresh-game")
-            refreshGame(JSON.parse(data.body))
+            refreshGame()
         }, 200)
 
         let debouncedHandAreaRefresh = debounce(function(data) {
@@ -143,29 +143,21 @@ function connect() {
     });
 }
 
-function refreshGame(data){
-    if(data.redirectToLogin) {
-        document.location = "login.html";
-        return;
-    }
-
-    if(data.redirectToLobby) {
-        document.location = "showGameRooms.html";
-        return;
-    }
+function refreshGame() {
 
     refreshGameInfo();
 
-    if(gameStatus == "Finished") {
-        $('#gameDiv').load('showGameResults.html', function() {
-            refreshFinished();
-            return;
-        });
-    }
+    refreshHandArea();
 
-    $('#gameDiv').load('getGameDiv.html');
+    refreshCardsPlayed();
 
-    refreshFinished();
+    refreshCardsBought();
+
+    refreshSupply();
+
+    refreshCardAction();
+
+    //$('#gameDiv').load('getGameDiv.html');
 }
 
 function showInfoMessage(message) {
@@ -173,7 +165,7 @@ function showInfoMessage(message) {
     $('#infoMessageDiv').show()
     setTimeout(function() {
         $('#infoMessageDiv').hide()
-    }, 5000)
+    }, 2000)
 }
 
 function refreshHandArea() {

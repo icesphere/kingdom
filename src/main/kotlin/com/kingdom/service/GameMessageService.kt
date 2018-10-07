@@ -1,7 +1,6 @@
 package com.kingdom.service
 
 import com.kingdom.model.Game
-import com.kingdom.model.GameStatus
 import com.kingdom.model.players.Player
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
@@ -22,7 +21,7 @@ private const val SHOW_INFO_MESSAGE_QUEUE = "show-info-message"
 class GameMessageService(private val messagingTemplate: SimpMessagingTemplate) {
 
     fun refreshGame(game: Game) {
-        game.humanPlayers.forEach { refreshPlayerGame(it) }
+        game.humanPlayers.forEach { refreshPlayerQueue(REFRESH_GAME_QUEUE, it) }
     }
 
     fun refreshHandArea(player: Player) {
@@ -71,32 +70,9 @@ class GameMessageService(private val messagingTemplate: SimpMessagingTemplate) {
         messagingTemplate.convertAndSend("/queue/$SHOW_INFO_MESSAGE_QUEUE/$userId", message)
     }
 
-    fun refreshPlayerGame(player: Player) {
-        val game = player.game
-
-        val data = getRefreshGameData(player)
-
-        data.title = when {
-            game.status == GameStatus.Finished -> "Game Over"
-            player.isYourTurn -> "Your Turn"
-            else -> game.currentPlayer.username + "'s Turn"
-        }
-
-        refreshPlayerQueue(REFRESH_GAME_QUEUE, player, data)
-    }
-
     private fun refreshPlayerQueue(queueName: String, player: Player, data: Any = "refresh") {
         if (!player.isBot) {
             messagingTemplate.convertAndSend("/queue/$queueName/${player.userId}", data)
         }
     }
-
-    fun getRefreshGameData(player: Player): RefreshGameData {
-        return RefreshGameData(player.game.status, player.isYourTurn)
-    }
-}
-
-class RefreshGameData(val gameStatus: GameStatus,
-                      val isCurrentPlayer: Boolean) {
-    var title: String? = null
 }
