@@ -49,8 +49,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var coinsSpent: Int = 0
 
     var buys: Int = 0
+        private set
 
     var actions: Int = 0
+        private set
 
     var coinTokens: Int = 0
 
@@ -197,6 +199,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         this.coins += coins
         coinsGainedThisTurn += coins
         game.refreshSupply()
+        game.refreshPlayerCardsBought(this)
+    }
+
+    fun addActions(actions: Int) {
+        this.actions += actions
+        game.refreshPlayerCardsPlayed(this)
+    }
+
+    fun addBuys(buys: Int) {
+        this.buys += buys
         game.refreshPlayerCardsBought(this)
     }
 

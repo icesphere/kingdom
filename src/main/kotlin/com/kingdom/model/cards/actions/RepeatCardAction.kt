@@ -6,7 +6,7 @@ import com.kingdom.model.players.Player
 class RepeatCardAction(private val repeatedCard: Card) : SelfResolvingAction() {
 
     override fun resolveAction(player: Player) {
-        player.actions++
+        player.addActions(1)
         player.playCard(repeatedCard, true)
     }
 }

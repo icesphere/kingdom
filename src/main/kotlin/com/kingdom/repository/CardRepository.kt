@@ -2,14 +2,17 @@ package com.kingdom.repository
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.intrigue.Courtyard
+import com.kingdom.model.cards.intrigue.Lurker
+import com.kingdom.model.cards.intrigue.Pawn
 import com.kingdom.model.cards.kingdom.*
 import org.springframework.stereotype.Service
 
 @Service
 class CardRepository {
 
-    fun getKingdomCards(): List<Card> {
-        return listOf(
+    val kingdomCards: List<Card>
+        get() = listOf(
                 Artisan(),
                 Bandit(),
                 Bureaucrat(),
@@ -37,15 +40,21 @@ class CardRepository {
                 Witch(),
                 Workshop()
         )
-    }
 
-    fun getAllCards(): List<Card> {
-        return getKingdomCards()
-    }
+    val intrigueCards: List<Card>
+        get() = listOf(
+                Courtyard(),
+                Lurker(),
+                Pawn()
+        )
+
+    val allCards: List<Card>
+        get() = kingdomCards + intrigueCards
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {
-            Deck.Kingdom -> getKingdomCards()
+            Deck.Kingdom -> kingdomCards
+            Deck.Intrigue -> intrigueCards
             else -> emptyList()
         }
     }

@@ -26,7 +26,7 @@ class Vassal : KingdomCard(NAME, CardType.Action, 3), ChoiceActionCard {
     override fun actionChoiceMade(player: Player, choice: Int) {
         if (choice == 1) {
             if (player.discard.remove(cardDiscarded)) {
-                player.actions += 1
+                player.addActions(1)
                 player.playCard(cardDiscarded)
             }
         }

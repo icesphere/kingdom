@@ -35,6 +35,10 @@ class GameMessageService(private val messagingTemplate: SimpMessagingTemplate) {
         }
     }
 
+    fun refreshCardsPlayed(player: Player) {
+        refreshPlayerQueue(REFRESH_CARDS_PLAYED_QUEUE, player)
+    }
+
     fun refreshCardsBought(game: Game) {
         game.humanPlayers.forEach { refreshPlayerQueue(REFRESH_CARDS_BOUGHT_QUEUE, it) }
         if (game.currentPlayer.isBot) {

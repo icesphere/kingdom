@@ -370,6 +370,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         gameMessageService.refreshCardsPlayed(this)
     }
 
+    fun refreshPlayerCardsPlayed(player: Player) {
+        gameMessageService.refreshCardsPlayed(player)
+    }
+
     fun refreshHistory() {
         gameMessageService.refreshHistory(this)
     }

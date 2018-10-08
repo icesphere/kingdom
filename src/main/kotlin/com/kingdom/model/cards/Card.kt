@@ -280,11 +280,11 @@ abstract class Card(
 
     fun cardPlayed(player: Player) {
         if (isAction) {
-            player.actions -= 1
+            player.addActions(-1)
         }
 
-        player.actions += addActions
-        player.buys += addBuys
+        player.addActions(addActions)
+        player.addBuys(addBuys)
         player.addCoins(addCoins)
 
         if (addCards > 0) {

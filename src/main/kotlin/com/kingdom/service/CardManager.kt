@@ -14,16 +14,15 @@ class CardManager(private val cardRepository: CardRepository,
     //todo
     val prizeCards: MutableList<Card> = emptyList<Card>().toMutableList()
 
-    fun getAllCards(): List<Card> {
-        return cardRepository.getAllCards()
-    }
+    val allCards: List<Card>
+        get() = cardRepository.allCards
 
     fun getCards(deck: Deck, includeTesting: Boolean): List<Card> {
         return getCardsByDeck(deck, includeTesting)
     }
 
     fun getCard(cardName: String): Card {
-        return getAllCards().first { it.name == cardName }
+        return allCards.first { it.name == cardName }
     }
 
     fun setRandomKingdomCards(game: Game) {

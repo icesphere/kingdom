@@ -545,7 +545,7 @@ class GameController(private val cardManager: CardManager,
     }
 
     private fun setBlackMarketCards(game: Game) {
-        val allCards = cardManager.getAllCards()
+        val allCards = cardManager.allCards
         val blackMarketCards = allCards - game.kingdomCards
         Collections.shuffle(blackMarketCards)
         game.blackMarketCards = blackMarketCards.toMutableList()
