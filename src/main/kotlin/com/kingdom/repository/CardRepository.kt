@@ -4,6 +4,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.intrigue.Courtyard
 import com.kingdom.model.cards.intrigue.Lurker
+import com.kingdom.model.cards.intrigue.Masquerade
 import com.kingdom.model.cards.intrigue.Pawn
 import com.kingdom.model.cards.kingdom.*
 import org.springframework.stereotype.Service
@@ -45,7 +46,8 @@ class CardRepository {
         get() = listOf(
                 Courtyard(),
                 Lurker(),
-                Pawn()
+                Pawn(),
+                Masquerade()
         )
 
     val allCards: List<Card>

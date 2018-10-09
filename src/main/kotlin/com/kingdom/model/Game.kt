@@ -181,6 +181,18 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var isShowPrizeCards: Boolean = false
     var prizeCards: MutableList<Card> = ArrayList(0)
 
+    fun getPlayerToLeft(player: Player): Player {
+        val playerIndex = players.indexOf(player)
+
+        val nextPlayerIndex = if (playerIndex == players.size - 1) {
+            0
+        } else {
+            playerIndex + 1
+        }
+
+        return players[nextPlayerIndex]
+    }
+
     private val colors = ArrayList<String>(6)
 
     private var currentColorIndex = 0

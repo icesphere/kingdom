@@ -68,6 +68,10 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(ChooseCardToGainFromTrash(game.trashedCards, optional))
     }
 
+    override fun passCardFromHandToPlayerOnLeft() {
+        addAction(CardFromHandToPlayerOnLeft(game.getPlayerToLeft(this)))
+    }
+
     override fun acquireFreeCard(maxCost: Int?) {
         addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply costing up to $maxCost"))
     }
