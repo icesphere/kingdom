@@ -5,9 +5,9 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.players.Player
 import java.util.*
 
-class TrashCardsFromSupply(protected var numCardsToScrap: Int, optional: Boolean) : Action("") {
+class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boolean) : Action("") {
 
-    protected var selectedCards: MutableList<Card> = ArrayList()
+    private var selectedCards: MutableList<Card> = ArrayList()
 
     override val isShowDone: Boolean
         get() =
@@ -15,13 +15,22 @@ class TrashCardsFromSupply(protected var numCardsToScrap: Int, optional: Boolean
 
     override val doneText: String
         get() = if (selectedCards.size == 1) {
-            "Scrap " + selectedCards[0].name
+            "Trash " + selectedCards[0].name
         } else {
-            "Scrap " + selectedCards.size + " cards"
+            "Trash " + selectedCards.size + " cards"
         }
 
+    init {
+        this.isShowDoNotUse = optional
+        setTextFromNumCards()
+    }
+
     private fun setTextFromNumCards() {
-        text = "Scrap "
+        text = if (optional) {
+            "You may trash "
+        } else {
+            "Trash "
+        }
         if (this.isShowDoNotUse) {
             text += "up to "
         }
@@ -29,12 +38,7 @@ class TrashCardsFromSupply(protected var numCardsToScrap: Int, optional: Boolean
         if (numCardsToScrap != 1) {
             text += "s"
         }
-        text += " from the trade row"
-    }
-
-    init {
-        this.isShowDoNotUse = optional
-        setTextFromNumCards()
+        text += " from the supply"
     }
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {

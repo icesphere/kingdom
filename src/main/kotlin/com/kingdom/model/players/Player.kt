@@ -363,6 +363,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun trashCardFromHand(optional: Boolean)
 
+    abstract fun trashCardFromSupply(optional: Boolean)
+
+    abstract fun gainCardFromTrash(optional: Boolean)
+
     fun buyCard(card: Card) {
         if (availableCoins >= this.getCardCostWithModifiers(card)) {
             addGameLog("Bought card: " + card.cardNameWithBackgroundColor)

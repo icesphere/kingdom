@@ -56,6 +56,18 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
+    override fun trashCardFromSupply(optional: Boolean) {
+        if (optional) {
+            addAction(TrashCardsFromSupply(1, true))
+        } else {
+            addAction(TrashCardsFromSupply(1, false))
+        }
+    }
+
+    override fun gainCardFromTrash(optional: Boolean) {
+        addAction(ChooseCardToGainFromTrash(game.trashedCards, optional))
+    }
+
     override fun acquireFreeCard(maxCost: Int?) {
         addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply costing up to $maxCost"))
     }

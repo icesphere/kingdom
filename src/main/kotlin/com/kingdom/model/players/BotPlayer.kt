@@ -154,6 +154,21 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
+    override fun trashCardFromSupply(optional: Boolean) {
+        //todo better logic
+        val card: Card = game.availableCards.toMutableList().shuffled().first()
+        game.removeCardFromSupply(card)
+    }
+
+    override fun gainCardFromTrash(optional: Boolean) {
+        //todo better logic
+        val trashedCards = game.trashedCards.toMutableList()
+        if (trashedCards.isNotEmpty()) {
+            val card = trashedCards.first()
+            addGameLog("$username gained ${card.cardNameWithBackgroundColor} from the trash")
+        }
+    }
+
     override fun acquireFreeCard(maxCost: Int?) {
         val card = chooseFreeCardToAcquire(maxCost)
         if (card != null) {
