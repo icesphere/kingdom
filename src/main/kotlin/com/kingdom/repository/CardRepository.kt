@@ -2,10 +2,7 @@ package com.kingdom.repository
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
-import com.kingdom.model.cards.intrigue.Courtyard
-import com.kingdom.model.cards.intrigue.Lurker
-import com.kingdom.model.cards.intrigue.Masquerade
-import com.kingdom.model.cards.intrigue.Pawn
+import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
 import org.springframework.stereotype.Service
 
@@ -47,7 +44,9 @@ class CardRepository {
                 Courtyard(),
                 Lurker(),
                 Pawn(),
-                Masquerade()
+                Masquerade(),
+                ShantyTown(),
+                Steward()
         )
 
     val allCards: List<Card>

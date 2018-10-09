@@ -1,42 +1,35 @@
 package com.kingdom.model.cards.actions
 
-import com.kingdom.model.players.Player
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
+import com.kingdom.model.players.Player
 import java.util.*
 
-open class TrashCardsFromHand : Action {
-    protected var numCardsToScrap: Int = 0
+open class TrashCardsFromHand(private var numCardsToScrap: Int, text: String, optional: Boolean) : Action(text) {
 
     protected var selectedCards: MutableList<Card> = ArrayList()
 
-    override//todo handle if not optional and available cards < numCardsToScrap
-    val isShowDone: Boolean
+    override val isShowDone: Boolean
         get() =
             numCardsToScrap > 1 && selectedCards.size in 1..numCardsToScrap && (this.isShowDoNotUse || selectedCards.size == numCardsToScrap)
 
     override val doneText: String
         get() = if (selectedCards.size == 1) {
-            "Scrap " + selectedCards[0].name
+            "Trash " + selectedCards[0].name
         } else {
-            "Scrap " + selectedCards.size + " cards"
+            "Trash " + selectedCards.size + " cards"
         }
 
-    constructor(numCardsToScrap: Int) : super("") {
-        this.numCardsToScrap = numCardsToScrap
-        text = "Scrap $numCardsToScrap card"
-        if (numCardsToScrap != 1) {
-            text += "s"
+    init {
+        isShowDoNotUse = optional
+
+        if (this.text == "") {
+            this.text = "Trash $numCardsToScrap card"
+            if (numCardsToScrap != 1) {
+                this.text += "s"
+            }
+            this.text += " from your hand"
         }
-    }
-
-    constructor(numCardsToScrap: Int, text: String) : super(text) {
-        this.numCardsToScrap = numCardsToScrap
-    }
-
-    constructor(numCardsToScrap: Int, text: String, optional: Boolean) : super(text) {
-        this.numCardsToScrap = numCardsToScrap
-        this.isShowDoNotUse = optional
     }
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
@@ -44,6 +37,9 @@ open class TrashCardsFromHand : Action {
     }
 
     override fun processAction(player: Player): Boolean {
+        if (player.hand.size < numCardsToScrap) {
+            numCardsToScrap = player.hand.size
+        }
         return !player.hand.isEmpty()
     }
 

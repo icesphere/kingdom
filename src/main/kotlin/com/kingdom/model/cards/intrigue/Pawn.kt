@@ -17,10 +17,10 @@ class Pawn : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
         player.makeChoice(this,
                 Choice(1, "+1 Card, +1 Action"),
                 Choice(2, "+1 Card, +1 Buy"),
-                Choice(3, "+1 Card, +1\$1"),
+                Choice(3, "+1 Card, +\$1"),
                 Choice(4, "+1 Action, +1 Buy"),
-                Choice(5, "+1 Action, +1\$1"),
-                Choice(6, "+1 Buy, +1\$1")
+                Choice(5, "+1 Action, +\$1"),
+                Choice(6, "+1 Buy, +\$1")
         )
     }
 

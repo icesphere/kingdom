@@ -147,7 +147,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         makeChoice(card, *choices)
     }
 
-    override fun trashCardFromHand(optional: Boolean) {
+    override fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean) {
         val card = getCardToTrashFromHand(optional)
         if (card != null) {
             trashCardFromHand(card)

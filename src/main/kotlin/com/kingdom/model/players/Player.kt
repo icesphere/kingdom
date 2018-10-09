@@ -361,7 +361,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun makeChoice(card: ChoiceActionCard, text: String, vararg choices: Choice)
 
-    abstract fun trashCardFromHand(optional: Boolean)
+    fun trashCardFromHand(optional: Boolean) {
+        trashCardsFromHand(1, optional)
+    }
+
+    abstract fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean)
 
     abstract fun trashCardFromSupply(optional: Boolean)
 
