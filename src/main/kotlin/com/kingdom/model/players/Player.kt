@@ -66,7 +66,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var isNextCardToTopOfDeck: Boolean = false
 
-    private var isNextCardToHand: Boolean = false
+    var isNextCardToHand: Boolean = false
 
     private var shuffles: Int = 0
 
@@ -805,7 +805,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (isOpponentHasAction) {
             waitForOtherPlayersForResolveAttack(attackCard)
         } else {
-            val attackResolver = attackCard as AttackResolver
+            val attackResolver = attackCard as AttackCard
             attackResolver.resolveAttack(this, opponents.filterNot { attackCard.playersExcludedFromCardEffects.contains(it) })
         }
     }

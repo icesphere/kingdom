@@ -2,10 +2,10 @@ package com.kingdom.model.cards.intrigue
 
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.actions.AttackResolver
+import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.players.Player
 
-class Swindler : IntrigueCard(NAME, CardType.ActionAttack, 3), AttackResolver {
+class Swindler : IntrigueCard(NAME, CardType.ActionAttack, 3), AttackCard {
 
     init {
         testing = true

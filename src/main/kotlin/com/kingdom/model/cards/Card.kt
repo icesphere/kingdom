@@ -1,6 +1,5 @@
 package com.kingdom.model.cards
 
-import com.kingdom.model.cards.actions.AttackResolver
 import com.kingdom.model.cards.intrigue.Pawn
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
 import com.kingdom.model.cards.supply.*

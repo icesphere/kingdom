@@ -1,15 +1,14 @@
 package com.kingdom.model.cards.intrigue
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.actions.AttackResolver
+import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.cards.actions.FreeCardFromSupplyForBenefitActionCard
 import com.kingdom.model.cards.actions.TrashCardsForBenefitActionCard
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.players.Player
 
-class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackResolver, TrashCardsForBenefitActionCard, FreeCardFromSupplyForBenefitActionCard {
+class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashCardsForBenefitActionCard, FreeCardFromSupplyForBenefitActionCard {
 
     init {
         testing = true

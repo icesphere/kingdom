@@ -60,7 +60,8 @@ class CardRepository {
                 Duke(),
                 Minion(),
                 Patrol(),
-                Replace()
+                Replace(),
+                Torturer()
         )
 
     val allCards: List<Card>

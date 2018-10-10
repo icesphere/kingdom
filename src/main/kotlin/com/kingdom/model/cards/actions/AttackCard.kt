@@ -2,7 +2,7 @@ package com.kingdom.model.cards.actions
 
 import com.kingdom.model.players.Player
 
-interface AttackResolver {
+interface AttackCard {
 
     fun resolveAttack(player: Player, affectedOpponents: List<Player>)
 }

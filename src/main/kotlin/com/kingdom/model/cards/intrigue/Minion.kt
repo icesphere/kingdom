@@ -2,11 +2,11 @@ package com.kingdom.model.cards.intrigue
 
 import com.kingdom.model.Choice
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.actions.AttackResolver
+import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.players.Player
 
-class Minion : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackResolver, ChoiceActionCard {
+class Minion : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, ChoiceActionCard {
 
     init {
         testing = true
