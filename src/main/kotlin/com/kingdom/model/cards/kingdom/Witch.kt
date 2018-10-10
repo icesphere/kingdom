@@ -13,6 +13,10 @@ class Witch : KingdomCard(NAME, CardType.ActionAttack, 5), AttackResolver {
         fontSize = 13
     }
 
+    override fun cardPlayedSpecialAction(player: Player) {
+        player.triggerAttack(this)
+    }
+
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         affectedOpponents.forEach { it.acquireFreeCardFromSupply(Curse()) }
     }

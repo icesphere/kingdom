@@ -8,7 +8,7 @@ open class WaitForOtherPlayersForResolveAttack(private val currentTurnPlayer: Pl
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
         if (!currentTurnPlayer.isOpponentHasAction) {
             val attackResolver = attackCard as AttackResolver
-            attackResolver.resolveAttack(currentTurnPlayer, currentTurnPlayer.opponents.filter { !attackCard.playersExcludedFromCardEffects.contains(it) })
+            attackResolver.resolveAttack(currentTurnPlayer, currentTurnPlayer.opponents.filterNot { attackCard.playersExcludedFromCardEffects.contains(it) })
             return true
         }
 

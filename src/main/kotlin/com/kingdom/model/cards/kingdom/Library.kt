@@ -40,7 +40,7 @@ class Library : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
 
     override fun actionChoiceMade(player: Player, choice: Int) {
         if (choice == 1) {
-            player.hand.add(cardToAdd)
+            player.addCardToHand(cardToAdd)
         } else {
             skippedActionCards.add(cardToAdd)
         }

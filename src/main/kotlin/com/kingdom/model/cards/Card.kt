@@ -313,15 +313,6 @@ abstract class Card(
                         .forEach { (it as BeforeOpponentCardPlayedListener).onBeforeOpponentCardPlayed(this, opponent, player) }
             }
 
-            if (this is AttackResolver) {
-                if (player.isOpponentHasAction) {
-                    player.waitForOtherPlayersForResolveAttack(this)
-                } else {
-                    val attackResolver = this
-                    attackResolver.resolveAttack(player, player.opponents.filter { !playersExcludedFromCardEffects.contains(it) })
-                }
-            }
-
             cardPlayedSpecialAction(player)
         }
     }

@@ -15,6 +15,7 @@ class Bureaucrat : KingdomCard(NAME, CardType.ActionAttack, 4), AttackResolver {
     override fun cardPlayedSpecialAction(player: Player) {
         player.isNextCardToTopOfDeck = true
         player.acquireFreeCardFromSupply(Silver())
+        player.triggerAttack(this)
     }
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {

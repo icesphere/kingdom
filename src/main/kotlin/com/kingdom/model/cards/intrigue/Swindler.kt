@@ -13,6 +13,10 @@ class Swindler : IntrigueCard(NAME, CardType.ActionAttack, 3), AttackResolver {
         special = "Each other player trashes the top card of their deck and gains a card with the same cost that you choose."
     }
 
+    override fun cardPlayedSpecialAction(player: Player) {
+        player.triggerAttack(this)
+    }
+
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         affectedOpponents
                 .forEach { opponent ->

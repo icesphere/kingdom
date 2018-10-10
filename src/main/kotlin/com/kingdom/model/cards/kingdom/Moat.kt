@@ -5,10 +5,11 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.AttackResolver
 import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.listeners.BeforeAttackListener
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
 import com.kingdom.model.players.Player
 
-class Moat : KingdomCard(NAME, CardType.ActionReaction, 2), BeforeOpponentCardPlayedListener, ChoiceActionCard {
+class Moat : KingdomCard(NAME, CardType.ActionReaction, 2), BeforeAttackListener, ChoiceActionCard {
 
     lateinit var attackCard: Card
 
@@ -20,7 +21,7 @@ class Moat : KingdomCard(NAME, CardType.ActionReaction, 2), BeforeOpponentCardPl
         textSize = 81
     }
 
-    override fun onBeforeOpponentCardPlayed(card: Card, player: Player, opponent: Player) {
+    override fun onBeforeAttack(card: Card, player: Player, opponent: Player) {
         if (card.isAttack && this.location == CardLocation.Hand) {
             attackCard = card
             player.yesNoChoice(this, "Reveal $cardNameWithBackgroundColor to be unaffected by ${card.cardNameWithBackgroundColor}?")

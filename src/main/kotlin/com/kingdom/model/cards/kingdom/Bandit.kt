@@ -14,6 +14,8 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackResolver {
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.acquireFreeCardFromSupply(Gold())
+
+        player.triggerAttack(this)
     }
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {

@@ -23,12 +23,15 @@ class Steward : IntrigueCard(NAME, CardType.Action, 3), ChoiceActionCard {
     override fun actionChoiceMade(player: Player, choice: Int) {
         when (choice) {
             1 -> {
+                player.addUsernameGameLog("chose +2 Cards")
                 player.drawCards(2)
             }
             2 -> {
+                player.addUsernameGameLog("chose +\$2")
                 player.addCoins(2)
             }
             3 -> {
+                player.addUsernameGameLog("chose Trash 2 cards")
                 player.trashCardsFromHand(2, false)
             }
         }

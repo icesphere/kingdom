@@ -1,11 +1,14 @@
 package com.kingdom.model.players
 
-import com.kingdom.model.*
+import com.kingdom.model.Choice
+import com.kingdom.model.Game
+import com.kingdom.model.TurnSummary
+import com.kingdom.model.User
 import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.CardCopier
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
+import com.kingdom.model.cards.listeners.BeforeAttackListener
 import com.kingdom.model.cards.listeners.CardPlayedListener
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.supply.Copper
@@ -474,6 +477,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return cards
         }
 
+    fun addUsernameGameLog(log: String) {
+        game.addHistory("$username $log")
+    }
+
     fun addGameLog(log: String) {
         game.addHistory(log)
     }
@@ -537,6 +544,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun addCardToDeck(card: Card) {
         deck.add(card)
+        game.refreshPlayerHandArea(this)
+    }
+
+    fun addCardToHand(card: Card) {
+        hand.add(card)
+        game.refreshPlayerHandArea(this)
     }
 
     fun setup() {
@@ -641,7 +654,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         val revealedCards = ArrayList<Card>()
 
         if (deck.size < cards) {
-            //todo account for cards in hand before shuffle list
             shuffleDiscardIntoDeck()
         }
 
@@ -649,6 +661,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addGameLog("$username had no cards to reveal")
         } else {
             for (i in 0 until cards) {
+                if (deck.size < i + 1 && discard.isNotEmpty()) {
+                    shuffleDiscardIntoDeck()
+                }
                 if (deck.size < i + 1) {
                     addGameLog("No more cards to reveal")
                 } else {
@@ -779,4 +794,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player)
 
     abstract fun chooseCardFromHand(text: String, chooseCardFromhandActionCard: ChooseCardFromHandActionCard)
+
+    fun triggerAttack(attackCard: Card) {
+
+        opponents.forEach { opponent ->
+            opponent.hand.filter { it is BeforeAttackListener }
+                    .forEach { (it as BeforeAttackListener).onBeforeAttack(attackCard, opponent, this) }
+        }
+
+        if (isOpponentHasAction) {
+            waitForOtherPlayersForResolveAttack(attackCard)
+        } else {
+            val attackResolver = attackCard as AttackResolver
+            attackResolver.resolveAttack(this, opponents.filterNot { attackCard.playersExcludedFromCardEffects.contains(it) })
+        }
+    }
 }

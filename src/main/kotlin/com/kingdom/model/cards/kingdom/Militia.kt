@@ -11,6 +11,10 @@ class Militia : KingdomCard(NAME, CardType.ActionAttack, 4), AttackResolver {
         special = "Each other player discards down to 3 cards in their hand."
     }
 
+    override fun cardPlayedSpecialAction(player: Player) {
+        player.triggerAttack(this)
+    }
+
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         var addWaitingAction = false
 

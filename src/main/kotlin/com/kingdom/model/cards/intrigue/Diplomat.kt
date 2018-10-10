@@ -4,10 +4,11 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.listeners.BeforeAttackListener
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
 import com.kingdom.model.players.Player
 
-class Diplomat : IntrigueCard(NAME, CardType.ActionReaction, 4), BeforeOpponentCardPlayedListener, ChoiceActionCard {
+class Diplomat : IntrigueCard(NAME, CardType.ActionReaction, 4), BeforeAttackListener, ChoiceActionCard {
 
     init {
         testing = true
@@ -21,7 +22,7 @@ class Diplomat : IntrigueCard(NAME, CardType.ActionReaction, 4), BeforeOpponentC
         }
     }
 
-    override fun onBeforeOpponentCardPlayed(card: Card, player: Player, opponent: Player) {
+    override fun onBeforeAttack(card: Card, player: Player, opponent: Player) {
         if (player.hand.size >= 5) {
             if (card.isAttack && this.location == CardLocation.Hand) {
                 player.yesNoChoice(this, "Reveal $cardNameWithBackgroundColor to draw 2 cards then discard 3?")
