@@ -1,6 +1,8 @@
 package com.kingdom.model.cards.supply
 
-class Province : VictoryCard(NAME, 8) {
+import com.kingdom.model.cards.CardType
+
+class Province : SupplyCard(NAME, CardType.Victory, 8) {
 
     init {
         victoryPoints = 6

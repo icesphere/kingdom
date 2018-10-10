@@ -53,7 +53,8 @@ class CardRepository {
                 Bridge(),
                 Conspirator(),
                 Diplomat(),
-                Ironworks()
+                Ironworks(),
+                Mill()
         )
 
     val allCards: List<Card>
