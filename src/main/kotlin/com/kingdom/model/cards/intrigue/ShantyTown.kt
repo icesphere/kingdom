@@ -13,7 +13,7 @@ class ShantyTown : IntrigueCard(NAME, CardType.Action, 3) {
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.revealHand()
-        if (player.cardCountByExpression { it.isAction } == 0) {
+        if (player.hand.count { it.isAction } == 0) {
             player.addGameLog("${player.username} gained +2 actions from ${this.cardNameWithBackgroundColor}")
             player.addActions(2)
         }

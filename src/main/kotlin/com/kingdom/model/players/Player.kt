@@ -87,8 +87,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     private var acquireCardToHand: Boolean = false
 
-    private var cardCostModifier: CardCostModifier? = null
-
     lateinit var chatColor: String
 
     var isQuit: Boolean = false
@@ -126,6 +124,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val isOpponentHasAction: Boolean
         get() = opponents.any { it.currentAction != null }
+
+    var numActionsPlayed = 0
 
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
@@ -232,6 +232,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         coinsSpent = 0
         actions = 0
         buys = 0
+
+        numActionsPlayed = 0
 
         isNextCardToTopOfDeck = false
         isNextCardToHand = false
@@ -420,6 +422,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             played.add(card)
             game.cardsPlayed.add(card)
 
+            if (card is CardCostModifier) {
+                game.cardCostModifiers.add(card)
+            }
+
             inPlay.filter { it is CardPlayedListener }
                     .forEach { (it as CardPlayedListener).onCardPlayed(card, this) }
 
@@ -428,6 +434,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             game.refreshPlayerHandArea(this)
             game.refreshCardsPlayed()
+        }
+
+        if (card.isAction) {
+            numActionsPlayed++
         }
 
         card.cardPlayed(this)
@@ -441,6 +451,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = shuffles + 1
 
     abstract fun acquireFreeCard(maxCost: Int?)
+
+    abstract fun acquireFreeCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard)
 
     abstract fun acquireFreeCardToTopOfDeck(maxCost: Int?)
 
@@ -696,11 +708,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = username.replace("\\s".toRegex(), "_")
 
     fun getCardCostWithModifiers(card: Card): Int {
-        if (cardCostModifier != null) {
-            return cardCostModifier!!.getCardCost(card, this)
-        }
+        var cost = card.cost
 
-        return card.cost
+        game.cardCostModifiers.forEach { cost += it.getChangeToCardCost(card, this) }
+
+        return cost
     }
 
     fun discardTopCardOfDeck(): Card? {

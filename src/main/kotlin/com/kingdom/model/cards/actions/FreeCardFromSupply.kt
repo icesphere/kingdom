@@ -5,7 +5,7 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.players.Player
 
-class FreeCardFromSupply(private val maxCost: Int?, text: String, private val destination: CardLocation = CardLocation.Discard, val cardType: CardType? = null) : Action(text) {
+open class FreeCardFromSupply(private val maxCost: Int?, text: String, private val destination: CardLocation = CardLocation.Discard, val cardType: CardType? = null) : Action(text) {
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
         return ((cardLocation == CardLocation.Supply)

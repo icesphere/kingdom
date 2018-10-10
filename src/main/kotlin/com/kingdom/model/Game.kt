@@ -2,6 +2,7 @@ package com.kingdom.model
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.BotPlayer
 import com.kingdom.model.players.HumanPlayer
@@ -166,6 +167,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     val cardsPlayed = LinkedList<Card>()
     val cardsBought = ArrayList<Card>()
+
+    val cardCostModifiers = mutableListOf<CardCostModifier>()
 
     var previousPlayerId = 0
     val previousPlayerCardsPlayed = ArrayList<Card>()
@@ -423,6 +426,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         cardsPlayed.clear()
         cardsBought.clear()
+        cardCostModifiers.clear()
 
         previousPlayerId = currentPlayerId
 
@@ -600,6 +604,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         trashedCards.clear()
         cardsPlayed.clear()
         cardsBought.clear()
+        cardCostModifiers.clear()
         recentTurnHistory.clear()
         turnHistory.clear()
         chats.clear()

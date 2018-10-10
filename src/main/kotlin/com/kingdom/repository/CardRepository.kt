@@ -47,7 +47,13 @@ class CardRepository {
                 Masquerade(),
                 ShantyTown(),
                 Steward(),
-                Swindler()
+                Swindler(),
+                WishingWell(),
+                Baron(),
+                Bridge(),
+                Conspirator(),
+                Diplomat(),
+                Ironworks()
         )
 
     val allCards: List<Card>

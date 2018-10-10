@@ -1,6 +1,7 @@
 package com.kingdom.model.cards
 
 import com.kingdom.model.cards.actions.AttackResolver
+import com.kingdom.model.cards.intrigue.Pawn
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.Player
@@ -112,7 +113,7 @@ abstract class Card(
         get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionSummon
 
     val isTerminalAction: Boolean
-        get() = isAction && addActions == 0 && name != "Nobles" && name != "Pawn" && name != "Trusty Steed"
+        get() = isAction && addActions == 0 && name != "Nobles" && name != Pawn.NAME && name != "Trusty Steed"
 
     val isDuration: Boolean
         get() = type == CardType.ActionDuration || type == CardType.DurationVictory

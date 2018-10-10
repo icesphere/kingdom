@@ -190,6 +190,20 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
+    override fun acquireFreeCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
+        //todo logic for different cards
+        val card = chooseFreeCardToAcquire(maxCost)
+        if (card != null) {
+            game.removeCardFromSupply(card)
+
+            addGameLog(username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
+
+            cardAcquired(card)
+
+            freeCardFromSupplyForBenefitActionCard.onCardAcquired(this, card)
+        }
+    }
+
     override fun acquireFreeCardToTopOfDeck(maxCost: Int?) {
         val card = chooseFreeCardToAcquire(maxCost)
         if (card != null) {

@@ -5,6 +5,6 @@ import com.kingdom.model.cards.Card
 
 interface CardCostModifier {
 
-    fun getCardCost(card: Card, player: Player): Int
+    fun getChangeToCardCost(card: Card, player: Player): Int
 
 }

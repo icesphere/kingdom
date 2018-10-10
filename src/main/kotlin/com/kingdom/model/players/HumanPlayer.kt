@@ -76,6 +76,10 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply costing up to $maxCost"))
     }
 
+    override fun acquireFreeCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
+        addAction(FreeCardFromSupplyForBenefit(freeCardFromSupplyForBenefitActionCard, maxCost, text))
+    }
+
     override fun acquireFreeCardToTopOfDeck(maxCost: Int?) {
         addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to the top of your deck costing up to $maxCost", CardLocation.Deck))
     }

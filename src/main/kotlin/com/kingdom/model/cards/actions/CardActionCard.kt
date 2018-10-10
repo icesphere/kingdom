@@ -4,8 +4,8 @@ import com.kingdom.model.players.Player
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 
-
 interface CardActionCard {
+
     fun isCardActionable(card: Card, cardAction: CardAction, cardLocation: CardLocation, player: Player): Boolean
 
     fun processCardAction(player: Player): Boolean
