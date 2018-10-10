@@ -447,6 +447,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun acquireFreeCard(maxCost: Int?)
 
+    abstract fun acquireFreeCardWithCost(cost: Int)
+
     abstract fun acquireFreeCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard)
 
     abstract fun acquireFreeCardToTopOfDeck(maxCost: Int?)
@@ -463,6 +465,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (game.isCardAvailableInSupply(card)) {
             game.removeCardFromSupply(card)
             cardAcquired(card)
+        }
+    }
+
+    fun acquireFreeCardFromSupplyToHand(card: Card) {
+        if (game.isCardAvailableInSupply(card)) {
+            game.removeCardFromSupply(card)
+            acquireCardToHand(card)
         }
     }
 
@@ -793,7 +802,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player)
 
-    abstract fun chooseCardFromHand(text: String, chooseCardFromhandActionCard: ChooseCardFromHandActionCard)
+    abstract fun chooseCardFromHand(text: String, chooseCardFromHandActionCard: ChooseCardFromHandActionCard)
 
     fun triggerAttack(attackCard: Card) {
 

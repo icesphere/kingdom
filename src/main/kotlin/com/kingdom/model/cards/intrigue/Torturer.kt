@@ -33,8 +33,7 @@ class Torturer : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
         } else {
             player.addUsernameGameLog("chose to gain a Curse to hand")
 
-            player.isNextCardToHand = true
-            player.acquireFreeCardFromSupply(Curse())
+            player.acquireFreeCardFromSupplyToHand(Curse())
         }
     }
 

@@ -190,6 +190,17 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
+    override fun acquireFreeCardWithCost(cost: Int) {
+        val card = chooseFreeCardToAcquireExactCost(cost)
+        if (card != null) {
+            game.removeCardFromSupply(card)
+
+            addGameLog(username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
+
+            cardAcquired(card)
+        }
+    }
+
     override fun acquireFreeCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
         //todo logic for different cards
         val card = chooseFreeCardToAcquire(maxCost)
@@ -543,6 +554,13 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return pickCardBasedOnBuyScore(cards)
     }
 
+    private fun chooseFreeCardToAcquireExactCost(cost: Int): Card? {
+        val cards = game.availableCards
+                .filter { this.getCardCostWithModifiers(it) == cost }
+
+        return pickCardBasedOnBuyScore(cards)
+    }
+
     override fun drawCardsAndPutSomeBackOnTop(cardsToDraw: Int, cardsToPutBack: Int) {
         var numCardsToPutBack = cardsToPutBack
         val cards = drawCards(cardsToDraw)
@@ -646,5 +664,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 }
             }
         }
+    }
+
+    override fun chooseCardFromHand(text: String, chooseCardFromHandActionCard: ChooseCardFromHandActionCard) {
+        //todo
     }
 }

@@ -76,6 +76,10 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply costing up to $maxCost"))
     }
 
+    override fun acquireFreeCardWithCost(cost: Int) {
+        addAction(FreeCardFromSupply(null, "Acquire a free card from the supply costing $cost", exactCost = cost))
+    }
+
     override fun acquireFreeCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
         addAction(FreeCardFromSupplyForBenefit(freeCardFromSupplyForBenefitActionCard, maxCost, text))
     }
@@ -138,5 +142,9 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player) {
         addAction(ChooseCardForOpponentToGain(cost, text, destination, opponent))
+    }
+
+    override fun chooseCardFromHand(text: String, chooseCardFromHandActionCard: ChooseCardFromHandActionCard) {
+        addAction(ChooseCardFromHand(chooseCardFromHandActionCard, text))    
     }
 }

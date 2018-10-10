@@ -61,7 +61,11 @@ class CardRepository {
                 Minion(),
                 Patrol(),
                 Replace(),
-                Torturer()
+                Torturer(),
+                TradingPost(),
+                Upgrade(),
+                TreasureRoom(),
+                Nobles()
         )
 
     val allCards: List<Card>

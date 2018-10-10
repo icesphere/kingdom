@@ -4,6 +4,7 @@ import com.kingdom.model.Game
 import com.kingdom.model.GameError
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.intrigue.Courtier
 import com.kingdom.model.cards.kingdom.Chapel
 import com.kingdom.model.cards.kingdom.Gardens
 import com.kingdom.model.cards.kingdom.Laboratory
@@ -101,6 +102,11 @@ open class EasyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
 
     override fun excludeCard(card: Card): Boolean {
         if (card.name == Chapel.NAME) {
+            return true
+        }
+
+        //todo remove this after implementing BotPlayer.chooseCardFromHand
+        if (card.name == Courtier.NAME) {
             return true
         }
 
