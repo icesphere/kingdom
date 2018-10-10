@@ -1,10 +1,11 @@
 package com.kingdom.model.cards.kingdom
 
 import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.actions.AttackResolver
 import com.kingdom.model.cards.supply.Gold
 import com.kingdom.model.players.Player
 
-class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5) {
+class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackResolver {
 
     init {
         special = "Gain a Gold. Each other player reveals the top two cards of their deck, trashes a revealed Treasure other than Copper, and discards the rest."
@@ -13,11 +14,13 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5) {
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.acquireFreeCardFromSupply(Gold())
+    }
+
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
 
         var addWaitingAction = false
 
-        player.opponents
-                .filter { !playersExcludedFromCardEffects.contains(it) }
+        affectedOpponents
                 .forEach { opponent ->
                     val topCardsOfDeck = opponent.revealTopCardsOfDeck(2)
                     val cardsThatCanBeTrashed = topCardsOfDeck.filter { it.isTreasure && !it.isCopper }

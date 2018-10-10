@@ -9,3 +9,4 @@ maybe show card name of card that triggered card action and maybe show who playe
 considering using embedded database so app can be deployed easily anywhere
 fix play all treasure cards
 figure out how to show what previous player(s) bought
+trigger AttackResolver function at correct time

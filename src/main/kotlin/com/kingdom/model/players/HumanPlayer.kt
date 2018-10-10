@@ -37,7 +37,7 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String) {
-        addAction(DiscardCardsFromHandForBenefit(card, numCardsToDiscard, text))
+        addAction(DiscardCardsFromHandForBenefit(card, numCardsToDiscard, text, false))
     }
 
     override fun makeChoice(card: ChoiceActionCard, vararg choices: Choice) {
@@ -100,24 +100,9 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(PutCardsOnTopOfDeckInAnyOrder(cards))
     }
 
-    override fun discardCardsFromHand(cards: Int) {
-        val lastAction = lastAction
-        if (lastAction != null && lastAction is DiscardCardsFromHand) {
-            val discardCardsFromHand = lastAction
-            discardCardsFromHand.numCardsToDiscard = discardCardsFromHand.numCardsToDiscard + cards
-            discardCardsFromHand.setTextFromNumberOfCardsToDiscard()
-        } else {
-            addAction(DiscardCardsFromHand(cards))
-        }
+    override fun discardCardsFromHand(numCardsToDiscard: Int, optional: Boolean) {
+        addAction(DiscardCardsFromHand(numCardsToDiscard, "", optional))
     }
-
-    private val lastAction: Action?
-        get() {
-            if (!actionsQueue.isEmpty()) {
-                return actionsQueue[actionsQueue.size - 1]
-            }
-            return null
-        }
 
     override fun addCardAction(card: CardActionCard, text: String) {
         addAction(CardAction(card, text))
@@ -135,11 +120,19 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(WaitForOtherPlayersActions(this))
     }
 
+    override fun waitForOtherPlayersForResolveAttack(attackCard: Card) {
+        addAction(WaitForOtherPlayersForResolveAttack(this, attackCard))
+    }
+
     override fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler) {
         addAction(WaitForOtherPlayersActionsWithResults(this, resultHandler))
     }
 
     override fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean) {
         addAction(SelectCardsToTrashFromDeck(cardsThatCanBeTrashed, numCardsToTrash, optional))
+    }
+
+    override fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player) {
+        addAction(ChooseCardForOpponentToGain(cost, text, destination, opponent))
     }
 }

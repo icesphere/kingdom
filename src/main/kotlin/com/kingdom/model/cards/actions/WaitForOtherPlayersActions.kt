@@ -8,11 +8,7 @@ open class WaitForOtherPlayersActions(private val currentTurnPlayer: Player) : A
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean = false
 
-    override fun processAction(player: Player): Boolean = opponentsHaveActions(currentTurnPlayer)
+    override fun processAction(player: Player): Boolean = currentTurnPlayer.isOpponentHasAction
 
-    override fun processActionResult(player: Player, result: ActionResult): Boolean = !opponentsHaveActions(currentTurnPlayer)
-
-    private fun opponentsHaveActions(player: Player): Boolean {
-        return player.opponents.any { it.currentAction != null }
-    }
+    override fun processActionResult(player: Player, result: ActionResult): Boolean = !currentTurnPlayer.isOpponentHasAction
 }

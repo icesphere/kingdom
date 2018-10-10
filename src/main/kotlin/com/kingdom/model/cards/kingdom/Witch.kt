@@ -1,10 +1,11 @@
 package com.kingdom.model.cards.kingdom
 
 import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.actions.AttackResolver
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.players.Player
 
-class Witch : KingdomCard(NAME, CardType.ActionAttack, 5) {
+class Witch : KingdomCard(NAME, CardType.ActionAttack, 5), AttackResolver {
 
     init {
         addCards = 2
@@ -12,10 +13,8 @@ class Witch : KingdomCard(NAME, CardType.ActionAttack, 5) {
         fontSize = 13
     }
 
-    override fun cardPlayedSpecialAction(player: Player) {
-        player.opponents
-                .filter { !playersExcludedFromCardEffects.contains(it) }
-                .forEach { it.acquireFreeCardFromSupply(Curse()) }
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+        affectedOpponents.forEach { it.acquireFreeCardFromSupply(Curse()) }
     }
 
     companion object {

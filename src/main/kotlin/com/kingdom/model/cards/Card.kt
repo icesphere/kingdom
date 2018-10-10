@@ -1,5 +1,6 @@
 package com.kingdom.model.cards
 
+import com.kingdom.model.cards.actions.AttackResolver
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.Player
@@ -296,6 +297,16 @@ abstract class Card(
                 opponent.hand.filter { it is BeforeOpponentCardPlayedListener }
                         .forEach { (it as BeforeOpponentCardPlayedListener).onBeforeOpponentCardPlayed(this, opponent, player) }
             }
+
+            if (this is AttackResolver) {
+                if (player.isOpponentHasAction) {
+                    player.waitForOtherPlayersForResolveAttack(this)
+                } else {
+                    val attackResolver = this
+                    attackResolver.resolveAttack(player, player.opponents.filter { !playersExcludedFromCardEffects.contains(it) })
+                }
+            }
+
             cardPlayedSpecialAction(player)
         }
     }

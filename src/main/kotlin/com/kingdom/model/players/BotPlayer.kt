@@ -4,6 +4,7 @@ import com.kingdom.model.Choice
 import com.kingdom.model.Game
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.kingdom.ThroneRoom
@@ -106,8 +107,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         card.cardsScrapped(this, cards)
     }
 
-    override fun discardCardsFromHand(cards: Int) {
-        val cardsToDiscard = getCardsToDiscard(cards, false)
+    override fun discardCardsFromHand(numCardsToDiscard: Int, optional: Boolean) {
+        val cardsToDiscard = getCardsToDiscard(numCardsToDiscard, optional)
         cardsToDiscard.forEach({ this.discardCardFromHand(it) })
     }
 
@@ -592,6 +593,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         //do nothing
     }
 
+    override fun waitForOtherPlayersForResolveAttack(attackCard: Card) {
+        //do nothing
+    }
+
     override fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler) {
         //todo
     }
@@ -601,6 +606,31 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         for (card in cardsToTrashFromDeck) {
             removeCardFromDeck(card)
             cardTrashed(card)
+        }
+    }
+
+    override fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player) {
+        //todo better logic
+        val availableCards = game.availableCards.filter { it.cost == cost }
+        if (availableCards.isNotEmpty()) {
+            val card = availableCards.shuffled().first()
+
+            game.removeCardFromSupply(card)
+
+            when (destination) {
+                CardLocation.Hand -> {
+                    addGameLog("$username put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s hand")
+                    opponent.acquireCardToHand(card)
+                }
+                CardLocation.Deck -> {
+                    addGameLog("$username put ${card.cardNameWithBackgroundColor} on top of ${opponent.username}'s deck")
+                    opponent.acquireCardToTopOfDeck(card)
+                }
+                else -> {
+                    addGameLog("$username put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s discard")
+                    opponent.cardAcquired(card)
+                }
+            }
         }
     }
 }

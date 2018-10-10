@@ -3,6 +3,7 @@ package com.kingdom.model.players
 import com.kingdom.model.*
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardCopier
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.listeners.CardPlayedListener
@@ -122,6 +123,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val isCardsBought: Boolean
         get() = game.cardsBought.isNotEmpty()
+
+    val isOpponentHasAction: Boolean
+        get() = opponents.any { it.currentAction != null }
 
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
@@ -477,7 +481,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun discardCardFromHand() {
-        discardCardsFromHand(1)
+        discardCardsFromHand(1, false)
     }
 
     fun discardCardFromHand(card: Card) {
@@ -486,9 +490,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addGameLog(username + " discarded " + card.cardNameWithBackgroundColor + " from hand")
     }
 
-    abstract fun discardCardsFromHand(cards: Int)
+    abstract fun discardCardsFromHand(numCardsToDiscard: Int, optional: Boolean)
 
     abstract fun waitForOtherPlayersToResolveActions()
+
+    abstract fun waitForOtherPlayersForResolveAttack(attackCard: Card)
 
     abstract fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler)
 
@@ -762,4 +768,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         val cost = getCardCostWithModifiers(card)
         return game.isCardAvailableInSupply(card) && availableCoins >= cost
     }
+
+    abstract fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player)
 }

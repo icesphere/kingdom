@@ -2,16 +2,8 @@ package com.kingdom.model.cards.actions
 
 import com.kingdom.model.players.Player
 
-class DiscardCardsFromHandForBenefit : DiscardCardsFromHand {
-    private var discardCardsForBenefitActionCard: DiscardCardsForBenefitActionCard? = null
-
-    constructor(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String) : super(numCardsToDiscard, text) {
-        this.discardCardsForBenefitActionCard = card
-    }
-
-    constructor(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, optional: Boolean) : super(numCardsToDiscard, text, optional) {
-        this.discardCardsForBenefitActionCard = card
-    }
+class DiscardCardsFromHandForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, optional: Boolean) : DiscardCardsFromHand(numCardsToDiscard, text, optional) {
+    private var discardCardsForBenefitActionCard: DiscardCardsForBenefitActionCard? = card
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
         val doneWithAction = super.processActionResult(player, result)

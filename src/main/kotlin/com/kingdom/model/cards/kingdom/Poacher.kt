@@ -14,7 +14,7 @@ class Poacher : KingdomCard(NAME, CardType.Action, 4) {
     override fun cardPlayedSpecialAction(player: Player) {
         val emptySupplyPiles = player.game.emptyPiles
         if (emptySupplyPiles > 0) {
-            player.discardCardsFromHand(emptySupplyPiles)
+            player.discardCardsFromHand(emptySupplyPiles, false)
         }
     }
 

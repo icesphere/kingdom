@@ -11,7 +11,7 @@ open class TrashCardsFromHand(private var numCardsToScrap: Int, text: String, op
 
     override val isShowDone: Boolean
         get() =
-            numCardsToScrap > 1 && selectedCards.size in 1..numCardsToScrap && (this.isShowDoNotUse || selectedCards.size == numCardsToScrap)
+            numCardsToScrap > 1 && (this.isShowDoNotUse || selectedCards.size == numCardsToScrap)
 
     override val doneText: String
         get() = if (selectedCards.size == 1) {

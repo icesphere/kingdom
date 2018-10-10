@@ -16,7 +16,7 @@ class CardAction(private val cardActionCard: CardActionCard, text: String?) : Ac
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
         cardActionCard.processCardActionResult(this, player, result);
-        return true;
+        return true
     }
 
     override var isShowDoNotUse: Boolean = cardActionCard.isShowDoNotUse
