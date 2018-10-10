@@ -54,7 +54,8 @@ class CardRepository {
                 Conspirator(),
                 Diplomat(),
                 Ironworks(),
-                Mill()
+                Mill(),
+                MiningVillage()
         )
 
     val allCards: List<Card>

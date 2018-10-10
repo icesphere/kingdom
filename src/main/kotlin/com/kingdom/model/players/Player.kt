@@ -292,19 +292,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun trashCardInPlayForBenefit(card: Card) {
-        addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from in play for benefit")
+    fun trashCardInPlay(card: Card) {
+        addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from in play")
         inPlay.remove(card)
-
-        var cardToTrash = card
-
-        if (card is CardCopier) {
-            if (card.cardBeingCopied != null) {
-                cardToTrash = card.cardBeingCopied!!
-            }
-        }
-
-        cardTrashed(cardToTrash)
+        cardTrashed(card)
+        game.refreshCardsPlayed()
     }
 
     fun acquireCardToTopOfDeck(card: Card) {
