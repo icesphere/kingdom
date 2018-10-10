@@ -42,24 +42,38 @@ abstract class Card(
 
     val id: String = UUID.randomUUID().toString()
 
-    val typeAsString: String
-        get() {
-            return when (type) {
-                CardType.Action -> "Action"
-                CardType.ActionAttack -> "Action - Attack"
-                CardType.ActionReaction -> "Action - Reaction"
-                CardType.Victory -> "Victory"
-                CardType.Curse -> "Curse"
-                CardType.Treasure -> "Treasure"
-                CardType.ActionVictory -> "Action - Victory"
-                CardType.TreasureVictory -> "Treasure - Victory"
-                CardType.ActionDuration -> "Action - Duration"
-                CardType.VictoryReaction -> "Victory - Reaction"
-                CardType.TreasureCurse -> "Treasure - Curse"
-                CardType.DurationVictory -> "Duration - Victory"
-                CardType.TreasureReaction -> "Treasure - Reaction"
-                CardType.ActionSummon -> "Action - Summon"
-            }
+    private val typeAsString: String
+        get() = when (type) {
+            CardType.Action -> "Action"
+            CardType.ActionAttack -> "Action - Attack"
+            CardType.ActionReaction -> "Action - Reaction"
+            CardType.Victory -> "Victory"
+            CardType.Curse -> "Curse"
+            CardType.Treasure -> "Treasure"
+            CardType.ActionVictory -> "Action - Victory"
+            CardType.TreasureVictory -> "Treasure - Victory"
+            CardType.ActionDuration -> "Action - Duration"
+            CardType.VictoryReaction -> "Victory - Reaction"
+            CardType.TreasureCurse -> "Treasure - Curse"
+            CardType.DurationVictory -> "Duration - Victory"
+            CardType.TreasureReaction -> "Treasure - Reaction"
+        }
+
+    val numTypes: Int
+        get() = when (type) {
+            CardType.Action -> 1
+            CardType.ActionAttack -> 2
+            CardType.ActionReaction -> 2
+            CardType.Victory -> 1
+            CardType.Curse -> 1
+            CardType.Treasure -> 1
+            CardType.ActionVictory -> 2
+            CardType.TreasureVictory -> 2
+            CardType.ActionDuration -> 2
+            CardType.VictoryReaction -> 2
+            CardType.TreasureCurse -> 2
+            CardType.DurationVictory -> 2
+            CardType.TreasureReaction -> 2
         }
 
     val isSpecialCard: Boolean
@@ -110,7 +124,7 @@ abstract class Card(
         get() = type == CardType.VictoryReaction
 
     val isAction: Boolean
-        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionSummon
+        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory
 
     val isTerminalAction: Boolean
         get() = isAction && addActions == 0 && name != "Nobles" && name != Pawn.NAME && name != "Trusty Steed"
@@ -201,16 +215,16 @@ abstract class Card(
         get() = backgroundColor.color
 
     open val isAutoPlayTreasure: Boolean = true
-        //get() = name != "Bank" && name != "Venture" && name != "Contraband" && name != "Loan" && name != "Horn of Plenty" && name != "Talisman" && name != "Diadem" && name != "Storybook" && name != "Ill-Gotten Gains" && name != "Fool's Gold"
+    //get() = name != "Bank" && name != "Venture" && name != "Contraband" && name != "Loan" && name != "Horn of Plenty" && name != "Talisman" && name != "Diadem" && name != "Storybook" && name != "Ill-Gotten Gains" && name != "Fool's Gold"
 
     open val isTrashingCard: Boolean = false
-        /*get() = (name == "Chapel" || name == "Mine" || name == "Moneylender" || name == "Remodel"
-                || name == "Masquerade" || name == "Steward" || name == "Trading Post"
-                || name == "Upgrade" || name == "Ambassador" || name == "Island"
-                || name == "Lookout" || name == "Salvager" || name == "Apprentice"
-                || name == "Transmute" || name == "Bishop" || name == "Expand" || name == "Forge"
-                || name == "Loan" || name == "Trade Route" || name == "Remake" || name == "Develop"
-                || name == "Jack of all Trades" || name == "Spice Merchant" || name == "Trader")*/
+    /*get() = (name == "Chapel" || name == "Mine" || name == "Moneylender" || name == "Remodel"
+            || name == "Masquerade" || name == "Steward" || name == "Trading Post"
+            || name == "Upgrade" || name == "Ambassador" || name == "Island"
+            || name == "Lookout" || name == "Salvager" || name == "Apprentice"
+            || name == "Transmute" || name == "Bishop" || name == "Expand" || name == "Forge"
+            || name == "Loan" || name == "Trade Route" || name == "Remake" || name == "Develop"
+            || name == "Jack of all Trades" || name == "Spice Merchant" || name == "Trader")*/
 
     val isExtraActionsCard: Boolean
         get() = addActions >= 2 || name == "Throne Room" || name == "King's Court"

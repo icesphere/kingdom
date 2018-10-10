@@ -777,4 +777,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     abstract fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player)
+
+    abstract fun chooseCardFromHand(text: String, chooseCardFromhandActionCard: ChooseCardFromHandActionCard)
 }

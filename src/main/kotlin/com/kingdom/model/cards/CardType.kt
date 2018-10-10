@@ -13,8 +13,7 @@ enum class CardType(val typeId: Int) {
     TreasureCurse(10),
     VictoryReaction(11),
     DurationVictory(12),
-    TreasureReaction(14),
-    ActionSummon(15);
+    TreasureReaction(14);
 
     companion object {
         fun fromCardTypeId(typeId: Int): CardType {
