@@ -155,9 +155,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun trashCardFromSupply(optional: Boolean) {
+    override fun trashCardFromSupply(optional: Boolean, expression: ((card: Card) -> Boolean)?) {
         //todo better logic
-        val card: Card = game.availableCards.toMutableList().shuffled().first()
+        val card: Card = game.availableCards.filter { expression == null || expression(it) }.shuffled().first()
         game.removeCardFromSupply(card)
     }
 

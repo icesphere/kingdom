@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Baron : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
 
     init {
-        testing = true
         addBuys = 1
         special = "You may discard an Estate for +\$4. If you don’t gain an Estate."
     }
@@ -26,6 +25,7 @@ class Baron : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
             player.discardCardFromHand(player.hand.first { it.name == Estate.NAME })
             player.addCoins(4)
         } else {
+            player.addUsernameGameLog("gained an ${Estate().cardNameWithBackgroundColor}")
             player.acquireFreeCardFromSupply(Estate())
         }
     }

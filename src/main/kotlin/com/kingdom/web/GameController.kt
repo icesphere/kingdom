@@ -1055,6 +1055,8 @@ class GameController(private val cardManager: CardManager,
         }
 
         game.refreshPlayerCardAction(player)
+        player.game.refreshSupply()
+        player.game.refreshPlayerHandArea(player)
 
         return emptyModelAndView
     }

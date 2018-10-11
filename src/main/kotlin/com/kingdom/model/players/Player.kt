@@ -368,7 +368,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean)
 
-    abstract fun trashCardFromSupply(optional: Boolean)
+    abstract fun trashCardFromSupply(optional: Boolean, expression: ((card: Card) -> Boolean)?)
 
     abstract fun gainCardFromTrash(optional: Boolean)
 

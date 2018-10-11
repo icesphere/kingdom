@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Ironworks : IntrigueCard(NAME, CardType.Action, 4), FreeCardFromSupplyForBenefitActionCard {
 
     init {
-        testing = true
         special = "Gain a card costing up to \$4. If the gained card is an… Action card, +1 Action; Treasure card, +\$1; Victory card, +1 Card"
     }
 

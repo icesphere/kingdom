@@ -13,16 +13,20 @@ class Lurker : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.makeChoice(this,
-                Choice(1, "Trash an Action card from the Supply"),
-                Choice(2, "Gain an Action card from the trash")
-        )
+        if (player.game.trashedCards.isNotEmpty()) {
+            player.makeChoice(this,
+                    Choice(1, "Trash an Action card from the Supply"),
+                    Choice(2, "Gain an Action card from the trash")
+            )
+        } else {
+            player.trashCardFromSupply(false, { c -> c.isAction })
+        }
     }
 
     override fun actionChoiceMade(player: Player, choice: Int) {
         when (choice) {
             1 -> {
-                player.trashCardFromSupply(false)
+                player.trashCardFromSupply(false, { c -> c.isAction })
             }
             2 -> {
                 player.gainCardFromTrash(false)

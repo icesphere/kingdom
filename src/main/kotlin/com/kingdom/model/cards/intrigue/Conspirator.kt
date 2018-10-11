@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class Conspirator : IntrigueCard(NAME, CardType.Action, 4) {
 
     init {
-        testing = true
         addCoins = 2
         special = "If you’ve played 3 or more Actions this turn (counting this), +1 Card and +1 Action."
     }

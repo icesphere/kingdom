@@ -56,11 +56,11 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun trashCardFromSupply(optional: Boolean) {
+    override fun trashCardFromSupply(optional: Boolean, expression: ((card: Card) -> Boolean)?) {
         if (optional) {
-            addAction(TrashCardsFromSupply(1, true))
+            addAction(TrashCardsFromSupply(1, true, expression))
         } else {
-            addAction(TrashCardsFromSupply(1, false))
+            addAction(TrashCardsFromSupply(1, false, expression))
         }
     }
 

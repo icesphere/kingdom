@@ -5,7 +5,7 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.players.Player
 import java.util.*
 
-class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boolean) : Action("") {
+class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boolean, private val expression: ((card: Card) -> Boolean)? = null) : Action("") {
 
     private var selectedCards: MutableList<Card> = ArrayList()
 
@@ -42,7 +42,7 @@ class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boole
     }
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
-        return cardLocation == CardLocation.Supply
+        return cardLocation == CardLocation.Supply && (expression == null || expression.invoke(card))
     }
 
     override fun processAction(player: Player): Boolean {
@@ -51,7 +51,7 @@ class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boole
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
         if (result.isDoneWithAction) {
-            selectedCards.forEach { c -> player.game.trashCardFromSupply(c) }
+            applyActionToSelectedCards(player)
             return true
         } else {
             val selectedCard = result.selectedCard!!
@@ -59,13 +59,18 @@ class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boole
                 selectedCards.remove(selectedCard)
             } else {
                 if (numCardsToScrap == 1) {
-                    selectedCards.clear()
+                    applyActionToSelectedCards(player)
+                    return true
                 }
                 selectedCards.add(selectedCard)
             }
         }
 
         return false
+    }
+
+    private fun applyActionToSelectedCards(player: Player) {
+        selectedCards.forEach { c -> player.game.trashCardFromSupply(c) }
     }
 
     override fun isCardSelected(card: Card): Boolean {
