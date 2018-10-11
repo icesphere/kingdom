@@ -41,31 +41,31 @@ class CardRepository {
 
     val intrigueCards: List<Card>
         get() = listOf(
-                Courtyard(),
-                Lurker(),
-                Pawn(),
-                Masquerade(),
-                ShantyTown(),
-                Steward(),
-                Swindler(),
-                WishingWell(),
                 Baron(),
                 Bridge(),
                 Conspirator(),
+                Courtier(),
+                Courtyard(),
                 Diplomat(),
+                Duke(),
                 Ironworks(),
+                Lurker(),
+                Masquerade(),
                 Mill(),
                 MiningVillage(),
-                Courtier(),
-                Duke(),
                 Minion(),
+                Nobles(),
                 Patrol(),
+                Pawn(),
                 Replace(),
+                ShantyTown(),
+                Steward(),
+                Swindler(),
                 Torturer(),
                 TradingPost(),
-                Upgrade(),
                 TreasureRoom(),
-                Nobles()
+                Upgrade(),
+                WishingWell()
         )
 
     val allCards: List<Card>

@@ -41,7 +41,8 @@ abstract class Card(
 
     val id: String = UUID.randomUUID().toString()
 
-    private val typeAsString: String
+    @Suppress("MemberVisibilityCanBePrivate")
+    val typeAsString: String
         get() = when (type) {
             CardType.Action -> "Action"
             CardType.ActionAttack -> "Action - Attack"

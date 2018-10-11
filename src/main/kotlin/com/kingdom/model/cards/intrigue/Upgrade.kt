@@ -14,6 +14,8 @@ class Upgrade : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefitActi
         special = "Trash a card from your hand. Gain a card costing exactly \$1 more than it."
     }
 
+    override val isTrashingCard: Boolean = true
+
     override fun cardPlayedSpecialAction(player: Player) {
         if (player.hand.isNotEmpty()) {
             player.trashCardsFromHandForBenefit(this, 1, "")

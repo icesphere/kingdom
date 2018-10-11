@@ -12,6 +12,8 @@ class Steward : IntrigueCard(NAME, CardType.Action, 3), ChoiceActionCard {
         special = "Choose one: +2 Cards; or +\$2; or trash 2 cards from your hand."
     }
 
+    override val isTrashingCard: Boolean = true
+
     override fun cardPlayedSpecialAction(player: Player) {
         player.makeChoice(this,
                 Choice(1, "+2 Cards"),

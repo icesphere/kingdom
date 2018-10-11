@@ -13,7 +13,10 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
     init {
         testing = true
         special = "Trash a card from your hand. Gain a card costing up to \$2 more than it. If the gained card is an Action or Treasure, put it onto your deck; if it’s a Victory card, each other player gains a Curse."
+        textSize = 100
     }
+
+    override val isTrashingCard: Boolean = true
 
     override fun cardPlayedSpecialAction(player: Player) {
         if (player.hand.isNotEmpty()) {

@@ -8,6 +8,7 @@ import com.kingdom.model.players.Player
 class Duke : IntrigueCard(NAME, CardType.Victory, 5), VictoryPointsCalculator {
 
     init {
+        testing = true
         special = "Worth 1 Victory Point per Duchy you have."
     }
 
