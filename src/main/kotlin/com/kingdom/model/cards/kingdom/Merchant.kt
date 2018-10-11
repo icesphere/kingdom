@@ -17,8 +17,6 @@ class Merchant : KingdomCard(NAME, CardType.Action, 3), CardPlayedListener {
         isPlayTreasureCardsRequired = true
     }
 
-    override val isAutoPlayTreasure: Boolean = false
-
     override fun onCardPlayed(card: Card, player: Player) {
         if (card.isSilver && !firstSilverPlayed) {
             firstSilverPlayed = true

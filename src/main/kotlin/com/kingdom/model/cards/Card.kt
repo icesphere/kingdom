@@ -214,7 +214,7 @@ abstract class Card(
     val backgroundColorColor: String
         get() = backgroundColor.color
 
-    open val isAutoPlayTreasure: Boolean = true
+    //open val isAutoPlayTreasure: Boolean = true
     //get() = name != "Bank" && name != "Venture" && name != "Contraband" && name != "Loan" && name != "Horn of Plenty" && name != "Talisman" && name != "Diadem" && name != "Storybook" && name != "Ill-Gotten Gains" && name != "Fool's Gold"
 
     open val isTrashingCard: Boolean = false
