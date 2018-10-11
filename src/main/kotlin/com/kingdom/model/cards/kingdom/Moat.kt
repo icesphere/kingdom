@@ -1,7 +1,6 @@
 package com.kingdom.model.cards.kingdom
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.listeners.BeforeAttackListener
@@ -12,7 +11,6 @@ class Moat : KingdomCard(NAME, CardType.ActionReaction, 2), BeforeAttackListener
     lateinit var attackCard: Card
 
     init {
-        testing = true
         addCards = 2
         special = "When another player plays an Attack card, you may first reveal this from your hand, to be unaffected by it."
         fontSize = 13
@@ -20,7 +18,7 @@ class Moat : KingdomCard(NAME, CardType.ActionReaction, 2), BeforeAttackListener
     }
 
     override fun onBeforeAttack(card: Card, player: Player, opponent: Player) {
-        if (card.isAttack && this.location == CardLocation.Hand) {
+        if (card.isAttack) {
             attackCard = card
             player.yesNoChoice(this, "Reveal $cardNameWithBackgroundColor to be unaffected by ${card.cardNameWithBackgroundColor}?")
         }
