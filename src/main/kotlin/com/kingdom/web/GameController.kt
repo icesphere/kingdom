@@ -974,8 +974,7 @@ class GameController(private val cardManager: CardManager,
         }
 
         try {
-            //todo
-            //game.playAllTreasureCards(player)
+            player.playAllTreasureCards()
             game.closeLoadingDialog(player)
         } catch (t: Throwable) {
             t.printStackTrace()

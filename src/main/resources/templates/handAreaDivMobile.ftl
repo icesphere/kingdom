@@ -15,7 +15,7 @@
     </div>
 
     <#if playTreasureCards && currentPlayerId == player.userId>
-        <div class="handAreaTopRowLeft" style="clear:both;"><a href="javascript:playAllTreasureCards()">Play Treasure Cards</a> (+ ${player.autoPlayCoins} <span style="position:relative; top:3px;"><img src="images/coin.png" alt="Coins" style="height:16px; width:16px;"/></span>)</div>
+        <div class="handAreaTopRowLeft" style="clear:both;"><a href="javascript:playAllTreasureCards()">Play Treasure Cards</a></div>
     </#if>
     <#if showIslandCards>
         <div class="handAreaTopRowLeft" style="clear:both;"><#if player.islandCards?size != 0><a href="javascript:showIslandCardsDialog()"></#if>${player.islandCards?size} Island Card<#if player.islandCards?size != 1>s</#if><#if player.islandCards?size != 0></a></#if></div>

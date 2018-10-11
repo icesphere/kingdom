@@ -7,6 +7,4 @@ problem starting new game after exiting game
 info dialogs look weird - change how to show info dialogs
 maybe show card name of card that triggered card action and maybe show who played the card if not you
 considering using embedded database so app can be deployed easily anywhere
-fix play all treasure cards
 figure out how to show what previous player(s) bought
-merchant is broken

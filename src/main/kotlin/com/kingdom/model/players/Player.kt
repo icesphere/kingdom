@@ -118,7 +118,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val allCardsString: String
         get() = KingdomUtil.groupCards(allCards, true)
 
-    val playTreasureCards: Boolean = game.isPlayTreasureCards
+    val isPlayTreasureCards: Boolean = game.isPlayTreasureCards
 
     val isTreasureCardsPlayed: Boolean
         get() = game.cardsPlayed.any { it.isTreasure }
@@ -817,6 +817,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         } else {
             val attackResolver = attackCard as AttackCard
             attackResolver.resolveAttack(this, opponents.filterNot { attackCard.playersExcludedFromCardEffects.contains(it) })
+        }
+    }
+
+    fun playAllTreasureCards() {
+        hand.filter { it.isTreasure }.forEach { card ->
+            playCard(card)
         }
     }
 }
