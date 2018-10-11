@@ -9,4 +9,19 @@ maybe show card name of card that triggered card action and maybe show who playe
 considering using embedded database so app can be deployed easily anywhere
 fix play all treasure cards
 figure out how to show what previous player(s) bought
-trigger AttackResolver function at correct time
+merchant is broken
+
+error:
+FTL stack trace ("~" means nesting-related):
+	- Failed at: #list player.groupedHand as card  [in template "handDiv.ftl" at line 4, column 5]
+	- Reached through: #include "handDiv.ftl"  [in template "handAreaDiv.ftl" at line 51, column 29]
+----] as the response has already been committed. As a result, the response may have the wrong status code.
+
+error:
+java.util.ConcurrentModificationException: null
+	at java.util.ArrayList.sort(ArrayList.java:1456) ~[na:1.8.0_91]
+	at java.util.Collections.sort(Collections.java:175) ~[na:1.8.0_91]
+	at com.kingdom.util.KingdomUtil.groupCards(KingdomUtil.kt:165) ~[classes/:na]
+	at com.kingdom.model.players.Player.getGroupedHand(Player.kt:110) ~[classes/:na]
+	at sun.reflect.GeneratedMethodAccessor115.invoke(Unknown Source) ~[na:na]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)

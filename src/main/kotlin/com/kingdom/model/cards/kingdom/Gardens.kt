@@ -22,7 +22,7 @@ class Gardens : KingdomCard(NAME, CardType.Victory, 4), VictoryPointsCalculator 
             return 0
         }
 
-        return (totalCards/10) * player.cardCountByName(Gardens.NAME)
+        return totalCards/10
     }
 }
 
