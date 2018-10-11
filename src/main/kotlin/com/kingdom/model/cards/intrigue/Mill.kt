@@ -7,7 +7,6 @@ import com.kingdom.model.players.Player
 class Mill : IntrigueCard(NAME, CardType.ActionVictory, 4), ChoiceActionCard {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         victoryPoints = 1

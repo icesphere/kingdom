@@ -7,7 +7,6 @@ import com.kingdom.model.players.Player
 class MiningVillage : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
 
     init {
-        testing = true
         addCards = 1
         addActions = 2
         special = "You may trash this for +\$2."

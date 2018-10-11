@@ -64,8 +64,8 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun gainCardFromTrash(optional: Boolean) {
-        addAction(ChooseCardToGainFromTrash(game.trashedCards, optional))
+    override fun gainCardFromTrash(optional: Boolean, expression: ((card: Card) -> Boolean)?) {
+        addAction(ChooseCardToGainFromTrash(game.trashedCards, optional, expression))
     }
 
     override fun passCardFromHandToPlayerOnLeft() {

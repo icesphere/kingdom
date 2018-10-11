@@ -58,11 +58,12 @@ class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boole
             if (selectedCards.contains(selectedCard)) {
                 selectedCards.remove(selectedCard)
             } else {
+                selectedCards.add(selectedCard)
+
                 if (numCardsToScrap == 1) {
                     applyActionToSelectedCards(player)
                     return true
                 }
-                selectedCards.add(selectedCard)
             }
         }
 

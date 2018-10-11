@@ -163,11 +163,12 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         game.removeCardFromSupply(card)
     }
 
-    override fun gainCardFromTrash(optional: Boolean) {
+    override fun gainCardFromTrash(optional: Boolean, expression: ((card: Card) -> Boolean)?) {
         //todo better logic
-        val trashedCards = game.trashedCards.toMutableList()
+        val trashedCards = game.trashedCards.filter { expression == null || expression(it) }.sortedByDescending { it.cost }
         if (trashedCards.isNotEmpty()) {
             val card = trashedCards.first()
+            game.trashedCards.remove(card)
             addGameLog("$username gained ${card.cardNameWithBackgroundColor} from the trash")
         }
     }

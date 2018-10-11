@@ -299,6 +299,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun trashCardInPlay(card: Card) {
         addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from in play")
         inPlay.remove(card)
+        game.cardsPlayed.remove(card)
         cardTrashed(card)
         game.refreshCardsPlayed()
     }
@@ -371,7 +372,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun trashCardFromSupply(optional: Boolean, expression: ((card: Card) -> Boolean)?)
 
-    abstract fun gainCardFromTrash(optional: Boolean)
+    abstract fun gainCardFromTrash(optional: Boolean, expression: ((card: Card) -> Boolean)?)
 
     abstract fun passCardFromHandToPlayerOnLeft()
 

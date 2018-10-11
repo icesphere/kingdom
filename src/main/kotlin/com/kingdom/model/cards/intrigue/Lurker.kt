@@ -7,13 +7,12 @@ import com.kingdom.model.players.Player
 
 class Lurker : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
     init {
-        testing = true
         addActions = 1
         special = "Choose one: Trash an Action card from the Supply; or gain an Action card from the trash."
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        if (player.game.trashedCards.isNotEmpty()) {
+        if (player.game.trashedCards.any { it.isAction }) {
             player.makeChoice(this,
                     Choice(1, "Trash an Action card from the Supply"),
                     Choice(2, "Gain an Action card from the trash")
@@ -29,7 +28,7 @@ class Lurker : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
                 player.trashCardFromSupply(false, { c -> c.isAction })
             }
             2 -> {
-                player.gainCardFromTrash(false)
+                player.gainCardFromTrash(false, { c -> c.isAction })
             }
         }
     }
