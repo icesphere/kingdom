@@ -40,7 +40,7 @@ class Steward : IntrigueCard(NAME, CardType.Action, 3), ChoiceActionCard {
     }
 
     companion object {
-        const val NAME: String = "Pawn"
+        const val NAME: String = "Steward"
     }
 }
 
