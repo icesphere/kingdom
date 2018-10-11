@@ -31,6 +31,8 @@ class GameController(private val cardManager: CardManager,
                      private val lobbyChats: LobbyChats,
                      private val gameMessageService: GameMessageService) {
 
+    val gameControllerLock: Any = Object()
+
     @ResponseBody
     @RequestMapping(value = ["/getUserId"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun getUserId(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {
@@ -1363,13 +1365,15 @@ class GameController(private val cardManager: CardManager,
     private fun addPlayerAndGameDataToModelAndView(game: Game, user: User, modelAndView: ModelAndView, request: HttpServletRequest) {
         val player = game.playerMap[user.userId]!!
 
-        player.hand.forEach {
-            it.isHighlighted = highlightCard(player, it, CardLocation.Hand)
-            it.isSelected = isCardSelected(player, it)
-        }
+        synchronized(gameControllerLock) {
+            player.hand.forEach {
+                it.isHighlighted = highlightCard(player, it, CardLocation.Hand)
+                it.isSelected = isCardSelected(player, it)
+            }
 
-        player.currentAction?.cardChoices?.forEach {
-            it.isHighlighted = true
+            player.currentAction?.cardChoices?.forEach {
+                it.isHighlighted = true
+            }
         }
 
         modelAndView.addObject("user", user)

@@ -3,10 +3,9 @@
 	<head>
 		<title>Confirm Random Cards</title>
         <#include "commonIncludes.ftl">
+        <link href="css/game.css" rel="stylesheet" type="text/css">
         <#if mobile>
             <link href="css/gameMobile.css" rel="stylesheet" type="text/css">
-        <#else>
-            <link href="css/game.css" rel="stylesheet" type="text/css">
         </#if>
         <script type="text/javascript">
             var addingTypeOfCard = false;

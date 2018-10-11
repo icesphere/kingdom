@@ -15,7 +15,7 @@
 
 <script type="text/javascript">
     function switchSite() {
-        $.getJSON("switchSite.html", function(data) {
+        $.get("switchSite.html", function(data) {
             window.location.reload(true);
         });
     }

@@ -107,8 +107,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val groupedHand: List<Card>
         get() {
-            KingdomUtil.groupCards(hand)
-            return hand
+            val handCopy = hand.toMutableList()
+            KingdomUtil.groupCards(handCopy)
+            return handCopy
         }
 
     val currentHand: String
