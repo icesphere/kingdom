@@ -11,7 +11,6 @@ var cardActionSelectExact;
 var cardActionSelectUpTo;
 var cardActionSelectAtLeast;
 var cardActionWidth = 750;
-var loadingDialog;
 var divsToLoad = 0;
 var specialDialog;
 var clickingCard = false;
@@ -22,12 +21,6 @@ var stompClient = null;
 
 $(document).ready(function() {
     $.ajaxSetup({ cache: false });
-
-    loadingDialog = $("#loadingDialog");
-    loadingDialog.dialog({
-        autoOpen: false, width:250, modal:true, draggable:false, resizable:false, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-    });
-    showLoadingDialog();
 
     connect()
 
@@ -129,7 +122,6 @@ function connect() {
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            closeLoadingDialog()
             stompClient.subscribe('/queue/refresh-game/' + userId, debouncedGameRefresh);
             stompClient.subscribe('/queue/refresh-hand-area/' + userId, debouncedHandAreaRefresh);
             stompClient.subscribe('/queue/refresh-cards-played/' + userId, debouncedCardsPlayedRefresh);
@@ -296,19 +288,10 @@ function reloadPage() {
 
 function refreshFinished() {
     refreshingGame = false;
-    closeLoadingDialog();
 }
 
 function endTurnRefreshFinished() {
     refreshingGame = false;
-}
-
-function showLoadingDialog() {
-    loadingDialog.dialog("open");
-}
-
-function closeLoadingDialog() {
-    loadingDialog.dialog("close");
 }
 
 function clickCard(clickType, cardName, cardId, special){
@@ -329,7 +312,6 @@ function endTurn(){
 function playAllTreasureCards(){
     if(gameStatus == "InProgress" && currentPlayer){
         refreshingGame = true;
-        showLoadingDialog();
         $.post("playAllTreasureCards");
     }
 }
@@ -419,7 +401,6 @@ function submitCardAction(){
             var selectedCardsString = selectedCards.join();
             $.get("submitCardAction.html", {selectedCards: selectedCardsString}, function(data) {
                 submittingCardAction = false;
-                showLoadingDialog();
             });
         }
         else {
@@ -434,7 +415,6 @@ function submitCardActionYesNo(answer){
         $.get("submitCardAction.html", {answer: answer}, function(data) {
             closeCardActionDialog();
             submittingCardAction = false;
-            showLoadingDialog();
         });
     }
 }
@@ -472,7 +452,6 @@ function submitCardActionChooseNumberBetween(numberChosen){
         submittingCardAction = true;
         $.get("submitCardAction.html", {numberChosen: numberChosen}, function(data) {
             submittingCardAction = false;
-            showLoadingDialog();
         });
     }
 }
@@ -544,7 +523,6 @@ function toggleSound() {
 function useCoinTokens(){
     if(gameStatus == "InProgress"){
         refreshingGame = true;
-        showLoadingDialog();
         $.post("useCoinTokens", function(data) {
             refreshGame(data);
         });

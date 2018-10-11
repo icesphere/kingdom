@@ -832,7 +832,6 @@ class GameController(private val cardManager: CardManager,
             if (cardId != null && cardName != null) {
                 val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
                 cardClicked(game, player, getCardLocationFromSource(clickType), cardName, cardId)
-                game.closeLoadingDialog(player)
             }
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -975,7 +974,6 @@ class GameController(private val cardManager: CardManager,
 
         try {
             player.playAllTreasureCards()
-            game.closeLoadingDialog(player)
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
@@ -2338,7 +2336,6 @@ class GameController(private val cardManager: CardManager,
             }
             //todo
 //            game.showUseFruitTokensCardAction(player)
-//            game.closeLoadingDialog(player)
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))

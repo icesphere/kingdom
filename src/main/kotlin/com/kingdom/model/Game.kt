@@ -683,10 +683,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             prizeCards.toCardNames()
         }
 
-    fun closeLoadingDialog(player: Player) {
-        //todo?
-    }
-
     fun repeat() {
         val playersCopy = ArrayList(players)
         val computerPlayersCopy = ArrayList(computerPlayers)

@@ -44,6 +44,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                     break
                 }
 
+                //todo play all treasure cards
+
                 val card = sortedCards[0]
                 playCard(card)
             }

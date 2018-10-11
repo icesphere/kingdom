@@ -26,6 +26,7 @@
 	</head>
 	<body>
         <div class="topGradient"></div>
+
         <div id="gameDiv">
             <#if gameStatus == "Finished">
                 <#include "gameResults.ftl">
@@ -34,12 +35,11 @@
             </#if>
         </div>
 
-        <div id="loadingDialog" class="loadingDialog gameDialog" style="display:none" title="">
-            Loading...
-        </div>
         <div id="gameInfoDiv">
             <#include "gameInfoDiv.ftl">
         </div>
+
         <#include "footer.ftl">
+
 	</body>
 </html>

@@ -10,7 +10,6 @@ class Merchant : KingdomCard(NAME, CardType.Action, 3), CardPlayedListener {
     var firstSilverPlayed: Boolean = false
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         special = "The first time you play a Silver this turn, +\$1."
