@@ -25,7 +25,7 @@ class MiningVillage : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
     }
 
     companion object {
-        const val NAME: String = "MiningVillage"
+        const val NAME: String = "Mining Village"
     }
 }
 
