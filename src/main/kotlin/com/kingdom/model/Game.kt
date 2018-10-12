@@ -331,10 +331,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         maxHistoryTurnSize = players.size + 1
 
-        if (currentPlayer.isBot) {
-            Thread.sleep(1000)
-        }
-
         startTurnInNewThreadIfComputerVsHuman()
     }
 
@@ -355,6 +351,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             currentPlayer.opponents.filter { it is HumanPlayer }.forEach { p ->
                 p.isWaitingForComputer = true
             }
+
+            if (currentPlayer.isBot) {
+                Thread.sleep(3000)
+            }
+
             Thread { currentPlayer.startTurn() }.start()
         } else {
             currentPlayer.startTurn()

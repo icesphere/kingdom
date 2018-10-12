@@ -1189,41 +1189,6 @@ class GameController(private val cardManager: CardManager,
         }
     }
 
-    @RequestMapping("/getPreviousPlayerPlayingAreaDiv.html")
-    fun getPreviousPlayerPlayingAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            var template = "playingAreaDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "playingAreaDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-            val player = game.playerMap[user.userId]!!
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("currentPlayerId", game.previousPlayerId)
-            modelAndView.addObject("gameStatus", game.status)
-            modelAndView.addObject("currentPlayer", game.previousPlayer!!)
-            modelAndView.addObject("user", user)
-            modelAndView.addObject("cardsPlayed", game.previousPlayerCardsPlayed)
-            modelAndView.addObject("cardsBought", game.previousPlayerCardsBought)
-            modelAndView.addObject("costDiscount", game.costDiscount)
-            //            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-            modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-            modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
     @RequestMapping("/getPlayingAreaDiv.html")
     fun getPlayingAreaDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
@@ -1310,6 +1275,31 @@ class GameController(private val cardManager: CardManager,
             addPlayerAndGameDataToModelAndView(game, user, modelAndView, request)
 
             modelAndView.addObject("cardsBought", game.cardsBought)
+            return modelAndView
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            return logErrorAndReturnEmpty(t, game)
+        }
+
+    }
+
+    @RequestMapping("/getPreviousPlayerCardsBoughtDiv.html")
+    fun getPreviousPlayerCardsBoughtDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return ModelAndView("redirect:/login.html")
+        }
+        try {
+            var template = "cardsBoughtDiv"
+            if (KingdomUtil.isMobile(request)) {
+                template = "cardsBoughtDivMobile"
+            }
+            val modelAndView = ModelAndView(template)
+
+            addPlayerAndGameDataToModelAndView(game, user, modelAndView, request)
+
+            modelAndView.addObject("cardsBought", game.previousPlayerCardsBought)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()

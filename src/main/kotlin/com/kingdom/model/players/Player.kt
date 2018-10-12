@@ -610,8 +610,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         isYourTurn = true
         turn++
 
-        game.showInfoMessage(this, "Your turn")
-
         addGameLog("")
         addGameLog("*** $username's Turn $turn ***")
         addGameLog("Deck: $currentDeckNumber")

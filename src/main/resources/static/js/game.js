@@ -63,6 +63,8 @@ function refreshGameInfo() {
                 refreshFinished();
                 return;
             });
+        } else if (currentPlayer) {
+            showInfoMessage("Your turn")
         }
     });
 }
@@ -80,7 +82,7 @@ function connect() {
 
         let debouncedGameRefresh = debounce(function(data) {
             console.log("run debounced refresh-game")
-            refreshGame()
+            refreshGame(true)
         }, 200)
 
         let debouncedHandAreaRefresh = debounce(function(data) {
@@ -135,21 +137,27 @@ function connect() {
     });
 }
 
-function refreshGame() {
+function refreshGame(showPreviousPlayerCardsBought) {
 
-    refreshGameInfo();
+    if (showPreviousPlayerCardsBought) {
+        refreshPreviousPlayerCardsBought();
 
-    refreshHandArea();
+        setTimeout(function() {
+            refreshGame(false)
+        }, 1500)
+    } else {
+        refreshGameInfo();
 
-    refreshCardsPlayed();
+        refreshHandArea();
 
-    refreshCardsBought();
+        refreshCardsPlayed();
 
-    refreshSupply();
+        refreshCardsBought();
 
-    refreshCardAction();
+        refreshSupply();
 
-    //$('#gameDiv').load('getGameDiv.html');
+        refreshCardAction();
+    }
 }
 
 function showInfoMessage(message) {
@@ -158,6 +166,10 @@ function showInfoMessage(message) {
     setTimeout(function() {
         $('#infoMessageDiv').hide()
     }, 2000)
+}
+
+function refreshPreviousPlayerCardsBought() {
+    $('#cardsBoughtDiv').load('getPreviousPlayerCardsBoughtDiv.html')
 }
 
 function refreshHandArea() {
@@ -442,7 +454,6 @@ function submitDoneWithAction() {
         submittingCardAction = true;
         $.get("submitDoneWithAction", function(data) {
             submittingCardAction = false;
-            refreshGame(data);
         });
     }
 }
@@ -470,9 +481,6 @@ function quitGame(){
                 if(gameStatus == "WaitingForPlayers"){
                     document.location = "showGameRooms.html";
                 }
-                else {
-                    refreshGame(data);
-                }
             });
         }
     }
@@ -484,7 +492,6 @@ function sendChat(){
         $("#chatMessage").val("");
         refreshingGame = true;
         $.get("sendChat", {message: message}, function(data) {
-            refreshGame(data);
         });
     }
 }
@@ -524,7 +531,6 @@ function useCoinTokens(){
     if(gameStatus == "InProgress"){
         refreshingGame = true;
         $.post("useCoinTokens", function(data) {
-            refreshGame(data);
         });
     }
 }
