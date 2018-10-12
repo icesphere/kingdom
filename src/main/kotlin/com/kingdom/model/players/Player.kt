@@ -410,7 +410,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return cards
         }
 
-    fun playCard(card: Card, repeatedAction: Boolean = false) {
+    fun playCard(card: Card, refresh: Boolean = true, repeatedAction: Boolean = false) {
 
         game.addHistory("Played card: ${card.cardNameWithBackgroundColor}")
 
@@ -429,8 +429,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             inPlay.add(card)
             hand.remove(card)
 
-            game.refreshPlayerHandArea(this)
-            game.refreshCardsPlayed()
+            if (refresh) {
+                game.refreshPlayerHandArea(this)
+                game.refreshCardsPlayed()
+            }
         }
 
         if (card.isAction) {
@@ -822,8 +824,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun playAllTreasureCards() {
-        hand.filter { it.isTreasure }.forEach { card ->
-            playCard(card)
+        hand.filter { it.isTreasure }.forEachIndexed { index, card ->
+            playCard(card, refresh = index == hand.lastIndex)
         }
     }
 }
