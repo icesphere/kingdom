@@ -9,6 +9,9 @@ open class WaitForOtherPlayersForResolveAttack(private val currentTurnPlayer: Pl
         if (!currentTurnPlayer.isOpponentHasAction) {
             val attackResolver = attackCard as AttackCard
             attackResolver.resolveAttack(currentTurnPlayer, currentTurnPlayer.opponents.filterNot { attackCard.playersExcludedFromCardEffects.contains(it) })
+            if (currentTurnPlayer.isOpponentHasAction) {
+                currentTurnPlayer.waitForOtherPlayersToResolveActions()
+            }
             return true
         }
 

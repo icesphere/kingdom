@@ -24,7 +24,15 @@ open class TrashCardsFromHand(private var numCardsToScrap: Int, text: String, op
         isShowDoNotUse = optional
 
         if (this.text == "") {
-            this.text = "Trash $numCardsToScrap card"
+            if (optional) {
+                this.text = "You may trash"
+                if (numCardsToScrap > 1) {
+                    this.text += " up to"
+                }
+            } else {
+                this.text = "Trash"
+            }
+            this.text += " $numCardsToScrap card"
             if (numCardsToScrap != 1) {
                 this.text += "s"
             }

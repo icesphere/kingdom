@@ -20,8 +20,6 @@ class Bureaucrat : KingdomCard(NAME, CardType.ActionAttack, 4), AttackCard {
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
 
-        var addWaitingAction = false
-
         affectedOpponents
                 .forEach { opponent ->
                     val victoryCards = opponent.hand.filter { it.isVictory }
@@ -33,16 +31,11 @@ class Bureaucrat : KingdomCard(NAME, CardType.ActionAttack, 4), AttackCard {
                             opponent.addCardToTopOfDeck(victoryCard)
                         } else {
                             opponent.addCardFromHandToTopOfDeck({ c -> c.isVictory })
-                            addWaitingAction = true
                         }
                     } else {
                         opponent.revealHand()
                     }
                 }
-
-        if (addWaitingAction) {
-            player.waitForOtherPlayersToResolveActions()
-        }
     }
 
     companion object {

@@ -20,8 +20,6 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard {
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
 
-        var addWaitingAction = false
-
         affectedOpponents
                 .forEach { opponent ->
                     val topCardsOfDeck = opponent.revealTopCardsOfDeck(2)
@@ -39,14 +37,9 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard {
                             opponent.addGameLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
                         } else {
                             opponent.selectCardsToTrashFromDeck(cardsThatCanBeTrashed, 1, false)
-                            addWaitingAction = true
                         }
                     }
                 }
-
-        if (addWaitingAction) {
-            player.waitForOtherPlayersToResolveActions()
-        }
     }
 
     companion object {

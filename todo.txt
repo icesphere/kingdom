@@ -6,3 +6,4 @@ refresh sometimes has issues after quit game
 problem starting new game after exiting game
 maybe show card name of card that triggered card action and maybe show who played the card if not you
 considering using embedded database so app can be deployed easily anywhere
+don't show previous players buys if previous player is you

@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Steward : IntrigueCard(NAME, CardType.Action, 3), ChoiceActionCard {
 
     init {
-        testing = true
         special = "Choose one: +2 Cards; or +\$2; or trash 2 cards from your hand."
     }
 

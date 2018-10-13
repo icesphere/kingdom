@@ -16,19 +16,12 @@ class Militia : KingdomCard(NAME, CardType.ActionAttack, 4), AttackCard {
     }
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
-        var addWaitingAction = false
-
         affectedOpponents
                 .forEach { p ->
                     if (p.hand.size > 3) {
-                        addWaitingAction = true
                         p.discardCardsFromHand(p.hand.size - 3, false)
                     }
                 }
-
-        if (addWaitingAction) {
-            player.waitForOtherPlayersToResolveActions()
-        }
     }
 
     companion object {

@@ -284,6 +284,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         hand.remove(card)
         cardTrashed(card)
         game.refreshPlayerHandArea(this)
+        if (!game.isPlayTreasureCards) {
+            game.refreshPlayerCardsBought(this)
+            game.refreshPlayerSupply(this)
+        }
     }
 
     fun cardTrashed(card: Card) {
@@ -319,7 +323,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun addCardToTopOfDeck(card: Card, addGameLog: Boolean = true) {
         deck.add(0, card)
         if (addGameLog) {
-            addGameLog("Added " + card.cardNameWithBackgroundColor + " to top of deck")
+            addUsernameGameLog("added " + card.cardNameWithBackgroundColor + " to top of deck")
         }
         game.refreshPlayerHandArea(this)
     }
@@ -327,7 +331,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     private fun addCardToHand(card: Card, addToGameLog: Boolean = true) {
         hand.add(card)
         if (addToGameLog) {
-            addGameLog("Added " + card.cardNameWithBackgroundColor + " to hand")
+            addUsernameGameLog("added " + card.cardNameWithBackgroundColor + " to hand")
         }
         game.refreshPlayerHandArea(this)
     }
@@ -512,6 +516,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         hand.remove(card)
         addCardToDiscard(card)
         addGameLog(username + " discarded " + card.cardNameWithBackgroundColor + " from hand")
+        if (!game.isPlayTreasureCards) {
+            game.refreshPlayerCardsBought(this)
+            game.refreshPlayerSupply(this)
+        }
     }
 
     abstract fun discardCardsFromHand(numCardsToDiscard: Int, optional: Boolean)
@@ -818,6 +826,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         } else {
             val attackResolver = attackCard as AttackCard
             attackResolver.resolveAttack(this, opponents.filterNot { attackCard.playersExcludedFromCardEffects.contains(it) })
+            if (isOpponentHasAction) {
+                waitForOtherPlayersToResolveActions()
+            }
         }
     }
 

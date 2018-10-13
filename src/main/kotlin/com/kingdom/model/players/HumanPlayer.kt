@@ -52,7 +52,7 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         if (optional) {
             addAction(TrashCardsFromHand(numCardsToTrash, "You may trash a card from your hand", true))
         } else {
-            addAction(TrashCardsFromHand(numCardsToTrash, "Trash a card from your hand", false))
+            addAction(TrashCardsFromHand(numCardsToTrash, "", false))
         }
     }
 

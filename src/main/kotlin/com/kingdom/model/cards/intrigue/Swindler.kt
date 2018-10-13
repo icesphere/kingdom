@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Swindler : IntrigueCard(NAME, CardType.ActionAttack, 3), AttackCard {
 
     init {
-        testing = true
         addCoins = 2
         special = "Each other player trashes the top card of their deck and gains a card with the same cost that you choose."
     }

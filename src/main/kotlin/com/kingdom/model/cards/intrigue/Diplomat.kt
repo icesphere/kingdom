@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Diplomat : IntrigueCard(NAME, CardType.ActionReaction, 4), BeforeAttackListener, ChoiceActionCard {
 
     init {
-        testing = true
         addCards = 2
         special = "If you have 5 or fewer cards in hand (after drawing), +2 Actions. When another player plays an Attack card, you may reveal this from a hand of 5 or more cards, to draw 2 cards then discard 3."
         textSize = 101
