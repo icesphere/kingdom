@@ -18,10 +18,8 @@ class Moat : KingdomCard(NAME, CardType.ActionReaction, 2), BeforeAttackListener
     }
 
     override fun onBeforeAttack(card: Card, player: Player, opponent: Player) {
-        if (card.isAttack) {
-            attackCard = card
-            player.yesNoChoice(this, "Reveal $cardNameWithBackgroundColor to be unaffected by ${card.cardNameWithBackgroundColor}?")
-        }
+        attackCard = card
+        player.yesNoChoice(this, "Reveal $cardNameWithBackgroundColor to be unaffected by ${card.cardNameWithBackgroundColor}?")
     }
 
     override fun actionChoiceMade(player: Player, choice: Int) {

@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Nobles : IntrigueCard(NAME, CardType.ActionVictory, 6), ChoiceActionCard {
 
     init {
-        testing = true
         victoryPoints = 2
         special = "Choose one: +3 Cards; or +2 Actions."
     }

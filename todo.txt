@@ -4,6 +4,5 @@ bots need to be better
 support multiple info messages
 refresh sometimes has issues after quit game
 problem starting new game after exiting game
-info dialogs look weird - change how to show info dialogs
 maybe show card name of card that triggered card action and maybe show who played the card if not you
 considering using embedded database so app can be deployed easily anywhere

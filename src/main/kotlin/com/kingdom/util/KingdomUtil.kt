@@ -59,7 +59,7 @@ object KingdomUtil {
 
     fun getWordWithBackgroundColor(word: String, color: CardColor): String {
         if (color.isImage) {
-            return "<span class=\"cardColor\" style=\"background-image:url(images/${color.color});background-repeat:repeat-x;\">$word</span>"
+            return "<span class=\"cardColor\" style=\"background-image:url(images/${color.color});background-repeat:repeat-x;background-position: center;\">$word</span>"
         }
         return "<span class=\"cardColor\" style=\"background-color:${color.color}\">$word</span>"
     }

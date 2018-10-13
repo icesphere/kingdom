@@ -45,9 +45,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 }
 
                 if (sortedCards.first().isTreasure) {
-                    sortedCards.forEachIndexed { index, card ->
-                        playCard(card, refresh = index == hand.lastIndex)
-                    }
+                    playAllTreasureCards()
                 } else {
                     val card = sortedCards[0]
                     playCard(card)

@@ -10,7 +10,7 @@ import com.kingdom.model.players.Player
 
 class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, ChooseCardFromHandActionCard {
 
-    val choices = listOf(
+    private val choices = listOf(
             Choice(1, "+1 Action"),
             Choice(2, "+1 Buy"),
             Choice(3, "+\$3"),
@@ -22,7 +22,6 @@ class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, Choos
     var numChoices = 0
 
     init {
-        testing = true
         special = "Reveal a card from your hand. For each type it has (Action, Attack, etc.), choose one: +1 Action; or +1 Buy; or +\$3; or gain a Gold. The choices must be different."
         textSize = 119
     }

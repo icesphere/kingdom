@@ -822,7 +822,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun playAllTreasureCards() {
-        hand.filter { it.isTreasure }.forEachIndexed { index, card ->
+        hand.filter { it.isTreasure }.sortedBy { it.cost }.forEachIndexed { index, card ->
             playCard(card, refresh = index == hand.lastIndex)
         }
     }

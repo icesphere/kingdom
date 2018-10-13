@@ -3,13 +3,11 @@ package com.kingdom.model.cards.intrigue
 import com.kingdom.model.Choice
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
-import com.kingdom.model.cards.kingdom.KingdomCard
 import com.kingdom.model.players.Player
 
 class Pawn : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
 
     init {
-        testing = true
         special = "Choose two: +1 Card; +1 Action; +1 Buy; +\$1. The choices must be different."
     }
 
