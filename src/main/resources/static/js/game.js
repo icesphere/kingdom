@@ -16,6 +16,7 @@ var specialDialog;
 var clickingCard = false;
 var submittingCardAction = false;
 var cardActionOpen = false;
+var previouslyEndedTurn = false;
 
 var stompClient = null;
 
@@ -57,6 +58,8 @@ function refreshGameInfo() {
         gameStatus = gameData.gameStatus;
 
         currentPlayer = gameData.currentPlayer;
+
+        previouslyEndedTurn = false
 
         if(gameStatus == "Finished") {
             $('#gameDiv').load('showGameResults.html', function() {
@@ -139,7 +142,7 @@ function connect() {
 
 function refreshGame(showPreviousPlayerCardsBought) {
 
-    if (showPreviousPlayerCardsBought) {
+    if (showPreviousPlayerCardsBought && !previouslyEndedTurn) {
         refreshPreviousPlayerCardsBought();
 
         setTimeout(function() {
@@ -317,6 +320,7 @@ function clickCard(clickType, cardName, cardId, special){
 
 function endTurn(){
     if(gameStatus == "InProgress" && currentPlayer){
+        previouslyEndedTurn = true
         $.post("endTurn");
     }
 }

@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class ShantyTown : IntrigueCard(NAME, CardType.Action, 3) {
 
     init {
-        testing = true
         addActions = 2
         special = "Reveal your hand. If you have no Action cards in hand, +2 Cards."
         fontSize = 10
