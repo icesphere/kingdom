@@ -25,7 +25,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
             return when {
                 actions > 0 && actionCards.isNotEmpty() -> actionCards
-                game.isPlayTreasureCards -> treasureCards
+                !isCardsBought -> treasureCards
                 else -> emptyList()
             }
         }
@@ -648,7 +648,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player) {
         //todo better logic
-        val availableCards = game.availableCards.filter { it.cost == cost }
+        val availableCards = game.availableCards.filter { getCardCostWithModifiers(it) == cost }
         if (availableCards.isNotEmpty()) {
             val card = availableCards.shuffled().first()
 
@@ -673,5 +673,12 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun chooseCardFromHand(text: String, chooseCardFromHandActionCard: ChooseCardFromHandActionCard) {
         //todo
+    }
+
+    override fun chooseCardForBenefit(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard, cardsToSelectFrom: List<Card>, optional: Boolean) {
+        //todo better logic
+        if (cardsToSelectFrom.isNotEmpty()) {
+            chooseCardForBenefitActionCard.onCardChosen(this, cardsToSelectFrom.first())
+        }
     }
 }

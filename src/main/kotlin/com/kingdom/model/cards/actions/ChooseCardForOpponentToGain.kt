@@ -12,7 +12,7 @@ class ChooseCardForOpponentToGain(private val cost: Int?, text: String, private 
     }
 
     override fun processAction(player: Player): Boolean {
-        return player.game.availableCards.any { cost == null || it.cost == cost }
+        return player.game.availableCards.any { cost == null || player.getCardCostWithModifiers(it) == cost }
     }
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {

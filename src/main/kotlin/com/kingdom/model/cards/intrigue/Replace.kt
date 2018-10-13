@@ -31,7 +31,7 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         val card = scrappedCards.first()
-        player.acquireFreeCardForBenefit(card.cost + 2, "Gain a card costing up to \$${card.cost + 2}. If the gained card is an Action or Treasure, put it onto your deck; if it’s a Victory card, each other player gains a Curse.", this)
+        player.acquireFreeCardForBenefit(player.getCardCostWithModifiers(card) + 2, "Gain a card costing up to \$${player.getCardCostWithModifiers(card) + 2}. If the gained card is an Action or Treasure, put it onto your deck; if it’s a Victory card, each other player gains a Curse.", this)
     }
 
     override fun isCardApplicable(card: Card): Boolean = true

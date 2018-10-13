@@ -19,14 +19,14 @@ class CardFromDiscardToTopOfDeck(cardsInDiscard: List<Card>, private val maxCost
     }
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
-        return cardLocation == CardLocation.Discard && (maxCost == null || card.cost <= maxCost)
+        return cardLocation == CardLocation.Discard && (maxCost == null || player.getCardCostWithModifiers(card) <= maxCost)
     }
 
     override fun processAction(player: Player): Boolean {
         return if (maxCost == null) {
-            !player.discard.isEmpty()
+            player.discard.isNotEmpty()
         } else {
-            player.discard.stream().anyMatch { c -> c.cost <= maxCost }
+            player.discard.stream().anyMatch { c -> player.getCardCostWithModifiers(c) <= maxCost }
         }
     }
 

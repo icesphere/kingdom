@@ -2,22 +2,20 @@ package com.kingdom.model.cards.intrigue
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.modifiers.CardCostModifier
-import com.kingdom.model.cards.supply.Estate
 import com.kingdom.model.players.Player
 
 class Bridge : IntrigueCard(NAME, CardType.Action, 4), CardCostModifier {
 
     init {
-        testing = true
         addBuys = 1
         addCoins = 1
         special = "This turn, cards (everywhere) cost \$1 less, but not less than \$0."
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-
+        player.game.refreshSupply()
+        player.game.refreshCardsBought()
     }
 
     override fun getChangeToCardCost(card: Card, player: Player): Int {

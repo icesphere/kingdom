@@ -8,7 +8,7 @@ import com.kingdom.model.players.Player
 class Remodel : KingdomCard(NAME, CardType.Action, 4), TrashCardsForBenefitActionCard {
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         if (scrappedCards.isNotEmpty()) {
-            player.acquireFreeCard(scrappedCards.get(0).cost + 2)
+            player.acquireFreeCard(player.getCardCostWithModifiers(scrappedCards[0]) + 2)
         }
     }
 

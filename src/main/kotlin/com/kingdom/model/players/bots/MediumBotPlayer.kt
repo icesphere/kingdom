@@ -28,7 +28,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
         val includeVictoryOnlyCards = turns > 8
 
         return when {
-            !card.isVictory && !card.isTreasure && card.cost < 5 && cardCountByName(card.name) >= 3 -> true
+            !card.isVictory && !card.isTreasure && getCardCostWithModifiers(card) < 5 && cardCountByName(card.name) >= 3 -> true
             card.name == ThroneRoom.NAME && (turns < 3 || cardCountByName(card.name) >= 2) -> true
             //card.name == "King's Court" && kingsCourtsBought >= 2 -> return true
             card.isTerminalAction && (terminalActionsBought - actionsBought > 1 || terminalActionsBought == 1 && actionsBought == 1) -> true

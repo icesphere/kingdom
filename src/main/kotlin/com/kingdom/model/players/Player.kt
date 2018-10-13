@@ -841,4 +841,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun discardHand() {
         hand.toMutableList().forEach { discardCardFromHand(it) }
     }
+
+    abstract fun chooseCardForBenefit(text: String,
+                                      chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard,
+                                      cardsToSelectFrom: List<Card>,
+                                      optional: Boolean)
 }
