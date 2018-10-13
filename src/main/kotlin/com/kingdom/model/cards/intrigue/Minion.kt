@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Minion : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, ChoiceActionCard {
 
     init {
-        testing = true
         addActions = 1
         special = "Choose one: +\$2; or discard your hand, +4 Cards, and each other player with at least 5 cards in hand discards their hand and draws 4 cards."
         textSize = 100
@@ -22,7 +21,7 @@ class Minion : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, ChoiceA
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         affectedOpponents
                 .forEach { opponent ->
-                    opponent.hand.forEach { opponent.discardCardFromHand(it) }
+                    opponent.discardHand()
                     opponent.drawCards(4)
                 }
     }
@@ -34,7 +33,7 @@ class Minion : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, ChoiceA
         } else {
             player.addUsernameGameLog("chose to discard hands")
 
-            player.hand.forEach { player.discardCardFromHand(it) }
+            player.discardHand()
 
             player.drawCards(4)
 

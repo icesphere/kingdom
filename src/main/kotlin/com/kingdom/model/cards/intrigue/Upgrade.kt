@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Upgrade : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefitActionCard {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         special = "Trash a card from your hand. Gain a card costing exactly \$1 more than it."
@@ -25,7 +24,7 @@ class Upgrade : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefitActi
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         val card = scrappedCards.first()
 
-        if (player.game.availableCards.any { it.cost == card.cost - 1 }) {
+        if (player.game.availableCards.any { it.cost == card.cost + 1 }) {
             player.acquireFreeCardWithCost(card.cost + 1)
         }
     }

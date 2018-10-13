@@ -837,4 +837,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             playCard(card, refresh = index == hand.lastIndex)
         }
     }
+
+    fun discardHand() {
+        hand.toMutableList().forEach { discardCardFromHand(it) }
+    }
 }

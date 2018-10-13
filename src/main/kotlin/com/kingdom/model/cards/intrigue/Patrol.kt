@@ -7,7 +7,6 @@ import com.kingdom.model.players.Player
 class Patrol : IntrigueCard(NAME, CardType.Action, 5) {
 
     init {
-        testing = true
         addCards = 3
         special = "Reveal the top 4 cards of your deck. Put the Victory cards and Curses into your hand. Put the rest back in any order."
     }
@@ -27,7 +26,11 @@ class Patrol : IntrigueCard(NAME, CardType.Action, 5) {
         }
 
         if (cardsToPutBack.isNotEmpty()) {
-            player.putCardsOnTopOfDeckInAnyOrder(cardsToPutBack)
+            if (cardsToPutBack.size == 1) {
+                player.addCardToTopOfDeck(cardsToPutBack[0], false)
+            } else {
+                player.putCardsOnTopOfDeckInAnyOrder(cardsToPutBack)
+            }
         }
     }
 
