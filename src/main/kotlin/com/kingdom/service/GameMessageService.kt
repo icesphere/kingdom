@@ -9,19 +9,22 @@ private const val REFRESH_GAME_QUEUE = "refresh-game"
 private const val REFRESH_HAND_AREA_QUEUE = "refresh-hand-area"
 private const val REFRESH_CARDS_PLAYED_QUEUE = "refresh-cards-played"
 private const val REFRESH_CARDS_BOUGHT_QUEUE = "refresh-cards-bought"
+private const val REFRESH_PREVIOUS_PLAYER_CARDS_BOUGHT_QUEUE = "refresh-previous-player-cards-bought"
 private const val REFRESH_SUPPLY_QUEUE = "refresh-supply"
 private const val REFRESH_CARD_ACTION_QUEUE = "refresh-card-action"
 private const val REFRESH_CHAT_QUEUE = "refresh-chat"
 private const val REFRESH_HISTORY_QUEUE = "refresh-history"
 private const val SHOW_INFO_MESSAGE_QUEUE = "show-info-message"
 
-//todo refresh info dialog
-
 @Service
 class GameMessageService(private val messagingTemplate: SimpMessagingTemplate) {
 
     fun refreshGame(game: Game) {
-        game.humanPlayers.forEach { refreshPlayerQueue(REFRESH_GAME_QUEUE, it) }
+        game.humanPlayers.forEach { refreshGame(it) }
+    }
+
+    fun refreshGame(player: Player) {
+        refreshPlayerQueue(REFRESH_GAME_QUEUE, player)
     }
 
     fun refreshHandArea(player: Player) {
@@ -48,6 +51,10 @@ class GameMessageService(private val messagingTemplate: SimpMessagingTemplate) {
 
     fun refreshCardsBought(player: Player) {
         refreshPlayerQueue(REFRESH_CARDS_BOUGHT_QUEUE, player)
+    }
+
+    fun refreshPreviousPlayerCardsBought(player: Player) {
+        refreshPlayerQueue(REFRESH_PREVIOUS_PLAYER_CARDS_BOUGHT_QUEUE, player)
     }
 
     fun refreshSupply(game: Game) {

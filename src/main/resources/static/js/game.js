@@ -16,7 +16,6 @@ var specialDialog;
 var clickingCard = false;
 var submittingCardAction = false;
 var cardActionOpen = false;
-var previouslyEndedTurn = false;
 
 var stompClient = null;
 
@@ -59,8 +58,6 @@ function refreshGameInfo() {
 
         currentPlayer = gameData.currentPlayer;
 
-        previouslyEndedTurn = false
-
         if(gameStatus == "Finished") {
             $('#gameDiv').load('showGameResults.html', function() {
                 refreshFinished();
@@ -84,42 +81,34 @@ function connect() {
         console.log("connect to game for user id: " + userId)
 
         let debouncedGameRefresh = debounce(function(data) {
-            console.log("run debounced refresh-game")
-            refreshGame(true)
+            refreshGame()
         }, 200)
 
         let debouncedHandAreaRefresh = debounce(function(data) {
-            console.log("run debounced refresh-hand")
             refreshHandArea()
         }, 200)
 
         let debouncedCardsPlayedRefresh = debounce(function(data) {
-            console.log("run debounced refresh-cards-played")
             refreshCardsPlayed()
         }, 200)
 
         let debouncedCardsBoughtRefresh = debounce(function(data) {
-            console.log("run debounced refresh-cards-bought")
             refreshCardsBought()
         }, 200)
 
         let debouncedSupplyRefresh = debounce(function(data) {
-            console.log("run debounced refresh-supply")
             refreshSupply()
         }, 200)
 
         let debouncedCardActionRefresh = debounce(function(data) {
-            console.log("run debounced refresh-card-action")
             refreshCardAction()
         }, 200)
 
         let debouncedChatRefresh = debounce(function(data) {
-            console.log("run debounced refresh-chat")
             refreshChat()
         }, 200)
 
         let debouncedHistoryRefresh = debounce(function(data) {
-            console.log("run debounced refresh-history")
             refreshHistory()
         }, 200)
 
@@ -131,6 +120,7 @@ function connect() {
             stompClient.subscribe('/queue/refresh-hand-area/' + userId, debouncedHandAreaRefresh);
             stompClient.subscribe('/queue/refresh-cards-played/' + userId, debouncedCardsPlayedRefresh);
             stompClient.subscribe('/queue/refresh-cards-bought/' + userId, debouncedCardsBoughtRefresh);
+            stompClient.subscribe('/queue/refresh-previous-player-cards-bought/' + userId, refreshPreviousPlayerCardsBought);
             stompClient.subscribe('/queue/refresh-supply/' + userId, debouncedSupplyRefresh);
             stompClient.subscribe('/queue/refresh-card-action/' + userId, debouncedCardActionRefresh);
             stompClient.subscribe('/queue/refresh-chat/' + userId, debouncedChatRefresh);
@@ -140,27 +130,21 @@ function connect() {
     });
 }
 
-function refreshGame(showPreviousPlayerCardsBought) {
+function refreshGame() {
 
-    if (showPreviousPlayerCardsBought && !previouslyEndedTurn) {
-        refreshPreviousPlayerCardsBought();
+    console.log("refreshing game")
 
-        setTimeout(function() {
-            refreshGame(false)
-        }, 1500)
-    } else {
-        refreshGameInfo();
+    refreshGameInfo();
 
-        refreshHandArea();
+    refreshHandArea();
 
-        refreshCardsPlayed();
+    refreshCardsPlayed();
 
-        refreshCardsBought();
+    refreshCardsBought();
 
-        refreshSupply();
+    refreshSupply();
 
-        refreshCardAction();
-    }
+    refreshCardAction();
 }
 
 function showInfoMessage(message) {
@@ -172,34 +156,42 @@ function showInfoMessage(message) {
 }
 
 function refreshPreviousPlayerCardsBought() {
+    console.log("refreshing previous player cards bought")
     $('#cardsBoughtDiv').load('getPreviousPlayerCardsBoughtDiv.html')
 }
 
 function refreshHandArea() {
+    console.log("refreshing hand area")
     $('#handAreaDiv').load('getHandAreaDiv.html')
 }
 
 function refreshCardsPlayed() {
+    console.log("refreshing cards played")
     $('#cardsPlayedDiv').load('getCardsPlayedDiv.html')
 }
 
 function refreshCardsBought() {
+    console.log("refreshing cards bought")
     $('#cardsBoughtDiv').load('getCardsBoughtDiv.html')
 }
 
 function refreshSupply() {
+    console.log("refreshing supply")
     $('#supplyDiv').load('getSupplyDiv.html')
 }
 
 function refreshCardAction() {
+    console.log("refreshing card action")
     $('#cardActionDiv').load('getCardActionDiv.html')
 }
 
 function refreshChat() {
+    console.log("refreshing chat")
     $('#chatDiv').load('getChatDiv.html')
 }
 
 function refreshHistory() {
+    console.log("refreshing history")
     $('#historyDiv').load('getHistoryDiv.html')
 }
 
@@ -320,7 +312,6 @@ function clickCard(clickType, cardName, cardId, special){
 
 function endTurn(){
     if(gameStatus == "InProgress" && currentPlayer){
-        previouslyEndedTurn = true
         $.post("endTurn");
     }
 }

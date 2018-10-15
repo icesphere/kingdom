@@ -334,7 +334,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         startTurnInNewThreadIfComputerVsHuman()
     }
 
-    private fun startTurnInNewThreadIfComputerVsHuman() {
+    private fun startTurnInNewThreadIfComputerVsHuman(refreshPreviousPlayerCardsBought: Boolean = false) {
         if (recentTurnHistory.size == maxHistoryTurnSize) {
             recentTurnHistory.removeFirst()
         }
@@ -352,18 +352,18 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 p.isWaitingForComputer = true
             }
 
-            if (currentPlayer.isBot) {
-                Thread.sleep(3000)
-            }
-
-            Thread { currentPlayer.startTurn() }.start()
+            Thread { currentPlayer.startTurn(refreshPreviousPlayerCardsBought) }.start()
         } else {
-            currentPlayer.startTurn()
+            currentPlayer.startTurn(refreshPreviousPlayerCardsBought)
         }
     }
 
     fun refreshGame() {
         gameMessageService.refreshGame(this)
+    }
+
+    fun refreshPlayerGame(player: Player) {
+        gameMessageService.refreshGame(player)
     }
 
     fun refreshSupply() {
@@ -380,6 +380,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     fun refreshPlayerCardsBought(player: Player) {
         gameMessageService.refreshCardsBought(player)
+    }
+
+    fun refreshPreviousPlayerCardsBought(player: Player) {
+        gameMessageService.refreshPreviousPlayerCardsBought(player)
     }
 
     fun refreshCardsPlayed() {
@@ -410,7 +414,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         gameMessageService.showInfoMessage(player, message)
     }
 
-    fun turnEnded() {
+    fun turnEnded(isAutoEnd: Boolean) {
         addHistory("End of turn $turn")
 
         if (emptyPiles >= 3
@@ -447,9 +451,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             recentTurnLogs.removeAt(0)
         }
 
-        refreshGame()
-
-        startTurnInNewThreadIfComputerVsHuman()
+        startTurnInNewThreadIfComputerVsHuman(isAutoEnd || previousPlayer!!.isBot)
     }
 
     private fun gameOver() {

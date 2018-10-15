@@ -8,3 +8,4 @@ maybe show card name of card that triggered card action and maybe show who playe
 considering using embedded database so app can be deployed easily anywhere
 show turn summaries
 show history in reverse order?
+should not immediately refresh supply after showing previous player cards bought

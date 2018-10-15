@@ -220,7 +220,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerCardsBought(this)
     }
 
-    fun endTurn() {
+    fun endTurn(isAutoEnd: Boolean = false) {
 
         addGameLog("Ending turn")
 
@@ -262,7 +262,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         isYourTurn = false
 
-        game.turnEnded()
+        game.turnEnded(isAutoEnd)
     }
 
     abstract fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String)
@@ -388,7 +388,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             bought.add(card)
             game.cardsBought.add(card)
             game.removeCardFromSupply(card)
-            game.refreshCardsBought()
+
+            //if buys=0 then cards bought will be refreshed by previous player cards bought
+            if (buys > 0) {
+                game.refreshCardsBought()
+            }
+
             cardAcquired(card)
         }
     }
@@ -611,12 +616,32 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         copyOfHand.forEach({ this.playCard(it) })
     }
 
-    fun startTurn() {
+    fun startTurn(refreshPreviousPlayerCardsBought: Boolean) {
         isWaitingForComputer = false
         actions = 1
         buys = 1
         isYourTurn = true
         turn++
+
+        if (game.currentPlayer.isBot) {
+            Thread.sleep(3000)
+        }
+
+        if (refreshPreviousPlayerCardsBought) {
+            val previousPlayer = game.previousPlayer!!
+
+            if (!previousPlayer.isBot) {
+                game.refreshPlayerGame(previousPlayer)
+            }
+
+            game.humanPlayers.filterNot { it.userId == game.previousPlayerId }.forEach { player ->
+                game.refreshPreviousPlayerCardsBought(player)
+                Thread.sleep(3000)
+                game.refreshPlayerGame(player)
+            }
+        } else {
+            game.refreshGame()
+        }
 
         addGameLog("")
         addGameLog("*** $username's Turn $turn ***")
