@@ -474,9 +474,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         return pileAmounts.containsKey(card.name) && pileAmounts[card.name]!! > 0
     }
 
-    fun removeCardFromSupply(card: Card) {
+    fun removeCardFromSupply(card: Card, refreshSupply: Boolean = true) {
         pileAmounts[card.name] = pileAmounts[card.name]!!.minus(1)
-        refreshSupply()
+        if (refreshSupply) {
+            refreshSupply()
+        }
     }
 
     val nonEmptyPiles

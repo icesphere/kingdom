@@ -206,7 +206,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun addCoins(coins: Int) {
         this.coins += coins
         coinsGainedThisTurn += coins
-        game.refreshSupply()
+        game.refreshPlayerSupply(this)
         game.refreshPlayerCardsBought(this)
     }
 
@@ -387,11 +387,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             buys -= 1
             bought.add(card)
             game.cardsBought.add(card)
-            game.removeCardFromSupply(card)
 
             //if buys=0 then cards bought will be refreshed by previous player cards bought
             if (buys > 0) {
+                game.removeCardFromSupply(card)
                 game.refreshCardsBought()
+            } else {
+                game.removeCardFromSupply(card, false)
             }
 
             cardAcquired(card)
@@ -623,10 +625,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         isYourTurn = true
         turn++
 
-        if (game.currentPlayer.isBot) {
-            Thread.sleep(3000)
-        }
-
         if (refreshPreviousPlayerCardsBought) {
             val previousPlayer = game.previousPlayer!!
 
@@ -636,11 +634,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             game.humanPlayers.filterNot { it.userId == game.previousPlayerId }.forEach { player ->
                 game.refreshPreviousPlayerCardsBought(player)
-                Thread.sleep(3000)
-                game.refreshPlayerGame(player)
+                Thread {
+                    Thread.sleep(2000)
+                    game.refreshPlayerGame(player)
+                }.start()
             }
         } else {
             game.refreshGame()
+        }
+
+        if (game.currentPlayer.isBot) {
+            Thread.sleep(2500)
         }
 
         addGameLog("")

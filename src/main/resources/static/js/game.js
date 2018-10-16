@@ -110,7 +110,7 @@ function connect() {
 
         let debouncedHistoryRefresh = debounce(function(data) {
             refreshHistory()
-        }, 200)
+        }, 1000)
 
         var socket = new SockJS('/kingdom-websocket');
         stompClient = Stomp.over(socket);

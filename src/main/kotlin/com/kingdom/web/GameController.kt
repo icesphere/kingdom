@@ -869,12 +869,9 @@ class GameController(private val cardManager: CardManager,
                         handleCardClickedForAction(player, card, source)
                     } else {
                         player.buyCard(card)
-                        game.refreshSupply()
 
                         if (player.buys == 0) {
                             player.endTurn(true)
-                        } else {
-                            game.refreshCardsBought()
                         }
                     }
                 }

@@ -58,7 +58,7 @@ class GameMessageService(private val messagingTemplate: SimpMessagingTemplate) {
     }
 
     fun refreshSupply(game: Game) {
-        game.humanPlayers.forEach { refreshPlayerQueue(REFRESH_SUPPLY_QUEUE, it) }
+        game.humanPlayers.forEach { refreshSupply(it) }
     }
 
     fun refreshSupply(player: Player) {
