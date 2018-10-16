@@ -862,9 +862,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun playAllTreasureCards() {
-        hand.filter { it.isTreasure }.sortedBy { it.cost }.forEachIndexed { index, card ->
-            playCard(card, refresh = index == hand.lastIndex)
+        hand.filter { it.isTreasure }.sortedBy { it.cost }.forEach { card ->
+            playCard(card, refresh = false)
         }
+
+        game.refreshPlayerHandArea(this)
+        game.refreshCardsPlayed()
     }
 
     fun discardHand() {

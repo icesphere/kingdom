@@ -1319,7 +1319,10 @@ class GameController(private val cardManager: CardManager,
                 template = "historyDivMobile"
             }
             val modelAndView = ModelAndView(template)
-            modelAndView.addObject("turnHistory", game.recentTurnHistory)
+
+            val reversedTurnHistory = game.recentTurnHistory.reversed()
+
+            modelAndView.addObject("turnHistory", reversedTurnHistory)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()

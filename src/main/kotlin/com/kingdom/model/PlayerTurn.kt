@@ -8,6 +8,10 @@ class PlayerTurn(player: Player) {
     var username = player.username
     val history = ArrayList<String>()
 
+    @Suppress("unused")
+    val reversedHistory
+        get() = history.reversed()
+
     init {
         val sb = StringBuilder()
         sb.append("<span style='font-weight:bold'>")
