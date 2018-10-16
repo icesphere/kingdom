@@ -9,6 +9,7 @@ import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
 import com.kingdom.service.*
 import com.kingdom.util.KingdomUtil
+import com.kingdom.util.groupedString
 import freemarker.ext.beans.BeansWrapper
 import freemarker.template.TemplateModelException
 import org.springframework.http.MediaType
@@ -1519,7 +1520,7 @@ class GameController(private val cardManager: CardManager,
             val player = game.playerMap[user.userId]!!
             modelAndView.addObject("player", player)
             modelAndView.addObject("players", game.players)
-            modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
+            modelAndView.addObject("trashedCards", game.trashedCards.groupedString)
             modelAndView.addObject("showIslandCards", game.isShowIslandCards)
             modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
@@ -1559,7 +1560,7 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("chats", game.chats)
             modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
 
-            modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
+            modelAndView.addObject("trashedCards", game.trashedCards.groupedString)
 
             modelAndView.addObject("logId", game.logId)
 
@@ -1807,7 +1808,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
         modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
         modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
-        modelAndView.addObject("trashedCards", KingdomUtil.groupCards(game.trashedCards, true))
+        modelAndView.addObject("trashedCards", game.trashedCards.groupedString)
         modelAndView.addObject("prizeCards", game.prizeCardsString)
 
         modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)

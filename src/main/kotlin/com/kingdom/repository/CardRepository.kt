@@ -4,6 +4,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
+import com.kingdom.model.cards.seaside.*
 import org.springframework.stereotype.Service
 
 @Service
@@ -68,6 +69,15 @@ class CardRepository {
                 WishingWell()
         )
 
+    val seasideCards: List<Card>
+        get() = listOf(
+                Embargo(),
+                Haven(),
+                Lighthouse(),
+                NativeVillage(),
+                PearlDiver()
+        )
+
     val allCards: List<Card>
         get() = kingdomCards + intrigueCards
 
@@ -75,6 +85,7 @@ class CardRepository {
         return when (deck) {
             Deck.Kingdom -> kingdomCards
             Deck.Intrigue -> intrigueCards
+            Deck.Seaside -> seasideCards
             else -> emptyList()
         }
     }

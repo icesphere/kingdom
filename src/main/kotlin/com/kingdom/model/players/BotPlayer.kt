@@ -671,8 +671,16 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun chooseCardFromHand(text: String, chooseCardFromHandActionCard: ChooseCardFromHandActionCard) {
-        //todo
+    override fun chooseCardFromHand(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard) {
+        //todo better logic
+        if (hand.isNotEmpty()) {
+            chooseCardForBenefitActionCard.onCardChosen(this, hand.first())
+        }
+    }
+
+    override fun chooseCardFromSupply(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard) {
+        //todo better logic
+        chooseCardForBenefitActionCard.onCardChosen(this, game.availableCards.last())
     }
 
     override fun chooseCardForBenefit(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard, cardsToSelectFrom: List<Card>, optional: Boolean) {

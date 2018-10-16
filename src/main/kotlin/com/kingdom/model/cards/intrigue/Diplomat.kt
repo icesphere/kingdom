@@ -3,10 +3,10 @@ package com.kingdom.model.cards.intrigue
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
-import com.kingdom.model.cards.listeners.BeforeAttackListener
+import com.kingdom.model.cards.listeners.HandBeforeAttackListener
 import com.kingdom.model.players.Player
 
-class Diplomat : IntrigueCard(NAME, CardType.ActionReaction, 4), BeforeAttackListener, ChoiceActionCard {
+class Diplomat : IntrigueCard(NAME, CardType.ActionReaction, 4), HandBeforeAttackListener, ChoiceActionCard {
 
     init {
         addCards = 2
@@ -20,7 +20,7 @@ class Diplomat : IntrigueCard(NAME, CardType.ActionReaction, 4), BeforeAttackLis
         }
     }
 
-    override fun onBeforeAttack(card: Card, player: Player, opponent: Player) {
+    override fun onBeforeAttack(attackCard: Card, player: Player, attacker: Player) {
         if (player.hand.size >= 5) {
             player.yesNoChoice(this, "Reveal $cardNameWithBackgroundColor to draw 2 cards then discard 3?")
         }

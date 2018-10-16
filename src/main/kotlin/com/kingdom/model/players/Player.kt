@@ -7,14 +7,18 @@ import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.*
-import com.kingdom.model.cards.listeners.BeforeAttackListener
+import com.kingdom.model.cards.listeners.HandBeforeAttackListener
 import com.kingdom.model.cards.listeners.CardPlayedListener
+import com.kingdom.model.cards.listeners.DurationBeforeAttackListener
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.supply.Copper
+import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.cards.supply.Estate
 import com.kingdom.model.cards.supply.VictoryPointsCalculator
 import com.kingdom.util.KingdomUtil
+import com.kingdom.util.groupedString
 import com.kingdom.util.toCardNames
 import java.util.*
 import java.util.function.Function
@@ -113,10 +117,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
     val currentHand: String
-        get() = KingdomUtil.groupCards(hand, true)
+        get() = hand.groupedString
 
     val allCardsString: String
-        get() = KingdomUtil.groupCards(allCards, true)
+        get() = allCards.groupedString
 
     val isPlayTreasureCards: Boolean = game.isPlayTreasureCards
 
@@ -130,6 +134,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = opponents.any { it.currentAction != null }
 
     var numActionsPlayed = 0
+
+    var durationCards = mutableListOf<Card>()
+
+    var nativeVillageCards = mutableListOf<Card>()
 
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
@@ -191,7 +199,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         return cardsDrawn
     }
 
-    private fun shuffleDiscardIntoDeck() {
+    fun shuffleDiscardIntoDeck() {
         deck.addAll(discard)
         discard.clear()
         addGameLog("Shuffling deck")
@@ -248,9 +256,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         bought.clear()
         played.clear()
 
+        durationCards.clear()
+
         for (card in inPlay) {
             discard.add(card)
+
             cardRemovedFromPlay(card)
+
+            if (card.isDuration) {
+                durationCards.add(card)
+            }
         }
 
         inPlay.clear()
@@ -388,6 +403,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             bought.add(card)
             game.cardsBought.add(card)
 
+            if (game.isShowEmbargoTokens) {
+                val numEmbargoTokens = game.embargoTokens[card.name] ?: 0
+                if (numEmbargoTokens > 0) {
+                    for (i in 1..numEmbargoTokens) {
+                        acquireFreeCardFromSupply(Curse(), true)
+                    }
+                }
+            }
+
             //if buys=0 then cards bought will be refreshed by previous player cards bought
             if (buys > 0) {
                 game.removeCardFromSupply(card)
@@ -476,9 +500,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String)
 
-    fun acquireFreeCardFromSupply(card: Card) {
+    fun acquireFreeCardFromSupply(card: Card, showLog: Boolean = false) {
         if (game.isCardAvailableInSupply(card)) {
             game.removeCardFromSupply(card)
+            if (showLog) {
+                addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
+            }
             cardAcquired(card)
         }
     }
@@ -653,6 +680,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         currentTurnSummary = TurnSummary()
         currentTurnSummary.gameTurn = game.turn
+
+        durationCards.forEach {
+            if (it is StartOfTurnDurationAction) {
+                it.durationStartOfTurnAction(this)
+            }
+        }
 
         resolveActions()
 
@@ -841,13 +874,18 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player)
 
-    abstract fun chooseCardFromHand(text: String, chooseCardFromHandActionCard: ChooseCardFromHandActionCard)
+    abstract fun chooseCardFromHand(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard)
+
+    abstract fun chooseCardFromSupply(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard)
 
     fun triggerAttack(attackCard: Card) {
 
         opponents.forEach { opponent ->
-            opponent.hand.filter { it is BeforeAttackListener }
-                    .forEach { (it as BeforeAttackListener).onBeforeAttack(attackCard, opponent, this) }
+            opponent.hand.filter { it is HandBeforeAttackListener }
+                    .forEach { (it as HandBeforeAttackListener).onBeforeAttack(attackCard, opponent, this) }
+
+            opponent.durationCards.filter { it is DurationBeforeAttackListener }
+                    .forEach { (it as DurationBeforeAttackListener).onBeforeAttack(attackCard, opponent, this) }
         }
 
         if (isOpponentHasAction) {

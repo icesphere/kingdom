@@ -16,6 +16,10 @@
     <#list supplyCards as card>
         <div style="float:left;padding-right:2px;padding-top:2px;">
             <#include "gameCard.ftl">
+            <#if gameStatus == "InProgress">
+                <#if showEmbargoTokens && (embargoTokens(card.name))?? && embargoTokens(card.name) != 0><div style="font-size:10px; float: left; padding-right: 2px;">(${embargoTokens(card.name)} ET)</div></#if>
+                <#if showTradeRouteTokens && tradeRouteTokenMap(card.name)><div style="font-size:10px; float: left; padding-right: 2px;">(TRT)</div></#if></td></tr>
+            </#if>
         </div>
     </#list>
 </div>

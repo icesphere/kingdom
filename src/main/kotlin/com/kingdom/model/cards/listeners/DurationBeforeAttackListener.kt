@@ -3,7 +3,7 @@ package com.kingdom.model.cards.listeners
 import com.kingdom.model.cards.Card
 import com.kingdom.model.players.Player
 
-interface BeforeAttackListener {
+interface DurationBeforeAttackListener {
 
-    fun onBeforeAttack(card: Card, player: Player, opponent: Player)
+    fun onBeforeAttack(attackCard: Card, player: Player, attacker: Player)
 }

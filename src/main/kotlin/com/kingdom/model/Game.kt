@@ -3,6 +3,7 @@ package com.kingdom.model
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.modifiers.CardCostModifier
+import com.kingdom.model.cards.seaside.Embargo
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.BotPlayer
 import com.kingdom.model.players.HumanPlayer
@@ -224,7 +225,19 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         setupSupply()
 
-        kingdomCards.forEach { cardMap[it.name] = it }
+        kingdomCards.forEach {
+            cardMap[it.name] = it
+
+            when (it.name) {
+                Embargo.NAME -> isShowEmbargoTokens = true
+            }
+
+            if (it.isDuration) {
+                isShowDuration = true
+            }
+
+        }
+
         supplyCards.forEach { cardMap[it.name] = it }
 
         if (numComputerPlayers > 0) {
