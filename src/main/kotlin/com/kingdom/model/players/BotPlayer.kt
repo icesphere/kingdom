@@ -638,14 +638,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         //todo
     }
 
-    override fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean) {
-        val cardsToTrashFromDeck = getCardsToTrashFromDeck(cardsThatCanBeTrashed, numCardsToTrash, optional)
-        for (card in cardsToTrashFromDeck) {
-            removeCardFromDeck(card)
-            cardTrashed(card)
-        }
-    }
-
     override fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player) {
         //todo better logic
         val availableCards = game.availableCards.filter { getCardCostWithModifiers(it) == cost }
@@ -671,22 +663,22 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun chooseCardFromHand(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard) {
+    override fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard) {
         //todo better logic
         if (hand.isNotEmpty()) {
-            chooseCardForBenefitActionCard.onCardChosen(this, hand.first())
+            chooseCardActionCard.onCardChosen(this, hand.first())
         }
     }
 
-    override fun chooseCardFromSupply(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard) {
+    override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard) {
         //todo better logic
-        chooseCardForBenefitActionCard.onCardChosen(this, game.availableCards.last())
+        chooseCardActionCard.onCardChosen(this, game.availableCards.last())
     }
 
-    override fun chooseCardForBenefit(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard, cardsToSelectFrom: List<Card>, optional: Boolean) {
+    override fun chooseCardAction(text: String, chooseCardActionCard: ChooseCardActionCard, cardsToSelectFrom: List<Card>, optional: Boolean) {
         //todo better logic
         if (cardsToSelectFrom.isNotEmpty()) {
-            chooseCardForBenefitActionCard.onCardChosen(this, cardsToSelectFrom.first())
+            chooseCardActionCard.onCardChosen(this, cardsToSelectFrom.first())
         }
     }
 }

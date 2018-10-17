@@ -1,16 +1,21 @@
 package com.kingdom.model.cards.kingdom
 
+import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.AttackCard
+import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.cards.supply.Gold
 import com.kingdom.model.players.Player
 
-class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard {
+class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCardActionCard {
 
     init {
+        testing = true
         special = "Gain a Gold. Each other player reveals the top two cards of their deck, trashes a revealed Treasure other than Copper, and discards the rest."
         textSize = 117
     }
+
+    var cardsThatCanBeTrashed: MutableList<Card>? = null
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.acquireFreeCardFromSupply(Gold())
@@ -36,10 +41,26 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard {
                             opponent.cardTrashed(card)
                             opponent.addGameLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
                         } else {
-                            opponent.selectCardsToTrashFromDeck(cardsThatCanBeTrashed, 1, false)
+                            this.cardsThatCanBeTrashed = cardsThatCanBeTrashed.toMutableList()
+                            opponent.chooseCardAction("Select a treasure to trash from the top of your deck. The other treasure will be discarded.", this, cardsThatCanBeTrashed, false)
                         }
                     }
                 }
+    }
+
+    override fun onCardChosen(player: Player, card: Card) {
+        player.addGameLog("${this.cardNameWithBackgroundColor} trashed ${player.username}'s ${card.cardNameWithBackgroundColor}")
+        player.removeCardFromDeck(card)
+        player.cardTrashed(card)
+        cardsThatCanBeTrashed?.remove(card)
+        val remainingCard = cardsThatCanBeTrashed?.first()!!
+        player.removeCardFromDeck(remainingCard)
+        player.addCardToDiscard(remainingCard)
+    }
+
+    override fun removedFromPlay(player: Player) {
+        super.removedFromPlay(player)
+        cardsThatCanBeTrashed = null
     }
 
     companion object {

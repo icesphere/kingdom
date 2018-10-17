@@ -855,8 +855,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         return victoryPoints
     }
 
-    abstract fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean)
-
     abstract fun putCardsOnTopOfDeckInAnyOrder(cards: List<Card>)
 
     fun cardCountByName(cardName: String): Int {
@@ -874,9 +872,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player)
 
-    abstract fun chooseCardFromHand(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard)
+    abstract fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard)
 
-    abstract fun chooseCardFromSupply(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard)
+    abstract fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard)
 
     fun triggerAttack(attackCard: Card) {
 
@@ -912,8 +910,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         hand.toMutableList().forEach { discardCardFromHand(it) }
     }
 
-    abstract fun chooseCardForBenefit(text: String,
-                                      chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard,
-                                      cardsToSelectFrom: List<Card>,
-                                      optional: Boolean)
+    abstract fun chooseCardAction(text: String,
+                                  chooseCardActionCard: ChooseCardActionCard,
+                                  cardsToSelectFrom: List<Card>,
+                                  optional: Boolean)
 }

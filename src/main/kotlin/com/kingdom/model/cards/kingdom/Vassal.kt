@@ -10,6 +10,7 @@ class Vassal : KingdomCard(NAME, CardType.Action, 3), ChoiceActionCard {
     lateinit var cardDiscarded: Card
 
     init {
+        addCoins = 2
         special = "Discard the top card of your deck. If it’s an Action card, you may play it."
     }
 

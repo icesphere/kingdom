@@ -136,23 +136,19 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(WaitForOtherPlayersActionsWithResults(this, resultHandler))
     }
 
-    override fun selectCardsToTrashFromDeck(cardsThatCanBeTrashed: List<Card>, numCardsToTrash: Int, optional: Boolean) {
-        addAction(SelectCardsToTrashFromDeck(cardsThatCanBeTrashed, numCardsToTrash, optional))
-    }
-
     override fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player) {
         addAction(ChooseCardForOpponentToGain(cost, text, destination, opponent))
     }
 
-    override fun chooseCardFromHand(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard) {
-        addAction(ChooseCardFromHand(chooseCardForBenefitActionCard, text))
+    override fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard) {
+        addAction(ChooseCardFromHand(chooseCardActionCard, text))
     }
 
-    override fun chooseCardFromSupply(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard) {
-        addAction(ChooseCardFromSupply(chooseCardForBenefitActionCard, text))
+    override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard) {
+        addAction(ChooseCardFromSupply(chooseCardActionCard, text))
     }
 
-    override fun chooseCardForBenefit(text: String, chooseCardForBenefitActionCard: ChooseCardForBenefitActionCard, cardsToSelectFrom: List<Card>, optional: Boolean) {
-        addAction(ChooseCardForBenefit(text, chooseCardForBenefitActionCard, cardsToSelectFrom, optional))
+    override fun chooseCardAction(text: String, chooseCardActionCard: ChooseCardActionCard, cardsToSelectFrom: List<Card>, optional: Boolean) {
+        addAction(ChooseCardAction(text, chooseCardActionCard, cardsToSelectFrom, optional))
     }
 }

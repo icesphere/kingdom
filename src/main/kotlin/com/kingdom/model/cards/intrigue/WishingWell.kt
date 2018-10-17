@@ -2,10 +2,10 @@ package com.kingdom.model.cards.intrigue
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.actions.ChooseCardForBenefitActionCard
+import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.players.Player
 
-class WishingWell : IntrigueCard(NAME, CardType.Action, 3), ChooseCardForBenefitActionCard {
+class WishingWell : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard {
 
     init {
         addActions = 1
@@ -15,7 +15,7 @@ class WishingWell : IntrigueCard(NAME, CardType.Action, 3), ChooseCardForBenefit
 
     override fun cardPlayedSpecialAction(player: Player) {
         val cardsToSelectFrom = player.game.kingdomCards + player.game.supplyCards
-        player.chooseCardForBenefit(special, this, cardsToSelectFrom, false)
+        player.chooseCardAction(special, this, cardsToSelectFrom, false)
     }
 
     override fun onCardChosen(player: Player, card: Card) {

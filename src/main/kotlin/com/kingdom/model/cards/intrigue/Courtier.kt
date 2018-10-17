@@ -4,11 +4,11 @@ import com.kingdom.model.Choice
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
-import com.kingdom.model.cards.actions.ChooseCardForBenefitActionCard
+import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.cards.supply.Gold
 import com.kingdom.model.players.Player
 
-class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, ChooseCardForBenefitActionCard {
+class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, ChooseCardActionCard {
 
     private val choices = listOf(
             Choice(1, "+1 Action"),
