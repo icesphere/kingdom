@@ -7,7 +7,6 @@ import com.kingdom.model.players.Player
 class PearlDiver : SeasideCard(NAME, CardType.Action, 2), ChoiceActionCard {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         special = "Look at the bottom card of your deck. You may put it on top."

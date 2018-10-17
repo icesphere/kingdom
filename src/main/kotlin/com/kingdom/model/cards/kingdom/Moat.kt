@@ -17,6 +17,8 @@ class Moat : KingdomCard(NAME, CardType.ActionReaction, 2), HandBeforeAttackList
         textSize = 81
     }
 
+    override val isDefense: Boolean = true
+
     override fun onBeforeAttack(attackCard: Card, player: Player, attacker: Player) {
         this.attackCard = attackCard
         player.yesNoChoice(this, "Reveal $cardNameWithBackgroundColor to be unaffected by ${attackCard.cardNameWithBackgroundColor}?")

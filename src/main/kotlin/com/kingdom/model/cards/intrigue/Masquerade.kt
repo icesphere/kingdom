@@ -12,6 +12,8 @@ class Masquerade : IntrigueCard(NAME, CardType.Action, 3) {
         fontSize = 11
     }
 
+    override val isTrashingCard: Boolean = true
+
     override fun cardPlayedSpecialAction(player: Player) {
         player.game.players.forEach {
             if (it.hand.isNotEmpty()) {

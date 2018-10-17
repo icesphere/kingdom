@@ -10,7 +10,6 @@ import com.kingdom.model.players.Player
 class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCardActionCard {
 
     init {
-        testing = true
         special = "Gain a Gold. Each other player reveals the top two cards of their deck, trashes a revealed Treasure other than Copper, and discards the rest."
         textSize = 117
     }
@@ -35,14 +34,25 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
                         opponent.addCardToDiscard(it)
                     }
                     if (cardsThatCanBeTrashed.isNotEmpty()) {
-                        if (cardsThatCanBeTrashed.size == 1) {
-                            val card = cardsThatCanBeTrashed.first()
-                            opponent.removeCardFromDeck(card)
-                            opponent.cardTrashed(card)
-                            opponent.addGameLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
-                        } else {
-                            this.cardsThatCanBeTrashed = cardsThatCanBeTrashed.toMutableList()
-                            opponent.chooseCardAction("Select a treasure to trash from the top of your deck. The other treasure will be discarded.", this, cardsThatCanBeTrashed, false)
+                        when {
+                            cardsThatCanBeTrashed.size == 1 -> {
+                                val card = cardsThatCanBeTrashed.first()
+                                opponent.removeCardFromDeck(card)
+                                opponent.cardTrashed(card)
+                                opponent.addGameLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
+                            }
+                            cardsThatCanBeTrashed[0].name == cardsThatCanBeTrashed[1].name -> {
+                                opponent.removeCardFromDeck(cardsThatCanBeTrashed[0])
+                                opponent.cardTrashed(cardsThatCanBeTrashed[0])
+                                opponent.addGameLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${cardsThatCanBeTrashed[0].cardNameWithBackgroundColor}")
+
+                                opponent.removeCardFromDeck(cardsThatCanBeTrashed[1])
+                                opponent.addCardToDiscard(cardsThatCanBeTrashed[1])
+                            }
+                            else -> {
+                                this.cardsThatCanBeTrashed = cardsThatCanBeTrashed.toMutableList()
+                                opponent.chooseCardAction("Select a treasure to trash from the top of your deck. The other treasure will be discarded.", this, cardsThatCanBeTrashed, false)
+                            }
                         }
                     }
                 }

@@ -137,6 +137,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var durationCards = mutableListOf<Card>()
 
+    val durationCardsString: String
+        get() = durationCards.groupedString
+
     var nativeVillageCards = mutableListOf<Card>()
 
     init {
@@ -256,16 +259,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         bought.clear()
         played.clear()
 
+        discard.addAll(durationCards)
+
         durationCards.clear()
 
         for (card in inPlay) {
-            discard.add(card)
-
-            cardRemovedFromPlay(card)
 
             if (card.isDuration) {
                 durationCards.add(card)
+            } else {
+                discard.add(card)
             }
+
+            cardRemovedFromPlay(card)
         }
 
         inPlay.clear()
@@ -345,10 +351,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     private fun addCardToHand(card: Card, addToGameLog: Boolean = true) {
         hand.add(card)
+
         if (addToGameLog) {
             addUsernameGameLog("added " + card.cardNameWithBackgroundColor + " to hand")
         }
+
         game.refreshPlayerHandArea(this)
+
+        if (!game.isPlayTreasureCards && card.addCoins > 0) {
+            game.refreshPlayerCardsBought(this)
+        }
     }
 
     fun cardAcquired(card: Card) {
@@ -781,7 +793,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun removeCardFromHand(card: Card) {
         hand.remove(card)
+
         game.refreshPlayerHandArea(this)
+
+        if (!game.isPlayTreasureCards && card.addCoins > 0) {
+            game.refreshPlayerCardsBought(this)
+        }
     }
 
     val cardOnTopOfDiscard: Card?

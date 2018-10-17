@@ -79,7 +79,7 @@ class CardRepository {
         )
 
     val allCards: List<Card>
-        get() = kingdomCards + intrigueCards
+        get() = kingdomCards + intrigueCards + seasideCards
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {

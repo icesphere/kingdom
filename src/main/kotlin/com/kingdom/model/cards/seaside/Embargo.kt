@@ -11,6 +11,7 @@ class Embargo : SeasideCard(NAME, CardType.Action, 2), ChooseCardActionCard {
         testing = true
         addCoins = 2
         special = "Trash this. Add an Embargo token to a Supply pile. (For the rest of the game, when a player buys a card from that pile, they gain a Curse.)"
+        textSize = 103
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

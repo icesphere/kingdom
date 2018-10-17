@@ -9,10 +9,12 @@ import com.kingdom.model.players.Player
 class Lighthouse : SeasideCard(NAME, CardType.ActionDuration, 2), StartOfTurnDurationAction, DurationBeforeAttackListener {
 
     init {
-        testing = true
         addActions = 1
         special = "Now and at the start of your next turn: +\$1. While this is in play, when another player plays an Attack card, it doesn’t affect you."
+        textSize = 103
     }
+
+    override val isDefense: Boolean = true
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.addCoins(1)

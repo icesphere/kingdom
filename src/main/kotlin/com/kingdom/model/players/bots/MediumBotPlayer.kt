@@ -13,7 +13,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
     override fun excludeCard(card: Card): Boolean {
 
         if (game.isShowEmbargoTokens ) {
-            val embargoTokens = game.embargoTokens[card.name]!!
+            val embargoTokens = game.embargoTokens[card.name] ?: 0
             if (embargoTokens > 0) {
                 if (embargoTokens > 2 || !card.isProvince && !card.isColony) {
                     return true

@@ -1,5 +1,6 @@
 package com.kingdom.model.cards
 
+import com.kingdom.model.cards.intrigue.Nobles
 import com.kingdom.model.cards.intrigue.Pawn
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
 import com.kingdom.model.cards.supply.*
@@ -127,7 +128,7 @@ abstract class Card(
         get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory
 
     val isTerminalAction: Boolean
-        get() = isAction && addActions == 0 && name != "Nobles" && name != Pawn.NAME && name != "Trusty Steed"
+        get() = isAction && addActions == 0 && name != Nobles.NAME && name != Pawn.NAME && name != "Trusty Steed"
 
     val isDuration: Boolean
         get() = type == CardType.ActionDuration || type == CardType.DurationVictory
@@ -171,8 +172,7 @@ abstract class Card(
     val isAttack: Boolean
         get() = type == CardType.ActionAttack
 
-    val isDefense: Boolean
-        get() = name == "Moat" || name == "Lighthouse" || name == "Watchtower" || name == "Bell Tower" || name == "Enchanted Palace"
+    open val isDefense: Boolean = false
 
     val isKingdom: Boolean
         get() = deck === Deck.Kingdom
@@ -218,9 +218,7 @@ abstract class Card(
     //get() = name != "Bank" && name != "Venture" && name != "Contraband" && name != "Loan" && name != "Horn of Plenty" && name != "Talisman" && name != "Diadem" && name != "Storybook" && name != "Ill-Gotten Gains" && name != "Fool's Gold"
 
     open val isTrashingCard: Boolean = false
-    /*get() = (name == "Chapel" || name == "Mine" || name == "Moneylender" || name == "Remodel"
-            || name == "Masquerade" || name == "Steward" || name == "Trading Post"
-            || name == "Upgrade" || name == "Ambassador" || name == "Island"
+    /*get() = (name == "Ambassador" || name == "Island"
             || name == "Lookout" || name == "Salvager" || name == "Apprentice"
             || name == "Transmute" || name == "Bishop" || name == "Expand" || name == "Forge"
             || name == "Loan" || name == "Trade Route" || name == "Remake" || name == "Develop"
