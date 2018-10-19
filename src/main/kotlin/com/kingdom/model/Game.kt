@@ -4,6 +4,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.seaside.Embargo
+import com.kingdom.model.cards.seaside.NativeVillage
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.BotPlayer
 import com.kingdom.model.players.HumanPlayer
@@ -230,6 +231,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
             when (it.name) {
                 Embargo.NAME -> isShowEmbargoTokens = true
+                NativeVillage.NAME -> isShowNativeVillage = true
             }
 
             if (it.isDuration) {

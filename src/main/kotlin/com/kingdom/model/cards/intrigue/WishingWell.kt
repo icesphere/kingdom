@@ -11,6 +11,7 @@ class WishingWell : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard
         addActions = 1
         addCards = 1
         special = "Name a card, then reveal the top card of your deck. If you name it, put it in your hand."
+        fontSize = 10
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

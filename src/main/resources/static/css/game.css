@@ -257,3 +257,9 @@
     float:left;
     padding-right:20px;
 }
+
+#nativeVillageDialog {
+    font-family:"Times New Roman", Times, serif;
+    padding: 16px;
+    background: white;
+}

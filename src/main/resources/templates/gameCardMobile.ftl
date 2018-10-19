@@ -28,4 +28,8 @@
         <div style="position:absolute;bottom:10px;font-size:8px;left:28px;">Bane</div>
         <div style="position:absolute;bottom:2px;font-size:8px;left:28px;">Card</div>
     </#if>
+
+    <#if showEmbargoTokens?? && showEmbargoTokens && (embargoTokens(card.name))?? && embargoTokens(card.name) != 0><div style="position: absolute; bottom: 11px; left: 25px; z-index: 5; color: #BB0000; font-size: 9px; font-weight: bold;">(${embargoTokens(card.name)} ET)</div></#if>
+    <#if showTradeRouteTokens?? && showTradeRouteTokens && tradeRouteTokenMap(card.name)><div style="position: absolute; bottom: 5px; right: 10px; z-index: 5">(TRT)</div></#if>
+
 </div>

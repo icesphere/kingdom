@@ -1,8 +1,6 @@
 package com.kingdom.model.cards.intrigue
 
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.actions.ChoiceActionCard
-import com.kingdom.model.cards.supply.Estate
 import com.kingdom.model.cards.supply.Silver
 import com.kingdom.model.players.Player
 
@@ -10,6 +8,7 @@ class TradingPost : IntrigueCard(NAME, CardType.Action, 5) {
 
     init {
         special = "Trash 2 cards from your hand. If you did, gain a Silver to your hand."
+        fontSize = 10
     }
 
     override val isTrashingCard: Boolean = true

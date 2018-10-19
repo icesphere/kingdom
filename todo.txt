@@ -9,4 +9,4 @@ considering using embedded database so app can be deployed easily anywhere
 show turn summaries
 some treasures should not be auto-played
 sometimes cards in discard are highlighted when they shouldn't be
-show embargo token and trade route token on top of mobile card in supply
+don't use dialog for native village cards
