@@ -9,9 +9,9 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.*
-import com.kingdom.model.cards.listeners.HandBeforeAttackListener
 import com.kingdom.model.cards.listeners.CardPlayedListener
 import com.kingdom.model.cards.listeners.DurationBeforeAttackListener
+import com.kingdom.model.cards.listeners.HandBeforeAttackListener
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Curse
@@ -26,7 +26,12 @@ import java.util.function.Function
 abstract class Player protected constructor(val user: User, val game: Game) {
     var deck: MutableList<Card> = ArrayList()
     val hand: MutableList<Card> = ArrayList()
-    val discard: MutableList<Card> = ArrayList()
+
+    protected val discard: MutableList<Card> = ArrayList()
+
+    val cardsInDiscard: List<Card>
+        get() = discard
+
     val bought: MutableList<Card> = ArrayList()
     val played: MutableList<Card> = ArrayList()
     private val inPlay: MutableList<Card> = ArrayList()
@@ -548,10 +553,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.addHistory(log)
     }
 
-    fun addCardToDiscard(card: Card) {
+    fun addCardToDiscard(card: Card, refresh: Boolean = true) {
         discard.add(card)
+
         cardRemovedFromPlay(card)
-        game.refreshPlayerHandArea(this)
+
+        if (refresh) {
+            game.refreshPlayerHandArea(this)
+        }
     }
 
     fun discardCardFromHand() {
@@ -791,6 +800,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerHandArea(this)
     }
 
+    fun removeCardFromDiscard(card: Card) {
+        discard.remove(card)
+        game.refreshPlayerHandArea(this)
+    }
+
     fun removeCardFromHand(card: Card) {
         hand.remove(card)
 
@@ -879,7 +893,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun cardCountByExpression(expression: ((card: Card) -> Boolean)): Int {
-        return allCards.count{ expression(it) }
+        return allCards.count { expression(it) }
     }
 
     fun canBuyCard(card: Card): Boolean {

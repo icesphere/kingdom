@@ -10,7 +10,7 @@
             </#if>
         </td>
         <td class="handAreaTopRow">
-            <#assign discardPileWidth = 3 * player.discard?size>
+            <#assign discardPileWidth = 3 * player.cardsInDiscard?size>
             <div style="float:left;">Discard Pile:&#160;</div>
             <div class="discardPile" style="float:left;width:${discardPileWidth}px;">&#160;</div>
         </td>

@@ -39,8 +39,8 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
     override fun onCardAcquired(player: Player, card: Card) {
         if (card.isAction || card.isTreasure) {
             //todo ideally the acquire action puts in on the deck
-            if (player.discard.contains(card)) {
-                player.discard.remove(card)
+            if (player.cardsInDiscard.contains(card)) {
+                player.removeCardFromDiscard(card)
                 player.addCardToTopOfDeck(card)
             }
         }

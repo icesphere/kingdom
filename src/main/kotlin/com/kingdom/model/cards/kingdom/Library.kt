@@ -33,7 +33,7 @@ class Library : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
                 }
             }
         } else {
-            player.discard.addAll(skippedActionCards)
+            skippedActionCards.forEach { player.addCardToDiscard(it, false) }
             player.game.refreshPlayerHandArea(player)
         }
     }

@@ -24,16 +24,16 @@ class CardFromDiscardToTopOfDeck(cardsInDiscard: List<Card>, private val maxCost
 
     override fun processAction(player: Player): Boolean {
         return if (maxCost == null) {
-            player.discard.isNotEmpty()
+            player.cardsInDiscard.isNotEmpty()
         } else {
-            player.discard.stream().anyMatch { c -> player.getCardCostWithModifiers(c) <= maxCost }
+            player.cardsInDiscard.stream().anyMatch { c -> player.getCardCostWithModifiers(c) <= maxCost }
         }
     }
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
-        val card = result.selectedCard
-        player.discard.remove(card)
-        player.addCardToTopOfDeck(card!!)
+        val card = result.selectedCard!!
+        player.removeCardFromDiscard(card)
+        player.addCardToTopOfDeck(card)
         return true
     }
 }

@@ -889,7 +889,7 @@ class GameController(private val cardManager: CardManager,
                 }
             }
             CardLocation.Discard -> {
-                val card = findCardById(player.discard, cardId)!!
+                val card = findCardById(player.cardsInDiscard, cardId)!!
                 if (highlightCard(player, card, source)) {
                     if (action != null) {
                         handleCardClickedForAction(player, card, source)

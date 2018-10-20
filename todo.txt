@@ -8,4 +8,3 @@ maybe show card name of card that triggered card action and maybe show who playe
 considering using embedded database so app can be deployed easily anywhere
 show turn summaries
 some treasures should not be auto-played
-sometimes cards in discard are highlighted when they shouldn't be

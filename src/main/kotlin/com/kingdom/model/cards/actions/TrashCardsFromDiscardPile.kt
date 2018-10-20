@@ -42,7 +42,7 @@ class TrashCardsFromDiscardPile : Action, SelectFromDiscardAction {
     }
 
     override fun processAction(player: Player): Boolean {
-        return !player.discard.isEmpty()
+        return player.cardsInDiscard.isNotEmpty()
     }
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
