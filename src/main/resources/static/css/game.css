@@ -122,7 +122,7 @@
 {
     position:absolute;
     top: 0;
-    z-index: 1;
+    z-index: 2;
     background-color: rgba(220, 240, 255, 0.9);
     margin-left: 15px;
     padding: 15px;
@@ -133,11 +133,24 @@
 {
     position:absolute;
     top: 0;
-    z-index: 2;
+    z-index: 4;
     background-color: rgba(220, 255, 240, 0.9);
     margin-left: 15px;
     padding: 15px;
     width: calc(100% - 60px)
+}
+
+.showCardsDivContent
+{
+    position: absolute;
+    top: 0;
+    z-index: 6;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 8px;
+    margin-left: 25px;
+    padding: 15px;
+    width: calc(100% - 80px)
 }
 
 #playingAreaDiv
@@ -256,10 +269,4 @@
     height: 600px;
     float:left;
     padding-right:20px;
-}
-
-#nativeVillageDialog {
-    font-family:"Times New Roman", Times, serif;
-    padding: 16px;
-    background: white;
 }

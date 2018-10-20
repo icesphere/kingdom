@@ -236,57 +236,19 @@ function resizeSupplyCardsDiv(){
     $("#supplyCardsDiv").css('overflow', 'auto');
 }
 
-function openSpecialDialog(cardName){
-    specialDialog = $("#specialDialog_"+cardName);
-    specialDialog.dialog(
-        {modal: true, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-    });
+function showNativeVillageCards(){
+
+    $('#showCardsDiv').load('showNativeVillageCards.html')
+
+    $('#showCardsDiv').show()
 }
 
-function closeSpecialDialog(){
-    specialDialog.dialog("close");
+function showIslandCards() {
+    //todo
 }
 
-function showIslandCardsDialog(){
-    if(mobile) {
-        $("#islandCardsDiv").load('loadIslandCardsDialog.html', function() {
-            $("#islandCardsDialog").dialog(
-                {modal: true, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-            });
-        });
-    }
-    else {
-        $("#islandCardsDiv").load('loadIslandCardsDialog.html', function() {
-            $("#islandCardsDialog").dialog(
-                {modal: true, width: 450, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-            });
-        });
-    }
-}
-
-function closeIslandCardsDialog(){
-    $("#islandCardsDialog").dialog("destroy").remove();
-}
-
-function showNativeVillageDialog(){
-    if(mobile) {
-        $("#nativeVillageDiv").load('loadNativeVillageDialog.html', function() {
-            $("#nativeVillageDialog").dialog(
-                {modal: true, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-            });
-        });
-    }
-    else {
-        $("#nativeVillageDiv").load('loadNativeVillageDialog.html', function() {
-            $("#nativeVillageDialog").dialog(
-                {modal: true, width: 450, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-            });
-        });
-    }
-}
-
-function closeNativeVillageDialog(){
-    $("#nativeVillageDialog").dialog("destroy").remove();
+function hideShowCardsDiv() {
+    $('#showCardsDiv').hide()
 }
 
 function reloadPage() {

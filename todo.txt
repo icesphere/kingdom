@@ -9,4 +9,3 @@ considering using embedded database so app can be deployed easily anywhere
 show turn summaries
 some treasures should not be auto-played
 sometimes cards in discard are highlighted when they shouldn't be
-don't use dialog for native village cards

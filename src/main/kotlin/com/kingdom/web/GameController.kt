@@ -513,7 +513,7 @@ class GameController(private val cardManager: CardManager,
                 for (card in game.kingdomCards) {
                     if (card.name == "Black Market") {
                         hasBlackMarket = true
-                    } else if (card.name == "Tournament" || card.name == "Museum") {
+                    } else if (card.name == "Tournament") {
                         includePrizes = true
                     }
                     if (card.isPlayTreasureCardsRequired) {
@@ -1762,24 +1762,37 @@ class GameController(private val cardManager: CardManager,
         return ModelAndView("empty")
     }
 
-    @RequestMapping("/loadNativeVillageDialog.html")
-    fun loadNativeVillageDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        return loadPlayerDialogContainingCards(request, response, "nativeVillageDialog")
+    @RequestMapping("/showNativeVillageCards.html")
+    fun showNativeVillageCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return ModelAndView("redirect:/login.html")
+        }
+        val player = game.playerMap[user.userId]!!
+
+        return getShowCardsDiv(request, response, player.nativeVillageCards, "Native Village Mat")
     }
 
-    @RequestMapping("/loadIslandCardsDialog.html")
-    fun loadIslandCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        return loadPlayerDialogContainingCards(request, response, "islandCardsDialog")
-    }
+    private fun getShowCardsDiv(request: HttpServletRequest, response: HttpServletResponse, cardsToShow: List<Card>, cardsToShowTitle: String): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return ModelAndView("redirect:/login.html")
+        }
+        try {
+            val modelAndView = ModelAndView("showCardsDiv")
 
-    @RequestMapping("/loadMuseumCardsDialog.html")
-    fun loadMuseumCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        return loadPlayerDialogContainingCards(request, response, "museumCardsDialog")
-    }
+            modelAndView.addObject("cardsToShowTitle", cardsToShowTitle)
+            modelAndView.addObject("cardsToShow", cardsToShow)
 
-    @RequestMapping("/loadCityPlannerCardsDialog.html")
-    fun loadCityPlannerCardsDialog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        return loadPlayerDialogContainingCards(request, response, "cityPlannerCardsDialog")
+            addPlayerAndGameDataToModelAndView(game, user, modelAndView, request)
+
+            return modelAndView
+        } catch (t: Throwable) {
+            return logErrorAndReturnEmpty(t, game)
+        }
+
     }
 
     private fun addGameObjects(game: Game, user: User, modelAndView: ModelAndView, request: HttpServletRequest) {

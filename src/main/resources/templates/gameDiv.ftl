@@ -29,6 +29,10 @@
         <#include "infoMessageDiv.ftl">
     </div>
 
+    <div id="showCardsDiv" style="display: none;">
+        <#include "showCardsDiv.ftl">
+    </div>
+
 </div>
 
 <#if mobile>

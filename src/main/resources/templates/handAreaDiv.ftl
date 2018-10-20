@@ -18,10 +18,10 @@
             <td class="handAreaTopRow"><a href="javascript:playAllTreasureCards()">Play Treasure Cards</a></td>
         </#if>
         <#if showIslandCards>
-            <td class="handAreaTopRow"><#if player.islandCards?size != 0><a href="javascript:showIslandCardsDialog()"></#if>${player.islandCards?size} Island Card<#if player.islandCards?size != 1>s</#if><#if player.islandCards?size != 0></a></#if></td>
+            <td class="handAreaTopRow"><#if player.islandCards?size != 0><a href="javascript:showIslandCards()"></#if>${player.islandCards?size} Island Card<#if player.islandCards?size != 1>s</#if><#if player.islandCards?size != 0></a></#if></td>
         </#if>
         <#if showNativeVillage>
-            <td class="handAreaTopRow"><#if player.nativeVillageCards?size != 0><a href="javascript:showNativeVillageDialog()"></#if>${player.nativeVillageCards?size} Native Village Card<#if player.nativeVillageCards?size != 1>s</#if><#if player.nativeVillageCards?size != 0></a></#if></td>
+            <td class="handAreaTopRow"><#if player.nativeVillageCards?size != 0><a href="javascript:showNativeVillageCards()"></#if>${player.nativeVillageCards?size} Native Village Card<#if player.nativeVillageCards?size != 1>s</#if><#if player.nativeVillageCards?size != 0></a></#if></td>
         </#if>
         <#if showPirateShipCoins>
             <td class="handAreaTopRow">${player.pirateShipCoins} Pirate Ship Coin<#if player.pirateShipCoins != 1>s</#if></td>
@@ -86,11 +86,3 @@
         </td>
     </tr>
 </table>
-<#if showIslandCards>
-    <div id="islandCardsDiv">
-    </div>
-</#if>
-<#if showNativeVillage>
-    <div id="nativeVillageDiv">
-    </div>
-</#if>
