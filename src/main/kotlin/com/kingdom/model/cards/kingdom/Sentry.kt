@@ -56,6 +56,11 @@ class Sentry : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
         }
     }
 
+    override fun removedFromPlay(player: Player) {
+        cardsForAction.clear()
+        super.removedFromPlay(player)
+    }
+
     companion object {
         const val NAME: String = "Sentry"
     }

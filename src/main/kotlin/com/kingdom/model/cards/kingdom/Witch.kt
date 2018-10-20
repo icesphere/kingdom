@@ -18,7 +18,9 @@ class Witch : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard {
     }
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
-        affectedOpponents.forEach { it.acquireFreeCardFromSupply(Curse()) }
+        affectedOpponents.forEach {
+            it.acquireFreeCardFromSupply(Curse(), true)
+        }
     }
 
     companion object {
