@@ -42,10 +42,22 @@ class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, Choos
         choicesChosen.add(choice)
 
         when (choice) {
-            1 -> player.addActions(1)
-            2 -> player.addBuys(1)
-            3 -> player.addCoins(3)
-            4 -> player.acquireFreeCardFromSupply(Gold())
+            1 -> {
+                player.addUsernameGameLog("chose +1 Action")
+                player.addActions(1)
+            }
+            2 -> {
+                player.addUsernameGameLog("chose +1 Buy")
+                player.addBuys(1)
+            }
+            3 -> {
+                player.addUsernameGameLog("chose +\$3")
+                player.addCoins(3)
+            }
+            4 -> {
+                player.addUsernameGameLog("chose to gain a Gold")
+                player.acquireFreeCardFromSupply(Gold())
+            }
         }
 
         if (choicesChosen.size < numChoices) {

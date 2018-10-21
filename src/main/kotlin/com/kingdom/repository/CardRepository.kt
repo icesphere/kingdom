@@ -75,7 +75,10 @@ class CardRepository {
                 Haven(),
                 Lighthouse(),
                 NativeVillage(),
-                PearlDiver()
+                PearlDiver(),
+                Ambassador(),
+                FishingVillage(),
+                Lookout()
         )
 
     val allCards: List<Card>

@@ -625,7 +625,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun addCardToHand(card: Card) {
         hand.add(card)
+
         game.refreshPlayerHandArea(this)
+
+        if (!game.isPlayTreasureCards && card.addCoins > 0) {
+            game.refreshPlayerCardsBought(this)
+        }
     }
 
     fun setup() {
@@ -646,6 +651,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 }
                 currentAction = null
 
+                resolveActions()
+
                 for (opponent in opponents) {
                     if (opponent.currentAction is WaitForOtherPlayersActions) {
                         if (opponent.currentAction!!.processActionResult(this, result)) {
@@ -655,8 +662,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                         }
                     }
                 }
-
-                resolveActions()
             }
         }
     }
