@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Smugglers : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
 
     init {
-        testing = true
         special = "Gain a copy of a card costing up to \$6 that the player to your right gained on their last turn."
     }
 

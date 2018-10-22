@@ -13,8 +13,8 @@ class Ambassador : SeasideCard(NAME, CardType.Action, 3), AttackCard, ChooseCard
     var revealedCard: Card? = null
 
     init {
-        testing = true
         special = "Reveal a card from your hand. Return up to 2 copies of it from your hand to the Supply. Then each other player gains a copy of it."
+        fontSize = 11
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
@@ -43,8 +43,9 @@ class Ambassador : SeasideCard(NAME, CardType.Action, 3), AttackCard, ChooseCard
 
         if (choice > 0) {
             repeat(choice) {
-                player.removeCardFromHand(card)
-                player.game.returnCardToSupply(card)
+                val cardByName = player.hand.first { it.name == card.name }
+                player.removeCardFromHand(cardByName)
+                player.game.returnCardToSupply(cardByName)
             }
         }
 

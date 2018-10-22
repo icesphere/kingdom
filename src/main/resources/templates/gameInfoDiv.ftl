@@ -64,7 +64,7 @@
                                 Discard Pile:
                             </td>
                             <td>
-                                <#assign discardPileWidth = 3 * p.discard?size>
+                                <#assign discardPileWidth = 3 * p.cardsInDiscard?size>
                                 <div class="discardPile" style=";width:${discardPileWidth}px;">&#160;</div>
                             </td>
                         </tr>

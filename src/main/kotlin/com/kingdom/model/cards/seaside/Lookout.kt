@@ -14,9 +14,9 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
     var topDeckCards = mutableListOf<Card>()
 
     init {
-        testing = true
         addActions = 1
         special = "Look at the top 3 cards of your deck. Trash one of them. Discard one of them. Put the other one back on to your deck."
+        textSize = 95
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
