@@ -89,7 +89,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     private var coinsGainedThisTurn: Int = 0
 
-    private var lastTurnSummary: TurnSummary? = null
+    var lastTurnSummary: TurnSummary? = null
 
     private var currentTurnSummary = TurnSummary()
 
@@ -398,7 +398,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun makeChoice(card: ChoiceActionCard, vararg choices: Choice)
 
+    fun makeChoiceFromList(card: ChoiceActionCard, choices: List<Choice>) {
+        makeChoice(card, *choices.toTypedArray())
+    }
+
     abstract fun makeChoice(card: ChoiceActionCard, text: String, vararg choices: Choice)
+
+    fun makeChoiceFromList(card: ChoiceActionCard, text: String, choices: List<Choice>) {
+        makeChoice(card, text, *choices.toTypedArray())
+    }
 
     fun trashCardFromHand(optional: Boolean) {
         trashCardsFromHand(1, optional)
@@ -754,7 +762,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun revealCardFromHand(card: Card) {
-        addGameLog("$username revealed ${card.cardNameWithBackgroundColor} from their hand")
+        addUsernameGameLog("revealed ${card.cardNameWithBackgroundColor} from their hand")
     }
 
     fun revealTopCardsOfDeck(cards: Int): List<Card> {
@@ -798,6 +806,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerHandArea(this)
 
         return card
+    }
+
+    fun removeTopCardsOfDeck(numCardsToRemove: Int): List<Card> {
+        val cards = mutableListOf<Card>()
+
+        repeat(numCardsToRemove) {
+            val topDeckCard = removeTopCardOfDeck()
+            topDeckCard?.let { cards.add(it) }
+        }
+
+        return cards
     }
 
     fun removeCardFromDeck(card: Card) {

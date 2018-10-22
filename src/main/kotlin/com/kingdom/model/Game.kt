@@ -496,6 +496,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
     }
 
+    fun returnCardToSupply(card: Card) {
+        pileAmounts[card.name] = pileAmounts[card.name]!!.plus(1)
+        refreshSupply()
+    }
+
     val nonEmptyPiles
         get() = cardMap.keys.filter { pileAmounts[it]!! > 0 }
 

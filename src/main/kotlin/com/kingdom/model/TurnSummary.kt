@@ -8,13 +8,6 @@ class TurnSummary {
 
     var gameTurn: Int = 0
 
-    fun copy(): TurnSummary {
-        val copy = TurnSummary()
-        copy.cardsAcquired = ArrayList(cardsAcquired)
-        copy.gameTurn = gameTurn
-        return copy
-    }
-
     var trashedCards: MutableList<Card> = ArrayList()
 
     var cardsPlayed: MutableList<Card> = ArrayList()

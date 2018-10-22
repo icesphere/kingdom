@@ -35,7 +35,7 @@ class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, Choos
 
         numChoices = card.numTypes
 
-        player.makeChoice(this, *choices.toTypedArray())
+        player.makeChoiceFromList(this, choices)
     }
 
     override fun actionChoiceMade(player: Player, choice: Int) {

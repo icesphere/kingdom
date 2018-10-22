@@ -71,14 +71,15 @@ class CardRepository {
 
     val seasideCards: List<Card>
         get() = listOf(
+                Ambassador(),
                 Embargo(),
+                FishingVillage(),
                 Haven(),
                 Lighthouse(),
+                Lookout(),
                 NativeVillage(),
                 PearlDiver(),
-                Ambassador(),
-                FishingVillage(),
-                Lookout()
+                Smugglers()
         )
 
     val allCards: List<Card>
