@@ -8,7 +8,7 @@ import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.players.Player
 
-class Ambassador : SeasideCard(NAME, CardType.Action, 3), AttackCard, ChooseCardActionCard, ChoiceActionCard {
+class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, ChooseCardActionCard, ChoiceActionCard {
 
     var revealedCard: Card? = null
 

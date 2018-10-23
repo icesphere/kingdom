@@ -147,6 +147,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var nativeVillageCards = mutableListOf<Card>()
 
+    var islandCards = mutableListOf<Card>()
+
+    var pirateCoinTokens: Int = 0
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -456,6 +460,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cards.addAll(deck)
             cards.addAll(discard)
             cards.addAll(inPlay)
+            cards.addAll(nativeVillageCards)
+            cards.addAll(islandCards)
 
             return cards
         }
