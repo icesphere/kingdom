@@ -18,7 +18,7 @@ class Embargo : SeasideCard(NAME, CardType.Action, 2), ChooseCardActionCard {
         player.chooseCardFromSupply("Add Embargo token to a card in the supply", this)
     }
 
-    override fun onCardChosen(player: Player, card: Card) {
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
         var numEmbargoTokens = player.game.embargoTokens[card.name] ?: 0
         numEmbargoTokens++
         player.game.embargoTokens[card.name] = numEmbargoTokens

@@ -7,7 +7,6 @@ import com.kingdom.model.players.Player
 class Caravan : SeasideCard(NAME, CardType.ActionDuration, 4), StartOfTurnDurationAction {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         special = "At the start of your next turn, +1 Card."

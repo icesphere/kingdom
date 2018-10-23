@@ -17,7 +17,7 @@ class Island : SeasideCard(NAME, CardType.ActionVictory, 4), ChooseCardActionCar
         player.chooseCardFromHand("Choose a card from your hand to put on your Island mat", this)
     }
 
-    override fun onCardChosen(player: Player, card: Card) {
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.revealCardFromHand(card)
         player.islandCards.add(card)
     }

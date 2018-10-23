@@ -5,5 +5,5 @@ import com.kingdom.model.players.Player
 
 interface ChooseCardActionCard {
 
-    fun onCardChosen(player: Player, card: Card)
+    fun onCardChosen(player: Player, card: Card, info: Any? = null)
 }

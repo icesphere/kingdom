@@ -19,7 +19,7 @@ class WishingWell : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard
         player.chooseCardAction(special, this, cardsToSelectFrom, false)
     }
 
-    override fun onCardChosen(player: Player, card: Card) {
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
         val topCards = player.revealTopCardsOfDeck(1)
         if (topCards.isNotEmpty()) {
             if (topCards.first().name == card.name) {

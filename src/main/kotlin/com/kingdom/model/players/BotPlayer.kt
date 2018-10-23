@@ -675,10 +675,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         chooseCardActionCard.onCardChosen(this, game.availableCards.last())
     }
 
-    override fun chooseCardAction(text: String, chooseCardActionCard: ChooseCardActionCard, cardsToSelectFrom: List<Card>, optional: Boolean) {
+    override fun chooseCardAction(text: String, chooseCardActionCard: ChooseCardActionCard, cardsToSelectFrom: List<Card>, optional: Boolean, info: Any?) {
         //todo better logic
         if (cardsToSelectFrom.isNotEmpty()) {
-            chooseCardActionCard.onCardChosen(this, cardsToSelectFrom.first())
+            chooseCardActionCard.onCardChosen(this, cardsToSelectFrom.first(), info)
         }
     }
 }

@@ -6,7 +6,8 @@ import com.kingdom.model.players.Player
 class ChooseCardAction(text: String,
                        private val chooseCardActionCard: ChooseCardActionCard,
                        cardsToSelectFrom: List<Card>,
-                       optional: Boolean) : SelectCardsAction(text, cardsToSelectFrom, 1, optional) {
+                       optional: Boolean,
+                       private val info: Any?) : SelectCardsAction(text, cardsToSelectFrom, 1, optional) {
 
     override val isShowDone: Boolean = false
 
@@ -15,7 +16,7 @@ class ChooseCardAction(text: String,
     }
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
-        chooseCardActionCard.onCardChosen(player, result.selectedCard!!)
+        chooseCardActionCard.onCardChosen(player, result.selectedCard!!, info)
         return true
     }
 

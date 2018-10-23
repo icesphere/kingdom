@@ -320,7 +320,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun cardTrashed(card: Card) {
+    fun cardTrashed(card: Card, showLog: Boolean = false) {
+        if (showLog) {
+            addUsernameGameLog("trashed ${card.cardNameWithBackgroundColor}")
+        }
+
         game.trashedCards.add(card)
         cardRemovedFromPlay(card)
         numCardsTrashedThisTurn++
@@ -567,7 +571,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.addHistory(log)
     }
 
-    fun addCardToDiscard(card: Card, refresh: Boolean = true) {
+    fun addCardToDiscard(card: Card, refresh: Boolean = true, showLog: Boolean = false) {
+        if (showLog) {
+            addUsernameGameLog("discarded ${card.cardNameWithBackgroundColor}")
+        }
+
         discard.add(card)
 
         cardRemovedFromPlay(card)
@@ -814,12 +822,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         return card
     }
 
-    fun removeTopCardsOfDeck(numCardsToRemove: Int): List<Card> {
+    fun removeTopCardsOfDeck(numCardsToRemove: Int, revealCards: Boolean = false): List<Card> {
         val cards = mutableListOf<Card>()
 
         repeat(numCardsToRemove) {
             val topDeckCard = removeTopCardOfDeck()
             topDeckCard?.let { cards.add(it) }
+        }
+
+        if (cards.isNotEmpty() && revealCards) {
+            addUsernameGameLog("revealed ${cards.groupedString} from top of deck")
         }
 
         return cards
@@ -974,5 +986,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun chooseCardAction(text: String,
                                   chooseCardActionCard: ChooseCardActionCard,
                                   cardsToSelectFrom: List<Card>,
-                                  optional: Boolean)
+                                  optional: Boolean,
+                                  info: Any? = null)
 }

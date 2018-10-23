@@ -21,7 +21,7 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
         player.chooseCardFromHand(special, this)
     }
 
-    override fun onCardChosen(player: Player, card: Card) {
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.revealCardFromHand(card)
 
         revealedCard = card

@@ -58,7 +58,7 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
                 }
     }
 
-    override fun onCardChosen(player: Player, card: Card) {
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.addGameLog("${this.cardNameWithBackgroundColor} trashed ${player.username}'s ${card.cardNameWithBackgroundColor}")
         player.removeCardFromDeck(card)
         player.cardTrashed(card)

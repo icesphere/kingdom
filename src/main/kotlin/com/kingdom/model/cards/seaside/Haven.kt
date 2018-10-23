@@ -23,7 +23,7 @@ class Haven : SeasideCard(NAME, CardType.ActionDuration, 2), StartOfTurnDuration
         }
     }
 
-    override fun onCardChosen(player: Player, card: Card) {
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.removeCardFromHand(card)
         setAsideCard = card
     }

@@ -35,7 +35,7 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
         }
     }
 
-    override fun onCardChosen(player: Player, card: Card) {
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
         if (trashingCard) {
             trashingCard = false
 

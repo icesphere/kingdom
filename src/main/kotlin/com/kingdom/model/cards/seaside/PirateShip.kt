@@ -1,12 +1,14 @@
 package com.kingdom.model.cards.seaside
 
 import com.kingdom.model.Choice
+import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.players.Player
 
-class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), AttackCard, ChoiceActionCard {
+class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), AttackCard, ChoiceActionCard, ChooseCardActionCard {
 
     init {
         testing = true
@@ -21,18 +23,55 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), AttackCard, Choi
 
     override fun actionChoiceMade(player: Player, choice: Int) {
         if (choice == 1) {
+            player.addUsernameGameLog("received +\$${player.pirateCoinTokens} from pirate coin tokens")
             player.addCoins(player.pirateCoinTokens)
         } else {
+            player.addUsernameGameLog("chose to attack with ${this.cardNameWithBackgroundColor}")
             player.triggerAttack(this)
         }
     }
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         affectedOpponents.forEach { opponent ->
-            val topCardsOfDeck = opponent.removeTopCardsOfDeck(2)
-            //todo
+            val topCardsOfDeck = opponent.removeTopCardsOfDeck(2, true)
+
+            val treasureCards = topCardsOfDeck.filter { it.isTreasure }
+
+            val nonTreasureCards = topCardsOfDeck.filterNot { it.isTreasure }
+
+            nonTreasureCards.forEach {
+                opponent.addCardToDiscard(it, showLog = true)
+            }
+
+            if (treasureCards.isNotEmpty()) {
+                if (treasureCards.size == 1) {
+                    opponent.cardTrashed(treasureCards.first(), true)
+                    player.pirateCoinTokens++
+                } else {
+                    if (treasureCards[0].name == treasureCards[1].name) {
+                        opponent.addCardToDiscard(treasureCards[0], showLog = true)
+                        opponent.cardTrashed(treasureCards[1], true)
+                        player.pirateCoinTokens++
+                    } else {
+                        val pirateAttackInfo = PirateAttackInfo(opponent, treasureCards)
+                        player.chooseCardAction("Attacking ${opponent.username}. Choose which treasure to trash (the other will be discarded)", this, treasureCards, false, pirateAttackInfo)
+                    }
+                }
+            }
         }
     }
+
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
+        val pirateAttackInfo = info as PirateAttackInfo
+
+        pirateAttackInfo.opponent.cardTrashed(card, showLog = true)
+
+        pirateAttackInfo.opponent.addCardToDiscard(pirateAttackInfo.treasureCards.first { it.name != card.name })
+
+        player.pirateCoinTokens++
+    }
+
+    private class PirateAttackInfo(val opponent: Player, val treasureCards: List<Card>)
 
     companion object {
         const val NAME: String = "Pirate Ship"

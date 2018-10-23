@@ -30,7 +30,7 @@ class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, Choos
         player.chooseCardFromHand(special, this)
     }
 
-    override fun onCardChosen(player: Player, card: Card) {
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.addGameLog("${player.username} revealed ${card.cardNameWithBackgroundColor}")
 
         numChoices = card.numTypes

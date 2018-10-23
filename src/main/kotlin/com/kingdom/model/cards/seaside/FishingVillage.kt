@@ -10,6 +10,7 @@ class FishingVillage : SeasideCard(NAME, CardType.ActionDuration, 3), StartOfTur
         addActions = 2
         addCoins = 1
         special = "At the start of your next turn: +1 Action and +\$1."
+        fontSize = 10
     }
 
     override fun durationStartOfTurnAction(player: Player) {
