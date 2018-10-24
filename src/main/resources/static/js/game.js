@@ -152,7 +152,7 @@ function showInfoMessage(message) {
     $('#infoMessageDiv').show()
     setTimeout(function() {
         $('#infoMessageDiv').hide()
-    }, 2000)
+    }, 1500)
 }
 
 function refreshPreviousPlayerCardsBought() {
@@ -244,7 +244,10 @@ function showNativeVillageCards(){
 }
 
 function showIslandCards() {
-    //todo
+
+    $('#showCardsDiv').load('showIslandCards.html')
+
+    $('#showCardsDiv').show()
 }
 
 function hideShowCardsDiv() {

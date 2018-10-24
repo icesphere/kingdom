@@ -1774,6 +1774,18 @@ class GameController(private val cardManager: CardManager,
         return getShowCardsDiv(request, response, player.nativeVillageCards, "Native Village Mat")
     }
 
+    @RequestMapping("/showIslandCards.html")
+    fun showIslandCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return ModelAndView("redirect:/login.html")
+        }
+        val player = game.playerMap[user.userId]!!
+
+        return getShowCardsDiv(request, response, player.islandCards, "Island Cards")
+    }
+
     private fun getShowCardsDiv(request: HttpServletRequest, response: HttpServletResponse, cardsToShow: List<Card>, cardsToShowTitle: String): ModelAndView {
         val user = getUser(request)
         val game = getGame(request)

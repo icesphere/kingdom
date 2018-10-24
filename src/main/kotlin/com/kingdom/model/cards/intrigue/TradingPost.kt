@@ -1,10 +1,12 @@
 package com.kingdom.model.cards.intrigue
 
+import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.actions.TrashCardsForBenefitActionCard
 import com.kingdom.model.cards.supply.Silver
 import com.kingdom.model.players.Player
 
-class TradingPost : IntrigueCard(NAME, CardType.Action, 5) {
+class TradingPost : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefitActionCard {
 
     init {
         special = "Trash 2 cards from your hand. If you did, gain a Silver to your hand."
@@ -22,12 +24,17 @@ class TradingPost : IntrigueCard(NAME, CardType.Action, 5) {
                     player.acquireFreeCardFromSupplyToHand(Silver())
                 }
                 else -> {
-                    player.trashCardsFromHand(2, false)
-                    player.acquireFreeCardFromSupplyToHand(Silver())
+                    player.trashCardsFromHandForBenefit(this, 2)
                 }
             }
         }
     }
+
+    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
+        player.acquireFreeCardFromSupplyToHand(Silver())
+    }
+
+    override fun isCardApplicable(card: Card): Boolean = true
 
     companion object {
         const val NAME: String = "Trading Post"

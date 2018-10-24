@@ -2,9 +2,8 @@ package com.kingdom.model
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.modifiers.CardCostModifier
-import com.kingdom.model.cards.seaside.Embargo
-import com.kingdom.model.cards.seaside.NativeVillage
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.BotPlayer
 import com.kingdom.model.players.HumanPlayer
@@ -14,8 +13,8 @@ import com.kingdom.model.players.bots.EasyBotPlayer
 import com.kingdom.model.players.bots.HardBotPlayer
 import com.kingdom.model.players.bots.MediumBotPlayer
 import com.kingdom.service.GameManager
-import com.kingdom.service.LoggedInUsers
 import com.kingdom.service.GameMessageService
+import com.kingdom.service.LoggedInUsers
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.toCardNames
 import org.apache.commons.lang3.StringUtils
@@ -229,9 +228,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         kingdomCards.forEach {
             cardMap[it.name] = it
 
-            when (it.name) {
-                Embargo.NAME -> isShowEmbargoTokens = true
-                NativeVillage.NAME -> isShowNativeVillage = true
+            if (it is GameSetupModifier) {
+                it.modifyGameSetup(this)
             }
 
             if (it.isDuration) {

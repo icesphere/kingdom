@@ -1,18 +1,24 @@
 package com.kingdom.model.cards.seaside
 
 import com.kingdom.model.Choice
+import com.kingdom.model.Game
 import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.players.Player
 import com.kingdom.util.groupedString
 
-class NativeVillage : SeasideCard(NAME, CardType.Action, 2), ChoiceActionCard {
+class NativeVillage : SeasideCard(NAME, CardType.Action, 2), GameSetupModifier, ChoiceActionCard {
 
     init {
         addActions = 2
         special = "Choose one: Put the top card of your deck face down on your Native Village mat (you may look at those cards at any time); or put all the cards from your mat into your hand."
         fontSize = 10
         textSize = 95
+    }
+
+    override fun modifyGameSetup(game: Game) {
+        game.isShowNativeVillage = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

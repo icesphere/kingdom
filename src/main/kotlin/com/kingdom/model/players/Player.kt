@@ -149,7 +149,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var islandCards = mutableListOf<Card>()
 
-    var pirateCoinTokens: Int = 0
+    val islandCardsString: String
+        get() = islandCards.groupedString
+
+    var pirateShipCoins: Int = 0
 
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
@@ -219,7 +222,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         shuffles++
     }
 
-    private fun cardRemovedFromPlay(card: Card) {
+    fun cardRemovedFromPlay(card: Card) {
         card.removedFromPlay(this)
     }
 
@@ -297,7 +300,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String)
     abstract fun optionallyTrashCardsFromHand(numCardsToTrash: Int, text: String)
-    abstract fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String)
+    abstract fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String = "")
     abstract fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String)
 
     abstract fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String)
@@ -337,6 +340,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun trashCardInPlay(card: Card) {
         addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from in play")
         inPlay.remove(card)
+        cardRemovedFromPlay(card)
         game.cardsPlayed.remove(card)
         cardTrashed(card)
         game.refreshCardsPlayed()

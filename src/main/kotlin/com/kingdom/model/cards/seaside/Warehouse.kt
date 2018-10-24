@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class Warehouse : SeasideCard(NAME, CardType.Action, 3) {
 
     init {
-        testing = true
         addCards = 3
         addActions = 1
         special = "Discard 3 cards."

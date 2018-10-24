@@ -11,8 +11,6 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
 
     var discardingCard: Boolean = false
 
-    var topDeckCards = mutableListOf<Card>()
-
     init {
         addActions = 1
         special = "Look at the top 3 cards of your deck. Trash one of them. Discard one of them. Put the other one back on to your deck."
@@ -22,7 +20,7 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
     override fun cardPlayedSpecialAction(player: Player) {
         val cards = player.removeTopCardsOfDeck(3)
 
-        topDeckCards = cards.toMutableList()
+        val topDeckCards = cards.toMutableList()
 
         if (cards.isNotEmpty()) {
             if (cards.size == 1) {
@@ -30,12 +28,16 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
                 player.addUsernameGameLog(" trashed ${cards.first().cardNameWithBackgroundColor}")
             } else {
                 trashingCard = true
-                player.chooseCardAction("Choose a card to trash", this, cards, false)
+                player.chooseCardAction("Choose a card to trash", this, cards, false, topDeckCards)
             }
         }
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
+
+        @Suppress("UNCHECKED_CAST")
+        val topDeckCards = info as MutableList<Card>
+
         if (trashingCard) {
             trashingCard = false
 
@@ -50,7 +52,7 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
                     player.addUsernameGameLog(" discarded ${card.cardNameWithBackgroundColor}")
                 } else {
                     discardingCard = true
-                    player.chooseCardAction("Choose a card to discard", this, topDeckCards, false)
+                    player.chooseCardAction("Choose a card to discard", this, topDeckCards, false, topDeckCards)
                 }
             }
         } else if (discardingCard) {
