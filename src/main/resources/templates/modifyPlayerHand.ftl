@@ -12,19 +12,19 @@
     </div>
 
     <div style="padding-bottom:10px;">
-        Add # Actions: <input type="text" name="addActions_${player.userId}" size="20" />
+        Add # Actions: <input type="text" name="addActions_${player.userId}" size="5" />
     </div>
 
     <div style="padding-bottom:10px;">
-        Add # Buys: <input type="text" name="addBuys_${player.userId}" size="20" />
+        Add # Buys: <input type="text" name="addBuys_${player.userId}" size="5" />
     </div>
 
     <div style="padding-bottom:10px;">
-        Add # Coins: <input type="text" name="addCoins_${player.userId}" size="20" />
+        Add # Coins: <input type="text" name="addCoins_${player.userId}" size="5" />
     </div>
 
     <div style="padding-bottom:10px;">
-        Draw # Cards: <input type="text" name="addCards_${player.userId}" size="20" />
+        Draw # Cards: <input type="text" name="addCards_${player.userId}" size="5" />
     </div>
 
     <div style="padding-bottom:10px;">

@@ -309,17 +309,24 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String)
 
     fun trashCardFromDiscard(card: Card) {
-        addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from discard")
+        addUsernameGameLog("trashed " + card.cardNameWithBackgroundColor + " from discard")
+
         discard.remove(card)
+
         cardTrashed(card)
+
         game.refreshPlayerHandArea(this)
     }
 
     fun trashCardFromHand(card: Card) {
-        addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from hand")
+        addUsernameGameLog("trashed " + card.cardNameWithBackgroundColor + " from hand")
+
         hand.remove(card)
+
         cardTrashed(card)
+
         game.refreshPlayerHandArea(this)
+
         if (!game.isPlayTreasureCards) {
             game.refreshPlayerCardsBought(this)
             game.refreshPlayerSupply(this)
@@ -545,12 +552,28 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String)
 
-    fun acquireFreeCardFromSupply(card: Card, showLog: Boolean = false) {
+    fun acquireFreeCardFromSupply(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {
         if (game.isCardAvailableInSupply(card)) {
             game.removeCardFromSupply(card)
-            if (showLog) {
-                addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
+
+            var log = "gained ${card.cardNameWithBackgroundColor} from the supply"
+
+            @Suppress("NON_EXHAUSTIVE_WHEN")
+            when (destination) {
+                CardLocation.Hand -> {
+                    acquireCardToHand = true
+                    log += " to their hand"
+                }
+                CardLocation.Deck -> {
+                    acquireCardToTopOfDeck = true
+                    log += " to the top of their deck"
+                }
             }
+
+            if (showLog) {
+                addUsernameGameLog(log)
+            }
+
             cardAcquired(card)
         }
     }
