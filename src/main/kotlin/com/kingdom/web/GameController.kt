@@ -2127,6 +2127,25 @@ class GameController(private val cardManager: CardManager,
         }
 
         for (player in game.players) {
+
+            val addActionsParam = request.getParameter("addActions_" + player.userId)
+            val addBuysParam = request.getParameter("addBuys_" + player.userId)
+            val addCoinsParam = request.getParameter("addCoins_" + player.userId)
+            val addCardsParam = request.getParameter("addCards_" + player.userId)
+
+            if (addActionsParam.isNotEmpty()) {
+                player.addActions(addActionsParam.toInt())
+            }
+            if (addBuysParam.isNotEmpty()) {
+                player.addBuys(addBuysParam.toInt())
+            }
+            if (addCoinsParam.isNotEmpty()) {
+                player.addCoins(addCoinsParam.toInt())
+            }
+            if (addCardsParam.isNotEmpty()) {
+                player.drawCards(addCardsParam.toInt())
+            }
+
             val currentHandChoice = request.getParameter("currentHandChoice_" + player.userId)
             val currentCards = ArrayList(player.hand)
             if (currentHandChoice == "discard") {

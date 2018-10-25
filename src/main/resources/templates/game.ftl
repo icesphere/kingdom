@@ -16,13 +16,13 @@
             </script>
         <#else>
             <script type="text/javascript" src="js/soundmanager2-nodebug-jsmin.js"></script>
-            <link href="css/game.css" rel="stylesheet" type="text/css">
+            <link href="css/game.css?1" rel="stylesheet" type="text/css">
             <script type="text/javascript" >
                 var playSound = <#if user.soundDefault == 1>true<#else>false</#if>;
                 var mobile = false;
             </script>
         </#if>
-        <script type="text/javascript" src="js/game.js"></script>
+        <script type="text/javascript" src="js/game.js?1"></script>
 	</head>
 	<body>
         <div class="topGradient"></div>

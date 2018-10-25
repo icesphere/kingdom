@@ -271,7 +271,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         bought.clear()
         played.clear()
 
-        discard.addAll(durationCards)
+        durationCards.forEach { addCardToDiscard(it, false, false) }
 
         durationCards.clear()
 
@@ -288,7 +288,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         inPlay.clear()
 
-        discard.addAll(hand)
+        hand.forEach {
+            addCardToDiscard(it, false, false)
+        }
+
         hand.clear()
 
         drawCards(5)
@@ -337,8 +340,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun trashCardInPlay(card: Card) {
-        addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from in play")
+    fun trashCardInPlay(card: Card, showLog: Boolean = true) {
+        if (showLog) {
+            addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from in play")
+        }
+
         inPlay.remove(card)
         cardRemovedFromPlay(card)
         game.cardsPlayed.remove(card)

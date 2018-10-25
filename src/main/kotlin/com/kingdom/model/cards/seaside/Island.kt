@@ -10,7 +10,6 @@ import com.kingdom.model.players.Player
 class Island : SeasideCard(NAME, CardType.ActionVictory, 4), GameSetupModifier, ChooseCardActionCard {
 
     init {
-        testing = true
         victoryPoints = 2
         special = "Put this and a card from your hand onto your Island mat."
     }
@@ -27,7 +26,7 @@ class Island : SeasideCard(NAME, CardType.ActionVictory, 4), GameSetupModifier, 
         player.removeCardFromHand(card)
         player.cardRemovedFromPlay(card)
         player.islandCards.add(card)
-        player.trashCardInPlay(this)
+        player.trashCardInPlay(this, false)
         player.islandCards.add(this)
     }
 
