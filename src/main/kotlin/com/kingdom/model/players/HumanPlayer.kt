@@ -120,8 +120,8 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(CardFromDiscardToTopOfDeck(this.discard, maxCost))
     }
 
-    override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?) {
-        addAction(CardFromHandToTopOfDeck(cardFilter))
+    override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?, chooseCardActionCard: ChooseCardActionCard?) {
+        addAction(CardFromHandToTopOfDeck(cardFilter, chooseCardActionCard))
     }
 
     override fun waitForOtherPlayersToResolveActions() {

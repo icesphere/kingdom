@@ -6,6 +6,8 @@ import java.util.ArrayList
 class TurnSummary {
     var cardsAcquired: MutableList<Card> = ArrayList()
 
+    var cardsBought: MutableList<Card> = ArrayList()
+
     var gameTurn: Int = 0
 
     var trashedCards: MutableList<Card> = ArrayList()

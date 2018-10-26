@@ -5,7 +5,8 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 
 //todo change text if cardFilter specified
-class CardFromHandToTopOfDeck(private val cardFilter: ((Card) -> Boolean)?) : Action("Choose a card from your hand to put on top of your deck") {
+class CardFromHandToTopOfDeck(private val cardFilter: ((Card) -> Boolean)?,
+                              private val chooseCardActionCard: ChooseCardActionCard?) : Action("Choose a card from your hand to put on top of your deck") {
 
     override var isShowDoNotUse: Boolean = false
 
@@ -21,6 +22,7 @@ class CardFromHandToTopOfDeck(private val cardFilter: ((Card) -> Boolean)?) : Ac
         val card = result.selectedCard!!
         player.hand.remove(card)
         player.addCardToTopOfDeck(card)
+        chooseCardActionCard?.onCardChosen(player, card)
         return true
     }
 }

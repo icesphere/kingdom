@@ -1,12 +1,11 @@
 repeat game is broken
 cards overflow weird when too many on desktop
 bots need to be better
-support multiple info messages
+support multiple info messages?
 refresh sometimes has issues after quit game
 problem starting new game after exiting game
-maybe show card name of card that triggered card action and maybe show who played the card if not you
 considering using embedded database so app can be deployed easily anywhere
 show turn summaries
 some treasures should not be auto-played
 better game info dialog - also it's currently broken at least on mobile
-admin - add ability to add buys and actions and coins
+still need better refresh

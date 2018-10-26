@@ -611,7 +611,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         choiceActionCard.actionChoiceMade(this, 1)
     }
 
-    override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?) {
+    override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?, chooseCardActionCard: ChooseCardActionCard?) {
         //todo better logic
 
         val cards =
@@ -623,6 +623,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             val firstCard = cards.first()
             hand.remove(firstCard)
             addCardToTopOfDeck(firstCard, false)
+            chooseCardActionCard?.onCardChosen(this, firstCard)
         }
     }
 

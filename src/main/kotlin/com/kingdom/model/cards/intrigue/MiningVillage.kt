@@ -10,7 +10,7 @@ class MiningVillage : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
         addCards = 1
         addActions = 2
         special = "You may trash this for +\$2."
-        fontSize = 10
+        fontSize = 9
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

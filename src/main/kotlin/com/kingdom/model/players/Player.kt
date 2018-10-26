@@ -9,6 +9,7 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.*
+import com.kingdom.model.cards.listeners.CardDiscardedFromPlayListener
 import com.kingdom.model.cards.listeners.CardPlayedListener
 import com.kingdom.model.cards.listeners.DurationBeforeAttackListener
 import com.kingdom.model.cards.listeners.HandBeforeAttackListener
@@ -154,6 +155,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var pirateShipCoins: Int = 0
 
+    var finishEndTurnAfterResolvingActions: Boolean = false
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -245,6 +248,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun endTurn(isAutoEnd: Boolean = false) {
 
+        resolveActions()
+
+        if (currentAction != null) {
+            return
+        }
+
         addGameLog("Ending turn")
 
         currentTurnSummary.cardsPlayed.addAll(played)
@@ -276,14 +285,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         durationCards.clear()
 
         for (card in inPlay) {
-
             if (card.isDuration) {
                 durationCards.add(card)
+                cardRemovedFromPlay(card)
             } else {
-                discard.add(card)
-            }
+                addCardToDiscard(card, false, false)
 
-            cardRemovedFromPlay(card)
+                if (card is CardDiscardedFromPlayListener) {
+                    card.onCardDiscarded(this)
+                }
+            }
         }
 
         inPlay.clear()
@@ -294,6 +305,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         hand.clear()
 
+        resolveActions()
+
+        if (currentAction != null) {
+            finishEndTurnAfterResolvingActions = true
+            return
+        }
+
+        finishEndTurn(isAutoEnd)
+    }
+
+    private fun finishEndTurn(isAutoEnd: Boolean = false) {
         drawCards(5)
 
         isYourTurn = false
@@ -452,6 +474,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             buys -= 1
             bought.add(card)
             game.cardsBought.add(card)
+            currentTurnSummary.cardsBought.add(card)
 
             if (game.isShowEmbargoTokens) {
                 val numEmbargoTokens = game.embargoTokens[card.name] ?: 0
@@ -622,10 +645,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         discardCardsFromHand(1, false)
     }
 
-    fun discardCardFromHand(card: Card) {
+    fun discardCardFromHand(card: Card, showLog: Boolean = true) {
         hand.remove(card)
+
         addCardToDiscard(card)
-        addGameLog(username + " discarded " + card.cardNameWithBackgroundColor + " from hand")
+
+        if (showLog) {
+            addGameLog(username + " discarded " + card.cardNameWithBackgroundColor + " from hand")
+        }
+
         if (!game.isPlayTreasureCards) {
             game.refreshPlayerCardsBought(this)
             game.refreshPlayerSupply(this)
@@ -717,6 +745,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                         }
                     }
                 }
+
+                if (currentAction == null && finishEndTurnAfterResolvingActions) {
+                    finishEndTurn()
+                }
             }
         }
     }
@@ -783,7 +815,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun addCardFromDiscardToTopOfDeck(maxCost: Int?)
 
-    abstract fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)? = null)
+    abstract fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)? = null, chooseCardActionCard: ChooseCardActionCard? = null)
 
     val isBot: Boolean = this is BotPlayer
 
@@ -1013,6 +1045,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun discardHand() {
+        addUsernameGameLog("discarded their hand")
         hand.toMutableList().forEach { discardCardFromHand(it) }
     }
 
