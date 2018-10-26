@@ -8,7 +8,7 @@ class MerchantShip : SeasideCard(NAME, CardType.ActionDuration, 5), StartOfTurnD
 
     init {
         special = "Now and at the start of your next turn: +\$2."
-        fontSize = 10
+        fontSize = 9
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
