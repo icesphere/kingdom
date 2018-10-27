@@ -235,7 +235,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             if (it.isDuration) {
                 isShowDuration = true
             }
-
         }
 
         supplyCards.forEach { cardMap[it.name] = it }

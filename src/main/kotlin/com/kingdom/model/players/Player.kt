@@ -9,10 +9,7 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.*
-import com.kingdom.model.cards.listeners.CardDiscardedFromPlayListener
-import com.kingdom.model.cards.listeners.CardPlayedListener
-import com.kingdom.model.cards.listeners.DurationBeforeAttackListener
-import com.kingdom.model.cards.listeners.HandBeforeAttackListener
+import com.kingdom.model.cards.listeners.*
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Curse
@@ -35,7 +32,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val bought: MutableList<Card> = ArrayList()
     val played: MutableList<Card> = ArrayList()
-    private val inPlay: MutableList<Card> = ArrayList()
+    val inPlay: MutableList<Card> = ArrayList()
 
     val numCards: Int
         get() = allCards.size
@@ -105,6 +102,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var isQuit: Boolean = false
 
     var victoryCoins: Int = 0
+        private set
 
     var victoryPoints: Int = 0
 
@@ -234,6 +232,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         coinsGainedThisTurn += coins
         game.refreshPlayerSupply(this)
         game.refreshPlayerCardsBought(this)
+    }
+
+    fun addVictoryCoins(victoryCoins: Int) {
+        this.victoryCoins += victoryCoins
+        game.refreshPlayerHandArea(this)
     }
 
     fun addActions(actions: Int) {
@@ -416,6 +419,29 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun cardAcquired(card: Card) {
+
+        var gainCardHandled = false
+
+        hand.filter { it is CardGainedListenerForCardsInHand }
+                .forEach {
+                    val handled = (it as CardGainedListenerForCardsInHand).onCardGained(card, this)
+                    if (handled) {
+                        gainCardHandled = true
+                    }
+                }
+
+        inPlay.filter { it is CardGainedListenerForCardsInPlay }
+                .forEach {
+                    val handled = (it as CardGainedListenerForCardsInPlay).onCardGained(card, this)
+                    if (handled) {
+                        gainCardHandled = true
+                    }
+                }
+
+        if (gainCardHandled) {
+            return
+        }
+
         when {
             acquireCardToHand -> {
                 acquireCardToHand = false
@@ -1036,7 +1062,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun playAllTreasureCards() {
-        hand.filter { it.isTreasure }.sortedBy { it.cost }.forEach { card ->
+        hand.filter { it.isTreasure && !it.isTreasureExcludedFromAutoPlay }.sortedBy { it.cost }.forEach { card ->
             playCard(card, refresh = false)
         }
 

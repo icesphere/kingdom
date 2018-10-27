@@ -65,7 +65,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     val availableCardsToBuy: List<Card>
-        get() = game.supplyCards.filter { canBuyCard(it) && !excludeCard(it) }
+        get() = (game.kingdomCards + game.supplyCards).filter { canBuyCard(it) && !excludeCard(it) }
 
     val availableCardsToBuyNames: List<String>
         get() = availableCardsToBuy.map { it.name }

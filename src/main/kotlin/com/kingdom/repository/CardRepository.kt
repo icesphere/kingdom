@@ -4,6 +4,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
+import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.seaside.*
 import org.springframework.stereotype.Service
 
@@ -97,14 +98,43 @@ class CardRepository {
                 Wharf()
         )
 
+    val prosperityCards: List<Card>
+        get() = listOf(
+                Bank(),
+                Bishop(),
+                City(),
+                Contraband(),
+                CountingHouse(),
+                Expand(),
+                Forge(),
+                Goons(),
+                GrandMarket(),
+                Hoard(),
+                KingsCourt(),
+                Loan(),
+                Mint(),
+                Mountebank(),
+                Monument(),
+                Peddler(),
+                Quarry(),
+                Rabble(),
+                RoyalSeal(),
+                TradeRoute(),
+                Vault(),
+                Venture(),
+                Watchtower(),
+                WorkersVillage()
+        )
+
     val allCards: List<Card>
-        get() = kingdomCards + intrigueCards + seasideCards
+        get() = kingdomCards + intrigueCards + seasideCards + prosperityCards
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {
             Deck.Kingdom -> kingdomCards
             Deck.Intrigue -> intrigueCards
             Deck.Seaside -> seasideCards
+            Deck.Prosperity -> prosperityCards
             else -> emptyList()
         }
     }

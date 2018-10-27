@@ -20,7 +20,7 @@ class CardFromHandToTopOfDeck(private val cardFilter: ((Card) -> Boolean)?,
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
         val card = result.selectedCard!!
-        player.hand.remove(card)
+        player.removeCardFromHand(card)
         player.addCardToTopOfDeck(card)
         chooseCardActionCard?.onCardChosen(player, card)
         return true

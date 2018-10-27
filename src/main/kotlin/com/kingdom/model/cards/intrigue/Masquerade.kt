@@ -10,9 +10,8 @@ class Masquerade : IntrigueCard(NAME, CardType.Action, 3) {
         special = "Each player with any cards in hand passes one to the next such player to their left, at once. Then you may trash a card from your hand."
         textSize = 102
         fontSize = 11
+        isTrashingCard = true
     }
-
-    override val isTrashingCard: Boolean = true
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.game.players.forEach {

@@ -11,9 +11,8 @@ class TradingPost : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefit
     init {
         special = "Trash 2 cards from your hand. If you did, gain a Silver to your hand."
         fontSize = 10
+        isTrashingCard = true
     }
-
-    override val isTrashingCard: Boolean = true
 
     override fun cardPlayedSpecialAction(player: Player) {
         if (player.hand.isNotEmpty()) {

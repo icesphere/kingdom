@@ -10,9 +10,8 @@ class Moneylender : KingdomCard(NAME, CardType.Action, 4), ChoiceActionCard {
     init {
         special = "You may trash a Copper from your hand. If you do, +\$3."
         fontSize = 10
+        isTrashingCard = true
     }
-
-    override val isTrashingCard: Boolean = true
 
     override fun cardPlayedSpecialAction(player: Player) {
         if (player.hand.any { it is Copper }) {

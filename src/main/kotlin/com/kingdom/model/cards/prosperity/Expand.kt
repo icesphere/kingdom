@@ -1,31 +1,30 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.prosperity
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.TrashCardsForBenefitActionCard
 import com.kingdom.model.players.Player
 
-class Remodel : KingdomCard(NAME, CardType.Action, 4), TrashCardsForBenefitActionCard {
+class Expand : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitActionCard {
 
     init {
-        special = "Trash a card from your hand. Gain a card costing up to \$2 more than the trashed card."
         isTrashingCard = true
+        special = "Trash a card from your hand. Gain a card costing up to \$3 more than it."
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.trashCardsFromHandForBenefit(this, 1, special)
     }
-    
+
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        if (scrappedCards.isNotEmpty()) {
-            player.acquireFreeCard(player.getCardCostWithModifiers(scrappedCards[0]) + 2)
-        }
+        val card = scrappedCards.first()
+        player.acquireFreeCard(player.getCardCostWithModifiers(card) + 3)
     }
 
     override fun isCardApplicable(card: Card): Boolean = true
 
     companion object {
-        const val NAME: String = "Remodel"
+        const val NAME: String = "Expand"
     }
 }
 

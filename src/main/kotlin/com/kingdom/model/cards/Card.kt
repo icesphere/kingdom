@@ -23,6 +23,7 @@ abstract class Card(
         var testing: Boolean = false,
         var addVictoryCoins: Int = 0,
         var isPlayTreasureCardsRequired: Boolean = false,
+        var isTreasureExcludedFromAutoPlay: Boolean = false,
         var disabled: Boolean = false,
         var fontSize: Int = 0,
         var nameLines: Int = 1,
@@ -34,6 +35,7 @@ abstract class Card(
         var isActivated: Boolean = false,
         var isCopied: Boolean = false,
         var location: CardLocation? = null,
+        var isTrashingCard: Boolean = false,
         var playersExcludedFromCardEffects: MutableSet<Player> = mutableSetOf()) {
 
     var isHighlighted: Boolean = false
@@ -214,16 +216,6 @@ abstract class Card(
     val backgroundColorColor: String
         get() = backgroundColor.color
 
-    //open val isAutoPlayTreasure: Boolean = true
-    //get() = name != "Bank" && name != "Venture" && name != "Contraband" && name != "Loan" && name != "Horn of Plenty" && name != "Talisman" && name != "Diadem" && name != "Storybook" && name != "Ill-Gotten Gains" && name != "Fool's Gold"
-
-    open val isTrashingCard: Boolean = false
-    /*get() = (name == "Ambassador" || name == "Island"
-            || name == "Lookout" || name == "Salvager" || name == "Apprentice"
-            || name == "Transmute" || name == "Bishop" || name == "Expand" || name == "Forge"
-            || name == "Loan" || name == "Trade Route" || name == "Remake" || name == "Develop"
-            || name == "Jack of all Trades" || name == "Spice Merchant" || name == "Trader")*/
-
     val isExtraActionsCard: Boolean
         get() = addActions >= 2 || name == "Throne Room" || name == "King's Court"
 
@@ -300,6 +292,7 @@ abstract class Card(
         player.addActions(addActions)
         player.addBuys(addBuys)
         player.addCoins(addCoins)
+        player.addVictoryCoins(addVictoryCoins)
 
         if (addCards > 0) {
             player.drawCards(addCards)

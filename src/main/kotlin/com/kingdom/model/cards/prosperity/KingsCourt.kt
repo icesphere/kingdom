@@ -1,4 +1,4 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.prosperity
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
@@ -8,17 +8,18 @@ import com.kingdom.model.cards.actions.CardAction
 import com.kingdom.model.cards.actions.CardActionCard
 import com.kingdom.model.players.Player
 
-class ThroneRoom : KingdomCard(NAME, CardType.Action, 4), CardActionCard {
+class KingsCourt : ProsperityCard(NAME, CardType.Action, 7), CardActionCard {
 
     var copiedCard: Card? = null
 
     init {
-        special = "You may play an Action card from your hand twice."
-        fontSize = 9
+        testing = true
+        special = "You may play an Action card from your hand three times."
+        fontSize = 10
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.addCardAction(this, "Choose an action card from your hand to play twice")
+        player.addCardAction(this, "Choose an action card from your hand to play three times")
     }
 
     override fun isCardActionable(card: Card, cardAction: CardAction, cardLocation: CardLocation, player: Player): Boolean {
@@ -35,6 +36,8 @@ class ThroneRoom : KingdomCard(NAME, CardType.Action, 4), CardActionCard {
             player.playCard(it)
             player.addActions(1)
             player.addRepeatCardAction(it)
+            player.addActions(1)
+            player.addRepeatCardAction(it)
         }
     }
 
@@ -45,7 +48,7 @@ class ThroneRoom : KingdomCard(NAME, CardType.Action, 4), CardActionCard {
     override val isShowDoNotUse: Boolean = true
 
     companion object {
-        const val NAME: String = "Throne Room"
+        const val NAME: String = "Kings Court"
     }
 }
 

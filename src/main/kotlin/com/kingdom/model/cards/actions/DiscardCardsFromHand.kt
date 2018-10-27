@@ -10,8 +10,7 @@ open class DiscardCardsFromHand(private var numCardsToDiscard: Int, text: String
     protected var selectedCards: MutableList<Card> = ArrayList()
 
     override val isShowDone: Boolean
-        get() =
-            numCardsToDiscard > 1 && (this.isShowDoNotUse || selectedCards.size == numCardsToDiscard)
+        get() = numCardsToDiscard > 1 && (this.isShowDoNotUse || selectedCards.size == numCardsToDiscard)
 
     override val doneText: String
         get() = if (selectedCards.size == 1) {
@@ -24,7 +23,11 @@ open class DiscardCardsFromHand(private var numCardsToDiscard: Int, text: String
         isShowDoNotUse = optional
 
         if (this.text == "") {
-            this.text = "Discard $numCardsToDiscard card"
+            this.text = "Discard "
+            if (optional) {
+                this.text += "up to "
+            }
+            this.text += "$numCardsToDiscard card"
             if (numCardsToDiscard != 1) {
                 this.text += "s"
             }

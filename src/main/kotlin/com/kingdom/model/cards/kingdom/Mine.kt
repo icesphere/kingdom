@@ -10,9 +10,8 @@ class Mine : KingdomCard(NAME, CardType.Action, 5), TrashCardsForBenefitActionCa
     init {
         special = "You may trash a Treasure from your hand. Gain a Treasure to your hand costing up to \$3 more than it."
         fontSize = 13
+        isTrashingCard = true
     }
-
-    override val isTrashingCard: Boolean = true
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         if (scrappedCards.isNotEmpty()) {

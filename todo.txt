@@ -9,3 +9,4 @@ show turn summaries
 some treasures should not be auto-played
 better game info dialog - also it's currently broken at least on mobile
 still need better refresh
+create game after exit game

@@ -7,14 +7,15 @@ import com.kingdom.model.players.Player
 
 class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
 
-    var trashingCard: Boolean = false
+    var choosingCardToTrash: Boolean = false
 
-    var discardingCard: Boolean = false
+    var choosingCardToDiscard: Boolean = false
 
     init {
         addActions = 1
         special = "Look at the top 3 cards of your deck. Trash one of them. Discard one of them. Put the other one back on to your deck."
         textSize = 95
+        isTrashingCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
@@ -27,7 +28,7 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
                 player.cardTrashed(cards.first())
                 player.addUsernameGameLog(" trashed ${cards.first().cardNameWithBackgroundColor}")
             } else {
-                trashingCard = true
+                choosingCardToTrash = true
                 player.chooseCardAction("Choose a card to trash", this, cards, false, topDeckCards)
             }
         }
@@ -38,8 +39,8 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
         @Suppress("UNCHECKED_CAST")
         val topDeckCards = info as MutableList<Card>
 
-        if (trashingCard) {
-            trashingCard = false
+        if (choosingCardToTrash) {
+            choosingCardToTrash = false
 
             player.cardTrashed(card)
             player.addUsernameGameLog(" trashed ${card.cardNameWithBackgroundColor}")
@@ -51,12 +52,12 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
                     player.addCardToDiscard(card)
                     player.addUsernameGameLog(" discarded ${card.cardNameWithBackgroundColor}")
                 } else {
-                    discardingCard = true
+                    choosingCardToDiscard = true
                     player.chooseCardAction("Choose a card to discard", this, topDeckCards, false, topDeckCards)
                 }
             }
-        } else if (discardingCard) {
-            discardingCard = false
+        } else if (choosingCardToDiscard) {
+            choosingCardToDiscard = false
 
             player.addCardToDiscard(card)
             player.addUsernameGameLog(" discarded ${card.cardNameWithBackgroundColor}")

@@ -12,6 +12,7 @@ class Island : SeasideCard(NAME, CardType.ActionVictory, 4), GameSetupModifier, 
     init {
         victoryPoints = 2
         special = "Put this and a card from your hand onto your Island mat."
+        isTrashingCard = true
     }
 
     override fun modifyGameSetup(game: Game) {
