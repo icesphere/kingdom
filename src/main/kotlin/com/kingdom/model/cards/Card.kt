@@ -332,6 +332,6 @@ abstract class Card(
     }
 
     private fun isSupplyCardActionable(player: Player): Boolean {
-        return player.getCardCostWithModifiers(this) <= player.availableCoins && player.buys > 0
+        return player.buys > 0 && player.canBuyCard(this)
     }
 }

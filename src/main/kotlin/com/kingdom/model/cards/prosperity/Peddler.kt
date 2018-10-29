@@ -10,7 +10,6 @@ import com.kingdom.model.players.Player
 class Peddler : ProsperityCard(NAME, CardType.Action, 8), GameSetupModifier, CardCostModifier {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         addCoins = 1

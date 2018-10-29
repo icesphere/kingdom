@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class GrandMarket : ProsperityCard(NAME, CardType.Action, 6), CardPlayedListenerForCardsInSupply {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         addBuys = 1

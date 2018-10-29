@@ -4,6 +4,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.modifiers.CardCostModifier
+import com.kingdom.model.cards.modifiers.CardCostModifierForCardsInPlay
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.BotPlayer
 import com.kingdom.model.players.HumanPlayer
@@ -173,8 +174,12 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     val gameCardCostModifiers = mutableListOf<CardCostModifier>()
 
-    val cardCostModifiers
-        get() = currentPlayerCardCostModifiers + gameCardCostModifiers
+    val cardCostModifiers: List<CardCostModifier>
+        get() {
+            val modifiers: MutableList<CardCostModifier> = (currentPlayerCardCostModifiers + gameCardCostModifiers).toMutableList()
+            currentPlayer.inPlay.filter { it is CardCostModifierForCardsInPlay }.forEach { modifiers.add(it as CardCostModifier) }
+            return modifiers
+        }
 
     var previousPlayerId = 0
     val previousPlayerCardsPlayed = ArrayList<Card>()

@@ -159,15 +159,15 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun trashCardFromSupply(optional: Boolean, expression: ((card: Card) -> Boolean)?) {
+    override fun trashCardFromSupply(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?) {
         //todo better logic
-        val card: Card = game.availableCards.filter { expression == null || expression(it) }.shuffled().first()
+        val card: Card = game.availableCards.filter { cardActionableExpression == null || cardActionableExpression(it) }.shuffled().first()
         game.removeCardFromSupply(card)
     }
 
-    override fun gainCardFromTrash(optional: Boolean, expression: ((card: Card) -> Boolean)?) {
+    override fun gainCardFromTrash(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?) {
         //todo better logic
-        val trashedCards = game.trashedCards.filter { expression == null || expression(it) }.sortedByDescending { it.cost }
+        val trashedCards = game.trashedCards.filter { cardActionableExpression == null || cardActionableExpression(it) }.sortedByDescending { it.cost }
         if (trashedCards.isNotEmpty()) {
             val card = trashedCards.first()
             game.trashedCards.remove(card)
@@ -664,10 +664,11 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard) {
+    override fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
         //todo better logic
-        if (hand.isNotEmpty()) {
-            chooseCardActionCard.onCardChosen(this, hand.first())
+        if (hand.any { cardActionableExpression == null || cardActionableExpression.invoke(it) }) {
+            val card = hand.first { cardActionableExpression == null || cardActionableExpression.invoke(it) }
+            chooseCardActionCard.onCardChosen(this, card)
         }
     }
 

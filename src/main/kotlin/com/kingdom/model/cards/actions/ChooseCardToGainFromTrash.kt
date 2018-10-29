@@ -4,7 +4,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.players.Player
 
-class ChooseCardToGainFromTrash(cardsInTrash: List<Card>, optional: Boolean, private val expression: ((card: Card) -> Boolean)? = null) : SelectCardsAction("", cardsInTrash, 1, optional) {
+class ChooseCardToGainFromTrash(cardsInTrash: List<Card>, optional: Boolean, private val cardActionableExpression: ((card: Card) -> Boolean)? = null) : SelectCardsAction("", cardsInTrash, 1, optional) {
 
     override val isShowDone: Boolean = false
 
@@ -15,7 +15,11 @@ class ChooseCardToGainFromTrash(cardsInTrash: List<Card>, optional: Boolean, pri
     }
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
-        return cardLocation == CardLocation.Trash && (expression == null || expression.invoke(card))
+        return cardLocation == CardLocation.Trash && (cardActionableExpression == null || cardActionableExpression.invoke(card))
+    }
+
+    override fun processAction(player: Player): Boolean {
+        return super.processAction(player) && player.game.trashedCards.any { cardActionableExpression == null || cardActionableExpression.invoke(it) }
     }
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {

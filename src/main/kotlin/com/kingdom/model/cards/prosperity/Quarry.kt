@@ -2,10 +2,10 @@ package com.kingdom.model.cards.prosperity
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.modifiers.CardCostModifier
+import com.kingdom.model.cards.modifiers.CardCostModifierForCardsInPlay
 import com.kingdom.model.players.Player
 
-class Quarry : ProsperityCard(NAME, CardType.Treasure, 4), CardCostModifier {
+class Quarry : ProsperityCard(NAME, CardType.Treasure, 4), CardCostModifierForCardsInPlay {
 
     init {
         testing = true

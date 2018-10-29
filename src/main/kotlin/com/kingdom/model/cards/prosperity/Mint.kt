@@ -9,14 +9,13 @@ import com.kingdom.model.players.Player
 class Mint : ProsperityCard(NAME, CardType.Action, 5), CardBoughtListenerForSelf, ChooseCardActionCard {
 
     init {
-        testing = true
         special = "You may reveal a Treasure card from your hand. Gain a copy of it. When you buy this, trash all Treasures you have in play."
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
         val treasureCards = player.hand.filter { it.isTreasure }
         if (treasureCards.isNotEmpty()) {
-            player.chooseCardFromHand("Chose a Treasure card to gain a copy of", this)
+            player.chooseCardFromHand("Chose a Treasure card to gain a copy of", this, { c -> c.isTreasure })
         }
     }
 

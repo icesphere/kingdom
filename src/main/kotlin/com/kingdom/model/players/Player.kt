@@ -496,9 +496,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean)
 
-    abstract fun trashCardFromSupply(optional: Boolean, expression: ((card: Card) -> Boolean)?)
+    abstract fun trashCardFromSupply(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?)
 
-    abstract fun gainCardFromTrash(optional: Boolean, expression: ((card: Card) -> Boolean)?)
+    abstract fun gainCardFromTrash(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?)
 
     abstract fun passCardFromHandToPlayerOnLeft()
 
@@ -607,10 +607,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (card.isAction) {
             numActionsPlayed++
-        }
-
-        if (card is CardCostModifier) {
-            game.cardCostModifiers.add(card)
         }
 
         game.availableCards.filter { it is CardPlayedListenerForCardsInSupply }
@@ -1086,7 +1082,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player)
 
-    abstract fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard)
+    abstract fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
     abstract fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard)
 

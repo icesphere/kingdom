@@ -10,5 +10,11 @@ open class WaitForOtherPlayersActions(private val currentTurnPlayer: Player) : A
 
     override fun processAction(player: Player): Boolean = currentTurnPlayer.isOpponentHasAction
 
-    override fun processActionResult(player: Player, result: ActionResult): Boolean = !currentTurnPlayer.isOpponentHasAction
+    override fun processActionResult(player: Player, result: ActionResult): Boolean {
+        val doneWaiting = !currentTurnPlayer.isOpponentHasAction
+        if (doneWaiting) {
+            player.game.refreshPlayerHandArea(currentTurnPlayer)
+        }
+        return doneWaiting
+    }
 }

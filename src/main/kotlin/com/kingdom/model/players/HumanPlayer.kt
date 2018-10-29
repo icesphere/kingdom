@@ -56,16 +56,16 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun trashCardFromSupply(optional: Boolean, expression: ((card: Card) -> Boolean)?) {
+    override fun trashCardFromSupply(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?) {
         if (optional) {
-            addAction(TrashCardsFromSupply(1, true, expression))
+            addAction(TrashCardsFromSupply(1, true, cardActionableExpression))
         } else {
-            addAction(TrashCardsFromSupply(1, false, expression))
+            addAction(TrashCardsFromSupply(1, false, cardActionableExpression))
         }
     }
 
-    override fun gainCardFromTrash(optional: Boolean, expression: ((card: Card) -> Boolean)?) {
-        addAction(ChooseCardToGainFromTrash(game.trashedCards, optional, expression))
+    override fun gainCardFromTrash(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        addAction(ChooseCardToGainFromTrash(game.trashedCards, optional, cardActionableExpression))
     }
 
     override fun passCardFromHandToPlayerOnLeft() {
@@ -140,8 +140,8 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(ChooseCardForOpponentToGain(cost, text, destination, opponent))
     }
 
-    override fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard) {
-        addAction(ChooseCardFromHand(chooseCardActionCard, text))
+    override fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        addAction(ChooseCardFromHand(chooseCardActionCard, text, cardActionableExpression))
     }
 
     override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard) {

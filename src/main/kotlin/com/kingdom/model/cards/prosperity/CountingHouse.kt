@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class CountingHouse : ProsperityCard(NAME, CardType.Action, 5), ChoiceActionCard {
 
     init {
-        testing = true
         special = "Look through your discard pile, reveal any number of Coppers from it, and put them into your hand."
         fontSize = 9
     }

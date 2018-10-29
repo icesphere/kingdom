@@ -14,8 +14,8 @@ class Bridge : IntrigueCard(NAME, CardType.Action, 4), CardCostModifier {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
+        player.game.currentPlayerCardCostModifiers.add(this)
         player.game.refreshSupply()
-        player.game.refreshCardsBought()
     }
 
     override fun getChangeToCardCost(card: Card, player: Player): Int {
