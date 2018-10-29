@@ -1,8 +1,11 @@
 package com.kingdom.model.cards.prosperity
 
+import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.listeners.CardPlayedListenerForCardsInSupply
+import com.kingdom.model.players.Player
 
-class GrandMarket : ProsperityCard(NAME, CardType.Action, 6) {
+class GrandMarket : ProsperityCard(NAME, CardType.Action, 6), CardPlayedListenerForCardsInSupply {
 
     init {
         testing = true
@@ -14,6 +17,12 @@ class GrandMarket : ProsperityCard(NAME, CardType.Action, 6) {
         special = "You can’t buy this if you have any Coppers in play."
         fontSize = 9
         textSize = 30
+    }
+
+    override fun onCardPlayed(card: Card, player: Player) {
+        if (card.isCopper) {
+            player.cardsUnavailableToBuyThisTurn.add(this)
+        }
     }
 
     companion object {

@@ -33,7 +33,6 @@ class ThroneRoom : KingdomCard(NAME, CardType.Action, 4), CardActionCard {
         result.selectedCard?.let {
             copiedCard = it
             player.playCard(it)
-            player.addActions(1)
             player.addRepeatCardAction(it)
         }
     }

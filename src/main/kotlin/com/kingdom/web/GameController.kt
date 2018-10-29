@@ -944,12 +944,10 @@ class GameController(private val cardManager: CardManager,
     fun highlightSupplyCard(player: Player, card: Card?): Boolean {
         val action = player.currentAction
 
-        return if (!player.isYourTurn || card == null) {
-            false
-        } else if (action != null) {
-            action.isCardActionable(card, CardLocation.Supply, player)
-        } else {
-            player.isCardBuyable(card)
+        return when {
+            !player.isYourTurn || card == null -> false
+            action != null -> action.isCardActionable(card, CardLocation.Supply, player)
+            else -> player.isCardBuyable(card)
         }
     }
 

@@ -155,6 +155,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var finishEndTurnAfterResolvingActions: Boolean = false
 
+    var cardsUnavailableToBuyThisTurn = mutableListOf<Card>()
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -279,6 +281,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         numCardsTrashedThisTurn = 0
         coinsGainedThisTurn = 0
+
+        cardsUnavailableToBuyThisTurn.clear()
 
         bought.clear()
         played.clear()
@@ -422,6 +426,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         var gainCardHandled = false
 
+        game.availableCards.filter { it is CardGainedListenerForCardsInSupply }
+                .forEach {
+                    (it as CardGainedListenerForCardsInSupply).onCardGained(card, this)
+                }
+
         hand.filter { it is CardGainedListenerForCardsInHand }
                 .forEach {
                     val handled = (it as CardGainedListenerForCardsInHand).onCardGained(card, this)
@@ -519,6 +528,35 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 game.removeCardFromSupply(card, false)
             }
 
+            var buyCardHandled = false
+
+            if (card is CardBoughtListenerForSelf) {
+                val handled = card.onCardBought(this)
+                if (handled) {
+                    buyCardHandled = true
+                }
+            }
+
+            inPlay.filter { it is CardBoughtListenerForCardsInPlay }
+                    .forEach {
+                        val handled = (it as CardBoughtListenerForCardsInPlay).onCardBought(card, this)
+                        if (handled) {
+                            buyCardHandled = true
+                        }
+                    }
+
+            inPlay.filter { it is CardBoughtListenerForCardsInPlay }
+                    .forEach {
+                        val handled = (it as CardBoughtListenerForCardsInPlay).onCardBought(card, this)
+                        if (handled) {
+                            buyCardHandled = true
+                        }
+                    }
+
+            if (buyCardHandled) {
+                return
+            }
+
             cardAcquired(card)
         }
     }
@@ -555,10 +593,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             played.add(card)
             game.cardsPlayed.add(card)
 
-            if (card is CardCostModifier) {
-                game.cardCostModifiers.add(card)
-            }
-
             inPlay.filter { it is CardPlayedListener }
                     .forEach { (it as CardPlayedListener).onCardPlayed(card, this) }
 
@@ -574,6 +608,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (card.isAction) {
             numActionsPlayed++
         }
+
+        if (card is CardCostModifier) {
+            game.cardCostModifiers.add(card)
+        }
+
+        game.availableCards.filter { it is CardPlayedListenerForCardsInSupply }
+                .forEach {
+                    (it as CardPlayedListenerForCardsInSupply).onCardPlayed(card, this)
+                }
 
         card.cardPlayed(this)
     }
@@ -696,7 +739,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun resolveActions() {
         if (!actionsQueue.isEmpty()) {
-            val action = actionsQueue.removeAt(0)
+            val action = if (actionsQueue.size > 1 && actionsQueue.count { it is RepeatCardAction } < actionsQueue.size) {
+                actionsQueue.removeAt(actionsQueue.indexOfFirst { it !is RepeatCardAction })
+            } else {
+                actionsQueue.removeAt(0)
+            }
+
             processNextAction(action)
         }
     }
@@ -704,14 +752,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     @Suppress("CascadeIf")
     private fun processNextAction(action: Action) {
         if (action is SelfResolvingAction) {
-            if (action is RepeatCardAction && actionsQueue.isNotEmpty()) {
-                //previous play of card created action that created another action so that needs to be resolved before repeating action
-                actionsQueue.add(action)
-                resolveActions()
-            } else {
-                action.resolveAction(this)
-                resolveActions()
-            }
+            action.resolveAction(this)
+            resolveActions()
         } else if (action.processAction(this)) {
             currentAction = action
             game.refreshPlayerCardAction(this)
@@ -724,7 +766,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun isCardBuyable(card: Card): Boolean {
-        return isYourTurn && this.getCardCostWithModifiers(card) <= availableCoins
+        return isYourTurn && canBuyCard(card)
     }
 
     fun addCardToDeck(card: Card) {
@@ -964,6 +1006,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         game.cardCostModifiers.forEach { cost += it.getChangeToCardCost(card, this) }
 
+        if (cost < 0) {
+            cost = 0
+        }
+
         return cost
     }
 
@@ -1030,6 +1076,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun canBuyCard(card: Card): Boolean {
+        if (cardsUnavailableToBuyThisTurn.any { it.name == card.name }) {
+            return false
+        }
+
         val cost = getCardCostWithModifiers(card)
         return game.isCardAvailableInSupply(card) && availableCoins >= cost
     }

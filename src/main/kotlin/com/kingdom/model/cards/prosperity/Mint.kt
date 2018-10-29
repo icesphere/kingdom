@@ -1,11 +1,12 @@
 package com.kingdom.model.cards.prosperity
 
+import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.actions.ChooseCardActionCard
+import com.kingdom.model.cards.listeners.CardBoughtListenerForSelf
 import com.kingdom.model.players.Player
 
-class Mint : ProsperityCard(NAME, CardType.Action, 5) {
-
-    //todo when you buy
+class Mint : ProsperityCard(NAME, CardType.Action, 5), CardBoughtListenerForSelf, ChooseCardActionCard {
 
     init {
         testing = true
@@ -13,7 +14,21 @@ class Mint : ProsperityCard(NAME, CardType.Action, 5) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        //todo
+        val treasureCards = player.hand.filter { it.isTreasure }
+        if (treasureCards.isNotEmpty()) {
+            player.chooseCardFromHand("Chose a Treasure card to gain a copy of", this)
+        }
+    }
+
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
+        player.acquireFreeCardFromSupply(card, true)
+    }
+
+    override fun onCardBought(player: Player): Boolean {
+        player.inPlay.filter { it.isTreasure }.forEach {
+            player.trashCardInPlay(it)
+        }
+        return false
     }
 
     companion object {

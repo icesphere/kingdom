@@ -34,9 +34,7 @@ class KingsCourt : ProsperityCard(NAME, CardType.Action, 7), CardActionCard {
         result.selectedCard?.let {
             copiedCard = it
             player.playCard(it)
-            player.addActions(1)
             player.addRepeatCardAction(it)
-            player.addActions(1)
             player.addRepeatCardAction(it)
         }
     }

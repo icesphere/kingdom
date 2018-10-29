@@ -1,14 +1,14 @@
 package com.kingdom.model.cards.prosperity
 
 import com.kingdom.model.Game
+import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.actions.AttackCard
+import com.kingdom.model.cards.listeners.CardBoughtListenerForCardsInPlay
 import com.kingdom.model.players.Player
 
-class Goons : ProsperityCard(NAME, CardType.ActionAttack, 6), AttackCard, GameSetupModifier {
-
-    //todo when you buy
+class Goons : ProsperityCard(NAME, CardType.ActionAttack, 6), AttackCard, GameSetupModifier, CardBoughtListenerForCardsInPlay {
 
     init {
         testing = true
@@ -32,6 +32,11 @@ class Goons : ProsperityCard(NAME, CardType.ActionAttack, 6), AttackCard, GameSe
                 opponent.discardCardsFromHand(opponent.hand.size - 3, false)
             }
         }
+    }
+
+    override fun onCardBought(card: Card, player: Player): Boolean {
+        player.addVictoryCoins(1)
+        return false
     }
 
     companion object {

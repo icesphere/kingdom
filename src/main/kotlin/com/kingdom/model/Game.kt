@@ -169,7 +169,12 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val cardsPlayed = LinkedList<Card>()
     val cardsBought = ArrayList<Card>()
 
-    val cardCostModifiers = mutableListOf<CardCostModifier>()
+    val currentPlayerCardCostModifiers = mutableListOf<CardCostModifier>()
+
+    val gameCardCostModifiers = mutableListOf<CardCostModifier>()
+
+    val cardCostModifiers
+        get() = currentPlayerCardCostModifiers + gameCardCostModifiers
 
     var previousPlayerId = 0
     val previousPlayerCardsPlayed = ArrayList<Card>()
@@ -443,7 +448,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         cardsPlayed.clear()
         cardsBought.clear()
-        cardCostModifiers.clear()
+
+        currentPlayerCardCostModifiers.clear()
 
         previousPlayerId = currentPlayerId
 
@@ -626,7 +632,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         trashedCards.clear()
         cardsPlayed.clear()
         cardsBought.clear()
-        cardCostModifiers.clear()
+        currentPlayerCardCostModifiers.clear()
+        gameCardCostModifiers.clear()
         recentTurnHistory.clear()
         turnHistory.clear()
         chats.clear()
