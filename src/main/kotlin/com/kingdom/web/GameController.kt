@@ -56,7 +56,7 @@ class GameController(private val cardManager: CardManager,
         val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
 
         var game = getGame(request)
-        if (game == null) {
+        if (game == null || game.status == GameStatus.Finished) {
             game = gameRoomManager.nextAvailableGame
         }
         if (game == null || gameRoomManager.isUpdatingWebsite) {
