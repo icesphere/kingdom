@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Contraband : ProsperityCard(NAME, CardType.Treasure, 5), ChooseCardActionCard {
 
     init {
-        testing = true
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         addCoins = 3

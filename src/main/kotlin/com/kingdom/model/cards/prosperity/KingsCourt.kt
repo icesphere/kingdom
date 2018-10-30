@@ -33,6 +33,7 @@ class KingsCourt : ProsperityCard(NAME, CardType.Action, 7), CardActionCard {
     override fun processCardActionResult(cardAction: CardAction, player: Player, result: ActionResult) {
         result.selectedCard?.let {
             copiedCard = it
+            player.addActions(1)
             player.playCard(it)
             player.addRepeatCardAction(it)
             player.addRepeatCardAction(it)

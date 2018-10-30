@@ -32,6 +32,7 @@ class ThroneRoom : KingdomCard(NAME, CardType.Action, 4), CardActionCard {
     override fun processCardActionResult(cardAction: CardAction, player: Player, result: ActionResult) {
         result.selectedCard?.let {
             copiedCard = it
+            player.addActions(1)
             player.playCard(it)
             player.addRepeatCardAction(it)
         }

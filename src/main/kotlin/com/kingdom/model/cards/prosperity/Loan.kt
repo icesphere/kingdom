@@ -12,7 +12,6 @@ class Loan : ProsperityCard(NAME, CardType.Treasure, 3), ChoiceActionCard {
     var treasureCard: Card? = null
 
     init {
-        testing = true
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         addCoins = 1
@@ -43,7 +42,7 @@ class Loan : ProsperityCard(NAME, CardType.Treasure, 3), ChoiceActionCard {
         }
 
         if (revealedCards.isNotEmpty()) {
-            player.addUsernameGameLog("revealed and discarded: ${revealedCards.groupedString}")
+            player.addUsernameGameLog("revealed: ${revealedCards.groupedString}")
         }
     }
 

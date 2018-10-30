@@ -570,6 +570,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cards.addAll(inPlay)
             cards.addAll(nativeVillageCards)
             cards.addAll(islandCards)
+            cards.addAll(durationCards)
 
             return cards
         }
