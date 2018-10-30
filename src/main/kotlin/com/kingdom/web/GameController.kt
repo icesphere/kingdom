@@ -1205,7 +1205,7 @@ class GameController(private val cardManager: CardManager,
 
             addPlayingAreaDataToModelView(game, player, modelAndView)
 
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards && !player.isCardsBought)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1412,13 +1412,15 @@ class GameController(private val cardManager: CardManager,
 
             addPlayerAndGameDataToModelAndView(game, user, modelAndView, request)
 
+            val player = game.playerMap[user.userId]!!
+
             modelAndView.addObject("showDuration", game.isShowDuration)
             modelAndView.addObject("showIslandCards", game.isShowIslandCards)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
             modelAndView.addObject("showCoinTokens", game.isShowCoinTokens)
             modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards && !player.isCardsBought)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1827,7 +1829,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("showCoinTokens", game.isShowCoinTokens)
         modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
         modelAndView.addObject("showIslandCards", game.isShowIslandCards)
-        modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards)
+        modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards && !player.isCardsBought)
         modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
         modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
         modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)

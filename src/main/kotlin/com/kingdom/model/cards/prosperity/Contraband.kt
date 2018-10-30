@@ -18,9 +18,6 @@ class Contraband : ProsperityCard(NAME, CardType.Treasure, 5), ChooseCardActionC
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.game.previousPlayer!!.chooseCardAction("Chose a card that ${player.username} can't buy this turn", this, player.game.availableCards.sortedBy { it.cost }, false)
-        if (player.isOpponentHasAction) {
-            player.waitForOtherPlayersToResolveActions()
-        }
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {

@@ -93,10 +93,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var isWaitingForComputer: Boolean = false
 
-    private var acquireCardToTopOfDeck: Boolean = false
-
-    private var acquireCardToHand: Boolean = false
-
     lateinit var chatColor: String
 
     var isQuit: Boolean = false
@@ -389,13 +385,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun acquireCardToTopOfDeck(card: Card) {
-        acquireCardToTopOfDeck = true
+        isNextCardToTopOfDeck = true
         cardAcquired(card)
         game.refreshPlayerHandArea(this)
     }
 
     fun acquireCardToHand(card: Card) {
-        acquireCardToHand = true
+        isNextCardToHand = true
         cardAcquired(card)
         game.refreshPlayerHandArea(this)
     }
@@ -452,21 +448,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         when {
-            acquireCardToHand -> {
-                acquireCardToHand = false
+            isNextCardToHand -> {
+                isNextCardToHand = false
                 addCardToHand(card)
-            }
-            acquireCardToTopOfDeck -> {
-                acquireCardToTopOfDeck = false
-                addCardToTopOfDeck(card)
             }
             isNextCardToTopOfDeck -> {
                 isNextCardToTopOfDeck = false
                 addCardToTopOfDeck(card)
-            }
-            isNextCardToHand -> {
-                isNextCardToHand = false
-                addCardToHand(card)
             }
             else -> {
                 addCardToDiscard(card)
@@ -536,14 +524,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     buyCardHandled = true
                 }
             }
-
-            inPlay.filter { it is CardBoughtListenerForCardsInPlay }
-                    .forEach {
-                        val handled = (it as CardBoughtListenerForCardsInPlay).onCardBought(card, this)
-                        if (handled) {
-                            buyCardHandled = true
-                        }
-                    }
 
             inPlay.filter { it is CardBoughtListenerForCardsInPlay }
                     .forEach {
@@ -650,11 +630,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             @Suppress("NON_EXHAUSTIVE_WHEN")
             when (destination) {
                 CardLocation.Hand -> {
-                    acquireCardToHand = true
+                    isNextCardToHand = true
                     log += " to their hand"
                 }
                 CardLocation.Deck -> {
-                    acquireCardToTopOfDeck = true
+                    isNextCardToTopOfDeck = true
                     log += " to the top of their deck"
                 }
             }

@@ -305,6 +305,10 @@ abstract class Card(
             }
 
             cardPlayedSpecialAction(player)
+
+            if (player.isOpponentHasAction) {
+                player.waitForOtherPlayersToResolveActions()
+            }
         }
     }
 

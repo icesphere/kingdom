@@ -23,11 +23,11 @@ class Mountebank : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard, C
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         for (opponent in affectedOpponents) {
-            if (player.hand.any { it.isCurse }) {
-                player.makeChoice(this, Choice(1, "Discard Curse"), Choice(2, "Gain Curse and Copper"))
+            if (opponent.hand.any { it.isCurse }) {
+                opponent.makeChoice(this, Choice(1, "Discard Curse"), Choice(2, "Gain Curse and Copper"))
             } else {
-                player.acquireFreeCardFromSupply(Curse())
-                player.acquireFreeCardFromSupply(Copper())
+                opponent.acquireFreeCardFromSupply(Curse(), showLog = true)
+                opponent.acquireFreeCardFromSupply(Copper(), showLog = true)
             }
         }
     }
@@ -36,8 +36,8 @@ class Mountebank : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard, C
         if (choice == 1) {
             player.discardCardFromHand(player.hand.first { it.isCurse })
         } else {
-            player.acquireFreeCardFromSupply(Curse())
-            player.acquireFreeCardFromSupply(Copper())
+            player.acquireFreeCardFromSupply(Curse(), showLog = true)
+            player.acquireFreeCardFromSupply(Copper(), showLog = true)
         }
     }
 

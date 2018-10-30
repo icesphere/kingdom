@@ -10,6 +10,8 @@ class RoyalSeal : ProsperityCard(NAME, CardType.Treasure, 5), CardGainedListener
 
     var gainedCard: Card? = null
 
+    var ignoreNextCardGained = false
+
     init {
         testing = true
         isPlayTreasureCardsRequired = true
@@ -18,6 +20,15 @@ class RoyalSeal : ProsperityCard(NAME, CardType.Treasure, 5), CardGainedListener
     }
 
     override fun onCardGained(card: Card, player: Player): Boolean {
+        if (ignoreNextCardGained) {
+            ignoreNextCardGained = false
+            return false
+        }
+
+        if (player.isNextCardToTopOfDeck) {
+            return false
+        }
+
         gainedCard = card
 
         player.yesNoChoice(this, "Put ${card.cardNameWithBackgroundColor} on top of your deck?")
@@ -28,6 +39,8 @@ class RoyalSeal : ProsperityCard(NAME, CardType.Treasure, 5), CardGainedListener
     override fun actionChoiceMade(player: Player, choice: Int) {
         if (choice == 1) {
             player.isNextCardToTopOfDeck = true
+        } else {
+            ignoreNextCardGained = true
         }
 
         player.cardAcquired(gainedCard!!)

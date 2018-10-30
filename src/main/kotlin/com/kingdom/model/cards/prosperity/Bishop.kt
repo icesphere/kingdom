@@ -27,10 +27,6 @@ class Bishop : ProsperityCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
         for (opponent in player.opponents) {
             opponent.trashCardsFromHand(1, true)
         }
-
-        if (player.isOpponentHasAction) {
-            player.waitForOtherPlayersToResolveActions()
-        }
     }
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {

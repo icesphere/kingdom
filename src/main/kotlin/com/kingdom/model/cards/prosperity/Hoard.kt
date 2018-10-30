@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Hoard : ProsperityCard(NAME, CardType.Treasure, 6), CardBoughtListenerForCardsInPlay {
 
     init {
-        testing = true
         isPlayTreasureCardsRequired = true
         addCoins = 2
         special = "While this is in play, when you buy a Victory card, gain a Gold."

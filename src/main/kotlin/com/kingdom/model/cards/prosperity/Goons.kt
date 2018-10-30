@@ -11,7 +11,6 @@ import com.kingdom.model.players.Player
 class Goons : ProsperityCard(NAME, CardType.ActionAttack, 6), AttackCard, GameSetupModifier, CardBoughtListenerForCardsInPlay {
 
     init {
-        testing = true
         addBuys = 1
         addCoins = 2
         special = "Each other player discards down to 3 cards in hand. While this is in play, when you buy a card, +1 VP token."

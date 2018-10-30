@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Vault : ProsperityCard(NAME, CardType.Action, 5), DiscardCardsForBenefitActionCard, ChoiceActionCard {
 
     init {
-        testing = true
         addCards = 2
         special = "Discard any number of cards for +\$1 each. Each other player may discard 2 cards, to draw a card."
     }
