@@ -427,21 +427,23 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     (it as CardGainedListenerForCardsInSupply).onCardGained(card, this)
                 }
 
-        hand.filter { it is CardGainedListenerForCardsInHand }
-                .forEach {
-                    val handled = (it as CardGainedListenerForCardsInHand).onCardGained(card, this)
-                    if (handled) {
-                        gainCardHandled = true
-                    }
-                }
+        val cardGainedListenersForCardsInHand = hand.filter { it is CardGainedListenerForCardsInHand }
+        for (listener in cardGainedListenersForCardsInHand) {
+            val handled = (listener as CardGainedListenerForCardsInHand).onCardGained(card, this)
+            if (handled) {
+                gainCardHandled = true
+                break
+            }
+        }
 
-        inPlay.filter { it is CardGainedListenerForCardsInPlay }
-                .forEach {
-                    val handled = (it as CardGainedListenerForCardsInPlay).onCardGained(card, this)
-                    if (handled) {
-                        gainCardHandled = true
-                    }
-                }
+        val cardGainedListenersForCardsInPlay = inPlay.filter { it is CardGainedListenerForCardsInPlay }
+        for (listener in cardGainedListenersForCardsInPlay) {
+            val handled = (listener as CardGainedListenerForCardsInPlay).onCardGained(card, this)
+            if (handled) {
+                gainCardHandled = true
+                break
+            }
+        }
 
         if (gainCardHandled) {
             return
@@ -525,13 +527,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 }
             }
 
-            inPlay.filter { it is CardBoughtListenerForCardsInPlay }
-                    .forEach {
-                        val handled = (it as CardBoughtListenerForCardsInPlay).onCardBought(card, this)
-                        if (handled) {
-                            buyCardHandled = true
-                        }
-                    }
+            val cardBoughtListenersForCardsInPlay = inPlay.filter { it is CardBoughtListenerForCardsInPlay }
+
+            for (listener in cardBoughtListenersForCardsInPlay) {
+                val handled = (listener as CardBoughtListenerForCardsInPlay).onCardBought(card, this)
+                if (handled) {
+                    buyCardHandled = true
+                    break
+                }
+            }
 
             if (buyCardHandled) {
                 return

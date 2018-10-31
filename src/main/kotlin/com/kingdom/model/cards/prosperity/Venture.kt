@@ -1,14 +1,11 @@
 package com.kingdom.model.cards.prosperity
 
-import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.players.Player
-import com.kingdom.util.groupedString
 
 class Venture : ProsperityCard(NAME, CardType.Treasure, 5) {
 
     init {
-        testing = true
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         addCoins = 1
@@ -19,23 +16,23 @@ class Venture : ProsperityCard(NAME, CardType.Treasure, 5) {
     override fun cardPlayedSpecialAction(player: Player) {
         var treasureFound = false
 
-        val revealedCards = mutableListOf<Card>()
-
         while(!treasureFound) {
             val card = player.removeTopCardOfDeck()
             if (card != null) {
-                revealedCards.add(card)
                 if (card.isTreasure) {
                     treasureFound = true
                     player.playCard(card)
+                } else {
+                    player.addCardToDiscard(card, showLog = true)
                 }
             } else {
                 break
             }
         }
 
-        if (revealedCards.isNotEmpty()) {
-            player.addUsernameGameLog("revealed: ${revealedCards.groupedString}")
+        if (!treasureFound) {
+            player.addUsernameGameLog("No treasures found")
+            player.game.showInfoMessage(player, "No treasures found")
         }
     }
 

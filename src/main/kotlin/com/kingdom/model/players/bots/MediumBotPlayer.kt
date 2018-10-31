@@ -5,6 +5,11 @@ import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.kingdom.ThroneRoom
 import com.kingdom.model.cards.kingdom.Witch
+import com.kingdom.model.cards.prosperity.Forge
+import com.kingdom.model.cards.prosperity.KingsCourt
+import com.kingdom.model.cards.prosperity.Mint
+import com.kingdom.model.cards.seaside.Lookout
+import com.kingdom.model.cards.seaside.TreasureMap
 
 open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
 
@@ -30,13 +35,14 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
         return when {
             !card.isVictory && !card.isTreasure && getCardCostWithModifiers(card) < 5 && cardCountByName(card.name) >= 3 -> true
             card.name == ThroneRoom.NAME && (turns < 3 || cardCountByName(card.name) >= 2) -> true
-            //card.name == "King's Court" && kingsCourtsBought >= 2 -> return true
+            card.name == KingsCourt.NAME && cardCountByName(card.name) >= 2 -> return true
             card.isTerminalAction && (terminalActionsBought - actionsBought > 1 || terminalActionsBought == 1 && actionsBought == 1) -> true
-            //card.name == "Lookout" -> return true
+            card.name == Lookout.NAME -> return true
             card.isVictoryOnly && !includeVictoryOnlyCards -> true
-            //card.name == "Forge" -> return true
+            card.name == Forge.NAME -> return true
             card.name == Witch.NAME && turns >= 8 -> true
-            //card.name == "Mint" && turns >= 5 -> return true
+            card.name == Mint.NAME && turns >= 5 -> return true
+            card.name == TreasureMap.NAME -> return true
             //card.name == "Remake" -> return true
             //card.name == "Farmland" && hand.all { it.isProvince } -> return true
             else -> super.excludeCard(card)

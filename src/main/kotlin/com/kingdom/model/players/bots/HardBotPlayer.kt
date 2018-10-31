@@ -7,6 +7,7 @@ import com.kingdom.model.cards.intrigue.WishingWell
 import com.kingdom.model.cards.kingdom.Mine
 import com.kingdom.model.cards.kingdom.Village
 import com.kingdom.model.cards.kingdom.Workshop
+import com.kingdom.model.cards.prosperity.Expand
 import com.kingdom.model.cards.prosperity.Quarry
 
 class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
@@ -40,9 +41,8 @@ class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
             bigMoneyStrategy && card.isTerminalAction && terminalActionsBought - actionsBought > 0 -> return true
             bigMoneyStrategy && card.isAction && !card.isVictory && actionsBought >= 3 -> return true
             !bigActionsStrategy && card.isAction && !card.isVictory && actionsBought >= 5 -> return true
-            //card.name == "Expand" && cardsGained["Expand"] != null -> return true
+            card.name == Expand.NAME && cardCountByName(card.name) > 0 -> return true
             bigMoneyStrategy && card.isExtraActionsCard -> return true
-            !isGardensStrategy && card.name == "Talisman" -> return true
             else -> return false
         }
 

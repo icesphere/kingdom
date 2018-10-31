@@ -13,7 +13,6 @@ class RoyalSeal : ProsperityCard(NAME, CardType.Treasure, 5), CardGainedListener
     var ignoreNextCardGained = false
 
     init {
-        testing = true
         isPlayTreasureCardsRequired = true
         addCoins = 2
         special = "While this is in play, when you gain a card, you may put that card onto your deck."

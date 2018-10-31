@@ -15,7 +15,7 @@ class Library : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
 
     init {
         special = "Draw until you have 7 cards in hand, skipping any Action cards you choose to; set those aside, discarding them afterwards."
-        textSize = 95
+        textSize = 110
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

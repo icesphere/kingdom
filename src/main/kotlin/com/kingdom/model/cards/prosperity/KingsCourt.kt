@@ -13,7 +13,6 @@ class KingsCourt : ProsperityCard(NAME, CardType.Action, 7), CardActionCard {
     var copiedCard: Card? = null
 
     init {
-        testing = true
         special = "You may play an Action card from your hand three times."
         fontSize = 10
     }

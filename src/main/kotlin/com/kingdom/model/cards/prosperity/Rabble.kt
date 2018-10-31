@@ -7,10 +7,9 @@ import com.kingdom.model.players.Player
 class Rabble : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard {
 
     init {
-        testing = true
         addCards = 3
         special = "Each other player reveals the top 3 cards of their deck, discards the Actions and Treasures, and puts the rest back in any order they choose."
-        textSize = 95
+        textSize = 96
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

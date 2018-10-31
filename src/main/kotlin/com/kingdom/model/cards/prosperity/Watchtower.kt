@@ -9,13 +9,12 @@ import com.kingdom.model.players.Player
 
 class Watchtower : ProsperityCard(NAME, CardType.ActionReaction, 3), CardGainedListenerForCardsInHand, ChoiceActionCard {
 
-    var gainedCard: Card? = null
+    var gainedCards = mutableListOf<Card>()
 
     init {
-        testing = true
         special = "Draw until you have 6 cards in hand. When you gain a card, you may reveal this from your hand, to either trash that card or put it onto your deck."
         fontSize = 11
-        textSize = 105
+        textSize = 123
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
@@ -25,17 +24,20 @@ class Watchtower : ProsperityCard(NAME, CardType.ActionReaction, 3), CardGainedL
     }
 
     override fun onCardGained(card: Card, player: Player): Boolean {
-        gainedCard = card
+        gainedCards.add(card)
         player.game.currentPlayer.waitForOtherPlayersToResolveActions()
         player.yesNoChoice(this, "Reveal ${this.cardNameWithBackgroundColor} to trash ${card.cardNameWithBackgroundColor} or put ${card.cardNameWithBackgroundColor} on top of your deck?")
         return true
     }
 
     override fun actionChoiceMade(player: Player, choice: Int) {
-        val card = gainedCard!!
+        val card = gainedCards.removeAt(0)
 
         when(choice) {
-            1 -> player.makeChoice(this, "${card.cardNameWithBackgroundColor} - Trash or put on top of deck?", Choice(3, "Trash"), Choice(4, "Top of deck"))
+            1 -> {
+                gainedCards.add(card)
+                player.makeChoice(this, "${card.cardNameWithBackgroundColor} - Trash or put on top of deck?", Choice(3, "Trash"), Choice(4, "Top of deck"))
+            }
             2 -> player.cardAcquired(card)
             3 -> player.cardTrashed(card, showLog = true)
             4 -> player.addCardToTopOfDeck(card)

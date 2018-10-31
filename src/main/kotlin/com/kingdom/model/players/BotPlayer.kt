@@ -351,8 +351,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     open fun getChoice(card: ChoiceActionCard, choices: Array<Choice>): Int {
-        //todo
-        return 1
+        when (card.name) {
+            //todo
+        }
+        return choices[0].choiceNumber
     }
 
     private fun getCardsToDiscard(cards: Int, optional: Boolean): List<Card> {
