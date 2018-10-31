@@ -64,7 +64,20 @@ class MainController(private var userManager: UserManager,
     @Throws(Exception::class)
     fun logout(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
-        KingdomUtil.logoutUser(user, request)
+        if (user != null) {
+            val gameId = request.session.getAttribute("gameId")
+            if (gameId != null) {
+                val game = gameRoomManager.getGame(gameId as String)
+                if (game != null) {
+                    val player = game.playerMap[user.userId]
+                    if (player != null) {
+                        game.playerQuitGame(player)
+                        game.playerExitedGame(player)
+                    }
+                }
+            }
+            KingdomUtil.logoutUser(user, request)
+        }
         return KingdomUtil.getLoginModelAndView(request)
     }
 

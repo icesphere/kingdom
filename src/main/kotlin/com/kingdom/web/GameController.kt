@@ -56,7 +56,7 @@ class GameController(private val cardManager: CardManager,
         val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
 
         var game = getGame(request)
-        if (game == null || game.status == GameStatus.Finished) {
+        if (game == null) {
             game = gameRoomManager.nextAvailableGame
         }
         if (game == null || gameRoomManager.isUpdatingWebsite) {
@@ -1581,6 +1581,7 @@ class GameController(private val cardManager: CardManager,
             return ModelAndView("redirect:/login.html")
         }
         try {
+            request.session.removeAttribute("gameId")
             user.gameId = null
             user.stats = null
             LoggedInUsers.updateUser(user)

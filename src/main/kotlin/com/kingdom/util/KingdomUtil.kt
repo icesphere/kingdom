@@ -265,6 +265,7 @@ object KingdomUtil {
         val session = request.getSession(false)
         if (session != null) {
             session.removeAttribute("user")
+            session.removeAttribute("gameId")
             session.invalidate()
         }
     }
