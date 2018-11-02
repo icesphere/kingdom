@@ -22,7 +22,9 @@ class Swindler : IntrigueCard(NAME, CardType.ActionAttack, 3), AttackCard {
                     val card = opponent.removeTopCardOfDeck()
                     if (card != null) {
                         opponent.cardTrashed(card)
-                        player.chooseCardForOpponentToGain(player.getCardCostWithModifiers(card), "Choose a card to put on top of ${opponent.username}'s deck", CardLocation.Deck, opponent)
+                        val log = "${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}"
+                        player.addGameLog(log)
+                        player.chooseCardForOpponentToGain(player.getCardCostWithModifiers(card), "$log. Choose a card from the supply to put on top of ${opponent.username}'s deck.", CardLocation.Deck, opponent)
                     }
                 }
     }

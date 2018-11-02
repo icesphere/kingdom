@@ -18,6 +18,8 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
         textSize = 100
     }
 
+    private var gainedPirateShipCoin = false
+
     override fun modifyGameSetup(game: Game) {
         game.isShowPirateShipCoins = true
     }
@@ -51,12 +53,12 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
             if (treasureCards.isNotEmpty()) {
                 if (treasureCards.size == 1) {
                     opponent.cardTrashed(treasureCards.first(), true)
-                    player.pirateShipCoins++
+                    gainPirateShipCoin(player)
                 } else {
                     if (treasureCards[0].name == treasureCards[1].name) {
                         opponent.addCardToDiscard(treasureCards[0], showLog = true)
                         opponent.cardTrashed(treasureCards[1], true)
-                        player.pirateShipCoins++
+                        gainPirateShipCoin(player)
                     } else {
                         val pirateAttackInfo = PirateAttackInfo(opponent, treasureCards)
                         player.chooseCardAction("Attacking ${opponent.username}. Choose which treasure to trash (the other will be discarded)", this, treasureCards, false, pirateAttackInfo)
@@ -66,6 +68,25 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
         }
     }
 
+    @Synchronized
+    private fun gainPirateShipCoin(player: Player) {
+        if (!gainedPirateShipCoin) {
+            gainedPirateShipCoin = true
+            player.addUsernameGameLog("gained a pirate ship coin")
+            player.pirateShipCoins++
+        }
+    }
+
+    override fun removedFromPlay(player: Player) {
+        super.removedFromPlay(player)
+        gainedPirateShipCoin = false
+    }
+
+    override fun beforeCardRepeated() {
+        super.beforeCardRepeated()
+        gainedPirateShipCoin = false
+    }
+
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         val pirateAttackInfo = info as PirateAttackInfo
 
@@ -73,7 +94,7 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
 
         pirateAttackInfo.opponent.addCardToDiscard(pirateAttackInfo.treasureCards.first { it.name != card.name })
 
-        player.pirateShipCoins++
+        gainPirateShipCoin(player)
     }
 
     private class PirateAttackInfo(val opponent: Player, val treasureCards: List<Card>)

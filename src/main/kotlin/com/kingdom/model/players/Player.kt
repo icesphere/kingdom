@@ -148,6 +148,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = islandCards.groupedString
 
     var pirateShipCoins: Int = 0
+        set(value) {
+            field = value
+            game.refreshPlayerHandArea(this)
+        }
 
     var finishEndTurnAfterResolvingActions: Boolean = false
 
@@ -626,10 +630,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String)
 
     fun acquireFreeCardFromSupply(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {
-        if (game.isCardAvailableInSupply(card)) {
-            game.removeCardFromSupply(card)
 
-            var log = "gained ${card.cardNameWithBackgroundColor} from the supply"
+        //create copy of card so that it doesn't affect card chosen in case it came from somewhere other than the supply
+        val supplyCard = game.getSupplyCard(card.name)
+
+        if (game.isCardAvailableInSupply(supplyCard)) {
+
+            game.removeCardFromSupply(supplyCard)
+
+            var log = "gained ${supplyCard.cardNameWithBackgroundColor} from the supply"
 
             @Suppress("NON_EXHAUSTIVE_WHEN")
             when (destination) {
@@ -647,7 +656,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 addUsernameGameLog(log)
             }
 
-            cardAcquired(card)
+            cardAcquired(supplyCard)
         }
     }
 
@@ -719,7 +728,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler)
 
     fun resolveActions() {
-        if (!actionsQueue.isEmpty()) {
+        if (currentAction == null && !actionsQueue.isEmpty()) {
             val action = if (actionsQueue.size > 1 && actionsQueue.count { it is RepeatCardAction } < actionsQueue.size) {
                 actionsQueue.removeAt(actionsQueue.indexOfFirst { it !is RepeatCardAction })
             } else {

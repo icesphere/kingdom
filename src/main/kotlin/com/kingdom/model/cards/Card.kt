@@ -284,6 +284,10 @@ abstract class Card(
         isHighlighted = false
     }
 
+    open fun beforeCardRepeated() {
+        //do nothing by default
+    }
+
     fun cardPlayed(player: Player) {
         if (isAction) {
             player.addActions(-1)
