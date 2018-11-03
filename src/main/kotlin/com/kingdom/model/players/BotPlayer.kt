@@ -7,9 +7,11 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
-import com.kingdom.model.cards.kingdom.ThroneRoom
-import com.kingdom.model.cards.supply.Copper
-import com.kingdom.model.cards.supply.Estate
+import com.kingdom.model.cards.intrigue.*
+import com.kingdom.model.cards.kingdom.*
+import com.kingdom.model.cards.prosperity.*
+import com.kingdom.model.cards.seaside.*
+import com.kingdom.model.cards.supply.*
 import java.util.*
 
 abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
@@ -310,9 +312,12 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     open fun getBuyCardScore(card: Card): Int {
+        //todo better logic
+
         if (card.isCurseOnly) {
             return -1
         }
+
         return card.cost
     }
 
@@ -327,34 +332,88 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     private fun getDiscardCardScore(card: Card): Int {
         //todo
-        if (card.isVictory) {
-            return 100
-        } else if (card.isCopper) {
-            return 50
+        return when {
+            card.isCurseOnly -> 200
+            card.isVictory -> 100
+            card.isCopper -> 90
+            else -> 20 - card.cost
         }
-        return 20 - card.cost
     }
 
     private fun getTrashCardScore(card: Card): Int {
         //todo
-        if (card is Estate) {
-            return 100
-        } else if (card is Copper) {
-            return 90
+        return when (card) {
+            is Curse -> 200
+            is Estate -> 100
+            is Copper -> 90
+            else -> 20 - card.cost
         }
 
-        return 20 - card.cost
     }
 
     private fun getReturnCardToTopOfDeckScore(card: Card): Int {
         return 1000 - getBuyCardScore(card)
     }
 
-    open fun getChoice(card: ChoiceActionCard, choices: Array<Choice>): Int {
-        when (card.name) {
-            //todo
+    open fun getChoice(choiceActionCard: ChoiceActionCard, choices: Array<Choice>): Int {
+        val card = choiceActionCard as Card
+
+        return when (choiceActionCard.name) {
+            Ambassador.NAME -> choices.last().choiceNumber
+            Baron.NAME -> 1
+            CountingHouse.NAME -> choices.last().choiceNumber
+            Courtier.NAME -> when {
+                actions == 0 && hand.any { it.isAction && it.cost > 3 } -> 1
+                buys < 2 && availableCoins > 11 -> 2
+                buys > 1 || turns > 10 -> 3
+                else -> 4
+            }
+            Diplomat.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 2) 1 else 2
+            Explorer.NAME -> 1
+            Library.NAME -> if (actions > 0 && hand.none { it.isAction }) 1 else 2
+            Loan.NAME -> if (card.isCopper) 2 else 1
+            Lurker.NAME -> if (game.trashedCards.any { getBuyCardScore(it) > 4 }) 2 else 1
+            Mill.NAME ->  if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
+            MiningVillage.NAME -> when {
+                game.availableCards.any { it.isColony } && availableCoins < 11 && availableCoins > 8 -> 1
+                turns > 7 && game.availableCards.any { it.isProvince } && availableCoins < 8 && availableCoins > 5 -> 1
+                else -> 2
+            }
+            Minion.NAME -> if (hand.size < 4 || hand.count { getDiscardCardScore(it) > 50 } > 2) 2 else 1
+            Moat.NAME -> 1
+            Moneylender.NAME -> 1
+            Mountebank.NAME -> 1
+            NativeVillage.NAME -> if (nativeVillageCards.size < 2) 1 else 2
+            Nobles.NAME -> if (actions == 0 && hand.any { it.isAction }) 2 else 1
+            RoyalSeal.NAME -> if (card.cost > 2) 1 else 2
+            Pawn.NAME -> when {
+                actions == 0 && hand.any { it.isAction } -> when {
+                    availableCoins > 11 && buys == 1 -> 4
+                    else -> 1
+                }
+                availableCoins > 11 && buys == 1 -> 2
+                else -> 3
+            }
+            PearlDiver.NAME -> if (getBuyCardScore(card) > 3) 1 else 2
+            PirateShip.NAME -> if (pirateShipCoins > 2) 1 else 2
+            Sentry.NAME -> when (card.cost) {
+                0 -> 1
+                1 -> 2
+                2 -> 2
+                else -> 3
+            }
+            Steward.NAME -> when {
+                turns < 5 && hand.count { it.cost <= 2 } >= 2 -> 3
+                actions > 0 -> 1
+                else -> 2
+            }
+            Torturer.NAME -> 1
+            Treasury.NAME -> 1
+            Vassal.NAME -> 1
+            Vault.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
+            Watchtower.NAME -> if (card.cost > 2) 1 else 2
+            else -> choices[0].choiceNumber
         }
-        return choices[0].choiceNumber
     }
 
     private fun getCardsToDiscard(cards: Int, optional: Boolean): List<Card> {
@@ -609,24 +668,29 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String) {
-        //todo
-        choiceActionCard.actionChoiceMade(this, 1)
+        val choice = getChoice(choiceActionCard, arrayOf(Choice(1, "Yes"), Choice(2, "No")))
+        choiceActionCard.actionChoiceMade(this, choice)
     }
 
     override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?, chooseCardActionCard: ChooseCardActionCard?) {
-        //todo better logic
-
         val cards =
                 if (cardFilter != null) {
                     hand.filter(cardFilter)
                 } else hand
 
-        if (cards.isNotEmpty()) {
-            val firstCard = cards.first()
-            hand.remove(firstCard)
-            addCardToTopOfDeck(firstCard, false)
-            chooseCardActionCard?.onCardChosen(this, firstCard)
+        if (cards.isEmpty()) {
+            return
         }
+
+        val chosenCard = when {
+            actions == 0 && cards.any { it.isAction && it.cost > 2 } -> cards.filter { it.isAction }.maxBy { it.cost }!!
+            buys == 1 && availableCoins > game.availableCards.maxBy { it.cost }!!.cost -> cards.filter { it.isTreasure }.minBy { it.cost }!!
+            else -> cards.maxBy { getDiscardCardScore(it) }!!
+        }
+
+        hand.remove(chosenCard)
+        addCardToTopOfDeck(chosenCard, false)
+        chooseCardActionCard?.onCardChosen(this, chosenCard)
     }
 
     override fun waitForOtherPlayersToResolveActions() {
@@ -642,47 +706,90 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player) {
-        //todo better logic
         val availableCards = game.availableCards.filter { getCardCostWithModifiers(it) == cost }
-        if (availableCards.isNotEmpty()) {
-            val card = availableCards.shuffled().first()
+        if (availableCards.isEmpty()) {
+            return
+        }
 
-            game.removeCardFromSupply(card)
+        val card = availableCards.minBy { getBuyCardScore(it) }!!
 
-            when (destination) {
-                CardLocation.Hand -> {
-                    addGameLog("$username put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s hand")
-                    opponent.acquireCardToHand(card)
-                }
-                CardLocation.Deck -> {
-                    addGameLog("$username put ${card.cardNameWithBackgroundColor} on top of ${opponent.username}'s deck")
-                    opponent.acquireCardToTopOfDeck(card)
-                }
-                else -> {
-                    addGameLog("$username put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s discard")
-                    opponent.cardAcquired(card)
-                }
+        game.removeCardFromSupply(card)
+
+        when (destination) {
+            CardLocation.Hand -> {
+                addGameLog("$username put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s hand")
+                opponent.acquireCardToHand(card)
+            }
+            CardLocation.Deck -> {
+                addGameLog("$username put ${card.cardNameWithBackgroundColor} on top of ${opponent.username}'s deck")
+                opponent.acquireCardToTopOfDeck(card)
+            }
+            else -> {
+                addGameLog("$username put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s discard")
+                opponent.cardAcquired(card)
             }
         }
     }
 
     override fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
-        //todo better logic
-        if (hand.any { cardActionableExpression == null || cardActionableExpression.invoke(it) }) {
-            val card = hand.first { cardActionableExpression == null || cardActionableExpression.invoke(it) }
-            chooseCardActionCard.onCardChosen(this, card)
+        val cards = hand.filter { cardActionableExpression == null || cardActionableExpression.invoke(it) }
+
+        if (cards.isEmpty()) {
+            return
         }
+
+        val card = chooseCardActionCard as Card
+
+        val chosenCard: Card = when (card.name) {
+            Ambassador.NAME -> cards.minBy { getBuyCardScore(it) }!!
+            Courtier.NAME -> cards.maxBy { it.numTypes }!!
+            Haven.NAME -> when {
+                actions == 0 && cards.any { it.isAction && it.cost > 2 } -> cards.filter { it.isAction }.maxBy { it.cost }!!
+                buys == 1 && availableCoins > game.availableCards.maxBy { it.cost }!!.cost -> cards.filter { it.isTreasure }.minBy { it.cost }!!
+                else -> cards.maxBy { getDiscardCardScore(it) }!!
+            }
+            Island.NAME -> when {
+                cards.any { it.isVictoryOnly } -> cards.first { it.isVictoryOnly }
+                else -> cards.maxBy { getTrashCardScore(it) }!!
+            }
+            Mint.NAME -> cards.maxBy { getBuyCardScore(it) }!!
+            else -> cards.first()
+        }
+
+        chooseCardActionCard.onCardChosen(this, chosenCard)
     }
 
     override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard) {
-        //todo better logic
-        chooseCardActionCard.onCardChosen(this, game.availableCards.last())
+        if (game.availableCards.isEmpty()) {
+            return
+        }
+
+        chooseCardActionCard.onCardChosen(this, game.availableCards.maxBy { getBuyCardScore(it) }!!)
     }
 
     override fun chooseCardAction(text: String, chooseCardActionCard: ChooseCardActionCard, cardsToSelectFrom: List<Card>, optional: Boolean, info: Any?) {
-        //todo better logic
-        if (cardsToSelectFrom.isNotEmpty()) {
-            chooseCardActionCard.onCardChosen(this, cardsToSelectFrom.first(), info)
+        if (cardsToSelectFrom.isEmpty()) {
+            return
         }
+
+        val card = chooseCardActionCard as Card
+
+        val chosenCard: Card = when (card.name) {
+            Bandit.NAME -> cardsToSelectFrom.minBy { getBuyCardScore(it) }!!
+            Contraband.NAME -> when {
+                cardsToSelectFrom.any { it.isPlatinum } && turns > 5 && game.currentPlayer.cardCountByName(Platinum.NAME) == 0 -> Platinum()
+                cardsToSelectFrom.any { it.isColony } && turns > 8 -> Colony()
+                cardsToSelectFrom.any { it.isProvince } && turns > 3 && (game.currentPlayer.cardCountByName(Gold.NAME) > 2 || turns > 10) -> Province()
+                cardsToSelectFrom.any { it.isDuchy } && turns > 10 -> Duchy()
+                else -> Gold()
+            }
+            Lookout.NAME -> cardsToSelectFrom.minBy { getDiscardCardScore(it) }!!
+            PirateShip.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
+            Smugglers.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
+            WishingWell.NAME -> deck.maxBy { cardCountByName(it.name) }!!
+            else -> cardsToSelectFrom.first()
+        }
+
+        chooseCardActionCard.onCardChosen(this, chosenCard, info)
     }
 }
