@@ -13,7 +13,7 @@ class CouncilRoom : KingdomCard(NAME, CardType.Action, 5) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.opponents.forEach { it.drawCard() }
+        player.opponentsInOrder.forEach { it.drawCard() }
     }
 
     companion object {

@@ -303,7 +303,7 @@ abstract class Card(
         }
 
         if (special.isNotBlank()) {
-            player.opponents.forEach { opponent ->
+            player.opponentsInOrder.forEach { opponent ->
                 opponent.hand.filter { it is BeforeOpponentCardPlayedListener }
                         .forEach { (it as BeforeOpponentCardPlayedListener).onBeforeOpponentCardPlayed(this, opponent, player) }
             }

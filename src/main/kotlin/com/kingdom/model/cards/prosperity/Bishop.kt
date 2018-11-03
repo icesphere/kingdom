@@ -24,7 +24,7 @@ class Bishop : ProsperityCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
     override fun cardPlayedSpecialAction(player: Player) {
         player.trashCardsFromHandForBenefit(this, 1, "Trash a card from your hand. +1 VP per \$2 it costs (round down)")
 
-        for (opponent in player.opponents) {
+        for (opponent in player.opponentsInOrder) {
             opponent.trashCardsFromHand(1, true)
         }
     }

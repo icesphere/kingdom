@@ -16,7 +16,7 @@ class Vault : ProsperityCard(NAME, CardType.Action, 5), DiscardCardsForBenefitAc
     override fun cardPlayedSpecialAction(player: Player) {
         player.optionallyDiscardCardsForBenefit(this, player.hand.size, "Discard any number of cards for +\$1 each")
 
-        for (opponent in player.opponents) {
+        for (opponent in player.opponentsInOrder) {
             if (opponent.hand.size >= 2) {
                 opponent.yesNoChoice(this, "Discard 2 cards to draw a card?")
             }

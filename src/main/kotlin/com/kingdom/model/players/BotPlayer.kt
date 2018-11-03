@@ -44,7 +44,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                     break
                 }
 
-                if (sortedCards.first().isTreasure) {
+                if (sortedCards.first().isTreasure && sortedCards.any { !it.isTreasureExcludedFromAutoPlay }) {
                     playAllTreasureCards()
                 } else {
                     val card = sortedCards[0]

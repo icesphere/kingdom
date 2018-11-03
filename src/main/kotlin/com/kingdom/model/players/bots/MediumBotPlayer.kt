@@ -10,6 +10,7 @@ import com.kingdom.model.cards.prosperity.KingsCourt
 import com.kingdom.model.cards.prosperity.Mint
 import com.kingdom.model.cards.seaside.Lookout
 import com.kingdom.model.cards.seaside.TreasureMap
+import com.kingdom.model.cards.supply.Copper
 
 open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
 
@@ -43,6 +44,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Witch.NAME && turns >= 8 -> true
             card.name == Mint.NAME && turns >= 5 -> return true
             card.name == TreasureMap.NAME -> return true
+            card.name == Copper.NAME -> return true
             //card.name == "Remake" -> return true
             //card.name == "Farmland" && hand.all { it.isProvince } -> return true
             else -> super.excludeCard(card)

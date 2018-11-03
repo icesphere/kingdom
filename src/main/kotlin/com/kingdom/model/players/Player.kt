@@ -71,6 +71,21 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.players.filterNot { it.userId == userId }
     }
 
+    val opponentsInOrder: List<Player> by lazy {
+
+        val list = mutableListOf<Player>()
+
+        var nextPlayer = game.getPlayerToLeft(this)
+
+        while (nextPlayer.userId != userId) {
+            list.add(nextPlayer)
+
+            nextPlayer = game.getPlayerToLeft(nextPlayer)
+        }
+
+        list
+    }
+
     var isNextCardToTopOfDeck: Boolean = false
 
     var isNextCardToHand: Boolean = false
@@ -794,7 +809,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
                 resolveActions()
 
-                for (opponent in opponents) {
+                for (opponent in opponentsInOrder) {
                     if (opponent.currentAction is WaitForOtherPlayersActions) {
                         if (opponent.currentAction!!.processActionResult(this, result)) {
                             opponent.currentAction = null
@@ -1082,7 +1097,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun triggerAttack(attackCard: Card) {
 
-        opponents.forEach { opponent ->
+        opponentsInOrder.forEach { opponent ->
             opponent.hand.filter { it is HandBeforeAttackListener }
                     .forEach { (it as HandBeforeAttackListener).onBeforeAttack(attackCard, opponent, this) }
 
@@ -1094,7 +1109,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             waitForOtherPlayersForResolveAttack(attackCard)
         } else {
             val attackResolver = attackCard as AttackCard
-            attackResolver.resolveAttack(this, opponents.filterNot { attackCard.playersExcludedFromCardEffects.contains(it) })
+            val affectedOpponents = opponentsInOrder.filterNot { attackCard.playersExcludedFromCardEffects.contains(it) }
+            attackResolver.resolveAttack(this, affectedOpponents)
             if (isOpponentHasAction) {
                 waitForOtherPlayersToResolveActions()
             }

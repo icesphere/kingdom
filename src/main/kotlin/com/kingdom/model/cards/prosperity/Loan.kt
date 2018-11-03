@@ -12,7 +12,6 @@ class Loan : ProsperityCard(NAME, CardType.Treasure, 3), ChoiceActionCard {
     var treasureCard: Card? = null
 
     init {
-        testing = true
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         addCoins = 1
