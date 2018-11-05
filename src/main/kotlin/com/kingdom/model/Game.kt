@@ -62,7 +62,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val cardMap = HashMap<String, Card>()
 
     val allCards: List<Card>
-        get() = cardMap.values.toList()
+        get() = supplyCards + kingdomCards
 
     val pileAmounts = HashMap<String, Int>()
 
