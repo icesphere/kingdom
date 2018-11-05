@@ -15,7 +15,7 @@ class WishingWell : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val cardsToSelectFrom = player.game.kingdomCards + player.game.supplyCards
+        val cardsToSelectFrom = player.game.allCards
         player.chooseCardAction(special, this, cardsToSelectFrom, false)
     }
 

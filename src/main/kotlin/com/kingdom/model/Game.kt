@@ -61,6 +61,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     val cardMap = HashMap<String, Card>()
 
+    val allCards: List<Card>
+        get() = cardMap.values.toList()
+
     val pileAmounts = HashMap<String, Int>()
 
     var blackMarketCards: MutableList<Card> = ArrayList(0)
@@ -153,7 +156,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var isShowIslandCards: Boolean = false
 
     val victoryCards: List<Card>
-        get() = (kingdomCards + supplyCards)
+        get() = allCards
                 .filter { it.isVictory }
                 .sortedByDescending { it.cost }
 

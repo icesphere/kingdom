@@ -7,6 +7,8 @@ import com.kingdom.model.players.BotPlayer
 
 class BigMoneyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
 
+    override val difficulty: Int = 3
+
     override fun getCardToBuy(): String? {
 
         return when {

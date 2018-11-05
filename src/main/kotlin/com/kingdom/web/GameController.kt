@@ -2110,7 +2110,7 @@ class GameController(private val cardManager: CardManager,
         val player = game.playerMap[user.userId]!!
         val modelAndView = ModelAndView("modifyHand")
         modelAndView.addObject("user", user)
-        modelAndView.addObject("cards", game.cardMap.values)
+        modelAndView.addObject("cards", game.allCards.sortedBy { it.cost })
         modelAndView.addObject("myPlayer", player)
         modelAndView.addObject("players", game.players)
         return modelAndView

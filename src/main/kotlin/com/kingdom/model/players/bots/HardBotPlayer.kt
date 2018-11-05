@@ -14,6 +14,8 @@ class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
     //todo better buying card strategy
 
+    override val difficulty: Int = 3
+
     //todo
     val bigMoneyStrategy = false
 

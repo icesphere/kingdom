@@ -20,7 +20,7 @@ class TradeRoute : ProsperityCard(NAME, CardType.Action, 3), GameSetupModifier, 
 
     override fun modifyGameSetup(game: Game) {
         game.isTrackTradeRouteTokens = true
-        (game.supplyCards + game.kingdomCards).filter { it.isVictory }.forEach {
+        (game.allCards).filter { it.isVictory }.forEach {
             game.tradeRouteTokenMap[it.name] = true
         }
     }

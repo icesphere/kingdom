@@ -18,7 +18,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     private val random = Random()
 
-    var difficulty = 3
+    var isWaitingForPlayers = false
+
+    abstract val difficulty: Int
 
     private val cardsToPlay: List<Card>
         get() {
@@ -52,6 +54,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                     val card = sortedCards[0]
                     playCard(card)
                 }
+
+                while (isWaitingForPlayers) {
+                    Thread.sleep(500)
+                }
             }
 
             if (availableCoins > 0 && buys > 0) {
@@ -67,7 +73,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     val availableCardsToBuy: List<Card>
-        get() = (game.kingdomCards + game.supplyCards).filter { canBuyCard(it) && !excludeCard(it) }
+        get() = game.allCards.filter { canBuyCard(it) && !excludeCard(it) }
 
     val availableCardsToBuyNames: List<String>
         get() = availableCardsToBuy.map { it.name }
@@ -689,15 +695,15 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun waitForOtherPlayersToResolveActions() {
-        //do nothing
+        isWaitingForPlayers = true
     }
 
     override fun waitForOtherPlayersForResolveAttack(attackCard: Card) {
-        //do nothing
+        isWaitingForPlayers = true
     }
 
     override fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler) {
-        //todo
+        isWaitingForPlayers = true
     }
 
     override fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player) {

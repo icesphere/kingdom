@@ -27,6 +27,8 @@ open class EasyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
 
     //todo check !isTrackContrabandCards || !game.contrabandCards.contains(getKingdomCard("Chapel")
 
+    override val difficulty: Int = 1
+
     private val onlyBuyVictoryCards: Boolean
         get() {
             var shouldOnlyBuyVictoryCards = false

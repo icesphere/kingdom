@@ -10,7 +10,6 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.listeners.*
-import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.cards.supply.Estate
@@ -814,6 +813,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                             opponent.game.refreshPlayerCardAction(opponent)
                             opponent.resolveActions()
                         }
+                    }
+                }
+
+                if (game.currentPlayer.isBot && !game.currentPlayer.isOpponentHasAction) {
+                    val botPlayer = game.currentPlayer as BotPlayer
+                    if (botPlayer.isWaitingForPlayers) {
+                        botPlayer.isWaitingForPlayers = false
                     }
                 }
 

@@ -16,6 +16,8 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
 
     //todo better buying card strategy
 
+    override val difficulty: Int = 2
+
     override fun excludeCard(card: Card): Boolean {
 
         if (game.isShowEmbargoTokens ) {
