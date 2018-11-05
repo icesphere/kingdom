@@ -177,15 +177,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun passCardFromHandToPlayerOnLeft() {
-        val card = getCardToTrashFromHand(false)
-        if (card != null) {
-            hand.remove(card)
-            val playerToLeft = game.getPlayerToLeft(this)
-            playerToLeft.acquireCardToHand(card)
-        }
-    }
-
     override fun acquireFreeCard(maxCost: Int?) {
         val card = chooseFreeCardToAcquire(maxCost)
         if (card != null) {
@@ -651,6 +642,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String) {
+        if (hand.isEmpty()) {
+            return
+        }
+
         val cards = getCardsToTrashFromHand(numCardsToTrash)
         cards.forEach { this.trashCardFromHand(it) }
         card.cardsScrapped(this, cards)
