@@ -5,5 +5,5 @@ support multiple info messages?
 refresh sometimes has issues after quit game
 considering using embedded database so app can be deployed easily anywhere
 show turn summaries
-better game info dialog
 still need better refresh
+remove all jquery ui dialogs

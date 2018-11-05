@@ -8,7 +8,7 @@
         <#include "commonIncludes.ftl">
         <#if mobile>
             <script type="text/javascript" src="js/soundmanager2empty.js"></script>
-            <link href="css/game.css" rel="stylesheet" type="text/css">
+            <link href="css/game.css?2" rel="stylesheet" type="text/css">
             <link href="css/gameMobile.css" rel="stylesheet" type="text/css">
             <script type="text/javascript" >
                 var playSound = false;
@@ -16,13 +16,13 @@
             </script>
         <#else>
             <script type="text/javascript" src="js/soundmanager2-nodebug-jsmin.js"></script>
-            <link href="css/game.css?1" rel="stylesheet" type="text/css">
+            <link href="css/game.css?2" rel="stylesheet" type="text/css">
             <script type="text/javascript" >
                 var playSound = <#if user.soundDefault == 1>true<#else>false</#if>;
                 var mobile = false;
             </script>
         </#if>
-        <script type="text/javascript" src="js/game.js?1"></script>
+        <script type="text/javascript" src="js/game.js?2"></script>
 	</head>
 	<body>
         <div class="topGradient"></div>
@@ -33,10 +33,6 @@
             <#else>
                 <#include "gameDiv.ftl">
             </#if>
-        </div>
-
-        <div id="gameInfoDiv">
-            <#include "gameInfoDiv.ftl">
         </div>
 
         <#include "footer.ftl">

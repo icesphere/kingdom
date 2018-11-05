@@ -140,7 +140,7 @@
     width: calc(100% - 60px)
 }
 
-.showCardsDivContent
+.showCardsDivContent, .gameInfoDivContent
 {
     position: absolute;
     top: 0;
@@ -202,10 +202,6 @@
     padding-top: 5px;
     padding-bottom: 5px;
     padding-left: 35px;
-}
-
-.gameInfoDialog
-{
 }
 
 .gameDialog {

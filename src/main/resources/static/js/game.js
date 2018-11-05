@@ -254,6 +254,16 @@ function hideShowCardsDiv() {
     $('#showCardsDiv').hide()
 }
 
+function showGameInfo() {
+    $('#gameInfoDiv').load('getGameInfoDiv.html')
+
+    $('#gameInfoDiv').show()
+}
+
+function hideGameInfoDiv() {
+    $('#gameInfoDiv').hide()
+}
+
 function reloadPage() {
     document.location = "showGame.html";
 }
@@ -295,29 +305,6 @@ function selectCard(cardIndex, cardName){
 function selectCardInOrder(cardName){
     selectedCards[selectedCardNumber] = cardName;
     selectedCardNumber++;
-}
-
-function showGameInfo() {
-    $('#gameInfoDiv').load('getGameInfoDiv.html', function() {
-        showGameInfoDialog();
-    });
-}
-
-function showGameInfoDialog() {
-    if(mobile) {
-        $("#gameInfoDialog").dialog({
-            modal: false, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-        });
-    }
-    else {
-        $("#gameInfoDialog").dialog({
-            modal: false, width: 600, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-        });
-    }
-}
-
-function closeGameInfoDialog() {
-    $("#gameInfoDialog").dialog("destroy").remove();
 }
 
 function focusChat(){

@@ -33,6 +33,10 @@
         <#include "showCardsDiv.ftl">
     </div>
 
+    <div id="gameInfoDiv" style="display: none;>
+        <#include "gameInfoDiv.ftl">
+    </div>
+
 </div>
 
 <#if mobile>
