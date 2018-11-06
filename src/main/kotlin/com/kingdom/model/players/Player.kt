@@ -912,9 +912,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun revealHand() {
-        hand.forEach {
-            addGameLog("$username revealed their hand: ${hand.toCardNames()}")
-        }
+        addGameLog("$username revealed their hand: ${hand.groupedString}")
     }
 
     fun revealCardFromHand(card: Card) {

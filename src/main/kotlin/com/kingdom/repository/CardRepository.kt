@@ -2,6 +2,7 @@ package com.kingdom.repository
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.cornucopia.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
 import com.kingdom.model.cards.prosperity.*
@@ -126,8 +127,17 @@ class CardRepository {
                 WorkersVillage()
         )
 
+
+    val cornucopiaCards: List<Card>
+        get() = listOf(
+                FarmingVillage(),
+                FortuneTeller(),
+                Hamlet(),
+                Menagerie()
+        )
+
     val allCards: List<Card>
-        get() = kingdomCards + intrigueCards + seasideCards + prosperityCards
+        get() = kingdomCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {
@@ -135,6 +145,7 @@ class CardRepository {
             Deck.Intrigue -> intrigueCards
             Deck.Seaside -> seasideCards
             Deck.Prosperity -> prosperityCards
+            Deck.Cornucopia -> cornucopiaCards
             else -> emptyList()
         }
     }

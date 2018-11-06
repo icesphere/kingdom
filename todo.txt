@@ -7,3 +7,4 @@ considering using embedded database so app can be deployed easily anywhere
 show turn summaries
 still need better refresh
 remove all jquery ui dialogs
+better logic for choosing cards for bots - e.g. chose card for Masquerade

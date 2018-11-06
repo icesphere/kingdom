@@ -7,6 +7,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
+import com.kingdom.model.cards.cornucopia.Hamlet
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
 import com.kingdom.model.cards.prosperity.*
@@ -367,6 +368,15 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
             Diplomat.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 2) 1 else 2
             Explorer.NAME -> 1
+            Hamlet.NAME -> {
+                val hamlet = card as Hamlet
+                when {
+                    hand.any { getDiscardCardScore(it) > 90 } -> 1
+                    hamlet.discardingCardForAction && hand.any { it.isAction } && hand.any { getDiscardCardScore(it) > 50 } -> 1
+                    !hamlet.discardingCardForAction && availableCoins > 11 && buys == 1 -> 1
+                    else -> 2
+                }
+            }
             Library.NAME -> if (actions > 0 && hand.none { it.isAction }) 1 else 2
             Loan.NAME -> if (card.isCopper) 2 else 1
             Lurker.NAME -> if (game.trashedCards.any { getBuyCardScore(it) > 4 }) 2 else 1
