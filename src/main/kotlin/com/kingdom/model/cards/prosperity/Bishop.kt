@@ -14,6 +14,7 @@ class Bishop : ProsperityCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
         addVictoryCoins = 1
         special = "Trash a card from your hand. +1 VP per \$2 it costs (round down). Each other player may trash a card from their hand."
         isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
         textSize = 75
     }
 

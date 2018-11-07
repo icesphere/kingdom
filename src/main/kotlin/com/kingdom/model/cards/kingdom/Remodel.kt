@@ -10,6 +10,8 @@ class Remodel : KingdomCard(NAME, CardType.Action, 4), TrashCardsForBenefitActio
     init {
         special = "Trash a card from your hand. Gain a card costing up to \$2 more than the trashed card."
         isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
+        isTrashingFromHandToUpgradeCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

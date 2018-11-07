@@ -105,7 +105,13 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun discardCardsFromHand(numCardsToDiscard: Int, optional: Boolean) {
-        addAction(DiscardCardsFromHand(numCardsToDiscard, "", optional))
+        val numCards = if (hand.size < numCardsToDiscard) {
+            hand.size
+        } else {
+            numCardsToDiscard
+        }
+
+        addAction(DiscardCardsFromHand(numCards, "", optional))
     }
 
     override fun addCardAction(card: CardActionCard, text: String) {

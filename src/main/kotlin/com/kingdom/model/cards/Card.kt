@@ -36,6 +36,8 @@ abstract class Card(
         var isCopied: Boolean = false,
         var location: CardLocation? = null,
         var isTrashingCard: Boolean = false,
+        var isTrashingFromHandRequiredCard: Boolean = false,
+        var isTrashingFromHandToUpgradeCard: Boolean = false,
         var playersExcludedFromCardEffects: MutableSet<Player> = mutableSetOf()) {
 
     var isHighlighted: Boolean = false

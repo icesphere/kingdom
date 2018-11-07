@@ -17,13 +17,13 @@ class Contraband : ProsperityCard(NAME, CardType.Treasure, 5), ChooseCardActionC
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.game.previousPlayer!!.chooseCardAction("Chose a card that ${player.username} can't buy this turn", this, player.game.availableCards.sortedBy { it.cost }, false)
+        player.game.getPlayerToLeft(player).chooseCardAction("Chose a card that ${player.username} can't buy this turn", this, player.game.availableCards.sortedBy { it.cost }, false)
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.game.currentPlayer.cardsUnavailableToBuyThisTurn.add(card)
         player.game.currentPlayer.addUsernameGameLog("can't buy ${card.cardNameWithBackgroundColor} this turn")
-        player.game.showInfoMessage(player, "You can't buy ${card.cardNameWithBackgroundColor} this turn")
+        player.game.showInfoMessage(player.game.currentPlayer, "You can't buy ${card.cardNameWithBackgroundColor} this turn")
     }
 
     companion object {

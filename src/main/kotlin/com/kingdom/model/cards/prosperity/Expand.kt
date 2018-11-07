@@ -9,6 +9,8 @@ class Expand : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitAct
 
     init {
         isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
+        isTrashingFromHandToUpgradeCard = true
         special = "Trash a card from your hand. Gain a card costing up to \$3 more than it."
     }
 

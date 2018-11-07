@@ -8,6 +8,7 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.cornucopia.Hamlet
+import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
 import com.kingdom.model.cards.prosperity.*
@@ -25,8 +26,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     private val cardsToPlay: List<Card>
         get() {
-            val actionCards = hand.filter { it.isAction }
-            val treasureCards = hand.filter { it.isTreasure }
+            val actionCards = hand.filter { it.isAction }.filter { getPlayCardScore(it) > 0 }
+            val treasureCards = hand.filter { it.isTreasure }.filter { getPlayCardScore(it) > 0 }
 
             return when {
                 actions > 0 && actionCards.isNotEmpty() -> actionCards
@@ -43,11 +44,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
             while (cardsToPlay.isNotEmpty()) {
                 endTurn = false
-                val sortedCards = cardsToPlay.sortedByDescending { getPlayCardScore(it) }
 
-                if (sortedCards.isEmpty()) {
-                    break
-                }
+                val sortedCards = cardsToPlay.sortedByDescending { getPlayCardScore(it) }
 
                 if (sortedCards.first().isTreasure && sortedCards.any { !it.isTreasureExcludedFromAutoPlay }) {
                     playAllTreasureCards()
@@ -90,8 +88,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             return
         }
 
-        if (card is ThroneRoom) {
-            val sortedCards = hand.sortedByDescending { getBuyCardScore(it) }
+        if (card is ThroneRoom || card is KingsCourt) {
+            val sortedCards = hand.filter { it.isAction }.sortedByDescending { getBuyCardScore(it) }
             val result = ActionResult().apply { selectedCard = sortedCards.first() }
             card.processCardActionResult(CardAction(card, ""), this, result)
         }
@@ -320,8 +318,19 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     private fun getPlayCardScore(card: Card): Int {
-        //todo
-        return card.cost
+        return when {
+            card.isTrashingFromHandRequiredCard -> {
+                val cardToTrash = getCardToTrashFromHand(false, { c -> c.id == card.id })
+                return when {
+                    cardToTrash == null -> -1
+                    !card.isTrashingFromHandToUpgradeCard && getBuyCardScore(cardToTrash) > 3 -> -1
+                    card.isTrashingFromHandToUpgradeCard && (cardToTrash.isProvince || cardToTrash.isColony) -> -1
+                    (card.name == Upgrade.NAME || card.name == Remake.NAME) && cardToTrash.cost > 2 && game.availableCards.none { it.cost == card.cost + 1 } -> 1
+                    else -> card.cost
+                }
+            }
+            else -> card.cost
+        }
     }
 
     fun getCardToTopOfDeckScore(card: Card): Int {
@@ -380,7 +389,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Library.NAME -> if (actions > 0 && hand.none { it.isAction }) 1 else 2
             Loan.NAME -> if (card.isCopper) 2 else 1
             Lurker.NAME -> if (game.trashedCards.any { getBuyCardScore(it) > 4 }) 2 else 1
-            Mill.NAME ->  if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
+            Mill.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
             MiningVillage.NAME -> when {
                 game.availableCards.any { it.isColony } && availableCoins < 11 && availableCoins > 8 -> 1
                 turns > 7 && game.availableCards.any { it.isProvince } && availableCoins < 8 && availableCoins > 5 -> 1
@@ -446,9 +455,12 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return cardsToDiscard
     }
 
-    private fun getCardToTrashFromHand(optional: Boolean): Card? {
-        if (!hand.isEmpty()) {
-            val sortedCards = hand.sortedByDescending { getTrashCardScore(it) }
+    private fun getCardToTrashFromHand(optional: Boolean, excludeCardExpression: ((card: Card) -> Boolean)? = null): Card? {
+
+        val cardsAvailableToTrash = hand.filter { excludeCardExpression == null || !excludeCardExpression(it) }
+
+        if (cardsAvailableToTrash.isNotEmpty()) {
+            val sortedCards = cardsAvailableToTrash.sortedByDescending { getTrashCardScore(it) }
             val card = sortedCards[0]
             if (optional && getTrashCardScore(card) < 20) {
                 return null
@@ -459,11 +471,13 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
 
-    private fun getCardsToTrashFromHand(cards: Int): List<Card> {
+    private fun getCardsToTrashFromHand(cards: Int, excludeCardExpression: ((card: Card) -> Boolean)? = null): List<Card> {
         val cardsToTrashFromHand = ArrayList<Card>()
 
-        if (!hand.isEmpty()) {
-            val sortedHandCards = hand.sortedByDescending { getTrashCardScore(it) }
+        val cardsAvailableToTrash = hand.filter { excludeCardExpression == null || !excludeCardExpression(it) }
+
+        if (cardsAvailableToTrash.isNotEmpty()) {
+            val sortedHandCards = cardsAvailableToTrash.sortedByDescending { getTrashCardScore(it) }
 
             for (i in 0 until cards) {
                 if (sortedHandCards.size <= i) {

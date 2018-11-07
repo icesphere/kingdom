@@ -133,7 +133,9 @@ class CardRepository {
                 FarmingVillage(),
                 FortuneTeller(),
                 Hamlet(),
-                Menagerie()
+                HorseTraders(),
+                Menagerie(),
+                Remake()
         )
 
     val allCards: List<Card>

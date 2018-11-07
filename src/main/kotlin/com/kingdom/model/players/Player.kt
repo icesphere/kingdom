@@ -171,6 +171,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var cardsUnavailableToBuyThisTurn = mutableListOf<Card>()
 
+    val cardsSetAsideUntilStartOfTurn = mutableSetOf<SetAsideUntilStartOfTurnCard>()
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -703,6 +705,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addUsernameGameLog("discarded ${card.cardNameWithBackgroundColor}")
         }
 
+        card.isHighlighted = false
+        card.isSelected = false
+
         discard.add(card)
 
         cardRemovedFromPlay(card)
@@ -870,6 +875,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         currentTurnSummary = TurnSummary()
         currentTurnSummary.gameTurn = game.turn
+
+        cardsSetAsideUntilStartOfTurn.forEach {
+            it.onStartOfTurn(this)
+        }
+
+        cardsSetAsideUntilStartOfTurn.clear()
 
         durationCards.forEach {
             if (it is StartOfTurnDurationAction) {

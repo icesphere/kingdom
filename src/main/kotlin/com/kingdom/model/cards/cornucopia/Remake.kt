@@ -1,25 +1,27 @@
-package com.kingdom.model.cards.intrigue
+package com.kingdom.model.cards.cornucopia
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.TrashCardsForBenefitActionCard
 import com.kingdom.model.players.Player
 
-class Upgrade : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefitActionCard {
+class Remake : CornucopiaCard(NAME, CardType.Action, 4), TrashCardsForBenefitActionCard {
+
+    var trashingSecondCard = false
 
     init {
-        addCards = 1
-        addActions = 1
-        special = "Trash a card from your hand. Gain a card costing exactly \$1 more than it."
+        special = "Do this twice: Trash a card from your hand, then gain a card costing exactly \$1 more than it."
         isTrashingCard = true
         isTrashingFromHandRequiredCard = true
         isTrashingFromHandToUpgradeCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        if (player.hand.isNotEmpty()) {
-            player.trashCardsFromHandForBenefit(this, 1, "")
-        }
+        trashCardFromHandForBenefit(player)
+    }
+
+    private fun trashCardFromHandForBenefit(player: Player) {
+        player.trashCardsFromHandForBenefit(this, 1, "Trash a card from your hand, then gain a card costing exactly \$1 more than it.")
     }
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
@@ -28,12 +30,21 @@ class Upgrade : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefitActi
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == player.getCardCostWithModifiers(card) + 1 }) {
             player.acquireFreeCardWithCost(player.getCardCostWithModifiers(card) + 1)
         }
+
+        if (trashingSecondCard) {
+            trashingSecondCard = false
+        } else {
+            if (player.hand.isNotEmpty()) {
+                trashingSecondCard = true
+                trashCardFromHandForBenefit(player)
+            }
+        }
     }
 
     override fun isCardApplicable(card: Card): Boolean = true
 
     companion object {
-        const val NAME: String = "Upgrade"
+        const val NAME: String = "Remake"
     }
 }
 

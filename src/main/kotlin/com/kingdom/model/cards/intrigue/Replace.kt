@@ -14,6 +14,8 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
         special = "Trash a card from your hand. Gain a card costing up to \$2 more than it. If the gained card is an Action or Treasure, put it onto your deck; if it’s a Victory card, each other player gains a Curse."
         textSize = 115
         isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
+        isTrashingFromHandToUpgradeCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
@@ -24,7 +26,7 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         affectedOpponents.forEach { opponent ->
-            opponent.acquireFreeCardFromSupply(Curse())
+            opponent.acquireFreeCardFromSupply(Curse(), showLog = true)
         }
     }
 
@@ -37,7 +39,7 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
 
     override fun onCardAcquired(player: Player, card: Card) {
         if (card.isAction || card.isTreasure) {
-            //todo ideally the acquire action puts in on the deck
+            //todo ideally the acquire action puts it on the deck
             if (player.cardsInDiscard.contains(card)) {
                 player.removeCardFromDiscard(card)
                 player.addCardToTopOfDeck(card)

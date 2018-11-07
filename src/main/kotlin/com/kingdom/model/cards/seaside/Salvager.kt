@@ -11,6 +11,7 @@ class Salvager : SeasideCard(NAME, CardType.Action, 4), TrashCardsForBenefitActi
         addBuys = 1
         special = "Trash a card from your hand. +\$1 per \$1 it costs."
         isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
