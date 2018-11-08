@@ -20,7 +20,7 @@ class Baron : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.discardCardFromHand(player.hand.first { it.name == Estate.NAME })
             player.addCoins(4)

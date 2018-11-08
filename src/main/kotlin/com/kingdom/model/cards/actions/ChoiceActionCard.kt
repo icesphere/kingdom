@@ -6,6 +6,6 @@ interface ChoiceActionCard {
 
     val name: String
 
-    fun actionChoiceMade(player: Player, choice: Int)
+    fun actionChoiceMade(player: Player, choice: Int, info: Any?)
 
 }

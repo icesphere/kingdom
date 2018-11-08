@@ -28,7 +28,7 @@ class NativeVillage : SeasideCard(NAME, CardType.Action, 2), GameSetupModifier, 
                 Choice(2, "Put cards from mat into hand"))
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             val topCardOfDeck = player.removeTopCardOfDeck()
             if (topCardOfDeck != null) {

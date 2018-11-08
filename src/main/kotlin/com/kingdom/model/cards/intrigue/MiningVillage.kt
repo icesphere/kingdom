@@ -17,7 +17,7 @@ class MiningVillage : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
         player.yesNoChoice(this, "Trash $cardNameWithBackgroundColor for +\$2?")
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.trashCardInPlay(this)
             player.addCoins(2)

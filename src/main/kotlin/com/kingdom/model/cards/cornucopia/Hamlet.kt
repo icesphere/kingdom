@@ -22,7 +22,7 @@ class Hamlet : CornucopiaCard(NAME, CardType.Action, 2), ChoiceActionCard, Disca
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         when (choice) {
             1 -> {
                 player.discardCardsForBenefit(this, 1, "")

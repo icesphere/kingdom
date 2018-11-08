@@ -21,7 +21,7 @@ class Treasury : SeasideCard(NAME, CardType.Action, 5), CardDiscardedFromPlayLis
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.removeCardFromDiscard(this)
             player.addCardToTopOfDeck(this)

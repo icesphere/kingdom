@@ -28,7 +28,7 @@ class CountingHouse : ProsperityCard(NAME, CardType.Action, 5), ChoiceActionCard
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         repeat(choice) {
             val copper = player.cardsInDiscard.first { it.isCopper }
             player.removeCardFromDiscard(copper)

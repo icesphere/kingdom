@@ -25,7 +25,7 @@ class HorseTraders : CornucopiaCard(NAME, CardType.ActionReaction, 4), HandBefor
         player.yesNoChoice(this, "Set aside ${this.cardNameWithBackgroundColor}? If you do, then at the start of your next turn, +1 Card and return this to your hand.")
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.removeCardFromHand(this)
             player.cardsSetAsideUntilStartOfTurn.add(this)

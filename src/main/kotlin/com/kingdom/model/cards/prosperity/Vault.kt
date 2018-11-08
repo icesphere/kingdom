@@ -34,7 +34,7 @@ class Vault : ProsperityCard(NAME, CardType.Action, 5), DiscardCardsForBenefitAc
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.discardCardsForBenefit(this, 2, "")
         }

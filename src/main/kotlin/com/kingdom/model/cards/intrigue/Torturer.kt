@@ -26,7 +26,7 @@ class Torturer : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
                 }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.addUsernameGameLog("chose discard 2 cards")
             player.discardCardsFromHand(2, false)

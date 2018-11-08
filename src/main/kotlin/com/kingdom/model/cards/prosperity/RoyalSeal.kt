@@ -35,7 +35,7 @@ class RoyalSeal : ProsperityCard(NAME, CardType.Treasure, 5), CardGainedListener
         return true
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.isNextCardToTopOfDeck = true
         } else {

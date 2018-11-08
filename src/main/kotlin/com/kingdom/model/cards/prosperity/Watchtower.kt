@@ -30,7 +30,7 @@ class Watchtower : ProsperityCard(NAME, CardType.ActionReaction, 3), CardGainedL
         return true
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         val card = gainedCards.removeAt(0)
 
         when(choice) {

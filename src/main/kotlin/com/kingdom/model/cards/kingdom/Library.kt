@@ -33,12 +33,11 @@ class Library : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
                 }
             }
         } else {
-            skippedActionCards.forEach { player.addCardToDiscard(it, false) }
-            player.game.refreshPlayerHandArea(player)
+            player.addCardsToDiscard(skippedActionCards)
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.addCardToHand(cardToAdd)
         } else {

@@ -39,7 +39,7 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
         player.makeChoiceFromList(this, "How many copies of ${card.cardNameWithBackgroundColor} do you want to return from your hand to the supply?", choices)
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         val card = revealedCard ?: return
 
         if (choice > 0) {

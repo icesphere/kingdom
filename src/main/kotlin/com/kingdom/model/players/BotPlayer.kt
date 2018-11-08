@@ -152,11 +152,16 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun makeChoice(card: ChoiceActionCard, vararg choices: Choice) {
         val choice = getChoice(card, arrayOf(*choices))
-        card.actionChoiceMade(this, choice)
+        card.actionChoiceMade(this, choice, null)
     }
 
     override fun makeChoice(card: ChoiceActionCard, text: String, vararg choices: Choice) {
         makeChoice(card, *choices)
+    }
+
+    override fun makeChoiceWithInfo(card: ChoiceActionCard, text: String, info: Any, vararg choices: Choice) {
+        val choice = getChoice(card, arrayOf(*choices))
+        card.actionChoiceMade(this, choice, info)
     }
 
     override fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean) {
@@ -694,7 +699,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String) {
         val choice = getChoice(choiceActionCard, arrayOf(Choice(1, "Yes"), Choice(2, "No")))
-        choiceActionCard.actionChoiceMade(this, choice)
+        choiceActionCard.actionChoiceMade(this, choice, null)
     }
 
     override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?, chooseCardActionCard: ChooseCardActionCard?) {

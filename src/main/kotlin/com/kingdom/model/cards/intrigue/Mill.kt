@@ -19,7 +19,7 @@ class Mill : IntrigueCard(NAME, CardType.ActionVictory, 4), ChoiceActionCard {
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.discardCardsFromHand(2, false)
             player.addCoins(2)

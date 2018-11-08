@@ -33,7 +33,7 @@ class Sentry : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         val card = cardsForAction.removeAt(0)
         when (choice) {
             1 -> {

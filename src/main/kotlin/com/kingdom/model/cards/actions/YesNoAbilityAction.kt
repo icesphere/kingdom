@@ -29,7 +29,7 @@ class YesNoAbilityAction(private val card: ChoiceActionCard, text: String) : Act
     override fun processAction(player: Player): Boolean = true
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
-        card.actionChoiceMade(player, result.choiceSelected!!)
+        card.actionChoiceMade(player, result.choiceSelected!!, null)
         return true
     }
 }

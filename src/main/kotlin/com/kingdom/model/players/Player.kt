@@ -16,7 +16,6 @@ import com.kingdom.model.cards.supply.Estate
 import com.kingdom.model.cards.supply.VictoryPointsCalculator
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.groupedString
-import com.kingdom.util.toCardNames
 import java.util.*
 import java.util.function.Function
 
@@ -201,7 +200,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun drawCards(numCards: Int): List<Card> {
         val cards = getCardsFromDeck(numCards)
-        cards.forEach { addCardToHand(it, false) }
+        cards.forEach { addCardToHand(it) }
         return cards
     }
 
@@ -424,20 +423,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerHandArea(this)
     }
 
-    private fun addCardToHand(card: Card, addToGameLog: Boolean = true) {
-        hand.add(card)
-
-        if (addToGameLog) {
-            addUsernameGameLog("added " + card.cardNameWithBackgroundColor + " to hand")
-        }
-
-        game.refreshPlayerHandArea(this)
-
-        if (!game.isPlayTreasureCards && card.addCoins > 0) {
-            game.refreshPlayerCardsBought(this)
-        }
-    }
-
     fun cardAcquired(card: Card) {
 
         var gainCardHandled = false
@@ -495,6 +480,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     abstract fun makeChoice(card: ChoiceActionCard, text: String, vararg choices: Choice)
+
+    abstract fun makeChoiceWithInfo(card: ChoiceActionCard, text: String, info: Any, vararg choices: Choice)
 
     fun makeChoiceFromList(card: ChoiceActionCard, text: String, choices: List<Choice>) {
         makeChoice(card, text, *choices.toTypedArray())
@@ -700,6 +687,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.addHistory(log)
     }
 
+    fun addCardsToDiscard(cards: List<Card>) {
+        cards.forEach { addCardToDiscard(it, refresh = false) }
+        game.refreshPlayerHandArea(this)
+    }
+
     fun addCardToDiscard(card: Card, refresh: Boolean = true, showLog: Boolean = false) {
         if (showLog) {
             addUsernameGameLog("discarded ${card.cardNameWithBackgroundColor}")
@@ -781,8 +773,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerHandArea(this)
     }
 
-    fun addCardToHand(card: Card) {
+    fun addCardToHand(card: Card, showLog: Boolean = false) {
         hand.add(card)
+
+        if (showLog) {
+            addUsernameGameLog("added " + card.cardNameWithBackgroundColor + " to hand")
+        }
 
         game.refreshPlayerHandArea(this)
 
@@ -1039,9 +1035,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         val discardedCard = cardsFromDeck[0]
 
-        addGameLog("$username discarded ${discardedCard.cardNameWithBackgroundColor}")
-
-        addCardToDiscard(discardedCard)
+        addCardToDiscard(discardedCard, showLog = true)
 
         return discardedCard
     }

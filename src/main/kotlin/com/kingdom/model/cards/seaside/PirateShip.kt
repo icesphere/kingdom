@@ -28,7 +28,7 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
         player.makeChoice(this, Choice(1, "+\$${player.pirateShipCoins}"), Choice(2, "Attack"))
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.addUsernameGameLog("received +\$${player.pirateShipCoins} from pirate coin tokens")
             player.addCoins(player.pirateShipCoins)

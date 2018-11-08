@@ -22,7 +22,7 @@ class Explorer : SeasideCard(NAME, CardType.Action, 5), ChoiceActionCard {
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.addUsernameGameLog("revealed a ${Province().cardNameWithBackgroundColor} from their hand")
             player.acquireFreeCardFromSupply(Gold(), showLog = true, destination = CardLocation.Hand)

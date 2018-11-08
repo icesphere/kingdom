@@ -26,7 +26,7 @@ class Minion : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, ChoiceA
                 }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.addUsernameGameLog("chose +\$2")
             player.addCoins(2)

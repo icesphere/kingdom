@@ -46,7 +46,7 @@ class Loan : ProsperityCard(NAME, CardType.Treasure, 3), ChoiceActionCard {
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         val card = treasureCard!!
 
         if (choice == 1) {

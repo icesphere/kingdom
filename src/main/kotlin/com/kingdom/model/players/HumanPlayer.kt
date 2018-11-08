@@ -48,6 +48,10 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(ChoiceAction(card, text, *choices))
     }
 
+    override fun makeChoiceWithInfo(card: ChoiceActionCard, text: String, info: Any, vararg choices: Choice) {
+        addAction(ChoiceAction(card, text, info, *choices))
+    }
+
     override fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean) {
         if (optional) {
             addAction(TrashCardsFromHand(numCardsToTrash, "You may trash a card from your hand", true))

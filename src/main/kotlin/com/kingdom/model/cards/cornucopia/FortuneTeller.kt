@@ -32,7 +32,7 @@ class FortuneTeller : CornucopiaCard(NAME, CardType.ActionAttack, 3), AttackCard
 
             if (revealedCards.isNotEmpty()) {
                 opponent.addUsernameGameLog("revealed ${revealedCards.groupedString}")
-                revealedCards.forEach { opponent.addCardToDiscard(it) }
+                opponent.addCardsToDiscard(revealedCards)
             }
 
             if (card != null) {

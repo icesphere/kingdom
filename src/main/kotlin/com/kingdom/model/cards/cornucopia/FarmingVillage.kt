@@ -26,7 +26,7 @@ class FarmingVillage : CornucopiaCard(NAME, CardType.Action, 4) {
 
         if (revealedCards.isNotEmpty()) {
             player.addUsernameGameLog("revealed ${revealedCards.groupedString}")
-            revealedCards.forEach { player.addCardToDiscard(it) }
+            player.addCardsToDiscard(revealedCards)
         }
 
         if (card != null) {

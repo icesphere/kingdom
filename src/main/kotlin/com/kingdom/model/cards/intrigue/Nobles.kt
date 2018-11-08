@@ -16,7 +16,7 @@ class Nobles : IntrigueCard(NAME, CardType.ActionVictory, 6), ChoiceActionCard {
         player.makeChoice(this, Choice(1, "+3 Cards"), Choice(2, "+2 Actions"))
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.addUsernameGameLog("Chose +3 Cards")
             player.drawCards(3)

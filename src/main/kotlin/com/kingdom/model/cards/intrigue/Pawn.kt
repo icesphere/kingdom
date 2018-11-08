@@ -22,7 +22,7 @@ class Pawn : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
         )
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         when (choice) {
             1 -> {
                 player.addUsernameGameLog("chose +1 Card, +1 Action")

@@ -130,10 +130,15 @@ class CardRepository {
 
     val cornucopiaCards: List<Card>
         get() = listOf(
+                Fairgrounds(),
                 FarmingVillage(),
                 FortuneTeller(),
                 Hamlet(),
+                Harvest(),
+                HornOfPlenty(),
                 HorseTraders(),
+                HuntingParty(),
+                Jester(),
                 Menagerie(),
                 Remake()
         )

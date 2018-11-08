@@ -20,7 +20,7 @@ class Steward : IntrigueCard(NAME, CardType.Action, 3), ChoiceActionCard {
         )
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int) {
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         when (choice) {
             1 -> {
                 player.addUsernameGameLog("chose +2 Cards")
