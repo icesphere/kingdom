@@ -5,10 +5,10 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.actions.AttackCard
-import com.kingdom.model.cards.listeners.CardBoughtListenerForCardsInPlay
+import com.kingdom.model.cards.listeners.AfterCardBoughtListenerForCardsInPlay
 import com.kingdom.model.players.Player
 
-class Goons : ProsperityCard(NAME, CardType.ActionAttack, 6), AttackCard, GameSetupModifier, CardBoughtListenerForCardsInPlay {
+class Goons : ProsperityCard(NAME, CardType.ActionAttack, 6), AttackCard, GameSetupModifier, AfterCardBoughtListenerForCardsInPlay {
 
     init {
         addBuys = 1
@@ -33,9 +33,8 @@ class Goons : ProsperityCard(NAME, CardType.ActionAttack, 6), AttackCard, GameSe
         }
     }
 
-    override fun onCardBought(card: Card, player: Player): Boolean {
+    override fun afterCardBought(card: Card, player: Player) {
         player.addVictoryCoins(1)
-        return false
     }
 
     companion object {

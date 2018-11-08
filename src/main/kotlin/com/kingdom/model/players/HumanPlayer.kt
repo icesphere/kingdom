@@ -33,11 +33,11 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String) {
-        addAction(DiscardCardsFromHandForBenefit(card, numCardsToDiscard, text, true))
+        addAction(DiscardCardsFromHandForBenefit(card, numCardsToDiscard, text, true, null))
     }
 
-    override fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String) {
-        addAction(DiscardCardsFromHandForBenefit(card, numCardsToDiscard, text, false))
+    override fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        addAction(DiscardCardsFromHandForBenefit(card, numCardsToDiscard, text, false, cardActionableExpression))
     }
 
     override fun makeChoice(card: ChoiceActionCard, vararg choices: Choice) {
@@ -72,28 +72,28 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(ChooseCardToGainFromTrash(game.trashedCards, optional, cardActionableExpression))
     }
 
-    override fun acquireFreeCard(maxCost: Int?) {
-        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply costing up to $maxCost"))
+    override fun acquireFreeCard(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply costing up to $maxCost", cardActionableExpression))
     }
 
     override fun acquireFreeCardWithCost(cost: Int) {
-        addAction(FreeCardFromSupply(null, "Acquire a free card from the supply costing $cost", exactCost = cost))
+        addAction(FreeCardFromSupply(null, "Acquire a free card from the supply costing $cost", {c -> getCardCostWithModifiers(c) == cost}))
     }
 
     override fun acquireFreeCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
-        addAction(FreeCardFromSupplyForBenefit(freeCardFromSupplyForBenefitActionCard, maxCost, text))
+        addAction(FreeCardFromSupplyForBenefit(freeCardFromSupplyForBenefitActionCard, maxCost, text, null))
     }
 
     override fun acquireFreeCardToTopOfDeck(maxCost: Int?) {
-        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to the top of your deck costing up to $maxCost", CardLocation.Deck))
+        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to the top of your deck costing up to $maxCost", null, CardLocation.Deck))
     }
 
     override fun acquireFreeCardToHand(maxCost: Int?) {
-        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to your hand costing up to $maxCost", CardLocation.Hand))
+        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to your hand costing up to $maxCost", null, CardLocation.Hand))
     }
 
     override fun acquireFreeCardOfTypeToHand(maxCost: Int?, cardType: CardType) {
-        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to your hand costing up to $maxCost", CardLocation.Hand, cardType))
+        addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to your hand costing up to $maxCost", { c -> c.type == cardType }, CardLocation.Hand))
     }
 
     override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String) {

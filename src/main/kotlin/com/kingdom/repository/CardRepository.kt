@@ -3,6 +3,7 @@ package com.kingdom.repository
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.cornucopia.*
+import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
 import com.kingdom.model.cards.prosperity.*
@@ -127,7 +128,6 @@ class CardRepository {
                 WorkersVillage()
         )
 
-
     val cornucopiaCards: List<Card>
         get() = listOf(
                 Fairgrounds(),
@@ -143,8 +143,37 @@ class CardRepository {
                 Remake()
         )
 
+    val hinterlandsCards: List<Card>
+        get() = listOf(
+                BorderVillage(),
+                Cache(),
+                Cartographer(),
+                Crossroads(),
+                Develop(),
+                Embassy(),
+                Farmland(),
+                FoolsGold(),
+                Haggler(),
+                Highway(),
+                IllGottenGains(),
+                Inn(),
+                JackOfAllTrades(),
+                Mandarin(),
+                Margrave(),
+                NobleBrigand(),
+                NomadCamp(),
+                Oasis(),
+                Oracle(),
+                Scheme(),
+                SilkRoad(),
+                SpiceMerchant(),
+                Stables(),
+                Trader(),
+                Tunnel()
+        )
+
     val allCards: List<Card>
-        get() = kingdomCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards
+        get() = kingdomCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards + hinterlandsCards
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {
@@ -153,6 +182,7 @@ class CardRepository {
             Deck.Seaside -> seasideCards
             Deck.Prosperity -> prosperityCards
             Deck.Cornucopia -> cornucopiaCards
+            Deck.Hinterlands -> hinterlandsCards
             else -> emptyList()
         }
     }

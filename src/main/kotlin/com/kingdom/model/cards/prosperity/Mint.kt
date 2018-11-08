@@ -3,10 +3,10 @@ package com.kingdom.model.cards.prosperity
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChooseCardActionCard
-import com.kingdom.model.cards.listeners.CardBoughtListenerForSelf
+import com.kingdom.model.cards.listeners.AfterCardBoughtListenerForSelf
 import com.kingdom.model.players.Player
 
-class Mint : ProsperityCard(NAME, CardType.Action, 5), CardBoughtListenerForSelf, ChooseCardActionCard {
+class Mint : ProsperityCard(NAME, CardType.Action, 5), AfterCardBoughtListenerForSelf, ChooseCardActionCard {
 
     init {
         special = "You may reveal a Treasure card from your hand. Gain a copy of it. When you buy this, trash all Treasures you have in play."
@@ -23,11 +23,10 @@ class Mint : ProsperityCard(NAME, CardType.Action, 5), CardBoughtListenerForSelf
         player.acquireFreeCardFromSupply(card, true)
     }
 
-    override fun onCardBought(player: Player): Boolean {
+    override fun afterCardBought(player: Player) {
         player.inPlay.filter { it.isTreasure }.forEach {
             player.trashCardInPlay(it)
         }
-        return false
     }
 
     companion object {

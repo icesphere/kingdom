@@ -8,7 +8,11 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.cornucopia.Hamlet
+import com.kingdom.model.cards.cornucopia.HorseTraders
+import com.kingdom.model.cards.cornucopia.Jester
 import com.kingdom.model.cards.cornucopia.Remake
+import com.kingdom.model.cards.hinterlands.IllGottenGains
+import com.kingdom.model.cards.hinterlands.Stables
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
 import com.kingdom.model.cards.prosperity.*
@@ -137,7 +141,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String) {
+    override fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
         //todo better logic
 
         val cardsToDiscard = getCardsToDiscard(numCardsToDiscard, false)
@@ -151,7 +155,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun makeChoice(card: ChoiceActionCard, vararg choices: Choice) {
-        val choice = getChoice(card, arrayOf(*choices))
+        val choice = getChoice(card, arrayOf(*choices), null)
         card.actionChoiceMade(this, choice, null)
     }
 
@@ -160,7 +164,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun makeChoiceWithInfo(card: ChoiceActionCard, text: String, info: Any, vararg choices: Choice) {
-        val choice = getChoice(card, arrayOf(*choices))
+        val choice = getChoice(card, arrayOf(*choices), info)
         card.actionChoiceMade(this, choice, info)
     }
 
@@ -187,8 +191,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun acquireFreeCard(maxCost: Int?) {
-        val card = chooseFreeCardToAcquire(maxCost)
+    override fun acquireFreeCard(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        val card = chooseFreeCardToAcquire(maxCost, cardActionableExpression)
         if (card != null) {
             game.removeCardFromSupply(card)
 
@@ -367,7 +371,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return 1000 - getBuyCardScore(card)
     }
 
-    open fun getChoice(choiceActionCard: ChoiceActionCard, choices: Array<Choice>): Int {
+    open fun getChoice(choiceActionCard: ChoiceActionCard, choices: Array<Choice>, info: Any?): Int {
         val card = choiceActionCard as Card
 
         return when (choiceActionCard.name) {
@@ -390,6 +394,12 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                     !hamlet.discardingCardForAction && availableCoins > 11 && buys == 1 -> 1
                     else -> 2
                 }
+            }
+            HorseTraders.NAME -> 1
+            IllGottenGains.NAME -> if (availableCoins == 4 || availableCoins == 5 || availableCoins == 7 || (availableCoins == 10 && game.isIncludeColonyCards)) 1 else 2
+            Jester.NAME -> {
+                val cardToGain = info as Card
+                if (getBuyCardScore(cardToGain) > 2) choices.first().choiceNumber else choices.last().choiceNumber
             }
             Library.NAME -> if (actions > 0 && hand.none { it.isAction }) 1 else 2
             Loan.NAME -> if (card.isCopper) 2 else 1
@@ -423,6 +433,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 2 -> 2
                 else -> 3
             }
+            Stables.NAME -> if (hand.any { (it.isTreasure && it.cost < 6) || (actions == 0 && it.isAction && it.cost > 3) }) 1 else 2
             Steward.NAME -> when {
                 turns < 5 && hand.count { it.cost <= 2 } >= 2 -> 3
                 actions > 0 -> 1
@@ -636,11 +647,11 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    private fun chooseFreeCardToAcquire(maxCost: Int?, cardType: CardType? = null): Card? {
+    private fun chooseFreeCardToAcquire(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null): Card? {
         val cards = game.availableCards
                 .filter { c ->
                     (maxCost == null || this.getCardCostWithModifiers(c) <= maxCost)
-                            && (cardType == null || cardType == c.type)
+                            && (cardActionableExpression == null || cardActionableExpression.invoke(c))
                 }
 
         return pickCardBasedOnBuyScore(cards)
@@ -687,7 +698,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun acquireFreeCardOfTypeToHand(maxCost: Int?, cardType: CardType) {
-        val card = chooseFreeCardToAcquire(maxCost, cardType)
+        val card = chooseFreeCardToAcquire(maxCost, { c -> c.type == cardType })
         if (card != null) {
             game.removeCardFromSupply(card)
 
@@ -698,7 +709,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String) {
-        val choice = getChoice(choiceActionCard, arrayOf(Choice(1, "Yes"), Choice(2, "No")))
+        val choice = getChoice(choiceActionCard, arrayOf(Choice(1, "Yes"), Choice(2, "No")), null)
         choiceActionCard.actionChoiceMade(this, choice, null)
     }
 

@@ -350,7 +350,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String = "")
     abstract fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String)
 
-    abstract fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String)
+    abstract fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
     fun trashCardFromDiscard(card: Card) {
         addUsernameGameLog("trashed " + card.cardNameWithBackgroundColor + " from discard")
@@ -389,6 +389,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (isYourTurn) {
             currentTurnSummary.trashedCards.add(card)
         }
+    }
+
+    fun removeCardInPlay(card: Card) {
+        inPlay.remove(card)
+        cardRemovedFromPlay(card)
+        game.cardsPlayed.remove(card)
+        game.refreshCardsPlayed()
     }
 
     fun trashCardInPlay(card: Card, showLog: Boolean = true) {
@@ -468,6 +475,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         }
 
+        if (card is AfterCardGainedListenerForSelf) {
+            card.afterCardGained(this)
+        }
+
         if (isYourTurn) {
             currentTurnSummary.cardsAcquired.add(card)
         }
@@ -523,30 +534,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 game.removeCardFromSupply(card, false)
             }
 
-            var buyCardHandled = false
+            cardAcquired(card)
 
-            if (card is CardBoughtListenerForSelf) {
-                val handled = card.onCardBought(this)
-                if (handled) {
-                    buyCardHandled = true
-                }
+            if (card is AfterCardBoughtListenerForSelf) {
+                card.afterCardBought(this)
             }
 
-            val cardBoughtListenersForCardsInPlay = inPlay.filter { it is CardBoughtListenerForCardsInPlay }
+            val cardBoughtListenersForCardsInPlay = inPlay.filter { it is AfterCardBoughtListenerForCardsInPlay }
 
             for (listener in cardBoughtListenersForCardsInPlay) {
-                val handled = (listener as CardBoughtListenerForCardsInPlay).onCardBought(card, this)
-                if (handled) {
-                    buyCardHandled = true
-                    break
-                }
+                (listener as AfterCardBoughtListenerForCardsInPlay).afterCardBought(card, this)
             }
-
-            if (buyCardHandled) {
-                return
-            }
-
-            cardAcquired(card)
         }
     }
 
@@ -614,7 +612,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     private val currentDeckNumber: Int
         get() = shuffles + 1
 
-    abstract fun acquireFreeCard(maxCost: Int?)
+    abstract fun acquireFreeCard(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
     abstract fun acquireFreeCardWithCost(cost: Int)
 

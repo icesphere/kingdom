@@ -2,11 +2,11 @@ package com.kingdom.model.cards.prosperity
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.listeners.CardBoughtListenerForCardsInPlay
+import com.kingdom.model.cards.listeners.AfterCardBoughtListenerForCardsInPlay
 import com.kingdom.model.cards.supply.Gold
 import com.kingdom.model.players.Player
 
-class Hoard : ProsperityCard(NAME, CardType.Treasure, 6), CardBoughtListenerForCardsInPlay {
+class Hoard : ProsperityCard(NAME, CardType.Treasure, 6), AfterCardBoughtListenerForCardsInPlay {
 
     init {
         isPlayTreasureCardsRequired = true
@@ -14,11 +14,10 @@ class Hoard : ProsperityCard(NAME, CardType.Treasure, 6), CardBoughtListenerForC
         special = "While this is in play, when you buy a Victory card, gain a Gold."
     }
 
-    override fun onCardBought(card: Card, player: Player): Boolean {
+    override fun afterCardBought(card: Card, player: Player) {
         if (card.isVictory) {
             player.acquireFreeCardFromSupply(Gold(), true)
         }
-        return false
     }
 
     companion object {
