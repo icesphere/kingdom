@@ -286,8 +286,8 @@ abstract class Card(
         isHighlighted = false
     }
 
-    open fun beforeCardRepeated() {
-        //do nothing by default
+    open fun beforeCardRepeated(player: Player) {
+        removedFromPlay(player)
     }
 
     fun cardPlayed(player: Player) {

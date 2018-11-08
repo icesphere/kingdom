@@ -2134,6 +2134,8 @@ class GameController(private val cardManager: CardManager,
             val addCoinsParam = request.getParameter("addCoins_" + player.userId)
             val addCardsParam = request.getParameter("addCards_" + player.userId)
 
+            val removeCardsFromSupply: Boolean = request.getParameter("removeCardsFromSupply_" + player.userId) == "on"
+
             if (addActionsParam.isNotEmpty()) {
                 player.addActions(addActionsParam.toInt())
             }
@@ -2163,7 +2165,11 @@ class GameController(private val cardManager: CardManager,
                     val cardName = ids.substring(0, ids.indexOf("_"))
                     val numCards = KingdomUtil.getRequestInt(request, name, 0)
                     for (i in 0 until numCards) {
-                        player.hand.add(game.getSupplyCard(cardName))
+                        val supplyCard = game.getSupplyCard(cardName)
+                        if (removeCardsFromSupply) {
+                            game.removeCardFromSupply(supplyCard, false)
+                        }
+                        player.hand.add(supplyCard)
                     }
                 }
             }

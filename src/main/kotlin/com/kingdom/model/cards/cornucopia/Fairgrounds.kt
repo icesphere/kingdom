@@ -7,7 +7,6 @@ import com.kingdom.model.players.Player
 class Fairgrounds : CornucopiaCard(NAME, CardType.Victory, 6), VictoryPointsCalculator {
 
     init {
-        testing = true
         special = "Worth 2VP for every 5 differently named cards in your deck (round down)."
         fontSize = 11
     }

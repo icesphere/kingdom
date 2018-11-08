@@ -67,11 +67,6 @@ class Masquerade : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard 
         super.removedFromPlay(player)
     }
 
-    override fun beforeCardRepeated() {
-        clearCardVariables()
-        super.beforeCardRepeated()
-    }
-
     private fun clearCardVariables() {
         cardsPassedMap.clear()
         passToPlayerMap.clear()

@@ -7,7 +7,7 @@ class RepeatCardAction(private val repeatedCard: Card) : SelfResolvingAction() {
 
     override fun resolveAction(player: Player) {
         player.addActions(1)
-        repeatedCard.beforeCardRepeated()
+        repeatedCard.beforeCardRepeated(player)
         player.playCard(repeatedCard, repeatedAction = true)
     }
 }

@@ -63,10 +63,10 @@
                 <table>
                     <#list players as player>
                         <tr>
-                            <td style="padding-left:10px;padding-right:15px;font-weight:bold;text-align:right;">
+                            <td style="padding-bottom: 10px;padding-left:10px;padding-right:15px;font-weight:bold;text-align:right;">
                                 ${player.username}
                             </td>
-                            <td>
+                            <td style="padding-bottom: 10px;">
                                 ${player.allCardsString}
                             </td>
                         </tr>

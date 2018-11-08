@@ -82,11 +82,6 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
         gainedPirateShipCoin = false
     }
 
-    override fun beforeCardRepeated() {
-        super.beforeCardRepeated()
-        gainedPirateShipCoin = false
-    }
-
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         val pirateAttackInfo = info as PirateAttackInfo
 

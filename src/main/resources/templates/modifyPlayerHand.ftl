@@ -31,6 +31,11 @@
         Add Cards To Hand:
     </div>
 
+    <div style="padding-bottom: 10px;">
+        <input type="checkbox" id="removeCardsFromSupply_${player.userId}" name="removeCardsFromSupply_${player.userId}" />
+        <label for="removeCardsFromSupply_${player.userId}">Remove cards from supply</label>
+    </div>
+
     <#list cards as card>
         <div>
             <select name="card_${card.name}_${player.userId}">

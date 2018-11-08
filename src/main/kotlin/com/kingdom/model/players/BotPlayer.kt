@@ -26,8 +26,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     private val cardsToPlay: List<Card>
         get() {
-            val actionCards = hand.filter { it.isAction }.filter { getPlayCardScore(it) > 0 }
-            val treasureCards = hand.filter { it.isTreasure }.filter { getPlayCardScore(it) > 0 }
+            val actionCards = hand.filter { it.isAction }.filter { getPlayCardScore(it) >= 0 }
+            val treasureCards = hand.filter { it.isTreasure }.filter { getPlayCardScore(it) >= 0 }
 
             return when {
                 actions > 0 && actionCards.isNotEmpty() -> actionCards

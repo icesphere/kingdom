@@ -8,11 +8,11 @@ import com.kingdom.util.groupedString
 class HuntingParty : CornucopiaCard(NAME, CardType.Action, 5) {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         special = "Reveal your hand. Reveal cards from your deck until you reveal one that isn’t a copy of one in your hand. Put it into your hand and discard the rest."
         fontSize = 10
+        textSize = 72
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

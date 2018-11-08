@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class Harvest : CornucopiaCard(NAME, CardType.Action, 5) {
 
     init {
-        testing = true
         special = "Reveal the top 4 cards of your deck, then discard them. +\$1 per differently named card revealed."
     }
 

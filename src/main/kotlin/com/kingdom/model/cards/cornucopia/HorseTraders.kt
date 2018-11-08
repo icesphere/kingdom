@@ -13,8 +13,8 @@ class HorseTraders : CornucopiaCard(NAME, CardType.ActionReaction, 4), HandBefor
         addBuys = 1
         addCoins = 3
         special = "Discard 2 cards. When another player plays an Attack card, you may first set this aside from your hand. If you do, then at the start of your next turn, +1 Card and return this to your hand."
-        fontSize = 9
-        textSize = 75
+        fontSize = 10
+        textSize = 81
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
