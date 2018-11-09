@@ -12,6 +12,8 @@ import com.kingdom.model.cards.cornucopia.HorseTraders
 import com.kingdom.model.cards.cornucopia.Jester
 import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.hinterlands.IllGottenGains
+import com.kingdom.model.cards.hinterlands.JackOfAllTrades
+import com.kingdom.model.cards.hinterlands.NobleBrigand
 import com.kingdom.model.cards.hinterlands.Stables
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
@@ -108,7 +110,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun optionallyTrashCardsFromHand(numCardsToTrash: Int, text: String) {
+    override fun optionallyTrashCardsFromHand(numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
         val cards = getCardsToOptionallyTrashFromHand(numCardsToTrash)
 
         cards.forEach({ this.trashCardFromHand(it) })
@@ -397,6 +399,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
             HorseTraders.NAME -> 1
             IllGottenGains.NAME -> if (availableCoins == 4 || availableCoins == 5 || availableCoins == 7 || (availableCoins == 10 && game.isIncludeColonyCards)) 1 else 2
+            JackOfAllTrades.NAME -> if (getDiscardCardScore(cardOnTopOfDeck!!) > 50) 1 else 2
             Jester.NAME -> {
                 val cardToGain = info as Card
                 if (getBuyCardScore(cardToGain) > 2) choices.first().choiceNumber else choices.last().choiceNumber
@@ -415,6 +418,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Moneylender.NAME -> 1
             Mountebank.NAME -> 1
             NativeVillage.NAME -> if (nativeVillageCards.size < 2) 1 else 2
+            NobleBrigand.NAME -> 2
             Nobles.NAME -> if (actions == 0 && hand.any { it.isAction }) 2 else 1
             RoyalSeal.NAME -> if (card.cost > 2) 1 else 2
             Pawn.NAME -> when {
@@ -510,11 +514,13 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return cardsToTrashFromHand
     }
 
-    private fun getCardsToOptionallyTrashFromHand(cards: Int): List<Card> {
+    private fun getCardsToOptionallyTrashFromHand(cards: Int, cardActionableExpression: ((card: Card) -> Boolean)? = null): List<Card> {
         val cardsToTrashFromHand = ArrayList<Card>()
 
-        if (!hand.isEmpty()) {
-            val sortedHandCards = hand.sortedByDescending { getTrashCardScore(it) }
+        val actionableCards = hand.filter { cardActionableExpression == null || cardActionableExpression.invoke(it) }
+
+        if (actionableCards.isNotEmpty()) {
+            val sortedHandCards = actionableCards.sortedByDescending { getTrashCardScore(it) }
 
             for (i in 0 until cards) {
                 if (sortedHandCards.size <= i) {
@@ -708,9 +714,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String) {
+    override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String, info: Any?) {
         val choice = getChoice(choiceActionCard, arrayOf(Choice(1, "Yes"), Choice(2, "No")), null)
-        choiceActionCard.actionChoiceMade(this, choice, null)
+        choiceActionCard.actionChoiceMade(this, choice, info)
     }
 
     override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?, chooseCardActionCard: ChooseCardActionCard?) {

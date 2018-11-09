@@ -147,12 +147,9 @@ class CardRepository {
         get() = listOf(
                 BorderVillage(),
                 Cache(),
-                Cartographer(),
                 Crossroads(),
-                Develop(),
                 Embassy(),
                 Farmland(),
-                FoolsGold(),
                 Haggler(),
                 Highway(),
                 IllGottenGains(),
@@ -163,13 +160,10 @@ class CardRepository {
                 NobleBrigand(),
                 NomadCamp(),
                 Oasis(),
-                Oracle(),
-                Scheme(),
                 SilkRoad(),
                 SpiceMerchant(),
                 Stables(),
-                Trader(),
-                Tunnel()
+                Trader()
         )
 
     val allCards: List<Card>

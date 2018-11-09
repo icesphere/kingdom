@@ -20,8 +20,8 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun optionallyTrashCardsFromHand(numCardsToTrash: Int, text: String) {
-        addAction(TrashCardsFromHand(numCardsToTrash, text, true))
+    override fun optionallyTrashCardsFromHand(numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        addAction(TrashCardsFromHand(numCardsToTrash, text, true, cardActionableExpression))
     }
 
     override fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String) {
@@ -96,8 +96,8 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(FreeCardFromSupply(maxCost, "Acquire a free card from the supply to your hand costing up to $maxCost", { c -> c.type == cardType }, CardLocation.Hand))
     }
 
-    override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String) {
-        addAction(YesNoAbilityAction(choiceActionCard, text))
+    override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String, info: Any?) {
+        addAction(YesNoAbilityAction(choiceActionCard, text, info))
     }
 
     override fun drawCardsAndPutSomeBackOnTop(cardsToDraw: Int, cardsToPutBack: Int) {

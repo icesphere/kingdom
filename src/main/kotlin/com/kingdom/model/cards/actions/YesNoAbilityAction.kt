@@ -6,7 +6,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import java.util.ArrayList
 
-class YesNoAbilityAction(private val card: ChoiceActionCard, text: String) : Action(text) {
+class YesNoAbilityAction(private val card: ChoiceActionCard, text: String, private val info: Any?) : Action(text) {
 
     override var choices: List<Choice>?
         get() {
@@ -29,7 +29,7 @@ class YesNoAbilityAction(private val card: ChoiceActionCard, text: String) : Act
     override fun processAction(player: Player): Boolean = true
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
-        card.actionChoiceMade(player, result.choiceSelected!!, null)
+        card.actionChoiceMade(player, result.choiceSelected!!, info)
         return true
     }
 }

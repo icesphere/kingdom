@@ -166,6 +166,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             game.refreshPlayerHandArea(this)
         }
 
+    var playedCrossroadsThisTurn: Boolean = false
+
     var finishEndTurnAfterResolvingActions: Boolean = false
 
     var cardsUnavailableToBuyThisTurn = mutableListOf<Card>()
@@ -291,6 +293,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         numActionsPlayed = 0
 
+        playedCrossroadsThisTurn = false
+
         isNextCardToTopOfDeck = false
         isNextCardToHand = false
 
@@ -346,7 +350,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     abstract fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String)
-    abstract fun optionallyTrashCardsFromHand(numCardsToTrash: Int, text: String)
+    abstract fun optionallyTrashCardsFromHand(numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null)
     abstract fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String = "")
     abstract fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String)
 
@@ -459,6 +463,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (gainCardHandled) {
             return
+        }
+
+        if (card is BeforeCardGainedListenerForSelf) {
+            card.beforeCardGained(this)
         }
 
         when {
@@ -626,7 +634,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun drawCardsAndPutSomeBackOnTop(cardsToDraw: Int, cardsToPutBack: Int)
 
-    abstract fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String)
+    abstract fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String, info: Any? = null)
 
     fun acquireFreeCardFromSupply(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {
 
@@ -950,6 +958,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         return revealedCards
     }
+
+    val cardOnTopOfDeck: Card?
+        get() {
+            if (deck.isEmpty()) {
+                shuffleDiscardIntoDeck()
+            }
+
+            if (deck.isEmpty()) {
+                return null
+            }
+
+            return deck.first()
+        }
 
     fun removeTopCardOfDeck(): Card? {
         if (deck.isEmpty()) {

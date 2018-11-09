@@ -5,7 +5,7 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.players.Player
 import java.util.*
 
-open class TrashCardsFromHand(private var numCardsToScrap: Int, text: String, optional: Boolean) : Action(text) {
+open class TrashCardsFromHand(private var numCardsToScrap: Int, text: String, optional: Boolean, private val cardActionableExpression: ((card: Card) -> Boolean)? = null) : Action(text) {
 
     protected var selectedCards: MutableList<Card> = ArrayList()
 
@@ -41,14 +41,15 @@ open class TrashCardsFromHand(private var numCardsToScrap: Int, text: String, op
     }
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
-        return cardLocation == CardLocation.Hand
+        return cardLocation == CardLocation.Hand && (cardActionableExpression == null || cardActionableExpression.invoke(card))
     }
 
     override fun processAction(player: Player): Boolean {
-        if (player.hand.size < numCardsToScrap) {
-            numCardsToScrap = player.hand.size
+        val actionableCards = player.hand.filter { cardActionableExpression == null || cardActionableExpression.invoke(it) }
+        if (actionableCards.size < numCardsToScrap) {
+            numCardsToScrap = actionableCards.size
         }
-        return !player.hand.isEmpty()
+        return actionableCards.isNotEmpty()
     }
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
