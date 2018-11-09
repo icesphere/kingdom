@@ -1,5 +1,6 @@
 package com.kingdom.model.cards
 
+import com.kingdom.model.cards.hinterlands.Crossroads
 import com.kingdom.model.cards.intrigue.Nobles
 import com.kingdom.model.cards.intrigue.Pawn
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
@@ -131,8 +132,8 @@ abstract class Card(
     val isAction: Boolean
         get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory
 
-    val isTerminalAction: Boolean
-        get() = isAction && addActions == 0 && name != Nobles.NAME && name != Pawn.NAME && name != "Trusty Steed"
+    open val isTerminalAction: Boolean
+        get() = isAction && addActions == 0
 
     val isDuration: Boolean
         get() = type == CardType.ActionDuration || type == CardType.DurationVictory

@@ -12,6 +12,8 @@ class Nobles : IntrigueCard(NAME, CardType.ActionVictory, 6), ChoiceActionCard {
         special = "Choose one: +3 Cards; or +2 Actions."
     }
 
+    override val isTerminalAction: Boolean = false
+
     override fun cardPlayedSpecialAction(player: Player) {
         player.makeChoice(this, Choice(1, "+3 Cards"), Choice(2, "+2 Actions"))
     }

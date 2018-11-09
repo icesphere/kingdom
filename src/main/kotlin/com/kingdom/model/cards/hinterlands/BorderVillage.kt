@@ -7,7 +7,6 @@ import com.kingdom.model.players.Player
 class BorderVillage : HinterlandsCard(NAME, CardType.Action, 6), AfterCardGainedListenerForSelf {
 
     init {
-        testing = true
         addCards = 1
         addActions = 2
         special = "When you gain this, gain a cheaper card."

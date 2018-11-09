@@ -11,10 +11,7 @@ import com.kingdom.model.cards.cornucopia.Hamlet
 import com.kingdom.model.cards.cornucopia.HorseTraders
 import com.kingdom.model.cards.cornucopia.Jester
 import com.kingdom.model.cards.cornucopia.Remake
-import com.kingdom.model.cards.hinterlands.IllGottenGains
-import com.kingdom.model.cards.hinterlands.JackOfAllTrades
-import com.kingdom.model.cards.hinterlands.NobleBrigand
-import com.kingdom.model.cards.hinterlands.Stables
+import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
 import com.kingdom.model.cards.prosperity.*
@@ -437,11 +434,23 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 2 -> 2
                 else -> 3
             }
+            SpiceMerchant.NAME -> when {
+                choices.first().choiceNumber == 1 -> {
+                    if (hand.any { it.isTreasure && it.cost < 6 } && (hand.any { actions == 0 && it.isAction && it.cost > 3 } || (availableCoins > 11 && buys == 1))) 1 else 2
+                }
+                else -> {
+                    if (hand.any { actions == 0 && it.isAction && it.cost > 3 }) 3 else 4
+                }
+            }
             Stables.NAME -> if (hand.any { (it.isTreasure && it.cost < 6) || (actions == 0 && it.isAction && it.cost > 3) }) 1 else 2
             Steward.NAME -> when {
                 turns < 5 && hand.count { it.cost <= 2 } >= 2 -> 3
                 actions > 0 -> 1
                 else -> 2
+            }
+            Trader.NAME -> {
+                val cardToGain = info as Card
+                if (getBuyCardScore(Silver()) > getBuyCardScore(cardToGain)) 1 else 2
             }
             Torturer.NAME -> 1
             Treasury.NAME -> 1

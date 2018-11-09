@@ -14,7 +14,10 @@ class IllGottenGains : HinterlandsCard(NAME, CardType.Treasure, 5), AfterCardGai
         testing = true
         addCoins = 1
         special = "When you play this, you may gain a Copper to your hand. When you gain this, each other player gains a Curse."
+        isPlayTreasureCardsRequired = true
+        isTreasureExcludedFromAutoPlay = true
         fontSize = 9
+        textSize = 74
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Cache : HinterlandsCard(NAME, CardType.Treasure, 5), AfterCardGainedListenerForSelf {
 
     init {
-        testing = true
         addCoins = 3
         special = "When you gain this, gain 2 Coppers."
     }

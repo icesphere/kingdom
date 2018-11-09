@@ -11,6 +11,7 @@ class Inn : HinterlandsCard(NAME, CardType.Action, 5), AfterCardGainedListenerFo
         addCards = 2
         addActions = 2
         special = "Discard 2 cards. When you gain this, look through your discard pile, reveal any number of Action cards from it (which can include this), and shuffle them into your deck."
+        textSize = 78
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

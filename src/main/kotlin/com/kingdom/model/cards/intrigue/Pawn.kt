@@ -11,6 +11,8 @@ class Pawn : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
         special = "Choose two: +1 Card; +1 Action; +1 Buy; +\$1. The choices must be different."
     }
 
+    override val isTerminalAction: Boolean = false
+
     override fun cardPlayedSpecialAction(player: Player) {
         player.makeChoice(this,
                 Choice(1, "+1 Card, +1 Action"),

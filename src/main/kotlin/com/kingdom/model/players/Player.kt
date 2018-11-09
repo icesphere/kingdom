@@ -1047,16 +1047,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun discardTopCardOfDeck(): Card? {
-        val cardsFromDeck = getCardsFromDeck(1)
-        if (cardsFromDeck.isEmpty()) {
-            return null
+        val topCardOfDeck = removeTopCardOfDeck()
+
+        if (topCardOfDeck != null) {
+            addCardToDiscard(topCardOfDeck, showLog = true)
         }
 
-        val discardedCard = cardsFromDeck[0]
-
-        addCardToDiscard(discardedCard, showLog = true)
-
-        return discardedCard
+        return topCardOfDeck
     }
 
     fun getVictoryPoints(gameOver: Boolean): Int {

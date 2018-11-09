@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Embassy : HinterlandsCard(NAME, CardType.Action, 5), AfterCardGainedListenerForSelf {
 
     init {
-        testing = true
         addCards = 5
         special = "Discard 3 cards. When you gain this, each other player gains a Silver."
     }
