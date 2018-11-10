@@ -3,7 +3,7 @@ package com.kingdom.model.cards.actions
 import com.kingdom.model.cards.Card
 import com.kingdom.model.players.Player
 
-class PutCardsOnTopOfDeckInAnyOrder(cards: List<Card>) : SelectCardsAction("Select cards in the order you want them to go on top of your deck (last card selected will be on the top)", cards, cards.size, false) {
+class PutCardsOnTopOfDeckInAnyOrder(cards: List<Card>) : SelectCardsFromCardAction("Select cards in the order you want them to go on top of your deck (last card selected will be on the top)", cards, cards.size, false) {
 
     override val isShowDone: Boolean = false
 
@@ -18,7 +18,7 @@ class PutCardsOnTopOfDeckInAnyOrder(cards: List<Card>) : SelectCardsAction("Sele
         return cardChoices?.isEmpty() ?: true
     }
 
-    override fun isCardSelected(card: Card): Boolean {
-        return selectedCards.contains(card)
+    override fun onSelectionDone(player: Player) {
+        //not applicable
     }
 }

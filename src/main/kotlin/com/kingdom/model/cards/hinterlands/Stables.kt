@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Stables : HinterlandsCard(NAME, CardType.Action, 5), ChoiceActionCard, DiscardCardsForBenefitActionCard {
 
     init {
-        testing = true
         special = "You may discard a Treasure, for +3 Cards and +1 Action."
     }
 

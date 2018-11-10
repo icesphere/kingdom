@@ -830,22 +830,51 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         val card = chooseCardActionCard as Card
 
-        val chosenCard: Card = when (card.name) {
-            Bandit.NAME -> cardsToSelectFrom.minBy { getBuyCardScore(it) }!!
-            Contraband.NAME -> when {
-                cardsToSelectFrom.any { it.isPlatinum } && turns > 5 && game.currentPlayer.cardCountByName(Platinum.NAME) == 0 -> Platinum()
-                cardsToSelectFrom.any { it.isColony } && turns > 8 -> Colony()
-                cardsToSelectFrom.any { it.isProvince } && turns > 3 && (game.currentPlayer.cardCountByName(Gold.NAME) > 2 || turns > 10) -> Province()
-                cardsToSelectFrom.any { it.isDuchy } && turns > 10 -> Duchy()
-                else -> Gold()
-            }
-            Lookout.NAME -> cardsToSelectFrom.minBy { getDiscardCardScore(it) }!!
-            PirateShip.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
-            Smugglers.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
-            WishingWell.NAME -> deck.maxBy { cardCountByName(it.name) }!!
-            else -> cardsToSelectFrom.first()
+        val chosenCards = getChosenCards(1, cardsToSelectFrom, card)
+
+        chooseCardActionCard.onCardChosen(this, chosenCards.first(), info)
+    }
+
+    override fun chooseCardsAction(numCardsToChoose: Int, text: String, chooseCardsActionCard: ChooseCardsActionCard, cardsToSelectFrom: List<Card>, optional: Boolean, info: Any?) {
+        if (cardsToSelectFrom.isEmpty()) {
+            return
         }
 
-        chooseCardActionCard.onCardChosen(this, chosenCard, info)
+        val card = chooseCardsActionCard as Card
+
+        val numCards = if (numCardsToChoose <= cardsToSelectFrom.size) numCardsToChoose else cardsToSelectFrom.size
+
+        val chosenCards = getChosenCards(numCards, cardsToSelectFrom, card)
+
+        chooseCardsActionCard.onCardsChosen(this, chosenCards, info)
+    }
+
+    private fun getChosenCards(numCardsToChoose: Int, cardsToSelectFrom: List<Card>, card: Card): MutableList<Card> {
+
+        val chosenCards = mutableListOf<Card>()
+
+        repeat(numCardsToChoose) {
+            //todo handle optional
+
+            val chosenCard: Card = when (card.name) {
+                Bandit.NAME -> cardsToSelectFrom.minBy { getBuyCardScore(it) }!!
+                Contraband.NAME -> when {
+                    cardsToSelectFrom.any { it.isPlatinum } && turns > 5 && game.currentPlayer.cardCountByName(Platinum.NAME) == 0 -> Platinum()
+                    cardsToSelectFrom.any { it.isColony } && turns > 8 -> Colony()
+                    cardsToSelectFrom.any { it.isProvince } && turns > 3 && (game.currentPlayer.cardCountByName(Gold.NAME) > 2 || turns > 10) -> Province()
+                    cardsToSelectFrom.any { it.isDuchy } && turns > 10 -> Duchy()
+                    else -> Gold()
+                }
+                Lookout.NAME -> cardsToSelectFrom.minBy { getDiscardCardScore(it) }!!
+                PirateShip.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
+                Smugglers.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
+                WishingWell.NAME -> deck.maxBy { cardCountByName(it.name) }!!
+                else -> cardsToSelectFrom.first()
+            }
+
+            chosenCards.add(chosenCard)
+        }
+
+        return chosenCards
     }
 }

@@ -13,13 +13,6 @@ class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boole
         get() =
             selectedCards.size in 1..numCardsToScrap && (this.isShowDoNotUse || selectedCards.size == numCardsToScrap)
 
-    override val doneText: String
-        get() = if (selectedCards.size == 1) {
-            "Trash " + selectedCards[0].name
-        } else {
-            "Trash " + selectedCards.size + " cards"
-        }
-
     init {
         this.isShowDoNotUse = optional
         setTextFromNumCards()

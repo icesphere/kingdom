@@ -1363,7 +1363,8 @@ class GameController(private val cardManager: CardManager,
             }
 
             player.currentAction?.cardChoices?.forEach {
-                it.isHighlighted = true
+                it.isHighlighted = highlightCard(player, it, CardLocation.CardAction)
+                it.isSelected = isCardSelected(player, it)
             }
         }
 

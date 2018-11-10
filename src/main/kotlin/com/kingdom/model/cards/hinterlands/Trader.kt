@@ -11,8 +11,8 @@ import com.kingdom.model.players.Player
 class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForBenefitActionCard, CardGainedListenerForCardsInHand, ChoiceActionCard {
 
     init {
-        testing = true
         special = "Trash a card from your hand. Gain a Silver per \$1 it costs. When you would gain a card, you may reveal this from your hand, to instead gain a Silver."
+        textSize = 122
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
@@ -23,11 +23,15 @@ class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForB
         val card = scrappedCards.first()
 
         repeat(player.getCardCostWithModifiers(card)) {
-            player.acquireFreeCardFromSupply(Silver())
+            player.acquireFreeCardFromSupply(Silver(), true)
         }
     }
 
     override fun onCardGained(card: Card, player: Player): Boolean {
+        if (card.isSilver) {
+            return false
+        }
+
         player.yesNoChoice(this, "Reveal ${this.cardNameWithBackgroundColor} to gain a ${Silver().cardNameWithBackgroundColor} instead of ${card.cardNameWithArticleAndBackgroundColor}?", card)
         return true
     }

@@ -4,7 +4,7 @@ import com.kingdom.model.players.Player
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 
-class CardFromDiscardToTopOfDeck(cardsInDiscard: List<Card>, private val maxCost: Int?) : SelectCardsAction("", cardsInDiscard, 1, true), SelectFromDiscardAction {
+class CardFromDiscardToTopOfDeck(cardsInDiscard: List<Card>, private val maxCost: Int?) : SelectCardsFromCardAction("", cardsInDiscard, 1, true), SelectFromDiscardAction {
 
     override var isShowDoNotUse: Boolean = true
 
@@ -19,10 +19,14 @@ class CardFromDiscardToTopOfDeck(cardsInDiscard: List<Card>, private val maxCost
     }
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
-        return cardLocation == CardLocation.Discard && (maxCost == null || player.getCardCostWithModifiers(card) <= maxCost)
+        return super.isCardActionable(card, cardLocation, player) && (maxCost == null || player.getCardCostWithModifiers(card) <= maxCost)
     }
 
     override fun processAction(player: Player): Boolean {
+        if (!super.processAction(player)) {
+            return false
+        }
+
         return if (maxCost == null) {
             player.cardsInDiscard.isNotEmpty()
         } else {
@@ -30,10 +34,10 @@ class CardFromDiscardToTopOfDeck(cardsInDiscard: List<Card>, private val maxCost
         }
     }
 
-    override fun processActionResult(player: Player, result: ActionResult): Boolean {
-        val card = result.selectedCard!!
+    override fun onSelectionDone(player: Player) {
+        val card = selectedCards.first()
+
         player.removeCardFromDiscard(card)
         player.addCardToTopOfDeck(card)
-        return true
     }
 }

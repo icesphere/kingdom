@@ -21,8 +21,6 @@ abstract class Action(open var text: String?) {
 
     open val isShowDone: Boolean = false
 
-    open val doneText: String = "Done"
-
     open fun isCardSelected(card: Card): Boolean = false
 
     open fun onNotUsed(player: Player) {}

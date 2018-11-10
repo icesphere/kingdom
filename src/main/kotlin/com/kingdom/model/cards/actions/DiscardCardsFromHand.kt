@@ -12,13 +12,6 @@ open class DiscardCardsFromHand(private var numCardsToDiscard: Int, text: String
     override val isShowDone: Boolean
         get() = numCardsToDiscard > 1 && (this.isShowDoNotUse || selectedCards.size == numCardsToDiscard)
 
-    override val doneText: String
-        get() = if (selectedCards.size == 1) {
-            "Discard " + selectedCards[0].name
-        } else {
-            "Discard " + selectedCards.size + " cards"
-        }
-
     init {
         isShowDoNotUse = optional
 

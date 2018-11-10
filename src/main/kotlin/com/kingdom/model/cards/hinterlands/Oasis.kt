@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class Oasis : HinterlandsCard(NAME, CardType.Action, 3) {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         addCoins = 1

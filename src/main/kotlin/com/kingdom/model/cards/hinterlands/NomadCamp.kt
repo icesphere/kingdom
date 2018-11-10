@@ -7,7 +7,6 @@ import com.kingdom.model.players.Player
 class NomadCamp : HinterlandsCard(NAME, CardType.Action, 4), BeforeCardGainedListenerForSelf {
 
     init {
-        testing = true
         addBuys = 1
         addCoins = 2
         special = "This is gained onto your deck (instead of to your discard pile)."

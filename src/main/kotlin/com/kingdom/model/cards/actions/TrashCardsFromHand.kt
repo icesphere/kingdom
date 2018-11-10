@@ -13,13 +13,6 @@ open class TrashCardsFromHand(private var numCardsToScrap: Int, text: String, op
         get() =
             numCardsToScrap > 1 && (this.isShowDoNotUse || selectedCards.size == numCardsToScrap)
 
-    override val doneText: String
-        get() = if (selectedCards.size == 1) {
-            "Trash " + selectedCards[0].name
-        } else {
-            "Trash " + selectedCards.size + " cards"
-        }
-
     init {
         isShowDoNotUse = optional
 

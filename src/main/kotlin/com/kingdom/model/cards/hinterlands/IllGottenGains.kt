@@ -11,7 +11,6 @@ import com.kingdom.model.players.Player
 class IllGottenGains : HinterlandsCard(NAME, CardType.Treasure, 5), AfterCardGainedListenerForSelf, ChoiceActionCard {
 
     init {
-        testing = true
         addCoins = 1
         special = "When you play this, you may gain a Copper to your hand. When you gain this, each other player gains a Curse."
         isPlayTreasureCardsRequired = true

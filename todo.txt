@@ -9,3 +9,4 @@ still need better refresh
 remove all jquery ui dialogs
 better logic for choosing cards for bots - e.g. chose card for Masquerade
 consolidate acquire free card functions
+consolidate select card actions

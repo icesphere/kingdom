@@ -7,17 +7,10 @@ class ChooseCardAction(text: String,
                        private val chooseCardActionCard: ChooseCardActionCard,
                        cardsToSelectFrom: List<Card>,
                        optional: Boolean,
-                       private val info: Any?) : SelectCardsAction(text, cardsToSelectFrom, 1, optional) {
+                       private val info: Any?) : SelectCardsFromCardAction(text, cardsToSelectFrom, 1, optional) {
 
-    override val isShowDone: Boolean = false
-
-    init {
-        this.isShowDoNotUse = optional
-    }
-
-    override fun processActionResult(player: Player, result: ActionResult): Boolean {
-        chooseCardActionCard.onCardChosen(player, result.selectedCard!!, info)
-        return true
+    override fun onSelectionDone(player: Player) {
+        chooseCardActionCard.onCardChosen(player, selectedCards.first(), info)
     }
 
 }

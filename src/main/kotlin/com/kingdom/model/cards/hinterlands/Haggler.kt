@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Haggler : HinterlandsCard(NAME, CardType.Action, 5), AfterCardBoughtListenerForCardsInPlay {
 
     init {
-        testing = true
         addCoins = 2
         special = "While this is in play, when you buy a card, gain a cheaper non-Victory card."
     }

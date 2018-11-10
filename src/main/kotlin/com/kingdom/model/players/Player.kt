@@ -774,6 +774,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         return isYourTurn && canBuyCard(card)
     }
 
+    fun addCardsToDeck(cards: List<Card>) {
+        deck.addAll(cards)
+        game.refreshPlayerHandArea(this)
+    }
+
     fun addCardToDeck(card: Card) {
         deck.add(card)
         game.refreshPlayerHandArea(this)
@@ -1008,6 +1013,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerHandArea(this)
     }
 
+    fun removeCardsFromDiscard(cards: List<Card>) {
+        cards.forEach { discard.remove(it) }
+        game.refreshPlayerHandArea(this)
+    }
+
     fun removeCardFromDiscard(card: Card) {
         discard.remove(card)
         game.refreshPlayerHandArea(this)
@@ -1155,8 +1165,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     abstract fun chooseCardAction(text: String,
-                                  chooseCardActionCard: ChooseCardActionCard,
-                                  cardsToSelectFrom: List<Card>,
-                                  optional: Boolean,
-                                  info: Any? = null)
+                         chooseCardActionCard: ChooseCardActionCard,
+                         cardsToSelectFrom: List<Card>,
+                         optional: Boolean,
+                         info: Any? = null)
+
+    abstract fun chooseCardsAction(numCardsToChoose: Int,
+                                   text: String,
+                                   chooseCardsActionCard: ChooseCardsActionCard,
+                                   cardsToSelectFrom: List<Card>,
+                                   optional: Boolean,
+                                   info: Any? = null)
 }

@@ -8,9 +8,9 @@ import com.kingdom.util.groupedString
 class Mandarin : HinterlandsCard(NAME, CardType.Action, 5), AfterCardGainedListenerForSelf {
 
     init {
-        testing = true
         addCoins = 3
         special = "Put a card from your hand on top of your deck. When you gain this, put all Treasures you have in play onto your deck in any order."
+        textSize = 101
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
