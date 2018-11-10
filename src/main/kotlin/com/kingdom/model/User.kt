@@ -89,6 +89,9 @@ class User {
     @Column(name = "hinterlands_checked")
     var hinterlandsChecked = true
 
+    @Column(name = "darkages_checked")
+    var darkAgesChecked = true
+
     @Column(name = "promo_checked")
     var promoChecked = false
 
@@ -109,6 +112,9 @@ class User {
 
     @Column(name = "hinterlands_weight")
     var hinterlandsWeight = 3
+
+    @Column(name = "darkages_weight")
+    var darkAgesWeight = 3
 
     @Column(name = "promo_weight")
     var promoWeight = 3

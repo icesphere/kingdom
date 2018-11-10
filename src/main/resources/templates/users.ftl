@@ -106,6 +106,9 @@
                         hinterlands <#if user.hinterlandsChecked>(${user.hinterlandsWeight})</#if>
                     </td>
                     <td style="padding-left:10px;">
+                        dark ages <#if user.darkAgesChecked>(${user.darkAgesWeight})</#if>
+                    </td>
+                    <td style="padding-left:10px;">
                         promo <#if user.promoChecked>(${user.promoWeight})</#if>
                     </td>
                     <td style="padding-left:10px;">

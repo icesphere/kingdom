@@ -4,6 +4,7 @@ import com.kingdom.model.*
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.UserDeckInfo
 import com.kingdom.model.cards.actions.ActionResult
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
@@ -109,17 +110,17 @@ class GameController(private val cardManager: CardManager,
 
     private fun addSelectCardsObjects(user: User, modelAndView: ModelAndView, includeTesting: Boolean) {
         modelAndView.addObject("user", user)
-        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, includeTesting))
-        modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, includeTesting))
-        modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, includeTesting))
-        modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, includeTesting))
-        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, includeTesting))
-        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, includeTesting))
-        modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, includeTesting))
+        modelAndView.addObject("decks", getDecks(user, includeTesting))
         modelAndView.addObject("annotatedGames", gameManager.annotatedGames)
         modelAndView.addObject("recentGames", gameManager.getGameHistoryList(user.userId))
         modelAndView.addObject("excludedCards", user.excludedCardNames)
         modelAndView.addObject("recommendedSets", gameManager.recommendedSets)
+    }
+
+    private fun getDecks(user: User, includeTesting: Boolean): List<UserDeckInfo> {
+        return Deck.values().map { deck ->
+            UserDeckInfo(user, deck, cardManager.getCards(deck, includeTesting))
+        }
     }
 
     @RequestMapping("/generateCards.html")
@@ -165,46 +166,49 @@ class GameController(private val cardManager: CardManager,
                 var numHardComputerPlayers = 0
                 var numBMUComputerPlayers = 0
 
-                user.baseChecked = request.getParameter("deck_kingdom") != null
-                user.intrigueChecked = request.getParameter("deck_intrigue") != null
-                user.seasideChecked = request.getParameter("deck_seaside") != null
-                user.prosperityChecked = request.getParameter("deck_prosperity") != null
-                user.cornucopiaChecked = request.getParameter("deck_cornucopia") != null
-                user.hinterlandsChecked = request.getParameter("deck_hinterlands") != null
-                user.promoChecked = request.getParameter("promo_cards") != null
+                user.baseChecked = request.getParameter("deck_${Deck.Base}") != null
+                user.intrigueChecked = request.getParameter("deck_${Deck.Intrigue}") != null
+                user.seasideChecked = request.getParameter("deck_${Deck.Seaside}") != null
+                user.prosperityChecked = request.getParameter("deck_${Deck.Prosperity}") != null
+                user.cornucopiaChecked = request.getParameter("deck_${Deck.Cornucopia}") != null
+                user.hinterlandsChecked = request.getParameter("deck_${Deck.Hinterlands}") != null
+                user.darkAgesChecked = request.getParameter("deck_${Deck.DarkAges}") != null
+                user.promoChecked = request.getParameter("deck_${Deck.Promo}") != null
+
                 user.alwaysPlayTreasureCards = KingdomUtil.getRequestBoolean(request, "playTreasureCards")
                 user.showVictoryPoints = KingdomUtil.getRequestBoolean(request, "showVictoryPoints")
                 user.identicalStartingHands = KingdomUtil.getRequestBoolean(request, "identicalStartingHands")
 
-                user.baseWeight = KingdomUtil.getRequestInt(request, "deck_weight_kingdom", 3)
-                user.intrigueWeight = KingdomUtil.getRequestInt(request, "deck_weight_intrigue", 3)
-                user.seasideWeight = KingdomUtil.getRequestInt(request, "deck_weight_seaside", 3)
-                user.prosperityWeight = KingdomUtil.getRequestInt(request, "deck_weight_prosperity", 3)
-                user.cornucopiaWeight = KingdomUtil.getRequestInt(request, "deck_weight_cornucopia", 3)
-                user.hinterlandsWeight = KingdomUtil.getRequestInt(request, "deck_weight_hinterlands", 3)
-                user.promoWeight = KingdomUtil.getRequestInt(request, "deck_weight_promo", 3)
+                user.baseWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Base}", 3)
+                user.intrigueWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Intrigue}", 3)
+                user.seasideWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Seaside}", 3)
+                user.prosperityWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Prosperity}", 3)
+                user.cornucopiaWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Cornucopia}", 3)
+                user.hinterlandsWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Hinterlands}", 3)
+                user.darkAgesWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.DarkAges}", 3)
+                user.promoWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Promo}", 3)
 
                 for (i in 2..6) {
-                    user.setPlayerDefault(i, request.getParameter("player" + i))
+                    user.setPlayerDefault(i, request.getParameter("player$i"))
 
                     when {
-                        request.getParameter("player" + i) == "human" -> numPlayers++
-                        request.getParameter("player" + i) == "computer_easy" -> {
+                        request.getParameter("player$i") == "human" -> numPlayers++
+                        request.getParameter("player$i") == "computer_easy" -> {
                             numPlayers++
                             numComputerPlayers++
                             numEasyComputerPlayers++
                         }
-                        request.getParameter("player" + i) == "computer_medium" -> {
+                        request.getParameter("player$i") == "computer_medium" -> {
                             numPlayers++
                             numComputerPlayers++
                             numMediumComputerPlayers++
                         }
-                        request.getParameter("player" + i) == "computer_hard" -> {
+                        request.getParameter("player$i") == "computer_hard" -> {
                             numPlayers++
                             numComputerPlayers++
                             numHardComputerPlayers++
                         }
-                        request.getParameter("player" + i) == "computer_bmu" -> {
+                        request.getParameter("player$i") == "computer_bmu" -> {
                             numPlayers++
                             numComputerPlayers++
                             numBMUComputerPlayers++
@@ -292,12 +296,13 @@ class GameController(private val cardManager: CardManager,
                 name.startsWith("deck_") && !name.startsWith("deck_weight_") -> {
                     val deck = Deck.valueOf(request.getParameter(name))
                     var weight = when (deck) {
-                        Deck.Kingdom -> user.baseWeight
+                        Deck.Base -> user.baseWeight
                         Deck.Intrigue -> user.intrigueWeight
                         Deck.Seaside -> user.seasideWeight
                         Deck.Prosperity -> user.prosperityWeight
                         Deck.Cornucopia -> user.cornucopiaWeight
                         Deck.Hinterlands -> user.hinterlandsWeight
+                        Deck.DarkAges -> user.darkAgesWeight
                         else -> 3
                     }
                     if (weight > 5) {
@@ -374,7 +379,7 @@ class GameController(private val cardManager: CardManager,
 
     @Throws(TemplateModelException::class)
     private fun showRandomConfirmPage(request: HttpServletRequest, user: User, game: Game): ModelAndView {
-        val includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].isProsperity && !game.isNeverIncludeColonyAndPlatinum
+        val includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].deck == Deck.Prosperity && !game.isNeverIncludeColonyAndPlatinum
         var playTreasureCardsRequired = false
         for (card in game.kingdomCards) {
             if (card.isPlayTreasureCardsRequired) {
@@ -526,7 +531,7 @@ class GameController(private val cardManager: CardManager,
                 if (playTreasureCardsRequired) {
                     game.isPlayTreasureCards = true
                 }
-                if (game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].isProsperity && !game.isNeverIncludeColonyAndPlatinum) {
+                if (game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].deck == Deck.Prosperity && !game.isNeverIncludeColonyAndPlatinum) {
                     game.isIncludeColonyCards = true
                     game.isIncludePlatinumCards = true
                 }
@@ -2091,7 +2096,7 @@ class GameController(private val cardManager: CardManager,
 
         modelAndView.addObject("user", user)
         modelAndView.addObject("selectedCards", selectedCards)
-        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Kingdom, true))
+        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Base, true))
         modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, true))
         modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, true))
         modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, true))

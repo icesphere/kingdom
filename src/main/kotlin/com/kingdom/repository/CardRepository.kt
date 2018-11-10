@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
 @Service
 class CardRepository {
 
-    val kingdomCards: List<Card>
+    val baseCards: List<Card>
         get() = listOf(
                 Artisan(),
                 Bandit(),
@@ -174,12 +174,12 @@ class CardRepository {
         )
 
     val allCards: List<Card>
-        get() = kingdomCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
+        get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
                 hinterlandsCards + darkAgesCards
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {
-            Deck.Kingdom -> kingdomCards
+            Deck.Base -> baseCards
             Deck.Intrigue -> intrigueCards
             Deck.Seaside -> seasideCards
             Deck.Prosperity -> prosperityCards

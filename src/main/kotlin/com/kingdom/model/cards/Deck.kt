@@ -1,11 +1,11 @@
 package com.kingdom.model.cards
 
 enum class Deck {
+    Base,
     Cornucopia,
     DarkAges,
     Hinterlands,
     Intrigue,
-    Kingdom,
     Promo,
     Prosperity,
     Seaside,

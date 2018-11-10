@@ -128,94 +128,28 @@
                 </div>
                 <div id="decks" style="padding-top:10px;float:left;clear:both;">
                     <div id="decksLabel" style="float:left;"><span class="label">Decks:</span></div>
-                    <div style="clear:both;float:left;padding-left:10px;">
-                        <input type="checkbox" name="deck_kingdom" id="deck_kingdom" value="Kingdom" onclick="selectDeck(this)" <#if user.baseChecked>checked</#if>/> <label for="deck_kingdom">Base Set</label>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="deck_intrigue" id="deck_intrigue" value="Intrigue" onclick="selectDeck(this)" <#if user.intrigueChecked>checked</#if>/>  <label for="deck_intrigue">Intrigue</label>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="deck_seaside" id="deck_seaside" value="Seaside" onclick="selectDeck(this)" <#if user.seasideChecked>checked</#if>/>  <label for="deck_seaside">Seaside</label>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="deck_prosperity" id="deck_prosperity" value="Prosperity" onclick="selectDeck(this)" <#if user.prosperityChecked>checked</#if>/>  <label for="deck_prosperity">Prosperity</label>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="deck_cornucopia" id="deck_cornucopia" value="Cornucopia" onclick="selectDeck(this)" <#if user.cornucopiaChecked>checked</#if>/>  <label for="deck_cornucopia">Cornucopia</label>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="deck_hinterlands" id="deck_hinterlands" value="Hinterlands" onclick="selectDeck(this)" <#if user.hinterlandsChecked>checked</#if>/>  <label for="deck_hinterlands">Hinterlands</label>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="checkbox" name="promo_cards" id="promo_cards" value="true" onclick="selectDeck(this)" <#if user.promoChecked>checked</#if>/>  <label for="promo_cards">Promo Cards</label>
+                    <div style="clear:both;float: left;">
+                        <#list decks as deck>
+                            <div style="float:left;padding-left:10px;">
+                                <input type="checkbox" name="deck_${deck.deckName}" id="deck_${deck.deckName}" value="${deck.deckName}" onclick="selectDeck(this)" <#if deck.deckChecked>checked</#if>/> <label for="deck_${deck.deckName}">${deck.displayName}</label>
+                            </div>
+                        </#list>
                     </div>
                 </div>
                 <div id="decksWeight" style="padding-top:10px;float:left;clear:both;">
                     <div id="decksWeightLabel" style="float:left;"><span class="label">Deck Frequency:</span></div><#if mobile><div style="float:left;padding-left:5px;"><a href="javascript:toggleDeckFrequency()" id="deckFrequencyLink">Show</a></div></#if>
-                    <div id="deckFrequency" <#if mobile>style="display:none"</#if>>
-                        <div style="clear:both;float:left;padding-left:10px;">
-                            Base Set <select name="deck_weight_kingdom" id="deck_weight_kingdom">
-                                <option value="5" <#if user.baseWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.baseWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.baseWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.baseWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.baseWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            Intrigue <select name="deck_weight_intrigue" id="deck_weight_intrigue">
-                                <option value="5" <#if user.intrigueWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.intrigueWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.intrigueWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.intrigueWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.intrigueWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            Seaside <select name="deck_weight_seaside" id="deck_weight_seaside">
-                                <option value="5" <#if user.seasideWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.seasideWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.seasideWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.seasideWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.seasideWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            Prosperity <select name="deck_weight_prosperity" id="deck_weight_prosperity">
-                                <option value="5" <#if user.prosperityWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.prosperityWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.prosperityWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.prosperityWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.prosperityWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            Cornucopia <select name="deck_weight_cornucopia" id="deck_weight_cornucopia">
-                                <option value="5" <#if user.cornucopiaWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.cornucopiaWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.cornucopiaWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.cornucopiaWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.cornucopiaWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            Hinterlands <select name="deck_weight_hinterlands" id="deck_weight_hinterlands">
-                                <option value="5" <#if user.hinterlandsWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.hinterlandsWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.hinterlandsWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.hinterlandsWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.hinterlandsWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            Promo Cards <select name="deck_weight_promo" id="deck_weight_promo">
-                                <option value="5" <#if user.promoWeight == 5>selected</#if>>Very Often</option>
-                                <option value="4" <#if user.promoWeight == 4>selected</#if>>More Often</option>
-                                <option value="3" <#if user.promoWeight == 3>selected</#if>>As Often</option>
-                                <option value="2" <#if user.promoWeight == 2>selected</#if>>Less Often</option>
-                                <option value="1" <#if user.promoWeight == 1>selected</#if>>Rarely</option>
-                            </select>
-                        </div>
+                    <div id="deckFrequency" <#if mobile>style="display:none"<#else>style="clear:both"</#if>>
+                        <#list decks as deck>
+                            <div style="float:left;padding-left:10px;">
+                                ${deck.displayName} <select name="deck_weight_${deck.deckName}" id="deck_weight_${deck.deckName}">
+                                    <option value="5" <#if deck.deckWeight == 5>selected</#if>>Very Often</option>
+                                    <option value="4" <#if deck.deckWeight == 4>selected</#if>>More Often</option>
+                                    <option value="3" <#if deck.deckWeight == 3>selected</#if>>As Often</option>
+                                    <option value="2" <#if deck.deckWeight == 2>selected</#if>>Less Often</option>
+                                    <option value="1" <#if deck.deckWeight == 1>selected</#if>>Rarely</option>
+                                </select>
+                            </div>
+                        </#list>
                     </div>
                 </div>
                 <div id="randomizingOptions" style="padding-top:10px;float:left;clear:both;">
@@ -241,62 +175,16 @@
                 <div id="excludedCards" style="padding-top:10px;float:left;clear:both;">
                     <div style="float:left;"><span class="label">Excluded Cards:</span></div><div style="float:left;padding-left:5px;"><a href="javascript:toggleExcludedCards()" id="excludedCardsLink">Show</a></div>
                     <div id="excludedCardsContent" style="display:none;clear:both;float:left;padding-left:10px;">
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Base Set</div>
-                            <#list kingdomCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Intrigue</div>
-                            <#list intrigueCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Seaside</div>
-                            <#list seasideCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Prosperity</div>
-                            <#list prosperityCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Cornucopia</div>
-                            <#list cornucopiaCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Hinterlands</div>
-                            <#list hinterlandsCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div class="customCardsDeck">
-                            <div style="float:left;" class="label">Promo Cards</div>
-                            <#list promoCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "excludedCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
+                        <#list decks as deck>
+                            <div class="customCardsDeck">
+                                <div style="float:left;" class="label">${deck.displayName}</div>
+                                <#list deck.cards as card>
+                                    <div style="float:left;clear:both;">
+                                        <#include "excludedCardRow.ftl">
+                                    </div>
+                                </#list>
+                            </div>
+                        </#list>
                     </div>
                 </div>
                 <div id="customCards" style="display:none;float:left;clear:both;">
@@ -310,65 +198,18 @@
                         <div style="float:left;padding-left:10px;color:red;">Cards selected:</div><div id="numCardsSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining cards will be randomized based on selected decks)</div>
                     </div>
                     <div style="clear:both;float:left;padding-left:10px;">
-                        <div id="kingdomCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Base Set</div>
-                            <#list kingdomCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="intrigueCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Intrigue</div>
-                            <#list intrigueCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="seasideCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Seaside</div>
-                            <#list seasideCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="prosperityCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Prosperity</div>
-                            <div style="float:left;clear:both;">
-                                <input type="checkbox" name="includeColonyAndPlatinumCards" id="includeColonyAndPlatinumCards" value="true"/> <label for="includeColonyAndPlatinumCards">Include Colony/Platinum</label>
+
+                        <#list decks as deck>
+                            <div class="customCardsDeck">
+                                <div style="float:left;" class="label">${deck.displayName}</div>
+                                <#list deck.cards as card>
+                                    <div style="float:left;clear:both;">
+                                        <#include "createGameCardRow.ftl">
+                                    </div>
+                                </#list>
                             </div>
-                            <#list prosperityCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="cornucopiaCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Cornucopia</div>
-                            <#list cornucopiaCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="hinterlandsCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Hinterlands</div>
-                            <#list hinterlandsCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
-                        <div id="promoCardsDiv" class="customCardsDeck">
-                            <div style="float:left;" class="label">Promo Cards</div>
-                            <#list promoCards as card>
-                                <div style="float:left;clear:both;">
-                                    <#include "createGameCardRow.ftl">
-                                </div>
-                            </#list>
-                        </div>
+                        </#list>
+
                     </div>
                 </div>
 

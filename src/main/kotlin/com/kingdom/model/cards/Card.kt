@@ -1,6 +1,9 @@
 package com.kingdom.model.cards
 
+import com.kingdom.model.cards.kingdom.ThroneRoom
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
+import com.kingdom.model.cards.prosperity.Goons
+import com.kingdom.model.cards.prosperity.KingsCourt
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.Player
 import com.kingdom.util.KingdomUtil
@@ -174,27 +177,6 @@ abstract class Card(
     val isAttack: Boolean
         get() = type == CardType.ActionAttack
 
-    val isKingdom: Boolean
-        get() = deck === Deck.Kingdom
-
-    val isIntrigue: Boolean
-        get() = deck === Deck.Intrigue
-
-    val isSeaside: Boolean
-        get() = deck === Deck.Seaside
-
-    val isPromo: Boolean
-        get() = deck === Deck.Promo
-
-    val isProsperity: Boolean
-        get() = deck === Deck.Prosperity
-
-    val isCornucopia: Boolean
-        get() = deck === Deck.Cornucopia
-
-    val isHinterlands: Boolean
-        get() = deck === Deck.Hinterlands
-
     val backgroundColor: CardColor
         get() = when {
             type == CardType.ActionVictory -> CardColor.ActionVictory
@@ -215,10 +197,10 @@ abstract class Card(
         get() = backgroundColor.color
 
     val isExtraActionsCard: Boolean
-        get() = addActions >= 2 || name == "Throne Room" || name == "King's Court"
+        get() = addActions >= 2 || name == ThroneRoom.NAME || name == KingsCourt.NAME
 
     val isVictoryCoinsCard: Boolean
-        get() = addVictoryCoins > 0 || name == "Goons"
+        get() = addVictoryCoins > 0 || name == Goons.NAME
 
     val actionValue: Int
         get() {

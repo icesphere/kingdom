@@ -66,6 +66,14 @@
     </tr>
     <tr>
         <td class="label">
+            <a href="showUsersForStat.html?stat=darkAgesChecked">Dark Ages Deck:</a>
+        </td>
+        <td>
+            ${stats.darkAgesDeck}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
             <a href="showUsersForStat.html?stat=promoChecked">Promo Deck:</a>
         </td>
         <td>
