@@ -18,16 +18,16 @@ class Explorer : SeasideCard(NAME, CardType.Action, 5), ChoiceActionCard {
         if (player.hand.any { it.isProvince }) {
             player.yesNoChoice(this, "Reveal ${Province().cardNameWithBackgroundColor} to gain ${Gold().cardNameWithBackgroundColor} to your hand?")
         } else {
-            player.acquireFreeCardFromSupply(Silver(), showLog = true, destination = CardLocation.Hand)
+            player.gainSupplyCard(Silver(), showLog = true, destination = CardLocation.Hand)
         }
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.addUsernameGameLog("revealed a ${Province().cardNameWithBackgroundColor} from their hand")
-            player.acquireFreeCardFromSupply(Gold(), showLog = true, destination = CardLocation.Hand)
+            player.gainSupplyCard(Gold(), showLog = true, destination = CardLocation.Hand)
         } else {
-            player.acquireFreeCardFromSupply(Silver(), showLog = true, destination = CardLocation.Hand)
+            player.gainSupplyCard(Silver(), showLog = true, destination = CardLocation.Hand)
         }
     }
 

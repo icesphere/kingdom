@@ -12,10 +12,10 @@ class Ironworks : IntrigueCard(NAME, CardType.Action, 4), FreeCardFromSupplyForB
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.acquireFreeCardForBenefit(4, special, this)
+        player.gainSupplyCardForBenefit(4, special, this)
     }
 
-    override fun onCardAcquired(player: Player, card: Card) {
+    override fun onCardGained(player: Player, card: Card) {
         if (card.isAction) {
             player.addActions(1)
         }

@@ -14,7 +14,7 @@ class Baron : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
 
     override fun cardPlayedSpecialAction(player: Player) {
         if (player.hand.count { it.name == Estate.NAME } == 0) {
-            player.acquireFreeCardFromSupply(Estate())
+            player.gainSupplyCard(Estate())
         } else {
             player.yesNoChoice(this, "Discard an Estate for +\$4?")
         }
@@ -26,7 +26,7 @@ class Baron : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
             player.addCoins(4)
         } else {
             player.addUsernameGameLog("gained an ${Estate().cardNameWithBackgroundColor}")
-            player.acquireFreeCardFromSupply(Estate())
+            player.gainSupplyCard(Estate())
         }
     }
 

@@ -28,7 +28,7 @@ class Remake : CornucopiaCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
         val card = scrappedCards.first()
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == player.getCardCostWithModifiers(card) + 1 }) {
-            player.acquireFreeCardWithCost(player.getCardCostWithModifiers(card) + 1)
+            player.gainSupplyCardWithExactCost(player.getCardCostWithModifiers(card) + 1)
         }
 
         if (trashingSecondCard) {

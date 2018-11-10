@@ -23,7 +23,7 @@ class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForB
         val card = scrappedCards.first()
 
         repeat(player.getCardCostWithModifiers(card)) {
-            player.acquireFreeCardFromSupply(Silver(), true)
+            player.gainSupplyCard(Silver(), true)
         }
     }
 
@@ -40,10 +40,10 @@ class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForB
         val card = info as Card
 
         if (choice == 1) {
-            player.cardAcquired(Silver())
+            player.cardGained(Silver())
             player.addUsernameGameLog("revealed ${this.cardNameWithBackgroundColor} to gain a ${Silver().cardNameWithBackgroundColor} instead of ${card.cardNameWithArticleAndBackgroundColor}")
         } else {
-            player.cardAcquired(card)
+            player.cardGained(card)
         }
     }
 

@@ -16,7 +16,7 @@ class Hoard : ProsperityCard(NAME, CardType.Treasure, 6), AfterCardBoughtListene
 
     override fun afterCardBought(card: Card, player: Player) {
         if (card.isVictory) {
-            player.acquireFreeCardFromSupply(Gold(), true)
+            player.gainSupplyCard(Gold(), true)
         }
     }
 

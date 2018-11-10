@@ -14,7 +14,7 @@ class ChooseCardToGainFromTrash(cardsInTrash: List<Card>, optional: Boolean, car
 
         player.game.trashedCards.remove(card)
         player.addGameLog("${player.username} gained ${card.cardNameWithBackgroundColor} from the trash")
-        player.cardAcquired(card)
+        player.cardGained(card)
     }
 
 }

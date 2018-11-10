@@ -4,7 +4,7 @@ import com.kingdom.model.cards.Card
 import java.util.ArrayList
 
 class TurnSummary {
-    var cardsAcquired: MutableList<Card> = ArrayList()
+    var cardsGained: MutableList<Card> = ArrayList()
 
     var cardsBought: MutableList<Card> = ArrayList()
 

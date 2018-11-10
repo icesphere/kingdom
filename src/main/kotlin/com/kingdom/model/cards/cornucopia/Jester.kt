@@ -25,7 +25,7 @@ class Jester : CornucopiaCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
             val card = opponent.discardTopCardOfDeck()
             if (card != null) {
                 if (card.isVictory) {
-                    opponent.acquireFreeCardFromSupply(Curse(), true)
+                    opponent.gainSupplyCard(Curse(), true)
                 } else {
                     if (player.game.isCardAvailableInSupply(card)) {
                         player.makeChoiceWithInfo(this, "Who do you want to gain a copy of ${card.cardNameWithBackgroundColor}?", card, Choice(player.userId, "You"), Choice(opponent.userId, opponent.username))
@@ -38,7 +38,7 @@ class Jester : CornucopiaCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         val card = info as Card
         val playerToGainCard = player.game.players.first { it.userId == choice }
-        playerToGainCard.acquireFreeCardFromSupply(card, showLog = true)
+        playerToGainCard.gainSupplyCard(card, showLog = true)
     }
 
     companion object {

@@ -18,7 +18,7 @@ class Embassy : HinterlandsCard(NAME, CardType.Action, 5), AfterCardGainedListen
 
     override fun afterCardGained(player: Player) {
         for (opponent in player.opponentsInOrder) {
-            opponent.acquireFreeCardFromSupply(Silver(), showLog = true)
+            opponent.gainSupplyCard(Silver(), showLog = true)
         }
     }
 

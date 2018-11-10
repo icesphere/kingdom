@@ -12,7 +12,7 @@ class Smugglers : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val previousPlayerCardsGainsLastTurn = player.game.previousPlayer?.lastTurnSummary?.cardsAcquired
+        val previousPlayerCardsGainsLastTurn = player.game.previousPlayer?.lastTurnSummary?.cardsGained
 
         if (previousPlayerCardsGainsLastTurn?.isNotEmpty() == true) {
             val cards = previousPlayerCardsGainsLastTurn.filter { player.game.isCardAvailableInSupply(it) && player.getCardCostWithModifiers(it) <= 6 }
@@ -24,7 +24,7 @@ class Smugglers : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.addUsernameGameLog("used ${this.cardNameWithBackgroundColor} to gain a copy of ${card.cardNameWithBackgroundColor}")
-        player.acquireFreeCardFromSupply(card)
+        player.gainSupplyCard(card)
     }
 
     companion object {

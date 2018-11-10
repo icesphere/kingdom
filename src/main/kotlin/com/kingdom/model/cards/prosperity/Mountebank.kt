@@ -25,8 +25,8 @@ class Mountebank : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard, C
             if (opponent.hand.any { it.isCurse }) {
                 opponent.makeChoice(this, Choice(1, "Discard Curse"), Choice(2, "Gain Curse and Copper"))
             } else {
-                opponent.acquireFreeCardFromSupply(Curse(), showLog = true)
-                opponent.acquireFreeCardFromSupply(Copper(), showLog = true)
+                opponent.gainSupplyCard(Curse(), showLog = true)
+                opponent.gainSupplyCard(Copper(), showLog = true)
             }
         }
     }
@@ -35,8 +35,8 @@ class Mountebank : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard, C
         if (choice == 1) {
             player.discardCardFromHand(player.hand.first { it.isCurse })
         } else {
-            player.acquireFreeCardFromSupply(Curse(), showLog = true)
-            player.acquireFreeCardFromSupply(Copper(), showLog = true)
+            player.gainSupplyCard(Curse(), showLog = true)
+            player.gainSupplyCard(Copper(), showLog = true)
         }
     }
 

@@ -25,13 +25,13 @@ class IllGottenGains : HinterlandsCard(NAME, CardType.Treasure, 5), AfterCardGai
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
-            player.acquireFreeCardFromSupply(Copper(), showLog = true, destination = CardLocation.Hand)
+            player.gainSupplyCard(Copper(), showLog = true, destination = CardLocation.Hand)
         }
     }
 
     override fun afterCardGained(player: Player) {
         for (opponent in player.opponentsInOrder) {
-            opponent.acquireFreeCardFromSupply(Curse(), true)
+            opponent.gainSupplyCard(Curse(), true)
         }
     }
 

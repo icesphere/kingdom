@@ -14,7 +14,7 @@ class JackOfAllTrades : HinterlandsCard(NAME, CardType.Action, 4), ChoiceActionC
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.acquireFreeCardFromSupply(Silver(), showLog = true)
+        player.gainSupplyCard(Silver(), showLog = true)
         val cardOnTopOfDeck = player.cardOnTopOfDeck
         if (cardOnTopOfDeck != null) {
             player.yesNoChoice(this, "Discard ${cardOnTopOfDeck.cardNameWithBackgroundColor} from the top of your deck?")

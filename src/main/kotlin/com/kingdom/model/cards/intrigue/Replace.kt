@@ -26,20 +26,20 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         affectedOpponents.forEach { opponent ->
-            opponent.acquireFreeCardFromSupply(Curse(), showLog = true)
+            opponent.gainSupplyCard(Curse(), showLog = true)
         }
     }
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         val card = scrappedCards.first()
-        player.acquireFreeCardForBenefit(player.getCardCostWithModifiers(card) + 2, "Gain a card costing up to \$${player.getCardCostWithModifiers(card) + 2}. If the gained card is an Action or Treasure, put it onto your deck; if it’s a Victory card, each other player gains a Curse.", this)
+        player.gainSupplyCardForBenefit(player.getCardCostWithModifiers(card) + 2, "Gain a card costing up to \$${player.getCardCostWithModifiers(card) + 2}. If the gained card is an Action or Treasure, put it onto your deck; if it’s a Victory card, each other player gains a Curse.", this)
     }
 
     override fun isCardApplicable(card: Card): Boolean = true
 
-    override fun onCardAcquired(player: Player, card: Card) {
+    override fun onCardGained(player: Player, card: Card) {
         if (card.isAction || card.isTreasure) {
-            //todo ideally the acquire action puts it on the deck
+            //todo ideally the gain action puts it on the deck
             if (player.cardsInDiscard.contains(card)) {
                 player.removeCardFromDiscard(card)
                 player.addCardToTopOfDeck(card)

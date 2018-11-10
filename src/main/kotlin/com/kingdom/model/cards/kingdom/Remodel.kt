@@ -20,7 +20,7 @@ class Remodel : KingdomCard(NAME, CardType.Action, 4), TrashCardsForBenefitActio
     
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         if (scrappedCards.isNotEmpty()) {
-            player.acquireFreeCard(player.getCardCostWithModifiers(scrappedCards[0]) + 2)
+            player.gainSupplyCardWithMaxCost(player.getCardCostWithModifiers(scrappedCards[0]) + 2)
         }
     }
 

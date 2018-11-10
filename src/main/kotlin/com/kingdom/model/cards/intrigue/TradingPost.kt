@@ -21,7 +21,7 @@ class TradingPost : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefit
                 1 -> player.trashCardFromHand(player.hand.first())
                 2 -> {
                     player.hand.forEach { player.trashCardFromHand(it) }
-                    player.acquireFreeCardFromSupplyToHand(Silver())
+                    player.gainSupplyCardToHand(Silver())
                 }
                 else -> {
                     player.trashCardsFromHandForBenefit(this, 2)
@@ -31,7 +31,7 @@ class TradingPost : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefit
     }
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        player.acquireFreeCardFromSupplyToHand(Silver())
+        player.gainSupplyCardToHand(Silver())
     }
 
     override fun isCardApplicable(card: Card): Boolean = true

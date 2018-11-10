@@ -15,7 +15,7 @@ class Mine : KingdomCard(NAME, CardType.Action, 5), TrashCardsForBenefitActionCa
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         if (scrappedCards.isNotEmpty()) {
-            player.acquireFreeCardOfTypeToHand(player.getCardCostWithModifiers(scrappedCards[0]) + 3, CardType.Treasure)
+            player.gainSupplyCardToHandWithMaxCostAndType(player.getCardCostWithModifiers(scrappedCards[0]) + 3, CardType.Treasure)
         }
     }
 

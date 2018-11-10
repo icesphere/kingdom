@@ -57,7 +57,7 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
         val card = revealedCard ?: return
 
         affectedOpponents.forEach { opponent ->
-            opponent.acquireFreeCardFromSupply(card, true)
+            opponent.gainSupplyCard(card, true)
         }
     }
 

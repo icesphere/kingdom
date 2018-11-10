@@ -57,13 +57,13 @@ class NobleBrigand : HinterlandsCard(NAME, CardType.ActionAttack, 4), AfterCardB
                     gainTrashedCard(player, opponent, card)
                 }
             } else {
-                opponent.acquireFreeCardFromSupply(Copper(), true)
+                opponent.gainSupplyCard(Copper(), true)
             }
         }
     }
 
     private fun gainTrashedCard(player: Player, opponent: Player, card: Card) {
-        player.cardAcquired(card)
+        player.cardGained(card)
         player.addUsernameGameLog("trashed and gained ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
     }
 

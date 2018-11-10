@@ -5,5 +5,5 @@ import com.kingdom.model.players.Player
 
 interface FreeCardFromSupplyForBenefitActionCard {
 
-    fun onCardAcquired(player: Player, card: Card)
+    fun onCardGained(player: Player, card: Card)
 }

@@ -42,7 +42,7 @@ class RoyalSeal : ProsperityCard(NAME, CardType.Treasure, 5), CardGainedListener
             ignoreNextCardGained = true
         }
 
-        player.cardAcquired(gainedCard!!)
+        player.cardGained(gainedCard!!)
     }
 
     companion object {

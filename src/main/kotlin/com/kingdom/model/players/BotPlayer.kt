@@ -190,58 +190,58 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun acquireFreeCard(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?) {
-        val card = chooseFreeCardToAcquire(maxCost, cardActionableExpression)
+    override fun gainSupplyCardWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        val card = chooseFreeCardToGain(maxCost, cardActionableExpression)
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addGameLog(username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
+            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
 
-            cardAcquired(card)
+            cardGained(card)
         }
     }
 
-    override fun acquireFreeCardWithCost(cost: Int) {
-        val card = chooseFreeCardToAcquireExactCost(cost)
+    override fun gainSupplyCardWithExactCost(cost: Int) {
+        val card = chooseFreeCardToGainWithExactCost(cost)
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addGameLog(username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
+            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
 
-            cardAcquired(card)
+            cardGained(card)
         }
     }
 
-    override fun acquireFreeCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
+    override fun gainSupplyCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
         //todo logic for different cards
-        val card = chooseFreeCardToAcquire(maxCost)
+        val card = chooseFreeCardToGain(maxCost)
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addGameLog(username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
+            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
 
-            cardAcquired(card)
+            cardGained(card)
 
-            freeCardFromSupplyForBenefitActionCard.onCardAcquired(this, card)
+            freeCardFromSupplyForBenefitActionCard.onCardGained(this, card)
         }
     }
 
-    override fun acquireFreeCardToTopOfDeck(maxCost: Int?) {
-        val card = chooseFreeCardToAcquire(maxCost)
+    override fun gainSupplyCardToTopOfDeck(maxCost: Int?) {
+        val card = chooseFreeCardToGain(maxCost)
         if (card != null) {
             game.removeCardFromSupply(card)
 
             addCardToTopOfDeck(card)
-            cardAcquired(card)
+            cardGained(card)
         }
     }
 
-    override fun acquireFreeCardToHand(maxCost: Int?) {
-        val card = chooseFreeCardToAcquire(maxCost)
+    override fun gainSupplyCardToHandWithMaxCost(maxCost: Int?) {
+        val card = chooseFreeCardToGain(maxCost)
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            acquireCardToHand(card)
+            gainCardToHand(card)
         }
     }
 
@@ -662,7 +662,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    private fun chooseFreeCardToAcquire(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null): Card? {
+    private fun chooseFreeCardToGain(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null): Card? {
         val cards = game.availableCards
                 .filter { c ->
                     (maxCost == null || this.getCardCostWithModifiers(c) <= maxCost)
@@ -672,7 +672,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return pickCardBasedOnBuyScore(cards)
     }
 
-    private fun chooseFreeCardToAcquireExactCost(cost: Int): Card? {
+    private fun chooseFreeCardToGainWithExactCost(cost: Int): Card? {
         val cards = game.availableCards
                 .filter { this.getCardCostWithModifiers(it) == cost }
 
@@ -712,14 +712,14 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         card.cardsScrapped(this, cards)
     }
 
-    override fun acquireFreeCardOfTypeToHand(maxCost: Int?, cardType: CardType) {
-        val card = chooseFreeCardToAcquire(maxCost, { c -> c.type == cardType })
+    override fun gainSupplyCardToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType) {
+        val card = chooseFreeCardToGain(maxCost, { c -> c.type == cardType })
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addGameLog(username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
+            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
 
-            cardAcquired(card)
+            cardGained(card)
         }
     }
 
@@ -774,15 +774,15 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         when (destination) {
             CardLocation.Hand -> {
                 addGameLog("$username put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s hand")
-                opponent.acquireCardToHand(card)
+                opponent.gainCardToHand(card)
             }
             CardLocation.Deck -> {
                 addGameLog("$username put ${card.cardNameWithBackgroundColor} on top of ${opponent.username}'s deck")
-                opponent.acquireCardToTopOfDeck(card)
+                opponent.gainCardToTopOfDeck(card)
             }
             else -> {
                 addGameLog("$username put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s discard")
-                opponent.cardAcquired(card)
+                opponent.cardGained(card)
             }
         }
     }

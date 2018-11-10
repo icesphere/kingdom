@@ -17,7 +17,7 @@ class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
     var cardsThatCanBeTrashed: MutableList<Card>? = null
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.acquireFreeCardFromSupply(Gold())
+        player.gainSupplyCard(Gold())
 
         player.triggerAttack(this)
     }

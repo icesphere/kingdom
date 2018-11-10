@@ -22,12 +22,12 @@ open class FreeCardFromSupply(private val maxCost: Int?, text: String, private v
 
         player.game.removeCardFromSupply(card)
 
-        player.addGameLog(player.username + " acquired a free card from the supply: " + card.cardNameWithBackgroundColor)
+        player.addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
 
         when (destination) {
-            CardLocation.Hand -> player.acquireCardToHand(card)
-            CardLocation.Deck -> player.acquireCardToTopOfDeck(card)
-            else -> player.cardAcquired(card)
+            CardLocation.Hand -> player.gainCardToHand(card)
+            CardLocation.Deck -> player.gainCardToTopOfDeck(card)
+            else -> player.cardGained(card)
         }
 
         return true

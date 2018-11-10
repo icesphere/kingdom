@@ -14,7 +14,7 @@ class BorderVillage : HinterlandsCard(NAME, CardType.Action, 6), AfterCardGained
     }
 
     override fun afterCardGained(player: Player) {
-        player.acquireFreeCard(player.getCardCostWithModifiers(this) - 1)
+        player.gainSupplyCardWithMaxCost(player.getCardCostWithModifiers(this) - 1)
     }
 
     companion object {

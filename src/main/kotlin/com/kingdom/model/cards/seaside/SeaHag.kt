@@ -19,7 +19,7 @@ class SeaHag : SeasideCard(NAME, CardType.ActionAttack, 4), AttackCard {
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         for (opponent in affectedOpponents) {
             opponent.discardTopCardOfDeck()
-            opponent.acquireFreeCardFromSupply(Curse(), false, CardLocation.Deck)
+            opponent.gainSupplyCard(Curse(), false, CardLocation.Deck)
         }
     }
 

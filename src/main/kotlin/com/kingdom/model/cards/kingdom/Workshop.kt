@@ -10,7 +10,7 @@ class Workshop : KingdomCard(NAME, CardType.Action, 3) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.acquireFreeCard(4)
+        player.gainSupplyCardWithMaxCost(4)
     }
 
     companion object {

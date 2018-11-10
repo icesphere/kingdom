@@ -20,7 +20,7 @@ class Expand : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitAct
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         val card = scrappedCards.first()
-        player.acquireFreeCard(player.getCardCostWithModifiers(card) + 3)
+        player.gainSupplyCardWithMaxCost(player.getCardCostWithModifiers(card) + 3)
     }
 
     override fun isCardApplicable(card: Card): Boolean = true

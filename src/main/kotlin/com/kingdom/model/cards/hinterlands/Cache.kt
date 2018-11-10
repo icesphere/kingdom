@@ -13,8 +13,8 @@ class Cache : HinterlandsCard(NAME, CardType.Treasure, 5), AfterCardGainedListen
     }
 
     override fun afterCardGained(player: Player) {
-        player.acquireFreeCardFromSupply(Copper(), showLog = true)
-        player.acquireFreeCardFromSupply(Copper(), showLog = true)
+        player.gainSupplyCard(Copper(), showLog = true)
+        player.gainSupplyCard(Copper(), showLog = true)
     }
 
     companion object {

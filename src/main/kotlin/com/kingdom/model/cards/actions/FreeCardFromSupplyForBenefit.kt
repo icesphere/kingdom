@@ -10,7 +10,7 @@ class FreeCardFromSupplyForBenefit(private val freeCardFromSupplyForBenefitActio
         val doneWithAction = super.processActionResult(player, result)
 
         if (doneWithAction) {
-            freeCardFromSupplyForBenefitActionCard.onCardAcquired(player, result.selectedCard!!)
+            freeCardFromSupplyForBenefitActionCard.onCardGained(player, result.selectedCard!!)
         }
 
         return doneWithAction

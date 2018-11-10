@@ -38,7 +38,7 @@ class Watchtower : ProsperityCard(NAME, CardType.ActionReaction, 3), CardGainedL
                 gainedCards.add(card)
                 player.makeChoice(this, "${card.cardNameWithBackgroundColor} - Trash or put on top of deck?", Choice(3, "Trash"), Choice(4, "Top of deck"))
             }
-            2 -> player.cardAcquired(card)
+            2 -> player.cardGained(card)
             3 -> player.cardTrashed(card, showLog = true)
             4 -> player.addCardToTopOfDeck(card)
         }

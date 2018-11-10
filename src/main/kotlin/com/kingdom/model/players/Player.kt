@@ -414,15 +414,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshCardsPlayed()
     }
 
-    fun acquireCardToTopOfDeck(card: Card) {
+    fun gainCardToTopOfDeck(card: Card) {
         isNextCardToTopOfDeck = true
-        cardAcquired(card)
+        cardGained(card)
         game.refreshPlayerHandArea(this)
     }
 
-    fun acquireCardToHand(card: Card) {
+    fun gainCardToHand(card: Card) {
         isNextCardToHand = true
-        cardAcquired(card)
+        cardGained(card)
         game.refreshPlayerHandArea(this)
     }
 
@@ -434,7 +434,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerHandArea(this)
     }
 
-    fun cardAcquired(card: Card) {
+    fun cardGained(card: Card) {
 
         var gainCardHandled = false
 
@@ -488,7 +488,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (isYourTurn) {
-            currentTurnSummary.cardsAcquired.add(card)
+            currentTurnSummary.cardsGained.add(card)
         }
     }
 
@@ -529,7 +529,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 val numEmbargoTokens = game.embargoTokens[card.name] ?: 0
                 if (numEmbargoTokens > 0) {
                     for (i in 1..numEmbargoTokens) {
-                        acquireFreeCardFromSupply(Curse(), true)
+                        gainSupplyCard(Curse(), true)
                     }
                 }
             }
@@ -542,7 +542,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 game.removeCardFromSupply(card, false)
             }
 
-            cardAcquired(card)
+            cardGained(card)
 
             if (card is AfterCardBoughtListenerForSelf) {
                 card.afterCardBought(this)
@@ -620,23 +620,23 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     private val currentDeckNumber: Int
         get() = shuffles + 1
 
-    abstract fun acquireFreeCard(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null)
+    abstract fun gainSupplyCardWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
-    abstract fun acquireFreeCardWithCost(cost: Int)
+    abstract fun gainSupplyCardWithExactCost(cost: Int)
 
-    abstract fun acquireFreeCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard)
+    abstract fun gainSupplyCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard)
 
-    abstract fun acquireFreeCardToTopOfDeck(maxCost: Int?)
+    abstract fun gainSupplyCardToTopOfDeck(maxCost: Int?)
 
-    abstract fun acquireFreeCardToHand(maxCost: Int?)
+    abstract fun gainSupplyCardToHandWithMaxCost(maxCost: Int?)
 
-    abstract fun acquireFreeCardOfTypeToHand(maxCost: Int?, cardType: CardType)
+    abstract fun gainSupplyCardToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType)
 
     abstract fun drawCardsAndPutSomeBackOnTop(cardsToDraw: Int, cardsToPutBack: Int)
 
     abstract fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String, info: Any? = null)
 
-    fun acquireFreeCardFromSupply(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {
+    fun gainSupplyCard(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {
 
         //create copy of card so that it doesn't affect card chosen in case it came from somewhere other than the supply
         val supplyCard = game.getSupplyCard(card.name)
@@ -663,14 +663,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 addUsernameGameLog(log)
             }
 
-            cardAcquired(supplyCard)
+            cardGained(supplyCard)
         }
     }
 
-    fun acquireFreeCardFromSupplyToHand(card: Card) {
+    fun gainSupplyCardToHand(card: Card) {
         if (game.isCardAvailableInSupply(card)) {
             game.removeCardFromSupply(card)
-            acquireCardToHand(card)
+            gainCardToHand(card)
         }
     }
 

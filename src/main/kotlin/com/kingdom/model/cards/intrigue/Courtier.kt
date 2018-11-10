@@ -56,7 +56,7 @@ class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, Choos
             }
             4 -> {
                 player.addUsernameGameLog("chose to gain a Gold")
-                player.acquireFreeCardFromSupply(Gold())
+                player.gainSupplyCard(Gold())
             }
         }
 

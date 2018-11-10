@@ -19,7 +19,7 @@ class TreasureMap : SeasideCard(NAME, CardType.Action, 4) {
             player.trashCardFromHand(player.hand.first { it.name == TreasureMap.NAME })
 
             repeat(4) {
-                player.acquireFreeCardFromSupply(Gold(), false, CardLocation.Deck)
+                player.gainSupplyCard(Gold(), false, CardLocation.Deck)
             }
         }
     }

@@ -20,7 +20,7 @@ class Mint : ProsperityCard(NAME, CardType.Action, 5), AfterCardBoughtListenerFo
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.acquireFreeCardFromSupply(card, true)
+        player.gainSupplyCard(card, true)
     }
 
     override fun afterCardBought(player: Player) {
