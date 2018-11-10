@@ -13,11 +13,10 @@ class Moat : KingdomCard(NAME, CardType.ActionReaction, 2), HandBeforeAttackList
     init {
         addCards = 2
         special = "When another player plays an Attack card, you may first reveal this from your hand, to be unaffected by it."
+        isDefense = true
         fontSize = 13
         textSize = 81
     }
-
-    override val isDefense: Boolean = true
 
     override fun onBeforeAttack(attackCard: Card, player: Player, attacker: Player) {
         this.attackCard = attackCard

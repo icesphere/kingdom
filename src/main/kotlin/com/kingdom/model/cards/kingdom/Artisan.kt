@@ -9,7 +9,7 @@ class Artisan : KingdomCard(NAME, CardType.Action, 6) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.gainSupplyCardToHandWithMaxCost(5)
+        player.chooseSupplyCardToGainToHandWithMaxCost(5)
         player.addCardFromHandToTopOfDeck()
     }
 

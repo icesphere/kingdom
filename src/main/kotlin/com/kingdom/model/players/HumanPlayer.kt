@@ -72,27 +72,27 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(ChooseCardToGainFromTrash(game.trashedCards, optional, cardActionableExpression))
     }
 
-    override fun gainSupplyCardWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?) {
+    override fun chooseSupplyCardToGainWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?) {
         addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply costing up to $maxCost", cardActionableExpression))
     }
 
-    override fun gainSupplyCardWithExactCost(cost: Int) {
+    override fun chooseSupplyCardToGainWithExactCost(cost: Int) {
         addAction(FreeCardFromSupply(null, "Gain a free card from the supply costing $cost", {c -> getCardCostWithModifiers(c) == cost}))
     }
 
-    override fun gainSupplyCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
+    override fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
         addAction(FreeCardFromSupplyForBenefit(freeCardFromSupplyForBenefitActionCard, maxCost, text, null))
     }
 
-    override fun gainSupplyCardToTopOfDeck(maxCost: Int?) {
+    override fun chooseSupplyCardToGainToTopOfDeck(maxCost: Int?) {
         addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply to the top of your deck costing up to $maxCost", null, CardLocation.Deck))
     }
 
-    override fun gainSupplyCardToHandWithMaxCost(maxCost: Int?) {
+    override fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int?) {
         addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply to your hand costing up to $maxCost", null, CardLocation.Hand))
     }
 
-    override fun gainSupplyCardToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType) {
+    override fun chooseSupplyCardToGainToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType) {
         addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply to your hand costing up to $maxCost", { c -> c.type == cardType }, CardLocation.Hand))
     }
 

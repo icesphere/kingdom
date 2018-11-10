@@ -620,17 +620,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     private val currentDeckNumber: Int
         get() = shuffles + 1
 
-    abstract fun gainSupplyCardWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null)
+    abstract fun chooseSupplyCardToGainWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
-    abstract fun gainSupplyCardWithExactCost(cost: Int)
+    abstract fun chooseSupplyCardToGainWithExactCost(cost: Int)
 
-    abstract fun gainSupplyCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard)
+    abstract fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard)
 
-    abstract fun gainSupplyCardToTopOfDeck(maxCost: Int?)
+    abstract fun chooseSupplyCardToGainToTopOfDeck(maxCost: Int?)
 
-    abstract fun gainSupplyCardToHandWithMaxCost(maxCost: Int?)
+    abstract fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int?)
 
-    abstract fun gainSupplyCardToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType)
+    abstract fun chooseSupplyCardToGainToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType)
 
     abstract fun drawCardsAndPutSomeBackOnTop(cardsToDraw: Int, cardsToPutBack: Int)
 
@@ -667,10 +667,25 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun gainSupplyCardToHand(card: Card) {
+    fun gainSupplyCardToHand(card: Card, showLog: Boolean) {
         if (game.isCardAvailableInSupply(card)) {
             game.removeCardFromSupply(card)
             gainCardToHand(card)
+
+            if (showLog) {
+                addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} to their hand")
+            }
+        }
+    }
+
+    fun gainSupplyCardToTopOfDeck(card: Card, showLog: Boolean) {
+        if (game.isCardAvailableInSupply(card)) {
+            game.removeCardFromSupply(card)
+            gainCardToTopOfDeck(card)
+
+            if (showLog) {
+                addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} to the top of their deck")
+            }
         }
     }
 

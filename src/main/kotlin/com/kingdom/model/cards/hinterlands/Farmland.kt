@@ -22,7 +22,7 @@ class Farmland : HinterlandsCard(NAME, CardType.Victory, 6), AfterCardBoughtList
         val card = scrappedCards.first()
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == player.getCardCostWithModifiers(card) + 2 }) {
-            player.gainSupplyCardWithExactCost(player.getCardCostWithModifiers(card) + 2)
+            player.chooseSupplyCardToGainWithExactCost(player.getCardCostWithModifiers(card) + 2)
         }
     }
 

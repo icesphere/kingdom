@@ -1,8 +1,5 @@
 package com.kingdom.model.cards
 
-import com.kingdom.model.cards.hinterlands.Crossroads
-import com.kingdom.model.cards.intrigue.Nobles
-import com.kingdom.model.cards.intrigue.Pawn
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.Player
@@ -35,7 +32,7 @@ abstract class Card(
         var isAutoSelect: Boolean = false,
         var isActivated: Boolean = false,
         var isCopied: Boolean = false,
-        var location: CardLocation? = null,
+        var isDefense: Boolean = false,
         var isTrashingCard: Boolean = false,
         var isTrashingFromHandRequiredCard: Boolean = false,
         var isTrashingFromHandToUpgradeCard: Boolean = false,
@@ -176,8 +173,6 @@ abstract class Card(
 
     val isAttack: Boolean
         get() = type == CardType.ActionAttack
-
-    open val isDefense: Boolean = false
 
     val isKingdom: Boolean
         get() = deck === Deck.Kingdom

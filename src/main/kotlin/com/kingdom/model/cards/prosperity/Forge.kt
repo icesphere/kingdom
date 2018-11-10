@@ -22,7 +22,7 @@ class Forge : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitActi
         scrappedCards.forEach { totalCost += player.getCardCostWithModifiers(it) }
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == totalCost }) {
-            player.gainSupplyCardWithExactCost(totalCost)
+            player.chooseSupplyCardToGainWithExactCost(totalCost)
         }
     }
 

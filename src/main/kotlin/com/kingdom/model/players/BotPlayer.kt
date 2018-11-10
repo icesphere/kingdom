@@ -190,7 +190,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun gainSupplyCardWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?) {
+    override fun chooseSupplyCardToGainWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?) {
         val card = chooseFreeCardToGain(maxCost, cardActionableExpression)
         if (card != null) {
             game.removeCardFromSupply(card)
@@ -201,7 +201,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun gainSupplyCardWithExactCost(cost: Int) {
+    override fun chooseSupplyCardToGainWithExactCost(cost: Int) {
         val card = chooseFreeCardToGainWithExactCost(cost)
         if (card != null) {
             game.removeCardFromSupply(card)
@@ -212,7 +212,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun gainSupplyCardForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
+    override fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
         //todo logic for different cards
         val card = chooseFreeCardToGain(maxCost)
         if (card != null) {
@@ -226,7 +226,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun gainSupplyCardToTopOfDeck(maxCost: Int?) {
+    override fun chooseSupplyCardToGainToTopOfDeck(maxCost: Int?) {
         val card = chooseFreeCardToGain(maxCost)
         if (card != null) {
             game.removeCardFromSupply(card)
@@ -236,7 +236,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun gainSupplyCardToHandWithMaxCost(maxCost: Int?) {
+    override fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int?) {
         val card = chooseFreeCardToGain(maxCost)
         if (card != null) {
             game.removeCardFromSupply(card)
@@ -712,7 +712,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         card.cardsScrapped(this, cards)
     }
 
-    override fun gainSupplyCardToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType) {
+    override fun chooseSupplyCardToGainToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType) {
         val card = chooseFreeCardToGain(maxCost, { c -> c.type == cardType })
         if (card != null) {
             game.removeCardFromSupply(card)

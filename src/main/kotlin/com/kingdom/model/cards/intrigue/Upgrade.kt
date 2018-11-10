@@ -26,7 +26,7 @@ class Upgrade : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefitActi
         val card = scrappedCards.first()
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == player.getCardCostWithModifiers(card) + 1 }) {
-            player.gainSupplyCardWithExactCost(player.getCardCostWithModifiers(card) + 1)
+            player.chooseSupplyCardToGainWithExactCost(player.getCardCostWithModifiers(card) + 1)
         }
     }
 
