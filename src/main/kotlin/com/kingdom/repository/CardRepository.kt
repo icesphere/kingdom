@@ -170,7 +170,8 @@ class CardRepository {
     val darkAgesCards: List<Card>
         get() = listOf(
                 Beggar(),
-                PoorHouse()
+                PoorHouse(),
+                Squire()
         )
 
     val allCards: List<Card>

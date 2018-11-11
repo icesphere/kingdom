@@ -12,9 +12,9 @@ import com.kingdom.util.groupedString
 class Beggar : DarkAgesCard(NAME, CardType.ActionReaction, 2), HandBeforeAttackListener, ChoiceActionCard {
 
     init {
-        testing = true
         special = "Gain 3 Coppers to your hand. When another player plays an Attack card, you may first discard this to gain 2 Silvers, putting one onto your deck."
         isDefense = true
+        textSize = 115
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

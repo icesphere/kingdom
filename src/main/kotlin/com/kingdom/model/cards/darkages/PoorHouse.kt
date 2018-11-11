@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class PoorHouse : DarkAgesCard(NAME, CardType.Action, 1) {
 
     init {
-        testing = true
         addCoins = 4
         special = "Reveal your hand. -\$1 per Treasure card in your hand. (You can’t go below \$0.)"
         fontSize = 11

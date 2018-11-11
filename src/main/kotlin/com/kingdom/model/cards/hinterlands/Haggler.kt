@@ -13,7 +13,7 @@ class Haggler : HinterlandsCard(NAME, CardType.Action, 5), AfterCardBoughtListen
     }
 
     override fun afterCardBought(card: Card, player: Player) {
-        player.chooseSupplyCardToGainWithMaxCost(player.getCardCostWithModifiers(card) - 1, { c -> !c.isVictory })
+        player.chooseSupplyCardToGain(player.getCardCostWithModifiers(card) - 1, { c -> !c.isVictory }, "Gain a non-Victory card from the supply")
     }
 
     companion object {

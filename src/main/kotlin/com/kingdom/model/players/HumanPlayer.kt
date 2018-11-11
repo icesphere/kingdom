@@ -72,8 +72,13 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(ChooseCardToGainFromTrash(game.trashedCards, optional, cardActionableExpression))
     }
 
-    override fun chooseSupplyCardToGainWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?) {
-        addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply costing up to $maxCost", cardActionableExpression))
+    override fun chooseSupplyCardToGain(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?, text: String?) {
+        val actionText = when {
+            text != null -> text
+            maxCost != null -> "Gain a free card from the supply costing up to $maxCost"
+            else -> "Gain a free card from the supply"
+        }
+        addAction(FreeCardFromSupply(maxCost, actionText, cardActionableExpression))
     }
 
     override fun chooseSupplyCardToGainWithExactCost(cost: Int) {

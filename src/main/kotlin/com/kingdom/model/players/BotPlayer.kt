@@ -11,6 +11,7 @@ import com.kingdom.model.cards.cornucopia.Hamlet
 import com.kingdom.model.cards.cornucopia.HorseTraders
 import com.kingdom.model.cards.cornucopia.Jester
 import com.kingdom.model.cards.cornucopia.Remake
+import com.kingdom.model.cards.darkages.Squire
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
@@ -190,7 +191,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun chooseSupplyCardToGainWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?) {
+    override fun chooseSupplyCardToGain(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?, text: String?) {
         val card = chooseFreeCardToGain(maxCost, cardActionableExpression)
         if (card != null) {
             game.removeCardFromSupply(card)
@@ -441,6 +442,11 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 else -> {
                     if (hand.any { actions == 0 && it.isAction && it.cost > 3 }) 3 else 4
                 }
+            }
+            Squire.NAME -> when {
+                actions == 0 && hand.any { it.isAction } -> 1
+                buys == 1 && availableCoins > 11 -> 2
+                else -> 3
             }
             Stables.NAME -> if (hand.any { (it.isTreasure && it.cost < 6) || (actions == 0 && it.isAction && it.cost > 3) }) 1 else 2
             Steward.NAME -> when {

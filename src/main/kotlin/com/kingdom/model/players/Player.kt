@@ -387,11 +387,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         game.trashedCards.add(card)
+
         cardRemovedFromPlay(card)
+
         numCardsTrashedThisTurn++
 
         if (isYourTurn) {
             currentTurnSummary.trashedCards.add(card)
+        }
+
+        if (card is AfterCardTrashedListenerForSelf) {
+            card.afterCardTrashed(this)
         }
     }
 
@@ -620,7 +626,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     private val currentDeckNumber: Int
         get() = shuffles + 1
 
-    abstract fun chooseSupplyCardToGainWithMaxCost(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null)
+    abstract fun chooseSupplyCardToGain(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null, text: String? = null)
 
     abstract fun chooseSupplyCardToGainWithExactCost(cost: Int)
 
