@@ -559,6 +559,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             for (listener in cardBoughtListenersForCardsInPlay) {
                 (listener as AfterCardBoughtListenerForCardsInPlay).afterCardBought(card, this)
             }
+
+            val cardBoughtListenersForCardsInHand = hand.filter { it is AfterCardBoughtListenerForCardsInHand }
+
+            for (listener in cardBoughtListenersForCardsInHand) {
+                (listener as AfterCardBoughtListenerForCardsInHand).afterCardBought(card, this)
+            }
         }
     }
 

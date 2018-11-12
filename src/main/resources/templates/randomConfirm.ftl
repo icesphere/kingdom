@@ -94,6 +94,15 @@
                     Colony and Platinum will NOT be included. <a href="togglePlatinumAndColony.html?include=true">Include</a>
                 </div>
             </#if>
+            <#if includeShelters>
+                <div style="clear:both;padding-top:5px;">
+                    Shelters will replace starting Estates. <a href="toggleShelters.html?includeShelters=false">Don't Replace</a>
+                </div>
+            <#else>
+                <div style="clear:both;padding-top:5px;">
+                    Shelters will NOT replace starting Estates. <a href="toggleShelters.html?includeShelters=true">Replace Estates with Shelters</a>
+                </div>
+            </#if>
             <#if playTreasureCardsRequired>
                 <div style="clear:both;padding-top:5px;">
                     Playing treasure cards will be required.

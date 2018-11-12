@@ -63,6 +63,10 @@ abstract class Card(
             CardType.TreasureCurse -> "Treasure - Curse"
             CardType.DurationVictory -> "Duration - Victory"
             CardType.TreasureReaction -> "Treasure - Reaction"
+            CardType.ActionRuins -> "Action - Ruins"
+            CardType.ActionShelter -> "Action - Shelter"
+            CardType.ReactionShelter -> "Reaction - Shelter"
+            CardType.VictoryShelter -> "Victory - Shelter"
         }
 
     val numTypes: Int
@@ -80,6 +84,10 @@ abstract class Card(
             CardType.TreasureCurse -> 2
             CardType.DurationVictory -> 2
             CardType.TreasureReaction -> 2
+            CardType.ActionRuins -> 2
+            CardType.ActionShelter -> 2
+            CardType.ReactionShelter -> 2
+            CardType.VictoryShelter -> 2
         }
 
     val isSpecialCard: Boolean
@@ -147,6 +155,9 @@ abstract class Card(
     val isCurse: Boolean
         get() = type == CardType.Curse || type == CardType.TreasureCurse
 
+    val isRuins: Boolean
+        get() = type == CardType.ActionRuins
+
     val isCurseOnly: Boolean
         get() = name == Curse.NAME
 
@@ -190,6 +201,10 @@ abstract class Card(
             type == CardType.ActionReaction -> CardColor.ActionReaction
             type == CardType.Curse -> CardColor.Curse
             type == CardType.ActionDuration -> CardColor.ActionDuration
+            type == CardType.ActionRuins -> CardColor.ActionDuration
+            type == CardType.ActionShelter -> CardColor.ActionShelter
+            type == CardType.ReactionShelter -> CardColor.ReactionShelter
+            type == CardType.VictoryShelter -> CardColor.VictoryShelter
             else -> CardColor.Action
         }
 

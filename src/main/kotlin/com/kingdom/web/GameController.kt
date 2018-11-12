@@ -379,13 +379,17 @@ class GameController(private val cardManager: CardManager,
 
     @Throws(TemplateModelException::class)
     private fun showRandomConfirmPage(request: HttpServletRequest, user: User, game: Game): ModelAndView {
+
         val includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].deck == Deck.Prosperity && !game.isNeverIncludeColonyAndPlatinum
+        val includeShelters = game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[1].deck == Deck.DarkAges
+
         var playTreasureCardsRequired = false
         for (card in game.kingdomCards) {
             if (card.isPlayTreasureCardsRequired) {
                 playTreasureCardsRequired = true
             }
         }
+
         val modelAndView = ModelAndView("randomConfirm")
         modelAndView.addObject("createGame", KingdomUtil.getRequestBoolean(request, "createGame"))
         modelAndView.addObject("player", HumanPlayer(user, game))
@@ -396,6 +400,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
         modelAndView.addObject("cards", game.kingdomCards)
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
+        modelAndView.addObject("includeShelters", includeShelters)
         modelAndView.addObject("playTreasureCardsRequired", playTreasureCardsRequired)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         modelAndView.addObject("randomizerReplacementCardNotFound", game.isRandomizerReplacementCardNotFound)
@@ -474,7 +479,6 @@ class GameController(private val cardManager: CardManager,
 
     }
 
-
     @RequestMapping("/togglePlatinumAndColony.html")
     fun togglePlatinumAndColony(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
@@ -498,7 +502,30 @@ class GameController(private val cardManager: CardManager,
         } catch (t: Throwable) {
             return logErrorAndReturnEmpty(t, game)
         }
+    }
 
+    @RequestMapping("/toggleShelters.html")
+    fun toggleShelters(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        }
+        try {
+            return if (game.status == GameStatus.BeingConfigured) {
+                val include = KingdomUtil.getRequestBoolean(request, "includeShelters")
+                game.isIncludeSheters = include
+                confirmCards(request, response)
+            } else {
+                if (game.status == GameStatus.InProgress) {
+                    ModelAndView("redirect:/showGame.html")
+                } else {
+                    ModelAndView("redirect:/showGameRooms.html")
+                }
+            }
+        } catch (t: Throwable) {
+            return logErrorAndReturnEmpty(t, game)
+        }
     }
 
     @RequestMapping("/keepRandomCards.html")

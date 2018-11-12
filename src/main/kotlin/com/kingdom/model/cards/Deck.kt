@@ -9,5 +9,5 @@ enum class Deck {
     Promo,
     Prosperity,
     Seaside,
-    Supply
+    None
 }

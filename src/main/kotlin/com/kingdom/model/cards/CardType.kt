@@ -1,5 +1,6 @@
 package com.kingdom.model.cards
 
+@Suppress("unused")
 enum class CardType(val typeId: Int) {
     Action(1),
     ActionAttack(2),
@@ -13,17 +14,9 @@ enum class CardType(val typeId: Int) {
     TreasureCurse(10),
     VictoryReaction(11),
     DurationVictory(12),
-    TreasureReaction(14);
-
-    companion object {
-        fun fromCardTypeId(typeId: Int): CardType {
-            for (cardType in CardType.values()) {
-                if (cardType.typeId == typeId) {
-                    return cardType
-                }
-            }
-
-            throw IllegalArgumentException("Card type not found for $typeId")
-        }
-    }
+    TreasureReaction(14),
+    ActionRuins(15),
+    ActionShelter(16),
+    ReactionShelter(17),
+    VictoryShelter(18);
 }
