@@ -1,5 +1,5 @@
 <div>
-    <div class="cardName" style="margin-bottom:2px;font-size:<#if card.name?length &gt; 12>12<#else>14</#if>px; padding-top:5px; padding-bottom:2px; <#if clickType=='supply' && gameStatus == "InProgress" && supply(card.name) == 0><#else><#if card.type.typeId == 7>background-image: url(images/grey_green.gif);background-repeat: repeat-x;<#elseif card.type.typeId == 8>background-image: url(images/gold_green.gif);background-repeat: repeat-x;<#elseif card.type.typeId == 10>background-image: url(images/gold_purple.gif);background-repeat: repeat-x;<#elseif card.type.typeId == 11>background-image: url(images/green_blue.gif);background-repeat: repeat-x;<#elseif card.type.typeId == 12>background-image: url(images/orange_green.gif);background-repeat: repeat-x;<#elseif card.type.typeId == 14>background-image: url(images/gold_blue.gif);background-repeat: repeat-x;<#else>background-color:${card.backgroundColorColor};</#if></#if>">
+    <div class="cardName" style="margin-bottom:2px;font-size:<#if card.name?length &gt; 12>12<#else>14</#if>px; padding-top:5px; padding-bottom:2px; <#if clickType=='supply' && gameStatus == "InProgress" && supply(card.name) == 0><#else><#if card.backgroundColor.image>background-image: url(images/${card.backgroundColor});background-repeat: repeat-x;<#else>background-color:${card.backgroundColorColor};</#if></#if>">
         ${card.name}
     </div>
 
@@ -55,5 +55,5 @@
         </div>
     </#if>
 </div>
-<div style="position:absolute; right:3px; bottom:0;<#if card.type.typeId == 2>color:#C00;</#if> font-size:<#if card.typeAsString?length &gt; 18>7<#elseif card.typeAsString?length &gt; 14>8<#else>10</#if>px; ">${card.typeAsString}</div>
+<div style="position:absolute; right:3px; bottom:0;<#if card.attack>color:#C00;</#if> font-size:<#if card.typeAsString?length &gt; 18>7<#elseif card.typeAsString?length &gt; 14>8<#else>10</#if>px; ">${card.typeAsString}</div>
 <div style="position:absolute; left:2px; bottom:0; font-size:12px;">${cost} <img src="images/coin.png" alt="coin" height="12" width="12"/></div>
