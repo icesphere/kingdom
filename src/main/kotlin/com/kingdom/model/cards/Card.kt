@@ -132,13 +132,13 @@ abstract class Card(
         get() = type == CardType.Victory
 
     val isVictory: Boolean
-        get() = type == CardType.Victory || type == CardType.ActionVictory || type == CardType.TreasureVictory || type == CardType.VictoryReaction || type == CardType.DurationVictory
+        get() = type == CardType.Victory || type == CardType.ActionVictory || type == CardType.TreasureVictory || type == CardType.VictoryReaction || type == CardType.DurationVictory || type == CardType.VictoryShelter
 
     val isVictoryReaction: Boolean
         get() = type == CardType.VictoryReaction
 
     val isAction: Boolean
-        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory
+        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionShelter
 
     open val isTerminalAction: Boolean
         get() = isAction && addActions == 0
@@ -150,7 +150,7 @@ abstract class Card(
         get() = type == CardType.Treasure || type == CardType.TreasureVictory || type == CardType.TreasureCurse || type == CardType.TreasureReaction
 
     val isReaction: Boolean
-        get() = type == CardType.ActionReaction || type == CardType.VictoryReaction || type == CardType.TreasureReaction
+        get() = type == CardType.ActionReaction || type == CardType.VictoryReaction || type == CardType.TreasureReaction || type == CardType.ReactionShelter
 
     val isCurse: Boolean
         get() = type == CardType.Curse || type == CardType.TreasureCurse
@@ -196,8 +196,6 @@ abstract class Card(
             type == CardType.VictoryReaction -> CardColor.VictoryReaction
             type == CardType.DurationVictory -> CardColor.DurationVictory
             type == CardType.TreasureReaction -> CardColor.TreasureReaction
-            isTreasure -> CardColor.Treasure
-            isVictory -> CardColor.Victory
             type == CardType.ActionReaction -> CardColor.ActionReaction
             type == CardType.Curse -> CardColor.Curse
             type == CardType.ActionDuration -> CardColor.ActionDuration
@@ -205,6 +203,8 @@ abstract class Card(
             type == CardType.ActionShelter -> CardColor.ActionShelter
             type == CardType.ReactionShelter -> CardColor.ReactionShelter
             type == CardType.VictoryShelter -> CardColor.VictoryShelter
+            isTreasure -> CardColor.Treasure
+            isVictory -> CardColor.Victory
             else -> CardColor.Action
         }
 

@@ -1,5 +1,5 @@
 <div>
-    <div class="cardName" style="margin-bottom:2px;font-size:<#if card.name?length &gt; 12>12<#else>14</#if>px; padding-top:5px; padding-bottom:2px; <#if clickType=='supply' && gameStatus == "InProgress" && supply(card.name) == 0><#else><#if card.backgroundColor.image>background-image: url(images/${card.backgroundColor});background-repeat: repeat-x;<#else>background-color:${card.backgroundColorColor};</#if></#if>">
+    <div class="cardName" style="margin-bottom:2px;font-size:<#if card.name?length &gt; 12>12<#else>14</#if>px; padding-top:5px; padding-bottom:2px; <#if clickType=='supply' && gameStatus == "InProgress" && supply(card.name) == 0><#else><#if card.backgroundColor.image>background-image: url(images/${card.backgroundColorColor});background-repeat: repeat-x;<#else>background-color:${card.backgroundColorColor};</#if></#if>">
         ${card.name}
     </div>
 

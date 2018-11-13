@@ -9,6 +9,9 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.*
+import com.kingdom.model.cards.darkages.shelters.Hovel
+import com.kingdom.model.cards.darkages.shelters.Necropolis
+import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.listeners.*
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Curse
@@ -182,12 +185,18 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 addCardToHand(card)
             }
         } else {
-            for (i in 1..7) {
+            repeat(7) {
                 deck.add(Copper())
             }
 
-            for (i in 1..3) {
-                deck.add(Estate())
+            if (game.isIncludeShelters) {
+                deck.add(Hovel())
+                deck.add(Necropolis())
+                deck.add(OvergrownEstate())
+            } else {
+                repeat(3) {
+                    deck.add(Estate())
+                }
             }
 
             deck.shuffle()

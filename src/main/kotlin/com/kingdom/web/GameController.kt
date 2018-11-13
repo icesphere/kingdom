@@ -308,7 +308,7 @@ class GameController(private val cardManager: CardManager,
                     if (weight > 5) {
                         weight = 5
                     }
-                    for (i in 0 until weight) {
+                    repeat(weight) {
                         decks.add(deck)
                     }
                 }
@@ -322,13 +322,6 @@ class GameController(private val cardManager: CardManager,
                     val card = cardManager.getCard(cardName)
                     excludedCards.add(card)
                 }
-            }
-        }
-
-        val promoCards = request.getParameter("promo_cards")
-        if (promoCards != null && promoCards == "true") {
-            for (i in 0 until user.promoWeight) {
-                decks.add(Deck.Promo)
             }
         }
     }
@@ -381,7 +374,7 @@ class GameController(private val cardManager: CardManager,
     private fun showRandomConfirmPage(request: HttpServletRequest, user: User, game: Game): ModelAndView {
 
         val includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].deck == Deck.Prosperity && !game.isNeverIncludeColonyAndPlatinum
-        val includeShelters = game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[1].deck == Deck.DarkAges
+        val includeShelters = !game.isExcludeShelters && (game.isIncludeShelters || game.kingdomCards[1].deck == Deck.DarkAges)
 
         var playTreasureCardsRequired = false
         for (card in game.kingdomCards) {
@@ -514,7 +507,8 @@ class GameController(private val cardManager: CardManager,
         try {
             return if (game.status == GameStatus.BeingConfigured) {
                 val include = KingdomUtil.getRequestBoolean(request, "includeShelters")
-                game.isIncludeSheters = include
+                game.isIncludeShelters = include
+                game.isExcludeShelters = !include
                 confirmCards(request, response)
             } else {
                 if (game.status == GameStatus.InProgress) {
@@ -2201,7 +2195,7 @@ class GameController(private val cardManager: CardManager,
                     val ids = name.substring(5)
                     val cardName = ids.substring(0, ids.indexOf("_"))
                     val numCards = KingdomUtil.getRequestInt(request, name, 0)
-                    for (i in 0 until numCards) {
+                    repeat(numCards) {
                         val supplyCard = game.getSupplyCard(cardName)
                         if (removeCardsFromSupply) {
                             game.removeCardFromSupply(supplyCard, false)

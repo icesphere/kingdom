@@ -143,7 +143,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var isAlwaysIncludeColonyAndPlatinum: Boolean = false
     var isNeverIncludeColonyAndPlatinum: Boolean = false
 
-    var isIncludeSheters: Boolean = false
+    var isIncludeShelters: Boolean = false
+    var isExcludeShelters: Boolean = false
 
     var randomizingOptions: RandomizingOptions? = null
 

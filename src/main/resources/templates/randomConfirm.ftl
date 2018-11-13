@@ -44,9 +44,9 @@
         <div class="topGradient"></div>
         <form action="confirmCards.html" method="POST" name="randomCardsForm" id="randomCardsForm">
             <#if randomizerReplacementCardNotFound>
-            <div style="color:red;padding-bottom:5px;">
-                The card type you selected could not be found from cards in the decks you selected from the create game screen.  Try selecting more decks when creating a game.
-            </div>
+                <div style="color:red;padding-bottom:5px;">
+                    The card type you selected could not be found from cards in the decks you selected from the create game screen.  Try selecting more decks when creating a game.
+                </div>
             </#if>
             <div style="padding-bottom:5px;">
                 Click a card to switch it out for a different one.
@@ -108,9 +108,11 @@
                     Playing treasure cards will be required.
                 </div>
             </#if>
+            <!-- todo this is broken
             <div style="clear:both;padding-top:5px;">
                 <a href="#" onclick="addTypeOfCard()">Add a specific type of card</a>
             </div>
+            -->
             <div style="clear:both;padding-top:5px;">
                 <table>
                     <tr>
