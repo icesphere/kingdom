@@ -158,6 +158,9 @@ abstract class Card(
     val isRuins: Boolean
         get() = type == CardType.ActionRuins
 
+    val isShelter: Boolean
+        get() = type == CardType.ActionShelter || type == CardType.ReactionShelter || type == CardType.VictoryShelter
+
     val isCurseOnly: Boolean
         get() = name == Curse.NAME
 

@@ -3,9 +3,7 @@ package com.kingdom.repository
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.cornucopia.*
-import com.kingdom.model.cards.darkages.Beggar
-import com.kingdom.model.cards.darkages.PoorHouse
-import com.kingdom.model.cards.darkages.Squire
+import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
@@ -172,8 +170,10 @@ class CardRepository {
     val darkAgesCards: List<Card>
         get() = listOf(
                 Beggar(),
+                Forager(),
                 PoorHouse(),
-                Squire()
+                Squire(),
+                Vagrant()
         )
 
     val allCards: List<Card>
