@@ -23,7 +23,7 @@ class Contraband : ProsperityCard(NAME, CardType.Treasure, 5), ChooseCardActionC
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.game.currentPlayer.cardsUnavailableToBuyThisTurn.add(card)
         player.game.currentPlayer.addUsernameGameLog("can't buy ${card.cardNameWithBackgroundColor} this turn")
-        player.game.showInfoMessage(player.game.currentPlayer, "You can't buy ${card.cardNameWithBackgroundColor} this turn")
+        player.game.currentPlayer.showInfoMessage("You can't buy ${card.cardNameWithBackgroundColor} this turn")
     }
 
     companion object {

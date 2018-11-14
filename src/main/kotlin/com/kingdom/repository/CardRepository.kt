@@ -171,6 +171,7 @@ class CardRepository {
         get() = listOf(
                 Beggar(),
                 Forager(),
+                Hermit(),
                 PoorHouse(),
                 Squire(),
                 Vagrant()

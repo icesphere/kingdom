@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Forager : DarkAgesCard(NAME, CardType.Action, 3), TrashCardsForBenefitActionCard {
 
     init {
-        testing = true
         addActions = 1
         addBuys = 1
         special = "Trash a card from your hand, then +\$1 per differently named Treasure in the trash."
@@ -20,7 +19,11 @@ class Forager : DarkAgesCard(NAME, CardType.Action, 3), TrashCardsForBenefitActi
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         val numDifferentTreasuresInTrash = player.game.trashedCards.groupBy { it.name }.size
-        player.addGameLog("There were $numDifferentTreasuresInTrash differently named treasures in the trash")
+        if (numDifferentTreasuresInTrash == 1) {
+            player.addGameLog("There was 1 differently named treasure in the trash")
+        } else {
+            player.addGameLog("There were $numDifferentTreasuresInTrash differently named treasures in the trash")
+        }
         if (numDifferentTreasuresInTrash > 0) {
             player.addCoins(numDifferentTreasuresInTrash)
         }

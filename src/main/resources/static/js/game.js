@@ -250,6 +250,13 @@ function showIslandCards() {
     $('#showCardsDiv').show()
 }
 
+function showCardsNotInSupply() {
+
+    $('#showCardsDiv').load('showCardsNotInSupply.html')
+
+    $('#showCardsDiv').show()
+}
+
 function hideShowCardsDiv() {
     $('#showCardsDiv').hide()
 }

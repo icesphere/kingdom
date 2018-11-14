@@ -657,6 +657,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String, info: Any? = null)
 
+    fun gainCardNotInSupply(card: Card) {
+        if (game.isCardAvailableInSupply(card)) {
+            game.removeCardFromSupply(card)
+
+            cardGained(card)
+        }
+    }
+
     fun gainSupplyCard(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {
 
         //create copy of card so that it doesn't affect card chosen in case it came from somewhere other than the supply
@@ -1212,4 +1220,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                                    cardsToSelectFrom: List<Card>,
                                    optional: Boolean,
                                    info: Any? = null)
+
+    fun showInfoMessage(message: String) {
+        game.showInfoMessage(this, message)
+    }
 }

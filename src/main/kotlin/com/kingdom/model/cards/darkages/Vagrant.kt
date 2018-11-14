@@ -6,10 +6,10 @@ import com.kingdom.model.players.Player
 class Vagrant : DarkAgesCard(NAME, CardType.Action, 2) {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         special = "Reveal the top card of your deck. If it’s a Curse, Ruins, Shelter, or Victory card, put it into your hand."
+        textSize = 82
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

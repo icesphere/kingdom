@@ -32,7 +32,7 @@ class Venture : ProsperityCard(NAME, CardType.Treasure, 5) {
 
         if (!treasureFound) {
             player.addUsernameGameLog("No treasures found")
-            player.game.showInfoMessage(player, "No treasures found")
+            player.showInfoMessage("No treasures found")
         }
     }
 

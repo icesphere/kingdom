@@ -22,7 +22,7 @@
                 var mobile = false;
             </script>
         </#if>
-        <script type="text/javascript" src="js/game.js?2"></script>
+        <script type="text/javascript" src="js/game.js?3"></script>
 	</head>
 	<body>
         <div class="topGradient"></div>

@@ -25,7 +25,7 @@ class Inn : HinterlandsCard(NAME, CardType.Action, 5), AfterCardGainedListenerFo
         if (actionCardsInDiscard.isNotEmpty()) {
             player.chooseCardsAction(actionCardsInDiscard.size, "Reveal any number of Action cards from your discard pile to shuffle into your deck", this, actionCardsInDiscard, true)
         } else {
-            player.game.showInfoMessage(player, "There were no Action cards in your discard pile. Discard pile contained: ${player.cardsInDiscard.groupedString}")
+            player.showInfoMessage("There were no Action cards in your discard pile. Discard pile contained: ${player.cardsInDiscard.groupedString}")
         }
     }
 

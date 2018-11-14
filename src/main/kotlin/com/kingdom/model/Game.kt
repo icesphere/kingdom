@@ -66,6 +66,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     val pileAmounts = HashMap<String, Int>()
 
+    var cardsNotInSupply: MutableList<Card> = ArrayList()
+
     var blackMarketCards: MutableList<Card> = ArrayList(0)
 
     var trashedCards: MutableList<Card> = ArrayList()

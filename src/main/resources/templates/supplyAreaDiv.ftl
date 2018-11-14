@@ -35,4 +35,9 @@
             </td>
         </#if>
     </tr>
+    <#if showCardsNotInSupply>
+        <tr>
+            <td <#if !mobile>style="padding-left: 48px;"</#if>><a href="javascript:showCardsNotInSupply()">Show cards not in supply</a>
+        </tr>
+    </#if>
 </table>

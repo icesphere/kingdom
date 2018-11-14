@@ -24,7 +24,7 @@ class CountingHouse : ProsperityCard(NAME, CardType.Action, 5), ChoiceActionCard
 
             player.makeChoiceFromList(this, "How many Coppers would you like to add to your hand from your discard pile?", choices)
         } else {
-            player.game.showInfoMessage(player, "There are no Coppers in your discard pile")
+            player.showInfoMessage("There are no Coppers in your discard pile")
         }
     }
 

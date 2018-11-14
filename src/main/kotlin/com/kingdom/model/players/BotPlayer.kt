@@ -335,9 +335,11 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                     !card.isTrashingFromHandToUpgradeCard && getBuyCardScore(cardToTrash) > 3 -> -1
                     card.isTrashingFromHandToUpgradeCard && (cardToTrash.isProvince || cardToTrash.isColony) -> -1
                     (card.name == Upgrade.NAME || card.name == Remake.NAME) && cardToTrash.cost > 2 && game.availableCards.none { it.cost == card.cost + 1 } -> 1
+                    card.addActions > 0 -> 10
                     else -> card.cost
                 }
             }
+            card.addActions > 0 -> 10
             else -> card.cost
         }
     }

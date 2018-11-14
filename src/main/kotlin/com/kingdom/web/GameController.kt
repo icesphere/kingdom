@@ -1818,6 +1818,16 @@ class GameController(private val cardManager: CardManager,
         return getShowCardsDiv(request, response, player.islandCards, "Island Cards")
     }
 
+    @RequestMapping("/showCardsNotInSupply.html")
+    fun showCardsNotInSupply(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return ModelAndView("redirect:/login.html")
+        }
+        return getShowCardsDiv(request, response, game.cardsNotInSupply, "Cards not in supply")
+    }
+
     private fun getShowCardsDiv(request: HttpServletRequest, response: HttpServletResponse, cardsToShow: List<Card>, cardsToShowTitle: String): ModelAndView {
         val user = getUser(request)
         val game = getGame(request)
@@ -1876,6 +1886,8 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("winnerString", game.winnerString)
         modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents)
         modelAndView.addObject("logId", game.logId)
+
+        modelAndView.addObject("showCardsNotInSupply", game.cardsNotInSupply.isNotEmpty())
     }
 
     private fun getUser(request: HttpServletRequest): User? {

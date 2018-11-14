@@ -33,7 +33,7 @@ class NativeVillage : SeasideCard(NAME, CardType.Action, 2), GameSetupModifier, 
             val topCardOfDeck = player.removeTopCardOfDeck()
             if (topCardOfDeck != null) {
                 player.nativeVillageCards.add(topCardOfDeck)
-                player.game.showInfoMessage(player, "Added ${topCardOfDeck.cardNameWithBackgroundColor} to your ${this.cardNameWithBackgroundColor}")
+                player.showInfoMessage("Added ${topCardOfDeck.cardNameWithBackgroundColor} to your ${this.cardNameWithBackgroundColor}")
             }
         } else {
             player.hand.addAll(player.nativeVillageCards)

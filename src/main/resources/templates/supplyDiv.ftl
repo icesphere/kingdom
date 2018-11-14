@@ -56,7 +56,7 @@
     </tr>
     <#if showTradeRouteTokens>
         <tr>
-            <td colspan="3">Trade Route Mat: ${tradeRouteTokensOnMat} token<#if tradeRouteTokensOnMat != 1>s</#if></td>
+            <td colspan="3" style="padding-left: 45px;">Trade Route Mat: ${tradeRouteTokensOnMat} token<#if tradeRouteTokensOnMat != 1>s</#if></td>
         </tr>
     </#if>
 </table>
