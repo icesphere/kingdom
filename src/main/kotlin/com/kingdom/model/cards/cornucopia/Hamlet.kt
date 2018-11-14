@@ -39,7 +39,7 @@ class Hamlet : CornucopiaCard(NAME, CardType.Action, 2), ChoiceActionCard, Disca
         }
     }
 
-    override fun cardsDiscarded(player: Player, discardedCards: List<Card>) {
+    override fun cardsDiscarded(player: Player, discardedCards: List<Card>, info: Any?) {
         if (discardingCardForAction) {
             player.addActions(1)
 

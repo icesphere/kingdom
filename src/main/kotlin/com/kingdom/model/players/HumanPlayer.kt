@@ -32,8 +32,8 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(TrashCardsFromHandForBenefit(card, numCardsToTrash, text, false))
     }
 
-    override fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String) {
-        addAction(DiscardCardsFromHandForBenefit(card, numCardsToDiscard, text, true, null))
+    override fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, info: Any?) {
+        addAction(DiscardCardsFromHandForBenefit(card, numCardsToDiscard, text, true, null, info))
     }
 
     override fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {

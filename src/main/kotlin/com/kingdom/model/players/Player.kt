@@ -358,7 +358,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.turnEnded(isAutoEnd)
     }
 
-    abstract fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String)
+    abstract fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, info: Any? = null)
     abstract fun optionallyTrashCardsFromHand(numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null)
     abstract fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String = "")
     abstract fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String)
@@ -407,6 +407,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (card is AfterCardTrashedListenerForSelf) {
             card.afterCardTrashed(this)
+        }
+
+        val cardTrashedListenersForCardsInHand = hand.filter { it is AfterCardTrashedListenerForCardsInHand }
+        for (listener in cardTrashedListenersForCardsInHand) {
+            (listener as AfterCardTrashedListenerForCardsInHand).afterCardTrashed(card, this)
         }
     }
 
@@ -1223,5 +1228,31 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun showInfoMessage(message: String) {
         game.showInfoMessage(this, message)
+    }
+
+    fun discardCardsFromDeckUntilCardFound(cardExpression: ((Card) -> Boolean)): Card? {
+        var cardsShuffled = false
+
+        while(true) {
+            if (deck.isEmpty()) {
+                if (cardsShuffled) {
+                    break
+                } else {
+                    cardsShuffled = true
+                }
+            }
+            val card = removeTopCardOfDeck()
+            if (card != null) {
+                if (cardExpression.invoke(card)) {
+                    return card
+                } else {
+                    addCardToDiscard(card, showLog = true)
+                }
+            } else {
+                break
+            }
+        }
+
+        return null
     }
 }

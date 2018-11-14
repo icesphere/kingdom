@@ -6,6 +6,7 @@ import com.kingdom.model.players.Player
 class Venture : ProsperityCard(NAME, CardType.Treasure, 5) {
 
     init {
+        testing = true
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         addCoins = 1
@@ -14,25 +15,14 @@ class Venture : ProsperityCard(NAME, CardType.Treasure, 5) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        var treasureFound = false
+        val card = player.discardCardsFromDeckUntilCardFound { c -> c.isTreasure }
 
-        while(!treasureFound) {
-            val card = player.removeTopCardOfDeck()
-            if (card != null) {
-                if (card.isTreasure) {
-                    treasureFound = true
-                    player.playCard(card)
-                } else {
-                    player.addCardToDiscard(card, showLog = true)
-                }
-            } else {
-                break
-            }
-        }
-
-        if (!treasureFound) {
-            player.addUsernameGameLog("No treasures found")
-            player.showInfoMessage("No treasures found")
+        if (card != null) {
+            player.playCard(card)
+        } else {
+            val message = "No treasures found"
+            player.addUsernameGameLog(message)
+            player.showInfoMessage(message)
         }
     }
 

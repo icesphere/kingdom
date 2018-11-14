@@ -172,8 +172,11 @@ class CardRepository {
                 Beggar(),
                 Forager(),
                 Hermit(),
+                MarketSquare(),
                 PoorHouse(),
+                Sage(),
                 Squire(),
+                Storeroom(),
                 Vagrant()
         )
 

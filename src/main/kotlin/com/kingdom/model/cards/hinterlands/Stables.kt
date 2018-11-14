@@ -24,7 +24,7 @@ class Stables : HinterlandsCard(NAME, CardType.Action, 5), ChoiceActionCard, Dis
         }
     }
 
-    override fun cardsDiscarded(player: Player, discardedCards: List<Card>) {
+    override fun cardsDiscarded(player: Player, discardedCards: List<Card>, info: Any?) {
         player.drawCards(3)
         player.addActions(1)
     }

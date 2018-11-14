@@ -23,7 +23,7 @@ class Vault : ProsperityCard(NAME, CardType.Action, 5), DiscardCardsForBenefitAc
         }
     }
 
-    override fun cardsDiscarded(player: Player, discardedCards: List<Card>) {
+    override fun cardsDiscarded(player: Player, discardedCards: List<Card>, info: Any?) {
         if (player.isYourTurn) {
             if (discardedCards.isNotEmpty()) {
                 player.addUsernameGameLog("Gained +\$${discardedCards.size} from ${this.cardNameWithBackgroundColor}")

@@ -5,13 +5,11 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.players.Player
-import com.kingdom.util.groupedString
 
 class Loan : ProsperityCard(NAME, CardType.Treasure, 3), ChoiceActionCard {
 
-    var treasureCard: Card? = null
-
     init {
+        testing = true
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         addCoins = 1
@@ -21,33 +19,20 @@ class Loan : ProsperityCard(NAME, CardType.Treasure, 3), ChoiceActionCard {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        var treasureFound = false
 
-        val revealedCards = mutableListOf<Card>()
+        val card = player.discardCardsFromDeckUntilCardFound { c -> c.isTreasure }
 
-        while(!treasureFound) {
-            val card = player.removeTopCardOfDeck()
-            if (card != null) {
-                revealedCards.add(card)
-                if (card.isTreasure) {
-                    treasureFound = true
-                    treasureCard = card
-                    player.makeChoice(this, "Discard or Trash ${card.cardNameWithBackgroundColor}?", Choice(1, "Discard"), Choice(2, "Trash"))
-                } else {
-                    player.addCardToDiscard(card)
-                }
-            } else {
-                break
-            }
-        }
-
-        if (revealedCards.isNotEmpty()) {
-            player.addUsernameGameLog("revealed: ${revealedCards.groupedString}")
+        if (card != null) {
+            player.makeChoiceWithInfo(this, "Discard or Trash ${card.cardNameWithBackgroundColor}?", card, Choice(1, "Discard"), Choice(2, "Trash"))
+        } else {
+            val message = "No treasures found"
+            player.addUsernameGameLog(message)
+            player.showInfoMessage(message)
         }
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-        val card = treasureCard!!
+        val card = info as Card
 
         if (choice == 1) {
             player.addCardToDiscard(card, showLog = true)

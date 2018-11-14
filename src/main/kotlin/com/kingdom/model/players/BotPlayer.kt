@@ -11,6 +11,7 @@ import com.kingdom.model.cards.cornucopia.Hamlet
 import com.kingdom.model.cards.cornucopia.HorseTraders
 import com.kingdom.model.cards.cornucopia.Jester
 import com.kingdom.model.cards.cornucopia.Remake
+import com.kingdom.model.cards.darkages.MarketSquare
 import com.kingdom.model.cards.darkages.Squire
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
@@ -127,7 +128,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         cardsToDiscard.forEach({ this.discardCardFromHand(it) })
     }
 
-    override fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String) {
+    override fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, info: Any?) {
         val optionalDiscard = true
 
         val cardsToDiscard = getCardsToDiscard(numCardsToDiscard, optionalDiscard)
@@ -135,7 +136,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         cardsToDiscard.forEach({ this.discardCardFromHand(it) })
 
         if (!cardsToDiscard.isEmpty()) {
-            card.cardsDiscarded(this, cardsToDiscard)
+            card.cardsDiscarded(this, cardsToDiscard, info)
         } else {
             card.onChoseDoNotUse(this)
         }
@@ -148,7 +149,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         if (!cardsToDiscard.isEmpty()) {
             cardsToDiscard.forEach({ this.discardCardFromHand(it) })
-            card.cardsDiscarded(this, cardsToDiscard)
+            card.cardsDiscarded(this, cardsToDiscard, null)
         } else {
             card.onChoseDoNotUse(this)
         }
@@ -407,6 +408,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Library.NAME -> if (actions > 0 && hand.none { it.isAction }) 1 else 2
             Loan.NAME -> if (card.isCopper) 2 else 1
             Lurker.NAME -> if (game.trashedCards.any { getBuyCardScore(it) > 4 }) 2 else 1
+            MarketSquare.NAME -> if (turns < 10 || game.pileAmounts[Province.NAME]!! > 3) 1 else 2
             Mill.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
             MiningVillage.NAME -> when {
                 game.availableCards.any { it.isColony } && availableCoins < 11 && availableCoins > 8 -> 1
