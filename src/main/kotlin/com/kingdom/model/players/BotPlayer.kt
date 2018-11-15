@@ -169,8 +169,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         card.actionChoiceMade(this, choice, info)
     }
 
-    override fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean) {
-        val card = getCardToTrashFromHand(optional)
+    override fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        val card = getCardToTrashFromHand(optional, null, cardActionableExpression)
         if (card != null) {
             trashCardFromHand(card)
         }
@@ -494,9 +494,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return cardsToDiscard
     }
 
-    private fun getCardToTrashFromHand(optional: Boolean, excludeCardExpression: ((card: Card) -> Boolean)? = null): Card? {
+    private fun getCardToTrashFromHand(optional: Boolean, excludeCardExpression: ((card: Card) -> Boolean)? = null, cardActionableExpression: ((card: Card) -> Boolean)? = null): Card? {
 
-        val cardsAvailableToTrash = hand.filter { excludeCardExpression == null || !excludeCardExpression(it) }
+        val cardsAvailableToTrash = hand.filter { (excludeCardExpression == null || !excludeCardExpression(it)) && (cardActionableExpression == null || cardActionableExpression(it)) }
 
         if (cardsAvailableToTrash.isNotEmpty()) {
             val sortedCards = cardsAvailableToTrash.sortedByDescending { getTrashCardScore(it) }

@@ -178,6 +178,7 @@ class CardRepository {
                 Ironmonger(),
                 MarketSquare(),
                 PoorHouse(),
+                Rats(),
                 Sage(),
                 Squire(),
                 Storeroom(),

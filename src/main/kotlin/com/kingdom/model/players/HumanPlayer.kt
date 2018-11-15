@@ -52,11 +52,11 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(ChoiceAction(card, text, info, *choices))
     }
 
-    override fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean) {
+    override fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?) {
         if (optional) {
-            addAction(TrashCardsFromHand(numCardsToTrash, "You may trash a card from your hand", true))
+            addAction(TrashCardsFromHand(numCardsToTrash, "You may trash a card from your hand", true, cardActionableExpression))
         } else {
-            addAction(TrashCardsFromHand(numCardsToTrash, "", false))
+            addAction(TrashCardsFromHand(numCardsToTrash, "", false, cardActionableExpression))
         }
     }
 

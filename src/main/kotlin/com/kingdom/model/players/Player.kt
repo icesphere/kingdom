@@ -526,11 +526,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         makeChoice(card, text, *choices.toTypedArray())
     }
 
-    fun trashCardFromHand(optional: Boolean) {
-        trashCardsFromHand(1, optional)
+    fun trashCardFromHand(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)? = null) {
+        trashCardsFromHand(1, optional, cardActionableExpression)
     }
 
-    abstract fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean)
+    abstract fun trashCardsFromHand(numCardsToTrash: Int, optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
     abstract fun trashCardFromSupply(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?)
 
