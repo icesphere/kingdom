@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class Venture : ProsperityCard(NAME, CardType.Treasure, 5) {
 
     init {
-        testing = true
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         addCoins = 1
@@ -15,7 +14,7 @@ class Venture : ProsperityCard(NAME, CardType.Treasure, 5) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val card = player.discardCardsFromDeckUntilCardFound { c -> c.isTreasure }
+        val card = player.revealFromDeckUntilCardFoundAndDiscardOthers { c -> c.isTreasure }
 
         if (card != null) {
             player.playCard(card)

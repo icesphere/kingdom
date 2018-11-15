@@ -138,7 +138,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         if (!cardsToDiscard.isEmpty()) {
             card.cardsDiscarded(this, cardsToDiscard, info)
         } else {
-            card.onChoseDoNotUse(this)
+            card.onChoseDoNotUse(this, info)
         }
     }
 
@@ -151,7 +151,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             cardsToDiscard.forEach({ this.discardCardFromHand(it) })
             card.cardsDiscarded(this, cardsToDiscard, null)
         } else {
-            card.onChoseDoNotUse(this)
+            card.onChoseDoNotUse(this, null)
         }
     }
 

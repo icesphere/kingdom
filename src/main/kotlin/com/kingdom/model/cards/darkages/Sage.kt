@@ -6,15 +6,14 @@ import com.kingdom.model.players.Player
 class Sage : DarkAgesCard(NAME, CardType.Action, 3) {
 
     init {
-        testing = true
         addActions = 1
         special = "Reveal cards from your deck until you reveal one costing \$3 or more. Put that card into your hand and discard the rest."
-        textSize = 85
+        textSize = 97
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
 
-        val card = player.discardCardsFromDeckUntilCardFound { c -> player.getCardCostWithModifiers(c) >= 3 }
+        val card = player.revealFromDeckUntilCardFoundAndDiscardOthers { c -> player.getCardCostWithModifiers(c) >= 3 }
 
         if (card != null) {
             player.addCardToHand(card, true)

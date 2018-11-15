@@ -1230,29 +1230,36 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.showInfoMessage(this, message)
     }
 
-    fun discardCardsFromDeckUntilCardFound(cardExpression: ((Card) -> Boolean)): Card? {
-        var cardsShuffled = false
+    fun revealFromDeckUntilCardFoundAndDiscardOthers(cardExpression: ((Card) -> Boolean)): Card? {
+        val revealedCards = mutableListOf<Card>()
+        val cardsToDiscard = mutableListOf<Card>()
+
+        var cardFound: Card? = null
 
         while(true) {
-            if (deck.isEmpty()) {
-                if (cardsShuffled) {
-                    break
-                } else {
-                    cardsShuffled = true
-                }
-            }
             val card = removeTopCardOfDeck()
             if (card != null) {
+                revealedCards.add(card)
                 if (cardExpression.invoke(card)) {
-                    return card
+                    cardFound = card
+                    break
                 } else {
-                    addCardToDiscard(card, showLog = true)
+                    cardsToDiscard.add(card)
                 }
             } else {
                 break
             }
         }
 
-        return null
+        if (revealedCards.isNotEmpty()) {
+            addUsernameGameLog("revealed ${revealedCards.groupedString} from their deck")
+        }
+
+        if (cardsToDiscard.isNotEmpty()) {
+            addCardsToDiscard(cardsToDiscard)
+            addUsernameGameLog("discarded ${revealedCards.groupedString}")
+        }
+
+        return cardFound
     }
 }

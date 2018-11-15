@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class HuntingParty : CornucopiaCard(NAME, CardType.Action, 5) {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         special = "Reveal your hand. Reveal cards from your deck until you reveal one that isn’t a copy of one in your hand. Put it into your hand and discard the rest."
@@ -19,7 +18,7 @@ class HuntingParty : CornucopiaCard(NAME, CardType.Action, 5) {
 
         val handCardNames = player.hand.distinctBy { it.name }.map { it.name }
 
-        val card = player.discardCardsFromDeckUntilCardFound { c -> !handCardNames.contains(c.name) }
+        val card = player.revealFromDeckUntilCardFoundAndDiscardOthers { c -> !handCardNames.contains(c.name) }
 
         if (card != null) {
             player.addCardToHand(card, true)

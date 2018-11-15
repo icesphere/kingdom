@@ -11,7 +11,7 @@ class Cellar : KingdomCard(NAME, CardType.Action, 2), DiscardCardsForBenefitActi
         player.drawCards(discardedCards.size)
     }
 
-    override fun onChoseDoNotUse(player: Player) {
+    override fun onChoseDoNotUse(player: Player, info: Any?) {
         //do nothing
     }
 

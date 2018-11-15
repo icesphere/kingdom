@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Storeroom : DarkAgesCard(NAME, CardType.Action, 3), DiscardCardsForBenefitActionCard {
 
     init {
-        testing = true
         addBuys = 1
         special = "Discard any number of cards, then draw that many. Then discard any number of cards for +\$1 each."
     }
@@ -24,7 +23,7 @@ class Storeroom : DarkAgesCard(NAME, CardType.Action, 3), DiscardCardsForBenefit
             if (discardedCards.isNotEmpty()) {
                 player.drawCards(discardedCards.size)
             }
-            player.optionallyDiscardCardsForBenefit(this, player.hand.size, "Discard any number of cards for +\$1 each", false)
+            discardCardsForCoins(player)
         } else {
             if (discardedCards.isNotEmpty()) {
                 player.addCoins(discardedCards.size)
@@ -32,8 +31,17 @@ class Storeroom : DarkAgesCard(NAME, CardType.Action, 3), DiscardCardsForBenefit
         }
     }
 
-    override fun onChoseDoNotUse(player: Player) {
-        //do nothing
+    private fun discardCardsForCoins(player: Player) {
+        player.optionallyDiscardCardsForBenefit(this, player.hand.size, "Discard any number of cards for +\$1 each", false)
+    }
+
+    override fun onChoseDoNotUse(player: Player, info: Any?) {
+
+        val discardToGainCards = info as Boolean
+
+        if (discardToGainCards) {
+            discardCardsForCoins(player)
+        }
     }
 
     companion object {

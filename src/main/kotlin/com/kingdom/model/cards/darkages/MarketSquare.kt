@@ -10,13 +10,12 @@ import com.kingdom.model.players.Player
 class MarketSquare : DarkAgesCard(NAME, CardType.ActionReaction, 3), AfterCardTrashedListenerForCardsInHand, ChoiceActionCard {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         addBuys = 1
         special = "When one of your cards is trashed, you may discard this from your hand to gain a Gold."
         fontSize = 10
-        textSize = 60
+        textSize = 55
     }
 
     override fun afterCardTrashed(card: Card, player: Player) {

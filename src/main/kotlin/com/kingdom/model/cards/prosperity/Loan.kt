@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Loan : ProsperityCard(NAME, CardType.Treasure, 3), ChoiceActionCard {
 
     init {
-        testing = true
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         addCoins = 1
@@ -20,7 +19,7 @@ class Loan : ProsperityCard(NAME, CardType.Treasure, 3), ChoiceActionCard {
 
     override fun cardPlayedSpecialAction(player: Player) {
 
-        val card = player.discardCardsFromDeckUntilCardFound { c -> c.isTreasure }
+        val card = player.revealFromDeckUntilCardFoundAndDiscardOthers { c -> c.isTreasure }
 
         if (card != null) {
             player.makeChoiceWithInfo(this, "Discard or Trash ${card.cardNameWithBackgroundColor}?", card, Choice(1, "Discard"), Choice(2, "Trash"))

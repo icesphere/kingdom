@@ -40,7 +40,7 @@ class Vault : ProsperityCard(NAME, CardType.Action, 5), DiscardCardsForBenefitAc
         }
     }
 
-    override fun onChoseDoNotUse(player: Player) {
+    override fun onChoseDoNotUse(player: Player, info: Any?) {
         //do nothing
     }
 

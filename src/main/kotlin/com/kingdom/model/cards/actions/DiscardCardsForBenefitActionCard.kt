@@ -5,5 +5,5 @@ import com.kingdom.model.cards.Card
 
 interface DiscardCardsForBenefitActionCard {
     fun cardsDiscarded(player: Player, discardedCards: List<Card>, info: Any?)
-    fun onChoseDoNotUse(player: Player)
+    fun onChoseDoNotUse(player: Player, info: Any?)
 }

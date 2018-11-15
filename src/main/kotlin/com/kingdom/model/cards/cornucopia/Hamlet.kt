@@ -56,7 +56,7 @@ class Hamlet : CornucopiaCard(NAME, CardType.Action, 2), ChoiceActionCard, Disca
         }
     }
 
-    override fun onChoseDoNotUse(player: Player) {
+    override fun onChoseDoNotUse(player: Player, info: Any?) {
         //do nothing
     }
 
