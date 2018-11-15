@@ -556,6 +556,10 @@ class GameController(private val cardManager: CardManager,
                     game.isIncludeColonyCards = true
                     game.isIncludePlatinumCards = true
                 }
+
+                val includeShelters = !game.isExcludeShelters && (game.isIncludeShelters || game.kingdomCards[1].deck == Deck.DarkAges)
+                game.isIncludeShelters = includeShelters
+
                 if (includePrizes || hasBlackMarket) {
                     game.prizeCards = cardManager.prizeCards
                 }

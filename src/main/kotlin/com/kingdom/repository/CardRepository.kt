@@ -171,8 +171,11 @@ class CardRepository {
         get() = listOf(
                 Armory(),
                 Beggar(),
+                Feodum(),
                 Forager(),
+                Fortress(),
                 Hermit(),
+                Ironmonger(),
                 MarketSquare(),
                 PoorHouse(),
                 Sage(),

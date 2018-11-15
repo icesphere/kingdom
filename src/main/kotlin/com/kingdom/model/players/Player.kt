@@ -986,6 +986,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addUsernameGameLog("revealed ${card.cardNameWithBackgroundColor} from their hand")
     }
 
+    fun revealTopCardOfDeck(): Card? {
+        val cards = revealTopCardsOfDeck(1)
+        return cards.firstOrNull()
+    }
+
     fun revealTopCardsOfDeck(cards: Int): List<Card> {
         val revealedCards = ArrayList<Card>()
 

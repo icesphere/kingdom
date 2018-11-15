@@ -17,12 +17,15 @@ class Ironworks : IntrigueCard(NAME, CardType.Action, 4), FreeCardFromSupplyForB
 
     override fun onCardGained(player: Player, card: Card) {
         if (card.isAction) {
+            player.addUsernameGameLog("gained +1 Action from ${this.cardNameWithBackgroundColor}")
             player.addActions(1)
         }
         if (card.isTreasure) {
+            player.addUsernameGameLog("gained +\$1 from ${this.cardNameWithBackgroundColor}")
             player.addCoins(1)
         }
         if (card.isVictory) {
+            player.addUsernameGameLog("gained +1 Card from ${this.cardNameWithBackgroundColor}")
             player.drawCard()
         }
     }
