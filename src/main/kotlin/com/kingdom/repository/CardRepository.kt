@@ -169,6 +169,7 @@ class CardRepository {
 
     val darkAgesCards: List<Card>
         get() = listOf(
+                Armory(),
                 Beggar(),
                 Forager(),
                 Hermit(),
