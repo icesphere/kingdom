@@ -67,6 +67,7 @@ abstract class Card(
             CardType.ActionShelter -> "Action - Shelter"
             CardType.ReactionShelter -> "Reaction - Shelter"
             CardType.VictoryShelter -> "Victory - Shelter"
+            CardType.ActionLooter -> "Action - Looter"
         }
 
     val numTypes: Int
@@ -88,6 +89,7 @@ abstract class Card(
             CardType.ActionShelter -> 2
             CardType.ReactionShelter -> 2
             CardType.VictoryShelter -> 2
+            CardType.ActionLooter -> 2
         }
 
     val isSpecialCard: Boolean
@@ -138,7 +140,7 @@ abstract class Card(
         get() = type == CardType.VictoryReaction
 
     val isAction: Boolean
-        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionShelter
+        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionShelter || type == CardType.ActionLooter
 
     open val isTerminalAction: Boolean
         get() = isAction && addActions == 0
@@ -160,6 +162,9 @@ abstract class Card(
 
     val isShelter: Boolean
         get() = type == CardType.ActionShelter || type == CardType.ReactionShelter || type == CardType.VictoryShelter
+
+    val isLooter: Boolean
+        get() = type == CardType.ActionLooter
 
     val isCurseOnly: Boolean
         get() = name == Curse.NAME
@@ -202,7 +207,7 @@ abstract class Card(
             type == CardType.ActionReaction -> CardColor.ActionReaction
             type == CardType.Curse -> CardColor.Curse
             type == CardType.ActionDuration -> CardColor.ActionDuration
-            type == CardType.ActionRuins -> CardColor.ActionDuration
+            type == CardType.ActionRuins -> CardColor.Ruins
             type == CardType.ActionShelter -> CardColor.ActionShelter
             type == CardType.ReactionShelter -> CardColor.ReactionShelter
             type == CardType.VictoryShelter -> CardColor.VictoryShelter

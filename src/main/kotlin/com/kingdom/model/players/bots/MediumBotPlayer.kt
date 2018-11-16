@@ -3,6 +3,7 @@ package com.kingdom.model.players.bots
 import com.kingdom.model.Game
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.darkages.Rats
 import com.kingdom.model.cards.kingdom.ThroneRoom
 import com.kingdom.model.cards.kingdom.Witch
 import com.kingdom.model.cards.prosperity.Forge
@@ -43,6 +44,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Lookout.NAME -> return true
             card.isVictoryOnly && !includeVictoryOnlyCards -> true
             card.name == Forge.NAME -> return true
+            card.name == Rats.NAME -> return true
             card.name == Witch.NAME && turns >= 8 -> true
             card.name == Mint.NAME && turns >= 5 -> return true
             card.name == TreasureMap.NAME -> return true

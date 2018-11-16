@@ -7,6 +7,7 @@ class AbandonedMine : DarkAgesCard(NAME, CardType.ActionRuins, 0) {
 
     init {
         addCoins = 1
+        fontSize = 9
     }
 
     companion object {

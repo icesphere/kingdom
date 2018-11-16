@@ -1202,12 +1202,13 @@ class GameController(private val cardManager: CardManager,
     private fun addSupplyDataToModelAndView(game: Game, player: Player, modelAndView: ModelAndView) {
         val kingdomCards = game.kingdomCards.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it }
         modelAndView.addObject("kingdomCards", kingdomCards)
-        val supplyCards = game.supplyCards.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it }
+
+        val supplyCards = game.cardsInSupply.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it }
         modelAndView.addObject("supplyCards", supplyCards)
 
         try {
             val bw = BeansWrapper()
-            modelAndView.addObject("supply", bw.wrap(game.pileAmounts))
+            modelAndView.addObject("supply", bw.wrap(game.numInPileMap))
             modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
             if (game.isShowEmbargoTokens) {
                 modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
@@ -1860,7 +1861,7 @@ class GameController(private val cardManager: CardManager,
 
         addSupplyDataToModelAndView(game, player, modelAndView)
 
-        modelAndView.addObject("supplySize", game.pileAmounts.size)
+        modelAndView.addObject("supplySize", game.allCards.size)
         modelAndView.addObject("players", game.players)
 
         addPlayingAreaDataToModelView(game, player, modelAndView)
@@ -2401,7 +2402,23 @@ class GameController(private val cardManager: CardManager,
         }
         val modelAndView = ModelAndView("gameCards")
         game.kingdomCards.forEach { it.isHighlighted = false }
-        modelAndView.addObject("cards", game.kingdomCards)
+
+
+        val cards = game.kingdomCards.toMutableList()
+
+        if (game.cardsNotInSupply.isNotEmpty()) {
+            cards.addAll(game.cardsNotInSupply)
+        }
+
+        if (game.isIncludeShelters) {
+            cards.addAll(cardManager.shelters)
+        }
+
+        if (game.isIncludeRuins) {
+            cards.addAll(cardManager.ruins)
+        }
+
+        modelAndView.addObject("cards", cards)
         modelAndView.addObject("prizeCards", game.prizeCards)
         modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
         return modelAndView

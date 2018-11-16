@@ -13,7 +13,7 @@ enum class CardColor(val color: String, val isImage: Boolean = false) {
     TreasureCurse("gold_purple.gif", true),
     DurationVictory("orange_green.gif", true),
     TreasureReaction("gold_blue.gif", true),
-    Ruins("#9C633F"),
+    Ruins("#B68C59"),
     ActionShelter("grey_red.png", true),
     ReactionShelter("blue_red.png", true),
     VictoryShelter("green_red.png", true)

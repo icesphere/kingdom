@@ -17,5 +17,6 @@ enum class CardType {
     ActionRuins,
     ActionShelter,
     ReactionShelter,
-    VictoryShelter;
+    VictoryShelter,
+    ActionLooter
 }

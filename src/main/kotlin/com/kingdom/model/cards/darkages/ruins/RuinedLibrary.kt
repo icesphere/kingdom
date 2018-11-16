@@ -7,6 +7,7 @@ class RuinedLibrary : DarkAgesCard(NAME, CardType.ActionRuins, 0) {
 
     init {
         addCards = 1
+        fontSize = 10
     }
 
     companion object {

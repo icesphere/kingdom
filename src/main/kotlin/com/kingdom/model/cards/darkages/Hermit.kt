@@ -17,7 +17,7 @@ class Hermit : DarkAgesCard(NAME, CardType.Action, 3), GameSetupModifier, Choose
 
     override fun modifyGameSetup(game: Game) {
         game.cardsNotInSupply.add(Madman())
-        game.pileAmounts[Madman.NAME] = 10
+        game.setupAmountForPile(Madman.NAME, 10)
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

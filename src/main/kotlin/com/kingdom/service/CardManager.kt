@@ -17,6 +17,12 @@ class CardManager(private val cardRepository: CardRepository,
     val allCards: List<Card>
         get() = cardRepository.allCards
 
+    val shelters: List<Card>
+        get() = cardRepository.shelters
+
+    val ruins: List<Card>
+        get() = cardRepository.ruins
+
     fun getCards(deck: Deck, includeTesting: Boolean): List<Card> {
         return getCardsByDeck(deck, includeTesting)
     }

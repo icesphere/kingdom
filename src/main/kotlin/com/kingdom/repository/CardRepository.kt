@@ -4,6 +4,13 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.cornucopia.*
 import com.kingdom.model.cards.darkages.*
+import com.kingdom.model.cards.darkages.ruins.AbandonedMine
+import com.kingdom.model.cards.darkages.ruins.RuinedLibrary
+import com.kingdom.model.cards.darkages.ruins.RuinedMarket
+import com.kingdom.model.cards.darkages.ruins.RuinedVillage
+import com.kingdom.model.cards.darkages.shelters.Hovel
+import com.kingdom.model.cards.darkages.shelters.Necropolis
+import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
@@ -171,6 +178,7 @@ class CardRepository {
         get() = listOf(
                 Armory(),
                 Beggar(),
+                DeathCart(),
                 Feodum(),
                 Forager(),
                 Fortress(),
@@ -183,6 +191,21 @@ class CardRepository {
                 Squire(),
                 Storeroom(),
                 Vagrant()
+        )
+
+    val shelters: List<Card>
+        get() = listOf(
+                Hovel(),
+                Necropolis(),
+                OvergrownEstate()
+        )
+
+    val ruins: List<Card>
+        get() = listOf(
+                AbandonedMine(),
+                RuinedLibrary(),
+                RuinedMarket(),
+                RuinedVillage()
         )
 
     val allCards: List<Card>

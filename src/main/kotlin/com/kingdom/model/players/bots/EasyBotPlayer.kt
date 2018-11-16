@@ -32,19 +32,19 @@ open class EasyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
     private val onlyBuyVictoryCards: Boolean
         get() {
             var shouldOnlyBuyVictoryCards = false
-            val provincesInSupply = game.pileAmounts[Province.NAME]
+            val provincesInSupply = game.numInPileMap[Province.NAME]
             if (provincesInSupply == null) {
                 val error = GameError(GameError.COMPUTER_ERROR, "Supply was null for Province")
                 game.logError(error)
             }
-            if (game.numPlayers == 2 && game.pileAmounts[Province.NAME]!! <= 2 || game.numPlayers > 2 && game.pileAmounts[Province.NAME]!! <= 3) {
+            if (game.numPlayers == 2 && game.numInPileMap[Province.NAME]!! <= 2 || game.numPlayers > 2 && game.numInPileMap[Province.NAME]!! <= 3) {
                 shouldOnlyBuyVictoryCards = true
-            } else if (game.isIncludeColonyCards && (game.numPlayers == 2 && game.pileAmounts[Colony.NAME]!! <= 2 || game.numPlayers > 2 && game.pileAmounts[Colony.NAME]!! <= 3)) {
+            } else if (game.isIncludeColonyCards && (game.numPlayers == 2 && game.numInPileMap[Colony.NAME]!! <= 2 || game.numPlayers > 2 && game.numInPileMap[Colony.NAME]!! <= 3)) {
                 shouldOnlyBuyVictoryCards = true
             } else if (difficulty >= 2) {
                 var pilesWithOneCard = 0
                 var pilesWithTwoCards = 0
-                for (numInSupply in game.pileAmounts.values) {
+                for (numInSupply in game.numInPileMap.values) {
                     if (numInSupply == 1) {
                         pilesWithOneCard++
                     } else if (numInSupply == 2) {

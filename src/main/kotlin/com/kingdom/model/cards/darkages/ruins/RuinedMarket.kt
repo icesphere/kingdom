@@ -7,6 +7,7 @@ class RuinedMarket : DarkAgesCard(NAME, CardType.ActionRuins, 0) {
 
     init {
         addBuys = 1
+        fontSize = 10
     }
 
     companion object {

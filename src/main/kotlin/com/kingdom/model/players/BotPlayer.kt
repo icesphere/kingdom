@@ -408,7 +408,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Library.NAME -> if (actions > 0 && hand.none { it.isAction }) 1 else 2
             Loan.NAME -> if (card.isCopper) 2 else 1
             Lurker.NAME -> if (game.trashedCards.any { getBuyCardScore(it) > 4 }) 2 else 1
-            MarketSquare.NAME -> if (turns < 10 || game.pileAmounts[Province.NAME]!! > 3) 1 else 2
+            MarketSquare.NAME -> if (turns < 10 || game.numInPileMap[Province.NAME]!! > 3) 1 else 2
             Mill.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
             MiningVillage.NAME -> when {
                 game.availableCards.any { it.isColony } && availableCoins < 11 && availableCoins > 8 -> 1

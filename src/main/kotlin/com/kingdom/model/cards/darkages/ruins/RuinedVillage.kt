@@ -7,6 +7,7 @@ class RuinedVillage : DarkAgesCard(NAME, CardType.ActionRuins, 0) {
 
     init {
         addActions = 1
+        fontSize = 10
     }
 
     companion object {

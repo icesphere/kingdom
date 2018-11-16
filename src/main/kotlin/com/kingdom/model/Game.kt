@@ -3,6 +3,8 @@ package com.kingdom.model
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.GameSetupModifier
+import com.kingdom.model.cards.darkages.Spoils
+import com.kingdom.model.cards.darkages.ruins.*
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.modifiers.CardCostModifierForCardsInPlay
 import com.kingdom.model.cards.supply.*
@@ -18,7 +20,6 @@ import com.kingdom.service.GameMessageService
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.toCardNames
-import org.apache.commons.lang3.StringUtils
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.full.createInstance
@@ -57,14 +58,40 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     private var twoCostKingdomCards = 0
 
-    val supplyCards = ArrayList<Card>()
+    private val supplyCards = ArrayList<Card>()
 
-    val cardMap = HashMap<String, Card>()
+    val cardsInSupply: List<Card>
+        get() {
+            return when {
+                isIncludeRuins -> when {
+                    ruinsPile.isEmpty() -> supplyCards + listOf(RuinsPlaceholder())
+                    else -> supplyCards + listOf(ruinsPile.first())
+                }
+                else -> supplyCards
+            }
+        }
+
+    private val cardMap = HashMap<String, Card>()
 
     val allCards: List<Card>
-        get() = supplyCards + kingdomCards
+        get() = cardsInSupply + kingdomCards
 
-    val pileAmounts = HashMap<String, Int>()
+    private val pileAmounts = HashMap<String, Int>()
+
+    val numInPileMap: Map<String, Int>
+        get() {
+            val amounts = pileAmounts.toMutableMap()
+
+            if (isIncludeRuins) {
+                if (ruinsPile.isEmpty()) {
+                    amounts[RuinsPlaceholder.NAME] = 0
+                } else {
+                    amounts[ruinsPile.first().name] = ruinsPile.size
+                }
+            }
+
+            return amounts
+        }
 
     var cardsNotInSupply: MutableList<Card> = ArrayList()
 
@@ -108,8 +135,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     private val recentTurnLogs = ArrayList<String>()
 
-    private var timedOut: Boolean = false
-
     var creationTime = Date()
 
     var lastActivity = Date()
@@ -147,6 +172,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var isIncludeShelters: Boolean = false
     var isExcludeShelters: Boolean = false
+
+    var isIncludeSpoils: Boolean = false
+
+    var isIncludeRuins: Boolean = false
+    var ruinsPile: MutableList<Card> = ArrayList()
 
     var randomizingOptions: RandomizingOptions? = null
 
@@ -241,8 +271,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         lastActivity = Date()
 
-        setupSupply()
-
         kingdomCards.forEach {
             cardMap[it.name] = it
 
@@ -253,9 +281,20 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             if (it.isDuration) {
                 isShowDuration = true
             }
+
+            if (it.isLooter) {
+                isIncludeRuins = true
+            }
         }
 
-        supplyCards.forEach { cardMap[it.name] = it }
+        setupSupply()
+
+        if (isIncludeSpoils) {
+            cardsNotInSupply.add(Spoils())
+            pileAmounts[Spoils.NAME] = 15
+        }
+
+        cardsInSupply.forEach { cardMap[it.name] = it }
 
         if (numComputerPlayers > 0) {
             addComputerPlayers()
@@ -353,6 +392,34 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 pileAmounts[Curse.NAME] = 30
             }
         }
+
+        if (isIncludeRuins) {
+            createRuinsPile()
+        }
+    }
+
+    private fun createRuinsPile() {
+        val ruinsCards = mutableListOf<Card>()
+
+        repeat(10) {
+            ruinsCards.add(AbandonedMine())
+        }
+        repeat(10) {
+            ruinsCards.add(RuinedLibrary())
+        }
+        repeat(10) {
+            ruinsCards.add(RuinedMarket())
+        }
+        repeat(10) {
+            ruinsCards.add(RuinedVillage())
+        }
+        repeat(10) {
+            ruinsCards.add(Survivors())
+        }
+
+        ruinsCards.shuffle()
+
+        ruinsPile = ruinsCards.subList(0, 10 * (numPlayers - 1))
     }
 
     private fun startGame() {
@@ -498,33 +565,39 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         trashedCards.add(card)
     }
 
-    val recentTurnsLog: String
-        get() = currentTurnLog.toString() + StringUtils.join(recentTurnLogs, "")
-
     fun isCardAvailableInSupply(card: Card): Boolean {
-        return pileAmounts.containsKey(card.name) && pileAmounts[card.name]!! > 0
+        return numInPileMap.containsKey(card.name) && numInPileMap[card.name]!! > 0
     }
 
     fun removeCardFromSupply(card: Card, refreshSupply: Boolean = true) {
-        pileAmounts[card.name] = pileAmounts[card.name]!!.minus(1)
+        if (card.isRuins) {
+            ruinsPile.removeAt(0)
+        } else {
+            pileAmounts[card.name] = pileAmounts[card.name]!!.minus(1)
+        }
+
         if (refreshSupply) {
             refreshSupply()
         }
     }
 
     fun returnCardToSupply(card: Card) {
-        pileAmounts[card.name] = pileAmounts[card.name]!!.plus(1)
+        if (card.isRuins) {
+            ruinsPile.add(0, card)
+        } else {
+            pileAmounts[card.name] = pileAmounts[card.name]!!.plus(1)
+        }
         refreshSupply()
     }
 
-    val nonEmptyPiles
-        get() = cardMap.keys.filter { pileAmounts[it]!! > 0 }
+    private val nonEmptyPiles: Int
+        get() = allCards.filter { numInPileMap[it.name]!! > 0 }.size
 
     val emptyPiles
-        get() = cardMap.size - nonEmptyPiles.size
+        get() = allCards.size - nonEmptyPiles
 
     val availableCards
-        get() = cardMap.values.filter { isCardAvailableInSupply(it) }
+        get() = allCards.filter { isCardAvailableInSupply(it) }
 
     fun addGameChat(message: String) {
         chats.add(ChatMessage(message, "black"))
@@ -614,6 +687,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             isPlayTreasureCards = false
             isIncludePlatinumCards = false
             isIncludeColonyCards = false
+            isIncludeShelters = false
+            isIncludeRuins = false
             supplyCards.clear()
             kingdomCards.clear()
             cardMap.clear()
@@ -926,5 +1001,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         currentTurn?.addHistory(history)
         historyEntriesAddedThisTurn++
         refreshHistory()
+    }
+
+    fun setupAmountForPile(cardName: String, amount: Int) {
+        pileAmounts[cardName] = amount
     }
 }
