@@ -1,9 +1,11 @@
 package com.kingdom.model.players.bots
 
 import com.kingdom.model.Game
+import com.kingdom.model.GameError
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.darkages.Rats
+import com.kingdom.model.cards.hinterlands.Farmland
 import com.kingdom.model.cards.kingdom.ThroneRoom
 import com.kingdom.model.cards.kingdom.Witch
 import com.kingdom.model.cards.prosperity.Forge
@@ -11,7 +13,10 @@ import com.kingdom.model.cards.prosperity.KingsCourt
 import com.kingdom.model.cards.prosperity.Mint
 import com.kingdom.model.cards.seaside.Lookout
 import com.kingdom.model.cards.seaside.TreasureMap
+import com.kingdom.model.cards.supply.Colony
 import com.kingdom.model.cards.supply.Copper
+import com.kingdom.model.cards.supply.Province
+import com.kingdom.model.cards.supply.VictoryPointsCalculator
 
 open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
 
@@ -19,9 +24,56 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
 
     override val difficulty: Int = 2
 
+    private val onlyBuyVictoryCards: Boolean
+        get() {
+            var shouldOnlyBuyVictoryCards = false
+            val provincesInSupply = game.numInPileMap[Province.NAME]
+            if (provincesInSupply == null) {
+                val error = GameError(GameError.COMPUTER_ERROR, "Supply was null for Province")
+                game.logError(error)
+            }
+            if (game.numPlayers == 2 && game.numInPileMap[Province.NAME]!! <= 2 || game.numPlayers > 2 && game.numInPileMap[Province.NAME]!! <= 3) {
+                shouldOnlyBuyVictoryCards = true
+            } else if (game.isIncludeColonyCards && (game.numPlayers == 2 && game.numInPileMap[Colony.NAME]!! <= 2 || game.numPlayers > 2 && game.numInPileMap[Colony.NAME]!! <= 3)) {
+                shouldOnlyBuyVictoryCards = true
+            } else if (difficulty >= 2) {
+                var pilesWithOneCard = 0
+                var pilesWithTwoCards = 0
+                for (numInSupply in game.numInPileMap.values) {
+                    if (numInSupply == 1) {
+                        pilesWithOneCard++
+                    } else if (numInSupply == 2) {
+                        pilesWithTwoCards++
+                    }
+                }
+                var numEmptyPilesForGameEnd = 3
+                if (game.numPlayers > 4) {
+                    numEmptyPilesForGameEnd = 4
+                }
+                if (game.emptyPiles + pilesWithOneCard + pilesWithTwoCards == numEmptyPilesForGameEnd) {
+                    shouldOnlyBuyVictoryCards = true
+                }
+            }
+            return shouldOnlyBuyVictoryCards
+        }
+
+    override fun getCardToBuy(): String? {
+        if (onlyBuyVictoryCards) {
+            return availableCardsToBuy.filter { it.isVictory }.maxBy {
+                if (it is VictoryPointsCalculator) {
+                    it.calculatePoints(this)
+                } else {
+                    it.victoryPoints
+                }
+            }?.name
+        }
+
+        return super.getCardToBuy()
+    }
+
     override fun excludeCard(card: Card): Boolean {
 
-        if (game.isShowEmbargoTokens ) {
+        if (game.isShowEmbargoTokens) {
             val embargoTokens = game.embargoTokens[card.name] ?: 0
             if (embargoTokens > 0) {
                 if (embargoTokens > 2 || !card.isProvince && !card.isColony) {
@@ -49,8 +101,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Mint.NAME && turns >= 5 -> return true
             card.name == TreasureMap.NAME -> return true
             card.name == Copper.NAME -> return true
-            //card.name == "Remake" -> return true
-            //card.name == "Farmland" && hand.all { it.isProvince } -> return true
+            card.name == Farmland.NAME && hand.all { it.isVictory && it.cost > 2 } -> return true
             else -> super.excludeCard(card)
         }
 

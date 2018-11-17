@@ -219,6 +219,9 @@ abstract class Card(
     val backgroundColorColor: String
         get() = backgroundColor.color
 
+    val backgroundColorMobileColor: String
+        get() = backgroundColor.mobileColor
+
     val isExtraActionsCard: Boolean
         get() = addActions >= 2 || name == ThroneRoom.NAME || name == KingsCourt.NAME
 

@@ -1,14 +1,14 @@
 package com.kingdom.model.players.bots
 
 import com.kingdom.model.Game
-import com.kingdom.model.GameError
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.intrigue.Courtier
 import com.kingdom.model.cards.kingdom.Chapel
 import com.kingdom.model.cards.kingdom.Gardens
 import com.kingdom.model.cards.kingdom.Laboratory
-import com.kingdom.model.cards.supply.*
+import com.kingdom.model.cards.supply.Gold
+import com.kingdom.model.cards.supply.Platinum
+import com.kingdom.model.cards.supply.Silver
 import com.kingdom.model.players.BotPlayer
 
 open class EasyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
@@ -28,39 +28,6 @@ open class EasyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
     //todo check !isTrackContrabandCards || !game.contrabandCards.contains(getKingdomCard("Chapel")
 
     override val difficulty: Int = 1
-
-    private val onlyBuyVictoryCards: Boolean
-        get() {
-            var shouldOnlyBuyVictoryCards = false
-            val provincesInSupply = game.numInPileMap[Province.NAME]
-            if (provincesInSupply == null) {
-                val error = GameError(GameError.COMPUTER_ERROR, "Supply was null for Province")
-                game.logError(error)
-            }
-            if (game.numPlayers == 2 && game.numInPileMap[Province.NAME]!! <= 2 || game.numPlayers > 2 && game.numInPileMap[Province.NAME]!! <= 3) {
-                shouldOnlyBuyVictoryCards = true
-            } else if (game.isIncludeColonyCards && (game.numPlayers == 2 && game.numInPileMap[Colony.NAME]!! <= 2 || game.numPlayers > 2 && game.numInPileMap[Colony.NAME]!! <= 3)) {
-                shouldOnlyBuyVictoryCards = true
-            } else if (difficulty >= 2) {
-                var pilesWithOneCard = 0
-                var pilesWithTwoCards = 0
-                for (numInSupply in game.numInPileMap.values) {
-                    if (numInSupply == 1) {
-                        pilesWithOneCard++
-                    } else if (numInSupply == 2) {
-                        pilesWithTwoCards++
-                    }
-                }
-                var numEmptyPilesForGameEnd = 3
-                if (game.numPlayers > 4) {
-                    numEmptyPilesForGameEnd = 4
-                }
-                if (game.emptyPiles + pilesWithOneCard + pilesWithTwoCards == numEmptyPilesForGameEnd) {
-                    shouldOnlyBuyVictoryCards = true
-                }
-            }
-            return shouldOnlyBuyVictoryCards
-        }
 
     override fun getCardToBuy(): String? {
 
@@ -104,11 +71,6 @@ open class EasyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
 
     override fun excludeCard(card: Card): Boolean {
         if (card.name == Chapel.NAME) {
-            return true
-        }
-
-        //todo remove this after implementing BotPlayer.chooseCardFromHand
-        if (card.name == Courtier.NAME) {
             return true
         }
 
