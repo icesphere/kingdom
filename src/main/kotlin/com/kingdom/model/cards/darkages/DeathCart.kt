@@ -2,9 +2,10 @@ package com.kingdom.model.cards.darkages
 
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.listeners.AfterCardGainedListenerForSelf
 import com.kingdom.model.players.Player
 
-class DeathCart : DarkAgesCard(NAME, CardType.ActionLooter, 4), ChoiceActionCard {
+class DeathCart : DarkAgesCard(NAME, CardType.ActionLooter, 4), ChoiceActionCard, AfterCardGainedListenerForSelf {
 
     init {
         testing = true
@@ -14,7 +15,7 @@ class DeathCart : DarkAgesCard(NAME, CardType.ActionLooter, 4), ChoiceActionCard
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        if (player.hand.isEmpty()) {
+        if (player.hand.none { it.isAction }) {
             player.trashCardInPlay(this, true)
         } else {
             player.yesNoChoice(this, "Trash card from hand? If you don't, ${this.cardNameWithBackgroundColor} will be trashed")
@@ -23,10 +24,15 @@ class DeathCart : DarkAgesCard(NAME, CardType.ActionLooter, 4), ChoiceActionCard
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
-            player.trashCardFromHand(false)
+            player.trashCardFromHand(false, { c -> c.isAction })
         } else {
             player.trashCardInPlay(this, true)
         }
+    }
+
+    override fun afterCardGained(player: Player) {
+        player.gainRuins()
+        player.gainRuins()
     }
 
     companion object {

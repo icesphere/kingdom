@@ -670,6 +670,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
+    fun gainRuins() {
+        if (game.ruinsPile.isNotEmpty()) {
+            val card = game.ruinsPile.removeAt(0)
+            cardGained(card)
+            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the Ruins pile")
+        }
+    }
+
     fun gainSupplyCard(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {
 
         //create copy of card so that it doesn't affect card chosen in case it came from somewhere other than the supply
