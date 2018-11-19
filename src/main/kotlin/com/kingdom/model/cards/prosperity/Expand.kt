@@ -23,8 +23,6 @@ class Expand : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitAct
         player.chooseSupplyCardToGain(player.getCardCostWithModifiers(card) + 3)
     }
 
-    override fun isCardApplicable(card: Card): Boolean = true
-
     companion object {
         const val NAME: String = "Expand"
     }

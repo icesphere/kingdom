@@ -36,8 +36,6 @@ class Bishop : ProsperityCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
         player.addVictoryCoins(card.cost/2)
     }
 
-    override fun isCardApplicable(card: Card): Boolean = true
-
     companion object {
         const val NAME: String = "Bishop"
     }

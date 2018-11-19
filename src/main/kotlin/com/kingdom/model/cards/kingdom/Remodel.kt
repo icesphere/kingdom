@@ -24,8 +24,6 @@ class Remodel : KingdomCard(NAME, CardType.Action, 4), TrashCardsForBenefitActio
         }
     }
 
-    override fun isCardApplicable(card: Card): Boolean = true
-
     companion object {
         const val NAME: String = "Remodel"
     }

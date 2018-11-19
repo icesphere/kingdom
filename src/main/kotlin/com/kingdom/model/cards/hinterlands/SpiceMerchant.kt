@@ -22,7 +22,7 @@ class SpiceMerchant : HinterlandsCard(NAME, CardType.Action, 4), ChoiceActionCar
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         when (choice) {
-            1 -> player.trashCardsFromHandForBenefit(this, 1, "Trash a Treasure from your hand")
+            1 -> player.trashCardsFromHandForBenefit(this, 1, "Trash a Treasure from your hand", { c -> c.isTreasure })
             3 -> {
                 player.drawCards(2)
                 player.addActions(1)
@@ -36,10 +36,6 @@ class SpiceMerchant : HinterlandsCard(NAME, CardType.Action, 4), ChoiceActionCar
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         player.makeChoice(this, Choice(3, "+2 Cards and +1 Action"), Choice(4, "+1 Buy and \$2"))
-    }
-
-    override fun isCardApplicable(card: Card): Boolean {
-        return card.isTreasure
     }
 
     companion object {

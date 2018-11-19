@@ -35,8 +35,6 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
         player.chooseSupplyCardToGainForBenefit(player.getCardCostWithModifiers(card) + 2, "Gain a card costing up to \$${player.getCardCostWithModifiers(card) + 2}. If the gained card is an Action or Treasure, put it onto your deck; if it’s a Victory card, each other player gains a Curse.", this)
     }
 
-    override fun isCardApplicable(card: Card): Boolean = true
-
     override fun onCardGained(player: Player, card: Card) {
         if (card.isAction || card.isTreasure) {
             //todo ideally the gain action puts it on the deck

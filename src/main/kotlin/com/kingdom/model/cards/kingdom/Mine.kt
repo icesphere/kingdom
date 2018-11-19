@@ -13,19 +13,13 @@ class Mine : KingdomCard(NAME, CardType.Action, 5), TrashCardsForBenefitActionCa
         isTrashingCard = true
     }
 
+    override fun cardPlayedSpecialAction(player: Player) {
+        player.optionallyTrashCardsFromHandForBenefit(this, 1, special, { c -> c.isTreasure })
+    }
+
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
         if (scrappedCards.isNotEmpty()) {
             player.chooseSupplyCardToGainToHandWithMaxCostAndType(player.getCardCostWithModifiers(scrappedCards[0]) + 3, CardType.Treasure)
-        }
-    }
-
-    override fun isCardApplicable(card: Card): Boolean {
-        return card.isTreasure
-    }
-
-    override fun cardPlayedSpecialAction(player: Player) {
-        if (player.hand.any { isCardApplicable(it) }) {
-            player.optionallyTrashCardsFromHandForBenefit(this, 1, special)
         }
     }
 

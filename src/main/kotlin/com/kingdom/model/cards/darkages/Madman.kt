@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class Madman : DarkAgesCard(NAME, CardType.Action, 0) {
 
     init {
-        testing = true
         addActions = 2
         special = "Return this to the Madman pile. If you do, +1 Card per card in your hand. (This is not in the Supply.)"
     }

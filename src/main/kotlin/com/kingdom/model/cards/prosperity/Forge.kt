@@ -26,8 +26,6 @@ class Forge : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitActi
         }
     }
 
-    override fun isCardApplicable(card: Card): Boolean = true
-
     companion object {
         const val NAME: String = "Forge"
     }

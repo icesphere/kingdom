@@ -24,8 +24,6 @@ class Salvager : SeasideCard(NAME, CardType.Action, 4), TrashCardsForBenefitActi
         player.addCoins(player.getCardCostWithModifiers(card))
     }
 
-    override fun isCardApplicable(card: Card): Boolean = true
-
     companion object {
         const val NAME: String = "Salvager"
     }

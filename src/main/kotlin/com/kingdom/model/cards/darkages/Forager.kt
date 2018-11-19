@@ -29,8 +29,6 @@ class Forager : DarkAgesCard(NAME, CardType.Action, 3), TrashCardsForBenefitActi
         }
     }
 
-    override fun isCardApplicable(card: Card) = true
-
     companion object {
         const val NAME: String = "Forager"
     }

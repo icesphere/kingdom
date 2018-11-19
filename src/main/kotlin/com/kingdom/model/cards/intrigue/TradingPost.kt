@@ -34,8 +34,6 @@ class TradingPost : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefit
         player.gainSupplyCardToHand(Silver(), true)
     }
 
-    override fun isCardApplicable(card: Card): Boolean = true
-
     companion object {
         const val NAME: String = "Trading Post"
     }

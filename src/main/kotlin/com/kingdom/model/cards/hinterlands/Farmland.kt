@@ -26,8 +26,6 @@ class Farmland : HinterlandsCard(NAME, CardType.Victory, 6), AfterCardBoughtList
         }
     }
 
-    override fun isCardApplicable(card: Card): Boolean = true
-
     companion object {
         const val NAME: String = "Farmland"
     }

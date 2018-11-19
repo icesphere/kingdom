@@ -360,8 +360,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, info: Any? = null)
     abstract fun optionallyTrashCardsFromHand(numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null)
-    abstract fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String = "")
-    abstract fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String)
+    abstract fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String = "", cardActionableExpression: ((card: Card) -> Boolean)? = null)
+    abstract fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
     abstract fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
@@ -634,6 +634,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.availableCards.filter { it is CardPlayedListenerForCardsInSupply }
                 .forEach {
                     (it as CardPlayedListenerForCardsInSupply).onCardPlayed(card, this)
+                }
+
+        inPlay.filter { it is CardPlayedListenerForCardsInPlay }
+                .forEach {
+                    (it as CardPlayedListenerForCardsInPlay).onCardPlayed(card, this)
                 }
 
         card.cardPlayed(this)

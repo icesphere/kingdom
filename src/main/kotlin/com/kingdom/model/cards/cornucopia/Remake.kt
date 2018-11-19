@@ -41,8 +41,6 @@ class Remake : CornucopiaCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
         }
     }
 
-    override fun isCardApplicable(card: Card): Boolean = true
-
     companion object {
         const val NAME: String = "Remake"
     }

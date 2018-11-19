@@ -115,8 +115,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         cards.forEach({ this.trashCardFromHand(it) })
     }
 
-    override fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String) {
-        val cards = getCardsToOptionallyTrashFromHand(numCardsToTrash)
+    override fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        val cards = getCardsToOptionallyTrashFromHand(numCardsToTrash, cardActionableExpression)
 
         cards.forEach({ this.trashCardFromHand(it) })
 
@@ -510,10 +510,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
 
-    private fun getCardsToTrashFromHand(cards: Int, excludeCardExpression: ((card: Card) -> Boolean)? = null): List<Card> {
+    private fun getCardsToTrashFromHand(cards: Int, excludeCardExpression: ((card: Card) -> Boolean)? = null, cardActionableExpression: ((card: Card) -> Boolean)? = null): List<Card> {
         val cardsToTrashFromHand = ArrayList<Card>()
 
-        val cardsAvailableToTrash = hand.filter { excludeCardExpression == null || !excludeCardExpression(it) }
+        val cardsAvailableToTrash = hand.filter { (excludeCardExpression == null || !excludeCardExpression(it)) && (cardActionableExpression == null || cardActionableExpression(it)) }
 
         if (cardsAvailableToTrash.isNotEmpty()) {
             val sortedHandCards = cardsAvailableToTrash.sortedByDescending { getTrashCardScore(it) }
@@ -712,12 +712,12 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         cards.forEach { addCardToTopOfDeck(it, false) }
     }
 
-    override fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String) {
-        if (hand.isEmpty()) {
+    override fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        if (hand.none { cardActionableExpression == null || cardActionableExpression(it) }) {
             return
         }
 
-        val cards = getCardsToTrashFromHand(numCardsToTrash)
+        val cards = getCardsToTrashFromHand(numCardsToTrash, null, cardActionableExpression)
         cards.forEach { this.trashCardFromHand(it) }
         card.cardsScrapped(this, cards)
     }

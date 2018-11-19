@@ -43,8 +43,6 @@ class TradeRoute : ProsperityCard(NAME, CardType.Action, 3), GameSetupModifier, 
         player.addCoins(player.game.tradeRouteTokensOnMat)
     }
 
-    override fun isCardApplicable(card: Card): Boolean = true
-
     companion object {
         const val NAME: String = "Trade Route"
     }

@@ -190,6 +190,7 @@ class CardRepository {
                 Sage(),
                 Squire(),
                 Storeroom(),
+                Urchin(),
                 Vagrant()
         )
 
