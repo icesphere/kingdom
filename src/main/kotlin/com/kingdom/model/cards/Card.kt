@@ -52,6 +52,7 @@ abstract class Card(
         get() = when (type) {
             CardType.Action -> "Action"
             CardType.ActionAttack -> "Action - Attack"
+            CardType.ActionAttackLooter -> "Action - Attack - Looter"
             CardType.ActionReaction -> "Action - Reaction"
             CardType.Victory -> "Victory"
             CardType.Curse -> "Curse"
@@ -74,6 +75,7 @@ abstract class Card(
         get() = when (type) {
             CardType.Action -> 1
             CardType.ActionAttack -> 2
+            CardType.ActionAttackLooter -> 3
             CardType.ActionReaction -> 2
             CardType.Victory -> 1
             CardType.Curse -> 1
@@ -140,7 +142,7 @@ abstract class Card(
         get() = type == CardType.VictoryReaction
 
     val isAction: Boolean
-        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionShelter || type == CardType.ActionLooter
+        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionShelter || type == CardType.ActionLooter || type == CardType.ActionAttackLooter
 
     open val isTerminalAction: Boolean
         get() = isAction && addActions == 0
@@ -164,7 +166,7 @@ abstract class Card(
         get() = type == CardType.ActionShelter || type == CardType.ReactionShelter || type == CardType.VictoryShelter
 
     val isLooter: Boolean
-        get() = type == CardType.ActionLooter
+        get() = type == CardType.ActionLooter || type == CardType.ActionAttackLooter
 
     val isCurseOnly: Boolean
         get() = name == Curse.NAME
@@ -194,7 +196,7 @@ abstract class Card(
         get() = name == Colony.NAME
 
     val isAttack: Boolean
-        get() = type == CardType.ActionAttack
+        get() = type == CardType.ActionAttack || type == CardType.ActionAttackLooter
 
     val backgroundColor: CardColor
         get() = when {

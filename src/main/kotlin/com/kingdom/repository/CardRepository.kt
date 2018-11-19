@@ -184,6 +184,7 @@ class CardRepository {
                 Fortress(),
                 Hermit(),
                 Ironmonger(),
+                Marauder(),
                 MarketSquare(),
                 PoorHouse(),
                 Rats(),

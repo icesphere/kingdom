@@ -3,6 +3,7 @@ package com.kingdom.model.cards
 enum class CardType {
     Action,
     ActionAttack,
+    ActionAttackLooter,
     Victory,
     ActionReaction,
     Treasure,
