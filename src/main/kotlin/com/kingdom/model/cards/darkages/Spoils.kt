@@ -8,6 +8,8 @@ class Spoils : DarkAgesCard(NAME, CardType.Treasure, 0) {
     init {
         addCoins = 3
         special = "When you play this, return it to the pile."
+        isPlayTreasureCardsRequired = true
+        isTreasureExcludedFromAutoPlay = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

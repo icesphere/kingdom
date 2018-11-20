@@ -24,7 +24,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
 
     override val difficulty: Int = 2
 
-    private val onlyBuyVictoryCards: Boolean
+    override val onlyBuyVictoryCards: Boolean
         get() {
             var shouldOnlyBuyVictoryCards = false
             val provincesInSupply = game.numInPileMap[Province.NAME]

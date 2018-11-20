@@ -1280,4 +1280,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         return cardFound
     }
+
+    fun putDeckIntoDiscard() {
+        discard.addAll(deck)
+        deck.clear()
+        game.refreshPlayerHandArea(this)
+        addUsernameGameLog("added deck into discard pile")
+    }
 }

@@ -10,4 +10,4 @@ remove all jquery ui dialogs
 better logic for choosing cards for bots - e.g. chose card for Masquerade
 consolidate select card actions
 fix add specific type of card from confirm cards page
-show cards not in play (e.g. Madman)
+allow adding cards not in supply from modify hand page

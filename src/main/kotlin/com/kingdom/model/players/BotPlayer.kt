@@ -11,8 +11,9 @@ import com.kingdom.model.cards.cornucopia.Hamlet
 import com.kingdom.model.cards.cornucopia.HorseTraders
 import com.kingdom.model.cards.cornucopia.Jester
 import com.kingdom.model.cards.cornucopia.Remake
-import com.kingdom.model.cards.darkages.MarketSquare
-import com.kingdom.model.cards.darkages.Squire
+import com.kingdom.model.cards.darkages.*
+import com.kingdom.model.cards.darkages.ruins.Survivors
+import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
@@ -28,6 +29,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     var isWaitingForPlayers = false
 
     abstract val difficulty: Int
+
+    open val onlyBuyVictoryCards: Boolean = false
 
     private val cardsToPlay: List<Card>
         get() {
@@ -380,12 +383,19 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return when (choiceActionCard.name) {
             Ambassador.NAME -> choices.last().choiceNumber
             Baron.NAME -> 1
+            Beggar.NAME -> 1
             CountingHouse.NAME -> choices.last().choiceNumber
             Courtier.NAME -> when {
                 actions == 0 && hand.any { it.isAction && it.cost > 3 } -> 1
                 buys < 2 && availableCoins > 11 -> 2
                 buys > 1 || turns > 10 -> 3
                 else -> 4
+            }
+            DeathCart.NAME -> when {
+                actions == 0 -> 1
+                onlyBuyVictoryCards -> 2
+                hand.any { it.isAction && it.cost < 5 } -> 1
+                else -> 2
             }
             Diplomat.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 2) 1 else 2
             Explorer.NAME -> 1
@@ -399,7 +409,12 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 }
             }
             HorseTraders.NAME -> 1
+            Hovel.NAME -> 1
             IllGottenGains.NAME -> if (availableCoins == 4 || availableCoins == 5 || availableCoins == 7 || (availableCoins == 10 && game.isIncludeColonyCards)) 1 else 2
+            Ironmonger.NAME -> {
+                val cardToDiscard = info as Card
+                if (getDiscardCardScore(cardToDiscard) > 50) 1 else 2
+            }
             JackOfAllTrades.NAME -> if (getDiscardCardScore(cardOnTopOfDeck!!) > 50) 1 else 2
             Jester.NAME -> {
                 val cardToGain = info as Card
@@ -409,6 +424,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Loan.NAME -> if (card.isCopper) 2 else 1
             Lurker.NAME -> if (game.trashedCards.any { getBuyCardScore(it) > 4 }) 2 else 1
             MarketSquare.NAME -> if (turns < 10 || game.numInPileMap[Province.NAME]!! > 3) 1 else 2
+            Mercenary.NAME -> if (hand.count { getTrashCardScore(it) > 15 } > 2) 1 else 2
             Mill.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
             MiningVillage.NAME -> when {
                 game.availableCards.any { it.isColony } && availableCoins < 11 && availableCoins > 8 -> 1
@@ -433,6 +449,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
             PearlDiver.NAME -> if (getBuyCardScore(card) > 3) 1 else 2
             PirateShip.NAME -> if (pirateShipCoins > 2) 1 else 2
+            Scavenger.NAME -> 1
             Sentry.NAME -> when (card.cost) {
                 0 -> 1
                 1 -> 2
@@ -458,12 +475,20 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 actions > 0 -> 1
                 else -> 2
             }
+            Survivors.NAME -> {
+                val cards = mutableListOf(deck[0])
+                if (deck.size > 1) {
+                    cards.add(deck[1])
+                }
+                if (cards.all { getDiscardCardScore(it) > 50 }) 1 else 2
+            }
             Trader.NAME -> {
                 val cardToGain = info as Card
                 if (getBuyCardScore(Silver()) > getBuyCardScore(cardToGain)) 1 else 2
             }
             Torturer.NAME -> 1
             Treasury.NAME -> 1
+            Urchin.NAME -> if (allCards.count { it is Mercenary } <= 2 ) 1 else 2
             Vassal.NAME -> 1
             Vault.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
             Watchtower.NAME -> if (card.cost > 2) 1 else 2

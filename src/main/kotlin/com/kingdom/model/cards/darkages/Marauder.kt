@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Marauder : DarkAgesCard(NAME, CardType.ActionAttackLooter, 4), GameSetupModifier, AttackCard {
 
     init {
-        testing = true
         special = "Gain a Spoils from the Spoils pile. Each other player gains a Ruins."
     }
 
