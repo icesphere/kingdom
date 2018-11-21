@@ -247,6 +247,8 @@ abstract class Card(
     val cardNameWithArticleAndBackgroundColor
         get() = KingdomUtil.getWordWithBackgroundColor(nameWithArticle(), backgroundColor)
 
+    var isCardActuallyBandOfMisfits: Boolean = false
+
     fun getNumberPlusNameWithBackgroundColor(num: Int): String {
         return KingdomUtil.getWordWithBackgroundColor(name.plural(num), backgroundColor)
     }

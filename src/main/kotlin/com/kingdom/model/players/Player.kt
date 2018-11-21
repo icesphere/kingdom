@@ -9,6 +9,7 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.*
+import com.kingdom.model.cards.darkages.BandOfMisfits
 import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
@@ -253,6 +254,43 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun cardRemovedFromPlay(card: Card) {
         card.removedFromPlay(this)
+        if (card.isCardActuallyBandOfMisfits) {
+            card.isCardActuallyBandOfMisfits = false
+
+            val bandOfMisfits = BandOfMisfits()
+
+            when {
+                cardsInDiscard.contains(card) -> {
+                    removeCardFromDiscard(card)
+                    addCardToDiscard(bandOfMisfits)
+                }
+                hand.contains(card) -> {
+                    removeCardFromHand(card)
+                    addCardToHand(card)
+                }
+                deck.contains(card) -> {
+                    deck.replaceAll { deckCard ->
+                        if (deckCard.id == card.id) {
+                            bandOfMisfits
+                        } else {
+                            deckCard
+                        }
+                    }
+                }
+                islandCards.contains(card) -> {
+                    islandCards.remove(card)
+                    islandCards.add(bandOfMisfits)
+                }
+                nativeVillageCards.contains(card) -> {
+                    nativeVillageCards.remove(card)
+                    nativeVillageCards.add(bandOfMisfits)
+                }
+                game.trashedCards.contains(card) -> {
+                    game.trashedCards.remove(card)
+                    game.trashedCards.add(bandOfMisfits)
+                }
+            }
+        }
     }
 
     fun addCoins(coins: Int) {
