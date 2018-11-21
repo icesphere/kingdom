@@ -194,7 +194,8 @@ class CardRepository {
                 Squire(),
                 Storeroom(),
                 Urchin(),
-                Vagrant()
+                Vagrant(),
+                WanderingMinstrel()
         )
 
     val shelters: List<Card>

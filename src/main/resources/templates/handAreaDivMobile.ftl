@@ -1,6 +1,6 @@
 <div style="float:left;clear:both;">
     <div class="handAreaTopRowLeft">
-        <div style="float:left;">Draw Pile:&#160;</div>
+        <div style="float:left;">Deck:&#160;</div>
         <#assign n = player.deck?size>
         <#if n != 0>
             <#list 1..n as i>

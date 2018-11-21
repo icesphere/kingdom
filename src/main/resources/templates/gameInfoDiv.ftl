@@ -57,7 +57,7 @@
                             </tr>
                             <tr>
                                 <td class="gameInfoLabel">
-                                    Draw Pile:
+                                    Deck:
                                 </td>
                                 <td>
                                     <#assign drawPileWidth = 3 * p.deck?size>

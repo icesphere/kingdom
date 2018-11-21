@@ -16,7 +16,6 @@ class Procession : DarkAgesCard(NAME, CardType.Action, 4), CardActionCard, CardP
     var numTimesCardPlayed: Int = 0
 
     init {
-        testing = true
         special = "You may play an Action card from your hand twice. Trash it. Gain an Action card costing exactly \$1 more than it."
         fontSize = 11
     }

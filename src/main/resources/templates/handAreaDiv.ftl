@@ -1,7 +1,7 @@
 <table cellpadding="0" cellspacing="0">
     <tr>
         <td class="handAreaTopRow" style="padding-left:50px;">
-            <div style="float:left;">Draw Pile:&#160;</div>
+            <div style="float:left;">Deck:&#160;</div>
             <#assign n = player.deck?size>
             <#if n != 0>
                 <#list 1..n as i>

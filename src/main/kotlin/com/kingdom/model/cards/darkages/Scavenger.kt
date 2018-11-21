@@ -9,10 +9,9 @@ import com.kingdom.model.players.Player
 class Scavenger : DarkAgesCard(NAME, CardType.Action, 4), ChoiceActionCard, ChooseCardActionCard {
 
     init {
-        testing = true
         addCoins = 2
         special = "You may put your deck into your discard pile. Look through your discard pile and put one card from it onto your deck."
-        textSize = 85
+        textSize = 98
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
