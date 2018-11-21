@@ -42,7 +42,6 @@ class Hermit : DarkAgesCard(NAME, CardType.Action, 3), GameSetupModifier, Choose
     override fun onCardDiscarded(player: Player) {
         if (player.lastTurnSummary!!.cardsBought.isEmpty()) {
             val madman = Madman()
-            player.addUsernameGameLog("gained a ${madman.cardNameWithBackgroundColor}")
             player.showInfoMessage("You gained a ${madman.cardNameWithBackgroundColor}")
             player.gainCardNotInSupply(madman)
         }

@@ -17,9 +17,8 @@ class Marauder : DarkAgesCard(NAME, CardType.ActionAttackLooter, 4), GameSetupMo
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val spoils = Spoils()
-        player.gainCardNotInSupply(spoils)
-        player.addUsernameGameLog("gained ${spoils.cardNameWithBackgroundColor}")
+        player.gainRuins()
+        player.gainSpoils()
         player.triggerAttack(this)
     }
 

@@ -44,9 +44,7 @@ class Urchin : DarkAgesCard(NAME, CardType.ActionAttack, 3), GameSetupModifier, 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.trashCardInPlay(this, true)
-            val mercenary = Mercenary()
-            player.addUsernameGameLog("gained a ${mercenary.cardNameWithBackgroundColor}")
-            player.gainCardNotInSupply(mercenary)
+            player.gainCardNotInSupply(Mercenary())
         }
     }
 

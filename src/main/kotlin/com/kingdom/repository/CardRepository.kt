@@ -178,6 +178,7 @@ class CardRepository {
         get() = listOf(
                 Armory(),
                 BandOfMisfits(),
+                BanditCamp(),
                 Beggar(),
                 DeathCart(),
                 Feodum(),

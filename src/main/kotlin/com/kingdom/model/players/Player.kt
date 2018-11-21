@@ -10,6 +10,7 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.darkages.BandOfMisfits
+import com.kingdom.model.cards.darkages.Spoils
 import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
@@ -710,6 +711,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             game.removeCardFromSupply(card)
 
             cardGained(card)
+
+            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor}")
         }
     }
 
@@ -719,6 +722,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cardGained(card)
             addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the Ruins pile")
         }
+    }
+
+    fun gainSpoils() {
+        gainCardNotInSupply(Spoils())
     }
 
     fun gainSupplyCard(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {
