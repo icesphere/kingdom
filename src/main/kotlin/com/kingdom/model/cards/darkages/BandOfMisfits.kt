@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class BandOfMisfits : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
 
     init {
-        testing = true
         special = "Play this as if it were a cheaper Action card in the Supply. This is that card until it leaves play."
         fontSize = 9
     }

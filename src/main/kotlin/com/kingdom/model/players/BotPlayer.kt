@@ -384,6 +384,22 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Ambassador.NAME -> choices.last().choiceNumber
             Baron.NAME -> 1
             Beggar.NAME -> 1
+            Catacombs.NAME -> {
+                val cards = info as List<Card>
+                if (cards.sumBy { getBuyCardScore(it) } >= 9) 1 else 2
+            }
+            Count.NAME -> {
+                val firstChoice = info as Boolean
+                if (firstChoice) {
+                    if (actions == 0 && hand.any { it.isAction }) 1 else 2
+                } else {
+                    when {
+                        onlyBuyVictoryCards -> 3
+                        hand.count { getTrashCardScore(it) > 50 } > hand.size - 2 -> 2
+                        else -> 1
+                    }
+                }
+            }
             CountingHouse.NAME -> choices.last().choiceNumber
             Courtier.NAME -> when {
                 actions == 0 && hand.any { it.isAction && it.cost > 3 } -> 1

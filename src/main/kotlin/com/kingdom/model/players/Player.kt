@@ -429,6 +429,26 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
+    fun trashHand() {
+        if (hand.isEmpty()) {
+            addUsernameGameLog("trashed an empty hand")
+            return
+        }
+
+        hand.forEach { cardTrashed(it) }
+
+        addUsernameGameLog("trashed their hand: ${hand.groupedString}")
+
+        hand.clear()
+
+        game.refreshPlayerHandArea(this)
+
+        if (!game.isPlayTreasureCards) {
+            game.refreshPlayerCardsBought(this)
+            game.refreshPlayerSupply(this)
+        }
+    }
+
     fun cardTrashed(card: Card, showLog: Boolean = false) {
         if (showLog) {
             addUsernameGameLog("trashed ${card.cardNameWithBackgroundColor}")
@@ -901,6 +921,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerHandArea(this)
 
         if (!game.isPlayTreasureCards && card.addCoins > 0) {
+            game.refreshPlayerCardsBought(this)
+        }
+    }
+
+    fun addCardsToHand(cards: List<Card>) {
+        hand.addAll(cards)
+
+        game.refreshPlayerHandArea(this)
+
+        if (!game.isPlayTreasureCards && cards.any { it.addCoins > 0 }) {
             game.refreshPlayerCardsBought(this)
         }
     }

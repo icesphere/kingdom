@@ -180,6 +180,8 @@ class CardRepository {
                 BandOfMisfits(),
                 BanditCamp(),
                 Beggar(),
+                Catacombs(),
+                Count(),
                 DeathCart(),
                 Feodum(),
                 Forager(),
