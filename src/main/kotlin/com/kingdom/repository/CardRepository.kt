@@ -182,6 +182,8 @@ class CardRepository {
                 Beggar(),
                 Catacombs(),
                 Count(),
+                Counterfeit(),
+                Cultist(),
                 DeathCart(),
                 Feodum(),
                 Forager(),

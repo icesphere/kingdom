@@ -400,6 +400,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                     }
                 }
             }
+            Counterfeit.NAME -> 1
             CountingHouse.NAME -> choices.last().choiceNumber
             Courtier.NAME -> when {
                 actions == 0 && hand.any { it.isAction && it.cost > 3 } -> 1
@@ -407,6 +408,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 buys > 1 || turns > 10 -> 3
                 else -> 4
             }
+            Cultist.NAME -> 1
             DeathCart.NAME -> when {
                 actions == 0 -> 1
                 onlyBuyVictoryCards -> 2

@@ -233,6 +233,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         for (i in 0 until numCards) {
             if (deck.isEmpty()) {
+                if (discard.isEmpty()) {
+                    break
+                }
                 shuffleDiscardIntoDeck()
             }
 
