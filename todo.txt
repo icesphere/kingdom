@@ -4,6 +4,7 @@ better bots
 support multiple info messages?
 refresh sometimes has issues after quit game
 considering using embedded database so app can be deployed easily anywhere
+consider using web storage for database
 show turn summaries
 still need better refresh
 remove all jquery ui dialogs
@@ -11,3 +12,5 @@ better logic for choosing cards for bots - e.g. chose card for Masquerade
 consolidate select card actions
 fix add specific type of card from confirm cards page
 allow adding cards not in supply from modify hand page
+add more spacing between action choices buttons for mobile
+update costs for bridge and similar cards

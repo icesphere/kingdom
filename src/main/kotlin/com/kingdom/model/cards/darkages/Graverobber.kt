@@ -13,6 +13,7 @@ class Graverobber : DarkAgesCard(NAME, CardType.Action, 5), ChoiceActionCard, Tr
         testing = true
         special = "Choose one: Gain a card from the trash costing from \$3 to \$6, onto your deck; or trash an Action card from your hand and gain a card costing up to \$3 more than it."
         fontSize = 11
+        textSize = 116
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
