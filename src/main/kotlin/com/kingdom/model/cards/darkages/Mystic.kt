@@ -1,17 +1,17 @@
-package com.kingdom.model.cards.intrigue
+package com.kingdom.model.cards.darkages
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.players.Player
 
-class WishingWell : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard {
+class Mystic : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
 
     init {
+        testing = true
         addActions = 1
-        addCards = 1
-        special = "Name a card, then reveal the top card of your deck. If you name it, put it in your hand."
-        fontSize = 10
+        addCoins = 2
+        special = "Name a card, then reveal the top card of your deck. If you named it, put it into your hand."
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
@@ -33,7 +33,7 @@ class WishingWell : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard
     }
 
     companion object {
-        const val NAME: String = "Wishing Well"
+        const val NAME: String = "Mystic"
     }
 }
 

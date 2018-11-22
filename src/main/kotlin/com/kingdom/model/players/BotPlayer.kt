@@ -417,6 +417,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
             Diplomat.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 2) 1 else 2
             Explorer.NAME -> 1
+            Graverobber.NAME -> if (game.trashedCards.any { getCardCostWithModifiers(it) in 3..6 }) 1 else 2
             Hamlet.NAME -> {
                 val hamlet = card as Hamlet
                 when {
@@ -428,6 +429,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
             HorseTraders.NAME -> 1
             Hovel.NAME -> 1
+            HuntingGrounds.NAME -> 1
             IllGottenGains.NAME -> if (availableCoins == 4 || availableCoins == 5 || availableCoins == 7 || (availableCoins == 10 && game.isIncludeColonyCards)) 1 else 2
             Ironmonger.NAME -> {
                 val cardToDiscard = info as Card

@@ -176,6 +176,7 @@ class CardRepository {
 
     val darkAgesCards: List<Card>
         get() = listOf(
+                Altar(),
                 Armory(),
                 BandOfMisfits(),
                 BanditCamp(),
@@ -188,13 +189,19 @@ class CardRepository {
                 Feodum(),
                 Forager(),
                 Fortress(),
+                Graverobber(),
                 Hermit(),
                 Ironmonger(),
+                JunkDealer(),
                 Marauder(),
                 MarketSquare(),
+                Mystic(),
+                Pillage(),
                 PoorHouse(),
                 Procession(),
                 Rats(),
+                Rebuild(),
+                Rogue(),
                 Sage(),
                 Scavenger(),
                 Squire(),
