@@ -25,8 +25,6 @@ class User {
 
     var guest: Boolean = false
 
-    var gender = MALE
-
     @Column(name = "last_login")
     var lastLogin: Date? = null
         get() {

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import java.util.Date
 
+@Suppress("unused")
 @Controller
 class UserController(internal var manager: UserManager) {
 
@@ -42,11 +43,6 @@ class UserController(internal var manager: UserManager) {
         }
         user.username = request.getParameter("username")
         user.password = request.getParameter("password")
-        if (request.getParameter("gender") == User.FEMALE) {
-            user.gender = User.FEMALE
-        } else {
-            user.gender = User.MALE
-        }
         manager.saveUser(user)
         return listUsers(request, response)
     }

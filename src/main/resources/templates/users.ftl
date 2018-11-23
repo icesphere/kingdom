@@ -32,7 +32,6 @@
             </tr>
             <tr>
                 <td style="font-weight:bold">Username</td>
-                <td style="font-weight:bold;padding-left:10px;">Gender</td>
                 <td style="font-weight:bold;padding-left:10px;">Logins</td>
                 <td style="font-weight:bold;padding-left:10px;">Last Login</td>
                 <td style="font-weight:bold;padding-left:10px;">Creation Date</td>
@@ -56,9 +55,6 @@
 					<td>
 						<a href="showUser.html?id=${user.userId}">${user.username}</a>
 					</td>
-                    <td style="padding-left:10px;">
-                        ${user.gender}
-                    </td>
                     <td style="padding-left:10px;">
                         ${user.logins}
                     </td>

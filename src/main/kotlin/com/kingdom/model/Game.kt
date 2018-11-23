@@ -778,7 +778,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     private fun addComputerPlayer(i: Int, bigMoneyUltimate: Boolean, difficulty: Int) {
         val userId = i * -1
         val user = User()
-        user.gender = User.COMPUTER
 
         when {
             bigMoneyUltimate -> {

@@ -110,7 +110,7 @@ class MainController(private var userManager: UserManager,
         return modelAndView
     }
 
-    @RequestMapping("/submitAccount.html")
+    @RequestMapping("/submitAccountRequest.html")
     @Throws(Exception::class)
     fun submitAccountRequest(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         var error: String? = null
@@ -131,12 +131,8 @@ class MainController(private var userManager: UserManager,
         if (error == null) {
             val user = User()
             user.username = username
-            user.password = RandomStringUtils.random(6, "ABCDEFGH23456789")
+            user.password = request.getParameter("password")
             user.creationDate = Date()
-            if (request.getParameter("gender") != null && request.getParameter("gender") == User.FEMALE) {
-                user.gender = request.getParameter("gender")
-            }
-            user.changePassword = true
             userManager.saveUser(user)
             val modelAndView = ModelAndView("accountRequestSubmitted")
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))

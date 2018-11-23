@@ -37,11 +37,6 @@
                         Password: <input type="password" name="password" value="${user.password}"/>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <input type="radio" name="gender" value="M" <#if user.gender == "M">checked</#if>/> Male  <input type="radio" name="gender" value="F" <#if user.gender == "F">checked</#if>/> Female  <input type="radio" name="gender" value="U" <#if user.gender == "U">checked</#if>/> Unknown
-                    </td>
-                </tr>
             </table>
             <table style="padding-top:10px;">
                 <tr>

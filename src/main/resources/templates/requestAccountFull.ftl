@@ -18,14 +18,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="text-align:right;">Gender:</td>
+                    <td style="text-align:right;">Password:</td>
                     <td>
-                        <input type="radio" name="gender" id="gender" value="M" checked/> Male  <input type="radio" name="gender" value="F"/> Female
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="font-size:10px;">
-                        (Used for game messages, e.g. John added a card to the top of his deck)
+                        <input type="password" name="password" id="password"/>
                     </td>
                 </tr>
                 <tr>

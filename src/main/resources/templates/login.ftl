@@ -26,8 +26,7 @@
                             <td><input class="loginField" type="password" name="password"/> </td>
                         </tr>
                         <tr>
-                            <td><input class="loginButton" type="submit" value="Login"></td>
-                            <td style="padding-left:10px;"><a href="forgotLogin.html">Forgot Login?</a></td>
+                            <td colspan="2"><input class="loginButton" type="submit" value="Login"></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="padding-top:10px;">
@@ -56,8 +55,7 @@
                             <td><input type="password" name="password"/> </td>
                         </tr>
                         <tr>
-                            <td><input type="submit" value="Login"></td>
-                            <td style="padding-left:10px;"><a href="forgotLogin.html">Forgot Login?</a></td>
+                            <td colspan="2"><input type="submit" value="Login"></td>
                         </tr>
                         <tr>
                             <td colspan="2" style="padding-top:10px;">

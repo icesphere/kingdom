@@ -42,7 +42,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val userId = user.userId
     val username = user.username
-    val gender = user.gender
     val isMobile = user.isMobile
 
     protected var actionsQueue: MutableList<Action> = ArrayList()
