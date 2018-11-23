@@ -26,13 +26,6 @@ $(document).ready(function() {
 
     resizeSupplyCardsDiv();
 
-    soundManager.url="sounds/swf/";
-    soundManager.useFlashBlock = false;
-
-    soundManager.onload = function() {
-      soundManager.createSound('beep','sounds/beep.mp3');
-    };
-
     $(document).bind('keyup', 't', function(){
         playAllTreasureCards();
     });
@@ -58,12 +51,17 @@ function refreshGameInfo() {
 
         currentPlayer = gameData.currentPlayer;
 
+        playSound = gameData.playSound
+
         if(gameStatus == "Finished") {
             $('#gameDiv').load('showGameResults.html', function() {
                 refreshFinished();
                 return;
             });
         } else if (currentPlayer) {
+            if (playSound) {
+                playBeep()
+            }
             showInfoMessage("Your turn")
         }
     });
@@ -459,13 +457,11 @@ function checkEnterOnAddChat(e)
     return true;
 }
 
-function playBeep(){
-    if(playSound) {
-        try{
-            soundManager.play("beep")
-        }
-        catch(err){
-        }
+function playBeep() {
+    try{
+        document.getElementById("beepAudio").play()
+    }
+    catch(err){
     }
 }
 

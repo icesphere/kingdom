@@ -1,5 +1,6 @@
 package com.kingdom.web
 
+import com.kingdom.model.SOUND_DEFAULT_ON
 import com.kingdom.model.User
 import com.kingdom.service.GameRoomManager
 import com.kingdom.service.LoggedInUsers
@@ -193,7 +194,7 @@ class MainController(private var userManager: UserManager,
     @RequestMapping("/saveMyAccount.html")
     fun saveMyAccount(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
-        val soundDefault = KingdomUtil.getRequestInt(request, "soundDefault", User.SOUND_DEFAULT_ON)
+        val soundDefault = KingdomUtil.getRequestInt(request, "soundDefault", SOUND_DEFAULT_ON)
         user.soundDefault = soundDefault
         userManager.saveUser(user)
         return ModelAndView("redirect:/showGameRooms.html")

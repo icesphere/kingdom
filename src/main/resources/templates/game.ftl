@@ -7,7 +7,6 @@
 		<title>Kingdom</title>
         <#include "commonIncludes.ftl">
         <#if mobile>
-            <script type="text/javascript" src="js/soundmanager2empty.js"></script>
             <link href="css/game.css?2" rel="stylesheet" type="text/css">
             <link href="css/gameMobile.css" rel="stylesheet" type="text/css">
             <script type="text/javascript" >
@@ -15,16 +14,21 @@
                 var mobile = true;
             </script>
         <#else>
-            <script type="text/javascript" src="js/soundmanager2-nodebug-jsmin.js"></script>
             <link href="css/game.css?2" rel="stylesheet" type="text/css">
             <script type="text/javascript" >
                 var playSound = <#if user.soundDefault == 1>true<#else>false</#if>;
                 var mobile = false;
             </script>
         </#if>
-        <script type="text/javascript" src="js/game.js?3"></script>
+        <script type="text/javascript" src="js/game.js?4"></script>
 	</head>
 	<body>
+
+        <audio id="beepAudio">
+          <source src="sounds/beep.mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+
         <div id="gameDiv">
             <#if gameStatus == "Finished">
                 <#include "gameResults.ftl">

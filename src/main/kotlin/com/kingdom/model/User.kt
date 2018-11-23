@@ -8,6 +8,9 @@ import java.text.SimpleDateFormat
 import java.util.Arrays
 import java.util.Date
 
+const val SOUND_DEFAULT_ON = 1
+const val SOUND_DEFAULT_OFF = 2
+
 @Table(name = "users")
 @Entity
 class User {
@@ -221,15 +224,5 @@ class User {
         } else {
             soundDefault = SOUND_DEFAULT_ON
         }
-    }
-
-    companion object {
-        const val MALE = "M"
-        const val FEMALE = "F"
-        const val UNKNOWN = "U"
-        const val COMPUTER = "C"
-
-        const val SOUND_DEFAULT_ON = 1
-        const val SOUND_DEFAULT_OFF = 2
     }
 }

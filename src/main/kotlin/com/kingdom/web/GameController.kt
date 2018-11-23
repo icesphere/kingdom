@@ -836,13 +836,14 @@ class GameController(private val cardManager: CardManager,
             return model
         }
 
-        model["refreshGameData"] = RefreshGameData(player.game.status, player.isYourTurn)
+        model["refreshGameData"] = RefreshGameData(player.game.status, player.isYourTurn, player.user.soundDefault == SOUND_DEFAULT_ON)
 
         return model
     }
 
     class RefreshGameData(val gameStatus: GameStatus,
-                          val isCurrentPlayer: Boolean) {
+                          val isCurrentPlayer: Boolean,
+                          val isPlaySound: Boolean) {
         var title: String? = null
     }
 
