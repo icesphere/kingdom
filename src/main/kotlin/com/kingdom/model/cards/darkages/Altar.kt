@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Altar : DarkAgesCard(NAME, CardType.Action, 6), TrashCardsForBenefitActionCard {
 
     init {
-        testing = true
         special = "Trash a card from your hand. Gain a card costing up to \$5."
         isTrashingCard = true
         isTrashingFromHandRequiredCard = true

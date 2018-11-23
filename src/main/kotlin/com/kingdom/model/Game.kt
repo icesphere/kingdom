@@ -76,6 +76,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val allCards: List<Card>
         get() = cardsInSupply + kingdomCards
 
+    val copyOfAllCards: List<Card>
+        get() = allCards.map { getNewInstanceOfCard(it.name) }
+
     private val pileAmounts = HashMap<String, Int>()
 
     val numInPileMap: Map<String, Int>
@@ -822,7 +825,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         startGame()
     }
 
-    fun getSupplyCard(cardName: String): Card {
+    fun getNewInstanceOfCard(cardName: String): Card {
         if (isIncludeRuins && ruinsPile.firstOrNull()?.name == cardName) {
             return ruinsPile.first().javaClass.kotlin.createInstance()
         }

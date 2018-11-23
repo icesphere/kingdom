@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class JunkDealer : DarkAgesCard(NAME, CardType.Action, 5) {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         addCoins = 1

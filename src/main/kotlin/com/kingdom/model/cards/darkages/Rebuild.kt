@@ -8,14 +8,13 @@ import com.kingdom.model.players.Player
 class Rebuild : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
 
     init {
-        testing = true
         addActions = 1
         special = "Name a card. Reveal cards from your deck until you reveal a Victory card you did not name. Discard the rest, trash the Victory card, and gain a Victory card costing up to \$3 more than it."
         textSize = 98
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val cardsToSelectFrom = player.game.allCards
+        val cardsToSelectFrom = player.game.copyOfAllCards
         player.chooseCardAction(special, this, cardsToSelectFrom, false)
     }
 

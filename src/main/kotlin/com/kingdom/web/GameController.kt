@@ -893,7 +893,7 @@ class GameController(private val cardManager: CardManager,
 
         when (source) {
             CardLocation.Supply -> {
-                val card = game.getSupplyCard(cardName)
+                val card = game.getNewInstanceOfCard(cardName)
 
                 if (highlightSupplyCard(player, card)) {
                     if (action != null) {
@@ -2213,7 +2213,7 @@ class GameController(private val cardManager: CardManager,
                     val cardName = ids.substring(0, ids.indexOf("_"))
                     val numCards = KingdomUtil.getRequestInt(request, name, 0)
                     repeat(numCards) {
-                        val supplyCard = game.getSupplyCard(cardName)
+                        val supplyCard = game.getNewInstanceOfCard(cardName)
                         if (removeCardsFromSupply) {
                             game.removeCardFromSupply(supplyCard, false)
                         }

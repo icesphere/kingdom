@@ -24,7 +24,7 @@ class BandOfMisfits : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCa
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.removeCardInPlay(this)
-        val bandOfMisfitsCard = player.game.getSupplyCard(card.name)
+        val bandOfMisfitsCard = player.game.getNewInstanceOfCard(card.name)
         bandOfMisfitsCard.isCardActuallyBandOfMisfits = true
         player.addActions(1)
         player.playCard(bandOfMisfitsCard)

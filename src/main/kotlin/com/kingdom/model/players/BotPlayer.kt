@@ -71,7 +71,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 val cardToBuy = getCardToBuy()
                 if (cardToBuy != null) {
                     endTurn = false
-                    this.buyCard(game.getSupplyCard(cardToBuy))
+                    this.buyCard(game.getNewInstanceOfCard(cardToBuy))
                 }
             }
         }

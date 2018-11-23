@@ -754,7 +754,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun gainSupplyCard(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {
 
         //create copy of card so that it doesn't affect card chosen in case it came from somewhere other than the supply
-        val supplyCard = game.getSupplyCard(card.name)
+        val supplyCard = game.getNewInstanceOfCard(card.name)
 
         if (game.isCardAvailableInSupply(supplyCard)) {
 

@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Mystic : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
 
     init {
-        testing = true
         addActions = 1
         addCoins = 2
         special = "Name a card, then reveal the top card of your deck. If you named it, put it into your hand."
@@ -16,7 +15,7 @@ class Mystic : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val cardsToSelectFrom = player.game.allCards
+        val cardsToSelectFrom = player.game.copyOfAllCards
         player.chooseCardAction(special, this, cardsToSelectFrom, false)
     }
 

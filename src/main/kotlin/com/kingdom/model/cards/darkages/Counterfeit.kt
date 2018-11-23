@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Counterfeit : DarkAgesCard(NAME, CardType.Treasure, 5), ChoiceActionCard, ChooseCardActionCard {
 
     init {
-        testing = true
         addCoins = 1
         addBuys = 1
         special = "When you play this, you may play a treasure from your hand twice. If you do, trash that treasure."

@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCardActionCard {
 
     init {
-        testing = true
         addCoins = 2
         special = "If there are any cards in the trash costing from \$3 to \$6, gain one of them. Otherwise, each other player reveals the top two cards of their deck, trashes one of them costing from \$3 to \$6, and discards the rest."
         textSize = 92
