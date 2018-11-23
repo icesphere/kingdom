@@ -12,3 +12,4 @@ consolidate select card actions
 fix add specific type of card from confirm cards page
 update costs for bridge and similar cards
 remove or fix sound stuff
+admin cancel current game is broken

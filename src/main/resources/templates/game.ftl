@@ -25,8 +25,6 @@
         <script type="text/javascript" src="js/game.js?3"></script>
 	</head>
 	<body>
-        <div class="topGradient"></div>
-
         <div id="gameDiv">
             <#if gameStatus == "Finished">
                 <#include "gameResults.ftl">
@@ -35,7 +33,7 @@
             </#if>
         </div>
 
-        <#include "footer.ftl">
+        <#include "footerNoGradient.ftl">
 
 	</body>
 </html>

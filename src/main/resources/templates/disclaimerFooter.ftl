@@ -1,1 +1,1 @@
-<div id="disclaimer">Kingdom is not affiliated with Donald X. Vaccarino, Rio Grande Games or any other publisher of Dominion. <a href="showDisclaimer.html">Disclaimer</a></div>
+<div id="disclaimer" style="clear: both;">Kingdom is not affiliated with Donald X. Vaccarino, Rio Grande Games or any other publisher of Dominion. <a href="showDisclaimer.html">Disclaimer</a></div>

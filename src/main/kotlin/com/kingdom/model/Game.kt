@@ -733,6 +733,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         if (isIncludeRuins && ruinsPile.firstOrNull()?.name == cardName) {
             return ruinsPile.first().javaClass.kotlin.createInstance()
         }
+        if (cardsNotInSupply.any { it.name == cardName }) {
+            return cardsNotInSupply.first { it.name == cardName }.javaClass.kotlin.createInstance()
+        }
         val card = cardMap[cardName]!!
         return card.javaClass.kotlin.createInstance()
     }
