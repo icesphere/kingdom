@@ -12,7 +12,7 @@
             <#if action.choices?has_content>
                 <div style="clear: both; float: left; padding-top: 10px;">
                     <#list action.choices as choice>
-                        <div style="margin-right: 10px; float: left;">
+                        <div style="margin-right: 10px; margin-bottom: 10px; float: left;">
                             <input type="button" onclick="submitCardActionChoice(${choice.choiceNumber})" value="${choice.text}"/>
                         </div>
                     </#list>
