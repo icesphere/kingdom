@@ -1600,8 +1600,6 @@ class GameController(private val cardManager: CardManager,
 
             modelAndView.addObject("logId", game.logId)
 
-            modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents)
-
             return modelAndView
         } catch (t: Throwable) {
             return logErrorAndReturnEmpty(t, game)
@@ -1889,7 +1887,6 @@ class GameController(private val cardManager: CardManager,
 
         modelAndView.addObject("gameEndReason", game.gameEndReason)
         modelAndView.addObject("winnerString", game.winnerString)
-        modelAndView.addObject("showRepeatGameLink", game.isAllComputerOpponents)
         modelAndView.addObject("logId", game.logId)
 
         modelAndView.addObject("showCardsNotInSupply", game.cardsNotInSupply.isNotEmpty())
@@ -2377,20 +2374,6 @@ class GameController(private val cardManager: CardManager,
         user!!.toggleSoundDefault()
         userManager.saveUser(user)
         return ModelAndView("empty")
-    }
-
-    @RequestMapping("/repeatGame.html")
-    fun repeatGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        if (gameRoomManager.isUpdatingWebsite) {
-            return ModelAndView("redirect:/showGameRooms.html")
-        }
-        game.repeat()
-        return ModelAndView("redirect:/showGame.html")
     }
 
     @RequestMapping("/showGameCards.html")

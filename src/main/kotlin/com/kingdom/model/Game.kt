@@ -163,8 +163,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var custom: Boolean = false
 
-    private var repeated: Boolean = false
-
     var isPlayTreasureCards = false
 
     var isShowVictoryPoints: Boolean = false
@@ -641,7 +639,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             history.winner = winnerString
             history.showVictoryPoints = isShowVictoryPoints
             history.identicalStartingHands = isIdenticalStartingHands
-            history.repeated = repeated
             history.mobile = mobile
             val cardNames = java.util.ArrayList<String>()
             for (kingdomCard in kingdomCards) {
@@ -673,83 +670,12 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
     }
 
-    fun reset(repeatingGame: Boolean = false) {
-        if (!repeatingGame) {
-            status = GameStatus.None
-            for (player in players) {
-                LoggedInUsers.gameReset(player.userId)
-            }
-            LoggedInUsers.refreshLobbyPlayers()
-            numPlayers = 0
-            numComputerPlayers = 0
-            numEasyComputerPlayers = 0
-            numMediumComputerPlayers = 0
-            numHardComputerPlayers = 0
-            numBMUComputerPlayers = 0
-            isAllComputerOpponents = false
-            isPlayTreasureCards = false
-            isIncludePlatinumCards = false
-            isIncludeColonyCards = false
-            isIncludeShelters = false
-            isIncludeRuins = false
-            supplyCards.clear()
-            kingdomCards.clear()
-            cardMap.clear()
-            blackMarketCards.clear()
-            isShowVictoryCoins = false
-            isShowNativeVillage = false
-            isShowPirateShipCoins = false
-            isTrackTradeRouteTokens = false
-            isAlwaysIncludeColonyAndPlatinum = false
-            isNeverIncludeColonyAndPlatinum = false
-            isAnnotatedGame = false
-            isRecommendedSet = false
-            isTestGame = false
-            isShowPrizeCards = false
-            isIdenticalStartingHands = false
-            creatorId = 0
-            creatorName = ""
-            title = ""
-            isPrivateGame = false
-            password = ""
-            twoCostKingdomCards = 0
-            custom = false
-            mobile = false
+    fun reset() {
+        status = GameStatus.None
+        for (player in players) {
+            LoggedInUsers.gameReset(player.userId)
         }
-        players.clear()
-        playerMap.clear()
-        pileAmounts.clear()
-        embargoTokens.clear()
-        trashedCards.clear()
-        cardsPlayed.clear()
-        cardsBought.clear()
-        currentPlayerCardCostModifiers.clear()
-        gameCardCostModifiers.clear()
-        recentTurnHistory.clear()
-        turnHistory.clear()
-        chats.clear()
-        currentPlayerIndex = 0
-        currentColorIndex = 0
-        previousPlayerId = 0
-        previousPlayerCardsPlayed.clear()
-        previousPlayerCardsBought.clear()
-        playersExited.clear()
-        costDiscount = 0
-        numActionsCardsPlayed = 0
-        actionCardsInPlay = 0
-        actionCardDiscount = 0
-        tradeRouteTokenMap.clear()
-        tradeRouteTokensOnMat = 0
-        determinedWinner = false
-        savedGameHistory = false
-        gameEndReason = ""
-        winnerString = ""
-        historyEntriesAddedThisTurn = 0
-        logId = 0
-        prizeCards.clear()
-        isAbandonedGame = false
-        isRecentGame = false
-        isRandomizerReplacementCardNotFound = false
+        LoggedInUsers.refreshLobbyPlayers()
         LoggedInUsers.refreshLobbyGameRooms()
     }
 
@@ -802,28 +728,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         } else {
             prizeCards.toCardNames()
         }
-
-    fun repeat() {
-        val playersCopy = ArrayList(players)
-        val computerPlayersCopy = ArrayList(computerPlayers)
-        reset(true)
-        repeated = true
-        setupSupply()
-        creationTime = Date()
-        updateLastActivity()
-        for (player in playersCopy) {
-            if (player.isBot) {
-                val computerPlayer = computerPlayersCopy[player.userId]!!
-                addPlayer(player.user, true, computerPlayer is BigMoneyBotPlayer, (computerPlayer as BotPlayer).difficulty)
-            } else {
-                addPlayer(player.user)
-            }
-        }
-        playersCopy.clear()
-        computerPlayersCopy.clear()
-
-        startGame()
-    }
 
     fun getNewInstanceOfCard(cardName: String): Card {
         if (isIncludeRuins && ruinsPile.firstOrNull()?.name == cardName) {
@@ -912,7 +816,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         players.add(player)
         playerMap[player.userId] = player
 
-        if (!repeated && players.size == numPlayers) {
+        if (players.size == numPlayers) {
             startGame()
         }
     }

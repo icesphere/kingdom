@@ -1,4 +1,3 @@
-repeat game is broken
 cards overflow weird when too many on desktop (use flexbox?)
 better bots
 support multiple info messages?
@@ -12,3 +11,4 @@ better logic for choosing cards for bots - e.g. chose card for Masquerade
 consolidate select card actions
 fix add specific type of card from confirm cards page
 update costs for bridge and similar cards
+remove or fix sound stuff

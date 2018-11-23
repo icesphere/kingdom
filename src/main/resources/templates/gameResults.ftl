@@ -77,11 +77,6 @@
                 <a href="javascript:exitGame();">Exit Game</a>
             </div>
         </div>
-        <#if showRepeatGameLink>
-            <div style="clear:both;float:left;padding-left:5px;padding-top:15px;font-size:16px;">
-                <a href="repeatGame.html">Play again with the same cards</a>
-            </div>
-        </#if>
         <div style="clear:both;float:left;padding-left:5px;padding-top:15px;font-size:16px;">
             <a href="showGameLog.html?logId=${logId}" target="_blank">Game Log</a>
         </div>
