@@ -21,7 +21,6 @@ class OverallStats {
     var identicalStartingHandsGames: Int = 0
     var repeatedGames: Int = 0
     var mobileGames: Int = 0
-    var annotatedGames: Int = 0
     var recentGames: Int = 0
     var recommendedSets: Int = 0
 

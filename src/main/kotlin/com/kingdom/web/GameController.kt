@@ -111,7 +111,6 @@ class GameController(private val cardManager: CardManager,
     private fun addSelectCardsObjects(user: User, modelAndView: ModelAndView, includeTesting: Boolean) {
         modelAndView.addObject("user", user)
         modelAndView.addObject("decks", getDecks(user, includeTesting))
-        modelAndView.addObject("annotatedGames", gameManager.annotatedGames)
         modelAndView.addObject("recentGames", gameManager.getGameHistoryList(user.userId))
         modelAndView.addObject("excludedCards", user.excludedCardNames)
         modelAndView.addObject("recommendedSets", gameManager.recommendedSets)
@@ -238,33 +237,24 @@ class GameController(private val cardManager: CardManager,
                 val excludedCards = ArrayList<Card>(0)
                 parseCardSelectionRequest(request, user, decks, customSelection, excludedCards, generateType)
 
-                if (generateType == "annotatedGame" || generateType == "recentGame" || generateType == "recommendedSet") {
+                if (generateType == "recentGame" || generateType == "recommendedSet") {
                     var cards: String
                     var includePlatinumAndColony = false
-                    if (generateType == "annotatedGame") {
-                        val annotatedGame = gameManager.getAnnotatedGame(Integer.parseInt(request.getParameter("annotatedGameId")))
-                        cards = annotatedGame.cards
-                        includePlatinumAndColony = annotatedGame.includeColonyAndPlatinum
-                        game.isAnnotatedGame = true
+
+                    if (generateType == "recentGame") {
+                        cards = request.getParameter("recentGameCards")
+                        game.isRecentGame = true
                     } else {
-                        if (generateType == "recentGame") {
-                            cards = request.getParameter("recentGameCards")
-                            game.isRecentGame = true
-                        } else {
-                            cards = request.getParameter("recommendedSetCards")
-                            game.isRecommendedSet = true
-                        }
-                        if (cards.endsWith("Platinum,Colony")) {
-                            cards = cards.substring(0, cards.indexOf(",Platinum,Colony"))
-                            includePlatinumAndColony = true
-                        }
+                        cards = request.getParameter("recommendedSetCards")
+                        game.isRecommendedSet = true
                     }
+                    if (cards.endsWith("Platinum,Colony")) {
+                        cards = cards.substring(0, cards.indexOf(",Platinum,Colony"))
+                        includePlatinumAndColony = true
+                    }
+
                     for (cardString in cards.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                        val card = if (generateType == "annotatedGame") {
-                            cardManager.getCard(cardString)
-                        } else {
-                            cardManager.getCard(cardString)
-                        }
+                        val card = cardManager.getCard(cardString)
                         customSelection.add(card)
                     }
 
@@ -331,7 +321,7 @@ class GameController(private val cardManager: CardManager,
 
         options.excludedCards = excludedCards
 
-        if (generateType == "custom" || generateType == "annotatedGame" || generateType == "recentGame" || generateType == "recommendedSet") {
+        if (generateType == "custom" || generateType == "recentGame" || generateType == "recommendedSet") {
             game.custom = true
             options.customSelection = customSelection
             if (KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")) {
@@ -2047,94 +2037,6 @@ class GameController(private val cardManager: CardManager,
         val modelAndView = ModelAndView("userStats")
         val stats = gameManager.userStats
         modelAndView.addObject("stats", stats)
-        return modelAndView
-    }
-
-    @RequestMapping("/annotatedGames.html")
-    fun annotatedGames(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("annotatedGames")
-        val games = gameManager.annotatedGames
-        modelAndView.addObject("games", games)
-        return modelAndView
-    }
-
-    @RequestMapping("/saveAnnotatedGame.html")
-    fun saveAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-
-        val cardsNames = ArrayList<String>()
-        val parameterNames = request.parameterNames
-        while (parameterNames.hasMoreElements()) {
-            val name = parameterNames.nextElement() as String
-            if (name.startsWith("card_")) {
-                val cardName = name.substring(5)
-                cardsNames.add(cardName)
-            }
-        }
-        val game: AnnotatedGame
-        val id = request.getParameter("id")
-        if (id == "0") {
-            game = AnnotatedGame()
-        } else {
-            game = gameManager.getAnnotatedGame(Integer.parseInt(id))
-        }
-        game.title = request.getParameter("title")
-        game.cards = KingdomUtil.implode(cardsNames, ",")
-        game.includeColonyAndPlatinum = KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")
-        gameManager.saveAnnotatedGame(game)
-        return annotatedGames(request, response)
-    }
-
-    @RequestMapping("/deleteAnnotatedGame.html")
-    fun deleteAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val id = request.getParameter("id")
-        val game = gameManager.getAnnotatedGame(Integer.parseInt(id))
-        gameManager.deleteAnnotatedGame(game)
-        return annotatedGames(request, response)
-    }
-
-    @RequestMapping("/showAnnotatedGame.html")
-    fun showAnnotatedGame(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("annotatedGame")
-        val id = request.getParameter("id")
-
-        val game: AnnotatedGame
-        val selectedCards = ArrayList<String>()
-        if (id == "0") {
-            game = AnnotatedGame()
-        } else {
-            game = gameManager.getAnnotatedGame(Integer.parseInt(id))
-            for (cardName in game.cards.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                val card = cardManager.getCard(cardName)
-                selectedCards.add(card.name)
-            }
-        }
-
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("selectedCards", selectedCards)
-        modelAndView.addObject("kingdomCards", cardManager.getCards(Deck.Base, true))
-        modelAndView.addObject("intrigueCards", cardManager.getCards(Deck.Intrigue, true))
-        modelAndView.addObject("seasideCards", cardManager.getCards(Deck.Seaside, true))
-        modelAndView.addObject("prosperityCards", cardManager.getCards(Deck.Prosperity, true))
-        modelAndView.addObject("cornucopiaCards", cardManager.getCards(Deck.Cornucopia, true))
-        modelAndView.addObject("hinterlandsCards", cardManager.getCards(Deck.Hinterlands, true))
-        modelAndView.addObject("promoCards", cardManager.getCards(Deck.Promo, true))
-        modelAndView.addObject("game", game)
         return modelAndView
     }
 

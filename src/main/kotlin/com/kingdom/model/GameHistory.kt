@@ -30,9 +30,6 @@ class GameHistory {
     @Column(name = "game_end_reason")
     var gameEndReason: String? = null
 
-    @Column(name = "annotated_game")
-    var annotatedGame: Boolean = false
-
     @Column(name = "test_game")
     var testGame: Boolean = false
 

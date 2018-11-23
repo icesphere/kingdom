@@ -53,11 +53,6 @@
 			</tr>
             <tr>
                 <td>
-                    <a href="annotatedGames.html">Annotated Games</a>
-                </td>
-            </tr>
-            <tr>
-                <td>
                     <a href="recommendedSets.html">Recommended Sets</a>
                 </td>
             </tr>

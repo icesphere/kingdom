@@ -141,14 +141,6 @@
     </tr>
     <tr>
         <td class="label">
-            Annotated games:
-        </td>
-        <td>
-            ${stats.annotatedGames}
-        </td>
-    </tr>
-    <tr>
-        <td class="label">
             Recent games:
         </td>
         <td>

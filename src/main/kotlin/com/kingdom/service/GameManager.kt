@@ -12,7 +12,6 @@ import java.util.GregorianCalendar
 @Service
 class GameManager(private val gameErrorRepository: GameErrorRepository,
                   private val gameLogRepository: GameLogRepository,
-                  private val annotatedGameRepository: AnnotatedGameRepository,
                   private val recommendedSetRepository: RecommendedSetRepository,
                   private val gameHistoryRepository: GameHistoryRepository,
                   private val gameUserHistoryRepository: GameUserHistoryRepository,
@@ -76,9 +75,6 @@ class GameManager(private val gameErrorRepository: GameErrorRepository,
     val userStats: UserStats
         get() = UserStats()
 
-    val annotatedGames: List<AnnotatedGame>
-        get() = annotatedGameRepository.findAllByOrderByGameIdDesc()
-
     val recommendedSets: List<RecommendedSet>
         get() = recommendedSetRepository.findAllByOrderByIdAsc()
 
@@ -130,18 +126,6 @@ class GameManager(private val gameErrorRepository: GameErrorRepository,
 
     fun saveGameLog(log: GameLog) {
         gameLogRepository.save(log)
-    }
-
-    fun saveAnnotatedGame(game: AnnotatedGame) {
-        annotatedGameRepository.save(game)
-    }
-
-    fun deleteAnnotatedGame(game: AnnotatedGame) {
-        annotatedGameRepository.delete(game)
-    }
-
-    fun getAnnotatedGame(id: Int): AnnotatedGame {
-        return annotatedGameRepository.findById(id).get()
     }
 
     fun saveRecommendedSet(set: RecommendedSet) {

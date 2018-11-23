@@ -136,8 +136,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var lastActivity = Date()
 
-    var isAnnotatedGame: Boolean = false
-
     var isRecentGame: Boolean = false
 
     var isRecommendedSet: Boolean = false
@@ -629,7 +627,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             history.numPlayers = numPlayers
             history.numComputerPlayers = numComputerPlayers
             history.custom = custom
-            history.annotatedGame = isAnnotatedGame
             history.recentGame = isRecentGame
             history.recommendedSet = isRecommendedSet
             history.testGame = isTestGame

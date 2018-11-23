@@ -1,7 +1,6 @@
 *** stuff to do ***
 
 fix or remove recommended sets
-fix or remove annotated games
 
 *** stuff to maybe do ***
 

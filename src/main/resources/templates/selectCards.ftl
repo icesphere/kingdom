@@ -122,9 +122,6 @@
                             <input type="radio" name="generateType" value="recentGame" onclick="toggleGenerateType()"/> Cards from a recent game
                         </div>
                     </#if>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="radio" name="generateType" value="annotatedGame" onclick="toggleGenerateType()"/> Annotated Game
-                    </div>
                 </div>
                 <div id="decks" style="padding-top:10px;float:left;clear:both;">
                     <div id="decksLabel" style="float:left;"><span class="label">Decks:</span></div>
@@ -239,20 +236,6 @@
                         <select name="recentGameCards">
                             <#list recentGames as recentGame>
                                 <option value="${recentGame.cards}">${recentGame.cards}</option>
-                            </#list>
-                        </select>
-                    </div>
-                </div>
-
-                <div id="annotatedGames" style="float:left;clear:both;padding-top:10px;display:none;">
-                    <div class="label" style="clear:both;float:left;">Choose Annotated Game:</div>
-                    <div style="clear:both;float:left;">
-                        (Go to <a href="http://dominionstrategy.com/category/annotated-games/" target="_blank">http://dominionstrategy.com/category/annotated-games/</a> for more information about the annotated games.)
-                    </div>
-                    <div style="clear:both;float:left;">
-                        <select name="annotatedGameId">
-                            <#list annotatedGames as annotatedGame>
-                                <option value="${annotatedGame.gameId}">${annotatedGame.title}</option>
                             </#list>
                         </select>
                     </div>

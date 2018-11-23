@@ -84,9 +84,6 @@ class GameDao//todo
         query = session.createSQLQuery("select count(distinct g.gameid) from games g where g.repeated = 1");
         stats.setRepeatedGames(((BigInteger) query.uniqueResult()).intValue());
 
-        query = session.createSQLQuery("select count(distinct g.gameid) from games g where g.annotated_game = 1");
-        stats.setAnnotatedGames(((BigInteger) query.uniqueResult()).intValue());
-
         query = session.createSQLQuery("select count(distinct g.gameid) from games g where g.recent_game = 1");
         stats.setRecentGames(((BigInteger) query.uniqueResult()).intValue());
 
