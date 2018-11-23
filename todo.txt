@@ -1,15 +1,15 @@
 *** stuff to do ***
 
-fix add specific type of card from confirm cards page
-show turn summaries
-
 
 *** stuff to maybe do ***
 
+show recent events
 admin cancel current game is broken
 cards overflow weird when too many on desktop (use flexbox?)
 
 better bots
+fix add specific type of card from confirm cards page
+
 support multiple info messages?
 refresh sometimes has issues after quit game
 considering using embedded database so app can be deployed easily anywhere

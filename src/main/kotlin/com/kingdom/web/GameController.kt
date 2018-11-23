@@ -1349,15 +1349,9 @@ class GameController(private val cardManager: CardManager,
             return ModelAndView("redirect:/login.html")
         }
         try {
-            var template = "historyDiv"
-            if (KingdomUtil.isMobile(request)) {
-                template = "historyDivMobile"
-            }
-            val modelAndView = ModelAndView(template)
-
-            val reversedTurnHistory = game.recentTurnHistory.reversed()
-
-            modelAndView.addObject("turnHistory", reversedTurnHistory)
+            val modelAndView = ModelAndView("historyDiv")
+            modelAndView.addObject("turnHistory", game.recentTurnHistory)
+            modelAndView.addObject("lastTurnSummaries", game.lastTurnSummaries)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1587,6 +1581,7 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("winnerString", game.winnerString)
             modelAndView.addObject("players", game.players)
             modelAndView.addObject("turnHistory", game.recentTurnHistory)
+            modelAndView.addObject("lastTurnSummaries", game.lastTurnSummaries)
 
             modelAndView.addObject("victoryCards", game.victoryCards)
 
@@ -1865,6 +1860,7 @@ class GameController(private val cardManager: CardManager,
         addPlayingAreaDataToModelView(game, player, modelAndView)
 
         modelAndView.addObject("turnHistory", game.recentTurnHistory)
+        modelAndView.addObject("lastTurnSummaries", game.lastTurnSummaries)
         modelAndView.addObject("chats", game.chats)
         modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
         modelAndView.addObject("showDuration", game.isShowDuration)

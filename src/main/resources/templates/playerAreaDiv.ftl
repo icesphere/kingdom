@@ -1,7 +1,7 @@
 <div id="playerAreaDiv">
     <table style="width:100%">
         <tr>
-            <td style="width:75%">
+            <td style="width:75%; vertical-align: top;">
                 <table style="width:100%">
                     <tr>
                         <td>
@@ -22,12 +22,10 @@
             <td style="width:25%; vertical-align:top;">
                 <table style="width:100%">
                     <tr>
-                        <#if !mobile>
-                            <td style="vertical-align:top; padding-top:30px;">
-                                <img src="images/History.png" alt="History"/>
-                            </td>
-                        </#if>
-                        <td>
+                        <td style="vertical-align:top; padding-top:30px;">
+                            <img src="images/History.png" alt="History"/>
+                        </td>
+                        <td style="vertical-align: top;">
                             <div id="historyDiv">
                                 <#include "historyDiv.ftl">
                             </div>

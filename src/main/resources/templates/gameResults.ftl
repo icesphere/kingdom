@@ -94,7 +94,7 @@
 
     <div style="clear:both; padding-top:20px;" class="label">Recent Game History:</div>
     <div id="historyDiv" style="clear:both;">
-        <#include "historyDivMobile.ftl">
+        <#include "historyDiv.ftl">
     </div>
 
 </div>

@@ -59,7 +59,7 @@
 <#if mobile>
     <div style="clear:both;" class="label">History:</div>
     <div id="historyDiv" style="clear:both;">
-        <#include "historyDivMobile.ftl">
+        <#include "historyDiv.ftl">
     </div>
 </#if>
 

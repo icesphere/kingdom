@@ -225,6 +225,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val recentTurnHistory = LinkedList<PlayerTurn>()
     private var maxHistoryTurnSize: Int = 0
 
+    val lastTurnSummaries
+        get() = players.mapNotNull {
+            it.lastTurnSummary
+        }
+
     var isShowPrizeCards: Boolean = false
     var prizeCards: MutableList<Card> = ArrayList(0)
 

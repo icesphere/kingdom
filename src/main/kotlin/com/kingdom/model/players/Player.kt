@@ -106,7 +106,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var lastTurnSummary: TurnSummary? = null
 
-    private var currentTurnSummary = TurnSummary()
+    private var currentTurnSummary = TurnSummary(username)
 
     var isWaitingForComputer: Boolean = false
 
@@ -332,7 +332,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         lastTurnSummary = currentTurnSummary
 
-        currentTurnSummary = TurnSummary()
+        currentTurnSummary = TurnSummary(username)
+
+        game.refreshHistory()
 
         turns++
 
@@ -1019,7 +1021,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addGameLog("*** $username's Turn $turn ***")
         addGameLog("Deck: $currentDeckNumber")
 
-        currentTurnSummary = TurnSummary()
+        currentTurnSummary = TurnSummary(username)
         currentTurnSummary.gameTurn = game.turn
 
         cardsSetAsideUntilStartOfTurn.forEach {

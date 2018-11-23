@@ -7,6 +7,7 @@ class PlayerTurn(player: Player) {
     val userId: Int = player.userId
     var username = player.username
     val history = ArrayList<String>()
+    val lastTurnSummary = player.lastTurnSummary
 
     @Suppress("unused")
     val reversedHistory

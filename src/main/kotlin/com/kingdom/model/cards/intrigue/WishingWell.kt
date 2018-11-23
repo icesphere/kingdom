@@ -25,9 +25,12 @@ class WishingWell : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard
         val topCards = player.revealTopCardsOfDeck(1)
         if (topCards.isNotEmpty()) {
             if (topCards.first().name == card.name) {
+                player.showInfoMessage("You guessed correctly")
                 player.addUsernameGameLog("correctly guessed the top card of their deck was ${card.cardNameWithBackgroundColor} and added it to their hand")
                 player.removeTopCardOfDeck()
                 player.addCardToHand(card)
+            } else {
+                player.showInfoMessage("You guessed wrong. The top card was ${topCards.first().cardNameWithBackgroundColor}.")
             }
         }
     }
