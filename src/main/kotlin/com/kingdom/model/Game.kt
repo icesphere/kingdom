@@ -110,12 +110,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val currentPlayer: Player
         get() = players[currentPlayerIndex]
 
-    //todo maybe get rid of these?
-    var costDiscount = 0
-    var actionCardDiscount: Int = 0
-    var actionCardsInPlay = 0
-    private var numActionsCardsPlayed = 0
-
     private val currentTurnLog = StringBuilder()
 
     private var quitGamePlayer: Player? = null

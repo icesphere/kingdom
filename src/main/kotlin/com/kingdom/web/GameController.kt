@@ -387,10 +387,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("createGame", KingdomUtil.getRequestBoolean(request, "createGame"))
         modelAndView.addObject("player", HumanPlayer(user, game))
         modelAndView.addObject("currentPlayerId", -1)
-        modelAndView.addObject("costDiscount", game.costDiscount)
 //        modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
         modelAndView.addObject("cards", game.kingdomCards)
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
         modelAndView.addObject("includeShelters", includeShelters)
@@ -1201,10 +1198,10 @@ class GameController(private val cardManager: CardManager,
     }
 
     private fun addSupplyDataToModelAndView(game: Game, player: Player, modelAndView: ModelAndView) {
-        val kingdomCards = game.kingdomCards.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it }
+        val kingdomCards = game.kingdomCards.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
         modelAndView.addObject("kingdomCards", kingdomCards)
 
-        val supplyCards = game.cardsInSupply.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it }
+        val supplyCards = game.cardsInSupply.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
         modelAndView.addObject("supplyCards", supplyCards)
 
         try {
@@ -1253,12 +1250,15 @@ class GameController(private val cardManager: CardManager,
     private fun addPlayingAreaDataToModelView(game: Game, player: Player, modelAndView: ModelAndView) {
         addCardsPlayedDataToModelAndView(game, player, modelAndView)
 
-        game.cardsBought.forEach { it.isHighlighted = false }
+        game.cardsBought.forEach {
+            it.isHighlighted = false
+            it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it)
+        }
         modelAndView.addObject("cardsBought", game.cardsBought)
     }
 
     private fun addCardsPlayedDataToModelAndView(game: Game, player: Player, modelAndView: ModelAndView) {
-        val cardsPlayed = game.cardsPlayed.map { it.isHighlighted = highlightCard(player, it, CardLocation.PlayArea); it }
+        val cardsPlayed = game.cardsPlayed.map { it.isHighlighted = highlightCard(player, it, CardLocation.PlayArea); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
         modelAndView.addObject("cardsPlayed", cardsPlayed)
     }
 
@@ -1392,11 +1392,13 @@ class GameController(private val cardManager: CardManager,
             player.hand.forEach {
                 it.isHighlighted = highlightCard(player, it, CardLocation.Hand)
                 it.isSelected = isCardSelected(player, it)
+                it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it)
             }
 
             player.currentAction?.cardChoices?.forEach {
                 it.isHighlighted = highlightCard(player, it, CardLocation.CardAction)
                 it.isSelected = isCardSelected(player, it)
+                it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it)
             }
         }
 
@@ -1406,10 +1408,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("currentPlayer", game.currentPlayer)
 
         modelAndView.addObject("gameStatus", game.status)
-        modelAndView.addObject("costDiscount", game.costDiscount)
 //            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
-        modelAndView.addObject("actionCardDiscount", game.actionCardDiscount)
-        modelAndView.addObject("actionCardsInPlay", game.actionCardsInPlay)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
     }
 

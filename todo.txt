@@ -1,7 +1,6 @@
 *** stuff to do ***
 
 fix add specific type of card from confirm cards page
-update costs for bridge and similar cards
 show turn summaries
 
 

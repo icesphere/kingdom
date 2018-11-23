@@ -10,10 +10,7 @@
 <div style="padding:15px;float:left;">
     <#assign clickType="info">
     <#assign gameStatus = "InProgress">
-    <#assign costDiscount = 0>
     <#assign coinTokensPlayed = 0>
-    <#assign actionCardDiscount = 0>
-    <#assign actionCardsInPlay = 0>
     <#assign card_index = 1>
     <#assign mobile = false>
     <#list cards as card>
