@@ -7,8 +7,6 @@ interface UserRepository : CrudRepository<User, Int> {
 
     fun findAllByOrderByLastLogin(): List<User>
 
-    fun findByEmail(email: String): User?
-
     fun findByUsername(username: String): User?
 
     fun findByUsernameAndPassword(username: String, password: String): User?

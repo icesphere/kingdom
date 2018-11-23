@@ -5,20 +5,16 @@
     <#include "commonIncludes.ftl">
     <script type="text/javascript">
         $(document).ready(function() {
-            $("#email").focus();
+            $("#username").focus();
         });
 
         function requestAccount() {
-            if($.trim($("#email").val()) == "") {
-                alert("Email required");
-            }
-            else if($.trim($("#username").val()) == "") {
+            if($.trim($("#username").val()) == "") {
                 alert("Username required");
             }
             else {
                 $("#submitButton").hide();
                 $("#cancelButton").hide();
-                $("#sendingEmailDiv").show();
                 $("#requestAccountForm").submit();    
             }
         }

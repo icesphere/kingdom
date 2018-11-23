@@ -31,10 +31,6 @@ class UserManager(private val dao: UserDao,
         return userRepository.findByUsername(username)
     }
 
-    fun getUserByEmail(email: String): User? {
-        return userRepository.findByEmail(email)
-    }
-
     fun usernameExists(username: String): Boolean {
         return userRepository.findByUsername(username) != null
     }

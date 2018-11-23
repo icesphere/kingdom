@@ -4,7 +4,6 @@ import com.kingdom.model.User
 import com.kingdom.service.GameRoomManager
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.service.UserManager
-import com.kingdom.util.EmailUtil
 import com.kingdom.util.KingdomUtil
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.stereotype.Controller
@@ -128,21 +127,9 @@ class MainController(private var userManager: UserManager,
                 error = "Invalid username (can only contain letters and numbers, with no spaces)"
             }
         }
-        val email = request.getParameter("email")
-        if (email == null || email == "") {
-            error = "Email required"
-        } else {
-            val p = Pattern.compile(".+@.+\\.[a-zA-Z0-9_]+")
-            val m = p.matcher(email)
-            val matchFound = m.matches()
-            if (!matchFound) {
-                error = "Invalid email"
-            }
-        }
 
         if (error == null) {
             val user = User()
-            user.email = email
             user.username = username
             user.password = RandomStringUtils.random(6, "ABCDEFGH23456789")
             user.creationDate = Date()
@@ -151,7 +138,6 @@ class MainController(private var userManager: UserManager,
             }
             user.changePassword = true
             userManager.saveUser(user)
-            EmailUtil.sendAccountRequestEmail(user)
             val modelAndView = ModelAndView("accountRequestSubmitted")
             modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
             return modelAndView
@@ -255,47 +241,6 @@ class MainController(private var userManager: UserManager,
         modelAndView.addObject("user", user)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         return modelAndView
-    }
-
-    @RequestMapping("/forgotLogin.html")
-    @Throws(Exception::class)
-    fun forgotLogin(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val modelAndView = ModelAndView("forgotLogin")
-        modelAndView.addObject("error", "")
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-        return modelAndView
-    }
-
-    @RequestMapping("/submitForgotLogin.html")
-    @Throws(Exception::class)
-    fun submitForgotLogin(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        var error: String? = null
-        val email = request.getParameter("email")
-        if (email == null || email == "") {
-            error = "Email required"
-        } else {
-            val p = Pattern.compile(".+@.+\\.[a-zA-Z0-9_]+")
-            val m = p.matcher(email)
-            val matchFound = m.matches()
-            if (!matchFound) {
-                error = "Invalid email"
-            }
-        }
-
-        if (error == null) {
-            val user = userManager.getUserByEmail(email!!)
-            if (user != null) {
-                EmailUtil.sendForgotLoginEmail(user)
-            }
-            val modelAndView = ModelAndView("forgotLoginSubmitted")
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        } else {
-            val modelAndView = ModelAndView("forgotLogin")
-            modelAndView.addObject("error", error)
-            modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-            return modelAndView
-        }
     }
 
     @RequestMapping("/setUpdatingWebsite.html")

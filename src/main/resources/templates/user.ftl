@@ -39,11 +39,6 @@
                 </tr>
                 <tr>
                     <td>
-                        Email: <input type="text" name="email" value="${user.email}"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
                         <input type="radio" name="gender" value="M" <#if user.gender == "M">checked</#if>/> Male  <input type="radio" name="gender" value="F" <#if user.gender == "F">checked</#if>/> Female  <input type="radio" name="gender" value="U" <#if user.gender == "U">checked</#if>/> Unknown
                     </td>
                 </tr>

@@ -42,7 +42,6 @@ class UserController(internal var manager: UserManager) {
         }
         user.username = request.getParameter("username")
         user.password = request.getParameter("password")
-        user.email = request.getParameter("email")
         if (request.getParameter("gender") == User.FEMALE) {
             user.gender = User.FEMALE
         } else {

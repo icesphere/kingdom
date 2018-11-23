@@ -41,8 +41,6 @@ class User {
             return field
         }
 
-    var email = ""
-
     var invisible: Boolean = false
 
     @Column(name = "creation_date")
