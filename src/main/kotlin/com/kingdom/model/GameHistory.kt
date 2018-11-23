@@ -44,13 +44,9 @@ class GameHistory {
     @Column(name = "identical_starting_hands")
     var identicalStartingHands: Boolean = false
 
-    var repeated: Boolean = false
-
     var mobile: Boolean = false
 
     @Column(name = "recent_game")
     var recentGame: Boolean = false
 
-    @Column(name = "recommended_set")
-    var recommendedSet: Boolean = false
 }

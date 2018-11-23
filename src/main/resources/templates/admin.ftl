@@ -51,11 +51,6 @@
 					<a href="gameErrors.html">Game Errors (${numErrors})</a>
 				</td>
 			</tr>
-            <tr>
-                <td>
-                    <a href="recommendedSets.html">Recommended Sets</a>
-                </td>
-            </tr>
             <#if showGameActions>
                 <tr>
                     <td>

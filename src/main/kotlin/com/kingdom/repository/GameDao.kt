@@ -87,9 +87,6 @@ class GameDao//todo
         query = session.createSQLQuery("select count(distinct g.gameid) from games g where g.recent_game = 1");
         stats.setRecentGames(((BigInteger) query.uniqueResult()).intValue());
 
-        query = session.createSQLQuery("select count(distinct g.gameid) from games g where g.recommended_set = 1");
-        stats.setRecommendedSets(((BigInteger) query.uniqueResult()).intValue());
-
         query = session.createSQLQuery("select count(distinct g.gameid) from games g where g.mobile = 1");
         stats.setMobileGames(((BigInteger) query.uniqueResult()).intValue());
 
@@ -177,21 +174,9 @@ class GameDao//todo
         result = getStatsResultFromQuery(query, startDate, endDate, session);
         stats.setIdenticalStartingHandsGames(result);
 
-        query = "select count(distinct g.gameid) from games g where g.repeated = 1";
-        result = getStatsResultFromQuery(query, startDate, endDate, session);
-        stats.setRepeatedGames(result);
-
-        query = "select count(distinct g.gameid) from games g where g.annotated_game = 1";
-        result = getStatsResultFromQuery(query, startDate, endDate, session);
-        stats.setAnnotatedGames(result);
-
         query = "select count(distinct g.gameid) from games g where g.recent_game = 1";
         result = getStatsResultFromQuery(query, startDate, endDate, session);
         stats.setRecentGames(result);
-
-        query = "select count(distinct g.gameid) from games g where g.recommended_set = 1";
-        result = getStatsResultFromQuery(query, startDate, endDate, session);
-        stats.setRecommendedSets(result);
 
         query = "select count(distinct g.gameid) from games g where g.mobile = 1";
         result = getStatsResultFromQuery(query, startDate, endDate, session);

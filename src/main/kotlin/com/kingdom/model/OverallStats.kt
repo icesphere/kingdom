@@ -22,7 +22,6 @@ class OverallStats {
     var repeatedGames: Int = 0
     var mobileGames: Int = 0
     var recentGames: Int = 0
-    var recommendedSets: Int = 0
 
     val gamesPlayed: Int
         get() = gamesAgainstComputersPlayed + gamesAgainstHumansPlayed

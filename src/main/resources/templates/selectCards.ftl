@@ -114,9 +114,6 @@
                     <div style="float:left;padding-left:10px;">
                         <input type="radio" name="generateType" value="custom" onclick="toggleGenerateType()"/> Custom
                     </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="radio" name="generateType" value="recommendedSet" onclick="toggleGenerateType()"/> Recommended Set
-                    </div>
                     <#if recentGames?size != 0>
                         <div style="float:left;padding-left:10px;">
                             <input type="radio" name="generateType" value="recentGame" onclick="toggleGenerateType()"/> Cards from a recent game
@@ -207,26 +204,6 @@
                             </div>
                         </#list>
 
-                    </div>
-                </div>
-
-                <div id="recommendedSets" style="float:left;clear:both;padding-top:10px;display:none;">
-                    <div class="label" style="clear:both;float:left;">Choose cards from a recommended set:</div>
-                    <div style="clear:both;float:left;">
-                        <#assign currentDeck = "">
-                        <select name="recommendedSetCards">
-                            <#list recommendedSets as recommendedSet>
-                                <#if currentDeck != recommendedSet.deck>
-                                    <#if currentDeck != "">
-                                        </optgroup>
-                                    </#if>
-                                    <optgroup label="${recommendedSet.deck}">
-                                    <#assign currentDeck = recommendedSet.deck>
-                                </#if>
-                                <option value="${recommendedSet.cards}">${recommendedSet.name} - ${recommendedSet.cards}</option>
-                            </#list>
-                            </optgroup>
-                        </select>
                     </div>
                 </div>
 

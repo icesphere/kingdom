@@ -113,7 +113,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("decks", getDecks(user, includeTesting))
         modelAndView.addObject("recentGames", gameManager.getGameHistoryList(user.userId))
         modelAndView.addObject("excludedCards", user.excludedCardNames)
-        modelAndView.addObject("recommendedSets", gameManager.recommendedSets)
     }
 
     private fun getDecks(user: User, includeTesting: Boolean): List<UserDeckInfo> {
@@ -237,17 +236,13 @@ class GameController(private val cardManager: CardManager,
                 val excludedCards = ArrayList<Card>(0)
                 parseCardSelectionRequest(request, user, decks, customSelection, excludedCards, generateType)
 
-                if (generateType == "recentGame" || generateType == "recommendedSet") {
+                if (generateType == "recentGame") {
                     var cards: String
                     var includePlatinumAndColony = false
 
-                    if (generateType == "recentGame") {
-                        cards = request.getParameter("recentGameCards")
-                        game.isRecentGame = true
-                    } else {
-                        cards = request.getParameter("recommendedSetCards")
-                        game.isRecommendedSet = true
-                    }
+                    cards = request.getParameter("recentGameCards")
+                    game.isRecentGame = true
+
                     if (cards.endsWith("Platinum,Colony")) {
                         cards = cards.substring(0, cards.indexOf(",Platinum,Colony"))
                         includePlatinumAndColony = true
@@ -321,7 +316,7 @@ class GameController(private val cardManager: CardManager,
 
         options.excludedCards = excludedCards
 
-        if (generateType == "custom" || generateType == "recentGame" || generateType == "recommendedSet") {
+        if (generateType == "custom" || generateType == "recentGame") {
             game.custom = true
             options.customSelection = customSelection
             if (KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")) {
@@ -2331,70 +2326,5 @@ class GameController(private val cardManager: CardManager,
         }
 
         return emptyModelAndView
-    }
-
-    @RequestMapping("/recommendedSets.html")
-    fun recommendedSets(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("recommendedSets")
-        val recommendedSets = gameManager.recommendedSets
-        modelAndView.addObject("recommendedSets", recommendedSets)
-        return modelAndView
-    }
-
-    @RequestMapping("/saveRecommendedSet.html")
-    fun saveRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-
-        val set: RecommendedSet
-        val id = request.getParameter("id")
-        if (id == "0") {
-            set = RecommendedSet()
-        } else {
-            set = gameManager.getRecommendedSet(Integer.parseInt(id))
-        }
-        set.name = request.getParameter("name")
-        set.deck = request.getParameter("deck")
-        set.cards = request.getParameter("cards")
-        gameManager.saveRecommendedSet(set)
-        return recommendedSets(request, response)
-    }
-
-    @RequestMapping("/deleteRecommendedSet.html")
-    fun deleteRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val id = request.getParameter("id")
-        val set = gameManager.getRecommendedSet(Integer.parseInt(id))
-        gameManager.deleteRecommendedSet(set)
-        return recommendedSets(request, response)
-    }
-
-    @RequestMapping("/showRecommendedSet.html")
-    fun showRecommendedSet(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("recommendedSet")
-        val id = request.getParameter("id")
-
-        val set: RecommendedSet
-        if (id == "0") {
-            set = RecommendedSet()
-        } else {
-            set = gameManager.getRecommendedSet(Integer.parseInt(id))
-        }
-
-        modelAndView.addObject("set", set)
-        return modelAndView
     }
 }

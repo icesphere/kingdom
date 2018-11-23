@@ -4,15 +4,11 @@ import com.kingdom.model.*
 import com.kingdom.model.players.Player
 import com.kingdom.repository.*
 import org.springframework.stereotype.Service
-
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.GregorianCalendar
+import java.util.*
 
 @Service
 class GameManager(private val gameErrorRepository: GameErrorRepository,
                   private val gameLogRepository: GameLogRepository,
-                  private val recommendedSetRepository: RecommendedSetRepository,
                   private val gameHistoryRepository: GameHistoryRepository,
                   private val gameUserHistoryRepository: GameUserHistoryRepository,
                   private val userRepository: UserRepository) {
@@ -75,9 +71,6 @@ class GameManager(private val gameErrorRepository: GameErrorRepository,
     val userStats: UserStats
         get() = UserStats()
 
-    val recommendedSets: List<RecommendedSet>
-        get() = recommendedSetRepository.findAllByOrderByIdAsc()
-
     fun getGameHistoryList(userId: Int): List<GameHistory> {
         //todo
         return ArrayList()
@@ -126,17 +119,5 @@ class GameManager(private val gameErrorRepository: GameErrorRepository,
 
     fun saveGameLog(log: GameLog) {
         gameLogRepository.save(log)
-    }
-
-    fun saveRecommendedSet(set: RecommendedSet) {
-        recommendedSetRepository.save(set)
-    }
-
-    fun deleteRecommendedSet(set: RecommendedSet) {
-        recommendedSetRepository.delete(set)
-    }
-
-    fun getRecommendedSet(id: Int): RecommendedSet {
-        return recommendedSetRepository.findById(id).get()
     }
 }

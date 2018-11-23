@@ -138,8 +138,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var isRecentGame: Boolean = false
 
-    var isRecommendedSet: Boolean = false
-
     var isIncludePlatinumCards: Boolean = false
 
     var isIncludeColonyCards: Boolean = false
@@ -628,7 +626,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             history.numComputerPlayers = numComputerPlayers
             history.custom = custom
             history.recentGame = isRecentGame
-            history.recommendedSet = isRecommendedSet
             history.testGame = isTestGame
             history.abandonedGame = isAbandonedGame
             history.gameEndReason = gameEndReason

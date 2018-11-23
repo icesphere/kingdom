@@ -1,7 +1,5 @@
 *** stuff to do ***
 
-fix or remove recommended sets
-
 *** stuff to maybe do ***
 
 show recent events

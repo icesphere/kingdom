@@ -149,14 +149,6 @@
     </tr>
     <tr>
         <td class="label">
-            Recommended sets:
-        </td>
-        <td>
-            ${stats.recommendedSets}
-        </td>
-    </tr>
-    <tr>
-        <td class="label">
             Mobile games:
         </td>
         <td>
