@@ -760,14 +760,13 @@ class GameController(private val cardManager: CardManager,
             return model
         }
 
-        model["refreshGameData"] = RefreshGameData(player.game.status, player.isYourTurn, player.user.soundDefault == SOUND_DEFAULT_ON)
+        model["refreshGameData"] = RefreshGameData(player.game.status, player.isYourTurn)
 
         return model
     }
 
     class RefreshGameData(val gameStatus: GameStatus,
-                          val isCurrentPlayer: Boolean,
-                          val isPlaySound: Boolean) {
+                          val isCurrentPlayer: Boolean) {
         var title: String? = null
     }
 
@@ -2073,13 +2072,6 @@ class GameController(private val cardManager: CardManager,
         val modelAndView = ModelAndView("gamesInProgress")
         modelAndView.addObject("games", gameRoomManager.gamesInProgress)
         return modelAndView
-    }
-
-    @RequestMapping("/toggleSound.html")
-    fun toggleSound(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        user!!.toggleSoundDefault()
-        return ModelAndView("empty")
     }
 
     @RequestMapping("/showGameCards.html")

@@ -34,6 +34,10 @@ $(document).ready(function() {
         endTurn();
     });
 
+    if (localStorage.muteSound == "true") {
+        $("#soundImage").attr("src", "images/soundoff.png");
+    }
+
     setTimeout(function() { refreshGameInfo(); }, 2000);
 });
 
@@ -51,15 +55,13 @@ function refreshGameInfo() {
 
         currentPlayer = gameData.currentPlayer;
 
-        playSound = gameData.playSound
-
         if(gameStatus == "Finished") {
             $('#gameDiv').load('showGameResults.html', function() {
                 refreshFinished();
                 return;
             });
         } else if (currentPlayer) {
-            if (playSound) {
+            if (!(localStorage.muteSound == "true")) {
                 playBeep()
             }
             showInfoMessage("Your turn")
@@ -466,15 +468,14 @@ function playBeep() {
 }
 
 function toggleSound() {
-    if(playSound) {
-        $("#soundImage").attr("src", "images/soundoff.png");
+    if (localStorage.muteSound == "true") {
+        $("#soundImage").attr("src", "images/soundon.png");
+        localStorage.muteSound = "false"
     }
     else {
-        $("#soundImage").attr("src", "images/soundon.png");
+        $("#soundImage").attr("src", "images/soundoff.png");
+        localStorage.muteSound = "true"
     }
-    playSound = !playSound;
-
-    $.get("toggleSound.html");
 }
 
 function useCoinTokens(){

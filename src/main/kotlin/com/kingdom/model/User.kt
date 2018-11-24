@@ -3,9 +3,6 @@ package com.kingdom.model
 import com.kingdom.service.LoggedInUsers
 import java.util.*
 
-const val SOUND_DEFAULT_ON = 1
-const val SOUND_DEFAULT_OFF = 2
-
 class User {
 
     var userId: String = UUID.randomUUID().toString()
@@ -17,8 +14,6 @@ class User {
     var guest: Boolean = false
 
     var gameId: String? = null
-
-    var soundDefault = SOUND_DEFAULT_ON
 
     var excludedCards = ""
 
@@ -49,6 +44,7 @@ class User {
             return expired
         }
 
+    @Suppress("unused") //used in freemarker template
     val isIdle: Boolean
         get() {
             if (gameId != null) {
@@ -58,6 +54,7 @@ class User {
             return lastActivity.time + threeMinutes < System.currentTimeMillis()
         }
 
+    @Suppress("unused") //used in freemarker template
     val idleTime: String
         get() {
             val timeDifference = System.currentTimeMillis() - lastActivity.time
@@ -74,12 +71,4 @@ class User {
             sb.append(minutes).append("m")
             return sb.toString()
         }
-
-    fun toggleSoundDefault() {
-        if (soundDefault == SOUND_DEFAULT_ON) {
-            soundDefault = SOUND_DEFAULT_OFF
-        } else {
-            soundDefault = SOUND_DEFAULT_ON
-        }
-    }
 }

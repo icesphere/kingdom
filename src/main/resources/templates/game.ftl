@@ -9,18 +9,16 @@
         <#if mobile>
             <link href="css/game.css?2" rel="stylesheet" type="text/css">
             <link href="css/gameMobile.css" rel="stylesheet" type="text/css">
-            <script type="text/javascript" >
-                var playSound = false;
+            <script type="text/javascript">
                 var mobile = true;
             </script>
         <#else>
             <link href="css/game.css?2" rel="stylesheet" type="text/css">
-            <script type="text/javascript" >
-                var playSound = <#if user.soundDefault == 1>true<#else>false</#if>;
+            <script type="text/javascript">
                 var mobile = false;
             </script>
         </#if>
-        <script type="text/javascript" src="js/game.js?4"></script>
+        <script type="text/javascript" src="js/game.js?6"></script>
 	</head>
 	<body>
 
