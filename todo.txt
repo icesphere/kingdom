@@ -1,11 +1,12 @@
 *** stuff to do ***
 
-show recent usernames on login page
-require password for admin page
-save settings in local storage
+save last sound toggle setting
+check login with username of someone already logged in
 
 *** stuff to maybe do ***
 
+require password for admin page
+show recent usernames on login page
 show recent events
 admin cancel current game is broken
 cards overflow weird when too many on desktop (use flexbox?)

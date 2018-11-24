@@ -130,7 +130,7 @@ class GameController(private val cardManager: CardManager,
         val decks = ArrayList<Deck>()
         val customSelection = ArrayList<Card>()
         val excludedCards = ArrayList<Card>(0)
-        parseCardSelectionRequest(request, user, decks, customSelection, excludedCards, generateType)
+        parseCardSelectionRequest(request, decks, customSelection, excludedCards, generateType)
 
         setRandomizingOptions(request, game, customSelection, excludedCards, generateType)
 
@@ -161,31 +161,7 @@ class GameController(private val cardManager: CardManager,
                 var numHardComputerPlayers = 0
                 var numBMUComputerPlayers = 0
 
-                user.baseChecked = request.getParameter("deck_${Deck.Base}") != null
-                user.intrigueChecked = request.getParameter("deck_${Deck.Intrigue}") != null
-                user.seasideChecked = request.getParameter("deck_${Deck.Seaside}") != null
-                user.prosperityChecked = request.getParameter("deck_${Deck.Prosperity}") != null
-                user.cornucopiaChecked = request.getParameter("deck_${Deck.Cornucopia}") != null
-                user.hinterlandsChecked = request.getParameter("deck_${Deck.Hinterlands}") != null
-                user.darkAgesChecked = request.getParameter("deck_${Deck.DarkAges}") != null
-                user.promoChecked = request.getParameter("deck_${Deck.Promo}") != null
-
-                user.alwaysPlayTreasureCards = KingdomUtil.getRequestBoolean(request, "playTreasureCards")
-                user.showVictoryPoints = KingdomUtil.getRequestBoolean(request, "showVictoryPoints")
-                user.identicalStartingHands = KingdomUtil.getRequestBoolean(request, "identicalStartingHands")
-
-                user.baseWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Base}", 3)
-                user.intrigueWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Intrigue}", 3)
-                user.seasideWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Seaside}", 3)
-                user.prosperityWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Prosperity}", 3)
-                user.cornucopiaWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Cornucopia}", 3)
-                user.hinterlandsWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Hinterlands}", 3)
-                user.darkAgesWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.DarkAges}", 3)
-                user.promoWeight = KingdomUtil.getRequestInt(request, "deck_weight_${Deck.Promo}", 3)
-
                 for (i in 2..6) {
-                    user.setPlayerDefault(i, request.getParameter("player$i"))
-
                     when {
                         request.getParameter("player$i") == "human" -> numPlayers++
                         request.getParameter("player$i") == "computer_easy" -> {
@@ -210,6 +186,7 @@ class GameController(private val cardManager: CardManager,
                         }
                     }
                 }
+
                 game.numPlayers = numPlayers
                 game.numComputerPlayers = numComputerPlayers
                 game.numEasyComputerPlayers = numEasyComputerPlayers
@@ -231,7 +208,7 @@ class GameController(private val cardManager: CardManager,
                 val decks = ArrayList<Deck>()
                 val customSelection = ArrayList<Card>()
                 val excludedCards = ArrayList<Card>(0)
-                parseCardSelectionRequest(request, user, decks, customSelection, excludedCards, generateType)
+                parseCardSelectionRequest(request, decks, customSelection, excludedCards, generateType)
 
                 setRandomizingOptions(request, game, customSelection, excludedCards, generateType)
 
@@ -249,26 +226,15 @@ class GameController(private val cardManager: CardManager,
 
     }
 
-    private fun parseCardSelectionRequest(request: HttpServletRequest, user: User, decks: MutableList<Deck>, customSelection: MutableList<Card>, excludedCards: MutableList<Card>, generateType: String) {
+    private fun parseCardSelectionRequest(request: HttpServletRequest, decks: MutableList<Deck>, customSelection: MutableList<Card>, excludedCards: MutableList<Card>, generateType: String) {
         val parameterNames = request.parameterNames
         while (parameterNames.hasMoreElements()) {
             val name = parameterNames.nextElement() as String
             when {
                 name.startsWith("deck_") && !name.startsWith("deck_weight_") -> {
                     val deck = Deck.valueOf(request.getParameter(name))
-                    var weight = when (deck) {
-                        Deck.Base -> user.baseWeight
-                        Deck.Intrigue -> user.intrigueWeight
-                        Deck.Seaside -> user.seasideWeight
-                        Deck.Prosperity -> user.prosperityWeight
-                        Deck.Cornucopia -> user.cornucopiaWeight
-                        Deck.Hinterlands -> user.hinterlandsWeight
-                        Deck.DarkAges -> user.darkAgesWeight
-                        else -> 3
-                    }
-                    if (weight > 5) {
-                        weight = 5
-                    }
+                    val weight: Int = request.getParameter("deck_weight_" + deck.name).toInt()
+
                     repeat(weight) {
                         decks.add(deck)
                     }

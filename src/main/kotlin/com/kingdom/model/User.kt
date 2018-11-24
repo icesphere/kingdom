@@ -20,54 +20,6 @@ class User {
 
     var soundDefault = SOUND_DEFAULT_ON
 
-    var player2Default = "computer_bmu"
-
-    var player3Default = "computer_hard"
-
-    var player4Default = "none"
-
-    var player5Default = "none"
-
-    var player6Default = "none"
-
-    var baseChecked = true
-
-    var intrigueChecked = true
-
-    var seasideChecked = true
-
-    var prosperityChecked = true
-
-    var cornucopiaChecked = true
-
-    var hinterlandsChecked = true
-
-    var darkAgesChecked = true
-
-    var promoChecked = false
-
-    var baseWeight = 3
-
-    var intrigueWeight = 3
-
-    var seasideWeight = 3
-
-    var prosperityWeight = 3
-
-    var cornucopiaWeight = 3
-
-    var hinterlandsWeight = 3
-
-    var darkAgesWeight = 3
-
-    var promoWeight = 3
-
-    var alwaysPlayTreasureCards: Boolean = false
-
-    var showVictoryPoints: Boolean = false
-
-    var identicalStartingHands: Boolean = false
-
     var excludedCards = ""
 
     val excludedCardNames: List<String>
@@ -122,16 +74,6 @@ class User {
             sb.append(minutes).append("m")
             return sb.toString()
         }
-
-    fun setPlayerDefault(i: Int, selection: String) {
-        when (i) {
-            2 -> player2Default = selection
-            3 -> player3Default = selection
-            4 -> player4Default = selection
-            5 -> player5Default = selection
-            6 -> player6Default = selection
-        }
-    }
 
     fun toggleSoundDefault() {
         if (soundDefault == SOUND_DEFAULT_ON) {

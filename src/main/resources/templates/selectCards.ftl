@@ -16,7 +16,7 @@
         <script type="text/javascript" >
             var createGame = ${createGame?string};
         </script>
-        <script type="text/javascript" src="js/selectCards.js?5"></script>
+        <script type="text/javascript" src="js/selectCards.js?7"></script>
 	</head>
 	<body>
         <div class="topGradient"></div>
@@ -85,16 +85,16 @@
                         <div class="label" style="float:left;">Options: </div><#if mobile><div style="float:left;padding-left:5px;"><a href="javascript:toggleOptions()" id="optionsLink">Show</a></div></#if>
                         <div id="options" <#if mobile>style="display:none"</#if>>
                             <div style="clear:both;">
-                                <input type="checkbox" name="playTreasureCards" id="playTreasureCards" value="true" <#if user.alwaysPlayTreasureCards>checked</#if>/> <label for="playTreasureCards">Play Treasure Cards</label> (Default is to assume treasure cards in hand are always played)
+                                <input type="checkbox" name="playTreasureCards" id="playTreasureCards" value="true"/> <label for="playTreasureCards">Play Treasure Cards</label> (Default is to assume treasure cards in hand are always played)
                             </div>
                             <div>
                                 (Cards marked with an * require treasure cards to be played.  If you select any of these cards, the Play Treasure Cards option will be used)
                             </div>
                             <div style="padding-top:10px;">
-                                <input type="checkbox" name="showVictoryPoints" id="showVictoryPoints" value="true" <#if user.showVictoryPoints>checked</#if>/> Show Victory Points (points are calculated as you play and displayed next to each player's name)
+                                <input type="checkbox" name="showVictoryPoints" id="showVictoryPoints" value="true"/> Show Victory Points (points are calculated as you play and displayed next to each player's name)
                             </div>
                             <div style="padding-top:10px;">
-                                <input type="checkbox" name="identicalStartingHands" id="identicalStartingHands" value="true" <#if user.identicalStartingHands>checked</#if>/> Identical Starting Hands (all players start with the same cards)
+                                <input type="checkbox" name="identicalStartingHands" id="identicalStartingHands" value="true"/> Identical Starting Hands (all players start with the same cards)
                             </div>
                             <div style="padding-top:10px;">
                                 <span class="label">Game Title/Description: </span><input type="text" name="title" style="width:200px;"> (optional - this will be displayed for your game room in the lobby)

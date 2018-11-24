@@ -30,6 +30,10 @@ function loadSelectedValuesFromLocalStorage() {
             pc.value = playerChoice;
         }
     });
+
+    $("#playTreasureCards").prop('checked', localStorage.getItem("playTreasureCards") == "true");
+    $("#showVictoryPoints").prop('checked', localStorage.getItem("showVictoryPoints") == "true");
+    $("#identicalStartingHands").prop('checked', localStorage.getItem("identicalStartingHands") == "true");
 }
 
 function createGame() {
@@ -64,6 +68,10 @@ function saveSelectedValuesToLocalStorage() {
 
     var playerChoices = $("select[name^='player']");
     $.makeArray(playerChoices).forEach(pc => localStorage.setItem(pc.name, pc.value));
+
+    localStorage.setItem("playTreasureCards", $("#playTreasureCards").prop('checked'));
+    localStorage.setItem("showVictoryPoints", $("#showVictoryPoints").prop('checked'));
+    localStorage.setItem("identicalStartingHands", $("#identicalStartingHands").prop('checked'));
 }
 
 function saveOptions() {
