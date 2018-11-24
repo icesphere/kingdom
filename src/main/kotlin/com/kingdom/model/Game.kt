@@ -8,7 +8,6 @@ import com.kingdom.model.cards.darkages.ruins.*
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.modifiers.CardCostModifierForCardsInPlay
 import com.kingdom.model.cards.supply.*
-import com.kingdom.model.players.BotPlayer
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
 import com.kingdom.model.players.bots.BigMoneyBotPlayer
@@ -31,7 +30,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var status: GameStatus = GameStatus.None
 
-    var creatorId: Int = 0
+    var creatorId: String? = null
     var creatorName = ""
 
     var title = ""
@@ -46,8 +45,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val humanPlayers: List<Player>
         get() = players.filterNot { it.isBot }
 
-    val playerMap: MutableMap<Int, Player> = HashMap(6)
-    private val playersExited = HashSet<Int>(6)
+    val playerMap: MutableMap<String, Player> = HashMap(6)
+    private val playersExited = HashSet<String>(6)
 
     private val computerPlayers: List<Player>
         get() = players.filter { it.isBot }
@@ -55,8 +54,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var decks: MutableList<Deck> = ArrayList()
 
     var kingdomCards = mutableListOf<Card>()
-
-    private var twoCostKingdomCards = 0
 
     private val supplyCards = ArrayList<Card>()
 
@@ -207,7 +204,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             return modifiers
         }
 
-    var previousPlayerId = 0
+    var previousPlayerId = ""
     val previousPlayerCardsPlayed = ArrayList<Card>()
     val previousPlayerCardsBought = ArrayList<Card>()
     val previousPlayer: Player?
@@ -718,27 +715,22 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     private fun addComputerPlayer(i: Int, bigMoneyUltimate: Boolean, difficulty: Int) {
-        val userId = i * -1
         val user = User()
 
         when {
             bigMoneyUltimate -> {
-                user.userId = userId - 40
                 user.username = "C$i (BMU)"
                 addPlayer(user, true, true, 3)
             }
             difficulty == 1 -> {
-                user.userId = userId - 10
                 user.username = "C$i (easy)"
                 addPlayer(user, true, false, 1)
             }
             difficulty == 2 -> {
-                user.userId = userId - 20
                 user.username = "C$i (medium)"
                 addPlayer(user, true, false, 2)
             }
             difficulty == 3 -> {
-                user.userId = userId - 30
                 user.username = "C$i (hard)"
                 addPlayer(user, true, false, 3)
             }
@@ -771,7 +763,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         playerMap.remove(player.userId)
         if (player.userId == creatorId) {
             creatorId = if (players.isEmpty()) {
-                0
+                null
             } else {
                 players[0].userId
             }

@@ -296,25 +296,4 @@ object KingdomUtil {
         val set = HashSet(list)
         return ArrayList(set)
     }
-
-    fun getLocation(ipAddress: String): String {
-        try {
-            val client = Client.create()
-            val webResource = client.resource("http://api.ipinfodb.com/v3/ip-city/")
-            val queryParams = MultivaluedMapImpl()
-            queryParams.add("key", "d2453b713dc82cdc1fddbb28550ef197f8666017107cecfc65ab56311bb69a96")
-            queryParams.add("ip", ipAddress)
-            val result = webResource.queryParams(queryParams).get(String::class.java)
-
-            val locationValues = result.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-
-            var location = ""
-            location += locationValues[6] + ", " + locationValues[5] + ", " + locationValues[4]
-
-            return location
-        } catch (e: Exception) {
-            return "Error"
-        }
-
-    }
 }

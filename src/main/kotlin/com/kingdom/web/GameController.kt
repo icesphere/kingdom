@@ -27,7 +27,6 @@ val emptyModelAndView = ModelAndView("empty")
 @Suppress("unused")
 @Controller
 class GameController(private val cardManager: CardManager,
-                     private val userManager: UserManager,
                      private val gameManager: GameManager,
                      private val gameRoomManager: GameRoomManager,
                      private val lobbyChats: LobbyChats,
@@ -139,7 +138,6 @@ class GameController(private val cardManager: CardManager,
         cardManager.setRandomKingdomCards(game)
 
         user.excludedCards = KingdomUtil.getCommaSeparatedCardNames(excludedCards)
-        userManager.saveUser(user)
 
         return showRandomConfirmPage(request, user, game)
     }
@@ -241,7 +239,6 @@ class GameController(private val cardManager: CardManager,
                 cardManager.setRandomKingdomCards(game)
 
                 user.excludedCards = KingdomUtil.getCommaSeparatedCardNames(excludedCards)
-                userManager.saveUser(user)
 
                 return ModelAndView("redirect:/confirmCards.html")
             }
@@ -1630,7 +1627,7 @@ class GameController(private val cardManager: CardManager,
             } else if (command.equals("whisper", ignoreCase = true) || command.equals("w", ignoreCase = true)) {
                 val username = remainingString.substring(0, remainingString.indexOf(" "))
                 val message = remainingString.substring(username.length + 1)
-                val receivingUser = userManager.getUser(username)
+                val receivingUser = LoggedInUsers.getUserByUsername(username)
                 if (receivingUser != null) {
                     sendPrivateChat(user, message, receivingUser.userId)
                 }
@@ -1648,8 +1645,8 @@ class GameController(private val cardManager: CardManager,
         }
     }
 
-    private fun sendPrivateChat(user: User, message: String?, receivingUserId: Int) {
-        if (message != null && message != "" && receivingUserId > 0) {
+    private fun sendPrivateChat(user: User, message: String?, receivingUserId: String?) {
+        if (message != null && message != "" && receivingUserId != null) {
             val receivingUser = LoggedInUsers.getUser(receivingUserId)
             if (receivingUser != null) {
                 if (receivingUser.gameId != null) {
@@ -1727,7 +1724,7 @@ class GameController(private val cardManager: CardManager,
             return model
         }
         val message = request.getParameter("message")
-        val receivingUserId = KingdomUtil.getRequestInt(request, "receivingUserId", 0)
+        val receivingUserId = request.getParameter("receivingUserId")
         sendPrivateChat(user, message, receivingUserId)
         return refreshLobby(request, response)
     }
@@ -2116,7 +2113,6 @@ class GameController(private val cardManager: CardManager,
     fun toggleSound(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
         user!!.toggleSoundDefault()
-        userManager.saveUser(user)
         return ModelAndView("empty")
     }
 

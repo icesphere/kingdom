@@ -6,7 +6,7 @@
         <td class="mediumLabel">Player</td>
     </tr>
     <#list players as player>
-        <#if !player.expired && !player.invisible>
+        <#if !player.expired>
             <tr>
                 <td>
                     <#if player.gameId??>

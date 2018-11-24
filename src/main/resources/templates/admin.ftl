@@ -26,11 +26,6 @@
                     Logged In Users: ${loggedInUsersCount}
                 </td>
             </tr>
-			<tr>
-				<td>
-					<a href="listUsers.html">Users</a>
-				</td>
-			</tr>
             <#if showGameActions>
                 <tr>
                     <td>

@@ -29,14 +29,6 @@
                 <br>
                 If this option is not enabled then you do not play treasure cards. When you are ready to buy a card you just click the card you want to buy.
             </dd>
-            <dt>How do I change my password?</dt>
-            <dd>
-                Click on the "My Account" link in the game room lobby. This page contains a section to change your password.
-            </dd>
-            <dt>How do I set the sound so that it is turned off by default?</dt>
-            <dd>
-                Click on the "My Account" link in the game room lobby. You can change the default sound under Game Settings.
-            </dd>
             <dt>Shortcut Keys</dt>
             <dd>
                 t - Play All Treasure Cards

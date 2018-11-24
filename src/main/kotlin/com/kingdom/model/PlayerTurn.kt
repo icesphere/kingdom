@@ -4,7 +4,7 @@ import com.kingdom.model.players.Player
 import java.util.ArrayList
 
 class PlayerTurn(player: Player) {
-    val userId: Int = player.userId
+    val userId: String = player.userId
     var username = player.username
     val history = ArrayList<String>()
     val lastTurnSummary = player.lastTurnSummary

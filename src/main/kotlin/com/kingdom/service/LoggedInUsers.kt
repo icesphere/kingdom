@@ -5,7 +5,7 @@ import java.util.*
 
 object LoggedInUsers {
 
-    private val users = HashMap<Int, User>()
+    private val users = HashMap<String, User>()
 
     fun userLoggedIn(user: User) {
         updateUser(user, true, true)
@@ -15,7 +15,7 @@ object LoggedInUsers {
         users.remove(user.userId)
     }
 
-    fun gameReset(userId: Int) {
+    fun gameReset(userId: String) {
         val user = users[userId]
         if (user != null) {
             user.gameId = null
@@ -27,8 +27,16 @@ object LoggedInUsers {
         return ArrayList(users.values)
     }
 
-    fun getUser(userId: Int): User? {
+    fun getUser(userId: String): User? {
         return users[userId]
+    }
+
+    fun usernameBeingUsed(username: String): Boolean {
+        return users.values.any { it.username == username }
+    }
+
+    fun getUserByUsername(username: String): User? {
+        return users.values.firstOrNull { it.username == username }
     }
 
     fun updateUser(user: User) {

@@ -174,9 +174,6 @@
                 </div>
             </#if>
             <div style="position:relative; right:5px;">
-                <a href="myAccount.html">My Account</a>
-            </div>
-            <div style="position:relative; right:5px;">
                 <a href="logout.html">Logout</a>
             </div>
         </div>

@@ -81,7 +81,7 @@ class GameMessageService(private val messagingTemplate: SimpMessagingTemplate) {
         refreshPlayerQueue(SHOW_INFO_MESSAGE_QUEUE, player, message)
     }
 
-    fun showInfoMessageForUserId(userId: Int, message: String) {
+    fun showInfoMessageForUserId(userId: String, message: String) {
         messagingTemplate.convertAndSend("/queue/$SHOW_INFO_MESSAGE_QUEUE/$userId", message)
     }
 

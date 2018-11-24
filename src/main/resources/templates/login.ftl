@@ -22,16 +22,7 @@
                             <td><input class="loginField" type="text" id="username" name="username"/> </td>
                         </tr>
                         <tr>
-                            <td class="loginLabel">Password:</td>
-                            <td><input class="loginField" type="password" name="password"/> </td>
-                        </tr>
-                        <tr>
                             <td colspan="2"><input class="loginButton" type="submit" value="Login"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="padding-top:10px;">
-                                <a href="requestAccount.html">Create Account</a>
-                            </td>
                         </tr>
                     </table>
                 </form>
@@ -51,16 +42,7 @@
                             <td><input type="text" id="username" name="username"/> </td>
                         </tr>
                         <tr>
-                            <td>Password:</td>
-                            <td><input type="password" name="password"/> </td>
-                        </tr>
-                        <tr>
                             <td colspan="2"><input type="submit" value="Login"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="padding-top:10px;">
-                                <a href="requestAccount.html">Create Account</a>
-                            </td>
                         </tr>
                     </table>
                 </form>

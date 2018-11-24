@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class LobbyChat(val username: String, val message: String, val time: Date) {
-    var userId: Int = 0
+    var userId: String? = null
 
     val chat: String
         get() {
@@ -12,7 +12,7 @@ class LobbyChat(val username: String, val message: String, val time: Date) {
             val sb = StringBuilder()
             sb.append("<span class='lobbyChat'>")
             sb.append(sdf.format(time))
-            if (userId > 0) {
+            if (userId != null) {
                 sb.append(" Private message from")
             }
             sb.append(" ").append(username).append(": ")
