@@ -1,9 +1,9 @@
 *** stuff to do ***
 
-fix showing error when login with username of someone already logged in
-
 *** stuff to maybe do ***
 
+cleanup UI on login page
+cleanup UI on lobby page
 require password for admin page
 show recent usernames on login page
 show recent events

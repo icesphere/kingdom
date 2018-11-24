@@ -23,9 +23,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         modelAndView.addObject("mobile", mobile)
         if (username != null) {
             if (LoggedInUsers.usernameBeingUsed(username)) {
-                val modelAndView1 = ModelAndView("usernameBeingUsed")
-                modelAndView1.addObject("mobile", KingdomUtil.isMobile(request))
-                return modelAndView1
+                modelAndView.addObject("usernameBeingUsed", true)
             } else {
                 val user = User()
                 user.username = username
