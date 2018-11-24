@@ -1860,44 +1860,6 @@ class GameController(private val cardManager: CardManager,
         return gameRoomManager.getGame(gameId as String)
     }
 
-    @RequestMapping("/gamePlayersHistory.html")
-    fun gamePlayersHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val gameId = request.getParameter("gameId")
-        val modelAndView = ModelAndView("gamePlayersHistory")
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("players", gameManager.getGamePlayersHistory(gameId))
-        modelAndView.addObject("gameId", gameId)
-        return modelAndView
-    }
-
-    @RequestMapping("/showGameLog.html")
-    fun showGameLog(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val modelAndView = ModelAndView("gameLog")
-        val logId = KingdomUtil.getRequestInt(request, "logId", -1)
-        val gameId = request.getParameter("gameId")
-        var logs = arrayOfNulls<String>(0)
-        var log: GameLog? = null
-        if (logId > 0) {
-            log = gameManager.getGameLog(logId)
-        } else if (gameId != null) {
-            log = gameManager.getGameLogByGameId(gameId)
-        }
-        val logNotFound: Boolean
-        if (log != null) {
-            logNotFound = false
-            logs = log.log!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        } else {
-            logNotFound = true
-        }
-        modelAndView.addObject("logs", logs)
-        modelAndView.addObject("logNotFound", logNotFound)
-        return modelAndView
-    }
-
     @ResponseBody
     @RequestMapping(value = ["/changeStatus"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun changeStatus(request: HttpServletRequest, response: HttpServletResponse): Map<*, *> {

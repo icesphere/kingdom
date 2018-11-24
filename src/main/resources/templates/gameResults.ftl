@@ -77,9 +77,6 @@
                 <a href="javascript:exitGame();">Exit Game</a>
             </div>
         </div>
-        <div style="clear:both;float:left;padding-left:5px;padding-top:15px;font-size:16px;">
-            <a href="showGameLog.html?logId=${logId}" target="_blank">Game Log</a>
-        </div>
     </div>
 
     <#if !allComputerOpponents>
