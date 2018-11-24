@@ -1597,7 +1597,6 @@ class GameController(private val cardManager: CardManager,
         try {
             request.session.removeAttribute("gameId")
             user.gameId = null
-            user.stats = null
             LoggedInUsers.updateUser(user)
             LoggedInUsers.refreshLobbyPlayers()
             val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGame.html")
@@ -1991,47 +1990,6 @@ class GameController(private val cardManager: CardManager,
         val modelAndView = ModelAndView("lobbyPlayers")
         modelAndView.addObject("user", getUser(request)!!)
         modelAndView.addObject("players", LoggedInUsers.getUsers())
-        return modelAndView
-    }
-
-    @RequestMapping("/getPlayerStatsDiv")
-    fun getPlayerStatsDiv(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request) ?: return ModelAndView("redirect:/login.html")
-        val modelAndView = ModelAndView("playerStatsDiv")
-        userManager.calculateGameStats(user)
-        modelAndView.addObject("user", user)
-        return modelAndView
-    }
-
-    @RequestMapping("/overallGameStats.html")
-    fun overallGameStats(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("overallStats")
-        val stats = gameManager.overallStats
-        val todayStats = gameManager.overallStatsForToday
-        val yesterdayStats = gameManager.overallStatsForYesterday
-        val weekStats = gameManager.overallStatsForPastWeek
-        val monthStats = gameManager.overallStatsForPastMonth
-        modelAndView.addObject("overallStats", stats)
-        modelAndView.addObject("todayStats", todayStats)
-        modelAndView.addObject("yesterdayStats", yesterdayStats)
-        modelAndView.addObject("weekStats", weekStats)
-        modelAndView.addObject("monthStats", monthStats)
-        return modelAndView
-    }
-
-    @RequestMapping("/userStats.html")
-    fun userStats(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("userStats")
-        val stats = gameManager.userStats
-        modelAndView.addObject("stats", stats)
         return modelAndView
     }
 

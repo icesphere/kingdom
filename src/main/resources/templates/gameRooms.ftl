@@ -163,22 +163,6 @@
                 });
             }
 
-            function showPlayerStats() {
-                $('#playerStatsDiv').load('getPlayerStatsDiv', function() {
-                    showPlayerStatsDialog();
-                });
-            }
-
-            function showPlayerStatsDialog() {
-                $("#playerStatsDialog").dialog({
-                    modal: false, width: 300, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-                });
-            }
-
-            function closePlayerStatsDialog() {
-                $("#playerStatsDialog").dialog("destroy").remove();
-            }
-
         </script>
 	</head>
 	<body>
@@ -191,9 +175,6 @@
             </#if>
             <div style="position:relative; right:5px;">
                 <a href="myAccount.html">My Account</a>
-            </div>
-            <div style="position:relative; right:5px;">
-                <a href="javascript:showPlayerStats()">My Game Stats</a>
             </div>
             <div style="position:relative; right:5px;">
                 <a href="logout.html">Logout</a>
@@ -233,8 +214,6 @@
                     <#include "lobbyPlayersDiv.ftl">
                 </div>
             </div>
-        </div>
-        <div id="playerStatsDiv">
         </div>
         <#include "footer.ftl">
 	</body>

@@ -92,7 +92,6 @@ class MainController(private var userManager: UserManager,
         val loggedInUser = LoggedInUsers.getUser(user.userId)
         val showGameActions = loggedInUser?.gameId != null
         modelAndView.addObject("showGameActions", showGameActions)
-        modelAndView.addObject("numErrors", userManager.errorCount)
         modelAndView.addObject("loggedInUsersCount", LoggedInUsers.getUsers().size)
         modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
         modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage ?: "")
@@ -223,19 +222,6 @@ class MainController(private var userManager: UserManager,
     @RequestMapping("/showDisclaimer.html")
     fun showDisclaimer(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val modelAndView = ModelAndView("disclaimer")
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
-        return modelAndView
-    }
-
-    @RequestMapping("/getPlayerStatsDivFromAdmin.html")
-    fun getPlayerStatsDivFromAdmin(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        if (!isAdmin(request)) {
-            return ModelAndView("redirect:/login.html")
-        }
-        val user = userManager.getUser(KingdomUtil.getRequestInt(request, "userId", -1))
-        val modelAndView = ModelAndView("playerStatsDiv")
-        userManager.calculateGameStats(user)
-        modelAndView.addObject("user", user)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         return modelAndView
     }

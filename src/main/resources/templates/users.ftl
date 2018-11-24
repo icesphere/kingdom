@@ -3,23 +3,6 @@
 	<head>
 		<title>Users</title>
         <#include "commonIncludes.ftl">
-        <script type="text/javascript">
-            function showPlayerStats(userId) {
-                $('#playerStatsDiv').load('getPlayerStatsDivFromAdmin.html', {userId: userId}, function() {
-                    showPlayerStatsDialog();
-                });
-            }
-
-            function showPlayerStatsDialog() {
-                $("#playerStatsDialog").dialog({
-                    modal: false, width: 300, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-                });
-            }
-
-            function closePlayerStatsDialog() {
-                $("#playerStatsDialog").dialog("destroy").remove();
-            }
-        </script>
 	</head>
 	<body>
         <#include "adminLinks.ftl">
@@ -35,7 +18,6 @@
                 <td style="font-weight:bold;padding-left:10px;">Logins</td>
                 <td style="font-weight:bold;padding-left:10px;">Last Login</td>
                 <td style="font-weight:bold;padding-left:10px;">Creation Date</td>
-                <td style="font-weight:bold;padding-left:10px;">Stats</td>
                 <td style="font-weight:bold;padding-left:10px;">Game History</td>
                 <td style="font-weight:bold;padding-left:10px;">User Agent</td>
                 <td style="font-weight:bold;padding-left:10px;">IP Address</td>
@@ -64,9 +46,6 @@
 					<td style="padding-left:10px;">
 						${user.creationDate}
 					</td>
-                    <td style="padding-left:10px;">
-                        <a href="javascript:showPlayerStats(${user.userId})">Game Stats</a>
-                    </td>
                     <td style="padding-left:10px;">
                         <a href="playerGameHistory.html?userId=${user.userId}">Game History</a>
                     </td>
@@ -112,8 +91,6 @@
 				</tr>
 			</#list>
 		</table>
-        <div id="playerStatsDiv">
-        </div>
 	</body>
 </html>
 		

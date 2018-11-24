@@ -153,9 +153,6 @@ class User {
     var status = ""
 
     @Transient
-    var stats: PlayerStats? = null
-
-    @Transient
     val refreshLobby = RefreshLobby()
 
     @Transient

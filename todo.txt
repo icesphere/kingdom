@@ -1,5 +1,9 @@
 *** stuff to do ***
 
+show recent usernames on login page
+don't require password for login
+require password for admin page
+
 *** stuff to maybe do ***
 
 show recent events

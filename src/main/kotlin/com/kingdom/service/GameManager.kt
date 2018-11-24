@@ -19,58 +19,6 @@ class GameManager(private val gameErrorRepository: GameErrorRepository,
     val gameErrors: List<GameError>
         get() = gameErrorRepository.findTop50ByOrderByErrorIdDesc()
 
-    //todo
-    //return dao.getOverallStats();
-    val overallStats: OverallStats
-        get() = OverallStats()
-
-    //todo
-    //return dao.getOverallStats(today.getTime(), null);
-    val overallStatsForToday: OverallStats
-        get() {
-            val today = GregorianCalendar.getInstance()
-            today.set(Calendar.HOUR_OF_DAY, 0)
-            today.set(Calendar.MINUTE, 0)
-            today.set(Calendar.SECOND, 0)
-            return OverallStats()
-        }
-
-    //todo
-    //return dao.getOverallStats(yesterday.getTime(), today.getTime());
-    val overallStatsForYesterday: OverallStats
-        get() {
-            val today = GregorianCalendar.getInstance()
-            today.set(Calendar.HOUR_OF_DAY, 0)
-            today.set(Calendar.MINUTE, 0)
-            today.set(Calendar.SECOND, 0)
-
-            val yesterday = today.clone() as Calendar
-            yesterday.add(Calendar.DAY_OF_MONTH, -1)
-            return OverallStats()
-        }
-
-    //todo
-    //return dao.getOverallStats(today.getTime(), null);
-    val overallStatsForPastWeek: OverallStats
-        get() {
-            val today = GregorianCalendar.getInstance()
-            today.add(Calendar.WEEK_OF_YEAR, -1)
-            return OverallStats()
-        }
-
-    //todo
-    //return dao.getOverallStats(today.getTime(), null);
-    val overallStatsForPastMonth: OverallStats
-        get() {
-            val today = GregorianCalendar.getInstance()
-            today.add(Calendar.MONTH, -1)
-            return OverallStats()
-        }
-
-    //todo
-    val userStats: UserStats
-        get() = UserStats()
-
     fun getGameHistoryList(userId: Int): List<GameHistory> {
         //todo
         return ArrayList()

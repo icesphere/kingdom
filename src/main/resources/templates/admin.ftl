@@ -31,24 +31,9 @@
 					<a href="listUsers.html">Users</a>
 				</td>
 			</tr>
-            <tr>
-                <td>
-                    <a href="userStats.html">User Stats</a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <a href="overallGameStats.html">Overall Stats</a>
-                </td>
-            </tr>
 			<tr>
 				<td>
 					<a href="gameHistory.html">Game History</a>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<a href="gameErrors.html">Game Errors (${numErrors})</a>
 				</td>
 			</tr>
             <#if showGameActions>

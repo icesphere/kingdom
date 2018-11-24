@@ -87,21 +87,4 @@ class UserController(internal var manager: UserManager) {
     private fun getUser(request: HttpServletRequest): User? {
         return KingdomUtil.getUser(request)
     }
-
-    @RequestMapping("/showUsersForStat.html")
-    fun showUsersForStat(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("users")
-        val stat = request.getParameter("stat")
-        var value: Int? = null
-        if (request.getParameter("value") != null) {
-            value = Integer.parseInt(request.getParameter("value"))
-        }
-        val users = manager.getUsers(stat, value)
-        modelAndView.addObject("users", users)
-        return modelAndView
-    }
 }
