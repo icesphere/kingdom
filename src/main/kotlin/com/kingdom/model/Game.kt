@@ -120,7 +120,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var winnerString = ""
 
     private var determinedWinner = false
-    private var savedGameHistory = false
 
     var isAbandonedGame: Boolean = false
 
@@ -135,8 +134,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var creationTime = Date()
 
     var lastActivity = Date()
-
-    var isRecentGame: Boolean = false
 
     var isIncludePlatinumCards: Boolean = false
 
@@ -615,54 +612,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         refreshChat()
     }
 
-    fun saveGameHistory() {
-        if (!savedGameHistory) {
-            savedGameHistory = true
-            val history = GameHistory()
-            history.gameId = gameId
-            history.startDate = creationTime
-            history.endDate = Date()
-            history.numPlayers = numPlayers
-            history.numComputerPlayers = numComputerPlayers
-            history.custom = custom
-            history.recentGame = isRecentGame
-            history.testGame = isTestGame
-            history.abandonedGame = isAbandonedGame
-            history.gameEndReason = gameEndReason
-            history.winner = winnerString
-            history.showVictoryPoints = isShowVictoryPoints
-            history.identicalStartingHands = isIdenticalStartingHands
-            history.mobile = mobile
-            val cardNames = java.util.ArrayList<String>()
-            for (kingdomCard in kingdomCards) {
-                cardNames.add(kingdomCard.name)
-            }
-            if (isIncludePlatinumCards) {
-                cardNames.add("Platinum")
-            }
-            if (isIncludeColonyCards) {
-                cardNames.add("Colony")
-            }
-            history.cards = KingdomUtil.implode(cardNames, ",")
-            gameManager.saveGameHistory(history)
-
-            val sb = StringBuilder()
-            for (playerTurn in turnHistory) {
-                sb.append(KingdomUtil.implode(playerTurn.history, ";"))
-            }
-
-            val log = GameLog()
-            log.gameId = history.gameId
-            log.log = sb.toString()
-            gameManager.saveGameLog(log)
-            logId = log.logId
-
-            for (player in players) {
-                gameManager.saveGameUserHistory(history.gameId, player)
-            }
-        }
-    }
-
     fun reset() {
         status = GameStatus.None
         for (player in players) {
@@ -893,8 +842,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 }
                 winnerString = sb.toString() + " tie for the win!"
             }
-
-            saveGameHistory()
 
             for (computerPlayer in computerPlayers) {
                 playerExitedGame(computerPlayer)

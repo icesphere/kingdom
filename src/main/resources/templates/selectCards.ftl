@@ -114,11 +114,6 @@
                     <div style="float:left;padding-left:10px;">
                         <input type="radio" name="generateType" value="custom" onclick="toggleGenerateType()"/> Custom
                     </div>
-                    <#if recentGames?size != 0>
-                        <div style="float:left;padding-left:10px;">
-                            <input type="radio" name="generateType" value="recentGame" onclick="toggleGenerateType()"/> Cards from a recent game
-                        </div>
-                    </#if>
                 </div>
                 <div id="decks" style="padding-top:10px;float:left;clear:both;">
                     <div id="decksLabel" style="float:left;"><span class="label">Decks:</span></div>
@@ -204,17 +199,6 @@
                             </div>
                         </#list>
 
-                    </div>
-                </div>
-
-                <div id="recentGames" style="float:left;clear:both;padding-top:10px;display:none;">
-                    <div class="label" style="clear:both;float:left;">Choose cards from a recent game:</div>
-                    <div style="clear:both;float:left;">
-                        <select name="recentGameCards">
-                            <#list recentGames as recentGame>
-                                <option value="${recentGame.cards}">${recentGame.cards}</option>
-                            </#list>
-                        </select>
                     </div>
                 </div>
 

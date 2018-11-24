@@ -111,7 +111,6 @@ class GameController(private val cardManager: CardManager,
     private fun addSelectCardsObjects(user: User, modelAndView: ModelAndView, includeTesting: Boolean) {
         modelAndView.addObject("user", user)
         modelAndView.addObject("decks", getDecks(user, includeTesting))
-        modelAndView.addObject("recentGames", gameManager.getGameHistoryList(user.userId))
         modelAndView.addObject("excludedCards", user.excludedCardNames)
     }
 
@@ -236,26 +235,6 @@ class GameController(private val cardManager: CardManager,
                 val excludedCards = ArrayList<Card>(0)
                 parseCardSelectionRequest(request, user, decks, customSelection, excludedCards, generateType)
 
-                if (generateType == "recentGame") {
-                    var cards: String
-                    var includePlatinumAndColony = false
-
-                    cards = request.getParameter("recentGameCards")
-                    game.isRecentGame = true
-
-                    if (cards.endsWith("Platinum,Colony")) {
-                        cards = cards.substring(0, cards.indexOf(",Platinum,Colony"))
-                        includePlatinumAndColony = true
-                    }
-
-                    for (cardString in cards.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                        val card = cardManager.getCard(cardString)
-                        customSelection.add(card)
-                    }
-
-                    game.isAlwaysIncludeColonyAndPlatinum = includePlatinumAndColony
-                }
-
                 setRandomizingOptions(request, game, customSelection, excludedCards, generateType)
 
                 game.decks = decks
@@ -316,7 +295,7 @@ class GameController(private val cardManager: CardManager,
 
         options.excludedCards = excludedCards
 
-        if (generateType == "custom" || generateType == "recentGame") {
+        if (generateType == "custom") {
             game.custom = true
             options.customSelection = customSelection
             if (KingdomUtil.getRequestBoolean(request, "includeColonyAndPlatinumCards")) {
@@ -1881,18 +1860,6 @@ class GameController(private val cardManager: CardManager,
         return gameRoomManager.getGame(gameId as String)
     }
 
-    @RequestMapping("/gameHistory.html")
-    fun gameHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("gameHistory")
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("games", gameManager.gameHistoryList)
-        return modelAndView
-    }
-
     @RequestMapping("/gamePlayersHistory.html")
     fun gamePlayersHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
@@ -1905,42 +1872,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("players", gameManager.getGamePlayersHistory(gameId))
         modelAndView.addObject("gameId", gameId)
         return modelAndView
-    }
-
-    @RequestMapping("/playerGameHistory.html")
-    fun playerGameHistory(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("gameHistory")
-        modelAndView.addObject("user", user)
-        val userId = Integer.parseInt(request.getParameter("userId"))
-        modelAndView.addObject("games", gameManager.getGameHistoryList(userId))
-        return modelAndView
-    }
-
-    @RequestMapping("/gameErrors.html")
-    fun gameErrors(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val modelAndView = ModelAndView("gameErrors")
-        modelAndView.addObject("user", user)
-        modelAndView.addObject("errors", gameManager.gameErrors)
-        return modelAndView
-    }
-
-    @RequestMapping("/deleteGameError.html")
-    fun deleteGameError(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        if (user == null || !user.admin) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        val errorId = Integer.parseInt(request.getParameter("errorId"))
-        gameManager.deleteGameError(errorId)
-        return gameErrors(request, response)
     }
 
     @RequestMapping("/showGameLog.html")

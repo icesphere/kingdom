@@ -31,11 +31,6 @@
 					<a href="listUsers.html">Users</a>
 				</td>
 			</tr>
-			<tr>
-				<td>
-					<a href="gameHistory.html">Game History</a>
-				</td>
-			</tr>
             <#if showGameActions>
                 <tr>
                     <td>

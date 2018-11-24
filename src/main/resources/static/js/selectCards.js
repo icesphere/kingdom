@@ -54,18 +54,7 @@ function toggleGenerateType(){
         $("#cardSelectedRow").show();
         $("#randomizingOptions").hide();
         if(createGame) {
-            $("#recentGames").hide();
             $("#decksWeight").show();
-        }
-    }
-    else if(generateType == "recentGame") {
-        $("#customCards").hide();
-        $("#decks").show();
-        $("#cardSelectedRow").hide();
-        $("#randomizingOptions").hide();
-        if(createGame) {
-            $("#recentGames").show();
-            $("#decksWeight").hide();
         }
     }
     else{
@@ -74,7 +63,6 @@ function toggleGenerateType(){
         $("#cardSelectedRow").hide();
         $("#randomizingOptions").show();
         if(createGame) {
-            $("#recentGames").hide();
             $("#decksWeight").show();
         }
     }

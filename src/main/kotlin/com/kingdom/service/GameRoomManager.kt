@@ -101,7 +101,6 @@ class GameRoomManager(val gameManager: GameManager, val gameMessageService: Game
             if (game.status == GameStatus.InProgress) {
                 game.gameEndReason = "Game Abandoned"
                 game.isAbandonedGame = true
-                game.saveGameHistory()
             }
             game.reset()
         }

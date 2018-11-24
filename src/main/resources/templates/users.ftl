@@ -18,7 +18,6 @@
                 <td style="font-weight:bold;padding-left:10px;">Logins</td>
                 <td style="font-weight:bold;padding-left:10px;">Last Login</td>
                 <td style="font-weight:bold;padding-left:10px;">Creation Date</td>
-                <td style="font-weight:bold;padding-left:10px;">Game History</td>
                 <td style="font-weight:bold;padding-left:10px;">User Agent</td>
                 <td style="font-weight:bold;padding-left:10px;">IP Address</td>
                 <td style="font-weight:bold;padding-left:10px;">Location</td>
@@ -46,9 +45,6 @@
 					<td style="padding-left:10px;">
 						${user.creationDate}
 					</td>
-                    <td style="padding-left:10px;">
-                        <a href="playerGameHistory.html?userId=${user.userId}">Game History</a>
-                    </td>
                     <td style="padding-left:10px;">
                         ${user.userAgent}
                     </td>
