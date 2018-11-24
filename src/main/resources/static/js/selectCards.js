@@ -3,6 +3,35 @@ var showDeckFrequency = false;
 var showRandomizingOptions = false;
 var showExcludedCards = false;
 
+$(document).ready(function() {
+    loadSelectedValuesFromLocalStorage();
+});
+
+function loadSelectedValuesFromLocalStorage() {
+    var decks = $("input[name^='deck_']");
+    $.makeArray(decks).forEach(d => {
+        if (localStorage.getItem(d.name) == "false") {
+            d.checked = false;
+        }
+    });
+
+    var deckWeights = $("select[name^='deck_weight_']");
+    $.makeArray(deckWeights).forEach(dw => {
+        let deckWeight = localStorage.getItem(dw.name);
+        if (deckWeight && deckWeight != "3") {
+            dw.value = deckWeight;
+        }
+    });
+
+    var playerChoices = $("select[name^='player']");
+    $.makeArray(playerChoices).forEach(pc => {
+        let playerChoice = localStorage.getItem(pc.name);
+        if (playerChoice) {
+            pc.value = playerChoice;
+        }
+    });
+}
+
 function createGame() {
     var decksSelected = $("input[name^='deck_']:checked").length;
     var generateType = $('input[name=generateType]:checked').val();
@@ -13,16 +42,30 @@ function createGame() {
             numHumanPlayers++;
         }
     });
-    if(decksSelected == 0){
+    if(decksSelected == 0) {
         alert("You need to select at least one deck");
     }
     else if(generateType == "custom" && cardsSelected > 10) {
         alert("You can't select more than 10 cards");
     }
-    else{
+    else {
+        saveSelectedValuesToLocalStorage();
+
         document.forms["selectCardOptionsForm"].submit();
     }
 }
+
+function saveSelectedValuesToLocalStorage() {
+    var decks = $("input[name^='deck_']");
+    $.makeArray(decks).forEach(d => localStorage.setItem(d.name, d.checked));
+
+    var deckWeights = $("select[name^='deck_weight_']");
+    $.makeArray(deckWeights).forEach(dw => localStorage.setItem(dw.name, dw.value));
+
+    var playerChoices = $("select[name^='player']");
+    $.makeArray(playerChoices).forEach(pc => localStorage.setItem(pc.name, pc.value));
+}
+
 function saveOptions() {
     if(generateType == "custom" && cardsSelected > 10) {
         alert("You can't select more than 10 cards");

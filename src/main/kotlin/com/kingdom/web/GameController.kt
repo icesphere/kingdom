@@ -109,13 +109,13 @@ class GameController(private val cardManager: CardManager,
 
     private fun addSelectCardsObjects(user: User, modelAndView: ModelAndView, includeTesting: Boolean) {
         modelAndView.addObject("user", user)
-        modelAndView.addObject("decks", getDecks(user, includeTesting))
+        modelAndView.addObject("decks", getDecks(includeTesting))
         modelAndView.addObject("excludedCards", user.excludedCardNames)
     }
 
-    private fun getDecks(user: User, includeTesting: Boolean): List<UserDeckInfo> {
-        return Deck.values().map { deck ->
-            UserDeckInfo(user, deck, cardManager.getCards(deck, includeTesting))
+    private fun getDecks(includeTesting: Boolean): List<UserDeckInfo> {
+        return Deck.values().filterNot { it == Deck.None }.map { deck ->
+            UserDeckInfo(deck, cardManager.getCards(deck, includeTesting))
         }
     }
 

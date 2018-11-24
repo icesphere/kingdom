@@ -16,7 +16,7 @@
         <script type="text/javascript" >
             var createGame = ${createGame?string};
         </script>
-        <script type="text/javascript" src="js/selectCards.js"></script>
+        <script type="text/javascript" src="js/selectCards.js?5"></script>
 	</head>
 	<body>
         <div class="topGradient"></div>
@@ -31,51 +31,51 @@
                     </div>
                     <div style="float:left;padding-right:20px;">
                         Player 2: <select name="player2">
-                            <option value="human" <#if user.player2Default == "human">selected</#if>>human</option>
-                            <option value="computer_easy" <#if user.player2Default == "computer_easy">selected</#if>>computer (easy)</option>
-                            <option value="computer_medium" <#if user.player2Default == "computer_medium">selected</#if>>computer (medium)</option>
-                            <option value="computer_hard" <#if user.player2Default == "computer_hard">selected</#if>>computer (hard)</option>
-                            <option value="computer_bmu" <#if user.player2Default == "computer_bmu">selected</#if>>computer (BMU)</option>
+                            <option value="human">human</option>
+                            <option value="computer_easy">computer (easy)</option>
+                            <option value="computer_medium">computer (medium)</option>
+                            <option value="computer_hard">computer (hard)</option>
+                            <option value="computer_bmu" selected>computer (BMU)</option>
                         </select>
                     </div>
                     <div style="float:left;padding-right:20px;">
                         Player 3: <select name="player3">
-                            <option value="human" <#if user.player3Default == "human">selected</#if>>human</option>
-                            <option value="computer_easy" <#if user.player3Default == "computer_easy">selected</#if>>computer (easy)</option>
-                            <option value="computer_medium" <#if user.player3Default == "computer_medium">selected</#if>>computer (medium)</option>
-                            <option value="computer_hard" <#if user.player3Default == "computer_hard">selected</#if>>computer (hard)</option>
-                            <option value="computer_bmu" <#if user.player3Default == "computer_bmu">selected</#if>>computer (BMU)</option>
-                            <option value="none" <#if user.player3Default == "none">selected</#if>>none</option>
+                            <option value="human">human</option>
+                            <option value="computer_easy">computer (easy)</option>
+                            <option value="computer_medium">computer (medium)</option>
+                            <option value="computer_hard" selected>computer (hard)</option>
+                            <option value="computer_bmu">computer (BMU)</option>
+                            <option value="none">none</option>
                         </select>
                     </div>
                     <div style="float:left;padding-right:20px;">
                         Player 4: <select name="player4">
-                            <option value="human" <#if user.player4Default == "human">selected</#if>>human</option>
-                            <option value="computer_easy" <#if user.player4Default == "computer_easy">selected</#if>>computer (easy)</option>
-                            <option value="computer_medium" <#if user.player4Default == "computer_medium">selected</#if>>computer (medium)</option>
-                            <option value="computer_hard" <#if user.player4Default == "computer_hard">selected</#if>>computer (hard)</option>
-                            <option value="computer_bmu" <#if user.player4Default == "computer_bmu">selected</#if>>computer (BMU)</option>
-                            <option value="none" <#if user.player4Default == "none">selected</#if>>none</option>
+                            <option value="human">human</option>
+                            <option value="computer_easy">computer (easy)</option>
+                            <option value="computer_medium">computer (medium)</option>
+                            <option value="computer_hard">computer (hard)</option>
+                            <option value="computer_bmu">computer (BMU)</option>
+                            <option value="none" selected>none</option>
                         </select>
                     </div>
                     <div style="float:left;padding-right:20px;">
                         Player 5: <select name="player5">
-                            <option value="human" <#if user.player5Default == "human">selected</#if>>human</option>
-                            <option value="computer_easy" <#if user.player5Default == "computer_easy">selected</#if>>computer (easy)</option>
-                            <option value="computer_medium" <#if user.player5Default == "computer_medium">selected</#if>>computer (medium)</option>
-                            <option value="computer_hard" <#if user.player5Default == "computer_hard">selected</#if>>computer (hard)</option>
-                            <option value="computer_bmu" <#if user.player5Default == "computer_bmu">selected</#if>>computer (BMU)</option>
-                            <option value="none" <#if user.player5Default == "none">selected</#if>>none</option>
+                            <option value="human">human</option>
+                            <option value="computer_easy">computer (easy)</option>
+                            <option value="computer_medium">computer (medium)</option>
+                            <option value="computer_hard">computer (hard)</option>
+                            <option value="computer_bmu">computer (BMU)</option>
+                            <option value="none" selected>none</option>
                         </select>
                     </div>
                     <div style="float:left;padding-right:20px;">
                         Player 6: <select name="player6">
-                            <option value="human" <#if user.player6Default == "human">selected</#if>>human</option>
-                            <option value="computer_easy" <#if user.player6Default == "computer_easy">selected</#if>>computer (easy)</option>
-                            <option value="computer_medium" <#if user.player6Default == "computer_medium">selected</#if>>computer (medium)</option>
-                            <option value="computer_hard" <#if user.player6Default == "computer_hard">selected</#if>>computer (hard)</option>
-                            <option value="computer_bmu" <#if user.player6Default == "computer_bmu">selected</#if>>computer (BMU)</option>
-                            <option value="none" <#if user.player6Default == "none">selected</#if>>none</option>
+                            <option value="human">human</option>
+                            <option value="computer_easy">computer (easy)</option>
+                            <option value="computer_medium">computer (medium)</option>
+                            <option value="computer_hard">computer (hard)</option>
+                            <option value="computer_bmu">computer (BMU)</option>
+                            <option value="none" selected>none</option>
                         </select>
                     </div>
                     <div style="clear:both; padding-top:10px; font-size:12px;">
@@ -120,7 +120,7 @@
                     <div style="clear:both;float: left;">
                         <#list decks as deck>
                             <div style="float:left;padding-left:10px;">
-                                <input type="checkbox" name="deck_${deck.deckName}" id="deck_${deck.deckName}" value="${deck.deckName}" onclick="selectDeck(this)" <#if deck.deckChecked>checked</#if>/> <label for="deck_${deck.deckName}">${deck.displayName}</label>
+                                <input type="checkbox" name="deck_${deck.deckName}" id="deck_${deck.deckName}" value="${deck.deckName}" onclick="selectDeck(this)" checked/> <label for="deck_${deck.deckName}">${deck.displayName}</label>
                             </div>
                         </#list>
                     </div>
@@ -131,11 +131,11 @@
                         <#list decks as deck>
                             <div style="float:left;padding-left:10px;">
                                 ${deck.displayName} <select name="deck_weight_${deck.deckName}" id="deck_weight_${deck.deckName}">
-                                    <option value="5" <#if deck.deckWeight == 5>selected</#if>>Very Often</option>
-                                    <option value="4" <#if deck.deckWeight == 4>selected</#if>>More Often</option>
-                                    <option value="3" <#if deck.deckWeight == 3>selected</#if>>As Often</option>
-                                    <option value="2" <#if deck.deckWeight == 2>selected</#if>>Less Often</option>
-                                    <option value="1" <#if deck.deckWeight == 1>selected</#if>>Rarely</option>
+                                    <option value="5">Very Often</option>
+                                    <option value="4">More Often</option>
+                                    <option value="3" selected>As Often</option>
+                                    <option value="2">Less Often</option>
+                                    <option value="1">Rarely</option>
                                 </select>
                             </div>
                         </#list>
