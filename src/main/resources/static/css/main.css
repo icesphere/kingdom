@@ -48,10 +48,3 @@ dt {font-weight:bold; padding-top:10px;}
     -webkit-border-bottom-left-radius:5px;
     -webkit-border-bottom-right-radius:5px;
 }
-
-.loginButton {
-    margin-top: 20px;
-    color: white;
-    background: #233d65;
-    font-size: 14px;
-}

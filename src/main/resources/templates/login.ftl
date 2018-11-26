@@ -14,26 +14,30 @@
 
     <div class="topGradient"></div>
 
-    <div style="display: flex; min-height: 130px;">
+    <form action="login.html" method="POST" name="loginForm">
 
-        <#if !mobile>
-            <img src="images/castle_small.jpg" alt="castle" style="margin-right: 20px;"/>
-        </#if>
+        <div style="display: flex; min-height: 130px;">
 
-        <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 20px;">
-
-            <#if usernameBeingUsed?? && usernameBeingUsed>
-                <span style="color: #990000; font-size: 12px;">Username being used - pick a different username</span>
+            <#if !mobile>
+                <img src="images/castle_small.jpg" alt="castle" style="margin-right: 20px;"/>
             </#if>
 
-            <span>Username:</span>
-            <input type="text" id="username" name="username"/>
+            <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 20px;">
 
-            <input type="submit" value="Login" class="loginButton">
+                <#if usernameBeingUsed?? && usernameBeingUsed>
+                    <span style="color: #990000; font-size: 12px;">Username being used - pick a different username</span>
+                </#if>
+
+                <span>Username:</span>
+                <input type="text" id="username" name="username"/>
+
+                <input type="submit" value="Log in" style="margin-top:20px">
+
+            </div>
 
         </div>
 
-    </div>
+    </form>
 
     <#include "footer.ftl">
 
