@@ -11,54 +11,31 @@
     </script>
 </head>
 <body>
-    <#if mobile>
-        <div class="topGradient"></div>
-        <div style="padding-top:10px; text-align:center; padding:20px;">
-            <div style="padding-top:10px;">
-                <form action="login.html" method="POST" name="loginForm" style="padding-right:20px;">
-                    <table style="text-align:center;">
-                        <#if usernameBeingUsed?? && usernameBeingUsed>
-                            <tr>
-                                <td colspan="2" style="color: #990000; font-size: 12px;">Username being used - pick a different username</td>
-                            </tr>
-                        </#if>
-                        <tr>
-                            <td class="loginLabel">Username:</td>
-                            <td><input class="loginField" type="text" id="username" name="username"/> </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><input class="loginButton" type="submit" value="Login"></td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
+
+    <div class="topGradient"></div>
+
+    <div style="display: flex; min-height: 130px;">
+
+        <#if !mobile>
+            <img src="images/castle_small.jpg" alt="castle" style="margin-right: 20px;"/>
+        </#if>
+
+        <div style="display: flex; flex-direction: column; justify-content: center; padding-left: 20px;">
+
+            <#if usernameBeingUsed?? && usernameBeingUsed>
+                <span style="color: #990000; font-size: 12px;">Username being used - pick a different username</span>
+            </#if>
+
+            <span>Username:</span>
+            <input type="text" id="username" name="username"/>
+
+            <input type="submit" value="Login" class="loginButton">
+
         </div>
-    <#else>
-        <div class="topGradient"></div>
-        <div style="padding-top:10px;">
-            <div style="float:left">
-                <img src="images/castle_small.jpg" alt="castle"/>
-            </div>
-            <div style="float:left; padding-left:20px; padding-top:10px;">
-                <form action="login.html" method="POST" name="loginForm">
-                    <table>
-                        <#if usernameBeingUsed?? && usernameBeingUsed>
-                            <tr>
-                                <td colspan="2" style="color: #990000; font-size: 12px;">Username being used - pick a different username</td>
-                            </tr>
-                        </#if>
-                        <tr>
-                            <td>Username:</td>
-                            <td><input type="text" id="username" name="username"/> </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><input type="submit" value="Login"></td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
-        </div>
-    </#if>
+
+    </div>
+
     <#include "footer.ftl">
+
 </body>
 </html>

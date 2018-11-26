@@ -2,7 +2,6 @@
 
 *** stuff to maybe do ***
 
-cleanup UI on login page
 cleanup UI on lobby page
 require password for admin page
 show recent usernames on login page
