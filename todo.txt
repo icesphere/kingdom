@@ -3,7 +3,6 @@
 *** stuff to maybe do ***
 
 cleanup UI on lobby page
-require password for admin page
 show recent usernames on login page
 show recent events
 admin cancel current game is broken?

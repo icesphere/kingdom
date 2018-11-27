@@ -64,7 +64,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
     @Throws(Exception::class)
     fun admin(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         if (!isAdmin(request)) {
-            return KingdomUtil.getLoginModelAndView(request)
+            return ModelAndView("adminLogin")
         }
         val modelAndView = ModelAndView("admin")
         val user = getUser(request)!!
@@ -77,6 +77,23 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         modelAndView.addObject("showNews", gameRoomManager.isShowNews)
         modelAndView.addObject("news", gameRoomManager.news)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    }
+
+    @RequestMapping("/adminLogin.html")
+    @Throws(Exception::class)
+    fun adminLogin(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
+
+        val adminPassword = request.getParameter("adminPassword")
+
+        if (adminPassword == "changethekingdom") {
+            user.admin = true
+            return admin(request, response)
+        }
+
+        val modelAndView = ModelAndView("adminLogin")
+        modelAndView.addObject("wrongPassword", true)
         return modelAndView
     }
 
