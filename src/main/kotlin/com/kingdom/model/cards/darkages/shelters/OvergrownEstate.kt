@@ -9,6 +9,7 @@ class OvergrownEstate : DarkAgesCard(NAME, CardType.VictoryShelter, 1), AfterCar
 
     init {
         special = "When you trash this, +1 Card."
+        fontSize = 9
     }
 
     override fun afterCardTrashed(player: Player) {
