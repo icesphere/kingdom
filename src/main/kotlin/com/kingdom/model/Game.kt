@@ -5,6 +5,9 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.darkages.Spoils
 import com.kingdom.model.cards.darkages.ruins.*
+import com.kingdom.model.cards.darkages.shelters.Hovel
+import com.kingdom.model.cards.darkages.shelters.Necropolis
+import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.modifiers.CardCostModifierForCardsInPlay
 import com.kingdom.model.cards.supply.*
@@ -73,7 +76,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val allCards: List<Card>
         get() = cardsInSupply + kingdomCards
 
-    val copyOfAllCards: List<Card>
+    val allCardsCopy: List<Card>
         get() = allCards.map { getNewInstanceOfCard(it.name) }
 
     private val pileAmounts = HashMap<String, Int>()
@@ -261,6 +264,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         lastActivity = Date()
 
+        setupSupply()
+
         kingdomCards.forEach {
             cardMap[it.name] = it
 
@@ -277,7 +282,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             }
         }
 
-        setupSupply()
+        if (isIncludeRuins) {
+            createRuinsPile()
+        }
 
         if (isIncludeSpoils) {
             cardsNotInSupply.add(Spoils())
@@ -285,6 +292,17 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
         cardsInSupply.forEach { cardMap[it.name] = it }
+        cardsNotInSupply.forEach { cardMap[it.name] = it }
+
+        if (isIncludeShelters) {
+            cardMap[Hovel.NAME] = Hovel()
+            cardMap[Necropolis.NAME] = Necropolis()
+            cardMap[OvergrownEstate.NAME] = OvergrownEstate()
+        }
+
+        if (isIncludeRuins) {
+            ruinsPile.distinctBy { it.name }.forEach { cardMap[it.name] = it }
+        }
 
         if (numComputerPlayers > 0) {
             addComputerPlayers()
@@ -381,10 +399,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             } else {
                 pileAmounts[Curse.NAME] = 30
             }
-        }
-
-        if (isIncludeRuins) {
-            createRuinsPile()
         }
     }
 
@@ -589,6 +603,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val availableCards
         get() = allCards.filter { isCardAvailableInSupply(it) }
 
+    val availableCardsCopy
+        get() = allCardsCopy.filter { isCardAvailableInSupply(it) }
+
     fun addGameChat(message: String) {
         chats.add(ChatMessage(message, "black"))
         players.forEach { showInfoMessage(it, message) }
@@ -669,12 +686,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
     fun getNewInstanceOfCard(cardName: String): Card {
-        if (isIncludeRuins && ruinsPile.firstOrNull()?.name == cardName) {
-            return ruinsPile.first().javaClass.kotlin.createInstance()
-        }
-        if (cardsNotInSupply.any { it.name == cardName }) {
-            return cardsNotInSupply.first { it.name == cardName }.javaClass.kotlin.createInstance()
-        }
         val card = cardMap[cardName]!!
         return card.javaClass.kotlin.createInstance()
     }

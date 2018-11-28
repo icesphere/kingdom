@@ -33,6 +33,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val cardsInDiscard: List<Card>
         get() = discard
 
+    val cardsInDiscardCopy: List<Card>
+        get() = cardsInDiscard.map { game.getNewInstanceOfCard(it.name) }
+
     val bought: MutableList<Card> = ArrayList()
     val played: MutableList<Card> = ArrayList()
     val inPlay: MutableList<Card> = ArrayList()
@@ -587,6 +590,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun makeChoiceFromList(card: ChoiceActionCard, text: String, choices: List<Choice>) {
         makeChoice(card, text, *choices.toTypedArray())
+    }
+
+    fun makeChoiceFromListWithInfo(card: ChoiceActionCard, text: String, info: Any, choices: List<Choice>) {
+        makeChoiceWithInfo(card, text, info, *choices.toTypedArray())
     }
 
     fun trashCardFromHand(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)? = null) {

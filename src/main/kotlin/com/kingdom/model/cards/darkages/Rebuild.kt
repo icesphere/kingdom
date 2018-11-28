@@ -14,7 +14,7 @@ class Rebuild : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val cardsToSelectFrom = player.game.copyOfAllCards
+        val cardsToSelectFrom = player.game.allCardsCopy
         player.chooseCardAction(special, this, cardsToSelectFrom, false)
     }
 

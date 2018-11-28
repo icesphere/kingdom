@@ -23,12 +23,12 @@ class Scavenger : DarkAgesCard(NAME, CardType.Action, 4), ChoiceActionCard, Choo
             player.putDeckIntoDiscard()
         }
         if (player.cardsInDiscard.isNotEmpty()) {
-            player.chooseCardAction("Look through your discard pile and put one card from it onto your deck.", this, player.cardsInDiscard, false)
+            player.chooseCardAction("Look through your discard pile and put one card from it onto your deck.", this, player.cardsInDiscardCopy, false)
         }
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.removeCardFromDiscard(card)
+        player.removeCardFromDiscard(player.cardsInDiscard.first { it.name == card.name })
         player.addCardToTopOfDeck(card)
     }
 

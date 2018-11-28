@@ -1,16 +1,13 @@
-*** stuff to do ***
-
-*** stuff to maybe do ***
+cards not in supply piles should not count toward empty piles
 
 cleanup UI on lobby page
-show recent usernames on login page
 show recent events
-admin cancel current game is broken?
+admin cancel current game is broken if admin is user in game
 cards overflow weird when too many on desktop (use flexbox?)
 
-better bots
-fix add specific type of card from confirm cards page
+fix or remove code for add specific type of card from confirm cards page
 
+better bots
 support multiple info messages?
 refresh sometimes has issues after quit game
 considering using embedded database so app can be deployed easily anywhere

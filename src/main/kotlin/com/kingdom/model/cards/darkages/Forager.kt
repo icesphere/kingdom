@@ -18,7 +18,7 @@ class Forager : DarkAgesCard(NAME, CardType.Action, 3), TrashCardsForBenefitActi
     }
 
     override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        val numDifferentTreasuresInTrash = player.game.trashedCards.groupBy { it.name }.size
+        val numDifferentTreasuresInTrash = player.game.trashedCards.filter { it.isTreasure }.groupBy { it.name }.size
         if (numDifferentTreasuresInTrash == 1) {
             player.addGameLog("There was 1 differently named treasure in the trash")
         } else {

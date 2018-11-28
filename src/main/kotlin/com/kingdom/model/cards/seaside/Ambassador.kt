@@ -13,7 +13,6 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
     var revealedCard: Card? = null
 
     init {
-        testing = true
         special = "Reveal a card from your hand. Return up to 2 copies of it from your hand to the Supply. Then each other player gains a copy of it."
         fontSize = 11
         isTrashingCard = true
@@ -26,7 +25,11 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.revealCardFromHand(card)
 
-        revealedCard = card
+        if (card.isShelter || player.game.cardsNotInSupply.any { it.name == card.name }) {
+            player.showInfoMessage("Revealed card is not in the supply")
+            player.addGameLog("Revealed card is not in the supply")
+            return
+        }
 
         val choices = mutableListOf(
                 Choice(0, "0"),
@@ -37,21 +40,23 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
             choices.add(Choice(2, "2"))
         }
 
-        player.makeChoiceFromList(this, "How many copies of ${card.cardNameWithBackgroundColor} do you want to return from your hand to the supply?", choices)
+        player.makeChoiceFromListWithInfo(this, "How many copies of ${card.cardNameWithBackgroundColor} do you want to return from your hand to the supply?", card, choices)
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-        val card = revealedCard ?: return
+        val card = info as Card
 
         if (choice > 0) {
+            revealedCard = card
+
             repeat(choice) {
                 val cardByName = player.hand.first { it.name == card.name }
                 player.removeCardFromHand(cardByName)
                 player.game.returnCardToSupply(cardByName)
             }
-        }
 
-        player.triggerAttack(this)
+            player.triggerAttack(this)
+        }
     }
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {

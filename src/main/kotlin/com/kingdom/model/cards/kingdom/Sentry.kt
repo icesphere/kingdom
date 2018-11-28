@@ -23,10 +23,11 @@ class Sentry : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
         val topCards = mutableListOf(player.removeTopCardOfDeck())
         topCards.add(player.removeTopCardOfDeck())
 
-        topCards.filterNotNull().forEach {
-            cardsForAction.add(it)
+        topCards.filterNotNull().forEachIndexed { index, card ->
+            val numText = if (index == 0) "1st" else "2nd"
+            cardsForAction.add(card)
             player.makeChoice(this,
-                    "Card drawn: ${it.cardNameWithBackgroundColor}",
+                    "$numText card on top of deck: ${card.cardNameWithBackgroundColor}",
                     Choice(1, "Trash"),
                     Choice(2, "Discard"),
                     Choice(3, "Top of Deck"))

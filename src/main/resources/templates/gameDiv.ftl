@@ -39,7 +39,7 @@
 
 </div>
 
-<#if mobile>
+<#if mobile && showVictoryPoints>
     <div style="clear:both;padding-top:5px;" class="label">Players:</div>
     <div id="playersDiv">
         <#include "playersDivMobile.ftl">
