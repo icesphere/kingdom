@@ -29,9 +29,9 @@
                 </#if>
 
                 <span>Username:</span>
-                <input type="text" id="username" name="username"/>
+                <input type="text" id="username" name="username" class="loginUsername <#if mobile>loginUsernameMobile</#if>"/>
 
-                <input type="submit" value="Log in" style="margin-top:20px">
+                <input type="submit" value="Log in" style="margin-top:20px" class="loginButton <#if mobile>loginButtonMobile</#if>">
 
             </div>
 

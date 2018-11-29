@@ -48,3 +48,24 @@ dt {font-weight:bold; padding-top:10px;}
     -webkit-border-bottom-left-radius:5px;
     -webkit-border-bottom-right-radius:5px;
 }
+
+.loginUsername {
+    font-size: 14px;
+}
+
+.loginUsernameMobile {
+    font-size: 18px;
+}
+
+.loginButton {
+    background: #1b3c69;
+    height: 26px;
+    font-size: 15px;
+    border-radius: 7px;
+    color: white;
+}
+
+.loginButtonMobile {
+    height: 36px;
+    font-size: 17px;
+}

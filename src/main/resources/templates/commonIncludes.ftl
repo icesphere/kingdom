@@ -11,7 +11,7 @@
 <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 <script type="text/javascript" src="js/jquery.hotkeys.js"></script>
 
-<link href="css/main.css" rel="stylesheet" type="text/css">
+<link href="css/main.css?1" rel="stylesheet" type="text/css">
 
 <script type="text/javascript">
     function switchSite() {
