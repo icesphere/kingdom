@@ -26,7 +26,7 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
         if (cards.isNotEmpty()) {
             if (cards.size == 1) {
                 player.cardTrashed(cards.first())
-                player.addUsernameGameLog(" trashed ${cards.first().cardNameWithBackgroundColor}")
+                player.addEventLogWithUsername(" trashed ${cards.first().cardNameWithBackgroundColor}")
             } else {
                 choosingCardToTrash = true
                 player.chooseCardAction("Choose a card to trash", this, cards, false, topDeckCards)
@@ -43,14 +43,14 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
             choosingCardToTrash = false
 
             player.cardTrashed(card)
-            player.addUsernameGameLog(" trashed ${card.cardNameWithBackgroundColor}")
+            player.addEventLogWithUsername(" trashed ${card.cardNameWithBackgroundColor}")
 
             topDeckCards.remove(card)
 
             if (topDeckCards.isNotEmpty()) {
                 if (topDeckCards.size == 1) {
                     player.addCardToDiscard(card)
-                    player.addUsernameGameLog(" discarded ${card.cardNameWithBackgroundColor}")
+                    player.addEventLogWithUsername(" discarded ${card.cardNameWithBackgroundColor}")
                 } else {
                     choosingCardToDiscard = true
                     player.chooseCardAction("Choose a card to discard", this, topDeckCards, false, topDeckCards)
@@ -60,7 +60,7 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
             choosingCardToDiscard = false
 
             player.addCardToDiscard(card)
-            player.addUsernameGameLog(" discarded ${card.cardNameWithBackgroundColor}")
+            player.addEventLogWithUsername(" discarded ${card.cardNameWithBackgroundColor}")
 
             topDeckCards.remove(card)
 

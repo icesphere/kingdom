@@ -26,7 +26,7 @@ class PearlDiver : SeasideCard(NAME, CardType.Action, 2), ChoiceActionCard {
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             val bottomDeckCard = player.deck.removeAt(player.deck.lastIndex)
-            player.addUsernameGameLog("added the bottom card of their deck to the top of their deck")
+            player.addEventLogWithUsername("added the bottom card of their deck to the top of their deck")
             player.addCardToTopOfDeck(bottomDeckCard, false)
         }
     }

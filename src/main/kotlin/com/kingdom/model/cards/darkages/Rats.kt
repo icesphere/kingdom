@@ -23,7 +23,7 @@ class Rats : DarkAgesCard(NAME, CardType.Action, 4), AfterCardTrashedListenerFor
                 player.trashCardFromHand(false, { c -> c !is Rats })
             }
         } else {
-            player.addGameLog("${player.username}'s hand was empty")
+            player.addEventLogWithUsername("'s hand was empty")
         }
     }
 

@@ -26,10 +26,10 @@ class Catacombs : DarkAgesCard(NAME, CardType.Action, 5), ChoiceActionCard, Afte
         val cards = info as List<Card>
 
         if (choice == 1) {
-            player.addUsernameGameLog("chose to put the cards into their hand")
+            player.addEventLogWithUsername("chose to put the cards into their hand")
             player.addCardsToHand(cards)
         } else {
-            player.addUsernameGameLog("chose to discard the cards and draw 3 cards")
+            player.addEventLogWithUsername("chose to discard the cards and draw 3 cards")
             player.addCardsToDiscard(cards)
             player.drawCards(3)
         }

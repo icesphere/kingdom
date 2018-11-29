@@ -25,7 +25,7 @@ class Loan : ProsperityCard(NAME, CardType.Treasure, 3), ChoiceActionCard {
             player.makeChoiceWithInfo(this, "Discard or Trash ${card.cardNameWithBackgroundColor}?", card, Choice(1, "Discard"), Choice(2, "Trash"))
         } else {
             val message = "No treasures found"
-            player.addUsernameGameLog(message)
+            player.addEventLogWithUsername(message)
             player.showInfoMessage(message)
         }
     }

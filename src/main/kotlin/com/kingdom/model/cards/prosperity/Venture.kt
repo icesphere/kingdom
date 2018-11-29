@@ -20,7 +20,7 @@ class Venture : ProsperityCard(NAME, CardType.Treasure, 5) {
             player.playCard(card)
         } else {
             val message = "No treasures found"
-            player.addUsernameGameLog(message)
+            player.addEventLogWithUsername(message)
             player.showInfoMessage(message)
         }
     }

@@ -19,7 +19,7 @@ class Sage : DarkAgesCard(NAME, CardType.Action, 3) {
             player.addCardToHand(card, true)
         } else {
             val message = "No card costing \$3 or more found"
-            player.addUsernameGameLog(message)
+            player.addEventLogWithUsername(message)
             player.showInfoMessage(message)
         }
     }

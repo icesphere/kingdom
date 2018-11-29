@@ -25,7 +25,7 @@ class Moat : KingdomCard(NAME, CardType.ActionReaction, 2), HandBeforeAttackList
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
-            player.addGameLog("${player.username} revealed $cardNameWithBackgroundColor to be unaffected by ${attackCard.cardNameWithBackgroundColor}")
+            player.addEventLogWithUsername("revealed $cardNameWithBackgroundColor to be unaffected by ${attackCard.cardNameWithBackgroundColor}")
             attackCard.playersExcludedFromCardEffects.add(player)
         }
     }

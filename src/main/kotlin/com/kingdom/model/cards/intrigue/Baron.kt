@@ -25,7 +25,7 @@ class Baron : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
             player.discardCardFromHand(player.hand.first { it.name == Estate.NAME })
             player.addCoins(4)
         } else {
-            player.addUsernameGameLog("gained an ${Estate().cardNameWithBackgroundColor}")
+            player.addEventLogWithUsername("gained an ${Estate().cardNameWithBackgroundColor}")
             player.gainSupplyCard(Estate())
         }
     }

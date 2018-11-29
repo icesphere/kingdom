@@ -21,7 +21,7 @@ class Mandarin : HinterlandsCard(NAME, CardType.Action, 5), AfterCardGainedListe
         val treasuresInPlay = player.inPlay.filter { it.isTreasure }
         treasuresInPlay.forEach { player.removeCardInPlay(it) }
         player.putCardsOnTopOfDeckInAnyOrder(treasuresInPlay)
-        player.addUsernameGameLog("added ${treasuresInPlay.groupedString} to the top of their deck")
+        player.addEventLogWithUsername("added ${treasuresInPlay.groupedString} to the top of their deck")
     }
 
     companion object {

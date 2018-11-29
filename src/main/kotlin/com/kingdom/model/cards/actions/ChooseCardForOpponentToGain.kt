@@ -22,15 +22,15 @@ class ChooseCardForOpponentToGain(private val cost: Int?, text: String, private 
 
         when (destination) {
             CardLocation.Hand -> {
-                player.addGameLog("${player.username} put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s hand")
+                player.addEventLogWithUsername("put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s hand")
                 opponent.gainCardToHand(card)
             }
             CardLocation.Deck -> {
-                player.addGameLog("${player.username} put ${card.cardNameWithBackgroundColor} on top of ${opponent.username}'s deck")
+                player.addEventLogWithUsername("put ${card.cardNameWithBackgroundColor} on top of ${opponent.username}'s deck")
                 opponent.gainCardToTopOfDeck(card)
             }
             else -> {
-                player.addGameLog("${player.username} put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s discard")
+                player.addEventLogWithUsername("put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s discard")
                 opponent.cardGained(card)
             }
         }

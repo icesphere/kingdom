@@ -26,12 +26,12 @@ class FarmingVillage : CornucopiaCard(NAME, CardType.Action, 4) {
         }
 
         if (revealedCards.isNotEmpty()) {
-            player.addUsernameGameLog("revealed ${revealedCards.groupedString}")
+            player.addEventLogWithUsername("revealed ${revealedCards.groupedString}")
             player.addCardsToDiscard(revealedCards)
         }
 
         if (card != null) {
-            player.addUsernameGameLog("added ${card.cardNameWithBackgroundColor} to their hand")
+            player.addEventLogWithUsername("added ${card.cardNameWithBackgroundColor} to their hand")
             player.addCardToHand(card)
         }
     }

@@ -13,7 +13,7 @@ open class FreeCardFromSupply(private val maxCost: Int?, text: String, private v
     }
 
     override fun processAction(player: Player): Boolean {
-        player.game.addHistory(player.username + " is choosing a free card from the supply")
+        player.addInfoLogWithUsername(" is choosing a free card from the supply")
         return true
     }
 
@@ -22,7 +22,7 @@ open class FreeCardFromSupply(private val maxCost: Int?, text: String, private v
 
         player.game.removeCardFromSupply(card)
 
-        player.addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
+        player.addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the supply")
 
         when (destination) {
             CardLocation.Hand -> player.gainCardToHand(card)

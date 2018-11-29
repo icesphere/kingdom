@@ -23,7 +23,7 @@ class Smugglers : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.addUsernameGameLog("used ${this.cardNameWithBackgroundColor} to gain a copy of ${card.cardNameWithBackgroundColor}")
+        player.addEventLogWithUsername("used ${this.cardNameWithBackgroundColor} to gain a copy of ${card.cardNameWithBackgroundColor}")
         player.gainSupplyCard(card)
     }
 

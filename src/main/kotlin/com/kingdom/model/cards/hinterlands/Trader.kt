@@ -44,7 +44,7 @@ class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForB
 
         if (choice == 1) {
             player.cardGained(Silver())
-            player.addUsernameGameLog("revealed ${this.cardNameWithBackgroundColor} to gain a ${Silver().cardNameWithBackgroundColor} instead of ${card.cardNameWithArticleAndBackgroundColor}")
+            player.addEventLogWithUsername("revealed ${this.cardNameWithBackgroundColor} to gain a ${Silver().cardNameWithBackgroundColor} instead of ${card.cardNameWithArticleAndBackgroundColor}")
         } else {
             player.cardGained(card)
         }

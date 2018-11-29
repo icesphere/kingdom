@@ -30,10 +30,10 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
-            player.addUsernameGameLog("received +\$${player.pirateShipCoins} from pirate coin tokens")
+            player.addEventLogWithUsername("received +\$${player.pirateShipCoins} from pirate coin tokens")
             player.addCoins(player.pirateShipCoins)
         } else {
-            player.addUsernameGameLog("chose to attack with ${this.cardNameWithBackgroundColor}")
+            player.addEventLogWithUsername("chose to attack with ${this.cardNameWithBackgroundColor}")
             player.triggerAttack(this)
         }
     }
@@ -72,7 +72,7 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
     private fun gainPirateShipCoin(player: Player) {
         if (!gainedPirateShipCoin) {
             gainedPirateShipCoin = true
-            player.addUsernameGameLog("gained a pirate ship coin")
+            player.addEventLogWithUsername("gained a pirate ship coin")
             player.pirateShipCoins++
         }
     }

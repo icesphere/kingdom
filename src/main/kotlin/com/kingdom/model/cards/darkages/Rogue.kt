@@ -39,12 +39,12 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
                         val card = cardsThatCanBeTrashed.first()
                         opponent.removeCardFromDeck(card)
                         opponent.cardTrashed(card)
-                        opponent.addGameLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
+                        opponent.addEventLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
                     }
                     cardsThatCanBeTrashed[0].name == cardsThatCanBeTrashed[1].name -> {
                         opponent.removeCardFromDeck(cardsThatCanBeTrashed[0])
                         opponent.cardTrashed(cardsThatCanBeTrashed[0])
-                        opponent.addGameLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${cardsThatCanBeTrashed[0].cardNameWithBackgroundColor}")
+                        opponent.addEventLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${cardsThatCanBeTrashed[0].cardNameWithBackgroundColor}")
 
                         opponent.removeCardFromDeck(cardsThatCanBeTrashed[1])
                         opponent.addCardToDiscard(cardsThatCanBeTrashed[1])
@@ -60,7 +60,7 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         val cardsThatCanBeTrashed = info as MutableList<Card>
 
-        player.addGameLog("${this.cardNameWithBackgroundColor} trashed ${player.username}'s ${card.cardNameWithBackgroundColor}")
+        player.addEventLog("${this.cardNameWithBackgroundColor} trashed ${player.username}'s ${card.cardNameWithBackgroundColor}")
         player.removeCardFromDeck(card)
         player.cardTrashed(card)
         cardsThatCanBeTrashed.remove(card)

@@ -225,13 +225,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         val cardsDrawn = ArrayList<Card>()
-        var log = "$username drawing $numCards"
+        var log = "drawing $numCards"
         log += if (numCards == 1) {
             " card"
         } else {
             " cards"
         }
-        addGameLog(log)
+        addInfoLogWithUsername(log)
 
         for (i in 0 until numCards) {
             if (deck.isEmpty()) {
@@ -253,7 +253,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun shuffleDiscardIntoDeck() {
         deck.addAll(discard)
         discard.clear()
-        addGameLog("Shuffling deck")
+        addInfoLogWithUsername("shuffling deck")
         deck.shuffle()
         shuffles++
     }
@@ -329,7 +329,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
 
-        addGameLog("Ending turn")
+        addInfoLogWithUsername("ending turn")
 
         currentTurnSummary.cardsPlayed.addAll(played)
 
@@ -412,7 +412,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
     fun trashCardFromDiscard(card: Card) {
-        addUsernameGameLog("trashed " + card.cardNameWithBackgroundColor + " from discard")
+        addEventLogWithUsername("trashed " + card.cardNameWithBackgroundColor + " from discard")
 
         discard.remove(card)
 
@@ -422,7 +422,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun trashCardFromHand(card: Card) {
-        addUsernameGameLog("trashed " + card.cardNameWithBackgroundColor + " from hand")
+        addEventLogWithUsername("trashed " + card.cardNameWithBackgroundColor + " from hand")
 
         hand.remove(card)
 
@@ -438,13 +438,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun trashHand() {
         if (hand.isEmpty()) {
-            addUsernameGameLog("trashed an empty hand")
+            addEventLogWithUsername("trashed an empty hand")
             return
         }
 
         hand.forEach { cardTrashed(it) }
 
-        addUsernameGameLog("trashed their hand: ${hand.groupedString}")
+        addEventLogWithUsername("trashed their hand: ${hand.groupedString}")
 
         hand.clear()
 
@@ -458,7 +458,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun cardTrashed(card: Card, showLog: Boolean = false) {
         if (showLog) {
-            addUsernameGameLog("trashed ${card.cardNameWithBackgroundColor}")
+            addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor}")
         }
 
         game.trashedCards.add(card)
@@ -490,7 +490,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun trashCardInPlay(card: Card, showLog: Boolean = true) {
         if (showLog) {
-            addGameLog("Trashed " + card.cardNameWithBackgroundColor + " from in play")
+            addEventLog("Trashed " + card.cardNameWithBackgroundColor + " from in play")
         }
 
         inPlay.remove(card)
@@ -515,7 +515,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun addCardToTopOfDeck(card: Card, addGameLog: Boolean = true) {
         deck.add(0, card)
         if (addGameLog) {
-            addUsernameGameLog("added " + card.cardNameWithBackgroundColor + " to top of deck")
+            addEventLogWithUsername("added " + card.cardNameWithBackgroundColor + " to top of deck")
         }
         game.refreshPlayerHandArea(this)
     }
@@ -608,7 +608,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun buyCard(card: Card) {
         if (availableCoins >= this.getCardCostWithModifiers(card)) {
-            addGameLog("Bought card: " + card.cardNameWithBackgroundColor)
+            addEventLogWithUsername("bought card: " + card.cardNameWithBackgroundColor)
             coins -= this.getCardCostWithModifiers(card)
             buys -= 1
             bought.add(card)
@@ -678,7 +678,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun playCard(card: Card, refresh: Boolean = true, repeatedAction: Boolean = false) {
 
-        game.addHistory("Played card: ${card.cardNameWithBackgroundColor}")
+        game.addEventLog("Played card: ${card.cardNameWithBackgroundColor}")
 
         if (!repeatedAction) {
 
@@ -743,7 +743,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             cardGained(card)
 
-            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor}")
+            addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor}")
         }
     }
 
@@ -751,7 +751,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (game.ruinsPile.isNotEmpty()) {
             val card = game.ruinsPile.removeAt(0)
             cardGained(card)
-            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the Ruins pile")
+            addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the Ruins pile")
         }
     }
 
@@ -783,7 +783,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
 
             if (showLog) {
-                addUsernameGameLog(log)
+                addEventLogWithUsername(log)
             }
 
             cardGained(supplyCard)
@@ -796,7 +796,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             gainCardToHand(card)
 
             if (showLog) {
-                addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} to their hand")
+                addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} to their hand")
             }
         }
     }
@@ -807,7 +807,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             gainCardToTopOfDeck(card)
 
             if (showLog) {
-                addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} to the top of their deck")
+                addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} to the top of their deck")
             }
         }
     }
@@ -823,12 +823,20 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return cards
         }
 
-    fun addUsernameGameLog(log: String) {
-        game.addHistory("$username $log")
+    fun addEventLog(log: String) {
+        game.addEventLog(log)
     }
 
-    fun addGameLog(log: String) {
-        game.addHistory(log)
+    fun addEventLogWithUsername(log: String) {
+        game.addEventLog("$username $log")
+    }
+
+    fun addInfoLog(log: String) {
+        game.addInfoLog(log)
+    }
+
+    fun addInfoLogWithUsername(log: String) {
+        game.addInfoLog("$username $log")
     }
 
     fun addCardsToDiscard(cards: List<Card>) {
@@ -838,7 +846,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun addCardToDiscard(card: Card, refresh: Boolean = true, showLog: Boolean = false) {
         if (showLog) {
-            addUsernameGameLog("discarded ${card.cardNameWithBackgroundColor}")
+            addEventLogWithUsername("discarded ${card.cardNameWithBackgroundColor}")
         }
 
         card.isHighlighted = false
@@ -863,7 +871,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addCardToDiscard(card)
 
         if (showLog) {
-            addGameLog(username + " discarded " + card.cardNameWithBackgroundColor + " from hand")
+            addEventLogWithUsername(" discarded ${card.cardNameWithBackgroundColor} from hand")
         }
 
         if (!game.isPlayTreasureCards) {
@@ -926,7 +934,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         hand.add(card)
 
         if (showLog) {
-            addUsernameGameLog("added " + card.cardNameWithBackgroundColor + " to hand")
+            addEventLogWithUsername("added " + card.cardNameWithBackgroundColor + " to hand")
         }
 
         game.refreshPlayerHandArea(this)
@@ -1024,7 +1032,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             Thread.sleep(2500)
         }
 
-        addGameLog("Deck: $currentDeckNumber")
+        addInfoLog("Deck: $currentDeckNumber")
 
         currentTurnSummary = TurnSummary(username)
         currentTurnSummary.gameTurn = game.turn
@@ -1076,11 +1084,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun revealHand() {
-        addGameLog("$username revealed their hand: ${hand.groupedString}")
+        addEventLogWithUsername("revealed their hand: ${hand.groupedString}")
     }
 
     fun revealCardFromHand(card: Card) {
-        addUsernameGameLog("revealed ${card.cardNameWithBackgroundColor} from their hand")
+        addEventLogWithUsername("revealed ${card.cardNameWithBackgroundColor} from their hand")
     }
 
     fun revealTopCardOfDeck(): Card? {
@@ -1096,17 +1104,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (deck.isEmpty()) {
-            addGameLog("$username had no cards to reveal")
+            addEventLogWithUsername("$username had no cards to reveal")
         } else {
             for (i in 0 until cards) {
                 if (deck.size < i + 1 && discard.isNotEmpty()) {
                     shuffleDiscardIntoDeck()
                 }
                 if (deck.size < i + 1) {
-                    addGameLog("No more cards to reveal")
+                    addInfoLog("No more cards to reveal")
                 } else {
                     val card = deck[i]
-                    addGameLog("$username revealed ${card.cardNameWithBackgroundColor} from top of deck")
+                    addEventLogWithUsername("revealed ${card.cardNameWithBackgroundColor} from top of deck")
                     revealedCards.add(card)
                 }
             }
@@ -1153,7 +1161,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (cards.isNotEmpty() && revealCards) {
-            addUsernameGameLog("revealed ${cards.groupedString} from top of deck")
+            addEventLogWithUsername("revealed ${cards.groupedString} from top of deck")
         }
 
         return cards
@@ -1311,7 +1319,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun discardHand() {
-        addUsernameGameLog("discarded their hand")
+        addEventLogWithUsername("discarded their hand")
         hand.toMutableList().forEach { discardCardFromHand(it) }
     }
 
@@ -1354,12 +1362,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (revealedCards.isNotEmpty()) {
-            addUsernameGameLog("revealed ${revealedCards.groupedString} from their deck")
+            addEventLogWithUsername("revealed ${revealedCards.groupedString} from their deck")
         }
 
         if (cardsToDiscard.isNotEmpty()) {
             addCardsToDiscard(cardsToDiscard)
-            addUsernameGameLog("discarded ${revealedCards.groupedString}")
+            addEventLogWithUsername("discarded ${revealedCards.groupedString}")
         }
 
         return cardFound
@@ -1369,6 +1377,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         discard.addAll(deck)
         deck.clear()
         game.refreshPlayerHandArea(this)
-        addUsernameGameLog("added deck into discard pile")
+        addEventLogWithUsername("added deck into discard pile")
     }
 }

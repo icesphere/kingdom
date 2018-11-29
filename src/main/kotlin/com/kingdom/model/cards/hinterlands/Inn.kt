@@ -34,7 +34,7 @@ class Inn : HinterlandsCard(NAME, CardType.Action, 5), AfterCardGainedListenerFo
             player.removeCardsFromDiscard(cards)
             player.addCardsToDeck(cards)
             player.deck.shuffle()
-            player.addUsernameGameLog("shuffled ${cards.groupedString} into their deck")
+            player.addEventLogWithUsername("shuffled ${cards.groupedString} into their deck")
         }
     }
 

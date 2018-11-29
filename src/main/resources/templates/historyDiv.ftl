@@ -44,7 +44,7 @@
 
         <#list turnHistory as turn>
             <div class="historyLine">
-                <#list turn.history as event>
+                <#list turn.allLogs as event>
                     <div style="clear:both;">${event}</div>
                 </#list>
             </div>

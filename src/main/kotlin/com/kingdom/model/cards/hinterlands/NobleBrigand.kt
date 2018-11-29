@@ -40,7 +40,7 @@ class NobleBrigand : HinterlandsCard(NAME, CardType.ActionAttack, 4), AfterCardB
 
             val otherCards = cards - silverAndGoldCards
             opponent.addCardsToDiscard(otherCards)
-            opponent.addUsernameGameLog("discarded ${otherCards.groupedString}")
+            opponent.addEventLogWithUsername("discarded ${otherCards.groupedString}")
 
             if (silverAndGoldCards.isNotEmpty()) {
                 if (silverAndGoldCards.size > 1) {
@@ -64,7 +64,7 @@ class NobleBrigand : HinterlandsCard(NAME, CardType.ActionAttack, 4), AfterCardB
 
     private fun gainTrashedCard(player: Player, opponent: Player, card: Card) {
         player.cardGained(card)
-        player.addUsernameGameLog("trashed and gained ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
+        player.addEventLogWithUsername("trashed and gained ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {

@@ -1,28 +1,28 @@
 package com.kingdom.model
 
 import com.kingdom.model.players.Player
-import java.util.ArrayList
 
 class PlayerTurn(player: Player) {
     val userId: String = player.userId
     var username = player.username
-    val history = ArrayList<String>()
     val lastTurnSummary = player.lastTurnSummary
 
-    val recentLogs: List<String>
-        get() {
-            val events = history.filter { !it.startsWith("<span class='historyLabel'>") && !it.startsWith("Deck:") && it.isNotBlank() }
+    val eventLogs = mutableListOf<String>()
+    val infoLogs = mutableListOf<String>()
+    val allLogs = mutableListOf<String>()
 
-            if (events.isEmpty()) {
+    val recentEvents: List<String>
+        get() {
+            if (eventLogs.isEmpty()) {
                 return emptyList()
             }
 
             var numLogsToShow = 3
-            if (events.size < numLogsToShow) {
-                numLogsToShow = events.size
+            if (eventLogs.size < numLogsToShow) {
+                numLogsToShow = eventLogs.size
             }
 
-            return events.reversed().subList(0, numLogsToShow).reversed()
+            return eventLogs.reversed().subList(0, numLogsToShow).reversed()
         }
 
     init {
@@ -30,10 +30,16 @@ class PlayerTurn(player: Player) {
         sb.append("<span class='historyLabel'>")
         sb.append(username).append("'s Turn ").append(player.turns + 1)
         sb.append("</span>")
-        history.add(sb.toString())
+        addInfoLog(sb.toString())
     }
 
-    fun addHistory(message: String) {
-        history.add(message)
+    fun addEventLog(log: String) {
+        eventLogs.add(log)
+        allLogs.add(log)
+    }
+
+    fun addInfoLog(log: String) {
+        infoLogs.add(log)
+        allLogs.add(log)
     }
 }

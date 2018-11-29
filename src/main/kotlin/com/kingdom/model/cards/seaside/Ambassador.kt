@@ -27,7 +27,7 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
 
         if (card.isShelter || player.game.cardsNotInSupply.any { it.name == card.name }) {
             player.showInfoMessage("Revealed card is not in the supply")
-            player.addGameLog("Revealed card is not in the supply")
+            player.addEventLog("Revealed card is not in the supply")
             return
         }
 

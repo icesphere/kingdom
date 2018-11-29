@@ -17,7 +17,7 @@ class BandOfMisfits : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCa
         if (cards.isNotEmpty()) {
             player.chooseCardAction("Choose a cheaper Action card from the Supply. ${this.cardNameWithBackgroundColor} will be that card until it leaves play.", this, cards, false)
         } else {
-            player.addGameLog("There were no cheaper Action cards in the Supply")
+            player.addEventLog("There were no cheaper Action cards in the Supply")
             player.showInfoMessage("There are no cheaper Action cards")
         }
     }

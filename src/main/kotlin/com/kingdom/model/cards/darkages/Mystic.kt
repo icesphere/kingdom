@@ -20,12 +20,12 @@ class Mystic : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.addUsernameGameLog("named ${card.cardNameWithBackgroundColor}")
+        player.addEventLogWithUsername("named ${card.cardNameWithBackgroundColor}")
 
         val topCards = player.revealTopCardsOfDeck(1)
         if (topCards.isNotEmpty()) {
             if (topCards.first().name == card.name) {
-                player.addUsernameGameLog("correctly guessed the top card of their deck was ${card.cardNameWithBackgroundColor} and added it to their hand")
+                player.addEventLogWithUsername("correctly guessed the top card of their deck was ${card.cardNameWithBackgroundColor} and added it to their hand")
                 player.removeTopCardOfDeck()
                 player.addCardToHand(card)
             }

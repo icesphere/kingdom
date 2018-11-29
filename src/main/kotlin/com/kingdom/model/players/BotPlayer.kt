@@ -191,7 +191,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         if (trashedCards.isNotEmpty()) {
             val card = trashedCards.first()
             game.trashedCards.remove(card)
-            addGameLog("$username gained ${card.cardNameWithBackgroundColor} from the trash")
+            addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the trash")
         }
     }
 
@@ -200,7 +200,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
+            addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the supply")
 
             cardGained(card)
         }
@@ -211,7 +211,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
+            addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the supply")
 
             cardGained(card)
         }
@@ -223,7 +223,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
+            addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the supply")
 
             cardGained(card)
 
@@ -772,7 +772,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         if (card != null) {
             game.removeCardFromSupply(card)
 
-            addUsernameGameLog("gained ${card.cardNameWithBackgroundColor} from the supply")
+            addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the supply")
 
             cardGained(card)
         }
@@ -828,15 +828,15 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         when (destination) {
             CardLocation.Hand -> {
-                addGameLog("$username put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s hand")
+                addEventLogWithUsername("put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s hand")
                 opponent.gainCardToHand(card)
             }
             CardLocation.Deck -> {
-                addGameLog("$username put ${card.cardNameWithBackgroundColor} on top of ${opponent.username}'s deck")
+                addEventLogWithUsername("put ${card.cardNameWithBackgroundColor} on top of ${opponent.username}'s deck")
                 opponent.gainCardToTopOfDeck(card)
             }
             else -> {
-                addGameLog("$username put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s discard")
+                addEventLogWithUsername("put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s discard")
                 opponent.cardGained(card)
             }
         }

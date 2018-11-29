@@ -15,7 +15,7 @@ class Bank : ProsperityCard(NAME, CardType.Treasure, 7) {
     override fun cardPlayedSpecialAction(player: Player) {
         val numTreasuresInPlay = player.inPlay.count { it.isTreasure }
         player.addCoins(numTreasuresInPlay)
-        player.addUsernameGameLog("gained +\$$numTreasuresInPlay from ${this.cardNameWithBackgroundColor}")
+        player.addEventLogWithUsername("gained +\$$numTreasuresInPlay from ${this.cardNameWithBackgroundColor}")
     }
 
     companion object {

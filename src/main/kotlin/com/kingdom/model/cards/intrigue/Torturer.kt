@@ -28,10 +28,10 @@ class Torturer : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
-            player.addUsernameGameLog("chose discard 2 cards")
+            player.addEventLogWithUsername("chose discard 2 cards")
             player.discardCardsFromHand(2, false)
         } else {
-            player.addUsernameGameLog("chose to gain a Curse to hand")
+            player.addEventLogWithUsername("chose to gain a Curse to hand")
 
             player.gainSupplyCardToHand(Curse(), false)
         }

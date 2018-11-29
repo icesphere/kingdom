@@ -29,11 +29,11 @@ class Hermit : DarkAgesCard(NAME, CardType.Action, 3), GameSetupModifier, Choose
         if (player.cardsInDiscard.contains(card)) {
             player.removeCardFromDiscard(card)
             player.cardTrashed(card)
-            player.addUsernameGameLog("trashed ${card.cardNameWithBackgroundColor} from their discard")
+            player.addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor} from their discard")
         } else {
             player.removeCardFromHand(card)
             player.cardTrashed(card)
-            player.addUsernameGameLog("trashed ${card.cardNameWithBackgroundColor} from their hand")
+            player.addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor} from their hand")
         }
 
         player.chooseSupplyCardToGain(3)

@@ -23,7 +23,7 @@ class HuntingParty : CornucopiaCard(NAME, CardType.Action, 5) {
         if (card != null) {
             player.addCardToHand(card, true)
         } else {
-            player.addUsernameGameLog("Deck did not contain any cards not already in ${player.username}'s hand")
+            player.addEventLogWithUsername("Deck did not contain any cards not already in ${player.username}'s hand")
             player.showInfoMessage("Deck did not contain any cards not already in your hand")
         }
     }

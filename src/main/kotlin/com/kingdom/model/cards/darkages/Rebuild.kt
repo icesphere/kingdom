@@ -19,7 +19,7 @@ class Rebuild : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.addUsernameGameLog("named ${card.cardNameWithBackgroundColor}")
+        player.addEventLogWithUsername("named ${card.cardNameWithBackgroundColor}")
 
         val victoryCard = player.revealFromDeckUntilCardFoundAndDiscardOthers { c -> c.isVictory && c.name != card.name }
         if (victoryCard != null) {
@@ -27,7 +27,7 @@ class Rebuild : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
             player.chooseSupplyCardToGain(player.getCardCostWithModifiers(victoryCard) + 3, { c -> c.isVictory })
         } else {
             player.showInfoMessage("You had no victory cards in your deck that are not ${card.cardNameWithBackgroundColor}")
-            player.addUsernameGameLog("had no victory cards in their deck that are not ${card.cardNameWithBackgroundColor}")
+            player.addEventLogWithUsername("had no victory cards in their deck that are not ${card.cardNameWithBackgroundColor}")
         }
     }
 

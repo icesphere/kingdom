@@ -13,7 +13,7 @@ class ChooseCardToGainFromTrash(cardsInTrash: List<Card>, optional: Boolean, car
         val card = selectedCards.first()
 
         player.game.trashedCards.remove(card)
-        player.addGameLog("${player.username} gained ${card.cardNameWithBackgroundColor} from the trash")
+        player.addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the trash")
         player.cardGained(card)
     }
 

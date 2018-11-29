@@ -31,7 +31,7 @@ class FortuneTeller : CornucopiaCard(NAME, CardType.ActionAttack, 3), AttackCard
             }
 
             if (revealedCards.isNotEmpty()) {
-                opponent.addUsernameGameLog("revealed ${revealedCards.groupedString}")
+                opponent.addEventLogWithUsername("revealed ${revealedCards.groupedString}")
                 opponent.addCardsToDiscard(revealedCards)
             }
 

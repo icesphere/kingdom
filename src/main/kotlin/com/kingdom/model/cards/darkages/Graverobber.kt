@@ -30,14 +30,14 @@ class Graverobber : DarkAgesCard(NAME, CardType.Action, 5), ChoiceActionCard, Tr
                 player.gainCardFromTrash(false, { c -> player.getCardCostWithModifiers(c) in 3..6 })
             } else {
                 val message = "There were no cards in the trash costing from \$3 to \$6"
-                player.addGameLog(message)
+                player.addEventLog(message)
                 player.showInfoMessage(message)
             }
         } else {
             if (player.hand.any { it.isAction }) {
                 player.trashCardsFromHandForBenefit(this, 1, "Trash an Action card from your hand and gain a card costing up to \$3 more than it.", { c -> c.isAction })
             } else {
-                player.addUsernameGameLog("had no actions cards in their hand to trash")
+                player.addEventLogWithUsername("had no actions cards in their hand to trash")
                 player.showInfoMessage("There are no actions cards in your hand to trash")
             }
         }

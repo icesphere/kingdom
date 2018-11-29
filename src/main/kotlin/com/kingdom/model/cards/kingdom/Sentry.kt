@@ -38,11 +38,11 @@ class Sentry : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
         val card = cardsForAction.removeAt(0)
         when (choice) {
             1 -> {
-                player.addGameLog("${player.username} trashed ${card.cardNameWithBackgroundColor}")
+                player.addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor}")
                 player.cardTrashed(card)
             }
             2 -> {
-                player.addGameLog("${player.username} discarded ${card.cardNameWithBackgroundColor}")
+                player.addEventLogWithUsername("discarded ${card.cardNameWithBackgroundColor}")
                 player.addCardToDiscard(card)
             }
             else -> cardsToPutOnTopOfDeck.add(card)

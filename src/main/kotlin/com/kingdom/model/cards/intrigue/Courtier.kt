@@ -31,7 +31,7 @@ class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, Choos
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.addGameLog("${player.username} revealed ${card.cardNameWithBackgroundColor}")
+        player.addEventLogWithUsername("revealed ${card.cardNameWithBackgroundColor}")
 
         numChoices = card.numTypes
 
@@ -43,19 +43,19 @@ class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, Choos
 
         when (choice) {
             1 -> {
-                player.addUsernameGameLog("chose +1 Action")
+                player.addEventLogWithUsername("chose +1 Action")
                 player.addActions(1)
             }
             2 -> {
-                player.addUsernameGameLog("chose +1 Buy")
+                player.addEventLogWithUsername("chose +1 Buy")
                 player.addBuys(1)
             }
             3 -> {
-                player.addUsernameGameLog("chose +\$3")
+                player.addEventLogWithUsername("chose +\$3")
                 player.addCoins(3)
             }
             4 -> {
-                player.addUsernameGameLog("chose to gain a Gold")
+                player.addEventLogWithUsername("chose to gain a Gold")
                 player.gainSupplyCard(Gold())
             }
         }

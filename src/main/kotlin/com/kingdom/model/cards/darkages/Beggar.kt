@@ -19,7 +19,7 @@ class Beggar : DarkAgesCard(NAME, CardType.ActionReaction, 2), HandBeforeAttackL
 
     override fun cardPlayedSpecialAction(player: Player) {
         val coppers = listOf(Copper(), Copper(), Copper())
-        player.addUsernameGameLog("gained ${coppers.groupedString} to their hand")
+        player.addEventLogWithUsername("gained ${coppers.groupedString} to their hand")
         for (copper in coppers) {
             player.gainSupplyCardToHand(copper, false)
         }
@@ -31,7 +31,7 @@ class Beggar : DarkAgesCard(NAME, CardType.ActionReaction, 2), HandBeforeAttackL
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
-            player.addUsernameGameLog("revealed $cardNameWithBackgroundColor to discard $cardNameWithBackgroundColor and gained 2 Silvers, putting one onto their deck")
+            player.addEventLogWithUsername("revealed $cardNameWithBackgroundColor to discard $cardNameWithBackgroundColor and gained 2 Silvers, putting one onto their deck")
             player.discardCardFromHand(this, true)
             player.gainSupplyCard(Silver())
             player.gainSupplyCardToTopOfDeck(Silver(), false)

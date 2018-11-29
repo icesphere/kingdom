@@ -125,8 +125,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var logId: Int = 0
 
-    private var historyEntriesAddedThisTurn = 0
-
     var isTestGame: Boolean = false
 
     private val recentTurnLogs = ArrayList<String>()
@@ -220,9 +218,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     private var maxHistoryTurnSize: Int = 0
     val recentHistory: List<String>
         get() {
-            val currentPlayerRecentLogs = currentTurn?.recentLogs ?: emptyList()
+            val currentPlayerRecentLogs = currentTurn?.recentEvents ?: emptyList()
             return if (currentPlayerRecentLogs.isEmpty()) {
-                previousTurn?.recentLogs ?: emptyList()
+                previousTurn?.recentEvents ?: emptyList()
             } else {
                 currentPlayerRecentLogs
             }
@@ -451,7 +449,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
         if (currentTurn != null) {
             previousTurn = currentTurn
-            currentTurn!!.addHistory("")
+            currentTurn!!.addInfoLog("")
         }
         currentTurn = PlayerTurn(currentPlayer)
         recentTurnHistory.add(currentTurn!!)
@@ -527,7 +525,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     fun turnEnded(isAutoEnd: Boolean) {
-        addHistory("End of turn $turn")
+        addInfoLog("End of turn $turn")
 
         if (emptyPiles >= 3
                 || pileAmounts[Province.NAME] == 0
@@ -568,7 +566,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     private fun gameOver() {
-        addHistory("GAME OVER")
+        addInfoLog("GAME OVER")
         status = GameStatus.Finished
         determineWinner()
         refreshGame()
@@ -576,7 +574,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     fun trashCardFromSupply(card: Card) {
         removeCardFromSupply(card)
-        addHistory("Trashed ${card.cardNameWithBackgroundColor} from supply")
+        addEventLog("Trashed ${card.cardNameWithBackgroundColor} from supply")
         trashedCards.add(card)
     }
 
@@ -673,7 +671,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
         if (currentTurn != null) {
-            errorHistory.append(KingdomUtil.implode(currentTurn!!.history, ";"))
+            errorHistory.append(KingdomUtil.implode(currentTurn!!.allLogs, ";"))
         }
 
         error.history = errorHistory.toString()
@@ -815,7 +813,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         player.isQuit = true
         quitGamePlayer = player
         gameEndReason = "${player.username} quit the game"
-        addHistory(gameEndReason)
+        addInfoLog(gameEndReason)
         winnerString = ""
         addGameChat(gameEndReason)
         gameOver()
@@ -863,9 +861,13 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
     }
 
-    fun addHistory(history: String) {
-        currentTurn?.addHistory(history)
-        historyEntriesAddedThisTurn++
+    fun addEventLog(log: String) {
+        currentTurn?.addEventLog(log)
+        refreshHistory()
+    }
+
+    fun addInfoLog(log: String) {
+        currentTurn?.addInfoLog(log)
         refreshHistory()
     }
 

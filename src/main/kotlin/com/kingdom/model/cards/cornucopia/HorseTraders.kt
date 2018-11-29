@@ -35,7 +35,7 @@ class HorseTraders : CornucopiaCard(NAME, CardType.ActionReaction, 4), HandBefor
     override fun onStartOfTurn(player: Player) {
         player.drawCard()
         player.addCardToHand(this)
-        player.addUsernameGameLog("added ${this.cardNameWithBackgroundColor} back to their hand")
+        player.addEventLogWithUsername("added ${this.cardNameWithBackgroundColor} back to their hand")
     }
 
     companion object {

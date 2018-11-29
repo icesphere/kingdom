@@ -27,32 +27,32 @@ class Pawn : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         when (choice) {
             1 -> {
-                player.addUsernameGameLog("chose +1 Card, +1 Action")
+                player.addEventLogWithUsername("chose +1 Card, +1 Action")
                 player.drawCard()
                 player.addActions(1)
             }
             2 -> {
-                player.addUsernameGameLog("chose +1 Card, +1 Buy")
+                player.addEventLogWithUsername("chose +1 Card, +1 Buy")
                 player.drawCard()
                 player.addBuys(1)
             }
             3 -> {
-                player.addUsernameGameLog("chose +1 Card, +\$1")
+                player.addEventLogWithUsername("chose +1 Card, +\$1")
                 player.drawCard()
                 player.addCoins(1)
             }
             4 -> {
-                player.addUsernameGameLog("chose +1 Action, +1 Buy")
+                player.addEventLogWithUsername("chose +1 Action, +1 Buy")
                 player.addActions(1)
                 player.addBuys(1)
             }
             5 -> {
-                player.addUsernameGameLog("chose +1 Action, +\$1")
+                player.addEventLogWithUsername("chose +1 Action, +\$1")
                 player.addActions(1)
                 player.addCoins(1)
             }
             6 -> {
-                player.addUsernameGameLog("chose +1 Buy, +\$1")
+                player.addEventLogWithUsername("chose +1 Buy, +\$1")
                 player.addBuys(1)
                 player.addCoins(1)
             }

@@ -24,7 +24,7 @@ class Island : SeasideCard(NAME, CardType.ActionVictory, 4), GameSetupModifier, 
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.addUsernameGameLog("added a card to their ${this.cardNameWithBackgroundColor}")
+        player.addEventLogWithUsername("added a card to their ${this.cardNameWithBackgroundColor}")
         player.removeCardFromHand(card)
         player.cardRemovedFromPlay(card)
         player.islandCards.add(card)
