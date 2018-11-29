@@ -512,9 +512,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerHandArea(this)
     }
 
-    fun addCardToTopOfDeck(card: Card, addGameLog: Boolean = true) {
+    fun addCardToTopOfDeck(card: Card, showLog: Boolean = true) {
         deck.add(0, card)
-        if (addGameLog) {
+        if (showLog) {
             addEventLogWithUsername("added " + card.cardNameWithBackgroundColor + " to top of deck")
         }
         game.refreshPlayerHandArea(this)
@@ -676,9 +676,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return cards
         }
 
-    fun playCard(card: Card, refresh: Boolean = true, repeatedAction: Boolean = false) {
+    fun playCard(card: Card, refresh: Boolean = true, repeatedAction: Boolean = false, showLog: Boolean = true) {
 
-        game.addEventLog("Played card: ${card.cardNameWithBackgroundColor}")
+        if (showLog) {
+            game.addEventLog("Played card: ${card.cardNameWithBackgroundColor}")
+        }
 
         if (!repeatedAction) {
 
@@ -1310,9 +1312,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun playAllTreasureCards() {
-        hand.filter { it.isTreasure && !it.isTreasureExcludedFromAutoPlay }.sortedBy { it.cost }.forEach { card ->
-            playCard(card, refresh = false)
+        val treasureCardsToPlay = hand.filter { it.isTreasure && !it.isTreasureExcludedFromAutoPlay }
+
+        if (treasureCardsToPlay.isEmpty()) {
+            return
         }
+
+        treasureCardsToPlay.sortedBy { it.cost }.forEach { card ->
+            playCard(card, refresh = false, showLog = false)
+        }
+
+        addEventLogWithUsername("played ${treasureCardsToPlay.groupedString}")
 
         game.refreshPlayerHandArea(this)
         game.refreshCardsPlayed()

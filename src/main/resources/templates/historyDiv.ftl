@@ -40,7 +40,7 @@
             </#list>
         </#if>
 
-        <div class="historyLabel">Events:</div>
+        <div class="historyLabel">Recent turns:</div>
 
         <#list turnHistory as turn>
             <div class="historyLine">
