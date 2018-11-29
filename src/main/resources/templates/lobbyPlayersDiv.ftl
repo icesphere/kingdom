@@ -16,7 +16,7 @@
                     </#if>
                 </td>
                 <td style="text-align:center">
-                    <a href="javascript:sendPrivateChat(${player.userId})"><img src="images/PlayerChat.png" style="border:0;width:16px;height16px;"/></a>
+                    <a href="javascript:sendPrivateChat('${player.userId}')"><img src="images/PlayerChat.png" style="border:0;width:16px;height16px;"/></a>
                 </td>
                 <td>
                     ${player.username} <span class="playerStatus">${player.status}</span> <#if player.idle><span class="idlePlayer">(idle ${player.idleTime})</span></#if>

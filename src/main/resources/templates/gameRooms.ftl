@@ -203,7 +203,7 @@
             <div class="lobbyPlayers">
                 <div>
                     <div onkeypress="return checkEnterOnChangeStatus(event)">
-                        <span class="mediumLabel">My Status: </span>
+                        <div style="clear: both; padding-top: 16px;" class="mediumLabel">My Status: </div>
                         <input type="text" name="status" id="status" style="width:100px;" value="${user.status}"/> <input type="button" id="changeStatusButton" value="Change" onclick="changeStatus()"/>
                     </div>
                 </div>

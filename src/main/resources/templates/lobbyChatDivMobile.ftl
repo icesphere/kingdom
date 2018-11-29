@@ -3,7 +3,7 @@
     <div id="chatDiv">
         <#list chats as chat>
             <#if !chat.expired>
-                <#if chat.userId == 0 || chat.userId == user.userId>
+                <#if !(chat.userId??) || chat.userId == user.userId>
                     <div style="clear:both;">
                         ${chat.chat}
                     </div>

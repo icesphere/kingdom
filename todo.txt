@@ -1,4 +1,3 @@
-cleanup UI on lobby page
 show recent events
 admin cancel current game is broken if admin is user in game
 cards overflow weird when too many on desktop (use flexbox?)

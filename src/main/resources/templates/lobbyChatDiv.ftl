@@ -6,7 +6,7 @@
                 <table style="width:100%">
                     <#list chats as chat>
                         <#if !chat.expired>
-                            <#if chat.userId == 0 || chat.userId == user.userId>
+                            <#if !(chat.userId??) || chat.userId == user.userId>
                                 <tr><td>${chat.chat}</td></tr>
                             </#if>
                         </#if>
