@@ -213,10 +213,20 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val previousPlayer: Player?
         get() = playerMap[previousPlayerId]
 
+    private var previousTurn: PlayerTurn? = null
     private var currentTurn: PlayerTurn? = null
     private val turnHistory = ArrayList<PlayerTurn>()
     val recentTurnHistory = LinkedList<PlayerTurn>()
     private var maxHistoryTurnSize: Int = 0
+    val recentHistory: List<String>
+        get() {
+            val currentPlayerRecentLogs = currentTurn?.recentLogs ?: emptyList()
+            return if (currentPlayerRecentLogs.isEmpty()) {
+                previousTurn?.recentLogs ?: emptyList()
+            } else {
+                currentPlayerRecentLogs
+            }
+        }
 
     val lastTurnSummaries
         get() = players.mapNotNull {
@@ -440,6 +450,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             recentTurnHistory.removeFirst()
         }
         if (currentTurn != null) {
+            previousTurn = currentTurn
             currentTurn!!.addHistory("")
         }
         currentTurn = PlayerTurn(currentPlayer)

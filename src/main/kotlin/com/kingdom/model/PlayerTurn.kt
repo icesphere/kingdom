@@ -9,9 +9,21 @@ class PlayerTurn(player: Player) {
     val history = ArrayList<String>()
     val lastTurnSummary = player.lastTurnSummary
 
-    @Suppress("unused")
-    val reversedHistory
-        get() = history.reversed()
+    val recentLogs: List<String>
+        get() {
+            val events = history.filter { !it.startsWith("<span class='historyLabel'>") && !it.startsWith("Deck:") && it.isNotBlank() }
+
+            if (events.isEmpty()) {
+                return emptyList()
+            }
+
+            var numLogsToShow = 3
+            if (events.size < numLogsToShow) {
+                numLogsToShow = events.size
+            }
+
+            return events.reversed().subList(0, numLogsToShow).reversed()
+        }
 
     init {
         val sb = StringBuilder()

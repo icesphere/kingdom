@@ -1276,6 +1276,7 @@ class GameController(private val cardManager: CardManager,
         }
         try {
             val modelAndView = ModelAndView("historyDiv")
+            modelAndView.addObject("recentHistory", game.recentHistory)
             modelAndView.addObject("turnHistory", game.recentTurnHistory)
             modelAndView.addObject("lastTurnSummaries", game.lastTurnSummaries)
             return modelAndView
@@ -1506,6 +1507,7 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("gameEndReason", game.gameEndReason)
             modelAndView.addObject("winnerString", game.winnerString)
             modelAndView.addObject("players", game.players)
+            modelAndView.addObject("recentHistory", game.recentHistory)
             modelAndView.addObject("turnHistory", game.recentTurnHistory)
             modelAndView.addObject("lastTurnSummaries", game.lastTurnSummaries)
 
@@ -1784,6 +1786,7 @@ class GameController(private val cardManager: CardManager,
 
         addPlayingAreaDataToModelView(game, player, modelAndView)
 
+        modelAndView.addObject("recentHistory", game.recentHistory)
         modelAndView.addObject("turnHistory", game.recentTurnHistory)
         modelAndView.addObject("lastTurnSummaries", game.lastTurnSummaries)
         modelAndView.addObject("chats", game.chats)

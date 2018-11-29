@@ -1,4 +1,17 @@
 <div style="float:left;clear:both;padding-top:5px;padding-bottom:5px;">
+
+    <#if recentHistory?size != 0>
+
+        <div class="historyLabel">Recent Events:</div>
+
+        <div class="historyLine">
+            <#list recentHistory as event>
+                <div style="clear:both;">${event}</div>
+            </#list>
+        </div>
+
+    </#if>
+
     <#if turnHistory?size != 0>
 
         <#if lastTurnSummaries?size != 0>

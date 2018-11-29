@@ -1,8 +1,10 @@
-show recent events
+separate out logs into events and info and just show events in recent events in history
 admin cancel current game is broken if admin is user in game
 cards overflow weird when too many on desktop (use flexbox?)
 
 fix or remove code for add specific type of card from confirm cards page
+
+figure out why create game page takes a long time to load the bottom of the page
 
 better bots
 support multiple info messages?
