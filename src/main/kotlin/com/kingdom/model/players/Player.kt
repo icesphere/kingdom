@@ -1024,8 +1024,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             Thread.sleep(2500)
         }
 
-        addGameLog("")
-        addGameLog("*** $username's Turn $turn ***")
         addGameLog("Deck: $currentDeckNumber")
 
         currentTurnSummary = TurnSummary(username)

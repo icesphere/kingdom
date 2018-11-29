@@ -2,35 +2,35 @@
     <#if turnHistory?size != 0>
 
         <#if lastTurnSummaries?size != 0>
-            <div style="clear: both; float: left; margin-right:1px; padding:3px; font-weight: bold">Last Turn Summaries:</div>
+            <div class="historyLabel">Last Turn Summaries:</div>
 
             <#list lastTurnSummaries as turnSummary>
-                <div style="clear: both; float: left; margin-right:1px; padding:3px; font-weight: bold">${turnSummary.username}:</div>
+                <div class="historyLabel">${turnSummary.username}:</div>
 
                 <#if turnSummary.cardsGainedString?has_content>
-                    <div style="clear:both;float:left;margin-right:1px;padding:3px;">
+                    <div class="historyLine">
                         Gained: ${turnSummary.cardsGainedString}
                     </div>
                 </#if>
 
                 <#if turnSummary.cardsPlayedString?has_content>
-                    <div style="clear:both;float:left;margin-right:1px;padding:3px;">
+                    <div class="historyLine">
                         Played: ${turnSummary.cardsPlayedString}
                     </div>
                 </#if>
 
                 <#if turnSummary.cardsTrashedString?has_content>
-                    <div style="clear:both;float:left;margin-right:1px;padding:3px;">
+                    <div class="historyLine">
                         Trashed: ${turnSummary.cardsTrashedString}
                     </div>
                 </#if>
             </#list>
         </#if>
 
-        <div style="clear: both; float: left;margin-right:1px;padding:3px; font-weight: bold">Events:</div>
+        <div class="historyLabel">Events:</div>
 
         <#list turnHistory as turn>
-            <div style="clear:both;float:left;margin-right:1px;padding:3px;">
+            <div class="historyLine">
                 <#list turn.history as event>
                     <div style="clear:both;">${event}</div>
                 </#list>

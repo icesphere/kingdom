@@ -15,8 +15,9 @@ class PlayerTurn(player: Player) {
 
     init {
         val sb = StringBuilder()
-        sb.append("<span style='font-weight:bold'>")
+        sb.append("<span class='historyLabel'>")
         sb.append(username).append("'s Turn ").append(player.turns + 1)
+        sb.append("</span>")
         history.add(sb.toString())
     }
 

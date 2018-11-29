@@ -262,3 +262,19 @@
     float:left;
     padding-right:20px;
 }
+
+.historyLabel {
+    clear: both;
+    float: left;
+    margin-right:1px;
+    padding:3px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.historyLine {
+    clear: both;
+    float: left;
+    margin-right: 1px;
+    padding: 3px;
+}

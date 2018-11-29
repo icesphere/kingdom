@@ -7,7 +7,7 @@
 		<title>Kingdom</title>
         <#include "commonIncludes.ftl">
         <#if mobile>
-            <link href="css/game.css?2" rel="stylesheet" type="text/css">
+            <link href="css/game.css?3" rel="stylesheet" type="text/css">
             <link href="css/gameMobile.css" rel="stylesheet" type="text/css">
             <script type="text/javascript">
                 var mobile = true;
