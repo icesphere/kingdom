@@ -517,7 +517,12 @@ class GameController(private val cardManager: CardManager,
         }
         val game = gameRoomManager.getGame(gameId)
         if (game != null && (user.admin || game.creatorId == user.userId)) {
-            game.reset()
+            if (game.status == GameStatus.InProgress) {
+                game.addInfoLog("${user.username} cancelled the game")
+                game.gameOver()
+            } else {
+                game.reset()
+            }
         }
         return ModelAndView("redirect:/showGameRooms.html")
     }

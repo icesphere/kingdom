@@ -565,7 +565,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         startTurnInNewThreadIfComputerVsHuman(isAutoEnd || previousPlayer!!.isBot)
     }
 
-    private fun gameOver() {
+    fun gameOver() {
         addInfoLog("GAME OVER")
         status = GameStatus.Finished
         determineWinner()
