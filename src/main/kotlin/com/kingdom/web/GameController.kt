@@ -59,7 +59,7 @@ class GameController(private val cardManager: CardManager,
         if (game == null) {
             game = gameRoomManager.nextAvailableGame
         }
-        if (game == null || gameRoomManager.isUpdatingWebsite) {
+        if (game == null) {
             return ModelAndView("redirect:/showGameRooms.html")
         }
 
@@ -593,10 +593,6 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("chats", lobbyChats.chats)
             modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached())
             modelAndView.addObject("numGamesInProgress", gameRoomManager.gamesInProgress.size)
-            modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
-            modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage ?: "")
-            modelAndView.addObject("showNews", gameRoomManager.isShowNews)
-            modelAndView.addObject("news", gameRoomManager.news)
 
             return modelAndView
         } catch (t: Throwable) {
@@ -2067,10 +2063,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("gameRooms", gameRoomManager.lobbyGameRooms)
         modelAndView.addObject("maxGameRoomLimitReached", gameRoomManager.maxGameRoomLimitReached())
         modelAndView.addObject("numGamesInProgress", gameRoomManager.gamesInProgress.size)
-        modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
-        modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage ?: "")
-        modelAndView.addObject("showNews", gameRoomManager.isShowNews)
-        modelAndView.addObject("news", gameRoomManager.news)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         return modelAndView
     }

@@ -12,12 +12,6 @@ class GameRoomManager(val gameManager: GameManager, val gameMessageService: Game
 
     private val games = HashMap<String, Game>()
 
-    var isUpdatingWebsite: Boolean = false
-    var updatingMessage: String? = null
-
-    var isShowNews: Boolean = false
-    var news = ""
-
     val nextAvailableGame: Game?
         get() {
             if (games.size >= MAX_GAME_ROOMS) {

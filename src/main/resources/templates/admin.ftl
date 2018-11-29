@@ -3,20 +3,6 @@
 	<head>
 		<title>Admin</title>
         <#include "commonIncludes.ftl">
-        <script type="text/javascript">
-            function setUpdatingWebsite()
-            {
-                var updatingWebsite = $("input[name=updatingWebsite]:checked").val();
-                var updatingMessage = $("#updatingMessage").val();
-                $.get("setUpdatingWebsite.html", {updatingWebsite: updatingWebsite, updatingMessage: updatingMessage});
-            }
-            function setShowNews()
-            {
-            var showNews = $("input[name=showNews]:checked").val();
-            var news = $("#news").val();
-            $.get("setShowNews.html", {showNews: showNews, news: news});
-            }
-        </script>
 	</head>
 	<body>
         <#include "adminLinks.ftl">
@@ -48,26 +34,6 @@
                     </td>
                 </tr>
             </#if>
-            <tr>
-                <td>
-                    Updating Website: <input type="radio" name="updatingWebsite" value="true" onclick="setUpdatingWebsite()" <#if updatingWebsite>checked</#if>> Yes  <input type="radio" name="updatingWebsite" value="false" onclick="setUpdatingWebsite()" <#if !updatingWebsite>checked</#if>> No
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <textarea name="updatingMessage" id="updatingMessage" cols="40" rows="5">The website needs to be updated with the latest changes.  Try coming back in about 15 minutes.</textarea>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Show News: <input type="radio" name="showNews" value="true" onclick="setShowNews()" <#if showNews>checked</#if>> Yes  <input type="radio" name="showNews" value="false" onclick="setShowNews()" <#if !showNews>checked</#if>> No
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <textarea name="news" id="news" cols="40" rows="5">${news}</textarea>
-                </td>
-            </tr>
 		</table>
 	</body>
 </html>

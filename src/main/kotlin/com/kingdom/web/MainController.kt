@@ -72,10 +72,6 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         val showGameActions = loggedInUser?.gameId != null
         modelAndView.addObject("showGameActions", showGameActions)
         modelAndView.addObject("loggedInUsersCount", LoggedInUsers.getUsers().size)
-        modelAndView.addObject("updatingWebsite", gameRoomManager.isUpdatingWebsite)
-        modelAndView.addObject("updatingMessage", gameRoomManager.updatingMessage ?: "")
-        modelAndView.addObject("showNews", gameRoomManager.isShowNews)
-        modelAndView.addObject("news", gameRoomManager.news)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         return modelAndView
     }
@@ -118,22 +114,6 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         val modelAndView = ModelAndView("disclaimer")
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         return modelAndView
-    }
-
-    @RequestMapping("/setUpdatingWebsite.html")
-    fun setUpdatingWebsite(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val updatingWebsite = KingdomUtil.getRequestBoolean(request, "updatingWebsite")
-        gameRoomManager.isUpdatingWebsite = updatingWebsite
-        gameRoomManager.updatingMessage = request.getParameter("updatingMessage")
-        return ModelAndView("empty")
-    }
-
-    @RequestMapping("/setShowNews.html")
-    fun setShowNews(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val showNews = KingdomUtil.getRequestBoolean(request, "showNews")
-        gameRoomManager.isShowNews = showNews
-        gameRoomManager.news = request.getParameter("news")
-        return ModelAndView("empty")
     }
 
     @RequestMapping("/switchSite.html")

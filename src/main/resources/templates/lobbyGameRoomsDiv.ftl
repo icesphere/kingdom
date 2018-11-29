@@ -1,8 +1,3 @@
-<#if showNews>
-    <div style="padding-bottom: 10px;">
-        ${news}
-    </div>
-</#if>
 <div style="padding-bottom: 10px;">
     <a href="showGamesInProgress.html" target="_blank">${numGamesInProgress} Game<#if numGamesInProgress != 1>s</#if> In Progress</a>
 </div>
@@ -10,13 +5,7 @@
     <#if maxGameRoomLimitReached>
         Max Game Room Limit Reached
     <#elseif !(user.gameId??)>
-        <#if updatingWebsite>
-            <div>
-                ${updatingMessage}
-            </div>
-        <#else>
-            <a href="createGame.html">Start a New Game</a>
-        </#if>
+        <a href="createGame.html">Start a New Game</a>
     </#if>
 </div>
 <#list gameRooms as room>
