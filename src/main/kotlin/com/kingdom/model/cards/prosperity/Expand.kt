@@ -18,8 +18,8 @@ class Expand : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitAct
         player.trashCardsFromHandForBenefit(this, 1, special)
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        val card = scrappedCards.first()
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+        val card = trashedCards.first()
         player.chooseSupplyCardToGain(player.getCardCostWithModifiers(card) + 3)
     }
 

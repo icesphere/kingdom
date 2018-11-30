@@ -9,7 +9,7 @@ class TrashCardsFromHandForBenefit(private val trashCardsForBenefitActionCard: T
         val doneWithAction = super.processActionResult(player, result)
 
         if (doneWithAction) {
-            trashCardsForBenefitActionCard.cardsScrapped(player, selectedCards)
+            trashCardsForBenefitActionCard.cardsTrashed(player, selectedCards)
         }
 
         return doneWithAction

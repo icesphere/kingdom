@@ -18,9 +18,9 @@ class Remodel : KingdomCard(NAME, CardType.Action, 4), TrashCardsForBenefitActio
         player.trashCardsFromHandForBenefit(this, 1, special)
     }
     
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        if (scrappedCards.isNotEmpty()) {
-            player.chooseSupplyCardToGain(player.getCardCostWithModifiers(scrappedCards[0]) + 2)
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+        if (trashedCards.isNotEmpty()) {
+            player.chooseSupplyCardToGain(player.getCardCostWithModifiers(trashedCards[0]) + 2)
         }
     }
 

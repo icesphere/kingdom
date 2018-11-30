@@ -34,7 +34,7 @@ class SpiceMerchant : HinterlandsCard(NAME, CardType.Action, 4), ChoiceActionCar
         }
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
         player.makeChoice(this, Choice(3, "+2 Cards and +1 Action"), Choice(4, "+1 Buy and \$2"))
     }
 

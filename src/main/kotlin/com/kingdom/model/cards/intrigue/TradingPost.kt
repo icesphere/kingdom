@@ -30,7 +30,7 @@ class TradingPost : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefit
         }
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
         player.gainSupplyCardToHand(Silver(), true)
     }
 

@@ -123,7 +123,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         cards.forEach({ this.trashCardFromHand(it) })
 
-        card.cardsScrapped(this, cards)
+        card.cardsTrashed(this, cards)
     }
 
     override fun discardCardsFromHand(numCardsToDiscard: Int, optional: Boolean) {
@@ -764,7 +764,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         val cards = getCardsToTrashFromHand(numCardsToTrash, null, cardActionableExpression)
         cards.forEach { this.trashCardFromHand(it) }
-        card.cardsScrapped(this, cards)
+        card.cardsTrashed(this, cards)
     }
 
     override fun chooseSupplyCardToGainToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType) {

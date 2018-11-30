@@ -22,8 +22,8 @@ class Upgrade : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefitActi
         }
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        val card = scrappedCards.first()
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+        val card = trashedCards.first()
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == player.getCardCostWithModifiers(card) + 1 }) {
             player.chooseSupplyCardToGainWithExactCost(player.getCardCostWithModifiers(card) + 1)

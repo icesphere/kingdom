@@ -61,4 +61,4 @@
     </#if>
 </div>
 <div style="position:absolute; right:3px; bottom:0;<#if card.attack>color:#C00;</#if> font-size:<#if card.typeAsString?length &gt; 22>6<#elseif card.typeAsString?length &gt; 18>7<#elseif card.typeAsString?length &gt; 14>8<#else>10</#if>px; ">${card.typeAsString}</div>
-<div style="position:absolute; left:2px; bottom:0; font-size:12px;">${cost} <img src="images/coin.png" alt="coin" height="12" width="12" style="position: relative; top: 2px; right: 1px;"/></div>
+<div style="position:absolute; left:2px; bottom:0; font-size:12px;">${cost}<#if card.overpayForCardAllowed>+</#if> <img src="images/coin.png" alt="coin" height="12" width="12" style="position: relative; top: 2px; right: 1px;"/></div>

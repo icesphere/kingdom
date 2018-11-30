@@ -12,6 +12,7 @@ import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.guilds.CandlestickMaker
+import com.kingdom.model.cards.guilds.Stonemason
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
@@ -229,7 +230,8 @@ class CardRepository {
 
     val guildsCards: List<Card>
         get() = listOf(
-                CandlestickMaker()
+                CandlestickMaker(),
+                Stonemason()
         )
 
     val allCards: List<Card>

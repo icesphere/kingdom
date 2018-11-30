@@ -30,8 +30,8 @@ class Bishop : ProsperityCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
         }
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        val card = scrappedCards.first()
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+        val card = trashedCards.first()
 
         player.addVictoryCoins(card.cost/2)
     }

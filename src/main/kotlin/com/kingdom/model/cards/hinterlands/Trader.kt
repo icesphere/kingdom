@@ -22,8 +22,8 @@ class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForB
         player.trashCardsFromHandForBenefit(this, 1, special)
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        val card = scrappedCards.first()
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+        val card = trashedCards.first()
 
         repeat(player.getCardCostWithModifiers(card)) {
             player.gainSupplyCard(Silver(), true)

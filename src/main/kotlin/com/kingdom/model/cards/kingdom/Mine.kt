@@ -17,9 +17,9 @@ class Mine : KingdomCard(NAME, CardType.Action, 5), TrashCardsForBenefitActionCa
         player.optionallyTrashCardsFromHandForBenefit(this, 1, special, { c -> c.isTreasure })
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        if (scrappedCards.isNotEmpty()) {
-            player.chooseSupplyCardToGainToHandWithMaxCostAndType(player.getCardCostWithModifiers(scrappedCards[0]) + 3, CardType.Treasure)
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+        if (trashedCards.isNotEmpty()) {
+            player.chooseSupplyCardToGainToHandWithMaxCostAndType(player.getCardCostWithModifiers(trashedCards[0]) + 3, CardType.Treasure)
         }
     }
 

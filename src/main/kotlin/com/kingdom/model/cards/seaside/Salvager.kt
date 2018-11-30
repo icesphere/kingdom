@@ -18,8 +18,8 @@ class Salvager : SeasideCard(NAME, CardType.Action, 4), TrashCardsForBenefitActi
         player.trashCardsFromHandForBenefit(this, 1, special)
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        val card = scrappedCards.first()
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+        val card = trashedCards.first()
 
         player.addCoins(player.getCardCostWithModifiers(card))
     }

@@ -16,10 +16,10 @@ class Forge : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitActi
         player.optionallyTrashCardsFromHandForBenefit(this, player.hand.size, special)
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
         var totalCost = 0
 
-        scrappedCards.forEach { totalCost += player.getCardCostWithModifiers(it) }
+        trashedCards.forEach { totalCost += player.getCardCostWithModifiers(it) }
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == totalCost }) {
             player.chooseSupplyCardToGainWithExactCost(totalCost)

@@ -43,8 +43,8 @@ class Graverobber : DarkAgesCard(NAME, CardType.Action, 5), ChoiceActionCard, Tr
         }
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
-        val card = scrappedCards.first()
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+        val card = trashedCards.first()
 
         player.chooseSupplyCardToGain(player.getCardCostWithModifiers(card) + 3, { c -> c.isAction }, "Choose an action card from the supply costing up to ${player.getCardCostWithModifiers(card) + 3}")
     }

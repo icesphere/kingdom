@@ -26,7 +26,7 @@ class Mercenary : DarkAgesCard(NAME, CardType.ActionAttack, 0), ChoiceActionCard
         }
     }
 
-    override fun cardsScrapped(player: Player, scrappedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
         player.drawCards(2)
         player.addCoins(2)
         player.triggerAttack(this)
