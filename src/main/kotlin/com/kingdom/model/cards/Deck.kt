@@ -8,6 +8,7 @@ enum class Deck {
     Cornucopia,
     Hinterlands,
     DarkAges,
+    Guilds,
     Promo,
     None
 }

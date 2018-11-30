@@ -70,7 +70,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var actions: Int = 0
         private set
 
-    var coinTokens: Int = 0
+    var coffers: Int = 0
 
     val opponents: List<Player> by lazy {
         game.players.filterNot { it.userId == userId }
@@ -300,6 +300,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun addCoins(coins: Int) {
+        if (coins == 0) {
+            return
+        }
         this.coins += coins
         coinsGainedThisTurn += coins
         game.refreshPlayerSupply(this)
@@ -307,16 +310,25 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun addVictoryCoins(victoryCoins: Int) {
+        if (victoryCoins == 0) {
+            return
+        }
         this.victoryCoins += victoryCoins
         game.refreshPlayerHandArea(this)
     }
 
     fun addActions(actions: Int) {
+        if (actions == 0) {
+            return
+        }
         this.actions += actions
         game.refreshPlayerCardsPlayed(this)
     }
 
     fun addBuys(buys: Int) {
+        if (buys == 0) {
+            return
+        }
         this.buys += buys
         game.refreshPlayerCardsBought(this)
     }
@@ -1388,5 +1400,22 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         deck.clear()
         game.refreshPlayerHandArea(this)
         addEventLogWithUsername("added deck into discard pile")
+    }
+
+    fun useCoffers(numCoffersToUse: Int) {
+        if (numCoffersToUse == 0) {
+            return
+        }
+        addCoffers(numCoffersToUse * -1)
+        addCoins(numCoffersToUse)
+        addEventLogWithUsername("used $numCoffersToUse Coffers")
+    }
+
+    fun addCoffers(coffers: Int) {
+        if (coffers == 0) {
+            return
+        }
+        this.coffers += coffers
+        game.refreshPlayerHandArea(this)
     }
 }

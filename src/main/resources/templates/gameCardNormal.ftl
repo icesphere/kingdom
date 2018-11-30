@@ -18,6 +18,11 @@
             + ${card.addBuys} Buy<#if card.addBuys != 1>s</#if>
         </div>
     </#if>
+    <#if card.addCoffers != 0>
+        <div class="cardRow">
+            + ${card.addCoffers} Coffers
+        </div>
+    </#if>
     <#if (card.name == "Philosopher's Stone" || card.name == "Bank") && card.addCoins == 0>
         <div class="cardRow">
             <div style="font-size:14px; padding-top:3px;">? <img src="images/coin.png" alt="coin" height="16" width="16"/></div>

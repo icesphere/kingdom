@@ -478,10 +478,9 @@ function toggleSound() {
     }
 }
 
-function useCoinTokens(){
+function useCoffers(){
     if(gameStatus == "InProgress"){
-        refreshingGame = true;
-        $.post("useCoinTokens", function(data) {
+        $.post("useCoffers", function(data) {
         });
     }
 }

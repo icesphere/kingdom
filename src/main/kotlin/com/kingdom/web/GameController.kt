@@ -6,6 +6,7 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.UserDeckInfo
 import com.kingdom.model.cards.actions.ActionResult
+import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
 import com.kingdom.service.*
@@ -77,8 +78,7 @@ class GameController(private val cardManager: CardManager,
             game.creatorId = user.userId
             game.creatorName = user.username
             LoggedInUsers.refreshLobbyGameRooms()
-            val includeTesting = user.admin
-            addSelectCardsObjects(user, modelAndView, includeTesting)
+            addSelectCardsObjects(user, modelAndView, true)
             return modelAndView
         } catch (t: Throwable) {
             return logErrorAndReturnEmpty(t, game)
@@ -97,8 +97,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("action", "generateCards.html")
 
         try {
-            val includeTesting = false
-            addSelectCardsObjects(user, modelAndView, includeTesting)
+            addSelectCardsObjects(user, modelAndView, false)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -314,7 +313,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("createGame", KingdomUtil.getRequestBoolean(request, "createGame"))
         modelAndView.addObject("player", HumanPlayer(user, game))
         modelAndView.addObject("currentPlayerId", -1)
-//        modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
         modelAndView.addObject("cards", game.kingdomCards)
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
         modelAndView.addObject("includeShelters", includeShelters)
@@ -1330,7 +1328,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("currentPlayer", game.currentPlayer)
 
         modelAndView.addObject("gameStatus", game.status)
-//            modelAndView.addObject("fruitTokensPlayed", game.fruitTokensPlayed)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
     }
 
@@ -1376,7 +1373,7 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("showIslandCards", game.isShowIslandCards)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-            modelAndView.addObject("showCoinTokens", game.isShowCoinTokens)
+            modelAndView.addObject("showCoffers", game.isShowCoffers)
             modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards && !player.isCardsBought)
             return modelAndView
@@ -1483,7 +1480,7 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-            modelAndView.addObject("showCoinTokens", game.isShowCoinTokens)
+            modelAndView.addObject("showCoffers", game.isShowCoffers)
             modelAndView.addObject("showDuration", game.isShowDuration)
             modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
             modelAndView.addObject("prizeCards", game.prizeCardsString)
@@ -1796,7 +1793,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
         modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
         modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-        modelAndView.addObject("showCoinTokens", game.isShowCoinTokens)
+        modelAndView.addObject("showCoffers", game.isShowCoffers)
         modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
         modelAndView.addObject("showIslandCards", game.isShowIslandCards)
         modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards && !player.isCardsBought)
@@ -2106,8 +2103,8 @@ class GameController(private val cardManager: CardManager,
     }
 
     @ResponseBody
-    @RequestMapping(value = ["/useCoinTokens"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
-    fun useCoinTokens(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+    @RequestMapping(value = ["/useCoffers"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun useCoffers(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
         val game = getGame(request)
 
@@ -2118,12 +2115,22 @@ class GameController(private val cardManager: CardManager,
         }
 
         try {
-            val player = game.playerMap[user.userId]
-            if (player == null) {
-                return ModelAndView("redirect:/showGameRooms.html")
+            val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
+
+            val choices = mutableListOf<Choice>()
+
+            for (i in 0..player.coffers) {
+                choices.add(Choice(i, i.toString()))
             }
-            //todo
-//            game.showUseFruitTokensCardAction(player)
+
+            player.makeChoiceFromList(object : ChoiceActionCard {
+                override val name: String
+                    get() = "Coffers"
+
+                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                    player.useCoffers(choice)
+                }
+            }, "How many Coffers do you want to use?", choices)
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))

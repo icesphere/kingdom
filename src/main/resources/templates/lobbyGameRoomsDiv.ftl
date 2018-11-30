@@ -58,7 +58,6 @@
     </div>
     <div id="cardsDialog_${room.gameId}" style="display:none" title="Kingdom Cards" class="oldCardAction">
         <#assign clickType="gameRoom">
-        <#assign coinTokensPlayed = 0>
         <#if mobile>
             <div>
                 <#list room.game.kingdomCards as card>

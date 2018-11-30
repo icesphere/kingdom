@@ -93,13 +93,13 @@
                                     </td>
                                 </tr>
                             </#if>
-                            <#if showCoinTokens>
+                            <#if showCoffers>
                                 <tr>
                                     <td class="gameInfoLabel">
-                                        Coin Tokens:
+                                        Coffers:
                                     </td>
                                     <td>
-                                        ${p.coinTokens}
+                                        ${p.coffers}
                                     </td>
                                 </tr>
                             </#if>

@@ -11,6 +11,7 @@ import com.kingdom.model.cards.darkages.ruins.RuinedVillage
 import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
+import com.kingdom.model.cards.guilds.CandlestickMaker
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
@@ -226,9 +227,14 @@ class CardRepository {
                 RuinedVillage()
         )
 
+    val guildsCards: List<Card>
+        get() = listOf(
+                CandlestickMaker()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
-                hinterlandsCards + darkAgesCards
+                hinterlandsCards + darkAgesCards + guildsCards
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {
@@ -239,6 +245,7 @@ class CardRepository {
             Deck.Cornucopia -> cornucopiaCards
             Deck.Hinterlands -> hinterlandsCards
             Deck.DarkAges -> darkAgesCards
+            Deck.Guilds -> guildsCards
             else -> emptyList()
         }
     }
