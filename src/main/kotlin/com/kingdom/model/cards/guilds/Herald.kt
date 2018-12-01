@@ -4,22 +4,31 @@ import com.kingdom.model.Choice
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.listeners.AfterCardBoughtListenerForSelf
-import com.kingdom.model.cards.supply.Silver
 import com.kingdom.model.players.Player
 
-class Masterpiece : GuildsCard(NAME, CardType.Treasure, 3), AfterCardBoughtListenerForSelf, ChoiceActionCard {
+class Herald : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard, AfterCardBoughtListenerForSelf {
 
     init {
-        testing = true
-        addCoins = 1
-        special = "When you buy this, you may overpay for it. For each \$1 you overpaid, gain a Silver."
+        addCards = 1
+        addActions = 1
+        special = "Reveal the top card of your deck. If it is an Action, play it. When you buy this, you may overpay for it. For each \$1 you overpaid, look through your discard pile and put a card from it onto your deck."
         isOverpayForCardAllowed = true
-        textSize = 73
+        textSize = 85
+    }
+
+    override fun cardPlayedSpecialAction(player: Player) {
+        val card = player.revealTopCardOfDeck()
+
+        if (card != null && card.isAction) {
+            player.removeTopCardOfDeck()
+            player.addActions(1, false)
+            player.playCard(card)
+        }
     }
 
     override fun afterCardBought(player: Player) {
         if (player.availableCoins > 0) {
-            player.yesNoChoice(this, "For each \$1 you overpaid, gain a Silver. Overpay?")
+            player.yesNoChoice(this, "Overpay to gain a Silver for each \$1 you overpaid?")
         } else {
             player.showInfoMessage("No coins available for overpaying")
         }
@@ -31,9 +40,8 @@ class Masterpiece : GuildsCard(NAME, CardType.Treasure, 3), AfterCardBoughtListe
         if (choosingOverpayAmount) {
             player.addCoins(choice * -1)
             repeat(choice) {
-                player.gainSupplyCard(Silver())
+                player.addCardFromDiscardToTopOfDeck()
             }
-            player.addEventLogWithUsername("gained $choice ${Silver().cardNameWithBackgroundColor}")
         } else {
             if (choice == 1) {
                 val choices = mutableListOf<Choice>()
@@ -48,7 +56,7 @@ class Masterpiece : GuildsCard(NAME, CardType.Treasure, 3), AfterCardBoughtListe
     }
 
     companion object {
-        const val NAME: String = "Masterpiece"
+        const val NAME: String = "Herald"
     }
 }
 

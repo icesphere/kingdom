@@ -14,10 +14,7 @@ import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.darkages.ruins.Survivors
 import com.kingdom.model.cards.darkages.shelters.Hovel
-import com.kingdom.model.cards.guilds.Advisor
-import com.kingdom.model.cards.guilds.Doctor
-import com.kingdom.model.cards.guilds.Masterpiece
-import com.kingdom.model.cards.guilds.Stonemason
+import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
@@ -436,6 +433,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                     else -> 2
                 }
             }
+            Herald.NAME -> 2
             HorseTraders.NAME -> 1
             Hovel.NAME -> 1
             HuntingGrounds.NAME -> 1

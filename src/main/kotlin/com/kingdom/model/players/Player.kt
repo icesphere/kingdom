@@ -317,12 +317,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerHandArea(this)
     }
 
-    fun addActions(actions: Int) {
+    fun addActions(actions: Int, refresh: Boolean = true) {
         if (actions == 0) {
             return
         }
         this.actions += actions
-        game.refreshPlayerCardsPlayed(this)
+        if (refresh) {
+            game.refreshPlayerCardsPlayed(this)
+        }
     }
 
     fun addBuys(buys: Int) {
