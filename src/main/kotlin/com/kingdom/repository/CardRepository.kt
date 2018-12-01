@@ -235,6 +235,7 @@ class CardRepository {
                 CandlestickMaker(),
                 Doctor(),
                 Herald(),
+                Journeyman(),
                 Masterpiece(),
                 Plaza(),
                 Stonemason(),

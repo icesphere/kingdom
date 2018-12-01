@@ -960,8 +960,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun addCardsToHand(cards: List<Card>) {
+    fun addCardsToHand(cards: List<Card>, showLog: Boolean = false) {
         hand.addAll(cards)
+
+        if (showLog) {
+            addEventLogWithUsername("added ${cards.groupedString} to hand")
+        }
 
         game.refreshPlayerHandArea(this)
 
@@ -1365,18 +1369,24 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun revealFromDeckUntilCardFoundAndDiscardOthers(cardExpression: ((Card) -> Boolean)): Card? {
+        return revealFromDeckUntilCardsFoundAndDiscardOthers(cardExpression, 1).firstOrNull()
+    }
+
+    fun revealFromDeckUntilCardsFoundAndDiscardOthers(cardExpression: ((Card) -> Boolean), numToFind: Int): List<Card> {
         val revealedCards = mutableListOf<Card>()
         val cardsToDiscard = mutableListOf<Card>()
 
-        var cardFound: Card? = null
+        val cardsFound = mutableListOf<Card>()
 
         while(true) {
             val card = removeTopCardOfDeck()
             if (card != null) {
                 revealedCards.add(card)
                 if (cardExpression.invoke(card)) {
-                    cardFound = card
-                    break
+                    cardsFound.add(card)
+                    if (cardsFound.size == numToFind) {
+                        break
+                    }
                 } else {
                     cardsToDiscard.add(card)
                 }
@@ -1391,10 +1401,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (cardsToDiscard.isNotEmpty()) {
             addCardsToDiscard(cardsToDiscard)
-            addEventLogWithUsername("discarded ${revealedCards.groupedString}")
+            addEventLogWithUsername("discarded ${cardsToDiscard.groupedString}")
         }
 
-        return cardFound
+        return cardsFound
     }
 
     fun putDeckIntoDiscard() {
