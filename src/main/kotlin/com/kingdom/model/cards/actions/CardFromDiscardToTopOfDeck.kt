@@ -23,6 +23,9 @@ class CardFromDiscardToTopOfDeck(cardsInDiscard: List<Card>, private val maxCost
     }
 
     override fun processAction(player: Player): Boolean {
+        //in case cards in discard have changed since this action was added
+        cardChoices = player.cardsInDiscardCopy
+
         if (!super.processAction(player)) {
             return false
         }
@@ -37,7 +40,7 @@ class CardFromDiscardToTopOfDeck(cardsInDiscard: List<Card>, private val maxCost
     override fun onSelectionDone(player: Player) {
         val card = selectedCards.first()
 
-        player.removeCardFromDiscard(card)
+        player.removeCardFromDiscard(player.cardsInDiscard.first { it.name == card.name })
         player.addCardToTopOfDeck(card)
     }
 }

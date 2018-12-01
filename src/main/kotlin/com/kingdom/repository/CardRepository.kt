@@ -13,6 +13,7 @@ import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.guilds.CandlestickMaker
 import com.kingdom.model.cards.guilds.Doctor
+import com.kingdom.model.cards.guilds.Masterpiece
 import com.kingdom.model.cards.guilds.Stonemason
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
@@ -233,6 +234,7 @@ class CardRepository {
         get() = listOf(
                 CandlestickMaker(),
                 Doctor(),
+                Masterpiece(),
                 Stonemason()
         )
 

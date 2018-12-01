@@ -14,6 +14,7 @@ class Doctor : GuildsCard(NAME, CardType.Action, 3), ChooseCardActionCard, After
         special = "Name a card. Reveal the top 3 cards of your deck. Trash the matches. Put the rest in any order. When you buy this, you may overpay for it. For each \$1 you overpaid, look at the top card of your deck; trash it, discard it, or put it back."
         isOverpayForCardAllowed = true
         textSize = 122
+        isTrashingCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
@@ -37,7 +38,7 @@ class Doctor : GuildsCard(NAME, CardType.Action, 3), ChooseCardActionCard, After
 
     override fun afterCardBought(player: Player) {
         if (player.availableCoins > 0) {
-            player.yesNoChoice(this, "Overpay for ${this.cardNameWithBackgroundColor} to gain 2 Action cards each costing the amount you overpaid?")
+            player.yesNoChoice(this, "For each \$1 you overpaid, look at the top card of your deck; trash it, discard it, or put it back. Overpay?")
         } else {
             player.showInfoMessage("No coins available for overpaying")
         }
@@ -63,13 +64,7 @@ class Doctor : GuildsCard(NAME, CardType.Action, 3), ChooseCardActionCard, After
             else -> if (choice == 1) {
                 val choices = mutableListOf<Choice>()
 
-                var maxOverpay = player.game.availableCards.filter { it.isAction }.map { player.getCardCostWithModifiers(it) }.max() ?: return
-
-                if (player.availableCoins < maxOverpay) {
-                    maxOverpay = player.availableCoins
-                }
-
-                for (i in 1..maxOverpay) {
+                for (i in 1..player.availableCoins) {
                     choices.add(Choice(i, i.toString()))
                 }
 

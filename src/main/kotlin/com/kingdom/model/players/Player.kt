@@ -1076,7 +1076,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         actionsQueue.add(RepeatCardAction(card))
     }
 
-    abstract fun addCardFromDiscardToTopOfDeck(maxCost: Int?)
+    abstract fun addCardFromDiscardToTopOfDeck(maxCost: Int? = null)
 
     abstract fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)? = null, chooseCardActionCard: ChooseCardActionCard? = null)
 
