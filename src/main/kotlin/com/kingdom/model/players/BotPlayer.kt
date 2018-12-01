@@ -14,6 +14,10 @@ import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.darkages.ruins.Survivors
 import com.kingdom.model.cards.darkages.shelters.Hovel
+import com.kingdom.model.cards.guilds.Advisor
+import com.kingdom.model.cards.guilds.Doctor
+import com.kingdom.model.cards.guilds.Masterpiece
+import com.kingdom.model.cards.guilds.Stonemason
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.kingdom.*
@@ -381,6 +385,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         val card = choiceActionCard as Card
 
         return when (choiceActionCard.name) {
+            Advisor.NAME -> {
+                val cards = info as List<Card>
+                return cards.indexOf(cards.maxBy { if (it.isVictoryOnly) -1 else it.cost })
+            }
             Ambassador.NAME -> choices.last().choiceNumber
             Baron.NAME -> 1
             Beggar.NAME -> 1
@@ -415,6 +423,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 hand.any { it.isAction && it.cost < 5 } -> 1
                 else -> 2
             }
+            Doctor.NAME -> 2
             Diplomat.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 2) 1 else 2
             Explorer.NAME -> 1
             Graverobber.NAME -> if (game.trashedCards.any { getCardCostWithModifiers(it) in 3..6 }) 1 else 2
@@ -444,6 +453,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Loan.NAME -> if (card.isCopper) 2 else 1
             Lurker.NAME -> if (game.trashedCards.any { getBuyCardScore(it) > 4 }) 2 else 1
             MarketSquare.NAME -> if (turns < 10 || game.numInPileMap[Province.NAME]!! > 3) 1 else 2
+            Masterpiece.NAME -> 2
             Mercenary.NAME -> if (hand.count { getTrashCardScore(it) > 15 } > 2) 1 else 2
             Mill.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
             MiningVillage.NAME -> when {
@@ -495,6 +505,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 actions > 0 -> 1
                 else -> 2
             }
+            Stonemason.NAME -> 2
             Survivors.NAME -> {
                 val cards = mutableListOf(deck[0])
                 if (deck.size > 1) {

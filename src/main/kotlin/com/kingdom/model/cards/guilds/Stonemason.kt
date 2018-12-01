@@ -14,6 +14,8 @@ class Stonemason : GuildsCard(NAME, CardType.Action, 2), TrashCardsForBenefitAct
         fontSize = 11
         special = "Trash a card from your hand. Gain 2 cards each costing less than it. When you buy this, you may overpay for it. If you do, gain 2 Action cards each costing the amount you overpaid."
         isOverpayForCardAllowed = true
+        isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
         textSize = 121
     }
 

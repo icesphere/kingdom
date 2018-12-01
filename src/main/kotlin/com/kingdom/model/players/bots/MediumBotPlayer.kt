@@ -5,6 +5,9 @@ import com.kingdom.model.GameError
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.darkages.Rats
+import com.kingdom.model.cards.guilds.Doctor
+import com.kingdom.model.cards.guilds.Masterpiece
+import com.kingdom.model.cards.guilds.Stonemason
 import com.kingdom.model.cards.hinterlands.Farmland
 import com.kingdom.model.cards.kingdom.ThroneRoom
 import com.kingdom.model.cards.kingdom.Witch
@@ -101,6 +104,9 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Mint.NAME && turns >= 5 -> return true
             card.name == TreasureMap.NAME -> return true
             card.name == Copper.NAME -> return true
+            card.name == Doctor.NAME -> return true
+            card.name == Masterpiece.NAME -> return true
+            card.name == Stonemason.NAME -> return true
             card.name == Farmland.NAME && hand.all { it.isVictory && it.cost > 2 } -> return true
             else -> super.excludeCard(card)
         }
