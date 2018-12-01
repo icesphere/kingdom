@@ -8,6 +8,7 @@ import com.kingdom.model.cards.darkages.ruins.*
 import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
+import com.kingdom.model.cards.listeners.GameStartedListener
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.modifiers.CardCostModifierForCardsInPlay
 import com.kingdom.model.cards.supply.*
@@ -443,6 +444,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         status = GameStatus.InProgress
 
         maxHistoryTurnSize = players.size + 1
+
+        kingdomCards.filter { it is GameStartedListener }.forEach { (it as GameStartedListener).onGameStarted(this) }
 
         startTurnInNewThreadIfComputerVsHuman()
     }

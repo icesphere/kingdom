@@ -230,6 +230,7 @@ class CardRepository {
     val guildsCards: List<Card>
         get() = listOf(
                 Advisor(),
+                Baker(),
                 CandlestickMaker(),
                 Doctor(),
                 Herald(),
