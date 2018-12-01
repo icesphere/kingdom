@@ -76,18 +76,6 @@
                 }
             }
 
-            function openCardsDialog(gameId){
-                var cardsDialog = $("#cardsDialog_"+gameId);
-                cardsDialog.dialog(
-                    {modal: true, <#if !mobile>width:550, </#if>open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-                });
-            }
-
-            function closeCardsDialog(gameId){
-                var cardsDialog = $("#cardsDialog_"+gameId);
-                cardsDialog.dialog("close");
-            }
-
             function sendChat(){
                 var message = $("#chatMessage").val();
                 if(message != ""){
@@ -131,18 +119,6 @@
                     document.getElementById("changeStatusButton").click();
                 }
                 return true;
-            }
-
-            var specialDialog;
-            function openSpecialDialog(cardName) {
-                specialDialog = $("#specialDialog_"+cardName);
-                specialDialog.dialog(
-                    {modal: true, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-                });
-            }
-
-            function closeSpecialDialog() {
-                specialDialog.dialog("close");
             }
 
             function joinPrivateGame(gameRoomId) {

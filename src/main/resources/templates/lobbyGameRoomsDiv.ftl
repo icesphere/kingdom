@@ -28,7 +28,6 @@
                             <#if room.game.identicalStartingHands>
                                 <tr><td>Identical Starting Hands</td></tr>
                             </#if>
-                            <tr><td><a href="javascript:openCardsDialog('${room.gameId}')">Show Cards</a></td></tr>
                             <#list room.game.players as player>
                                 <tr><td>${player.username}<#if user.userId == player.userId>&#160;-&#160;<a href="leaveGame.html">Leave Game</a></#if></td></tr>
                             </#list>
@@ -47,7 +46,7 @@
                     </#if>
                 </td>
             </tr>
-            <#if user.admin || (user.userId == room.game.creatorId && user.gameId == room.gameId)>
+            <#if user.admin || (user.userId == room.game.creatorId && user.gameId?? && user.gameId == room.gameId)>
                 <tr>
                     <td>
                         <a href="cancelGame.html?gameId=${room.gameId}">Cancel Game</a>
@@ -55,50 +54,5 @@
                 </tr>
             </#if>
         </table>
-    </div>
-    <div id="cardsDialog_${room.gameId}" style="display:none" title="Kingdom Cards" class="oldCardAction">
-        <#assign clickType="gameRoom">
-        <#if mobile>
-            <div>
-                <#list room.game.kingdomCards as card>
-                    <div style="float:left;padding-right:2px;padding-top:2px;">
-                        <#if room.game.kingdomCards?size == 11 && card_index == 10>
-                            <#assign baneCard = true>
-                        <#else>
-                            <#assign baneCard = false>
-                        </#if>
-                        <#include "gameCard.ftl">
-                    </div>
-                </#list>
-            </div>
-        <#else>
-            <table>
-                <tr>
-                    <#list room.game.kingdomCards as card>
-                        <#if card_index == 5>
-                            <#if room.game.kingdomCards?size == 11>
-                                <td style="vertical-align:bottom;text-align:center;">(Bane Card)</td>
-                            </#if>
-                            </tr>
-                            <tr>
-                        </#if>
-                        <td style="vertical-align:top"><#include "gameCard.ftl"></td>
-                    </#list>
-                </tr>
-            </table>
-        </#if>
-        <#if room.game.includeColonyCards && room.game.includePlatinumCards>
-            <div style="clear:both;padding-top:5px;">
-                Colony and Platinum will be included.
-            </div>
-        </#if>
-        <#if room.game.playTreasureCards>
-            <div style="clear:both;padding-top:5px;">
-                Playing treasure cards will be required.
-            </div>
-        </#if>
-        <div style="clear:both; padding-top:10px; text-align:center">
-            <input type="button" onclick="closeCardsDialog('${room.gameId}')" value="Close">
-        </div>
     </div>
 </#list>

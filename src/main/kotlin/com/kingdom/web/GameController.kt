@@ -370,30 +370,6 @@ class GameController(private val cardManager: CardManager,
 
     }
 
-    @RequestMapping("/swapForTypeOfCard.html")
-    fun swapForTypeOfCard(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return KingdomUtil.getLoginModelAndView(request)
-        }
-        try {
-            return if (game.status == GameStatus.BeingConfigured) {
-                cardManager.swapForTypeOfCard(game, request.getParameter("cardName"), request.getParameter("cardFilter"))
-                confirmCards(request, response)
-            } else {
-                if (game.status == GameStatus.InProgress) {
-                    ModelAndView("redirect:/showGame.html")
-                } else {
-                    ModelAndView("redirect:/showGameRooms.html")
-                }
-            }
-        } catch (t: Throwable) {
-            return logErrorAndReturnEmpty(t, game)
-        }
-
-    }
-
     @RequestMapping("/togglePlatinumAndColony.html")
     fun togglePlatinumAndColony(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
@@ -1692,22 +1668,6 @@ class GameController(private val cardManager: CardManager,
         val receivingUserId = request.getParameter("receivingUserId")
         sendPrivateChat(user, message, receivingUserId)
         return refreshLobby(request, response)
-    }
-
-    private fun loadPlayerDialogContainingCards(request: HttpServletRequest, response: HttpServletResponse, templateFile: String): ModelAndView {
-        val user = getUser(request)
-        val game = getGame(request)
-        if (user == null || game == null) {
-            return ModelAndView("redirect:/login.html")
-        }
-        try {
-            val modelAndView = ModelAndView(templateFile)
-            addPlayerAndGameDataToModelAndView(game, user, modelAndView, request)
-            return modelAndView
-        } catch (t: Throwable) {
-            return logErrorAndReturnEmpty(t, game)
-        }
-
     }
 
     private fun logErrorAndReturnEmpty(t: Throwable, game: Game): ModelAndView {

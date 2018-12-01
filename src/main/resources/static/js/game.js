@@ -12,7 +12,6 @@ var cardActionSelectUpTo;
 var cardActionSelectAtLeast;
 var cardActionWidth = 750;
 var divsToLoad = 0;
-var specialDialog;
 var clickingCard = false;
 var submittingCardAction = false;
 var cardActionOpen = false;
@@ -372,16 +371,6 @@ function submitCardAction(){
         else {
             submittingCardAction = false;
         }
-    }
-}
-
-function submitCardActionYesNo(answer){
-    if(!submittingCardAction) {
-        submittingCardAction = true;
-        $.get("submitCardAction.html", {answer: answer}, function(data) {
-            closeCardActionDialog();
-            submittingCardAction = false;
-        });
     }
 }
 

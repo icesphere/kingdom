@@ -39,10 +39,6 @@ class CardManager(private val cardRepository: CardRepository,
         cardRandomizer.swapRandomCard(game, cardName)
     }
 
-    fun swapForTypeOfCard(game: Game, cardName: String, cardType: String) {
-        cardRandomizer.swapCard(game, cardName, cardType)
-    }
-
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {
         var cards = cardRepository.getCardsByDeck(deck)
         if (!includeTesting) {

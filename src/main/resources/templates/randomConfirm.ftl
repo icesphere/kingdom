@@ -8,46 +8,14 @@
             <link href="css/gameMobile.css" rel="stylesheet" type="text/css">
         </#if>
         <script type="text/javascript">
-            var addingTypeOfCard = false;
-            var cardType;
             function swapCard(cardName) {
-                if(addingTypeOfCard) {
-                    document.location = "swapForTypeOfCard.html?cardName="+cardName+"&cardType="+cardType;
-                }
-                else {
-                    document.location = "swapRandomCard.html?cardName="+cardName;
-                }
-            }
-            function addTypeOfCard() {
-                addingTypeOfCard = true;
-                $("#typeOfCardDialog").dialog({
-                    modal: true, closeOnEscape: false, open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
-                });
-            }
-            function submitCardType() {
-                cardType = $('input[name=cardType]:checked').val();
-                if(!cardType) {
-                    alert("You need to select a type of card to add");
-                }
-                else {
-                    $("#typeOfCardDialog").dialog("close");
-                    alert("Click on the card you want to replace");
-                }
-            }
-            function cancelCardType() {
-                addingTypeOfCard = false;
-                $("#typeOfCardDialog").dialog("close");
+                document.location = "swapRandomCard.html?cardName="+cardName;
             }
         </script>
 	</head>
 	<body>
         <div class="topGradient"></div>
         <form action="confirmCards.html" method="POST" name="randomCardsForm" id="randomCardsForm">
-            <#if randomizerReplacementCardNotFound>
-                <div style="color:red;padding-bottom:5px;">
-                    The card type you selected could not be found from cards in the decks you selected from the create game screen.  Try selecting more decks when creating a game.
-                </div>
-            </#if>
             <div style="padding-bottom:5px;">
                 Click a card to switch it out for a different one.
             </div>
@@ -108,11 +76,6 @@
                     Playing treasure cards will be required.
                 </div>
             </#if>
-            <!-- todo this is broken
-            <div style="clear:both;padding-top:5px;">
-                <a href="#" onclick="addTypeOfCard()">Add a specific type of card</a>
-            </div>
-            -->
             <div style="clear:both;padding-top:5px;">
                 <table>
                     <tr>
@@ -123,41 +86,6 @@
                 </table>
             </div>
         </form>
-        <div id="typeOfCardDialog" style="display:none;">
-            <div style="float:left;font-size:14px;">
-                <div style="float:left;">
-                    Choose the type of card you want to add:
-                </div>
-                <div style="clear:both;margin-top:10px;float:left;">
-                    <div style="float:left;padding-right:10px;">
-                        <input type="radio" name="cardType" value="extraBuy"/> +1 Buy
-                    </div>
-                    <div style="float:left;padding-right:10px;">
-                        <input type="radio" name="cardType" value="extraActions"/> +2 Actions
-                    </div>
-                    <div style="float:left;padding-right:10px;">
-                        <input type="radio" name="cardType" value="treasure"/> Treasure
-                    </div>
-                    <div style="float:left;padding-right:10px;">
-                        <input type="radio" name="cardType" value="reaction"/> Reaction
-                    </div>
-                    <div style="float:left;padding-right:10px;">
-                        <input type="radio" name="cardType" value="attack"/> Attack
-                    </div>
-                    <div style="float:left;padding-right:10px;">
-                        <input type="radio" name="cardType" value="trashingCard"/> Trashing Card
-                    </div>
-                </div>
-                <div style="clear:both;margin-top:10px;float:left;">
-                    <div style="float:left;">
-                        <input type="button" onclick="submitCardType()" value="Submit"/>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input type="button" onclick="cancelCardType()" value="Cancel"/>
-                    </div>
-                </div>
-            </div>
-        </div>
         <#include "footer.ftl">
 	</body>
 </html>

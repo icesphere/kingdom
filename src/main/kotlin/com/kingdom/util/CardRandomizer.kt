@@ -18,7 +18,6 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
     private var cardSwapped: Boolean = false
     private var changingBaneCard: Boolean = false
-    private var replacingCardWithSpecificType: Boolean = false
 
     fun setRandomKingdomCards(game: Game, options: RandomizingOptions) {
         game.isRandomizerReplacementCardNotFound = false
@@ -26,7 +25,6 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         val decks = game.decks
         cardSwapped = false
         changingBaneCard = options.isSwappingCard && options.cardToReplaceIndex == 10
-        replacingCardWithSpecificType = options.cardTypeToReplaceWith != null
 
         selectedCards = LinkedList()
         selectedCards.addAll(options.customSelection)
@@ -169,20 +167,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
     private fun canAddCard(card: Card): Boolean {
         return (!selectedCards.map { it.name }.contains(card.name) && !options!!.excludedCards.contains(card)
-                && (!changingBaneCard || card.cost == 2 || card.cost == 3)
-                && (!replacingCardWithSpecificType || cardMatchesType(card, options!!.cardTypeToReplaceWith!!)))
-    }
-
-    private fun cardMatchesType(card: Card, type: String): Boolean {
-        return when (type) {
-            "extraBuy" -> card.addBuys > 0
-            "extraActions" -> card.addActions >= 2
-            "treasure" -> card.isTreasure
-            "reaction" -> card.isReaction
-            "attack" -> card.isAttack
-            "trashingCard" -> card.isTrashingCard
-            else -> false
-        }
+                && (!changingBaneCard || card.cost == 2 || card.cost == 3))
     }
 
     private fun randomCardSelected(card: Card) {
@@ -213,10 +198,10 @@ class CardRandomizer(private val cardRepository: CardRepository) {
     }
 
     fun swapRandomCard(game: Game, cardName: String) {
-        swapCard(game, cardName, null)
+        swapCard(game, cardName)
     }
 
-    fun swapCard(game: Game, cardName: String, cardType: String?) {
+    fun swapCard(game: Game, cardName: String) {
         var cardToReplaceIndex = 0
         var cardToReplace: Card? = null
         val cards = game.kingdomCards
@@ -228,7 +213,6 @@ class CardRandomizer(private val cardRepository: CardRepository) {
             }
         }
         val swapOptions = RandomizingOptions()
-        swapOptions.cardTypeToReplaceWith = cardType
         swapOptions.isSwappingCard = true
         swapOptions.cardToReplace = cardToReplace
         swapOptions.cardToReplaceIndex = cardToReplaceIndex

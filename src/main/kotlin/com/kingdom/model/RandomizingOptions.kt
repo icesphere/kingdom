@@ -13,5 +13,4 @@ class RandomizingOptions {
     var isSwappingCard: Boolean = false
     var cardToReplaceIndex: Int = 0
     var cardToReplace: Card? = null
-    var cardTypeToReplaceWith: String? = null
 }

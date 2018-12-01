@@ -1,11 +1,8 @@
 cards overflow weird when too many on desktop (use flexbox?)
 
-fix or remove code for add specific type of card from confirm cards page
-
 figure out why create game page takes a long time to load the bottom of the page
 
 better bots
 refresh sometimes has issues after quit game
-remove all jquery ui dialogs
 better logic for choosing cards for bots - e.g. chose card for Masquerade
 consolidate select card actions
