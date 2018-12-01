@@ -13,7 +13,6 @@ open class FreeCardFromSupply(private val maxCost: Int?, text: String, private v
     }
 
     override fun processAction(player: Player): Boolean {
-        player.addInfoLogWithUsername(" is choosing a free card from the supply")
         return true
     }
 

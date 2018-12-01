@@ -235,7 +235,8 @@ class CardRepository {
                 Herald(),
                 Masterpiece(),
                 Plaza(),
-                Stonemason()
+                Stonemason(),
+                Taxman()
         )
 
     val allCards: List<Card>
