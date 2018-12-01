@@ -817,7 +817,7 @@ class GameController(private val cardManager: CardManager,
                         handleCardClickedForAction(player, card, source)
                     } else {
                         player.playCard(card)
-                        game.refreshPlayerHandArea(player)
+                        player.refreshPlayerHandArea()
                     }
                 }
             }
@@ -852,7 +852,7 @@ class GameController(private val cardManager: CardManager,
 
         player.game.refreshPlayerCardAction(player)
         player.game.refreshSupply()
-        player.game.refreshPlayerHandArea(player)
+        player.refreshPlayerHandArea()
     }
 
     fun highlightCard(player: Player, card: Card?, cardLocation: CardLocation): Boolean {
@@ -960,7 +960,7 @@ class GameController(private val cardManager: CardManager,
 
         game.refreshPlayerCardAction(player)
         game.refreshSupply()
-        game.refreshPlayerHandArea(player)
+        player.refreshPlayerHandArea()
 
         return emptyModelAndView
     }
@@ -985,7 +985,7 @@ class GameController(private val cardManager: CardManager,
 
         game.refreshPlayerCardAction(player)
         player.game.refreshSupply()
-        player.game.refreshPlayerHandArea(player)
+        player.refreshPlayerHandArea()
 
         return emptyModelAndView
     }
@@ -1010,7 +1010,7 @@ class GameController(private val cardManager: CardManager,
 
         game.refreshPlayerCardAction(player)
         game.refreshSupply()
-        game.refreshPlayerHandArea(player)
+        player.refreshPlayerHandArea()
 
         return emptyModelAndView
     }
@@ -1159,7 +1159,7 @@ class GameController(private val cardManager: CardManager,
     }
 
     private fun addCardsPlayedDataToModelAndView(game: Game, player: Player, modelAndView: ModelAndView) {
-        val cardsPlayed = game.cardsPlayed.map { it.isHighlighted = highlightCard(player, it, CardLocation.PlayArea); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
+        val cardsPlayed = game.currentPlayer.inPlay.map { it.isHighlighted = highlightCard(player, it, CardLocation.PlayArea); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
         modelAndView.addObject("cardsPlayed", cardsPlayed)
     }
 
@@ -1347,6 +1347,7 @@ class GameController(private val cardManager: CardManager,
 
             modelAndView.addObject("showDuration", game.isShowDuration)
             modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+            modelAndView.addObject("showTavern", game.isShowTavern)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
             modelAndView.addObject("showCoffers", game.isShowCoffers)
@@ -1453,6 +1454,7 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("players", game.players)
             modelAndView.addObject("trashedCards", game.trashedCards.groupedString)
             modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+            modelAndView.addObject("showTavern", game.isShowTavern)
             modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
@@ -1756,6 +1758,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("showCoffers", game.isShowCoffers)
         modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
         modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+        modelAndView.addObject("showTavern", game.isShowTavern)
         modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards && !player.isCardsBought)
         modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
         modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
@@ -2101,6 +2104,30 @@ class GameController(private val cardManager: CardManager,
                     player.useCoffers(choice)
                 }
             }, "How many Coffers do you want to use?", choices)
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+        }
+
+        return emptyModelAndView
+    }
+
+    @ResponseBody
+    @RequestMapping(value = ["/showTavernCards"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun showTavernCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+
+        if (user == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        } else if (game == null) {
+            return ModelAndView("redirect:/showGameRooms.html")
+        }
+
+        try {
+            val player = game.playerMap[user.userId] as? HumanPlayer ?: return ModelAndView("redirect:/showGameRooms.html")
+            player.showTavernCards()
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))

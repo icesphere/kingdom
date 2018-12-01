@@ -10,7 +10,6 @@ class UserDeckInfo(deck: Deck, val cards: List<Card>) {
         displayName = when(deck) {
             Deck.Base -> "Base Set"
             Deck.DarkAges -> "Dark Ages"
-            Deck.Promo -> "Promo Cards"
             else -> deckName
         }
     }

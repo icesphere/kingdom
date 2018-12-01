@@ -113,6 +113,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if showTavern>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        Tavern Cards:
+                                    </td>
+                                    <td>
+                                        ${p.tavernCardsString}
+                                    </td>
+                                </tr>
+                            </#if>
                             <#if showNativeVillage>
                                 <tr>
                                     <td class="gameInfoLabel">

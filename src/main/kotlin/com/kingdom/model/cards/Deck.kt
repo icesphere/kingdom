@@ -9,6 +9,6 @@ enum class Deck {
     Hinterlands,
     DarkAges,
     Guilds,
-    Promo,
+    Adventures,
     None
 }

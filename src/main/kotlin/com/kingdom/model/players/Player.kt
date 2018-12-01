@@ -170,7 +170,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var pirateShipCoins: Int = 0
         set(value) {
             field = value
-            game.refreshPlayerHandArea(this)
+            refreshPlayerHandArea()
         }
 
     var playedCrossroadsThisTurn: Boolean = false
@@ -180,6 +180,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var cardsUnavailableToBuyThisTurn = mutableListOf<Card>()
 
     val cardsSetAsideUntilStartOfTurn = mutableSetOf<SetAsideUntilStartOfTurnCard>()
+
+    val tavernCards = mutableListOf<Card>()
+
+    val tavernCardsString: String
+        get() = tavernCards.groupedString
 
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
@@ -314,7 +319,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
         this.victoryCoins += victoryCoins
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun addActions(actions: Int, refresh: Boolean = true) {
@@ -432,7 +437,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         cardTrashed(card)
 
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun trashCardFromHand(card: Card) {
@@ -442,7 +447,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         cardTrashed(card)
 
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
 
         if (!game.isPlayTreasureCards) {
             game.refreshPlayerCardsBought(this)
@@ -462,7 +467,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         hand.clear()
 
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
 
         if (!game.isPlayTreasureCards) {
             game.refreshPlayerCardsBought(this)
@@ -498,7 +503,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun removeCardInPlay(card: Card) {
         inPlay.remove(card)
         cardRemovedFromPlay(card)
-        game.cardsPlayed.remove(card)
         game.refreshCardsPlayed()
     }
 
@@ -517,13 +521,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun gainCardToTopOfDeck(card: Card) {
         isNextCardToTopOfDeck = true
         cardGained(card)
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun gainCardToHand(card: Card) {
         isNextCardToHand = true
         cardGained(card)
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun addCardToTopOfDeck(card: Card, showLog: Boolean = true) {
@@ -531,7 +535,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (showLog) {
             addEventLogWithUsername("added " + card.cardNameWithBackgroundColor + " to top of deck")
         }
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun cardGained(card: Card) {
@@ -676,6 +680,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cards.addAll(nativeVillageCards)
             cards.addAll(islandCards)
             cards.addAll(durationCards)
+            cards.addAll(tavernCards)
 
             return cards
         }
@@ -708,7 +713,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             hand.remove(card)
 
             if (refresh) {
-                game.refreshPlayerHandArea(this)
+                refreshPlayerHandArea()
                 game.refreshCardsPlayed()
             }
         }
@@ -857,7 +862,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun addCardsToDiscard(cards: List<Card>) {
         cards.forEach { addCardToDiscard(it, refresh = false) }
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun addCardToDiscard(card: Card, refresh: Boolean = true, showLog: Boolean = false) {
@@ -873,7 +878,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         cardRemovedFromPlay(card)
 
         if (refresh) {
-            game.refreshPlayerHandArea(this)
+            refreshPlayerHandArea()
         }
     }
 
@@ -924,7 +929,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         } else if (action.processAction(this)) {
             currentAction = action
             game.refreshPlayerCardAction(this)
-            game.refreshPlayerHandArea(this)
+            refreshPlayerHandArea()
             game.refreshPlayerSupply(this)
         } else {
             action.onNotUsed(this)
@@ -938,12 +943,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun addCardsToDeck(cards: List<Card>) {
         deck.addAll(cards)
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun addCardToDeck(card: Card) {
         deck.add(card)
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun addCardToHand(card: Card, showLog: Boolean = false) {
@@ -953,7 +958,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addEventLogWithUsername("added " + card.cardNameWithBackgroundColor + " to hand")
         }
 
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
 
         if (!game.isPlayTreasureCards && card.addCoins > 0) {
             game.refreshPlayerCardsBought(this)
@@ -967,7 +972,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addEventLogWithUsername("added ${cards.groupedString} to hand")
         }
 
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
 
         if (!game.isPlayTreasureCards && cards.any { it.addCoins > 0 }) {
             game.refreshPlayerCardsBought(this)
@@ -1167,7 +1172,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         val card = deck.removeAt(0)
 
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
 
         return card
     }
@@ -1189,23 +1194,23 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun removeCardFromDeck(card: Card) {
         deck.remove(card)
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun removeCardsFromDiscard(cards: List<Card>) {
         cards.forEach { discard.remove(it) }
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun removeCardFromDiscard(card: Card) {
         discard.remove(card)
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
     }
 
     fun removeCardFromHand(card: Card) {
         hand.remove(card)
 
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
 
         if (!game.isPlayTreasureCards && card.addCoins > 0) {
             game.refreshPlayerCardsBought(this)
@@ -1342,7 +1347,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         addEventLogWithUsername("played ${treasureCardsToPlay.groupedString}")
 
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
         game.refreshCardsPlayed()
     }
 
@@ -1410,7 +1415,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun putDeckIntoDiscard() {
         discard.addAll(deck)
         deck.clear()
-        game.refreshPlayerHandArea(this)
+        refreshPlayerHandArea()
         addEventLogWithUsername("added deck into discard pile")
     }
 
@@ -1428,6 +1433,25 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
         this.coffers += coffers
+        refreshPlayerHandArea()
+    }
+
+    fun refreshPlayerHandArea() {
         game.refreshPlayerHandArea(this)
+    }
+
+    fun moveCardInPlayToTavern(card: Card) {
+        removeCardInPlay(card)
+        tavernCards.add(card)
+        refreshPlayerHandArea()
+        addEventLogWithUsername("moved ${card.cardNameWithBackgroundColor} to their Tavern mat")
+    }
+
+    fun moveCardInTavernToInPlay(card: Card) {
+        tavernCards.remove(card)
+        inPlay.add(card)
+        game.refreshCardsPlayed()
+        refreshPlayerHandArea()
+        addEventLogWithUsername("called ${card.cardNameWithBackgroundColor} from their Tavern mat")
     }
 }

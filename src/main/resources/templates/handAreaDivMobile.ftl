@@ -17,6 +17,9 @@
     <#if playTreasureCards && currentPlayerId == player.userId>
         <div class="handAreaTopRowLeft" style="clear:both;"><a href="javascript:playAllTreasureCards()">Play Treasure Cards</a></div>
     </#if>
+    <#if showTavern>
+        <div class="handAreaTopRowLeft" style="clear:both;"><#if player.tavernCards?size != 0><a href="javascript:showTavernCards()"></#if>${player.tavernCards?size} Tavern Card<#if player.tavernCards?size != 1>s</#if><#if player.tavernCards?size != 0></a></#if></div>
+    </#if>
     <#if showIslandCards>
         <div class="handAreaTopRowLeft" style="clear:both;"><#if player.islandCards?size != 0><a href="javascript:showIslandCards()"></#if>${player.islandCards?size} Island Card<#if player.islandCards?size != 1>s</#if><#if player.islandCards?size != 0></a></#if></div>
     </#if>

@@ -166,4 +166,8 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     override fun chooseCardsAction(numCardsToChoose: Int, text: String, chooseCardsActionCard: ChooseCardsActionCard, cardsToSelectFrom: List<Card>, optional: Boolean, info: Any?) {
         addAction(ChooseCardsAction(numCardsToChoose, text, chooseCardsActionCard, cardsToSelectFrom, optional, info))
     }
+
+    fun showTavernCards() {
+        addAction(ShowTavernCardsAction())
+    }
 }

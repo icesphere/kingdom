@@ -1,3 +1,5 @@
+cancel a created game that hasn't started yet has issues
+
 cards overflow weird when too many on desktop (use flexbox?)
 
 figure out why create game page takes a long time to load the bottom of the page

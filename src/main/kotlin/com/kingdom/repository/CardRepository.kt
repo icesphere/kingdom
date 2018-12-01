@@ -2,6 +2,7 @@ package com.kingdom.repository
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.adventures.*
 import com.kingdom.model.cards.cornucopia.*
 import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.darkages.ruins.AbandonedMine
@@ -244,9 +245,14 @@ class CardRepository {
                 Taxman()
         )
 
+    val adventuresCards: List<Card>
+        get() = listOf(
+                CoinOfTheRealm()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
-                hinterlandsCards + darkAgesCards + guildsCards
+                hinterlandsCards + darkAgesCards + guildsCards + adventuresCards
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {
@@ -258,6 +264,7 @@ class CardRepository {
             Deck.Hinterlands -> hinterlandsCards
             Deck.DarkAges -> darkAgesCards
             Deck.Guilds -> guildsCards
+            Deck.Adventures -> adventuresCards
             else -> emptyList()
         }
     }

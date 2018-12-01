@@ -3,6 +3,7 @@ package com.kingdom.model
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.GameSetupModifier
+import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.cards.darkages.Spoils
 import com.kingdom.model.cards.darkages.ruins.*
 import com.kingdom.model.cards.darkages.shelters.Hovel
@@ -171,6 +172,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var isShowCoffers: Boolean = false
 
+    var isShowTavern: Boolean = false
+
     var isShowEmbargoTokens: Boolean = false
 
     var isShowDuration: Boolean = false
@@ -292,6 +295,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
             if (it.addCoffers > 0) {
                 isShowCoffers = true
+            }
+
+            if (it is TavernCard) {
+                isShowTavern = true
             }
         }
 

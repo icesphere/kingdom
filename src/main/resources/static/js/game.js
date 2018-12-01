@@ -473,3 +473,10 @@ function useCoffers(){
         });
     }
 }
+
+function showTavernCards() {
+    if(gameStatus == "InProgress"){
+        $.post("showTavernCards", function(data) {
+        });
+    }
+}
