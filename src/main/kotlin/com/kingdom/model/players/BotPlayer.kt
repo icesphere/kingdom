@@ -255,6 +255,11 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         get() {
             val cardsToBuy = ArrayList<Card>()
 
+            //todo better logic
+            if (coffers > 0) {
+                useCoffers(coffers)
+            }
+
             val cardsAvailableToBuy = game.availableCards.filter { c -> availableCoins >= this.getCardCostWithModifiers(c) }
 
             if (cardsAvailableToBuy.isEmpty()) {
@@ -477,6 +482,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
             PearlDiver.NAME -> if (getBuyCardScore(card) > 3) 1 else 2
             PirateShip.NAME -> if (pirateShipCoins > 2) 1 else 2
+            Plaza.NAME -> if (hand.any { it.isCopper }) 1 else 2
             Scavenger.NAME -> 1
             Sentry.NAME -> when (card.cost) {
                 0 -> 1

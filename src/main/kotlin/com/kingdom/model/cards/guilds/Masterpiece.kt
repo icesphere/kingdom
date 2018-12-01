@@ -10,7 +10,6 @@ import com.kingdom.model.players.Player
 class Masterpiece : GuildsCard(NAME, CardType.Treasure, 3), AfterCardBoughtListenerForSelf, ChoiceActionCard {
 
     init {
-        testing = true
         addCoins = 1
         special = "When you buy this, you may overpay for it. For each \$1 you overpaid, gain a Silver."
         isOverpayForCardAllowed = true

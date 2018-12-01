@@ -234,6 +234,7 @@ class CardRepository {
                 Doctor(),
                 Herald(),
                 Masterpiece(),
+                Plaza(),
                 Stonemason()
         )
 
