@@ -231,6 +231,7 @@ class CardRepository {
         get() = listOf(
                 Advisor(),
                 Baker(),
+                Butcher(),
                 CandlestickMaker(),
                 Doctor(),
                 Herald(),
