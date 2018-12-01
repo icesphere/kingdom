@@ -2117,6 +2117,16 @@ class GameController(private val cardManager: CardManager,
         try {
             val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
 
+            if (!player.isYourTurn) {
+                player.showInfoMessage("You can only use Coffers on your turn")
+                return emptyModelAndView
+            }
+
+            if (player.isCardsBought) {
+                player.showInfoMessage("You can't use Coffers after you have bought a card")
+                return emptyModelAndView
+            }
+
             val choices = mutableListOf<Choice>()
 
             for (i in 0..player.coffers) {

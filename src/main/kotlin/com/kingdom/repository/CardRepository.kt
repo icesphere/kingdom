@@ -237,6 +237,7 @@ class CardRepository {
                 Herald(),
                 Journeyman(),
                 Masterpiece(),
+                MerchantGuild(),
                 Plaza(),
                 Stonemason(),
                 Taxman()
