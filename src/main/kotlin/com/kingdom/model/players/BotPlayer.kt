@@ -794,7 +794,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String, info: Any?) {
-        val choice = getChoice(choiceActionCard, arrayOf(Choice(1, "Yes"), Choice(2, "No")), null)
+        val choice = getChoice(choiceActionCard, arrayOf(Choice(1, "Yes"), Choice(2, "No")), info)
         choiceActionCard.actionChoiceMade(this, choice, info)
     }
 

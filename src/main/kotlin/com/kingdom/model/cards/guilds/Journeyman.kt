@@ -9,6 +9,7 @@ class Journeyman : GuildsCard(NAME, CardType.Action, 5), ChooseCardActionCard {
 
     init {
         special = "Name a card. Reveal cards from your deck until you reveal 3 cards without that name. Put those cards into your hand and discard the rest."
+        fontSize = 11
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
