@@ -7,7 +7,7 @@ enum class CardColor(val color: String, val mobileColor: String = color, val isI
     ActionReaction("#7FAED8"),
     ActionDuration("#F09954"),
     ActionDurationReaction("orange_blue.png", "orange_blue_mobile.png", true),
-    ActionReserve("C3AA7D"),
+    ActionReserve("#C3AA7D"),
     ActionReserveVictory("tan_green.png", "tan_green_mobile.png", true),
     Action("#CBC6B3"),
     ActionVictory("grey_green.gif", "grey_green_mobile.gif", true),

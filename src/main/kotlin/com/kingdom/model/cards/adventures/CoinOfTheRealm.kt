@@ -7,7 +7,6 @@ import com.kingdom.model.players.Player
 class CoinOfTheRealm : AdventuresCard(NAME, CardType.TreasureReserve, 2), TavernCard {
 
     init {
-        testing = true
         addCoins = 1
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
