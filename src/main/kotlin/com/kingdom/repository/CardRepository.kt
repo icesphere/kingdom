@@ -251,6 +251,7 @@ class CardRepository {
                 CaravanGuard(),
                 CoinOfTheRealm(),
                 Dungeon(),
+                Duplicate(),
                 Gear(),
                 Guide(),
                 Ratcatcher(),

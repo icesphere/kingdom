@@ -594,6 +594,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             card.afterCardGained(this)
         }
 
+        val afterCardGainedListenersForCardsInTavern = tavernCards.filter { it is AfterCardGainedListenerForCardsInTavern }
+        for (listener in afterCardGainedListenersForCardsInTavern) {
+            (listener as AfterCardGainedListenerForCardsInTavern).afterCardGained(card, this)
+        }
+
         if (isYourTurn) {
             currentTurnSummary.cardsGained.add(card)
         }
