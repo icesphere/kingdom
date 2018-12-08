@@ -5,13 +5,13 @@ import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.players.Player
 import java.util.*
 
-class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boolean, private val cardActionableExpression: ((card: Card) -> Boolean)? = null) : Action("") {
+class TrashCardsFromSupply(private var numCardsToTrash: Int, val optional: Boolean, private val cardActionableExpression: ((card: Card) -> Boolean)? = null) : Action("") {
 
     private var selectedCards: MutableList<Card> = ArrayList()
 
     override val isShowDone: Boolean
         get() =
-            selectedCards.size in 1..numCardsToScrap && (this.isShowDoNotUse || selectedCards.size == numCardsToScrap)
+            numCardsToTrash > 1 && ((this.isShowDoNotUse && selectedCards.size <= numCardsToTrash) || selectedCards.size == numCardsToTrash)
 
     init {
         this.isShowDoNotUse = optional
@@ -27,8 +27,8 @@ class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boole
         if (this.isShowDoNotUse) {
             text += "up to "
         }
-        text += numCardsToScrap.toString() + " card"
-        if (numCardsToScrap != 1) {
+        text += numCardsToTrash.toString() + " card"
+        if (numCardsToTrash != 1) {
             text += "s"
         }
         text += " from the supply"
@@ -53,7 +53,7 @@ class TrashCardsFromSupply(private var numCardsToScrap: Int, val optional: Boole
             } else {
                 selectedCards.add(selectedCard)
 
-                if (numCardsToScrap == 1) {
+                if (numCardsToTrash == 1) {
                     applyActionToSelectedCards(player)
                     return true
                 }

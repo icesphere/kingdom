@@ -250,6 +250,8 @@ class CardRepository {
                 Amulet(),
                 CaravanGuard(),
                 CoinOfTheRealm(),
+                Dungeon(),
+                Gear(),
                 Ratcatcher(),
                 Raze()
         )

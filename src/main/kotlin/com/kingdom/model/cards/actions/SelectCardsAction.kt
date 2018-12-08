@@ -13,7 +13,7 @@ abstract class SelectCardsAction(text: String,
     override var isShowDoNotUse: Boolean = optional
 
     override val isShowDone: Boolean
-        get() = numCardsToSelect > 1 && selectedCards.isNotEmpty() && (this.isShowDoNotUse || selectedCards.size == numCardsToSelect)
+        get() = numCardsToSelect > 1 && selectedCards.isNotEmpty() && ((this.isShowDoNotUse && selectedCards.size <= numCardsToSelect) || selectedCards.size == numCardsToSelect)
 
     protected var selectedCards: MutableList<Card> = ArrayList()
 

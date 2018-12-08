@@ -6,6 +6,7 @@ import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.cards.adventures.Amulet
+import com.kingdom.model.cards.adventures.Gear
 import com.kingdom.model.cards.adventures.Raze
 import com.kingdom.model.cards.darkages.Rats
 import com.kingdom.model.cards.guilds.Doctor
@@ -114,6 +115,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Stonemason.NAME -> return true
             card.name == Raze.NAME -> return true
             card.name == Amulet.NAME -> return true
+            card.name == Gear.NAME -> return true
             card.name == Farmland.NAME && hand.all { it.isVictory && it.cost > 2 } -> return true
             card is TavernCard -> return true
             else -> super.excludeCard(card)

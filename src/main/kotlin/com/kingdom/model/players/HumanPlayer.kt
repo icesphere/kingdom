@@ -155,6 +155,10 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(ChooseCardFromHand(chooseCardActionCard, text, cardActionableExpression))
     }
 
+    override fun chooseCardsFromHand(text: String, numToChoose: Int, optional: Boolean, chooseCardsActionCard: ChooseCardsActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        addAction(ChooseCardsFromHand(numToChoose, text, optional, chooseCardsActionCard, cardActionableExpression))
+    }
+
     override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard) {
         addAction(ChooseCardFromSupply(chooseCardActionCard, text))
     }

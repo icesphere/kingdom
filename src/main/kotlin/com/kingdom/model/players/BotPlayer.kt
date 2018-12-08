@@ -885,6 +885,18 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         chooseCardActionCard.onCardChosen(this, chosenCard)
     }
 
+    override fun chooseCardsFromHand(text: String, numToChoose: Int, optional: Boolean, chooseCardsActionCard: ChooseCardsActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        //todo better logic
+
+        val cards = if (hand.size < numToChoose) {
+            hand
+        } else {
+            hand.subList(0, numToChoose)
+        }
+
+        chooseCardsActionCard.onCardsChosen(this, cards)
+    }
+
     override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard) {
         if (game.availableCards.isEmpty()) {
             return

@@ -1,32 +1,27 @@
 package com.kingdom.model.cards.actions
 
+import com.kingdom.model.players.Player
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
-import com.kingdom.model.players.Player
 import java.util.*
 
-open class TrashCardsFromHand(private var numCardsToTrash: Int, text: String, optional: Boolean, private val cardActionableExpression: ((card: Card) -> Boolean)? = null) : Action(text) {
+open class ChooseCardsFromHand(private var numCardsToChoose: Int, text: String, optional: Boolean, private val chooseCardsActionCard: ChooseCardsActionCard, private val cardActionableExpression: ((card: Card) -> Boolean)? = null, private val info: Any? = null) : Action(text) {
 
     protected var selectedCards: MutableList<Card> = ArrayList()
 
     override val isShowDone: Boolean
-        get() =
-            numCardsToTrash > 1 && ((this.isShowDoNotUse && selectedCards.size <= numCardsToTrash) || selectedCards.size == numCardsToTrash)
+        get() = numCardsToChoose > 1 && ((this.isShowDoNotUse && selectedCards.size <= numCardsToChoose) || selectedCards.size == numCardsToChoose)
 
     init {
         isShowDoNotUse = optional
 
         if (this.text == "") {
+            this.text = "Choose "
             if (optional) {
-                this.text = "You may trash"
-                if (numCardsToTrash > 1) {
-                    this.text += " up to"
-                }
-            } else {
-                this.text = "Trash"
+                this.text += "up to "
             }
-            this.text += " $numCardsToTrash card"
-            if (numCardsToTrash != 1) {
+            this.text += "$numCardsToChoose card"
+            if (numCardsToChoose != 1) {
                 this.text += "s"
             }
             this.text += " from your hand"
@@ -39,22 +34,22 @@ open class TrashCardsFromHand(private var numCardsToTrash: Int, text: String, op
 
     override fun processAction(player: Player): Boolean {
         val actionableCards = player.hand.filter { cardActionableExpression == null || cardActionableExpression.invoke(it) }
-        if (actionableCards.size < numCardsToTrash) {
-            numCardsToTrash = actionableCards.size
+        if (actionableCards.size < numCardsToChoose) {
+            numCardsToChoose = actionableCards.size
         }
         return actionableCards.isNotEmpty()
     }
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
         if (result.isDoneWithAction) {
-            selectedCards.forEach({ player.trashCardFromHand(it) })
+            chooseCardsActionCard.onCardsChosen(player, selectedCards, info)
             return true
         } else {
             val selectedCard = result.selectedCard!!
 
-            if (numCardsToTrash == 1) {
+            if (numCardsToChoose == 1) {
                 selectedCards.add(selectedCard)
-                player.trashCardFromHand(selectedCard)
+                chooseCardsActionCard.onCardsChosen(player, selectedCards, info)
                 return true
             }
 
