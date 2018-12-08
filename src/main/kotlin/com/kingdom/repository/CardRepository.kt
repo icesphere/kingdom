@@ -247,6 +247,7 @@ class CardRepository {
 
     val adventuresCards: List<Card>
         get() = listOf(
+                Amulet(),
                 CoinOfTheRealm(),
                 Ratcatcher(),
                 Raze()
