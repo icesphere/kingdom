@@ -252,6 +252,7 @@ class CardRepository {
                 CoinOfTheRealm(),
                 Dungeon(),
                 Gear(),
+                Guide(),
                 Ratcatcher(),
                 Raze()
         )

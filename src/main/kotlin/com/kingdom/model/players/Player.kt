@@ -54,6 +54,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var isYourTurn: Boolean = false
         protected set
 
+    val isStartOfTurn: Boolean
+        get() = isYourTurn && game.cardsPlayed.isEmpty() && !isCardsBought
+
     private var coins: Int = 0
 
     private var coinsInHand: Int = 0
@@ -1357,8 +1360,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun discardHand() {
-        addEventLogWithUsername("discarded their hand")
-        hand.toMutableList().forEach { discardCardFromHand(it) }
+        addEventLogWithUsername("discarded their hand: ${hand.groupedString}")
+        hand.toMutableList().forEach { discardCardFromHand(it, false) }
     }
 
     abstract fun chooseCardAction(text: String,
