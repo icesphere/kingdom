@@ -860,8 +860,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.addInfoLog("$username $log")
     }
 
-    fun addCardsToDiscard(cards: List<Card>) {
+    fun addCardsToDiscard(cards: List<Card>, showLog: Boolean = false) {
         cards.forEach { addCardToDiscard(it, refresh = false) }
+        if (showLog) {
+            addEventLogWithUsername("discarded ${cards.groupedString}")
+        }
         refreshPlayerHandArea()
     }
 
