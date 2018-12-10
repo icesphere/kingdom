@@ -976,6 +976,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (!game.isPlayTreasureCards && card.addCoins > 0) {
             game.refreshPlayerCardsBought(this)
+            game.refreshPlayerSupply(this)
         }
     }
 
@@ -990,6 +991,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (!game.isPlayTreasureCards && cards.any { it.addCoins > 0 }) {
             game.refreshPlayerCardsBought(this)
+            game.refreshPlayerSupply(this)
         }
     }
 
@@ -1228,6 +1230,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (!game.isPlayTreasureCards && card.addCoins > 0) {
             game.refreshPlayerCardsBought(this)
+            game.refreshPlayerSupply(this)
         }
     }
 
