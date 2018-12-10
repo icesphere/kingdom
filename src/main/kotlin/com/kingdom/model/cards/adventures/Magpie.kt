@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class Magpie : AdventuresCard(NAME, CardType.Action, 4) {
 
     init {
-        testing = true
         addCards = 1
         addActions = 1
         special = "Reveal the top card of your deck. If it’s a Treasure, put it into your hand. If it’s an Action or Victory card, gain a Magpie."
