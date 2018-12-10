@@ -7,6 +7,8 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
+import com.kingdom.model.cards.adventures.Messenger
+import com.kingdom.model.cards.adventures.Miser
 import com.kingdom.model.cards.cornucopia.Hamlet
 import com.kingdom.model.cards.cornucopia.HorseTraders
 import com.kingdom.model.cards.cornucopia.Jester
@@ -458,6 +460,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             MarketSquare.NAME -> if (turns < 10 || game.numInPileMap[Province.NAME]!! > 3) 1 else 2
             Masterpiece.NAME -> 2
             Mercenary.NAME -> if (hand.count { getTrashCardScore(it) > 15 } > 2) 1 else 2
+            Messenger.NAME -> if (turns < 10) 1 else 2
             Mill.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
             MiningVillage.NAME -> when {
                 game.availableCards.any { it.isColony } && availableCoins < 11 && availableCoins > 8 -> 1
@@ -465,6 +468,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 else -> 2
             }
             Minion.NAME -> if (hand.size < 4 || hand.count { getDiscardCardScore(it) > 50 } > 2) 2 else 1
+            Miser.NAME -> if (turns < 10 || tavernCards.count { it.isCopper } == 0) 1 else 2
             Moat.NAME -> 1
             Moneylender.NAME -> 1
             Mountebank.NAME -> 1
