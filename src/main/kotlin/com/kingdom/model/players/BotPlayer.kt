@@ -244,6 +244,16 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
+    override fun chooseSupplyCardToGainToTopOfDeckWithExactCost(cost: Int) {
+        val card = chooseFreeCardToGainWithExactCost(cost)
+        if (card != null) {
+            game.removeCardFromSupply(card)
+
+            addCardToTopOfDeck(card)
+            cardGained(card)
+        }
+    }
+
     override fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int?) {
         val card = chooseFreeCardToGain(maxCost)
         if (card != null) {

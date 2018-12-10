@@ -93,6 +93,10 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply to the top of your deck costing up to $maxCost", null, CardLocation.Deck))
     }
 
+    override fun chooseSupplyCardToGainToTopOfDeckWithExactCost(cost: Int) {
+        addAction(FreeCardFromSupply(null, "Gain a free card from the supply to the top of your deck costing $cost", {c -> getCardCostWithModifiers(c) == cost}, CardLocation.Deck))
+    }
+
     override fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int?) {
         addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply to your hand costing up to $maxCost", null, CardLocation.Hand))
     }
