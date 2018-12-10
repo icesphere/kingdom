@@ -260,7 +260,8 @@ class CardRepository {
                 Port(),
                 Ranger(),
                 Ratcatcher(),
-                Raze()
+                Raze(),
+                Transmogrify()
         )
 
     val allCards: List<Card>
