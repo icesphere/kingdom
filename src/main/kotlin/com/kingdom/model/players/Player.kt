@@ -28,6 +28,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var deck: MutableList<Card> = ArrayList()
     val hand: MutableList<Card> = ArrayList()
 
+    val handCopy: List<Card>
+        get() = hand.map { game.getNewInstanceOfCard(it.name) }
+
     protected val discard: MutableList<Card> = ArrayList()
 
     val cardsInDiscard: List<Card>

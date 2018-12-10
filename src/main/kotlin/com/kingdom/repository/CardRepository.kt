@@ -254,6 +254,7 @@ class CardRepository {
                 Duplicate(),
                 Gear(),
                 Guide(),
+                Magpie(),
                 Ratcatcher(),
                 Raze()
         )

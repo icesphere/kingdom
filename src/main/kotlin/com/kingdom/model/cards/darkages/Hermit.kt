@@ -21,17 +21,17 @@ class Hermit : DarkAgesCard(NAME, CardType.Action, 3), GameSetupModifier, Choose
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val cardsToSelectFrom = player.cardsInDiscard + player.hand
+        val cardsToSelectFrom = player.cardsInDiscardCopy + player.handCopy
         player.chooseCardAction("You may trash a non-Treasure card from your discard pile or hand (cards from discard are shown first)", this, cardsToSelectFrom, true)
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        if (player.cardsInDiscard.contains(card)) {
-            player.removeCardFromDiscard(card)
+        if (player.cardsInDiscard.any { it.name == card.name }) {
+            player.removeCardFromDiscard(player.cardsInDiscard.first { it.name == card.name })
             player.cardTrashed(card)
             player.addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor} from their discard")
         } else {
-            player.removeCardFromHand(card)
+            player.removeCardFromHand(player.hand.first { it.name == card.name })
             player.cardTrashed(card)
             player.addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor} from their hand")
         }

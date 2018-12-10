@@ -28,7 +28,7 @@ class Pillage : DarkAgesCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
         for (opponent in affectedOpponents) {
             if (opponent.hand.size >= 5) {
                 opponent.revealHand()
-                player.chooseCardAction("Choose a card from ${opponent.username}'s hand to discard", this, opponent.hand, false, opponent)
+                player.chooseCardAction("Choose a card from ${opponent.username}'s hand to discard", this, opponent.handCopy, false, opponent)
             }
         }
 
@@ -38,7 +38,7 @@ class Pillage : DarkAgesCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         val opponent = info as Player
-        opponent.discardCardFromHand(card, true)
+        opponent.discardCardFromHand(opponent.hand.first { it.name == card.name }, true)
     }
 
     companion object {
