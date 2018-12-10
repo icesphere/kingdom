@@ -258,6 +258,7 @@ class CardRepository {
                 Messenger(),
                 Miser(),
                 Port(),
+                Ranger(),
                 Ratcatcher(),
                 Raze()
         )

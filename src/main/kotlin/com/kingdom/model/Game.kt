@@ -174,6 +174,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var isShowTavern: Boolean = false
 
+    var isShowJourneyToken: Boolean = false
+
     var isShowEmbargoTokens: Boolean = false
 
     var isShowDuration: Boolean = false

@@ -144,6 +144,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if showJourneyToken>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        Journey token:
+                                    </td>
+                                    <td>
+                                        <#if p.journeyTokenFaceUp>Face up<#else>Face down</#if>
+                                    </td>
+                                </tr>
+                            </#if>
                         </table>
                     </td>
                 </tr>

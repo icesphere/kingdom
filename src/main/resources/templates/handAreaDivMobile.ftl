@@ -35,6 +35,9 @@
     <#if showVictoryCoins>
         <div class="handAreaTopRowLeft" style="clear:both;">${player.victoryCoins} Victory Coin<#if player.victoryCoins != 1>s</#if></div>
     </#if>
+    <#if showJourneyToken>
+        <div class="handAreaTopRowLeft" style="clear:both;">Journey token: <#if player.journeyTokenFaceUp>Face up<#else>Face down</#if></div>
+    </#if>
 </div>
 <div style="clear:both;">
     <div class="label">

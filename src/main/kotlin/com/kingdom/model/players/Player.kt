@@ -192,6 +192,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val tavernCardsString: String
         get() = tavernCards.groupedString
 
+    var isJourneyTokenFaceUp: Boolean = true
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
