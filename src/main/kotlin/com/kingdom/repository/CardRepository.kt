@@ -247,6 +247,7 @@ class CardRepository {
         get() = listOf(
                 Amulet(),
                 Artificer(),
+                BridgeTroll(),
                 CaravanGuard(),
                 CoinOfTheRealm(),
                 Dungeon(),

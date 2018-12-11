@@ -42,6 +42,9 @@
         <#if showJourneyToken>
             <td class="handAreaTopRow">Journey token: <#if player.journeyTokenFaceUp>Face up<#else>Face down</#if></td>
         </#if>
+        <#if player.minusCoinTokenInFrontOfPlayer>
+            <td class="handAreaTopRow">-$1 token</td>
+        </#if>
     </tr>
 </table>
 <table style="width:100%">

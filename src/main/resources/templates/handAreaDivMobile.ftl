@@ -38,6 +38,9 @@
     <#if showJourneyToken>
         <div class="handAreaTopRowLeft" style="clear:both;">Journey token: <#if player.journeyTokenFaceUp>Face up<#else>Face down</#if></div>
     </#if>
+    <#if player.minusCoinTokenInFrontOfPlayer>
+        <div class="handAreaTopRowLeft" style="clear:both;">-$1 token</div>
+    </#if>
 </div>
 <div style="clear:both;">
     <div class="label">

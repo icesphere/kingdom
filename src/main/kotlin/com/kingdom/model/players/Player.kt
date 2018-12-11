@@ -197,6 +197,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var isJourneyTokenFaceUp: Boolean = true
 
+    var isMinusCoinTokenInFrontOfPlayer = false
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -319,7 +321,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (coins == 0) {
             return
         }
-        this.coins += coins
+
+        if (isMinusCoinTokenInFrontOfPlayer) {
+            addInfoLogWithUsername(" used -\$1 token")
+            isMinusCoinTokenInFrontOfPlayer = false
+            this.coins += coins - 1
+        } else {
+            this.coins += coins
+        }
+
         coinsGainedThisTurn += coins
         game.refreshPlayerSupply(this)
         game.refreshPlayerCardsBought(this)

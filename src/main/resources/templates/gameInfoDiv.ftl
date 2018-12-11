@@ -154,6 +154,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if p.minusCoinTokenInFrontOfPlayer>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        -$1 token:
+                                    </td>
+                                    <td>
+                                        Yes
+                                    </td>
+                                </tr>
+                            </#if>
                         </table>
                     </td>
                 </tr>
