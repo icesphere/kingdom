@@ -250,6 +250,7 @@ class CardRepository {
                 BridgeTroll(),
                 CaravanGuard(),
                 CoinOfTheRealm(),
+                DistantLands(),
                 Dungeon(),
                 Duplicate(),
                 Gear(),

@@ -150,7 +150,7 @@ abstract class Card(
         get() = type == CardType.Victory
 
     val isVictory: Boolean
-        get() = type == CardType.Victory || type == CardType.ActionVictory || type == CardType.TreasureVictory || type == CardType.VictoryReaction || type == CardType.DurationVictory || type == CardType.VictoryShelter
+        get() = type == CardType.Victory || type == CardType.ActionVictory || type == CardType.TreasureVictory || type == CardType.VictoryReaction || type == CardType.DurationVictory || type == CardType.VictoryShelter || type == CardType.ActionReserveVictory
 
     val isVictoryReaction: Boolean
         get() = type == CardType.VictoryReaction
