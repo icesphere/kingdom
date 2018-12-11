@@ -1,3 +1,5 @@
+handle repeated actions with duration cards
+
 cancel a created game that hasn't started yet has issues
 
 cards overflow weird when too many on desktop (use flexbox?)

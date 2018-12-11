@@ -265,6 +265,7 @@ class CardRepository {
                 Ratcatcher(),
                 Raze(),
                 Relic(),
+                RoyalCarriage(),
                 Transmogrify()
         )
 
