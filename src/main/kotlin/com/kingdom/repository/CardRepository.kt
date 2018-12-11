@@ -256,6 +256,7 @@ class CardRepository {
                 Gear(),
                 Giant(),
                 Guide(),
+                LostCity(),
                 Magpie(),
                 Messenger(),
                 Miser(),
