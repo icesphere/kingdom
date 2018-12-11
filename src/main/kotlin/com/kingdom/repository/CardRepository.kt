@@ -5,10 +5,7 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.adventures.*
 import com.kingdom.model.cards.cornucopia.*
 import com.kingdom.model.cards.darkages.*
-import com.kingdom.model.cards.darkages.ruins.AbandonedMine
-import com.kingdom.model.cards.darkages.ruins.RuinedLibrary
-import com.kingdom.model.cards.darkages.ruins.RuinedMarket
-import com.kingdom.model.cards.darkages.ruins.RuinedVillage
+import com.kingdom.model.cards.darkages.ruins.*
 import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
@@ -225,7 +222,8 @@ class CardRepository {
                 AbandonedMine(),
                 RuinedLibrary(),
                 RuinedMarket(),
-                RuinedVillage()
+                RuinedVillage(),
+                Survivors()
         )
 
     val guildsCards: List<Card>

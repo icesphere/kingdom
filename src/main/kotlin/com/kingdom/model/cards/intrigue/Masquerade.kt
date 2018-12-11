@@ -56,9 +56,7 @@ class Masquerade : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard 
                 playerOnLeft.addCardToHand(c)
             }
 
-            passToPlayerMap.keys.forEach {
-                it.trashCardFromHand(true)
-            }
+            player.game.currentPlayer.trashCardFromHand(true)
         }
     }
 

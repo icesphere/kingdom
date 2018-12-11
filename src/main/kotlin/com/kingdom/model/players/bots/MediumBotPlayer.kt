@@ -118,6 +118,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Gear.NAME -> return true
             card.name == Farmland.NAME && hand.all { it.isVictory && it.cost > 2 } -> return true
             card is TavernCard -> return true
+            card.isRuins -> return true
             else -> super.excludeCard(card)
         }
 

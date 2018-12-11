@@ -11,7 +11,7 @@ class Transmogrify : AdventuresCard(NAME, CardType.ActionReserve, 4), TavernCard
     init {
         addActions = 1
         special = "Put this on your Tavern mat. At the start of your turn, you may call this, to trash a card from your hand, and gain a card to your hand costing up to \$1 more than it."
-        fontSize = 11
+        fontSize = 10
         textSize = 100
     }
 
