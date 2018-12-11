@@ -200,6 +200,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val cardsPlayed = LinkedList<Card>()
     val cardsBought = ArrayList<Card>()
 
+    val treasureCardsPlayedInActionPhase = mutableListOf<Card>()
+
     val currentPlayerCardCostModifiers = mutableListOf<CardCostModifier>()
 
     val gameCardCostModifiers = mutableListOf<CardCostModifier>()
@@ -557,6 +559,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         cardsPlayed.clear()
         cardsBought.clear()
+        treasureCardsPlayedInActionPhase.clear()
 
         currentPlayerCardCostModifiers.clear()
 

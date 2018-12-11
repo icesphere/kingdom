@@ -153,8 +153,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val isPlayTreasureCards: Boolean = game.isPlayTreasureCards
 
-    val isTreasureCardsPlayed: Boolean
-        get() = game.cardsPlayed.any { it.isTreasure }
+    val isTreasureCardsPlayedInBuyPhase: Boolean
+        get() = (game.cardsPlayed - game.treasureCardsPlayedInActionPhase).any { it.isTreasure }
 
     val isCardsBought: Boolean
         get() = game.cardsBought.isNotEmpty()
