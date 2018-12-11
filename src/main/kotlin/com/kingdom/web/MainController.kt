@@ -30,7 +30,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
                 LoggedInUsers.userLoggedIn(user)
                 LoggedInUsers.refreshLobbyPlayers()
                 val session = request.getSession(true)
-                session.maxInactiveInterval = 60 * 30
+                session.maxInactiveInterval = 60 * 120
                 session.setAttribute("user", user)
                 session.setAttribute("mobile", mobile)
                 return ModelAndView("redirect:/showGameRooms.html")

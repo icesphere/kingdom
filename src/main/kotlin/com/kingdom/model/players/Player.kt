@@ -43,6 +43,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val played: MutableList<Card> = ArrayList()
     val inPlay: MutableList<Card> = ArrayList()
 
+    val inPlayWithDuration: List<Card>
+        get() = inPlay + durationCards
+
     val numCards: Int
         get() = allCards.size
 
@@ -564,7 +567,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         }
 
-        val cardGainedListenersForCardsInPlay = inPlay.filter { it is CardGainedListenerForCardsInPlay }
+        val cardGainedListenersForCardsInPlay = inPlayWithDuration.filter { it is CardGainedListenerForCardsInPlay }
         for (listener in cardGainedListenersForCardsInPlay) {
             val handled = (listener as CardGainedListenerForCardsInPlay).onCardGained(card, this)
             if (handled) {
@@ -669,7 +672,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 card.afterCardBought(this)
             }
 
-            val cardBoughtListenersForCardsInPlay = inPlay.filter { it is AfterCardBoughtListenerForCardsInPlay }
+            val cardBoughtListenersForCardsInPlay = inPlayWithDuration.filter { it is AfterCardBoughtListenerForCardsInPlay }
 
             for (listener in cardBoughtListenersForCardsInPlay) {
                 (listener as AfterCardBoughtListenerForCardsInPlay).afterCardBought(card, this)
@@ -719,7 +722,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             played.add(card)
             game.cardsPlayed.add(card)
 
-            inPlay.filter { it is CardPlayedListener }
+            inPlayWithDuration.filter { it is CardPlayedListener }
                     .forEach { (it as CardPlayedListener).onCardPlayed(card, this) }
 
             inPlay.add(card)
@@ -740,7 +743,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     (it as CardPlayedListenerForCardsInSupply).onCardPlayed(card, this)
                 }
 
-        inPlay.filter { it is CardPlayedListenerForCardsInPlay }
+        inPlayWithDuration.filter { it is CardPlayedListenerForCardsInPlay }
                 .forEach {
                     (it as CardPlayedListenerForCardsInPlay).onCardPlayed(card, this)
                 }

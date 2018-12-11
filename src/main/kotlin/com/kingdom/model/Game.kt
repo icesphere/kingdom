@@ -207,7 +207,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val cardCostModifiers: List<CardCostModifier>
         get() {
             val modifiers: MutableList<CardCostModifier> = (currentPlayerCardCostModifiers + gameCardCostModifiers).toMutableList()
-            currentPlayer.inPlay.filter { it is CardCostModifierForCardsInPlay }.forEach { modifiers.add(it as CardCostModifier) }
+            currentPlayer.inPlayWithDuration.filter { it is CardCostModifierForCardsInPlay }.forEach { modifiers.add(it as CardCostModifier) }
             return modifiers
         }
 

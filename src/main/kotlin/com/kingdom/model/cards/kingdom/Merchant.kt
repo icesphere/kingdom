@@ -23,6 +23,11 @@ class Merchant : KingdomCard(NAME, CardType.Action, 3), CardPlayedListener {
         }
     }
 
+    override fun removedFromPlay(player: Player) {
+        super.removedFromPlay(player)
+        firstSilverPlayed = false
+    }
+
     companion object {
         const val NAME: String = "Merchant"
     }

@@ -23,7 +23,7 @@ class Peddler : ProsperityCard(NAME, CardType.Action, 8), GameSetupModifier, Car
 
     override fun getChangeToCardCost(card: Card, player: Player): Int {
         if (card.name == this.name) {
-            return player.inPlay.count { it.isAction } * -2
+            return player.inPlayWithDuration.count { it.isAction } * -2
         }
 
         return 0

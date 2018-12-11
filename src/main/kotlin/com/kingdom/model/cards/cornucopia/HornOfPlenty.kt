@@ -16,7 +16,7 @@ class HornOfPlenty : CornucopiaCard(NAME, CardType.Treasure, 5), FreeCardFromSup
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val numDifferentCards = player.inPlay.groupBy { it.name }.size
+        val numDifferentCards = player.inPlayWithDuration.groupBy { it.name }.size
 
         player.chooseSupplyCardToGainForBenefit(numDifferentCards, "Gain a card costing up to \$$numDifferentCards. If it’s a Victory card, ${this.cardNameWithBackgroundColor} will be trashed.", this)
 
