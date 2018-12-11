@@ -164,7 +164,7 @@ abstract class Card(
         get() = isAction && addActions == 0
 
     val isDuration: Boolean
-        get() = type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionDurationReaction
+        get() = type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionDurationReaction || type == CardType.ActionAttackDuration
 
     val isTreasure: Boolean
         get() = type == CardType.Treasure || type == CardType.TreasureAttack || type == CardType.TreasureVictory || type == CardType.TreasureCurse || type == CardType.TreasureReaction || type == CardType.TreasureReserve

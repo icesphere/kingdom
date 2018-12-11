@@ -4,10 +4,7 @@ import com.kingdom.model.Choice
 import com.kingdom.model.Game
 import com.kingdom.model.TurnSummary
 import com.kingdom.model.User
-import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.CardLocation
-import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.StartOfTurnDurationAction
+import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.darkages.BandOfMisfits
 import com.kingdom.model.cards.darkages.Spoils
@@ -286,6 +283,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun cardRemovedFromPlay(card: Card) {
         card.removedFromPlay(this)
+
         if (card.isCardActuallyBandOfMisfits) {
             card.isCardActuallyBandOfMisfits = false
 
@@ -409,9 +407,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         bought.clear()
         played.clear()
 
-        durationCards.forEach { addCardToDiscard(it, false, false) }
+        val nonPermanentDurationCards = durationCards.filter { it !is PermanentDuration }
 
-        durationCards.clear()
+        nonPermanentDurationCards.forEach { addCardToDiscard(it, false, false) }
+
+        durationCards.removeAll(nonPermanentDurationCards)
 
         for (card in inPlay) {
             if (card.isDuration) {

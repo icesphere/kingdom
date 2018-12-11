@@ -1291,6 +1291,10 @@ class GameController(private val cardManager: CardManager,
                 it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it)
             }
 
+            player.durationCards.forEach {
+                it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it)
+            }
+
             player.currentAction?.cardChoices?.forEach {
                 it.isHighlighted = highlightCard(player, it, CardLocation.CardAction)
                 it.isSelected = isCardSelected(player, it)
