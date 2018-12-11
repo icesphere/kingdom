@@ -45,6 +45,9 @@
         <#if player.minusCoinTokenInFrontOfPlayer>
             <td class="handAreaTopRow">-$1 token</td>
         </#if>
+        <#if player.minusCardTokenOnDeck>
+            <td class="handAreaTopRow">-1 Card token</td>
+        </#if>
     </tr>
 </table>
 <table style="width:100%">

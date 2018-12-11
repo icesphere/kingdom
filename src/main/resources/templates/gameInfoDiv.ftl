@@ -164,6 +164,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if p.minusCardTokenOnDeck>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        -1 Card token on deck:
+                                    </td>
+                                    <td>
+                                        Yes
+                                    </td>
+                                </tr>
+                            </#if>
                         </table>
                     </td>
                 </tr>

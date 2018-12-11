@@ -199,6 +199,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var isMinusCoinTokenInFrontOfPlayer = false
 
+    var isMinusCardTokenOnDeck = false
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -240,6 +242,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     private fun getCardsFromDeck(numCards: Int): List<Card> {
         if (numCards == 0) {
             return ArrayList()
+        }
+
+        if (isMinusCardTokenOnDeck) {
+            addEventLogWithUsername(" used -1 Card token")
+            isMinusCardTokenOnDeck = false
+            return getCardsFromDeck(numCards - 1)
         }
 
         val cardsDrawn = ArrayList<Card>()
@@ -323,7 +331,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (isMinusCoinTokenInFrontOfPlayer) {
-            addInfoLogWithUsername(" used -\$1 token")
+            addEventLogWithUsername(" used -\$1 token")
             isMinusCoinTokenInFrontOfPlayer = false
             this.coins += coins - 1
         } else {

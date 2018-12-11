@@ -59,6 +59,7 @@ abstract class Card(
             CardType.Victory -> "Victory"
             CardType.Curse -> "Curse"
             CardType.Treasure -> "Treasure"
+            CardType.TreasureAttack -> "Treasure - Attack"
             CardType.ActionVictory -> "Action - Victory"
             CardType.TreasureVictory -> "Treasure - Victory"
             CardType.ActionDuration -> "Action - Duration"
@@ -86,6 +87,7 @@ abstract class Card(
             CardType.Victory -> 1
             CardType.Curse -> 1
             CardType.Treasure -> 1
+            CardType.TreasureAttack -> 2
             CardType.ActionVictory -> 2
             CardType.TreasureVictory -> 2
             CardType.ActionDuration -> 2
@@ -165,7 +167,7 @@ abstract class Card(
         get() = type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionDurationReaction
 
     val isTreasure: Boolean
-        get() = type == CardType.Treasure || type == CardType.TreasureVictory || type == CardType.TreasureCurse || type == CardType.TreasureReaction || type == CardType.TreasureReserve
+        get() = type == CardType.Treasure || type == CardType.TreasureAttack || type == CardType.TreasureVictory || type == CardType.TreasureCurse || type == CardType.TreasureReaction || type == CardType.TreasureReserve
 
     val isReaction: Boolean
         get() = type == CardType.ActionReaction || type == CardType.VictoryReaction || type == CardType.TreasureReaction || type == CardType.ReactionShelter || type == CardType.ActionDurationReaction
@@ -210,7 +212,7 @@ abstract class Card(
         get() = name == Colony.NAME
 
     val isAttack: Boolean
-        get() = type == CardType.ActionAttack || type == CardType.ActionAttackDuration || type == CardType.ActionAttackLooter
+        get() = type == CardType.ActionAttack || type == CardType.ActionAttackDuration || type == CardType.ActionAttackLooter || type == CardType.TreasureAttack
 
     val backgroundColor: CardColor
         get() = when {

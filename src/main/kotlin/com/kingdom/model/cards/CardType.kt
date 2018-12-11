@@ -8,6 +8,7 @@ enum class CardType {
     Victory,
     ActionReaction,
     Treasure,
+    TreasureAttack,
     Curse,
     ActionVictory,
     TreasureVictory,
