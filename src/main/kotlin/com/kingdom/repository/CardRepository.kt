@@ -267,7 +267,8 @@ class CardRepository {
                 Relic(),
                 RoyalCarriage(),
                 Storyteller(),
-                Transmogrify()
+                Transmogrify(),
+                TreasureTrove()
         )
 
     val allCards: List<Card>
