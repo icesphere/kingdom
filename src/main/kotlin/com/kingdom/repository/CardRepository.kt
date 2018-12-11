@@ -254,6 +254,7 @@ class CardRepository {
                 Dungeon(),
                 Duplicate(),
                 Gear(),
+                Giant(),
                 Guide(),
                 Magpie(),
                 Messenger(),
