@@ -7,6 +7,7 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
+import com.kingdom.model.cards.adventures.Disciple
 import com.kingdom.model.cards.adventures.Messenger
 import com.kingdom.model.cards.adventures.Miser
 import com.kingdom.model.cards.cornucopia.Hamlet
@@ -93,19 +94,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     open fun excludeCard(card: Card): Boolean {
         return card.isCurseOnly
     }
-
-    override fun addCardAction(card: CardActionCard, text: String) {
-        if (!card.processCardAction(this)) {
-            return
-        }
-
-        if (card is ThroneRoom || card is KingsCourt) {
-            val sortedCards = hand.filter { it.isAction }.sortedByDescending { getBuyCardScore(it) }
-            val result = ActionResult().apply { selectedCard = sortedCards.first() }
-            card.processCardActionResult(CardAction(card, ""), this, result)
-        }
-    }
-
 
     override fun addCardFromDiscardToTopOfDeck(maxCost: Int?) {
         val card = chooseCardFromDiscardToAddToTopOfDeck()
@@ -880,7 +868,13 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         val card = chooseCardActionCard as Card
 
-        val chosenCard: Card = when (card.name) {
+        val chosenCard: Card = choseCard(card, cards)
+
+        chooseCardActionCard.onCardChosen(this, chosenCard)
+    }
+
+    private fun choseCard(card: Card, cards: List<Card>): Card {
+        return when (card.name) {
             Ambassador.NAME -> cards.minBy { getBuyCardScore(it) }!!
             Courtier.NAME -> cards.maxBy { it.numTypes }!!
             Haven.NAME -> when {
@@ -893,8 +887,23 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 else -> cards.maxBy { getTrashCardScore(it) }!!
             }
             Mint.NAME -> cards.maxBy { getBuyCardScore(it) }!!
+            ThroneRoom.NAME, KingsCourt.NAME, Procession.NAME, Disciple.NAME -> cards.maxBy { getPlayCardScore(it) }!!
             else -> cards.first()
         }
+    }
+
+    override fun chooseCardFromHandOptional(text: String, chooseCardActionCard: ChooseCardActionCardOptional, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        //todo handle optional
+
+        val cards = hand.filter { cardActionableExpression == null || cardActionableExpression(it) }
+
+        if (cards.isEmpty()) {
+            return
+        }
+
+        val card = chooseCardActionCard as Card
+
+        val chosenCard: Card = choseCard(card, cards)
 
         chooseCardActionCard.onCardChosen(this, chosenCard)
     }

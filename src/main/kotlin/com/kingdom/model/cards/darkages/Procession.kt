@@ -1,15 +1,12 @@
 package com.kingdom.model.cards.darkages
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.actions.ActionResult
-import com.kingdom.model.cards.actions.CardAction
-import com.kingdom.model.cards.actions.CardActionCard
+import com.kingdom.model.cards.actions.ChooseCardActionCardOptional
 import com.kingdom.model.cards.listeners.CardPlayedListenerForCardsInPlay
 import com.kingdom.model.players.Player
 
-class Procession : DarkAgesCard(NAME, CardType.Action, 4), CardActionCard, CardPlayedListenerForCardsInPlay {
+class Procession : DarkAgesCard(NAME, CardType.Action, 4), ChooseCardActionCardOptional, CardPlayedListenerForCardsInPlay {
 
     var cardToPlayTwice: Card? = null
 
@@ -21,23 +18,16 @@ class Procession : DarkAgesCard(NAME, CardType.Action, 4), CardActionCard, CardP
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.addCardAction(this, "Choose an action card from your hand to play twice")
+        player.chooseCardFromHandOptional("Choose an Action card from your hand to play twice", this, { c -> c.isAction })
     }
 
-    override fun isCardActionable(card: Card, cardAction: CardAction, cardLocation: CardLocation, player: Player): Boolean {
-        return card.isAction && cardLocation == CardLocation.Hand
-    }
+    override fun onCardChosen(player: Player, card: Card?, info: Any?) {
+        cardToPlayTwice = card
 
-    override fun processCardAction(player: Player): Boolean {
-        return player.hand.any { it.isAction }
-    }
-
-    override fun processCardActionResult(cardAction: CardAction, player: Player, result: ActionResult) {
-        result.selectedCard?.let {
-            cardToPlayTwice = it
+        if (card != null) {
             player.addActions(1)
-            player.playCard(it)
-            player.addRepeatCardAction(it)
+            player.playCard(card)
+            player.addRepeatCardAction(card)
         }
     }
 
@@ -58,8 +48,6 @@ class Procession : DarkAgesCard(NAME, CardType.Action, 4), CardActionCard, CardP
         cardToPlayTwice = null
         numTimesCardPlayed = 0
     }
-
-    override val isShowDoNotUse: Boolean = true
 
     companion object {
         const val NAME: String = "Procession"
