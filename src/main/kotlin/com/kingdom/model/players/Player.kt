@@ -198,6 +198,21 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var isMinusCardTokenOnDeck = false
 
+    var plusCardTokenSupplyPile: String? = null
+    var plusActionTokenSupplyPile: String? = null
+    var plusBuyTokenSupplyPile: String? = null
+    var plusCoinTokenSupplyPile: String? = null
+
+    val supplyPilesWithBonusTokens: List<String>
+        get() {
+            val piles = mutableListOf<String>()
+            plusCardTokenSupplyPile?.let { piles.add(it) }
+            plusActionTokenSupplyPile?.let { piles.add(it) }
+            plusBuyTokenSupplyPile?.let { piles.add(it) }
+            plusCoinTokenSupplyPile?.let { piles.add(it) }
+            return piles
+        }
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -759,6 +774,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 refreshPlayerHandArea()
                 game.refreshCardsPlayed()
             }
+        }
+
+        when (card.name) {
+            plusCardTokenSupplyPile -> drawCard()
+            plusActionTokenSupplyPile -> addActions(1)
+            plusBuyTokenSupplyPile -> addBuys(1)
+            plusCoinTokenSupplyPile -> addCoins(1)
         }
 
         if (card.isAction) {
@@ -1363,7 +1385,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun chooseCardsFromHand(text: String, numToChoose: Int, optional: Boolean, chooseCardsActionCard: ChooseCardsActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
-    abstract fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard)
+    abstract fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null, info: Any? = null)
 
     fun triggerAttack(attackCard: Card) {
 

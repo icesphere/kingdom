@@ -20,7 +20,7 @@ class TreasureHunter : AdventuresCard(NAME, CardType.ActionTraveller, 3), CardDi
         val numCardsGainedLastTurn = player.game.previousPlayer?.lastTurnSummary?.cardsGained?.size ?: 0
         if (numCardsGainedLastTurn > 0) {
             repeat(numCardsGainedLastTurn) {
-                player.gainSupplyCard(Silver())
+                player.gainSupplyCard(Silver(), true)
             }
         }
     }

@@ -174,6 +174,46 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if p.plusCardTokenSupplyPile??>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        +1 Card token on: ${p.plusCardTokenSupplyPile}
+                                    </td>
+                                    <td>
+                                        Yes
+                                    </td>
+                                </tr>
+                            </#if>
+                            <#if p.plusActionTokenSupplyPile??>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        +1 Action token on: ${p.plusActionTokenSupplyPile}
+                                    </td>
+                                    <td>
+                                        Yes
+                                    </td>
+                                </tr>
+                            </#if>
+                            <#if p.plusBuyTokenSupplyPile??>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        +1 Buy token on: ${p.plusBuyTokenSupplyPile}
+                                    </td>
+                                    <td>
+                                        Yes
+                                    </td>
+                                </tr>
+                            </#if>
+                            <#if p.plusCoinTokenSupplyPile??>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        +$1 token on: ${p.plusCoinTokenSupplyPile}
+                                    </td>
+                                    <td>
+                                        Yes
+                                    </td>
+                                </tr>
+                            </#if>
                         </table>
                     </td>
                 </tr>

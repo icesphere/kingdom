@@ -48,6 +48,18 @@
         <#if player.minusCardTokenOnDeck>
             <td class="handAreaTopRow">-1 Card token</td>
         </#if>
+        <#if player.plusCardTokenSupplyPile??>
+            <td class="handAreaTopRow">+1 Card token on: ${player.plusCardTokenSupplyPile}</td>
+        </#if>
+        <#if player.plusActionTokenSupplyPile??>
+            <td class="handAreaTopRow">+1 Action token on: ${player.plusActionTokenSupplyPile}</td>
+        </#if>
+        <#if player.plusBuyTokenSupplyPile??>
+            <td class="handAreaTopRow">+1 Buy token on: ${player.plusBuyTokenSupplyPile}</td>
+        </#if>
+        <#if player.plusCoinTokenSupplyPile??>
+            <td class="handAreaTopRow">+$1 token on: ${player.plusCoinTokenSupplyPile}</td>
+        </#if>
     </tr>
 </table>
 <table style="width:100%">

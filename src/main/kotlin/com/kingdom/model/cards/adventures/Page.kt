@@ -12,6 +12,7 @@ class Page : AdventuresCard(NAME, CardType.ActionTraveller, 2), GameSetupModifie
     init {
         addCards = 1
         addActions = 1
+        isPlayTreasureCardsRequired = true
         special = "When you discard this from play, you may exchange it for a Treasure Hunter."
     }
 
@@ -27,6 +28,8 @@ class Page : AdventuresCard(NAME, CardType.ActionTraveller, 2), GameSetupModifie
 
         game.cardsNotInSupply.add(Champion())
         game.setupAmountForPile(Champion.NAME, 5)
+
+        game.isShowDuration = true
     }
 
     override fun onCardDiscarded(player: Player) {

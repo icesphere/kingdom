@@ -10,9 +10,9 @@ import com.kingdom.model.players.Player
 class Peasant : AdventuresCard(NAME, CardType.ActionTraveller, 2), GameSetupModifier, CardDiscardedFromPlayListener, ChoiceActionCard {
 
     init {
-        testing = true
         addBuys = 1
         addCoins = 1
+        isPlayTreasureCardsRequired = true
         special = "When you discard this from play, you may exchange it for a Soldier."
     }
 
@@ -28,6 +28,8 @@ class Peasant : AdventuresCard(NAME, CardType.ActionTraveller, 2), GameSetupModi
 
         game.cardsNotInSupply.add(Teacher())
         game.setupAmountForPile(Teacher.NAME, 5)
+
+        game.isShowTavern = true
     }
 
     override fun onCardDiscarded(player: Player) {

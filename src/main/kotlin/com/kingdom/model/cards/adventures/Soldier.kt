@@ -11,11 +11,11 @@ class Soldier : AdventuresCard(NAME, CardType.ActionAttackTraveller, 3), CardDis
     init {
         addCoins = 2
         special = "+\$1 per other Attack you have in play. Each other player with 4 or more cards in hand discards a card. When you discard this from play, you may exchange it for a Fugitive. (This is not in the Supply.)"
-        textSize = 85
+        textSize = 101
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.addCoins(player.inPlay.count { it.isAttack })
+        player.addCoins(player.inPlay.count { it != this && it.isAttack })
         player.triggerAttack(this)
     }
 

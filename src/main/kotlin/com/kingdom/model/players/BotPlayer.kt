@@ -872,7 +872,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun chooseCardFromHand(text: String, chooseCardActionCard: ChooseCardActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
-        val cards = hand.filter { cardActionableExpression == null || cardActionableExpression.invoke(it) }
+        val cards = hand.filter { cardActionableExpression == null || cardActionableExpression(it) }
 
         if (cards.isEmpty()) {
             return
@@ -902,21 +902,25 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     override fun chooseCardsFromHand(text: String, numToChoose: Int, optional: Boolean, chooseCardsActionCard: ChooseCardsActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
         //todo better logic
 
-        val cards = if (hand.size < numToChoose) {
-            hand
+        val availableCards = hand.filter { cardActionableExpression == null || cardActionableExpression(it) }
+
+        val cards = if (availableCards.size < numToChoose) {
+            availableCards
         } else {
-            hand.subList(0, numToChoose)
+            availableCards.subList(0, numToChoose)
         }
 
         chooseCardsActionCard.onCardsChosen(this, cards)
     }
 
-    override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard) {
-        if (game.availableCards.isEmpty()) {
+    override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard, cardActionableExpression: ((card: Card) -> Boolean)?, info: Any?) {
+        val availableCards = game.availableCards.filter { cardActionableExpression == null || cardActionableExpression(it) }
+
+        if (availableCards.isEmpty()) {
             return
         }
 
-        chooseCardActionCard.onCardChosen(this, game.availableCards.maxBy { getBuyCardScore(it) }!!)
+        chooseCardActionCard.onCardChosen(this, availableCards.maxBy { getBuyCardScore(it) }!!, info)
     }
 
     override fun chooseCardAction(text: String, chooseCardActionCard: ChooseCardActionCard, cardsToSelectFrom: List<Card>, optional: Boolean, info: Any?) {
