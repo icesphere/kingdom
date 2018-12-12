@@ -622,6 +622,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         refreshSupply()
     }
 
+    fun exchangeCardInSupply(putBackInSupply: Card, takeFromSupply: Card) {
+        returnCardToSupply(putBackInSupply)
+        removeCardFromSupply(takeFromSupply)
+    }
+
     private val nonEmptyPiles: Int
         get() = allCards.filter { numInPileMap[it.name]!! > 0 }.size
 

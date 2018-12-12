@@ -76,6 +76,8 @@ abstract class Card(
             CardType.ActionReserve -> "Action - Reserve"
             CardType.ActionReserveVictory -> "Action - Reserve - Victory"
             CardType.ActionDurationReaction -> "Action - Duration - Reaction"
+            CardType.ActionTraveller -> "Action - Traveller"
+            CardType.ActionAttackTraveller -> "Action - Attack - Traveller"
         }
 
     val numTypes: Int
@@ -105,6 +107,8 @@ abstract class Card(
             CardType.ActionReserveVictory -> 3
             CardType.ActionDurationReaction -> 3
             CardType.ActionAttackDuration -> 3
+            CardType.ActionTraveller -> 2
+            CardType.ActionAttackTraveller -> 3
         }
 
     val isSpecialCard: Boolean
@@ -158,7 +162,7 @@ abstract class Card(
         get() = type == CardType.VictoryReaction
 
     val isAction: Boolean
-        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionAttackDuration || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionRuins || type == CardType.ActionShelter || type == CardType.ActionLooter || type == CardType.ActionAttackLooter || type == CardType.ActionReserve || type == CardType.ActionReserveVictory || type == CardType.ActionDurationReaction
+        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionAttackDuration || type == CardType.ActionReaction || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.DurationVictory || type == CardType.ActionRuins || type == CardType.ActionShelter || type == CardType.ActionLooter || type == CardType.ActionAttackLooter || type == CardType.ActionReserve || type == CardType.ActionReserveVictory || type == CardType.ActionDurationReaction || type == CardType.ActionTraveller || type == CardType.ActionAttackTraveller
 
     open val isTerminalAction: Boolean
         get() = isAction && addActions == 0
@@ -183,6 +187,9 @@ abstract class Card(
 
     val isLooter: Boolean
         get() = type == CardType.ActionLooter || type == CardType.ActionAttackLooter
+
+    val isTraveller: Boolean
+        get() = type == CardType.ActionTraveller || type == CardType.ActionAttackTraveller
 
     val isCurseOnly: Boolean
         get() = name == Curse.NAME
@@ -212,7 +219,7 @@ abstract class Card(
         get() = name == Colony.NAME
 
     val isAttack: Boolean
-        get() = type == CardType.ActionAttack || type == CardType.ActionAttackDuration || type == CardType.ActionAttackLooter || type == CardType.TreasureAttack
+        get() = type == CardType.ActionAttack || type == CardType.ActionAttackDuration || type == CardType.ActionAttackLooter || type == CardType.TreasureAttack || type == CardType.ActionAttackTraveller
 
     val backgroundColor: CardColor
         get() = when {

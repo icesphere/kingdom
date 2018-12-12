@@ -459,6 +459,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
+    fun exchangeDiscardedCard(discardedCard: Card, exchangeToCard: Card) {
+        removeCardFromDiscard(discardedCard)
+        game.exchangeCardInSupply(discardedCard, exchangeToCard)
+        addCardToDiscard(exchangeToCard)
+        addEventLogWithUsername("Exchanged ${discardedCard.cardNameWithBackgroundColor} for ${exchangeToCard.cardNameWithBackgroundColor}")
+    }
+
     fun trashCardFromDiscard(card: Card) {
         addEventLogWithUsername("trashed " + card.cardNameWithBackgroundColor + " from discard")
 

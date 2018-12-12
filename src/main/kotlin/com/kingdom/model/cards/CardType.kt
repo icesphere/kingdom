@@ -25,5 +25,7 @@ enum class CardType {
     TreasureReserve,
     ActionReserve,
     ActionReserveVictory,
-    ActionDurationReaction
+    ActionDurationReaction,
+    ActionTraveller,
+    ActionAttackTraveller
 }
