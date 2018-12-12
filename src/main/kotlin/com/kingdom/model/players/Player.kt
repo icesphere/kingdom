@@ -445,6 +445,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     private fun finishEndTurn(isAutoEnd: Boolean = false) {
+        finishEndTurnAfterResolvingActions = false
+
         drawCards(5)
 
         isYourTurn = false
