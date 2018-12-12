@@ -262,6 +262,7 @@ class CardRepository {
                 Messenger(),
                 Miser(),
                 Page(),
+                Peasant(),
                 Port(),
                 Ranger(),
                 Ratcatcher(),
