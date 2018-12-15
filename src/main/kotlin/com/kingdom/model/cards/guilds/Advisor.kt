@@ -29,11 +29,15 @@ class Advisor : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard {
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+        @Suppress("UNCHECKED_CAST")
         val cards = info as List<Card>
+
         val cardToDiscard = cards[choice]
         player.addCardToDiscard(cardToDiscard, showLog = true)
+
         val cardsToPutInHand = cards - cardToDiscard
         player.addCardsToHand(cardsToPutInHand)
+
         player.addEventLogWithUsername("added ${cardsToPutInHand.groupedString} to hand")
     }
 

@@ -1,13 +1,16 @@
 package com.kingdom.model.cards.adventures
 
-import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.actions.ChooseCardActionCardOptional
 import com.kingdom.model.cards.listeners.CardDiscardedFromPlayListener
 import com.kingdom.model.players.Player
 
-class Disciple : AdventuresCard(NAME, CardType.ActionTraveller, 5), CardDiscardedFromPlayListener, ChoiceActionCard, ChooseCardActionCardOptional {
+class Disciple : AdventuresCard(NAME, CardType.ActionTraveller, 5), CardDiscardedFromPlayListener, ChoiceActionCard, ChooseCardActionCardOptional, CardRepeater {
+
+    override var cardBeingRepeated: Card? = null
+
+    override val timesRepeated: Int = 1
 
     init {
         special = "You may play an Action card from your hand twice. Gain a copy of it. When you discard this from play, you may exchange it for a Teacher. (This is not in the Supply.)"
@@ -19,11 +22,7 @@ class Disciple : AdventuresCard(NAME, CardType.ActionTraveller, 5), CardDiscarde
     }
 
     override fun onCardChosen(player: Player, card: Card?, info: Any?) {
-        if (card != null) {
-            player.addActions(1)
-            player.playCard(card)
-            player.addRepeatCardAction(card)
-        }
+        handleCardToRepeatChosen(card, player)
     }
 
     override fun onCardDiscarded(player: Player) {
@@ -38,6 +37,10 @@ class Disciple : AdventuresCard(NAME, CardType.ActionTraveller, 5), CardDiscarde
         if (choice == 1) {
             player.exchangeDiscardedCard(this, Teacher())
         }
+    }
+
+    override fun removedFromPlay(player: Player) {
+        cardBeingRepeated = null
     }
 
     companion object {

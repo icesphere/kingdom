@@ -388,6 +388,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         return when (choiceActionCard.name) {
             Advisor.NAME -> {
+                @Suppress("UNCHECKED_CAST")
                 val cards = info as List<Card>
                 return cards.indexOf(cards.maxBy { if (it.isVictoryOnly) -1 else it.cost })
             }
@@ -395,6 +396,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Baron.NAME -> 1
             Beggar.NAME -> 1
             Catacombs.NAME -> {
+                @Suppress("UNCHECKED_CAST")
                 val cards = info as List<Card>
                 if (cards.sumBy { getBuyCardScore(it) } >= 9) 1 else 2
             }

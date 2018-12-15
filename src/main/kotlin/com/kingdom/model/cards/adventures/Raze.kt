@@ -50,7 +50,9 @@ class Raze : AdventuresCard(NAME, CardType.Action, 2), ChoiceActionCard, TrashCa
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
+        @Suppress("UNCHECKED_CAST")
         val cards = info as List<Card>
+
         player.addCardToHand(card, true)
         val cardsToDiscard = cards - card
         if (cardsToDiscard.isNotEmpty()) {

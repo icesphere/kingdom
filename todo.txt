@@ -1,4 +1,4 @@
-handle repeated actions with duration cards
+handle throne room a throne room which then copies a duration card
 
 cancel a created game that hasn't started yet has issues
 

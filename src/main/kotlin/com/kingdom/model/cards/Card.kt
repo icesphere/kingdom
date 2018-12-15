@@ -34,7 +34,6 @@ abstract class Card(
         var isDisableSelect: Boolean = false,
         var isAutoSelect: Boolean = false,
         var isActivated: Boolean = false,
-        var isCopied: Boolean = false,
         var isDefense: Boolean = false,
         var isTrashingCard: Boolean = false,
         var isTrashingFromHandRequiredCard: Boolean = false,

@@ -58,6 +58,7 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
+        @Suppress("UNCHECKED_CAST")
         val cardsThatCanBeTrashed = info as MutableList<Card>
 
         player.addEventLog("${this.cardNameWithBackgroundColor} trashed ${player.username}'s ${card.cardNameWithBackgroundColor}")

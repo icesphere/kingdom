@@ -422,16 +422,18 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         bought.clear()
         played.clear()
 
-        val nonPermanentDurationCards = durationCards.filter { it !is PermanentDuration }
+        val nonPermanentDurationCards = durationCards.filterNot { it is PermanentDuration || (it is CardRepeater && it.cardBeingRepeated is PermanentDuration) }
 
         nonPermanentDurationCards.forEach { addCardToDiscard(it, false, false) }
 
         durationCards.removeAll(nonPermanentDurationCards)
 
         for (card in inPlay) {
-            if (card.isDuration) {
+            if (card.isDuration || (card is CardRepeater && card.cardBeingRepeated?.isDuration == true)) {
                 durationCards.add(card)
-                cardRemovedFromPlay(card)
+
+                card.isSelected = false
+                card.isHighlighted = false
             } else {
                 addCardToDiscard(card, false, false)
 
@@ -1140,9 +1142,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         cardsSetAsideUntilStartOfTurn.clear()
 
-        durationCards.forEach {
-            if (it is StartOfTurnDurationAction) {
-                it.durationStartOfTurnAction(this)
+        durationCards.forEach { card ->
+            if (card is StartOfTurnDurationAction) {
+                card.durationStartOfTurnAction(this)
+            } else if (card is CardRepeater && card.cardBeingRepeated is StartOfTurnDurationAction) {
+                val durationCard = card.cardBeingRepeated as StartOfTurnDurationAction
+
+                repeat(card.timesRepeated) {
+                    durationCard.durationStartOfTurnAction(this)
+                }
             }
         }
 
@@ -1152,8 +1160,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     abstract fun takeTurn()
-
-    abstract fun addCardAction(card: CardActionCard, text: String)
 
     fun addRepeatCardAction(card: Card) {
         actionsQueue.add(RepeatCardAction(card))
@@ -1434,10 +1440,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     abstract fun chooseCardAction(text: String,
-                         chooseCardActionCard: ChooseCardActionCard,
-                         cardsToSelectFrom: List<Card>,
-                         optional: Boolean,
-                         info: Any? = null)
+                                  chooseCardActionCard: ChooseCardActionCard,
+                                  cardsToSelectFrom: List<Card>,
+                                  optional: Boolean,
+                                  info: Any? = null)
 
     abstract fun chooseCardsAction(numCardsToChoose: Int,
                                    text: String,
@@ -1460,7 +1466,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         val cardsFound = mutableListOf<Card>()
 
-        while(true) {
+        while (true) {
             val card = removeTopCardOfDeck()
             if (card != null) {
                 revealedCards.add(card)

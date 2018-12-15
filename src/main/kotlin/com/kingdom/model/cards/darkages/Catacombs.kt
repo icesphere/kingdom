@@ -23,6 +23,7 @@ class Catacombs : DarkAgesCard(NAME, CardType.Action, 5), ChoiceActionCard, Afte
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+        @Suppress("UNCHECKED_CAST")
         val cards = info as List<Card>
 
         if (choice == 1) {
