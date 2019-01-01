@@ -109,10 +109,10 @@
                 <div style="padding-top:10px;float:left;clear:both;">
                     <div style="float:left;"><span class="label">Card Selection:</span></div>
                     <div style="clear:both;float:left;padding-left:10px;">
-                        <input type="radio" name="generateType" value="random" onclick="toggleGenerateType()" checked="true"/> Random
+                        <input id="generateTypeRandom" type="radio" name="generateType" value="random" onclick="toggleGenerateType()" checked="true"/> <label for="generateTypeRandom">Random</label>
                     </div>
                     <div style="float:left;padding-left:10px;">
-                        <input type="radio" name="generateType" value="custom" onclick="toggleGenerateType()"/> Custom
+                        <input id="generateTypeCustom" type="radio" name="generateType" value="custom" onclick="toggleGenerateType()"/> <label for="generateTypeCustom">Custom</label>
                     </div>
                 </div>
                 <div id="decks" style="padding-top:10px;float:left;clear:both;">
@@ -139,6 +139,18 @@
                                 </select>
                             </div>
                         </#list>
+                    </div>
+                </div>
+                <div id="events" style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label">Events:</span></div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        <input id="eventSelectionNone" type="radio" name="eventSelection" value="none" onclick="toggleGenerateType()"/> <label for="eventSelectionNone">None</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="eventSelectionRandom" type="radio" name="eventSelection" value="random" onclick="toggleGenerateType()" checked="true"/> <label for="eventSelectionRandom">Random</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="eventSelectionCustom" type="radio" name="eventSelection" value="custom" onclick="toggleGenerateType()"/> <label for="eventSelectionCustom">Custom</label>
                     </div>
                 </div>
                 <div id="randomizingOptions" style="padding-top:10px;float:left;clear:both;">

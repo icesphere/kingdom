@@ -109,6 +109,7 @@ class GameController(private val cardManager: CardManager,
     private fun addSelectCardsObjects(user: User, modelAndView: ModelAndView, includeTesting: Boolean) {
         modelAndView.addObject("user", user)
         modelAndView.addObject("decks", getDecks(includeTesting))
+        modelAndView.addObject("events", cardManager.allEvents)
         modelAndView.addObject("excludedCards", user.excludedCardNames)
     }
 

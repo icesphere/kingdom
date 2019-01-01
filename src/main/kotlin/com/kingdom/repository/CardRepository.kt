@@ -2,7 +2,9 @@ package com.kingdom.repository
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.Event
 import com.kingdom.model.cards.adventures.*
+import com.kingdom.model.cards.adventures.events.Alms
 import com.kingdom.model.cards.cornucopia.*
 import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.darkages.ruins.*
@@ -274,9 +276,17 @@ class CardRepository {
                 TreasureTrove()
         )
 
+    val adventuresEvents: List<Event>
+        get() = listOf(
+                Alms()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
                 hinterlandsCards + darkAgesCards + guildsCards + adventuresCards
+
+    val allEvents: List<Event>
+        get() = adventuresEvents
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {

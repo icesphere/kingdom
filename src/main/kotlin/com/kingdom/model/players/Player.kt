@@ -20,6 +20,7 @@ import com.kingdom.util.KingdomUtil
 import com.kingdom.util.groupedString
 import java.util.*
 import java.util.function.Function
+import kotlin.collections.ArrayList
 
 abstract class Player protected constructor(val user: User, val game: Game) {
     var deck: MutableList<Card> = ArrayList()
@@ -36,9 +37,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val cardsInDiscardCopy: List<Card>
         get() = cardsInDiscard.map { game.getNewInstanceOfCard(it.name) }
 
-    val bought: MutableList<Card> = ArrayList()
+    private val cardsBought: MutableList<Card> = ArrayList()
     val played: MutableList<Card> = ArrayList()
     val inPlay: MutableList<Card> = ArrayList()
+
+    val eventsBought: MutableList<Event> = ArrayList()
 
     val inPlayWithDuration: List<Card>
         get() = inPlay + durationCards
@@ -154,7 +157,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = (game.cardsPlayed - game.treasureCardsPlayedInActionPhase).any { it.isTreasure }
 
     val isCardsBought: Boolean
-        get() = game.cardsBought.isNotEmpty()
+        get() = cardsBought.isNotEmpty() || eventsBought.isNotEmpty()
 
     val isOpponentHasAction: Boolean
         get() = opponents.any { it.currentAction != null }
@@ -419,8 +422,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         cardsUnavailableToBuyThisTurn.clear()
 
-        bought.clear()
+        cardsBought.clear()
         played.clear()
+
+        eventsBought.clear()
 
         val nonPermanentDurationCards = durationCards.filterNot { it is PermanentDuration || (it is CardRepeater && it.cardBeingRepeated is PermanentDuration) }
 
@@ -684,12 +689,23 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun gainCardFromTrash(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?)
 
+    fun buyEvent(event: Event) {
+        if (event.isEventActionable(this)) {
+            addEventLogWithUsername("bought event: " + event.name)
+            coins -= event.cost
+            buys -= 1
+            eventsBought.add(event)
+            currentTurnSummary.eventsBought.add(event)
+            event.cardPlayed(this)
+        }
+    }
+
     fun buyCard(card: Card) {
         if (availableCoins >= this.getCardCostWithModifiers(card)) {
             addEventLogWithUsername("bought card: " + card.cardNameWithBackgroundColor)
             coins -= this.getCardCostWithModifiers(card)
             buys -= 1
-            bought.add(card)
+            cardsBought.add(card)
             game.cardsBought.add(card)
             currentTurnSummary.cardsBought.add(card)
 

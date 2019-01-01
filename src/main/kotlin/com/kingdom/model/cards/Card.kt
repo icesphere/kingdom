@@ -77,6 +77,7 @@ abstract class Card(
             CardType.ActionDurationReaction -> "Action - Duration - Reaction"
             CardType.ActionTraveller -> "Action - Traveller"
             CardType.ActionAttackTraveller -> "Action - Attack - Traveller"
+            CardType.Event -> "Event"
         }
 
     val numTypes: Int
@@ -108,6 +109,7 @@ abstract class Card(
             CardType.ActionAttackDuration -> 3
             CardType.ActionTraveller -> 2
             CardType.ActionAttackTraveller -> 3
+            CardType.Event -> 1
         }
 
     val isSpecialCard: Boolean
@@ -343,9 +345,11 @@ abstract class Card(
         }
 
         if (special.isNotBlank()) {
-            player.opponentsInOrder.forEach { opponent ->
-                opponent.hand.filter { it is BeforeOpponentCardPlayedListener }
-                        .forEach { (it as BeforeOpponentCardPlayedListener).onBeforeOpponentCardPlayed(this, opponent, player) }
+            if (this !is Event) {
+                player.opponentsInOrder.forEach { opponent ->
+                    opponent.hand.filter { it is BeforeOpponentCardPlayedListener }
+                            .forEach { (it as BeforeOpponentCardPlayedListener).onBeforeOpponentCardPlayed(this, opponent, player) }
+                }
             }
 
             cardPlayedSpecialAction(player)
@@ -367,6 +371,7 @@ abstract class Card(
         return when (cardLocation) {
             CardLocation.Hand -> isHandCardActionable(player)
             CardLocation.Supply -> isSupplyCardActionable(player)
+            CardLocation.Event -> (this as Event).isEventActionable(player)
             else -> false
         }
     }

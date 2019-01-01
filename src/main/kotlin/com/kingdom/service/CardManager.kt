@@ -3,6 +3,7 @@ package com.kingdom.service
 import com.kingdom.model.Game
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.Event
 import com.kingdom.repository.CardRepository
 import com.kingdom.util.CardRandomizer
 import org.springframework.stereotype.Service
@@ -16,6 +17,9 @@ class CardManager(private val cardRepository: CardRepository,
 
     val allCards: List<Card>
         get() = cardRepository.allCards
+
+    val allEvents: List<Event>
+        get() = cardRepository.allEvents
 
     val shelters: List<Card>
         get() = cardRepository.shelters

@@ -2,6 +2,7 @@ package com.kingdom.model
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.Event
 import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.cards.darkages.Spoils
@@ -61,6 +62,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var kingdomCards = mutableListOf<Card>()
 
     private val supplyCards = ArrayList<Card>()
+
+    var events = mutableListOf<Event>()
 
     val cardsInSupply: List<Card>
         get() {

@@ -26,6 +26,12 @@
                     </div>
                 </#if>
 
+                <#if turnSummary.eventsBoughtString?has_content>
+                    <div class="historyLine">
+                        Gained: ${turnSummary.eventsBoughtString}
+                    </div>
+                </#if>
+
                 <#if turnSummary.cardsPlayedString?has_content>
                     <div class="historyLine">
                         Played: ${turnSummary.cardsPlayedString}
