@@ -16,7 +16,7 @@
         <script type="text/javascript" >
             var createGame = ${createGame?string};
         </script>
-        <script type="text/javascript" src="js/selectCards.js?7"></script>
+        <script type="text/javascript" src="js/selectCards.js?8"></script>
 	</head>
 	<body>
         <div class="topGradient"></div>
@@ -141,16 +141,24 @@
                         </#list>
                     </div>
                 </div>
-                <div id="events" style="padding-top:10px;float:left;clear:both;">
-                    <div style="float:left;"><span class="label">Events:</span></div>
+                <div style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label"># Events:</span></div>
                     <div style="clear:both;float:left;padding-left:10px;">
-                        <input id="eventSelectionNone" type="radio" name="eventSelection" value="none" onclick="toggleGenerateType()"/> <label for="eventSelectionNone">None</label>
+                        <select id="numEvents" name="numEvents">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2" selected>2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label">Event Selection:</span></div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        <input id="eventSelectionRandom" type="radio" name="eventSelection" value="random" onclick="toggleEventSelection()" checked="true"/> <label for="eventSelectionRandom">Random</label>
                     </div>
                     <div style="float:left;padding-left:10px;">
-                        <input id="eventSelectionRandom" type="radio" name="eventSelection" value="random" onclick="toggleGenerateType()" checked="true"/> <label for="eventSelectionRandom">Random</label>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input id="eventSelectionCustom" type="radio" name="eventSelection" value="custom" onclick="toggleGenerateType()"/> <label for="eventSelectionCustom">Custom</label>
+                        <input id="eventSelectionCustom" type="radio" name="eventSelection" value="custom" onclick="toggleEventSelection()"/> <label for="eventSelectionCustom">Custom</label>
                     </div>
                 </div>
                 <div id="randomizingOptions" style="padding-top:10px;float:left;clear:both;">
@@ -211,6 +219,28 @@
                             </div>
                         </#list>
 
+                    </div>
+                </div>
+
+                <div id="customEvents" style="display:none;float:left;clear:both;">
+                    <div class="label" style="padding-top:10px;">
+                        Choose Specific Events:
+                    </div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        (Events marked with an * require treasure cards to be played. If you select any of these events, the Play Treasure Cards option will be used)
+                    </div>
+                    <div style="clear:both;float:left;">
+                        <div style="float:left;padding-left:10px;color:red;">Events selected:</div><div id="numEventsSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining events will be randomized based on selected decks)</div>
+                    </div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        <div class="customCardsDeck">
+                            <div style="float:left;" class="label">Events</div>
+                            <#list events as event>
+                                <div style="float:left;clear:both;">
+                                    <#include "createGameEventRow.ftl">
+                                </div>
+                            </#list>
+                        </div>
                     </div>
                 </div>
 

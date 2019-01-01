@@ -39,7 +39,10 @@ function loadSelectedValuesFromLocalStorage() {
 function createGame() {
     var decksSelected = $("input[name^='deck_']:checked").length;
     var generateType = $('input[name=generateType]:checked').val();
+    var eventSelection = $('input[name=eventSelection]:checked').val();
     var cardsSelected = $("input[name^='card_']:checked:visible").length;
+    var eventsSelected = $("input[name^='event_']:checked:visible").length;
+    var numEvents = $("#numEvents option:selected").val()
     var numHumanPlayers = 0;
     $('[value*="human"]').each(function () {
         if($(this).attr('selected')) {
@@ -51,6 +54,9 @@ function createGame() {
     }
     else if(generateType == "custom" && cardsSelected > 10) {
         alert("You can't select more than 10 cards");
+    }
+    else if(eventSelection == "custom" && eventsSelected > numEvents) {
+        alert("You selected too many events");
     }
     else {
         saveSelectedValuesToLocalStorage();
@@ -97,25 +103,36 @@ function selectCard() {
     $("#numCardsSelected").html(cardsSelected);
 }
 
+function selectEvent() {
+    var eventsSelected = $("input[name^='event_']:checked:visible").length;
+    $("#numEventsSelected").html(eventsSelected);
+}
+
 function toggleGenerateType(){
     var generateType = $('input[name=generateType]:checked').val();
-    if(generateType == "custom"){
+    if(generateType == "custom") {
         $("#customCards").show();
-        $("#decks").show();
-        $("#cardSelectedRow").show();
         $("#randomizingOptions").hide();
         if(createGame) {
             $("#decksWeight").show();
         }
     }
-    else{
+    else {
         $("#customCards").hide();
-        $("#decks").show();
-        $("#cardSelectedRow").hide();
         $("#randomizingOptions").show();
         if(createGame) {
             $("#decksWeight").show();
         }
+    }
+}
+
+function toggleEventSelection(){
+    var eventSelection = $('input[name=eventSelection]:checked').val();
+    if (eventSelection == "custom") {
+        $("#customEvents").show();
+    }
+    else {
+        $("#customEvents").hide();
     }
 }
 

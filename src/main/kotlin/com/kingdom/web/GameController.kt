@@ -304,8 +304,15 @@ class GameController(private val cardManager: CardManager,
         val includeShelters = !game.isExcludeShelters && (game.isIncludeShelters || game.kingdomCards[1].deck == Deck.DarkAges)
 
         var playTreasureCardsRequired = false
+
         for (card in game.kingdomCards) {
             if (card.isPlayTreasureCardsRequired) {
+                playTreasureCardsRequired = true
+            }
+        }
+
+        for (event in game.events) {
+            if (event.isPlayTreasureCardsRequired) {
                 playTreasureCardsRequired = true
             }
         }
@@ -435,6 +442,7 @@ class GameController(private val cardManager: CardManager,
                 var hasBlackMarket = false
                 var playTreasureCardsRequired = false
                 var includePrizes = false
+
                 for (card in game.kingdomCards) {
                     if (card.name == "Black Market") {
                         hasBlackMarket = true
@@ -445,6 +453,13 @@ class GameController(private val cardManager: CardManager,
                         playTreasureCardsRequired = true
                     }
                 }
+
+                for (event in game.events) {
+                    if (event.isPlayTreasureCardsRequired) {
+                        playTreasureCardsRequired = true
+                    }
+                }
+
                 if (hasBlackMarket) {
                     setBlackMarketCards(game)
                 }
