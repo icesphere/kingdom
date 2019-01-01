@@ -18,6 +18,8 @@ class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForB
         isDefense = true
     }
 
+    var ignoreNextCardGained = false
+
     override fun cardPlayedSpecialAction(player: Player) {
         player.trashCardsFromHandForBenefit(this, 1, special)
     }
@@ -31,6 +33,12 @@ class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForB
     }
 
     override fun onCardGained(card: Card, player: Player): Boolean {
+
+        if (ignoreNextCardGained) {
+            ignoreNextCardGained = false
+            return false
+        }
+
         if (card.isSilver) {
             return false
         }
@@ -46,6 +54,7 @@ class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForB
             player.cardGained(Silver())
             player.addEventLogWithUsername("revealed ${this.cardNameWithBackgroundColor} to gain a ${Silver().cardNameWithBackgroundColor} instead of ${card.cardNameWithArticleAndBackgroundColor}")
         } else {
+            ignoreNextCardGained = true
             player.cardGained(card)
         }
     }
