@@ -1,6 +1,7 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.Event
 import java.util.ArrayList
 
 class RandomizingOptions {
@@ -8,7 +9,9 @@ class RandomizingOptions {
     var isOneWithBuy: Boolean = false
     var isOneWithActions: Boolean = false
     var isDefenseForAttack: Boolean = false
-    var customSelection: List<Card> = ArrayList(0)
+    var customCardSelection: List<Card> = ArrayList(0)
+    var numEvents: Int = 2
+    var customEventSelection: List<Event> = ArrayList(0)
     var excludedCards: List<Card> = ArrayList(0)
     var isSwappingCard: Boolean = false
     var cardToReplaceIndex: Int = 0

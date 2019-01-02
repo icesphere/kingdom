@@ -5,6 +5,8 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.Event
 import com.kingdom.model.cards.adventures.*
 import com.kingdom.model.cards.adventures.events.Alms
+import com.kingdom.model.cards.adventures.events.Borrow
+import com.kingdom.model.cards.adventures.events.Quest
 import com.kingdom.model.cards.cornucopia.*
 import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.darkages.ruins.*
@@ -278,7 +280,9 @@ class CardRepository {
 
     val adventuresEvents: List<Event>
         get() = listOf(
-                Alms()
+                Alms(),
+                Borrow(),
+                Quest()
         )
 
     val allCards: List<Card>

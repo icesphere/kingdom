@@ -4,6 +4,7 @@ import com.kingdom.model.Game
 import com.kingdom.model.RandomizingOptions
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.Event
 import com.kingdom.repository.CardRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -16,6 +17,10 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
     private lateinit var selectedCards: LinkedList<Card>
 
+    private var numEvents: Int = 2
+
+    private lateinit var selectedEvents: LinkedList<Event>
+
     private var cardSwapped: Boolean = false
     private var changingBaneCard: Boolean = false
 
@@ -26,8 +31,11 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         cardSwapped = false
         changingBaneCard = options.isSwappingCard && options.cardToReplaceIndex == 10
 
-        selectedCards = LinkedList()
-        selectedCards.addAll(options.customSelection)
+        selectedCards = LinkedList(options.customCardSelection)
+
+        selectedEvents = LinkedList(options.customEventSelection)
+
+        numEvents = options.numEvents
 
         rcs = RandomCardsSelected()
 
@@ -216,7 +224,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         swapOptions.isSwappingCard = true
         swapOptions.cardToReplace = cardToReplace
         swapOptions.cardToReplaceIndex = cardToReplaceIndex
-        swapOptions.customSelection = cards
+        swapOptions.customCardSelection = cards
         swapOptions.excludedCards.toMutableList().add(cardToReplace!!)
         setRandomKingdomCards(game, swapOptions)
     }

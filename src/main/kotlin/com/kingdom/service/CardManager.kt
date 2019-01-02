@@ -35,6 +35,10 @@ class CardManager(private val cardRepository: CardRepository,
         return allCards.first { it.name == cardName }
     }
 
+    fun getEvent(eventName: String): Event {
+        return allEvents.first { it.name == eventName }
+    }
+
     fun setRandomKingdomCards(game: Game) {
         cardRandomizer.setRandomKingdomCards(game, game.randomizingOptions!!)
     }
