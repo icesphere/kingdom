@@ -143,7 +143,7 @@ class GameController(private val cardManager: CardManager,
 
         game.decks = decks
 
-        cardManager.setRandomKingdomCards(game)
+        cardManager.setRandomKingdomCardsAndEvents(game)
 
         user.excludedCards = KingdomUtil.getCommaSeparatedCardNames(excludedCards)
     }
@@ -328,6 +328,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("player", HumanPlayer(user, game))
         modelAndView.addObject("currentPlayerId", -1)
         modelAndView.addObject("cards", game.kingdomCards)
+        modelAndView.addObject("events", game.events)
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
         modelAndView.addObject("includeShelters", includeShelters)
         modelAndView.addObject("playTreasureCardsRequired", playTreasureCardsRequired)
@@ -345,7 +346,7 @@ class GameController(private val cardManager: CardManager,
         }
         try {
             return if (game.status == GameStatus.BeingConfigured) {
-                cardManager.setRandomKingdomCards(game)
+                cardManager.setRandomKingdomCardsAndEvents(game)
                 confirmCards(request, response)
             } else {
                 if (game.status == GameStatus.InProgress) {
@@ -381,7 +382,29 @@ class GameController(private val cardManager: CardManager,
         } catch (t: Throwable) {
             return logErrorAndReturnEmpty(t, game)
         }
+    }
 
+    @RequestMapping("/swapEvent.html")
+    fun swapEvent(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        }
+        try {
+            return if (game.status == GameStatus.BeingConfigured) {
+                cardManager.swapEvent(game, request.getParameter("eventName"))
+                confirmCards(request, response)
+            } else {
+                if (game.status == GameStatus.InProgress) {
+                    ModelAndView("redirect:/showGame.html")
+                } else {
+                    ModelAndView("redirect:/showGameRooms.html")
+                }
+            }
+        } catch (t: Throwable) {
+            return logErrorAndReturnEmpty(t, game)
+        }
     }
 
     @RequestMapping("/togglePlatinumAndColony.html")
@@ -1126,6 +1149,9 @@ class GameController(private val cardManager: CardManager,
 
         val supplyCards = game.cardsInSupply.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
         modelAndView.addObject("supplyCards", supplyCards)
+
+        game.events.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Event) }
+        modelAndView.addObject("events", game.events)
 
         try {
             val bw = BeansWrapper()
@@ -2071,10 +2097,8 @@ class GameController(private val cardManager: CardManager,
             return ModelAndView("redirect:/login.html")
         }
         val modelAndView = ModelAndView("gameCards")
-        game.kingdomCards.forEach { it.isHighlighted = false }
 
-
-        val cards = game.kingdomCards.toMutableList()
+        val cards = game.kingdomCards.map { it.isHighlighted = false; it }.toMutableList()
 
         if (game.cardsNotInSupply.isNotEmpty()) {
             cards.addAll(game.cardsNotInSupply)
@@ -2089,6 +2113,7 @@ class GameController(private val cardManager: CardManager,
         }
 
         modelAndView.addObject("cards", cards)
+        modelAndView.addObject("events", game.events.map { it.isHighlighted = false; it })
         modelAndView.addObject("prizeCards", game.prizeCards)
         modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
         return modelAndView

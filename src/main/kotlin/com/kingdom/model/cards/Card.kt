@@ -222,6 +222,9 @@ abstract class Card(
     val isAttack: Boolean
         get() = type == CardType.ActionAttack || type == CardType.ActionAttackDuration || type == CardType.ActionAttackLooter || type == CardType.TreasureAttack || type == CardType.ActionAttackTraveller
 
+    val isEvent: Boolean
+        get() = type == CardType.Event
+
     val backgroundColor: CardColor
         get() = when {
             type == CardType.ActionVictory -> CardColor.ActionVictory

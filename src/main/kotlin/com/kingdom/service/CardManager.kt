@@ -39,12 +39,16 @@ class CardManager(private val cardRepository: CardRepository,
         return allEvents.first { it.name == eventName }
     }
 
-    fun setRandomKingdomCards(game: Game) {
-        cardRandomizer.setRandomKingdomCards(game, game.randomizingOptions!!)
+    fun setRandomKingdomCardsAndEvents(game: Game) {
+        cardRandomizer.setRandomKingdomCardsAndEvents(game, game.randomizingOptions!!)
     }
 
     fun swapRandomCard(game: Game, cardName: String) {
         cardRandomizer.swapRandomCard(game, cardName)
+    }
+
+    fun swapEvent(game: Game, eventName: String) {
+        cardRandomizer.swapEvent(game, eventName)
     }
 
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {

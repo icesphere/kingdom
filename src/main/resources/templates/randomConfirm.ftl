@@ -12,6 +12,11 @@
                 document.location = "swapRandomCard.html?cardName="+cardName;
             }
         </script>
+        <script type="text/javascript">
+            function swapEvent(eventName) {
+                document.location = "swapEvent.html?eventName="+eventName;
+            }
+        </script>
 	</head>
 	<body>
         <div class="topGradient"></div>
@@ -19,13 +24,30 @@
             <div style="padding-bottom:5px;">
                 Click a card to switch it out for a different one.
             </div>
-            <#if mobile>
-                <div style="padding-bottom:5px;">
-                    <a href="showGameCards.html" target="_blank">Card Details</a>
-                </div>
-                <div>
+            <div style="padding-bottom:5px;">
+                <a href="showGameCards.html" target="_blank">Card Details</a>
+            </div>
+            <div style="padding-bottom: 5px;">
+                <#if events?has_content>
+                    <div style="font-weight: bold; padding-bottom: 5px;">Kingdom Cards:</div>
+                </#if>
+                <#assign clickType="random">
+                <#list cards as card>
+                    <div style="float:left;padding-right:2px;padding-top:2px;">
+                        <#if cards?size == 11 && card_index == 10>
+                            <#assign baneCard = true>
+                        <#else>
+                            <#assign baneCard = false>
+                        </#if>
+                        <#include "gameCard.ftl">
+                    </div>
+                </#list>
+            </div>
+            <#if events?has_content>
+                <div style="clear: both; padding-top: 5px; padding-bottom: 5px;">
+                    <div style="font-weight: bold; padding-bottom: 5px;">Events:</div>
                     <#assign clickType="random">
-                    <#list cards as card>
+                    <#list events as card>
                         <div style="float:left;padding-right:2px;padding-top:2px;">
                             <#if cards?size == 11 && card_index == 10>
                                 <#assign baneCard = true>
@@ -36,22 +58,6 @@
                         </div>
                     </#list>
                 </div>
-            <#else>
-                <table>
-                    <tr>
-                        <#assign clickType="random">
-                        <#list cards as card>
-                            <#if card_index == 5>
-                                <#if cards?size == 11>
-                                    <td style="vertical-align:bottom;text-align:center;">(Bane Card)</td>
-                                </#if>
-                                </tr>
-                                <tr>
-                            </#if>
-                            <td style="vertical-align:top"><#include "gameCard.ftl"></td>
-                        </#list>
-                    </tr>
-                </table>
             </#if>
             <#if includeColonyAndPlatinum>
                 <div style="clear:both;padding-top:5px;">

@@ -4,7 +4,6 @@ import com.kingdom.model.Game
 import com.kingdom.model.RandomizingOptions
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
-import com.kingdom.model.cards.Event
 import com.kingdom.repository.CardRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -17,25 +16,26 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
     private lateinit var selectedCards: LinkedList<Card>
 
-    private var numEvents: Int = 2
-
-    private lateinit var selectedEvents: LinkedList<Event>
-
     private var cardSwapped: Boolean = false
     private var changingBaneCard: Boolean = false
 
-    fun setRandomKingdomCards(game: Game, options: RandomizingOptions) {
-        game.isRandomizerReplacementCardNotFound = false
+    fun setRandomKingdomCardsAndEvents(game: Game, options: RandomizingOptions) {
         this.options = options
+
+        addCards(game, options)
+
+        addEvents(game, options)
+    }
+
+    private fun addCards(game: Game, options: RandomizingOptions) {
+        game.isRandomizerReplacementCardNotFound = false
+
         val decks = game.decks
+
         cardSwapped = false
         changingBaneCard = options.isSwappingCard && options.cardToReplaceIndex == 10
 
         selectedCards = LinkedList(options.customCardSelection)
-
-        selectedEvents = LinkedList(options.customEventSelection)
-
-        numEvents = options.numEvents
 
         rcs = RandomCardsSelected()
 
@@ -133,7 +133,25 @@ class CardRandomizer(private val cardRepository: CardRepository) {
                 selectedCards.add(baneCard)
             }
         }
+
         game.kingdomCards = selectedCards
+    }
+
+    private fun addEvents(game: Game, options: RandomizingOptions) {
+
+        val events = cardRepository.allEvents.shuffled()
+
+        val numEvents = options.numEvents
+
+        val selectedEvents = LinkedList(options.customEventSelection)
+
+        if (selectedEvents.size < numEvents) {
+            val selectedEventNames = selectedEvents.map { it.name }
+            val availableEvents = events.filterNot { selectedEventNames.contains(it.name) }
+            selectedEvents.addAll(availableEvents.subList(0, numEvents - selectedEvents.size))
+        }
+
+        game.events = selectedEvents
     }
 
     private fun addBaneCard(): Boolean {
@@ -226,7 +244,26 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         swapOptions.cardToReplaceIndex = cardToReplaceIndex
         swapOptions.customCardSelection = cards
         swapOptions.excludedCards.toMutableList().add(cardToReplace!!)
-        setRandomKingdomCards(game, swapOptions)
+        setRandomKingdomCardsAndEvents(game, swapOptions)
+    }
+
+    fun swapEvent(game: Game, eventName: String) {
+
+        val events = cardRepository.allEvents.shuffled()
+
+        val numEvents = game.events.size
+
+        val selectedEvents = LinkedList(game.events)
+
+        val selectedEventNames = selectedEvents.map { it.name }
+
+        val availableEvents = events.filterNot { selectedEventNames.contains(it.name) }
+
+        selectedEvents.removeIf { it.name == eventName }
+
+        selectedEvents.addAll(availableEvents.subList(0, numEvents - selectedEvents.size))
+
+        game.events = selectedEvents
     }
 
     private fun getCardsByDeck(deck: Deck): MutableList<Card> {
