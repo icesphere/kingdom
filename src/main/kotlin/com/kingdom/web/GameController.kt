@@ -824,6 +824,7 @@ class GameController(private val cardManager: CardManager,
             "discard" -> CardLocation.Discard
             "playArea" -> CardLocation.PlayArea
             "cardAction" -> CardLocation.CardAction
+            "event" -> CardLocation.Event
             else -> CardLocation.Unknown
         }
     }
@@ -853,6 +854,13 @@ class GameController(private val cardManager: CardManager,
                             }
                         }
                     }
+                }
+            }
+            CardLocation.Event -> {
+                val eventCard = game.getNewInstanceOfEvent(cardName)
+
+                if (highlightEventCard(player, eventCard)) {
+                    player.buyEvent(eventCard)
                 }
             }
             CardLocation.Hand -> {
@@ -927,6 +935,10 @@ class GameController(private val cardManager: CardManager,
             action != null -> action.isCardActionable(card, CardLocation.Supply, player)
             else -> player.isCardBuyable(card)
         }
+    }
+
+    fun highlightEventCard(player: Player, card: Card?): Boolean {
+        return player.currentAction == null && card?.isActionable(player, CardLocation.Event) ?: false
     }
 
     @ResponseBody

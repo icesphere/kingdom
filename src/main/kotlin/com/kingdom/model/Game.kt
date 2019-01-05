@@ -78,6 +78,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     private val cardMap = HashMap<String, Card>()
 
+    private val eventMap = HashMap<String, Event>()
+
     val allCards: List<Card>
         get() = cardsInSupply + kingdomCards
 
@@ -308,6 +310,16 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 isShowTavern = true
             }
         }
+
+        events.forEach { event ->
+            eventMap[event.name] = event
+
+            if (event is GameSetupModifier) {
+                event.modifyGameSetup(this)
+            }
+        }
+
+        events.sortBy { it.cost }
 
         if (isIncludeRuins) {
             createRuinsPile()
@@ -724,6 +736,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     fun getNewInstanceOfCard(cardName: String): Card {
         val card = cardMap[cardName]!!
         return card.javaClass.kotlin.createInstance()
+    }
+
+    fun getNewInstanceOfEvent(eventName: String): Event {
+        val event = eventMap[eventName]!!
+        return event.javaClass.kotlin.createInstance()
     }
 
     private fun addComputerPlayers() {

@@ -283,7 +283,7 @@ function endTurnRefreshFinished() {
 }
 
 function clickCard(clickType, cardName, cardId, special){
-    if (!clickingCard && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand" || clickType == "cardAction")){
+    if (!clickingCard && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand" || clickType == "cardAction" || clickType == "event")){
         clickingCard = true;
         $.post("clickCard", {clickType: clickType, cardName: cardName, cardId: cardId}, function(data) {
             clickingCard = false;

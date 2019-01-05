@@ -696,6 +696,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             buys -= 1
             eventsBought.add(event)
             currentTurnSummary.eventsBought.add(event)
+            game.refreshCardsBought()
             event.cardPlayed(this)
         }
     }

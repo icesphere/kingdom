@@ -53,6 +53,28 @@
                 </tr>
             </table>
         </td>
+        <#if events?has_content>
+            <#assign clickType="event">
+            <td>
+                <table>
+                    <tr><td style="font-weight: bold; font-size: 14px; padding-bottom: 3px;">Events</td></tr>
+                    <tr>
+                        <#list events as card>
+                            <#if card_index == 1>
+                                </tr>
+                                <tr>
+                            </#if>
+                            <td>
+                                <#include "gameCard.ftl">
+                            </td>
+                        </#list>
+                        <#if events?size == 1>
+                            <tr><td style="height: 110px;">&#160;</td></tr>
+                        </#if>
+                    </tr>
+                </table>
+            </td>
+        </#if>
     </tr>
     <#if showTradeRouteTokens>
         <tr>
