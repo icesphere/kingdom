@@ -10,7 +10,7 @@ class ScoutingParty : AdventuresEvent(NAME, 2), ChooseCardsActionCard {
     init {
         addBuys = 1
         special = "Look at the top 5 cards of your deck. Discard 3 and put the rest back in any order."
-        fontSize = 10
+        fontSize = 9
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

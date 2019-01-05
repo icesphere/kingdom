@@ -281,6 +281,7 @@ class CardRepository {
                 Alms(),
                 Bonfire(),
                 Borrow(),
+                Expedition(),
                 Quest(),
                 Save(),
                 ScoutingParty(),

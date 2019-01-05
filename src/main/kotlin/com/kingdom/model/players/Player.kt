@@ -221,6 +221,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var cardToPutIntoHandAfterDrawingCardsAtEndOfTurn: Card? = null
 
+    var numExtraCardsToDrawAtEndOfTurn: Int = 0
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -474,7 +476,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     private fun finishEndTurn(isAutoEnd: Boolean = false) {
         finishEndTurnAfterResolvingActions = false
 
-        drawCards(5)
+        drawCards(5 + numExtraCardsToDrawAtEndOfTurn)
+
+        numExtraCardsToDrawAtEndOfTurn = 0
 
         if (cardToPutIntoHandAfterDrawingCardsAtEndOfTurn != null) {
             addCardToHand(cardToPutIntoHandAfterDrawingCardsAtEndOfTurn!!)

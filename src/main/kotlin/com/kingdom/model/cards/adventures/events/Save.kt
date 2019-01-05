@@ -7,6 +7,7 @@ import com.kingdom.model.players.Player
 class Save : AdventuresEvent(NAME, 1, true), ChooseCardActionCard {
 
     init {
+        isPlayTreasureCardsRequired = true
         special = "Once per turn: +1 Buy. Set aside a card from your hand, and put it into your hand at end of turn (after drawing)."
     }
 

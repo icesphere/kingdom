@@ -12,7 +12,7 @@ class TravellingFair : AdventuresEvent(NAME, 2), CardGainedListenerForEventsBoug
     init {
         addBuys = 2
         special = "When you gain a card this turn, you may put it onto your deck."
-        fontSize = 10
+        fontSize = 9
     }
 
     override fun onCardGained(card: Card, player: Player): Boolean {
