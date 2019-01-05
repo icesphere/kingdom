@@ -177,50 +177,60 @@
                             <#if p.plusCardTokenSupplyPile??>
                                 <tr>
                                     <td class="gameInfoLabel">
-                                        +1 Card token on: ${p.plusCardTokenSupplyPile}
+                                        +1 Card token on:
                                     </td>
                                     <td>
-                                        Yes
+                                        ${p.plusCardTokenSupplyPile}
                                     </td>
                                 </tr>
                             </#if>
                             <#if p.plusActionTokenSupplyPile??>
                                 <tr>
                                     <td class="gameInfoLabel">
-                                        +1 Action token on: ${p.plusActionTokenSupplyPile}
+                                        +1 Action token on:
                                     </td>
                                     <td>
-                                        Yes
+                                        ${p.plusActionTokenSupplyPile}
                                     </td>
                                 </tr>
                             </#if>
                             <#if p.plusBuyTokenSupplyPile??>
                                 <tr>
                                     <td class="gameInfoLabel">
-                                        +1 Buy token on: ${p.plusBuyTokenSupplyPile}
+                                        +1 Buy token on:
                                     </td>
                                     <td>
-                                        Yes
+                                        ${p.plusBuyTokenSupplyPile}
                                     </td>
                                 </tr>
                             </#if>
                             <#if p.plusCoinTokenSupplyPile??>
                                 <tr>
                                     <td class="gameInfoLabel">
-                                        +$1 token on: ${p.plusCoinTokenSupplyPile}
+                                        +$1 token on:
                                     </td>
                                     <td>
-                                        Yes
+                                        ${p.plusCoinTokenSupplyPile}
                                     </td>
                                 </tr>
                             </#if>
                             <#if p.minusTwoCostTokenSupplyPile??>
                                 <tr>
                                     <td class="gameInfoLabel">
-                                        -$2 cost token on: ${p.minusTwoCostTokenSupplyPile}
+                                        -$2 cost token on:
                                     </td>
                                     <td>
-                                        Yes
+                                        ${p.minusTwoCostTokenSupplyPile}
+                                    </td>
+                                </tr>
+                            </#if>
+                            <#if p.trashingTokenSupplyPile??>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        Trashing token on:
+                                    </td>
+                                    <td>
+                                        ${p.trashingTokenSupplyPile}
                                     </td>
                                 </tr>
                             </#if>

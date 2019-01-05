@@ -11,7 +11,7 @@ class Ferry : AdventuresEvent(NAME, 3), ChooseCardActionCard {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.chooseCardFromSupply("Choose which supply pile to put the token on", this, { c -> c.isAction })
+        player.chooseCardFromSupply("Choose which supply pile to put your -\$2 cost token on", this, { c -> c.isAction })
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {

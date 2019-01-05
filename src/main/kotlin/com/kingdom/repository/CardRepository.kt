@@ -283,6 +283,7 @@ class CardRepository {
                 Borrow(),
                 Expedition(),
                 Ferry(),
+                Plan(),
                 Quest(),
                 Save(),
                 ScoutingParty(),

@@ -63,6 +63,9 @@
         <#if player.minusTwoCostTokenSupplyPile??>
             <td class="handAreaTopRow">-$2 cost token on: ${player.minusTwoCostTokenSupplyPile}</td>
         </#if>
+        <#if player.trashingTokenSupplyPile??>
+            <td class="handAreaTopRow">Trashing token on: ${player.trashingTokenSupplyPile}</td>
+        </#if>
     </tr>
 </table>
 <table style="width:100%">
