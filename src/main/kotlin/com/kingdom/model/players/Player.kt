@@ -357,8 +357,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         coinsGainedThisTurn += coins
-        game.refreshPlayerSupply(this)
-        game.refreshPlayerCardsBought(this)
+        refreshSupply()
+        refreshCardsBought()
     }
 
     fun addVictoryCoins(victoryCoins: Int) {
@@ -384,7 +384,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
         this.buys += buys
-        game.refreshPlayerCardsBought(this)
+        refreshCardsBought()
     }
 
     fun endTurn(isAutoEnd: Boolean = false) {
@@ -517,8 +517,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
 
         if (!game.isPlayTreasureCards) {
-            game.refreshPlayerCardsBought(this)
-            game.refreshPlayerSupply(this)
+            refreshCardsBought()
+            refreshSupply()
         }
     }
 
@@ -537,8 +537,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
 
         if (!game.isPlayTreasureCards) {
-            game.refreshPlayerCardsBought(this)
-            game.refreshPlayerSupply(this)
+            refreshCardsBought()
+            refreshSupply()
         }
     }
 
@@ -632,6 +632,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         }
 
+        val cardGainedListenersForEventsBought = eventsBought.filter { it is CardGainedListenerForEventsBought }
+        for (listener in cardGainedListenersForEventsBought) {
+            val handled = (listener as CardGainedListenerForEventsBought).onCardGained(card, this)
+            if (handled) {
+                gainCardHandled = true
+                break
+            }
+        }
+
         if (gainCardHandled) {
             return
         }
@@ -703,7 +712,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             buys -= 1
             eventsBought.add(event)
             currentTurnSummary.eventsBought.add(event)
-            game.refreshCardsBought()
+            refreshCardsBought()
+            refreshSupply()
             event.cardPlayed(this)
         }
     }
@@ -992,8 +1002,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (!game.isPlayTreasureCards) {
-            game.refreshPlayerCardsBought(this)
-            game.refreshPlayerSupply(this)
+            refreshCardsBought()
+            refreshSupply()
         }
     }
 
@@ -1026,7 +1036,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             currentAction = action
             game.refreshPlayerCardAction(this)
             refreshPlayerHandArea()
-            game.refreshPlayerSupply(this)
+            refreshSupply()
         } else {
             action.onNotUsed(this)
             resolveActions()
@@ -1057,8 +1067,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
 
         if (!game.isPlayTreasureCards && card.addCoins > 0) {
-            game.refreshPlayerCardsBought(this)
-            game.refreshPlayerSupply(this)
+            refreshCardsBought()
+            refreshSupply()
         }
     }
 
@@ -1072,8 +1082,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
 
         if (!game.isPlayTreasureCards && cards.any { it.addCoins > 0 }) {
-            game.refreshPlayerCardsBought(this)
-            game.refreshPlayerSupply(this)
+            refreshCardsBought()
+            refreshSupply()
         }
     }
 
@@ -1315,8 +1325,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
 
         if (!game.isPlayTreasureCards && card.addCoins > 0) {
-            game.refreshPlayerCardsBought(this)
-            game.refreshPlayerSupply(this)
+            refreshCardsBought()
+            refreshSupply()
         }
     }
 
@@ -1545,6 +1555,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun refreshPlayerHandArea() {
         game.refreshPlayerHandArea(this)
+    }
+
+    fun refreshCardsBought() {
+        game.refreshPlayerCardsBought(this)
+    }
+
+    fun refreshSupply() {
+        game.refreshPlayerSupply(this)
     }
 
     fun moveCardInPlayToTavern(card: Card) {

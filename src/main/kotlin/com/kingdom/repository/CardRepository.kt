@@ -282,7 +282,8 @@ class CardRepository {
                 Borrow(),
                 Quest(),
                 Save(),
-                ScoutingParty()
+                ScoutingParty(),
+                TravellingFair()
         )
 
     val allCards: List<Card>
