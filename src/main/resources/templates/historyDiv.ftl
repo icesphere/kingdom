@@ -28,7 +28,7 @@
 
                 <#if turnSummary.eventsBoughtString?has_content>
                     <div class="historyLine">
-                        Gained: ${turnSummary.eventsBoughtString}
+                        Events Bought: ${turnSummary.eventsBoughtString}
                     </div>
                 </#if>
 

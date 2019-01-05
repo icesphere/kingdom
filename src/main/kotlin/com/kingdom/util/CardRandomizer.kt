@@ -139,7 +139,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
     private fun addEvents(game: Game, options: RandomizingOptions) {
 
-        val events = cardRepository.allEvents.shuffled()
+        val events = cardRepository.allEvents.filterNot { it.disabled }.shuffled()
 
         val numEvents = options.numEvents
 
@@ -249,9 +249,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
     fun swapEvent(game: Game, eventName: String) {
 
-        val events = cardRepository.allEvents.shuffled()
-
-        val numEvents = game.events.size
+        val events = cardRepository.allEvents.filterNot { it.disabled }.shuffled()
 
         val selectedEvents = LinkedList(game.events)
 
@@ -259,11 +257,13 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
         val availableEvents = events.filterNot { selectedEventNames.contains(it.name) }
 
-        selectedEvents.removeIf { it.name == eventName }
-
-        selectedEvents.addAll(availableEvents.subList(0, numEvents - selectedEvents.size))
-
-        game.events = selectedEvents
+        game.events = selectedEvents.map {
+            if (it.name == eventName) {
+                availableEvents.first()
+            } else {
+                it
+            }
+        }.toMutableList()
     }
 
     private fun getCardsByDeck(deck: Deck): MutableList<Card> {

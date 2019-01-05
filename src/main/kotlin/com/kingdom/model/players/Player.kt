@@ -216,6 +216,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return piles
         }
 
+    var cardToPutIntoHandAfterDrawingCardsAtEndOfTurn: Card? = null
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -470,6 +472,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         finishEndTurnAfterResolvingActions = false
 
         drawCards(5)
+
+        if (cardToPutIntoHandAfterDrawingCardsAtEndOfTurn != null) {
+            addCardToHand(cardToPutIntoHandAfterDrawingCardsAtEndOfTurn!!)
+            cardToPutIntoHandAfterDrawingCardsAtEndOfTurn = null
+        }
 
         isYourTurn = false
 
