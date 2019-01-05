@@ -56,6 +56,9 @@
     <#if player.plusCoinTokenSupplyPile??>
         <div class="handAreaTopRowLeft" style="clear:both;">+$1 token on: ${player.plusCoinTokenSupplyPile}</div>
     </#if>
+    <#if player.minusTwoCostTokenSupplyPile??>
+        <div class="handAreaTopRowLeft" style="clear:both;">-$2 cost token on: ${player.minusTwoCostTokenSupplyPile}</div>
+    </#if>
 </div>
 <div style="clear:both;">
     <div class="label">

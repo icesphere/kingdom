@@ -209,6 +209,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var plusBuyTokenSupplyPile: String? = null
     var plusCoinTokenSupplyPile: String? = null
 
+    var minusTwoCostTokenSupplyPile: String? = null
+
     val supplyPilesWithBonusTokens: List<String>
         get() {
             val piles = mutableListOf<String>()
@@ -216,6 +218,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             plusActionTokenSupplyPile?.let { piles.add(it) }
             plusBuyTokenSupplyPile?.let { piles.add(it) }
             plusCoinTokenSupplyPile?.let { piles.add(it) }
+            minusTwoCostTokenSupplyPile?.let { piles.add(it) }
             return piles
         }
 
@@ -1352,6 +1355,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         var cost = card.cost
 
         game.cardCostModifiers.forEach { cost += it.getChangeToCardCost(card, this) }
+
+        if (game.currentPlayer.minusTwoCostTokenSupplyPile == card.name) {
+            cost -= 2
+        }
 
         if (cost < 0) {
             cost = 0

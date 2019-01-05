@@ -214,6 +214,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if p.minusTwoCostTokenSupplyPile??>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        -$2 cost token on: ${p.minusTwoCostTokenSupplyPile}
+                                    </td>
+                                    <td>
+                                        Yes
+                                    </td>
+                                </tr>
+                            </#if>
                         </table>
                     </td>
                 </tr>

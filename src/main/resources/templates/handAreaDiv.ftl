@@ -60,6 +60,9 @@
         <#if player.plusCoinTokenSupplyPile??>
             <td class="handAreaTopRow">+$1 token on: ${player.plusCoinTokenSupplyPile}</td>
         </#if>
+        <#if player.minusTwoCostTokenSupplyPile??>
+            <td class="handAreaTopRow">-$2 cost token on: ${player.minusTwoCostTokenSupplyPile}</td>
+        </#if>
     </tr>
 </table>
 <table style="width:100%">

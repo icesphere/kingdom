@@ -28,7 +28,7 @@ class Teacher : AdventuresCard(NAME, CardType.ActionReserve, 6), TavernCard, Cho
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-        player.chooseCardFromSupply("Choose which supply pile to put the token on", this, { c -> !player.supplyPilesWithBonusTokens.contains(c.name) }, choice)
+        player.chooseCardFromSupply("Choose which supply pile to put the token on", this, { c -> c.isAction && !player.supplyPilesWithBonusTokens.contains(c.name) }, choice)
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
