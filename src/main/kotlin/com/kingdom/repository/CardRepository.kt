@@ -279,6 +279,7 @@ class CardRepository {
     val adventuresEvents: List<Event>
         get() = listOf(
                 Alms(),
+                Bonfire(),
                 Borrow(),
                 Quest(),
                 Save(),
