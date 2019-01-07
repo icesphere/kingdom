@@ -291,6 +291,7 @@ class CardRepository {
                 Save(),
                 ScoutingParty(),
                 Seaway(),
+                Trade(),
                 TravellingFair()
         )
 
