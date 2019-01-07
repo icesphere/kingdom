@@ -287,6 +287,7 @@ class CardRepository {
                 Pilgrimage(),
                 Plan(),
                 Quest(),
+                Raid(),
                 Save(),
                 ScoutingParty(),
                 TravellingFair()
