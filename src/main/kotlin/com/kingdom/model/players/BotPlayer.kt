@@ -208,9 +208,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard) {
+    override fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
         //todo logic for different cards
-        val card = chooseFreeCardToGain(maxCost)
+        val card = chooseFreeCardToGain(maxCost, cardActionableExpression)
         if (card != null) {
             game.removeCardFromSupply(card)
 

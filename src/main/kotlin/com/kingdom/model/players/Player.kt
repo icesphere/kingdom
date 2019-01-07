@@ -864,7 +864,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun chooseSupplyCardToGainWithExactCost(cost: Int)
 
-    abstract fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard)
+    abstract fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
     abstract fun chooseSupplyCardToGainToTopOfDeck(maxCost: Int?)
 
