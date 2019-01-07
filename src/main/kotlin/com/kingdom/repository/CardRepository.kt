@@ -285,6 +285,7 @@ class CardRepository {
                 Expedition(),
                 Ferry(),
                 LostArts(),
+                Pathfinding(),
                 Pilgrimage(),
                 Plan(),
                 Quest(),
