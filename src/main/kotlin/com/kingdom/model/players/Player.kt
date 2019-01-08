@@ -229,6 +229,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var numExtraCardsToDrawAtEndOfTurn: Int = 0
 
+    var inheritanceActionCard: Card? = null
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -792,6 +794,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cards.addAll(islandCards)
             cards.addAll(durationCards)
             cards.addAll(tavernCards)
+            inheritanceActionCard?.let{ cards.add(it) }
 
             return cards
         }

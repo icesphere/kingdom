@@ -66,6 +66,9 @@
         <#if player.trashingTokenSupplyPile??>
             <td class="handAreaTopRow">Trashing token on: ${player.trashingTokenSupplyPile}</td>
         </#if>
+        <#if player.inheritanceActionCard??>
+            <td class="handAreaTopRow">Estate token on: ${player.inheritanceActionCard.name}</td>
+        </#if>
     </tr>
 </table>
 <table style="width:100%">

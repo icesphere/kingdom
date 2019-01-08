@@ -234,6 +234,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if p.inheritanceActionCard??>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        Estate token on:
+                                    </td>
+                                    <td>
+                                        ${p.inheritanceActionCard.name}
+                                    </td>
+                                </tr>
+                            </#if>
                         </table>
                     </td>
                 </tr>
