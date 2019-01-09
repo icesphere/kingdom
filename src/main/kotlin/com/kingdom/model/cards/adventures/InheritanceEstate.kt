@@ -25,16 +25,14 @@ class InheritanceEstate(private val associatedActionCard: Card, cardType: CardTy
                 CardType.ActionAttackLooter -> CardType.ActionAttackLooterVictory
                 CardType.ActionReaction -> CardType.ActionReactionVictory
                 CardType.ActionDuration -> CardType.ActionDurationVictory
-                //todo
-/*                CardType.ActionRuins -> CardType.
-                CardType.ActionShelter -> CardType.
-                CardType.ReactionShelter -> CardType.
-                CardType.ActionLooter -> CardType.
-                CardType.ActionReserve -> CardType.
-                CardType.ActionReserveVictory -> CardType.
-                CardType.ActionDurationReaction -> CardType.
-                CardType.ActionTraveller -> CardType.
-                CardType.ActionAttackTraveller -> CardType.*/
+                CardType.ActionRuins -> CardType.ActionRuinsVictory
+                CardType.ActionShelter -> CardType.ActionShelterVictory
+                CardType.ReactionShelter -> CardType.ReactionShelterVictory
+                CardType.ActionLooter -> CardType.ActionLooterVictory
+                CardType.ActionReserve -> CardType.ActionReserveVictory
+                CardType.ActionDurationReaction -> CardType.ActionDurationReactionVictory
+                CardType.ActionTraveller -> CardType.ActionTravellerVictory
+                CardType.ActionAttackTraveller -> CardType.ActionAttackTravellerVictory
                 else -> card.type
             }
         }

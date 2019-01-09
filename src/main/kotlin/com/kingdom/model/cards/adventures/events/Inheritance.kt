@@ -21,6 +21,8 @@ class Inheritance : AdventuresEvent(NAME, 7), ChooseCardActionCard {
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.game.removeCardFromSupply(card)
         player.inheritanceActionCard = card
+        //todo turn all player's Estates into InheritanceEstates and anytime they gain an Estate also turn it into an InheritanceEstate
+        //todo anytime they lose an Estate turn it back into a normal Estate
     }
 
     companion object {

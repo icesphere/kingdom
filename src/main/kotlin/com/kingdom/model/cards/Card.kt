@@ -72,16 +72,23 @@ abstract class Card(
             CardType.DurationVictory -> "Duration - Victory"
             CardType.TreasureReaction -> "Treasure - Reaction"
             CardType.ActionRuins -> "Action - Ruins"
+            CardType.ActionRuinsVictory -> "Action - Ruins - Victory"
             CardType.ActionShelter -> "Action - Shelter"
+            CardType.ActionShelterVictory -> "Action - Shelter - Victory"
             CardType.ReactionShelter -> "Reaction - Shelter"
+            CardType.ReactionShelterVictory -> "Reaction - Shelter - Victory"
             CardType.VictoryShelter -> "Victory - Shelter"
             CardType.ActionLooter -> "Action - Looter"
+            CardType.ActionLooterVictory -> "Action - Looter - Victory"
             CardType.TreasureReserve -> "Treasure - Reserve"
             CardType.ActionReserve -> "Action - Reserve"
             CardType.ActionReserveVictory -> "Action - Reserve - Victory"
             CardType.ActionDurationReaction -> "Action - Duration - Reaction"
+            CardType.ActionDurationReactionVictory -> "Action - Duration - Reaction - Victory"
             CardType.ActionTraveller -> "Action - Traveller"
+            CardType.ActionTravellerVictory -> "Action - Traveller - Victory"
             CardType.ActionAttackTraveller -> "Action - Attack - Traveller"
+            CardType.ActionAttackTravellerVictory -> "Action - Attack - Traveller - Victory"
             CardType.Event -> "Event"
         }
 
@@ -107,18 +114,25 @@ abstract class Card(
             CardType.DurationVictory -> 2
             CardType.TreasureReaction -> 2
             CardType.ActionRuins -> 2
+            CardType.ActionRuinsVictory -> 3
             CardType.ActionShelter -> 2
+            CardType.ActionShelterVictory -> 3
             CardType.ReactionShelter -> 2
+            CardType.ReactionShelterVictory -> 3
             CardType.VictoryShelter -> 2
             CardType.ActionLooter -> 2
+            CardType.ActionLooterVictory -> 3
             CardType.TreasureReserve -> 2
             CardType.ActionReserve -> 2
             CardType.ActionReserveVictory -> 3
             CardType.ActionDurationReaction -> 3
+            CardType.ActionDurationReactionVictory -> 4
             CardType.ActionAttackDuration -> 3
             CardType.ActionAttackDurationVictory -> 4
             CardType.ActionTraveller -> 2
+            CardType.ActionTravellerVictory -> 3
             CardType.ActionAttackTraveller -> 3
+            CardType.ActionAttackTravellerVictory -> 4
             CardType.Event -> 1
         }
 
@@ -167,40 +181,40 @@ abstract class Card(
         get() = type == CardType.Victory
 
     val isVictory: Boolean
-        get() = type == CardType.Victory || type == CardType.ActionVictory || type == CardType.TreasureVictory || type == CardType.VictoryReaction || type == CardType.DurationVictory || type == CardType.VictoryShelter || type == CardType.ActionReserveVictory || type == CardType.ActionAttackVictory || type == CardType.ActionAttackDurationVictory || type == CardType.ActionAttackLooterVictory || type == CardType.ActionReactionVictory || type == CardType.ActionDurationVictory
+        get() = type == CardType.Victory || type == CardType.ActionVictory || type == CardType.TreasureVictory || type == CardType.VictoryReaction || type == CardType.DurationVictory || type == CardType.VictoryShelter || type == CardType.ActionReserveVictory || type == CardType.ActionAttackVictory || type == CardType.ActionAttackDurationVictory || type == CardType.ActionAttackLooterVictory || type == CardType.ActionReactionVictory || type == CardType.ActionDurationVictory || type == CardType.ActionRuinsVictory || type == CardType.ActionShelterVictory || type == CardType.ReactionShelterVictory || type == CardType.ActionLooterVictory || type == CardType.ActionDurationReactionVictory || type == CardType.ActionTravellerVictory || type == CardType.ActionAttackTravellerVictory
 
     val isVictoryReaction: Boolean
         get() = type == CardType.VictoryReaction
 
     val isAction: Boolean
-        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionAttackVictory || type == CardType.ActionAttackDuration || type == CardType.ActionAttackDurationVictory || type == CardType.ActionReaction || type == CardType.ActionReactionVictory || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.ActionDurationVictory || type == CardType.DurationVictory || type == CardType.ActionRuins || type == CardType.ActionShelter || type == CardType.ActionLooter || type == CardType.ActionAttackLooter || type == CardType.ActionAttackLooterVictory || type == CardType.ActionReserve || type == CardType.ActionReserveVictory || type == CardType.ActionDurationReaction || type == CardType.ActionTraveller || type == CardType.ActionAttackTraveller
+        get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionAttackVictory || type == CardType.ActionAttackDuration || type == CardType.ActionAttackDurationVictory || type == CardType.ActionReaction || type == CardType.ActionReactionVictory || type == CardType.ActionVictory || type == CardType.ActionDuration || type == CardType.ActionDurationVictory || type == CardType.DurationVictory || type == CardType.ActionRuins || type == CardType.ActionRuinsVictory || type == CardType.ActionShelter || type == CardType.ActionShelterVictory || type == CardType.ActionLooter || type == CardType.ActionLooterVictory || type == CardType.ActionAttackLooter || type == CardType.ActionAttackLooterVictory || type == CardType.ActionReserve || type == CardType.ActionReserveVictory || type == CardType.ActionDurationReaction || type == CardType.ActionDurationReactionVictory || type == CardType.ActionTraveller || type == CardType.ActionTravellerVictory || type == CardType.ActionAttackTraveller || type == CardType.ActionAttackTravellerVictory
 
     open val isTerminalAction: Boolean
         get() = isAction && addActions == 0
 
     val isDuration: Boolean
-        get() = type == CardType.ActionDuration || type == CardType.ActionDurationVictory || type == CardType.DurationVictory || type == CardType.ActionDurationReaction || type == CardType.ActionAttackDuration || type == CardType.ActionAttackDurationVictory
+        get() = type == CardType.ActionDuration || type == CardType.ActionDurationVictory || type == CardType.DurationVictory || type == CardType.ActionDurationReaction || type == CardType.ActionDurationReactionVictory || type == CardType.ActionAttackDuration || type == CardType.ActionAttackDurationVictory
 
     val isTreasure: Boolean
         get() = type == CardType.Treasure || type == CardType.TreasureAttack || type == CardType.TreasureVictory || type == CardType.TreasureCurse || type == CardType.TreasureReaction || type == CardType.TreasureReserve
 
     val isReaction: Boolean
-        get() = type == CardType.ActionReaction || type == CardType.ActionReactionVictory || type == CardType.VictoryReaction || type == CardType.TreasureReaction || type == CardType.ReactionShelter || type == CardType.ActionDurationReaction
+        get() = type == CardType.ActionReaction || type == CardType.ActionReactionVictory || type == CardType.VictoryReaction || type == CardType.TreasureReaction || type == CardType.ReactionShelter || type == CardType.ReactionShelterVictory || type == CardType.ActionDurationReaction || type == CardType.ActionDurationReactionVictory
 
     val isCurse: Boolean
         get() = type == CardType.Curse || type == CardType.TreasureCurse
 
     val isRuins: Boolean
-        get() = type == CardType.ActionRuins
+        get() = type == CardType.ActionRuins || type == CardType.ActionRuinsVictory
 
     val isShelter: Boolean
-        get() = type == CardType.ActionShelter || type == CardType.ReactionShelter || type == CardType.VictoryShelter
+        get() = type == CardType.ActionShelter || type == CardType.ActionShelterVictory || type == CardType.ReactionShelter || type == CardType.ReactionShelterVictory || type == CardType.VictoryShelter
 
     val isLooter: Boolean
-        get() = type == CardType.ActionLooter || type == CardType.ActionAttackLooter || type == CardType.ActionAttackLooterVictory
+        get() = type == CardType.ActionLooter || type == CardType.ActionLooterVictory || type == CardType.ActionAttackLooter || type == CardType.ActionAttackLooterVictory
 
     val isTraveller: Boolean
-        get() = type == CardType.ActionTraveller || type == CardType.ActionAttackTraveller
+        get() = type == CardType.ActionTraveller || type == CardType.ActionAttackTraveller || type == CardType.ActionTravellerVictory || type == CardType.ActionAttackTravellerVictory
 
     val isCurseOnly: Boolean
         get() = name == Curse.NAME
@@ -230,7 +244,7 @@ abstract class Card(
         get() = name == Colony.NAME
 
     val isAttack: Boolean
-        get() = type == CardType.ActionAttack || type == CardType.ActionAttackVictory || type == CardType.ActionAttackDuration || type == CardType.ActionAttackDurationVictory || type == CardType.ActionAttackLooter || type == CardType.ActionAttackLooterVictory || type == CardType.TreasureAttack || type == CardType.ActionAttackTraveller
+        get() = type == CardType.ActionAttack || type == CardType.ActionAttackVictory || type == CardType.ActionAttackDuration || type == CardType.ActionAttackDurationVictory || type == CardType.ActionAttackLooter || type == CardType.ActionAttackLooterVictory || type == CardType.TreasureAttack || type == CardType.ActionAttackTraveller || type == CardType.ActionAttackTravellerVictory
 
     val isEvent: Boolean
         get() = type == CardType.Event
@@ -252,10 +266,14 @@ abstract class Card(
             type == CardType.ActionAttackDurationVictory -> CardColor.ActionDuration
             type == CardType.ActionReserve -> CardColor.ActionReserve
             type == CardType.ActionRuins -> CardColor.Ruins
+            type == CardType.ActionRuinsVictory -> CardColor.Ruins
             type == CardType.ActionShelter -> CardColor.ActionShelter
+            type == CardType.ActionShelterVictory -> CardColor.ActionShelter
             type == CardType.ReactionShelter -> CardColor.ReactionShelter
+            type == CardType.ReactionShelterVictory -> CardColor.ReactionShelter
             type == CardType.VictoryShelter -> CardColor.VictoryShelter
             type == CardType.ActionDurationReaction -> CardColor.ActionDurationReaction
+            type == CardType.ActionDurationReactionVictory -> CardColor.ActionDurationReaction
             type == CardType.ActionReserveVictory -> CardColor.ActionReserveVictory
             type == CardType.TreasureReserve -> CardColor.TreasureReserve
             isTreasure -> CardColor.Treasure
