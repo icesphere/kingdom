@@ -6,6 +6,7 @@ import com.kingdom.model.TurnSummary
 import com.kingdom.model.User
 import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.*
+import com.kingdom.model.cards.adventures.InheritanceEstate
 import com.kingdom.model.cards.darkages.BandOfMisfits
 import com.kingdom.model.cards.darkages.Spoils
 import com.kingdom.model.cards.darkages.shelters.Hovel
@@ -558,27 +559,29 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun cardTrashed(card: Card, showLog: Boolean = false) {
+        val cardToTrash = if (card is InheritanceEstate) Estate() else card
+
         if (showLog) {
-            addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor}")
+            addEventLogWithUsername("trashed ${cardToTrash.cardNameWithBackgroundColor}")
         }
 
-        game.trashedCards.add(card)
+        game.trashedCards.add(cardToTrash)
 
-        cardRemovedFromPlay(card)
+        cardRemovedFromPlay(cardToTrash)
 
         numCardsTrashedThisTurn++
 
         if (isYourTurn) {
-            currentTurnSummary.trashedCards.add(card)
+            currentTurnSummary.trashedCards.add(cardToTrash)
         }
 
-        if (card is AfterCardTrashedListenerForSelf) {
-            card.afterCardTrashed(this)
+        if (cardToTrash is AfterCardTrashedListenerForSelf) {
+            cardToTrash.afterCardTrashed(this)
         }
 
         val cardTrashedListenersForCardsInHand = hand.filter { it is AfterCardTrashedListenerForCardsInHand }
         for (listener in cardTrashedListenersForCardsInHand) {
-            (listener as AfterCardTrashedListenerForCardsInHand).afterCardTrashed(card, this)
+            (listener as AfterCardTrashedListenerForCardsInHand).afterCardTrashed(cardToTrash, this)
         }
     }
 
@@ -624,14 +627,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         var gainCardHandled = false
 
+        val cardToGain = if (card.isEstate && inheritanceActionCard != null) createInheritanceEstate() else if (card is InheritanceEstate) Estate() else card
+
         game.availableCards.filter { it is CardGainedListenerForCardsInSupply }
                 .forEach {
-                    (it as CardGainedListenerForCardsInSupply).onCardGained(card, this)
+                    (it as CardGainedListenerForCardsInSupply).onCardGained(cardToGain, this)
                 }
 
         val cardGainedListenersForCardsInHand = hand.filter { it is CardGainedListenerForCardsInHand }
         for (listener in cardGainedListenersForCardsInHand) {
-            val handled = (listener as CardGainedListenerForCardsInHand).onCardGained(card, this)
+            val handled = (listener as CardGainedListenerForCardsInHand).onCardGained(cardToGain, this)
             if (handled) {
                 gainCardHandled = true
                 break
@@ -640,7 +645,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         val cardGainedListenersForCardsInPlay = inPlayWithDuration.filter { it is CardGainedListenerForCardsInPlay }
         for (listener in cardGainedListenersForCardsInPlay) {
-            val handled = (listener as CardGainedListenerForCardsInPlay).onCardGained(card, this)
+            val handled = (listener as CardGainedListenerForCardsInPlay).onCardGained(cardToGain, this)
             if (handled) {
                 gainCardHandled = true
                 break
@@ -649,7 +654,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         val cardGainedListenersForEventsBought = eventsBought.filter { it is CardGainedListenerForEventsBought }
         for (listener in cardGainedListenersForEventsBought) {
-            val handled = (listener as CardGainedListenerForEventsBought).onCardGained(card, this)
+            val handled = (listener as CardGainedListenerForEventsBought).onCardGained(cardToGain, this)
             if (handled) {
                 gainCardHandled = true
                 break
@@ -660,35 +665,35 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
 
-        if (card is BeforeCardGainedListenerForSelf) {
-            card.beforeCardGained(this)
+        if (cardToGain is BeforeCardGainedListenerForSelf) {
+            cardToGain.beforeCardGained(this)
         }
 
         when {
             isNextCardToHand -> {
                 isNextCardToHand = false
-                addCardToHand(card)
+                addCardToHand(cardToGain)
             }
             isNextCardToTopOfDeck -> {
                 isNextCardToTopOfDeck = false
-                addCardToTopOfDeck(card)
+                addCardToTopOfDeck(cardToGain)
             }
             else -> {
-                addCardToDiscard(card)
+                addCardToDiscard(cardToGain)
             }
         }
 
-        if (card is AfterCardGainedListenerForSelf) {
-            card.afterCardGained(this)
+        if (cardToGain is AfterCardGainedListenerForSelf) {
+            cardToGain.afterCardGained(this)
         }
 
         val afterCardGainedListenersForCardsInTavern = tavernCards.filter { it is AfterCardGainedListenerForCardsInTavern }
         for (listener in afterCardGainedListenersForCardsInTavern) {
-            (listener as AfterCardGainedListenerForCardsInTavern).afterCardGained(card, this)
+            (listener as AfterCardGainedListenerForCardsInTavern).afterCardGained(cardToGain, this)
         }
 
         if (isYourTurn) {
-            currentTurnSummary.cardsGained.add(card)
+            currentTurnSummary.cardsGained.add(cardToGain)
         }
     }
 
@@ -1589,6 +1594,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshPlayerSupply(this)
     }
 
+    fun refreshCardsPlayed() {
+        game.refreshPlayerCardsPlayed(this)
+    }
+
     fun moveCardInPlayToTavern(card: Card) {
         removeCardInPlay(card)
         tavernCards.add(card)
@@ -1602,5 +1611,33 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshCardsPlayed()
         refreshPlayerHandArea()
         addEventLogWithUsername("called ${card.cardNameWithBackgroundColor} from their Tavern mat")
+    }
+
+    fun replaceAllEstatesWithInheritanceEstates() {
+        replaceEstatesWithInheritanceEstates(hand)
+        replaceEstatesWithInheritanceEstates(deck)
+        replaceEstatesWithInheritanceEstates(discard)
+        replaceEstatesWithInheritanceEstates(inPlay)
+        replaceEstatesWithInheritanceEstates(nativeVillageCards)
+        replaceEstatesWithInheritanceEstates(islandCards)
+        replaceEstatesWithInheritanceEstates(durationCards)
+        replaceEstatesWithInheritanceEstates(tavernCards)
+
+        refreshPlayerHandArea()
+        refreshCardsBought()
+    }
+
+    private fun replaceEstatesWithInheritanceEstates(cards: MutableList<Card>) {
+        cards.replaceAll { card ->
+            if (card is Estate) {
+                createInheritanceEstate()
+            } else {
+                card
+            }
+        }
+    }
+
+    private fun createInheritanceEstate(): Card {
+        return InheritanceEstate(inheritanceActionCard!!, InheritanceEstate.calculateInheritanceEstateCardType(inheritanceActionCard!!))
     }
 }

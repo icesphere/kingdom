@@ -5,6 +5,7 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.Event
 import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.actions.TavernCard
+import com.kingdom.model.cards.adventures.InheritanceEstate
 import com.kingdom.model.cards.darkages.Spoils
 import com.kingdom.model.cards.darkages.ruins.*
 import com.kingdom.model.cards.darkages.shelters.Hovel
@@ -629,11 +630,14 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     fun returnCardToSupply(card: Card) {
-        if (card.isRuins) {
-            ruinsPile.add(0, card)
+        val cardToReturn = if (card is InheritanceEstate) Estate() else card
+
+        if (cardToReturn.isRuins) {
+            ruinsPile.add(0, cardToReturn)
         } else {
-            pileAmounts[card.name] = pileAmounts[card.name]!!.plus(1)
+            pileAmounts[cardToReturn.name] = pileAmounts[cardToReturn.name]!!.plus(1)
         }
+
         refreshSupply()
     }
 
