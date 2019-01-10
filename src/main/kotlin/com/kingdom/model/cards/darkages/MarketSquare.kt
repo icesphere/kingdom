@@ -14,7 +14,7 @@ class MarketSquare : DarkAgesCard(NAME, CardType.ActionReaction, 3), AfterCardTr
         addActions = 1
         addBuys = 1
         special = "When one of your cards is trashed, you may discard this from your hand to gain a Gold."
-        fontSize = 10
+        fontSize = 9
         textSize = 55
     }
 

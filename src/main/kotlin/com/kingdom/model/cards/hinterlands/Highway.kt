@@ -13,6 +13,10 @@ class Highway : HinterlandsCard(NAME, CardType.Action, 5), CardCostModifierForCa
         special = "While this is in play, cards cost \$1 less, but not less than \$0."
     }
 
+    override fun cardPlayedSpecialAction(player: Player) {
+        player.game.refreshSupply()
+    }
+
     override fun getChangeToCardCost(card: Card, player: Player): Int {
         return -1
     }

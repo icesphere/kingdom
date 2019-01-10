@@ -14,6 +14,7 @@ class Masterpiece : GuildsCard(NAME, CardType.Treasure, 3), AfterCardBoughtListe
         special = "When you buy this, you may overpay for it. For each \$1 you overpaid, gain a Silver."
         isOverpayForCardAllowed = true
         textSize = 73
+        fontSize = 11
     }
 
     override fun afterCardBought(player: Player) {

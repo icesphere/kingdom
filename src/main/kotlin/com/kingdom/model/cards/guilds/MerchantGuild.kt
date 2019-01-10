@@ -13,7 +13,7 @@ class MerchantGuild : GuildsCard(NAME, CardType.Action, 5), GameSetupModifier, A
         addBuys = 1
         addCoins = 1
         special = "While this is in play, when you buy a card, +1 Coffers"
-        fontSize = 10
+        fontSize = 9
     }
 
     override fun modifyGameSetup(game: Game) {

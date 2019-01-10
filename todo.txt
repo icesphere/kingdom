@@ -12,3 +12,15 @@ better logic for choosing cards for bots - e.g. chose card for Masquerade
 consolidate select card actions
 
 popup about what stuff other people did to you
+
+allow putting tokens in empty supply piles
+
+Lurker - show what cards are in the trash
+
+Bmu computer bought an Estate over a Duchy
+
+game info broken on the game over page
+
+royal seal shouldn't ask multiple times if answer is no
+
+changing kingdom card from confirm page also changes the events

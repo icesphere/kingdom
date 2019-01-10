@@ -874,7 +874,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             players.sortByDescending { it.getVictoryPoints(true) }
             val firstPlayer = players[0]
             val highScore = firstPlayer.finalVictoryPoints
-            val leastTurns = firstPlayer.turns
+            val leastTurns = players.minBy { it.turns }!!.turns
             val marginOfVictory = players[0].finalVictoryPoints - players[1].finalVictoryPoints
             val winners = ArrayList<String>()
             for (player in players) {
