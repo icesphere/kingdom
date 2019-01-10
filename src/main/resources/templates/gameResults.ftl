@@ -1,3 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Expires" CONTENT="-1">
+    <title>Kingdom - Game Over</title>
+    <#include "gameIncludes.ftl">
+</head>
+
+<body>
+
+<div id="gameInfoDiv" style="display: none;>
+    <#include "gameInfoDiv.ftl">
+</div>
+
 <div style="float:left; padding-bottom:10px;">
     <div style="float:right;">
         <a href="javascript:showGameInfo()">Game Info</a>
@@ -95,3 +112,7 @@
     </div>
 
 </div>
+
+</body>
+
+</html>

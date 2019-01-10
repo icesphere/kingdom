@@ -55,10 +55,9 @@ function refreshGameInfo() {
         currentPlayer = gameData.currentPlayer;
 
         if(gameStatus == "Finished") {
-            $('#gameDiv').load('showGameResults.html', function() {
-                refreshFinished();
-                return;
-            });
+            if (!document.location.pathname.includes("showGameResults")) {
+                document.location = "showGameResults.html";
+            }
         } else if (currentPlayer) {
             if (!(localStorage.muteSound == "true")) {
                 playBeep()

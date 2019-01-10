@@ -1514,20 +1514,7 @@ class GameController(private val cardManager: CardManager,
         }
         try {
             val modelAndView = ModelAndView("gameInfoDiv")
-            val player = game.playerMap[user.userId]!!
-            modelAndView.addObject("player", player)
-            modelAndView.addObject("players", game.players)
-            modelAndView.addObject("trashedCards", game.trashedCards.groupedString)
-            modelAndView.addObject("showIslandCards", game.isShowIslandCards)
-            modelAndView.addObject("showTavern", game.isShowTavern)
-            modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)
-            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-            modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
-            modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-            modelAndView.addObject("showCoffers", game.isShowCoffers)
-            modelAndView.addObject("showDuration", game.isShowDuration)
-            modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
-            modelAndView.addObject("prizeCards", game.prizeCardsString)
+            addGameObjects(game, user, modelAndView, request)
             return modelAndView
         } catch (t: Throwable) {
             return logErrorAndReturnEmpty(t, game)
@@ -1544,27 +1531,7 @@ class GameController(private val cardManager: CardManager,
         }
         val modelAndView = ModelAndView("gameResults")
         try {
-            modelAndView.addObject("user", user)
-            modelAndView.addObject("gameStatus", game.status)
-            modelAndView.addObject("gameEndReason", game.gameEndReason)
-            modelAndView.addObject("winnerString", game.winnerString)
-            modelAndView.addObject("players", game.players)
-            modelAndView.addObject("recentHistory", game.recentHistory)
-            modelAndView.addObject("turnHistory", game.recentTurnHistory)
-            modelAndView.addObject("lastTurnSummaries", game.lastTurnSummaries)
-
-            modelAndView.addObject("victoryCards", game.victoryCards)
-
-            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
-            modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
-
-            modelAndView.addObject("chats", game.chats)
-            modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
-
-            modelAndView.addObject("trashedCards", game.trashedCards.groupedString)
-
-            modelAndView.addObject("logId", game.logId)
-
+            addGameObjects(game, user, modelAndView, request)
             return modelAndView
         } catch (t: Throwable) {
             return logErrorAndReturnEmpty(t, game)
@@ -1822,7 +1789,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
         modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
         modelAndView.addObject("showCoffers", game.isShowCoffers)
-        modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
         modelAndView.addObject("showIslandCards", game.isShowIslandCards)
         modelAndView.addObject("showTavern", game.isShowTavern)
         modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)
@@ -1839,7 +1805,7 @@ class GameController(private val cardManager: CardManager,
 
         modelAndView.addObject("gameEndReason", game.gameEndReason)
         modelAndView.addObject("winnerString", game.winnerString)
-        modelAndView.addObject("logId", game.logId)
+        modelAndView.addObject("victoryCards", game.victoryCards)
 
         modelAndView.addObject("showCardsNotInSupply", game.cardsNotInSupply.isNotEmpty())
     }

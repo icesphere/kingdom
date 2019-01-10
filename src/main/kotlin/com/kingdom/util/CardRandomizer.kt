@@ -244,6 +244,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         swapOptions.cardToReplaceIndex = cardToReplaceIndex
         swapOptions.customCardSelection = cards
         swapOptions.excludedCards.toMutableList().add(cardToReplace!!)
+        swapOptions.customEventSelection = game.events
         setRandomKingdomCardsAndEvents(game, swapOptions)
     }
 

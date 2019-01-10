@@ -1,26 +1,15 @@
 handle throne room a throne room which then copies a duration card
-
 cancel a created game that hasn't started yet has issues
-
 cards overflow weird when too many on desktop (use flexbox?)
-
-figure out why create game page takes a long time to load the bottom of the page
-
+figure out why create game page takes a long time to load the bottom of the page - or at least show spinner or something until it loads
 better bots
-refresh sometimes has issues after quit game
 better logic for choosing cards for bots - e.g. chose card for Masquerade
 consolidate select card actions
+Bmu computer bought an Estate over a Duchy
+Lurker - show what cards are in the trash
 
 popup about what stuff other people did to you
 
 allow putting tokens in empty supply piles
 
-Lurker - show what cards are in the trash
-
-Bmu computer bought an Estate over a Duchy
-
-game info broken on the game over page
-
 royal seal shouldn't ask multiple times if answer is no
-
-changing kingdom card from confirm page also changes the events

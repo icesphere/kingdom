@@ -5,7 +5,7 @@
 
 	<groupId>com.kingdom</groupId>
 	<artifactId>kingdom</artifactId>
-	<version>3.4</version>
+	<version>3.5</version>
 	<packaging>jar</packaging>
 
 	<name>kingdom</name>
