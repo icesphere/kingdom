@@ -7,6 +7,7 @@ import com.kingdom.util.KingdomUtil
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.servlet.ModelAndView
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -17,6 +18,12 @@ class MainController(private val gameRoomManager: GameRoomManager) {
     @RequestMapping("/login.html")
     @Throws(Exception::class)
     fun login(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+
+        val accessAllowed = isAccessAllowed(request)
+        if (!accessAllowed) {
+            return KingdomUtil.getAccessModelAndView(request)
+        }
+
         val modelAndView = ModelAndView("login")
         val username = request.getParameter("username")
         val mobile = KingdomUtil.isMobile(request)
@@ -34,6 +41,35 @@ class MainController(private val gameRoomManager: GameRoomManager) {
                 session.setAttribute("user", user)
                 session.setAttribute("mobile", mobile)
                 return ModelAndView("redirect:/showGameRooms.html")
+            }
+        }
+        return modelAndView
+    }
+
+    private fun isAccessAllowed(request: HttpServletRequest) =
+            request.cookies.firstOrNull { it.name.trim().toLowerCase() == "kingdomaccess" }?.value?.trim()?.toLowerCase() == "winner"
+
+
+    @RequestMapping("/access.html")
+    @Throws(Exception::class)
+    fun access(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+
+        val accessAllowed = isAccessAllowed(request)
+        if (accessAllowed) {
+            return KingdomUtil.getLoginModelAndView(request)
+        }
+
+        val modelAndView = ModelAndView("access")
+        val password = request.getParameter("password")
+        val mobile = KingdomUtil.isMobile(request)
+        modelAndView.addObject("mobile", mobile)
+        if (password != null) {
+            if (password.trim().toLowerCase() == "winner") {
+                response.addCookie(Cookie("kingdomaccess", "winner"))
+
+                return KingdomUtil.getLoginModelAndView(request)
+            } else {
+                modelAndView.addObject("accessDenied", true)
             }
         }
         return modelAndView

@@ -247,6 +247,12 @@ object KingdomUtil {
         return request.session.getAttribute("tablet") as Boolean
     }
 
+    fun getAccessModelAndView(request: HttpServletRequest): ModelAndView {
+        val modelAndView = ModelAndView("access")
+        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        return modelAndView
+    }
+
     fun getLoginModelAndView(request: HttpServletRequest): ModelAndView {
         val modelAndView = ModelAndView("login")
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
