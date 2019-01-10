@@ -10,6 +10,4 @@ Lurker - show what cards are in the trash
 
 popup about what stuff other people did to you
 
-allow putting tokens in empty supply piles
-
 royal seal shouldn't ask multiple times if answer is no

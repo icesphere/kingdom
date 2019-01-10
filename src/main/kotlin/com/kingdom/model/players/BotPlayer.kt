@@ -924,8 +924,11 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         chooseCardsActionCard.onCardsChosen(this, cards)
     }
 
-    override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard, cardActionableExpression: ((card: Card) -> Boolean)?, info: Any?) {
-        val availableCards = game.availableCards.filter { cardActionableExpression == null || cardActionableExpression(it) }
+    override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard, cardActionableExpression: ((card: Card) -> Boolean)?, info: Any?, choosingEmptyPilesAllowed: Boolean) {
+
+        val availableSupplyCards = if (choosingEmptyPilesAllowed) game.allCards else game.availableCards
+
+        val availableCards = availableSupplyCards.filter { cardActionableExpression == null || cardActionableExpression(it) }
 
         if (availableCards.isEmpty()) {
             return
