@@ -12,5 +12,3 @@ better logic for choosing cards for bots - e.g. chose card for Masquerade
 consolidate select card actions
 
 popup about what stuff other people did to you
-
-InheritanceEstate should get all the listener abilities of its associated card

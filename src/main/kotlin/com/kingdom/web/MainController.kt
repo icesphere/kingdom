@@ -63,11 +63,12 @@ class MainController(private val gameRoomManager: GameRoomManager) {
     @RequestMapping("/admin.html")
     @Throws(Exception::class)
     fun admin(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
+
         if (!isAdmin(request)) {
             return ModelAndView("adminLogin")
         }
         val modelAndView = ModelAndView("admin")
-        val user = getUser(request)!!
         val loggedInUser = LoggedInUsers.getUser(user.userId)
         val showGameActions = loggedInUser?.gameId != null
         modelAndView.addObject("showGameActions", showGameActions)

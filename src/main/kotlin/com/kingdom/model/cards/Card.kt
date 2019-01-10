@@ -47,6 +47,8 @@ abstract class Card(
 
     val id: String = UUID.randomUUID().toString()
 
+    var addedAbilityCard: Card? = null
+
     @Suppress("MemberVisibilityCanBePrivate")
     val typeAsString: String
         get() = when (type) {
@@ -252,6 +254,7 @@ abstract class Card(
     val backgroundColor: CardColor
         get() = when {
             type == CardType.ActionVictory -> CardColor.ActionVictory
+            type == CardType.ActionAttackVictory -> CardColor.ActionVictory
             type == CardType.TreasureVictory -> CardColor.TreasureVictory
             type == CardType.TreasureCurse -> CardColor.TreasureCurse
             type == CardType.VictoryReaction -> CardColor.VictoryReaction
@@ -368,29 +371,43 @@ abstract class Card(
             player.addActions(-1)
         }
 
-        player.addActions(addActions)
-        player.addBuys(addBuys)
-        player.addCoins(addCoins)
-        player.addVictoryCoins(addVictoryCoins)
-        player.addCoffers(addCoffers)
+        addCardBonuses(this, player)
 
-        if (addCards > 0) {
-            player.drawCards(addCards)
+        if (addedAbilityCard != null) {
+            addCardBonuses(addedAbilityCard!!, player)
         }
 
         if (special.isNotBlank()) {
             if (this !is Event) {
                 player.opponentsInOrder.forEach { opponent ->
-                    opponent.hand.filter { it is BeforeOpponentCardPlayedListener }
-                            .forEach { (it as BeforeOpponentCardPlayedListener).onBeforeOpponentCardPlayed(this, opponent, player) }
+                    val listeners = opponent.hand.filter { it is BeforeOpponentCardPlayedListener }.toMutableList()
+                    listeners.addAll(opponent.hand.filter { it is BeforeOpponentCardPlayedListener }.map { it.addedAbilityCard!! })
+
+                    listeners.forEach { (it as BeforeOpponentCardPlayedListener).onBeforeOpponentCardPlayed(this, opponent, player) }
                 }
             }
 
             cardPlayedSpecialAction(player)
 
+            if (addedAbilityCard != null) {
+                addedAbilityCard?.cardPlayedSpecialAction(player)
+            }
+
             if (player.isOpponentHasAction) {
                 player.waitForOtherPlayersToResolveActions()
             }
+        }
+    }
+
+    private fun addCardBonuses(card: Card, player: Player) {
+        player.addActions(card.addActions)
+        player.addBuys(card.addBuys)
+        player.addCoins(card.addCoins)
+        player.addVictoryCoins(card.addVictoryCoins)
+        player.addCoffers(card.addCoffers)
+
+        if (card.addCards > 0) {
+            player.drawCards(card.addCards)
         }
     }
 

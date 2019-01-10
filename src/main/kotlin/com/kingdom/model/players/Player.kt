@@ -461,6 +461,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 if (card is CardDiscardedFromPlayListener) {
                     card.onCardDiscarded(this)
                 }
+
+                if (card.addedAbilityCard is CardDiscardedFromPlayListener) {
+                    (card.addedAbilityCard as CardDiscardedFromPlayListener).onCardDiscarded(this)
+                }
             }
         }
 
@@ -579,7 +583,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cardToTrash.afterCardTrashed(this)
         }
 
-        val cardTrashedListenersForCardsInHand = hand.filter { it is AfterCardTrashedListenerForCardsInHand }
+        if (cardToTrash.addedAbilityCard is AfterCardTrashedListenerForSelf) {
+            (cardToTrash.addedAbilityCard as AfterCardTrashedListenerForSelf).afterCardTrashed(this)
+        }
+
+        val cardTrashedListenersForCardsInHand = hand.filter { it is AfterCardTrashedListenerForCardsInHand }.toMutableList()
+        cardTrashedListenersForCardsInHand.addAll(hand.filter { it.addedAbilityCard is AfterCardTrashedListenerForCardsInHand }.map { it.addedAbilityCard!! })
+
         for (listener in cardTrashedListenersForCardsInHand) {
             (listener as AfterCardTrashedListenerForCardsInHand).afterCardTrashed(cardToTrash, this)
         }
@@ -634,7 +644,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     (it as CardGainedListenerForCardsInSupply).onCardGained(cardToGain, this)
                 }
 
-        val cardGainedListenersForCardsInHand = hand.filter { it is CardGainedListenerForCardsInHand }
+        val cardGainedListenersForCardsInHand = hand.filter { it is CardGainedListenerForCardsInHand }.toMutableList()
+        cardGainedListenersForCardsInHand.addAll(hand.filter { it.addedAbilityCard is CardGainedListenerForCardsInHand }.map { it.addedAbilityCard!! })
+
         for (listener in cardGainedListenersForCardsInHand) {
             val handled = (listener as CardGainedListenerForCardsInHand).onCardGained(cardToGain, this)
             if (handled) {
@@ -643,7 +655,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         }
 
-        val cardGainedListenersForCardsInPlay = inPlayWithDuration.filter { it is CardGainedListenerForCardsInPlay }
+        val cardGainedListenersForCardsInPlay = inPlayWithDuration.filter { it is CardGainedListenerForCardsInPlay }.toMutableList()
+        cardGainedListenersForCardsInPlay.addAll(inPlayWithDuration.filter { it.addedAbilityCard is CardGainedListenerForCardsInPlay }.map { it.addedAbilityCard!! })
+
         for (listener in cardGainedListenersForCardsInPlay) {
             val handled = (listener as CardGainedListenerForCardsInPlay).onCardGained(cardToGain, this)
             if (handled) {
@@ -669,6 +683,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cardToGain.beforeCardGained(this)
         }
 
+        if (cardToGain.addedAbilityCard is BeforeCardGainedListenerForSelf) {
+            (cardToGain.addedAbilityCard as BeforeCardGainedListenerForSelf).beforeCardGained(this)
+        }
+
         when {
             isNextCardToHand -> {
                 isNextCardToHand = false
@@ -687,7 +705,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cardToGain.afterCardGained(this)
         }
 
-        val afterCardGainedListenersForCardsInTavern = tavernCards.filter { it is AfterCardGainedListenerForCardsInTavern }
+        if (cardToGain.addedAbilityCard is AfterCardGainedListenerForSelf) {
+            (cardToGain.addedAbilityCard as AfterCardGainedListenerForSelf).afterCardGained(this)
+        }
+
+        val afterCardGainedListenersForCardsInTavern = tavernCards.filter { it is AfterCardGainedListenerForCardsInTavern }.toMutableList()
+        afterCardGainedListenersForCardsInTavern.addAll(tavernCards.filter { it.addedAbilityCard is AfterCardGainedListenerForCardsInTavern }.map { it.addedAbilityCard!! })
+
         for (listener in afterCardGainedListenersForCardsInTavern) {
             (listener as AfterCardGainedListenerForCardsInTavern).afterCardGained(cardToGain, this)
         }
@@ -774,13 +798,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 card.afterCardBought(this)
             }
 
-            val cardBoughtListenersForCardsInPlay = inPlayWithDuration.filter { it is AfterCardBoughtListenerForCardsInPlay }
+            if (card.addedAbilityCard is AfterCardBoughtListenerForSelf) {
+                (card.addedAbilityCard as AfterCardBoughtListenerForSelf).afterCardBought(this)
+            }
+
+            val cardBoughtListenersForCardsInPlay = inPlayWithDuration.filter { it is AfterCardBoughtListenerForCardsInPlay || it.addedAbilityCard is AfterCardBoughtListenerForCardsInPlay }.toMutableList()
+            cardBoughtListenersForCardsInPlay.addAll(inPlayWithDuration.filter { it.addedAbilityCard is AfterCardBoughtListenerForCardsInPlay}.map { it.addedAbilityCard!! })
 
             for (listener in cardBoughtListenersForCardsInPlay) {
                 (listener as AfterCardBoughtListenerForCardsInPlay).afterCardBought(card, this)
             }
 
-            val cardBoughtListenersForCardsInHand = hand.filter { it is AfterCardBoughtListenerForCardsInHand }
+            val cardBoughtListenersForCardsInHand = hand.filter { it is AfterCardBoughtListenerForCardsInHand || it.addedAbilityCard is AfterCardBoughtListenerForCardsInHand }.toMutableList()
+            cardBoughtListenersForCardsInHand.addAll(hand.filter { it.addedAbilityCard is AfterCardBoughtListenerForCardsInHand }.map { it.addedAbilityCard!! })
 
             for (listener in cardBoughtListenersForCardsInHand) {
                 (listener as AfterCardBoughtListenerForCardsInHand).afterCardBought(card, this)
@@ -825,8 +855,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             played.add(card)
             game.cardsPlayed.add(card)
 
-            inPlayWithDuration.filter { it is CardPlayedListener }
-                    .forEach { (it as CardPlayedListener).onCardPlayed(card, this) }
+            val listeners = inPlayWithDuration.filter { it is CardPlayedListener }.toMutableList()
+            listeners.addAll(inPlayWithDuration.filter { it.addedAbilityCard is CardPlayedListener }.map { it.addedAbilityCard!! })
+
+            listeners.forEach { (it as CardPlayedListener).onCardPlayed(card, this) }
 
             inPlay.add(card)
             hand.remove(card)
@@ -853,10 +885,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     (it as CardPlayedListenerForCardsInSupply).onCardPlayed(card, this)
                 }
 
-        inPlayWithDuration.filter { it is CardPlayedListenerForCardsInPlay }
-                .forEach {
-                    (it as CardPlayedListenerForCardsInPlay).onCardPlayed(card, this)
-                }
+        val cardPlayedListenersForCardsInPlay = inPlayWithDuration.filter { it is CardPlayedListenerForCardsInPlay }.toMutableList()
+        cardPlayedListenersForCardsInPlay.addAll(inPlayWithDuration.filter { it.addedAbilityCard is CardPlayedListenerForCardsInPlay }.map { it.addedAbilityCard!! })
+
+        cardPlayedListenersForCardsInPlay.forEach {
+            (it as CardPlayedListenerForCardsInPlay).onCardPlayed(card, this)
+        }
 
         card.cardPlayed(this)
     }
@@ -1461,11 +1495,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun triggerAttack(attackCard: Card) {
 
         opponentsInOrder.forEach { opponent ->
-            opponent.hand.filter { it is HandBeforeAttackListener }
-                    .forEach { (it as HandBeforeAttackListener).onBeforeAttack(attackCard, opponent, this) }
+            val handBeforeAttackListeners = opponent.hand.filter { it is HandBeforeAttackListener }.toMutableList()
+            handBeforeAttackListeners.addAll(opponent.hand.filter { it.addedAbilityCard is HandBeforeAttackListener }.map { it.addedAbilityCard!! })
 
-            opponent.durationCards.filter { it is DurationBeforeAttackListener }
-                    .forEach { (it as DurationBeforeAttackListener).onBeforeAttack(attackCard, opponent, this) }
+            handBeforeAttackListeners.forEach { (it as HandBeforeAttackListener).onBeforeAttack(attackCard, opponent, this) }
+
+            val durationBeforeAttackListeners = opponent.durationCards.filter { it is DurationBeforeAttackListener }.toMutableList()
+            durationBeforeAttackListeners.addAll(opponent.durationCards.filter { it.addedAbilityCard is DurationBeforeAttackListener }.map { it.addedAbilityCard!! })
+
+            durationBeforeAttackListeners.forEach { (it as DurationBeforeAttackListener).onBeforeAttack(attackCard, opponent, this) }
         }
 
         if (isOpponentHasAction) {

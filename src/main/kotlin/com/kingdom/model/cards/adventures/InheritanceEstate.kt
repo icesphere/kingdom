@@ -2,16 +2,13 @@ package com.kingdom.model.cards.adventures
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.players.Player
 
-class InheritanceEstate(private val associatedActionCard: Card, cardType: CardType) : AdventuresCard(NAME, cardType, 2) {
+class InheritanceEstate(associatedActionCard: Card, cardType: CardType) : AdventuresCard(NAME, cardType, 2) {
 
     init {
         victoryPoints = 1
-    }
-
-    override fun cardPlayedSpecialAction(player: Player) {
-        associatedActionCard.cardPlayedSpecialAction(player)
+        this.addedAbilityCard = associatedActionCard
+        this.special = "(Has abilities and types of ${associatedActionCard.name})"
     }
 
     companion object {
