@@ -3,6 +3,7 @@
 </div>
 <div style="clear:both;float:left;">
     <#assign clickType="supply">
+
     <#list kingdomCards as card>
         <div style="float:left;padding-right:2px;padding-top:2px;">
             <#if kingdomCards?size == 11 && card_index == 5>
@@ -13,17 +14,16 @@
             <#include "gameCard.ftl">
         </div>
     </#list>
+
     <#list supplyCards as card>
         <div style="float:left;padding-right:2px;padding-top:2px;">
             <#include "gameCard.ftl">
         </div>
     </#list>
-</div>
 
-<#if events?has_content>
-    <div style="clear:both;float:left; padding-top: 5px; font-size: 14px;">Events:</div>
+    <#if events?has_content>
+        <div style="float:left;padding-right:2px;padding-top:2px;font-size:18px;position:relative;top:9px;left:10px;width:74px;">Events</div>
 
-    <div style="clear:both;float:left;">
         <#assign clickType="event">
 
         <#list events as card>
@@ -31,8 +31,8 @@
                 <#include "gameCard.ftl">
             </div>
         </#list>
-    </div>
-</#if>
+    </#if>
+</div>
 
 <#if showTradeRouteTokens>
     <div style="clear:both;">

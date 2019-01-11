@@ -8,6 +8,10 @@ consolidate select card actions
 Bmu computer bought an Estate over a Duchy
 Lurker - show what cards are in the trash
 
+font size on mobile on card details page
+
+save username as cookie so that it can resume game if user is logged in
+
 popup about what stuff other people did to you
 
 royal seal shouldn't ask multiple times if answer is no
