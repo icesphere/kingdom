@@ -29,26 +29,48 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         val mobile = KingdomUtil.isMobile(request)
         modelAndView.addObject("mobile", mobile)
         if (username != null) {
-            if (LoggedInUsers.usernameBeingUsed(username)) {
+            val usernameCookieValue = getUsernameCookie(request)
+
+            val usernameMatchesCookie = username.toLowerCase() == usernameCookieValue?.toLowerCase()
+
+            if (LoggedInUsers.usernameBeingUsed(username) && !usernameMatchesCookie) {
                 modelAndView.addObject("usernameBeingUsed", true)
             } else {
-                val user = User()
+                val user = usernameCookieValue?.let { LoggedInUsers.getUserByUsername(it) } ?: User()
                 user.username = username
+
+                addUsernameCookieToResponse(username, response)
+
                 LoggedInUsers.userLoggedIn(user)
                 LoggedInUsers.refreshLobbyPlayers()
+
                 val session = request.getSession(true)
                 session.maxInactiveInterval = 60 * 120
                 session.setAttribute("user", user)
                 session.setAttribute("mobile", mobile)
-                return ModelAndView("redirect:/showGameRooms.html")
+
+                return if (user.gameId != null) {
+                    session.setAttribute("gameId", user.gameId)
+                    ModelAndView("redirect:/showGame.html")
+                } else {
+                    ModelAndView("redirect:/showGameRooms.html")
+                }
             }
         }
         return modelAndView
     }
 
-    private fun isAccessAllowed(request: HttpServletRequest) =
-            request.cookies.firstOrNull { it.name.trim().toLowerCase() == "kingdomaccess" }?.value?.trim()?.toLowerCase() == "winner"
+    private fun addUsernameCookieToResponse(username: String?, response: HttpServletResponse) {
+        val usernameCookie = Cookie("kingdomusername", username)
+        usernameCookie.maxAge = 2 * 60 * 60 //2 hours
+        response.addCookie(usernameCookie)
+    }
 
+    private fun isAccessAllowed(request: HttpServletRequest): Boolean =
+            request.cookies?.firstOrNull { it.name.trim().toLowerCase() == "kingdomaccess" }?.value?.trim()?.toLowerCase() == "winner"
+
+    private fun getUsernameCookie(request: HttpServletRequest): String? =
+            request.cookies?.firstOrNull { it.name.trim().toLowerCase() == "kingdomusername" }?.value?.trim()
 
     @RequestMapping("/access.html")
     @Throws(Exception::class)
@@ -65,7 +87,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         modelAndView.addObject("mobile", mobile)
         if (password != null) {
             if (password.trim().toLowerCase() == "winner") {
-                response.addCookie(Cookie("kingdomaccess", "winner"))
+                addAccessCookieToResponse(response)
 
                 return KingdomUtil.getLoginModelAndView(request)
             } else {
@@ -73,6 +95,12 @@ class MainController(private val gameRoomManager: GameRoomManager) {
             }
         }
         return modelAndView
+    }
+
+    private fun addAccessCookieToResponse(response: HttpServletResponse) {
+        val accessCookie = Cookie("kingdomaccess", "winner")
+        accessCookie.maxAge = 24 * 60 * 60 * 365 //1 year
+        response.addCookie(accessCookie)
     }
 
     @RequestMapping("/logout.html")

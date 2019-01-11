@@ -32,7 +32,7 @@ object LoggedInUsers {
     }
 
     fun usernameBeingUsed(username: String): Boolean {
-        return users.values.any { it.username == username }
+        return users.values.any { it.username.toLowerCase() == username.toLowerCase() }
     }
 
     fun getUserByUsername(username: String): User? {
