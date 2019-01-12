@@ -5,13 +5,13 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardColor
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.service.UAgentInfo
-import com.sun.jersey.api.client.Client
-import com.sun.jersey.core.util.MultivaluedMapImpl
 import org.springframework.web.servlet.ModelAndView
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.*
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 fun List<Card>?.toCardNames(addColor: Boolean = true): String {
     if (this == null || this.isEmpty()) {
@@ -301,5 +301,11 @@ object KingdomUtil {
     fun uniqueCardList(list: List<Card>): MutableList<Card> {
         val set = HashSet(list)
         return ArrayList(set)
+    }
+
+    fun addUsernameCookieToResponse(username: String?, response: HttpServletResponse) {
+        val usernameCookie = Cookie("kingdomusername", username)
+        usernameCookie.maxAge = 3 * 60 * 60 //3 hours
+        response.addCookie(usernameCookie)
     }
 }

@@ -39,7 +39,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
                 val user = usernameCookieValue?.let { LoggedInUsers.getUserByUsername(it) } ?: User()
                 user.username = username
 
-                addUsernameCookieToResponse(username, response)
+                KingdomUtil.addUsernameCookieToResponse(username, response)
 
                 LoggedInUsers.userLoggedIn(user)
                 LoggedInUsers.refreshLobbyPlayers()
@@ -58,12 +58,6 @@ class MainController(private val gameRoomManager: GameRoomManager) {
             }
         }
         return modelAndView
-    }
-
-    private fun addUsernameCookieToResponse(username: String?, response: HttpServletResponse) {
-        val usernameCookie = Cookie("kingdomusername", username)
-        usernameCookie.maxAge = 2 * 60 * 60 //2 hours
-        response.addCookie(usernameCookie)
     }
 
     private fun isAccessAllowed(request: HttpServletRequest): Boolean =

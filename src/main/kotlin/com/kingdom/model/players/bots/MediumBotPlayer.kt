@@ -40,7 +40,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
                 val error = GameError(GameError.COMPUTER_ERROR, "Supply was null for Province")
                 game.logError(error)
             }
-            if (game.numPlayers == 2 && game.numInPileMap[Province.NAME]!! <= 2 || game.numPlayers > 2 && game.numInPileMap[Province.NAME]!! <= 3) {
+            if (game.numPlayers == 2 && game.numInPileMap[Province.NAME]!! <= 3 || game.numPlayers > 2 && game.numInPileMap[Province.NAME]!! <= 4) {
                 shouldOnlyBuyVictoryCards = true
             } else if (game.isIncludeColonyCards && (game.numPlayers == 2 && game.numInPileMap[Colony.NAME]!! <= 2 || game.numPlayers > 2 && game.numInPileMap[Colony.NAME]!! <= 3)) {
                 shouldOnlyBuyVictoryCards = true

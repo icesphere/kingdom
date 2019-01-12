@@ -15,7 +15,7 @@ class BigMoneyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
             game.isIncludeColonyCards && availableCardsToBuyNames.contains(Colony.NAME) -> Colony.NAME
             game.isIncludePlatinumCards && game.isIncludeColonyCards && turns < 10 && cardCountByName(Platinum.NAME) == 0 && availableCardsToBuyNames.contains(Platinum.NAME) -> Platinum.NAME
             availableCardsToBuyNames.contains(Province.NAME) -> Province.NAME
-            game.numInPileMap[Duchy.NAME]!! <= 5 && availableCardsToBuyNames.contains(Duchy.NAME) -> Duchy.NAME
+            game.numInPileMap[Province.NAME]!! <= 5 && availableCardsToBuyNames.contains(Duchy.NAME) -> Duchy.NAME
             game.numInPileMap[Province.NAME]!! <= 2 && availableCardsToBuyNames.contains(Estate.NAME) -> Estate.NAME
             availableCardsToBuyNames.contains(Gold.NAME) -> Gold.NAME
             availableCardsToBuyNames.contains(Silver.NAME) -> Silver.NAME

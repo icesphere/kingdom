@@ -754,6 +754,9 @@ class GameController(private val cardManager: CardManager,
         try {
             val modelAndView = ModelAndView("game")
             val player = game.playerMap[user.userId] ?: return showGameRooms(request, response)
+
+            KingdomUtil.addUsernameCookieToResponse(player.username, response)
+
             addGameObjects(game, user, modelAndView, request)
             return modelAndView
         } catch (t: Throwable) {

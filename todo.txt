@@ -5,8 +5,8 @@ figure out why create game page takes a long time to load the bottom of the page
 better bots
 better logic for choosing cards for bots - e.g. chose card for Masquerade
 consolidate select card actions
-Bmu computer bought an Estate over a Duchy
 Lurker - show what cards are in the trash
+computer should buy provinces sooner if they have lots of gold
 
 font size on mobile on card details page
 

@@ -876,31 +876,35 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             val highScore = firstPlayer.finalVictoryPoints
             val leastTurns = players.minBy { it.turns }!!.turns
             val marginOfVictory = players[0].finalVictoryPoints - players[1].finalVictoryPoints
-            val winners = ArrayList<String>()
+            var winners = mutableListOf<Player>()
             for (player in players) {
-                if (player.finalVictoryPoints == highScore && leastTurns == player.turns) {
+                if (player.finalVictoryPoints == highScore) {
                     player.isWinner = true
                     player.marginOfVictory = marginOfVictory
-                    winners.add(player.username)
+                    winners.add(player)
                 } else {
                     break
                 }
             }
 
-            if (winners.size == 1) {
-                winnerString = winners[0] + " wins!"
+            if (winners.size > 1) {
+                winners = winners.filter { it.turns == leastTurns }.toMutableList()
+            }
+
+            winnerString = if (winners.size == 1) {
+                winners[0].username + " wins!"
             } else {
                 val sb = StringBuilder()
                 for (i in winners.indices) {
                     if (i != 0) {
                         sb.append(", ")
                     }
-                    if (i == winners.size - 1) {
+                    if (i == winners.lastIndex) {
                         sb.append("and ")
                     }
-                    sb.append(winners[i])
+                    sb.append(winners[i].username)
                 }
-                winnerString = sb.toString() + " tie for the win!"
+                sb.toString() + " tie for the win!"
             }
 
             for (computerPlayer in computerPlayers) {

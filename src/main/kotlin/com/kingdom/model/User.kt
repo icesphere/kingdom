@@ -35,8 +35,8 @@ class User {
             if (gameId != null) {
                 return false
             }
-            val thirtyMinutes = (60 * 1000 * 30).toLong()
-            val expired = lastRefresh == null || lastRefresh!!.time + thirtyMinutes < System.currentTimeMillis()
+            val twoHours = (60 * 1000 * 120).toLong()
+            val expired = lastRefresh == null || lastRefresh!!.time + twoHours < System.currentTimeMillis()
             if (expired) {
                 LoggedInUsers.userLoggedOut(this)
                 LoggedInUsers.refreshLobbyPlayers()
@@ -62,7 +62,7 @@ class User {
             var hours = 0
             if (minutes > 60) {
                 hours = minutes / 60
-                minutes = minutes - hours * 60
+                minutes -= hours * 60
             }
             val sb = StringBuilder()
             if (hours > 0) {
