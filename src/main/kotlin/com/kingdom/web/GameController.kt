@@ -2093,6 +2093,7 @@ class GameController(private val cardManager: CardManager,
             cards.addAll(cardManager.ruins)
         }
 
+        modelAndView.addObject("adjustFontSizeForMobile", KingdomUtil.isMobile(request))
         modelAndView.addObject("cards", cards)
         modelAndView.addObject("events", game.events.map { it.isHighlighted = false; it })
         modelAndView.addObject("prizeCards", game.prizeCards)

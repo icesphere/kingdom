@@ -8,8 +8,6 @@ consolidate select card actions
 Lurker - show what cards are in the trash
 computer should buy provinces sooner if they have lots of gold
 
-font size on mobile on card details page
-
 popup about what stuff other people did to you
 
 royal seal shouldn't ask multiple times if answer is no

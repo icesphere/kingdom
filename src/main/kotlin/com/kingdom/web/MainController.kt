@@ -33,10 +33,16 @@ class MainController(private val gameRoomManager: GameRoomManager) {
 
             val usernameMatchesCookie = username.toLowerCase() == usernameCookieValue?.toLowerCase()
 
+            val existingUser = LoggedInUsers.getUserByUsername(username)
+
+            if (existingUser?.isExpired == true) {
+                LoggedInUsers.userLoggedOut(existingUser)
+            }
+
             if (LoggedInUsers.usernameBeingUsed(username) && !usernameMatchesCookie) {
                 modelAndView.addObject("usernameBeingUsed", true)
             } else {
-                val user = usernameCookieValue?.let { LoggedInUsers.getUserByUsername(it) } ?: User()
+                val user = usernameCookieValue?.let { existingUser } ?: User()
                 user.username = username
 
                 KingdomUtil.addUsernameCookieToResponse(username, response)

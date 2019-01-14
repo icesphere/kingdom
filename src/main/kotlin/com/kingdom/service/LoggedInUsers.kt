@@ -1,6 +1,7 @@
 package com.kingdom.service
 
 import com.kingdom.model.User
+import com.kingdom.util.KingdomUtil
 import java.util.*
 
 object LoggedInUsers {
