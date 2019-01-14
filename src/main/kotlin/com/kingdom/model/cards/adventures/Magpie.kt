@@ -15,6 +15,7 @@ class Magpie : AdventuresCard(NAME, CardType.Action, 4) {
     override fun cardPlayedSpecialAction(player: Player) {
         val card = player.revealTopCardOfDeck()
         if (card != null) {
+            player.showInfoMessage("Revealed card was ${card.cardNameWithBackgroundColor}")
             if (card.isTreasure) {
                 player.removeTopCardOfDeck()
                 player.addCardToHand(card, true)

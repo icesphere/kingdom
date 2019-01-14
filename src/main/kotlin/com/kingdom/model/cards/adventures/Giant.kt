@@ -21,10 +21,12 @@ class Giant : AdventuresCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
     override fun cardPlayedSpecialAction(player: Player) {
         player.isJourneyTokenFaceUp = !player.isJourneyTokenFaceUp
         if (player.isJourneyTokenFaceUp) {
+            player.showInfoMessage("Journey token was flipped to face up")
             player.addInfoLogWithUsername("'s Journey token was flipped to face up")
             player.addCoins(5)
             player.triggerAttack(this)
         } else {
+            player.showInfoMessage("Journey token was flipped to face down")
             player.addInfoLogWithUsername("'s Journey token was flipped to face down")
             player.addCoins(1)
         }
@@ -37,10 +39,17 @@ class Giant : AdventuresCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
                 val card = cards.first()
                 val cost = player.getCardCostWithModifiers(card)
                 if (cost in 3..6) {
+                    opponent.showInfoMessage("${player.username}'s ${this.cardNameWithBackgroundColor} trashed your ${card.cardNameWithBackgroundColor}")
                     opponent.cardTrashed(card, true)
                 } else {
+                    var message = "${player.username}'s ${this.cardNameWithBackgroundColor} discarded your ${card.cardNameWithBackgroundColor}"
+                    val curse = Curse()
+                    if (player.game.isCardAvailableInSupply(curse)) {
+                        message += " and gave you a ${curse.cardNameWithBackgroundColor}"
+                    }
+                    opponent.showInfoMessage(message)
                     opponent.addCardToDiscard(card, showLog = true)
-                    opponent.gainSupplyCard(Curse(), true)
+                    opponent.gainSupplyCard(curse, true)
                 }
             }
         }

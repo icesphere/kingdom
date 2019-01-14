@@ -19,9 +19,11 @@ class Ranger : AdventuresCard(NAME, CardType.Action, 4), GameSetupModifier {
     override fun cardPlayedSpecialAction(player: Player) {
         player.isJourneyTokenFaceUp = !player.isJourneyTokenFaceUp
         if (player.isJourneyTokenFaceUp) {
+            player.showInfoMessage("Journey token was flipped to face up")
             player.addInfoLogWithUsername("'s Journey token was flipped to face up")
             player.drawCards(5)
         } else {
+            player.showInfoMessage("Journey token was flipped to face down")
             player.addInfoLogWithUsername("'s Journey token was flipped to face down")
         }
 

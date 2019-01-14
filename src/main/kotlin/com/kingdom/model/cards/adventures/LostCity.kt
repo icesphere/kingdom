@@ -15,6 +15,7 @@ class LostCity : AdventuresCard(NAME, CardType.Action, 5), AfterCardGainedListen
     override fun afterCardGained(player: Player) {
         for (opponent in player.opponentsInOrder) {
             opponent.drawCard()
+            opponent.showInfoMessage("Gained +1 Card from ${player.username}'s ${this.cardNameWithBackgroundColor}")
         }
     }
 

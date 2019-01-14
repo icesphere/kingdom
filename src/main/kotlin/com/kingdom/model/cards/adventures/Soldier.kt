@@ -15,7 +15,9 @@ class Soldier : AdventuresCard(NAME, CardType.ActionAttackTraveller, 3), CardDis
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.addCoins(player.inPlay.count { it != this && it.isAttack })
+        val numAttacksInPlay = player.inPlay.count { it != this && it.isAttack }
+        player.addCoins(numAttacksInPlay)
+        player.showInfoMessage("Gained +\$$numAttacksInPlay from ${this.cardNameWithBackgroundColor}")
         player.triggerAttack(this)
     }
 

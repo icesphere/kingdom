@@ -16,6 +16,7 @@ class Champion : AdventuresCard(NAME, CardType.ActionDuration, 6), PermanentDura
     }
 
     override fun onBeforeAttack(attackCard: Card, player: Player, attacker: Player) {
+        attacker.showInfoMessage("${player.username}'s ${this.cardNameWithBackgroundColor} prevented the attack")
         player.addEventLogWithUsername("'s ${this.cardNameWithBackgroundColor} prevented attack from ${attacker.username}'s ${attackCard.cardNameWithBackgroundColor}")
         attackCard.playersExcludedFromCardEffects.add(player)
     }

@@ -7,6 +7,7 @@ better logic for choosing cards for bots - e.g. chose card for Masquerade
 consolidate select card actions
 Lurker - show what cards are in the trash
 computer should buy provinces sooner if they have lots of gold
+remind player which tavern cards are available to use at start of turn
 
 popup about what stuff other people did to you
 

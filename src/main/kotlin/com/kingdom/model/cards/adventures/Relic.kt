@@ -21,6 +21,7 @@ class Relic : AdventuresCard(NAME, CardType.TreasureAttack, 5), AttackCard {
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         for (opponent in affectedOpponents) {
             opponent.isMinusCardTokenOnDeck = true
+            opponent.showInfoMessage("${player.username}'s ${this.cardNameWithBackgroundColor} put your -1 Card token on your deck")
             opponent.refreshPlayerHandArea()
         }
     }

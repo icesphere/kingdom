@@ -35,6 +35,7 @@ class Messenger : AdventuresCard(NAME, CardType.Action, 4), ChoiceActionCard, Af
     override fun onCardGained(player: Player, card: Card) {
         player.opponents.forEach { opponent ->
             opponent.gainSupplyCard(card, true)
+            opponent.showInfoMessage("You gained ${card.cardNameWithBackgroundColor} from ${player.username}'s ${this.cardNameWithBackgroundColor}")
         }
     }
 

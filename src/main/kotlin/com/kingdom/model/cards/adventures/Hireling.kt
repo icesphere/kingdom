@@ -13,6 +13,7 @@ class Hireling : AdventuresCard(NAME, CardType.ActionDuration, 6), StartOfTurnDu
 
     override fun durationStartOfTurnAction(player: Player) {
         player.drawCard()
+        player.showInfoMessage("Gained +1 Card from ${this.cardNameWithBackgroundColor}")
     }
 
     companion object {

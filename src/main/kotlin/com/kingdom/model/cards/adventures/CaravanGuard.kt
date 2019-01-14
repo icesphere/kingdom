@@ -19,6 +19,7 @@ class CaravanGuard : AdventuresCard(NAME, CardType.ActionDurationReaction, 3), S
 
     override fun durationStartOfTurnAction(player: Player) {
         player.addCoins(1)
+        player.showInfoMessage("Gained +\$1 from ${this.cardNameWithBackgroundColor}")
     }
 
     override fun onBeforeAttack(attackCard: Card, player: Player, attacker: Player) {
@@ -30,6 +31,7 @@ class CaravanGuard : AdventuresCard(NAME, CardType.ActionDurationReaction, 3), S
             player.removeCardFromHand(this)
             player.drawCard()
             player.durationCards.add(this)
+            player.opponents.forEach { it.showInfoMessage("${player.username} played ${this.cardNameWithBackgroundColor}") }
         }
     }
 

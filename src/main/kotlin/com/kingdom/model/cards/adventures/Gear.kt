@@ -5,6 +5,7 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.ChooseCardsActionCard
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
 class Gear : AdventuresCard(NAME, CardType.ActionDuration, 3), StartOfTurnDurationAction, ChooseCardsActionCard {
 
@@ -30,6 +31,7 @@ class Gear : AdventuresCard(NAME, CardType.ActionDuration, 3), StartOfTurnDurati
     override fun durationStartOfTurnAction(player: Player) {
         if (setAsideCards?.isNotEmpty() == true) {
             player.addCardsToHand(setAsideCards!!)
+            player.showInfoMessage("${this.cardNameWithBackgroundColor} added ${setAsideCards!!.groupedString} to your hand")
             player.addEventLogWithUsername("put cards from ${this.cardNameWithBackgroundColor} into their hand")
         }
 
