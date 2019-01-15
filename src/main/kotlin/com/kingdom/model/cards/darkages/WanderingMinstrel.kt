@@ -2,6 +2,7 @@ package com.kingdom.model.cards.darkages
 
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
 class WanderingMinstrel : DarkAgesCard(NAME, CardType.Action, 4) {
 
@@ -16,6 +17,7 @@ class WanderingMinstrel : DarkAgesCard(NAME, CardType.Action, 4) {
 
     override fun cardPlayedSpecialAction(player: Player) {
         val cards = player.removeTopCardsOfDeck(3, true)
+        player.showInfoMessage("Revealed ${cards.groupedString}")
         val actionCards = cards.filter { it.isAction }
         val nonActionCards = cards - actionCards
         player.addCardsToDiscard(nonActionCards)

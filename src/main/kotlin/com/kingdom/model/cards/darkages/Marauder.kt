@@ -24,7 +24,10 @@ class Marauder : DarkAgesCard(NAME, CardType.ActionAttackLooter, 4), GameSetupMo
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         for (opponent in affectedOpponents) {
-            opponent.gainRuins()
+            val ruins = opponent.gainRuins()
+            if (ruins != null) {
+                opponent.showInfoMessage("You gained ${ruins.cardNameWithBackgroundColor} from ${player.username}'s ${this.cardNameWithBackgroundColor}")
+            }
         }
     }
 

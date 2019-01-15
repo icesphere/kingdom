@@ -21,11 +21,15 @@ class Forager : DarkAgesCard(NAME, CardType.Action, 3), TrashCardsForBenefitActi
 
     override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
         val numDifferentTreasuresInTrash = player.game.trashedCards.filter { it.isTreasure }.groupBy { it.name }.size
-        if (numDifferentTreasuresInTrash == 1) {
-            player.addEventLog("There was 1 differently named treasure in the trash")
+
+        val message = if (numDifferentTreasuresInTrash == 1) {
+            "There was 1 differently named treasure in the trash"
         } else {
-            player.addEventLog("There were $numDifferentTreasuresInTrash differently named treasures in the trash")
+            "There were $numDifferentTreasuresInTrash differently named treasures in the trash"
         }
+        player.addEventLog(message)
+        player.showInfoMessage(message)
+
         if (numDifferentTreasuresInTrash > 0) {
             player.addCoins(numDifferentTreasuresInTrash)
         }

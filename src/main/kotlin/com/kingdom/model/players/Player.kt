@@ -932,11 +932,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun gainRuins() {
-        if (game.ruinsPile.isNotEmpty()) {
+    fun gainRuins(): Card? {
+        return if (game.ruinsPile.isNotEmpty()) {
             val card = game.ruinsPile.removeAt(0)
             cardGained(card)
             addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the Ruins pile")
+            card
+        } else {
+            null
         }
     }
 

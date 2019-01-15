@@ -4,6 +4,7 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.listeners.AfterCardGainedListenerForSelf
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
 class DeathCart : DarkAgesCard(NAME, CardType.ActionLooter, 4), ChoiceActionCard, AfterCardGainedListenerForSelf {
 
@@ -31,8 +32,10 @@ class DeathCart : DarkAgesCard(NAME, CardType.ActionLooter, 4), ChoiceActionCard
     }
 
     override fun afterCardGained(player: Player) {
-        player.gainRuins()
-        player.gainRuins()
+        val ruins = listOfNotNull(player.gainRuins(), player.gainRuins())
+        if (ruins.isNotEmpty()) {
+            player.showInfoMessage("You gained ${ruins.groupedString} from ${this.cardNameWithBackgroundColor}")
+        }
     }
 
     companion object {

@@ -5,6 +5,7 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
 class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCardActionCard {
 
@@ -33,17 +34,23 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
                 opponent.addCardToDiscard(it)
             }
 
+            if (cardsToDiscard.isNotEmpty()) {
+                opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${cardsToDiscard.groupedString} from your deck")
+            }
+
             if (cardsThatCanBeTrashed.isNotEmpty()) {
                 when {
                     cardsThatCanBeTrashed.size == 1 -> {
                         val card = cardsThatCanBeTrashed.first()
                         opponent.removeCardFromDeck(card)
                         opponent.cardTrashed(card)
+                        opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor trashed ${card.cardNameWithBackgroundColor} from your deck")
                         opponent.addEventLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
                     }
                     cardsThatCanBeTrashed[0].name == cardsThatCanBeTrashed[1].name -> {
                         opponent.removeCardFromDeck(cardsThatCanBeTrashed[0])
                         opponent.cardTrashed(cardsThatCanBeTrashed[0])
+                        opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor trashed ${cardsThatCanBeTrashed[0].cardNameWithBackgroundColor} from your deck")
                         opponent.addEventLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${cardsThatCanBeTrashed[0].cardNameWithBackgroundColor}")
 
                         opponent.removeCardFromDeck(cardsThatCanBeTrashed[1])

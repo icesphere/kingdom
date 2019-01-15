@@ -32,6 +32,8 @@ class WishingWell : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard
             } else {
                 player.showInfoMessage("You guessed wrong. The top card was ${topCards.first().cardNameWithBackgroundColor}.")
             }
+        } else {
+            player.showInfoMessage("Your deck is empty")
         }
     }
 

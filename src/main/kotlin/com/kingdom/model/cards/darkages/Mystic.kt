@@ -25,10 +25,15 @@ class Mystic : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
         val topCards = player.revealTopCardsOfDeck(1)
         if (topCards.isNotEmpty()) {
             if (topCards.first().name == card.name) {
+                player.showInfoMessage("You guessed correctly")
                 player.addEventLogWithUsername("correctly guessed the top card of their deck was ${card.cardNameWithBackgroundColor} and added it to their hand")
                 player.removeTopCardOfDeck()
                 player.addCardToHand(card)
+            } else {
+                player.showInfoMessage("You guessed wrong. The top card was ${topCards.first().cardNameWithBackgroundColor}.")
             }
+        } else {
+            player.showInfoMessage("Your deck is empty")
         }
     }
 
