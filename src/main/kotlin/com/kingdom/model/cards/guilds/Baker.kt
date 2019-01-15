@@ -14,7 +14,10 @@ class Baker : GuildsCard(NAME, CardType.Action, 5), GameStartedListener {
     }
 
     override fun onGameStarted(game: Game) {
-        game.players.forEach { it.addCoffers(1) }
+        game.players.forEach {
+            it.addCoffers(1)
+            it.showInfoMessage("Setup for ${this.cardNameWithBackgroundColor} gave everyone 1 Coffers")
+        }
     }
 
     companion object {

@@ -34,10 +34,12 @@ class Advisor : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard {
 
         val cardToDiscard = cards[choice]
         player.addCardToDiscard(cardToDiscard, showLog = true)
+        player.showInfoMessage("${player.game.getPlayerToLeft(player).username} discarded ${cardToDiscard.cardNameWithBackgroundColor}")
 
         val cardsToPutInHand = cards - cardToDiscard
         player.addCardsToHand(cardsToPutInHand)
 
+        player.showInfoMessage("${cardsToPutInHand.groupedString} were added to your hand")
         player.addEventLogWithUsername("added ${cardsToPutInHand.groupedString} to hand")
     }
 

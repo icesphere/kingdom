@@ -21,6 +21,7 @@ class Soothsayer : GuildsCard(NAME, CardType.ActionAttack, 5), AttackCard {
         for (opponent in affectedOpponents) {
             val curse = Curse()
             if (player.game.isCardAvailableInSupply(curse)) {
+                opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor gave you a ${curse.cardNameWithBackgroundColor} and you drew 1 Card")
                 opponent.gainSupplyCard(curse, true)
                 opponent.drawCard()
             }

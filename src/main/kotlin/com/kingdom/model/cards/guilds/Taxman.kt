@@ -30,8 +30,10 @@ class Taxman : GuildsCard(NAME, CardType.ActionAttack, 4), TrashCardsForBenefitA
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         for (opponent in affectedOpponents) {
             if (opponent.hand.size >= 5) {
-                if (opponent.hand.any { it.name == treasureCard!!.name }) {
-                    opponent.discardCardFromHand(opponent.hand.first { it.name == treasureCard!!.name }, true)
+                val treasureCard = opponent.hand.firstOrNull { it.name == treasureCard!!.name }
+                if (treasureCard != null) {
+                    opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${treasureCard.cardNameWithBackgroundColor} from your hand")
+                    opponent.discardCardFromHand(treasureCard, true)
                 } else {
                     opponent.revealHand()
                 }

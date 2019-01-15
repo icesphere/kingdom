@@ -20,9 +20,12 @@ class Herald : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard, AfterCard
         val card = player.revealTopCardOfDeck()
 
         if (card != null && card.isAction) {
+            player.showInfoMessage("$cardNameWithBackgroundColor revealed and played ${card.cardNameWithBackgroundColor}")
             player.removeTopCardOfDeck()
             player.addActions(1, false)
             player.playCard(card)
+        } else if (card != null) {
+            player.showInfoMessage("$cardNameWithBackgroundColor revealed ${card.cardNameWithBackgroundColor}")
         }
     }
 
