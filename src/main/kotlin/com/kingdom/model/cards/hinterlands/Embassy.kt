@@ -18,6 +18,7 @@ class Embassy : HinterlandsCard(NAME, CardType.Action, 5), AfterCardGainedListen
 
     override fun afterCardGained(player: Player) {
         for (opponent in player.opponentsInOrder) {
+            opponent.showInfoMessage("You gained a ${Silver().cardNameWithBackgroundColor} when ${player.username} gained an $cardNameWithBackgroundColor")
             opponent.gainSupplyCard(Silver(), showLog = true)
         }
     }

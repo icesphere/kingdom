@@ -15,6 +15,7 @@ class Cache : HinterlandsCard(NAME, CardType.Treasure, 5), AfterCardGainedListen
     override fun afterCardGained(player: Player) {
         player.gainSupplyCard(Copper(), showLog = true)
         player.gainSupplyCard(Copper(), showLog = true)
+        player.showInfoMessage("You gained 2 ${Copper().cardNameWithBackgroundColor}")
     }
 
     companion object {

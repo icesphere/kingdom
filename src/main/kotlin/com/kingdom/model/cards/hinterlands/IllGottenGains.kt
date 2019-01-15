@@ -31,7 +31,11 @@ class IllGottenGains : HinterlandsCard(NAME, CardType.Treasure, 5), AfterCardGai
 
     override fun afterCardGained(player: Player) {
         for (opponent in player.opponentsInOrder) {
-            opponent.gainSupplyCard(Curse(), true)
+            val curse = Curse()
+            if (opponent.game.isCardAvailableInSupply(curse)) {
+                opponent.gainSupplyCard(curse, true)
+                opponent.showInfoMessage("You gained a ${curse.cardNameWithBackgroundColor} when ${player.username} gained an $cardNameWithBackgroundColor")
+            }
         }
     }
 

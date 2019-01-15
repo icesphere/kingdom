@@ -16,7 +16,7 @@ class NobleBrigand : HinterlandsCard(NAME, CardType.ActionAttack, 4), AfterCardB
 
     init {
         addCoins = 1
-        special = "When you buy or play this, each other player reveals the top 2 cards of their deck, trashes a revealed Silver or Gold you choose, discards the rest, and gains a Copper if they didn’t reveal a Treasure. You gain the trashed cards."
+        special = "When you buy or play this, each other player reveals the top 2 cards of their deck, trashes a revealed Silver or Gold you choose, discards the rest, and gains a Copper if they didn't reveal a Treasure. You gain the trashed cards."
         fontSize = 10
         textSize = 112
     }
@@ -40,7 +40,10 @@ class NobleBrigand : HinterlandsCard(NAME, CardType.ActionAttack, 4), AfterCardB
 
             val otherCards = cards - silverAndGoldCards
             opponent.addCardsToDiscard(otherCards)
-            opponent.addEventLogWithUsername("discarded ${otherCards.groupedString}")
+            if (otherCards.isNotEmpty()) {
+                opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${otherCards.groupedString} from your deck")
+                opponent.addEventLogWithUsername("discarded ${otherCards.groupedString}")
+            }
 
             if (silverAndGoldCards.isNotEmpty()) {
                 if (silverAndGoldCards.size > 1) {
@@ -48,6 +51,7 @@ class NobleBrigand : HinterlandsCard(NAME, CardType.ActionAttack, 4), AfterCardB
                     val secondCard = silverAndGoldCards[1]
                     if (firstCard.name == secondCard.name) {
                         opponent.addCardToDiscard(firstCard, showLog = true)
+                        opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${firstCard.cardNameWithBackgroundColor} from your deck")
                         gainTrashedCard(player, opponent, secondCard)
                     } else {
                         player.makeChoiceWithInfo(this, "${opponent.username} revealed a ${Silver().cardNameWithBackgroundColor} and a ${Gold().cardNameWithBackgroundColor}.  Which one do you want to trash and gain?", opponent, Choice(1, "Silver"), Choice(2, "Gold"))
@@ -57,6 +61,7 @@ class NobleBrigand : HinterlandsCard(NAME, CardType.ActionAttack, 4), AfterCardB
                     gainTrashedCard(player, opponent, card)
                 }
             } else {
+                opponent.showInfoMessage("You gained a ${Copper().cardNameWithBackgroundColor} from ${player.username}'s $cardNameWithBackgroundColor")
                 opponent.gainSupplyCard(Copper(), true)
             }
         }
@@ -64,6 +69,7 @@ class NobleBrigand : HinterlandsCard(NAME, CardType.ActionAttack, 4), AfterCardB
 
     private fun gainTrashedCard(player: Player, opponent: Player, card: Card) {
         player.cardGained(card)
+        opponent.showInfoMessage("${player.username} trashed and gained your ${card.cardNameWithBackgroundColor}")
         player.addEventLogWithUsername("trashed and gained ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
     }
 
