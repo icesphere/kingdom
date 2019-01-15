@@ -859,14 +859,17 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         when (destination) {
             CardLocation.Hand -> {
+                opponent.showInfoMessage("$username put ${card.cardNameWithBackgroundColor} into your hand")
                 addEventLogWithUsername("put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s hand")
                 opponent.gainCardToHand(card)
             }
             CardLocation.Deck -> {
+                opponent.showInfoMessage("$username put ${card.cardNameWithBackgroundColor} on top of your deck")
                 addEventLogWithUsername("put ${card.cardNameWithBackgroundColor} on top of ${opponent.username}'s deck")
                 opponent.gainCardToTopOfDeck(card)
             }
             else -> {
+                opponent.showInfoMessage("$username put ${card.cardNameWithBackgroundColor} into your discard")
                 addEventLogWithUsername("put ${card.cardNameWithBackgroundColor} into ${opponent.username}'s discard")
                 opponent.cardGained(card)
             }

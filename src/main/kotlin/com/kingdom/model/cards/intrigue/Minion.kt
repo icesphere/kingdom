@@ -23,6 +23,7 @@ class Minion : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, ChoiceA
                 .forEach { opponent ->
                     opponent.discardHand()
                     opponent.drawCards(4)
+                    opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded your hand and you drew 4 new Cards")
                 }
     }
 

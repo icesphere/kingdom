@@ -3,6 +3,7 @@ package com.kingdom.model.cards.intrigue
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
 class Patrol : IntrigueCard(NAME, CardType.Action, 5) {
 
@@ -13,6 +14,7 @@ class Patrol : IntrigueCard(NAME, CardType.Action, 5) {
 
     override fun cardPlayedSpecialAction(player: Player) {
         val cards = player.revealTopCardsOfDeck(4)
+        player.showInfoMessage("Revealed ${cards.groupedString}")
 
         val cardsToPutBack = mutableListOf<Card>()
 

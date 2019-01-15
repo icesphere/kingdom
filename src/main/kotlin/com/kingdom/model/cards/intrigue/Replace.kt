@@ -26,7 +26,11 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         affectedOpponents.forEach { opponent ->
-            opponent.gainSupplyCard(Curse(), showLog = true)
+            val curse = Curse()
+            if (opponent.game.isCardAvailableInSupply(curse)) {
+                opponent.gainSupplyCard(curse, showLog = true)
+                opponent.showInfoMessage("You gained a ${curse.cardNameWithBackgroundColor} when ${player.username} gained a Victory card with $cardNameWithBackgroundColor")
+            }
         }
     }
 
