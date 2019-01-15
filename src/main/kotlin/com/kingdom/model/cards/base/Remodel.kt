@@ -1,11 +1,11 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.TrashCardsForBenefitActionCard
 import com.kingdom.model.players.Player
 
-class Remodel : KingdomCard(NAME, CardType.Action, 4), TrashCardsForBenefitActionCard {
+class Remodel : BaseCard(NAME, CardType.Action, 4), TrashCardsForBenefitActionCard {
 
     init {
         special = "Trash a card from your hand. Gain a card costing up to \$2 more than the trashed card."

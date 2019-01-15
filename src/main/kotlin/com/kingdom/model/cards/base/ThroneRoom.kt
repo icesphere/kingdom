@@ -1,10 +1,10 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.ChooseCardActionCardOptional
 import com.kingdom.model.players.Player
 
-class ThroneRoom : KingdomCard(NAME, CardType.Action, 4), ChooseCardActionCardOptional, CardRepeater {
+class ThroneRoom : BaseCard(NAME, CardType.Action, 4), ChooseCardActionCardOptional, CardRepeater {
 
     override var cardBeingRepeated: Card? = null
 

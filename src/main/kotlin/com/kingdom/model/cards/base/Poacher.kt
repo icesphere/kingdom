@@ -1,9 +1,9 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.players.Player
 
-class Poacher : KingdomCard(NAME, CardType.Action, 4) {
+class Poacher : BaseCard(NAME, CardType.Action, 4) {
     init {
         addCards = 1
         addActions = 1

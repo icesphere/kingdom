@@ -15,8 +15,8 @@ import com.kingdom.model.cards.guilds.Doctor
 import com.kingdom.model.cards.guilds.Masterpiece
 import com.kingdom.model.cards.guilds.Stonemason
 import com.kingdom.model.cards.hinterlands.Farmland
-import com.kingdom.model.cards.kingdom.ThroneRoom
-import com.kingdom.model.cards.kingdom.Witch
+import com.kingdom.model.cards.base.ThroneRoom
+import com.kingdom.model.cards.base.Witch
 import com.kingdom.model.cards.prosperity.Forge
 import com.kingdom.model.cards.prosperity.KingsCourt
 import com.kingdom.model.cards.prosperity.Mint

@@ -1,8 +1,8 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.CardType
 
-class Smithy : KingdomCard(NAME, CardType.Action, 4) {
+class Smithy : BaseCard(NAME, CardType.Action, 4) {
 
     init {
         addCards = 3

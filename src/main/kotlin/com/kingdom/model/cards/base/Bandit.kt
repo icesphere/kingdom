@@ -1,4 +1,4 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
@@ -7,7 +7,7 @@ import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.cards.supply.Gold
 import com.kingdom.model.players.Player
 
-class Bandit : KingdomCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCardActionCard {
+class Bandit : BaseCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCardActionCard {
 
     init {
         special = "Gain a Gold. Each other player reveals the top two cards of their deck, trashes a revealed Treasure other than Copper, and discards the rest."

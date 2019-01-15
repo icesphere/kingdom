@@ -1,8 +1,8 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.CardType
 
-class Festival : KingdomCard(NAME, CardType.Action, 5) {
+class Festival : BaseCard(NAME, CardType.Action, 5) {
 
     init {
         addActions = 2

@@ -20,7 +20,7 @@ import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
-import com.kingdom.model.cards.kingdom.*
+import com.kingdom.model.cards.base.*
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.seaside.*
 import com.kingdom.model.cards.supply.*

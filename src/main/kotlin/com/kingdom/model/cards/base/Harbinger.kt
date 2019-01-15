@@ -1,9 +1,9 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.players.Player
 
-class Harbinger : KingdomCard(NAME, CardType.Action, 3) {
+class Harbinger : BaseCard(NAME, CardType.Action, 3) {
     init {
         addCards = 1
         addActions = 1

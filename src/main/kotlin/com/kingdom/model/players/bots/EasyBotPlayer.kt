@@ -3,9 +3,9 @@ package com.kingdom.model.players.bots
 import com.kingdom.model.Game
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.kingdom.Chapel
-import com.kingdom.model.cards.kingdom.Gardens
-import com.kingdom.model.cards.kingdom.Laboratory
+import com.kingdom.model.cards.base.Chapel
+import com.kingdom.model.cards.base.Gardens
+import com.kingdom.model.cards.base.Laboratory
 import com.kingdom.model.cards.supply.Gold
 import com.kingdom.model.cards.supply.Platinum
 import com.kingdom.model.cards.supply.Silver

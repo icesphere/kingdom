@@ -1,9 +1,9 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.players.Player
 
-class Workshop : KingdomCard(NAME, CardType.Action, 3) {
+class Workshop : BaseCard(NAME, CardType.Action, 3) {
 
     init {
         special = "Gain a card costing up to \$4."

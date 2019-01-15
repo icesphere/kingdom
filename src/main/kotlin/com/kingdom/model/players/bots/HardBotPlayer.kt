@@ -4,9 +4,9 @@ import com.kingdom.model.Game
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.intrigue.WishingWell
-import com.kingdom.model.cards.kingdom.Mine
-import com.kingdom.model.cards.kingdom.Village
-import com.kingdom.model.cards.kingdom.Workshop
+import com.kingdom.model.cards.base.Mine
+import com.kingdom.model.cards.base.Village
+import com.kingdom.model.cards.base.Workshop
 import com.kingdom.model.cards.prosperity.Expand
 import com.kingdom.model.cards.prosperity.Quarry
 

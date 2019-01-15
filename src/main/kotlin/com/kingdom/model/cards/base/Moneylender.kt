@@ -1,11 +1,11 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.players.Player
 
-class Moneylender : KingdomCard(NAME, CardType.Action, 4), ChoiceActionCard {
+class Moneylender : BaseCard(NAME, CardType.Action, 4), ChoiceActionCard {
 
     init {
         special = "You may trash a Copper from your hand. If you do, +\$3."

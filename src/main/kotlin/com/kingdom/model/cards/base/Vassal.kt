@@ -1,11 +1,11 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.players.Player
 
-class Vassal : KingdomCard(NAME, CardType.Action, 3), ChoiceActionCard {
+class Vassal : BaseCard(NAME, CardType.Action, 3), ChoiceActionCard {
 
     lateinit var cardDiscarded: Card
 

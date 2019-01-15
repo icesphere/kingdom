@@ -1,11 +1,11 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.players.Player
 
-class Library : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
+class Library : BaseCard(NAME, CardType.Action, 5), ChoiceActionCard {
 
     val skippedActionCards: MutableList<Card> = ArrayList()
 

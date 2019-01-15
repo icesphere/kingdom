@@ -1,10 +1,10 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.players.Player
 
-class Militia : KingdomCard(NAME, CardType.ActionAttack, 4), AttackCard {
+class Militia : BaseCard(NAME, CardType.ActionAttack, 4), AttackCard {
 
     init {
         addCoins = 2

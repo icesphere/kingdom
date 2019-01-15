@@ -1,6 +1,6 @@
 package com.kingdom.model.cards
 
-import com.kingdom.model.cards.kingdom.ThroneRoom
+import com.kingdom.model.cards.base.ThroneRoom
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
 import com.kingdom.model.cards.prosperity.Goons
 import com.kingdom.model.cards.prosperity.KingsCourt

@@ -1,9 +1,9 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.players.Player
 
-class CouncilRoom : KingdomCard(NAME, CardType.Action, 5) {
+class CouncilRoom : BaseCard(NAME, CardType.Action, 5) {
     init {
         addCards = 4
         addBuys = 1

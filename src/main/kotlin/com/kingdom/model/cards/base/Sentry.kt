@@ -1,4 +1,4 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.Choice
 import com.kingdom.model.cards.Card
@@ -6,7 +6,7 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.players.Player
 
-class Sentry : KingdomCard(NAME, CardType.Action, 5), ChoiceActionCard {
+class Sentry : BaseCard(NAME, CardType.Action, 5), ChoiceActionCard {
 
     private val cardsForAction = mutableListOf<Card>()
 

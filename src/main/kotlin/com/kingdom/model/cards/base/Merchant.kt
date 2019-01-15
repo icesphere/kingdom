@@ -1,11 +1,11 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.listeners.CardPlayedListener
 import com.kingdom.model.players.Player
 
-class Merchant : KingdomCard(NAME, CardType.Action, 3), CardPlayedListener {
+class Merchant : BaseCard(NAME, CardType.Action, 3), CardPlayedListener {
 
     var firstSilverPlayed: Boolean = false
 

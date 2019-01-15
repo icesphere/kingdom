@@ -1,4 +1,4 @@
-package com.kingdom.model.cards.kingdom
+package com.kingdom.model.cards.base
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
@@ -6,7 +6,7 @@ import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.listeners.HandBeforeAttackListener
 import com.kingdom.model.players.Player
 
-class Moat : KingdomCard(NAME, CardType.ActionReaction, 2), HandBeforeAttackListener, ChoiceActionCard {
+class Moat : BaseCard(NAME, CardType.ActionReaction, 2), HandBeforeAttackListener, ChoiceActionCard {
 
     lateinit var attackCard: Card
 
