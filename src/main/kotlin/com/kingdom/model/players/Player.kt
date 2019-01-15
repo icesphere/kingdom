@@ -1359,6 +1359,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (cards.isNotEmpty() && revealCards) {
+            showInfoMessage("Revealed ${cards.groupedString}")
             addEventLogWithUsername("revealed ${cards.groupedString} from top of deck")
         }
 
@@ -1587,6 +1588,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (revealedCards.isNotEmpty()) {
+            showInfoMessage("Revealed ${revealedCards.groupedString}")
             addEventLogWithUsername("revealed ${revealedCards.groupedString} from their deck")
         }
 

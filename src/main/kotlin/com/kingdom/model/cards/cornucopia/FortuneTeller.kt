@@ -1,10 +1,8 @@
 package com.kingdom.model.cards.cornucopia
 
-import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.players.Player
-import com.kingdom.util.groupedString
 
 class FortuneTeller : CornucopiaCard(NAME, CardType.ActionAttack, 3), AttackCard {
 
@@ -21,19 +19,7 @@ class FortuneTeller : CornucopiaCard(NAME, CardType.ActionAttack, 3), AttackCard
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         for (opponent in affectedOpponents) {
-            val revealedCards = mutableListOf<Card>()
-
-            var card = opponent.removeTopCardOfDeck()
-
-            while (card != null && !card.isVictory && !card.isCurse) {
-                revealedCards.add(card)
-                card = opponent.removeTopCardOfDeck()
-            }
-
-            if (revealedCards.isNotEmpty()) {
-                opponent.addEventLogWithUsername("revealed ${revealedCards.groupedString}")
-                opponent.addCardsToDiscard(revealedCards)
-            }
+            val card = opponent.revealFromDeckUntilCardFoundAndDiscardOthers { c -> c.isVictory || c.isCurse }
 
             if (card != null) {
                 opponent.addCardToTopOfDeck(card)

@@ -24,8 +24,14 @@ class Jester : CornucopiaCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
         for (opponent in affectedOpponents) {
             val card = opponent.discardTopCardOfDeck()
             if (card != null) {
+                opponent.showInfoMessage("${player.username}'s ${this.cardNameWithBackgroundColor} discarded ${card.cardNameWithBackgroundColor} from your deck")
+
                 if (card.isVictory) {
-                    opponent.gainSupplyCard(Curse(), true)
+                    val curse = Curse()
+                    if (opponent.game.isCardAvailableInSupply(curse)) {
+                        opponent.showInfoMessage("You gained a ${curse.cardNameWithBackgroundColor} from ${player.username}'s ${this.cardNameWithBackgroundColor}")
+                        opponent.gainSupplyCard(curse, true)
+                    }
                 } else {
                     if (player.game.isCardAvailableInSupply(card)) {
                         player.makeChoiceWithInfo(this, "Who do you want to gain a copy of ${card.cardNameWithBackgroundColor}?", JesterInfo(card, opponent), Choice(1, "You"), Choice(2, opponent.username))
@@ -37,7 +43,10 @@ class Jester : CornucopiaCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         val jesterInfo = info as JesterInfo
-        val playerToGainCard = if (choice == 1) player else info.opponent
+        val playerToGainCard = if (choice == 1) player else {
+            info.opponent.showInfoMessage("You gained ${info.card.cardNameWithBackgroundColor} from ${player.username}'s ${this.cardNameWithBackgroundColor}")
+            info.opponent
+        }
         playerToGainCard.gainSupplyCard(jesterInfo.card, showLog = true)
     }
 
