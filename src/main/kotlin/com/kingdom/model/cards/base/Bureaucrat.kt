@@ -4,6 +4,7 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.cards.supply.Silver
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
 class Bureaucrat : BaseCard(NAME, CardType.ActionAttack, 4), AttackCard {
     init {
@@ -29,10 +30,14 @@ class Bureaucrat : BaseCard(NAME, CardType.ActionAttack, 4), AttackCard {
                             opponent.revealCardFromHand(victoryCard)
                             opponent.removeCardFromHand(victoryCard)
                             opponent.addCardToTopOfDeck(victoryCard)
+                            player.showInfoMessage("${opponent.username} put ${victoryCard.cardNameWithBackgroundColor} on top of their deck")
+                            opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor put ${victoryCard.cardNameWithBackgroundColor} on top of your deck")
                         } else {
+                            player.showInfoMessage("${opponent.username} is choosing a victory card from ${victoryCards.groupedString} to put on top of their deck")
                             opponent.addCardFromHandToTopOfDeck({ c -> c.isVictory })
                         }
                     } else {
+                        player.showInfoMessage("${opponent.username} did not have any victory cards in their hand: ${opponent.hand.groupedString}")
                         opponent.revealHand()
                     }
                 }

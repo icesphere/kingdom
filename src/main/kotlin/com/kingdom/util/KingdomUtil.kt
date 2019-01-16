@@ -3,6 +3,8 @@ package com.kingdom.util
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardColor
+import com.kingdom.model.cards.intrigue.Nobles
+import com.kingdom.model.cards.prosperity.Goons
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.service.UAgentInfo
 import org.springframework.web.servlet.ModelAndView
@@ -20,7 +22,7 @@ fun List<Card>?.toCardNames(addColor: Boolean = true): String {
 
     if (this.size == 1) {
         return if (addColor) {
-            KingdomUtil.getCardWithBackgroundColor(this[0])
+            this[0].cardNameWithBackgroundColor
         } else {
             this[0].name
         }
@@ -30,11 +32,11 @@ fun List<Card>?.toCardNames(addColor: Boolean = true): String {
         if (i != 0) {
             sb.append(", ")
         }
-        if (i == this.size - 1) {
+        if (i == this.lastIndex) {
             sb.append("and ")
         }
         if (addColor) {
-            sb.append(KingdomUtil.getCardWithBackgroundColor(this[i]))
+            sb.append(this[i].cardNameWithBackgroundColor)
         } else {
             sb.append(this[i].name)
         }
@@ -43,18 +45,15 @@ fun List<Card>?.toCardNames(addColor: Boolean = true): String {
 }
 
 object KingdomUtil {
-    fun getArticleWithCardName(card: Card): String {
+    private fun getArticleWithCardName(card: Card): String {
         val cardName = card.name
-        val cardNameString = getCardWithBackgroundColor(card)
-        if (cardName == "Goons" || cardName == "Nobles") {
+        val cardNameString = card.cardNameWithBackgroundColor
+        if (cardName == Goons.NAME || cardName == Nobles.NAME) {
             return cardNameString
         }
-        if (cardName == "University") {
-            return "a " + cardNameString
-        }
         return if (cardName.toUpperCase().startsWith("A") || cardName.toUpperCase().startsWith("E") || cardName.toUpperCase().startsWith("I") || cardName.toUpperCase().startsWith("O") || cardName.toUpperCase().startsWith("U") || cardName == "Herbalist") {
-            "an " + cardNameString
-        } else "a " + cardNameString
+            "an $cardNameString"
+        } else "a $cardNameString"
     }
 
     fun getWordWithBackgroundColor(word: String, color: CardColor): String {
@@ -166,8 +165,7 @@ object KingdomUtil {
         return cards
     }
 
-    @JvmOverloads
-    fun groupCards(cards: List<Card>?, addColor: Boolean, addNumbers: Boolean = true): String {
+    fun groupCards(cards: List<Card>?, addColor: Boolean): String {
         if (cards == null || cards.isEmpty()) {
             return ""
         }
@@ -182,16 +180,16 @@ object KingdomUtil {
                     sb.append(", ")
                 }
                 if (addColor) {
-                    if (addNumbers) {
-                        sb.append(currentCard.getNumberPlusNameWithBackgroundColor(numOfEach))
+                    if (numOfEach == 1) {
+                        sb.append(currentCard.cardNameWithBackgroundColor)
                     } else {
-                        sb.append(getCardWithBackgroundColor(currentCard))
+                        sb.append(currentCard.getNumberPlusNameWithBackgroundColor(numOfEach))
                     }
                 } else {
-                    if (addNumbers) {
-                        sb.append(currentCard.name.plural(numOfEach))
-                    } else {
+                    if (numOfEach == 1) {
                         sb.append(currentCard.name)
+                    } else {
+                        sb.append(currentCard.name.plural(numOfEach))
                     }
                 }
                 numOfEach = 0
@@ -203,16 +201,16 @@ object KingdomUtil {
             sb.append(", and ")
         }
         if (addColor) {
-            if (addNumbers) {
-                sb.append(currentCard.getNumberPlusNameWithBackgroundColor(numOfEach))
+            if (numOfEach == 1) {
+                sb.append(currentCard.cardNameWithBackgroundColor)
             } else {
-                sb.append(getCardWithBackgroundColor(currentCard))
+                sb.append(currentCard.getNumberPlusNameWithBackgroundColor(numOfEach))
             }
         } else {
-            if (addNumbers) {
-                sb.append(currentCard.name.plural(numOfEach))
-            } else {
+            if (numOfEach == 1) {
                 sb.append(currentCard.name)
+            } else {
+                sb.append(currentCard.name.plural(numOfEach))
             }
         }
         return sb.toString()

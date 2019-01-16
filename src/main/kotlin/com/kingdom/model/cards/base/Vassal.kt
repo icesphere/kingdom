@@ -20,6 +20,8 @@ class Vassal : BaseCard(NAME, CardType.Action, 3), ChoiceActionCard {
             if (card.isAction) {
                 cardDiscarded = card
                 player.yesNoChoice(this, "Play discarded ${card.name}?")
+            } else {
+                player.showInfoMessage("Discarded ${card.cardNameWithBackgroundColor}")
             }
         }
     }

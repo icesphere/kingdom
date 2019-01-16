@@ -18,8 +18,12 @@ class Witch : BaseCard(NAME, CardType.ActionAttack, 5), AttackCard {
     }
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
-        affectedOpponents.forEach {
-            it.gainSupplyCard(Curse(), true)
+        affectedOpponents.forEach { opponent ->
+            val curse = Curse()
+            if (opponent.game.isCardAvailableInSupply(curse)) {
+                opponent.gainSupplyCard(curse, true)
+                opponent.showInfoMessage("You gained a ${curse.cardNameWithBackgroundColor} from ${player.username}'s $cardNameWithBackgroundColor")
+            }
         }
     }
 

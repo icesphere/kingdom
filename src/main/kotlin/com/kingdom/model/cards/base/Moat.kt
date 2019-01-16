@@ -20,11 +20,13 @@ class Moat : BaseCard(NAME, CardType.ActionReaction, 2), HandBeforeAttackListene
 
     override fun onBeforeAttack(attackCard: Card, player: Player, attacker: Player) {
         this.attackCard = attackCard
-        player.yesNoChoice(this, "Reveal $cardNameWithBackgroundColor to be unaffected by ${attackCard.cardNameWithBackgroundColor}?")
+        player.yesNoChoice(this, "Reveal $cardNameWithBackgroundColor to be unaffected by ${attackCard.cardNameWithBackgroundColor}?", attacker)
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
+            val attacker = info as Player
+            attacker.showInfoMessage("${player.username} revealed $cardNameWithBackgroundColor to be unaffected by the attack")
             player.addEventLogWithUsername("revealed $cardNameWithBackgroundColor to be unaffected by ${attackCard.cardNameWithBackgroundColor}")
             attackCard.playersExcludedFromCardEffects.add(player)
         }
