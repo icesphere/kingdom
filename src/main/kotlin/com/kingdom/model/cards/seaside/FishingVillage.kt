@@ -16,6 +16,7 @@ class FishingVillage : SeasideCard(NAME, CardType.ActionDuration, 3), StartOfTur
     override fun durationStartOfTurnAction(player: Player) {
         player.addActions(1)
         player.addCoins(1)
+        player.showInfoMessage("Gained +1 Action and +\$1 from ${this.cardNameWithBackgroundColor}")
     }
 
     companion object {

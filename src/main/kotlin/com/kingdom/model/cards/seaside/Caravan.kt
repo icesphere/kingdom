@@ -14,6 +14,7 @@ class Caravan : SeasideCard(NAME, CardType.ActionDuration, 4), StartOfTurnDurati
 
     override fun durationStartOfTurnAction(player: Player) {
         player.drawCard()
+        player.showInfoMessage("Gained +1 Card from ${this.cardNameWithBackgroundColor}")
     }
 
     companion object {

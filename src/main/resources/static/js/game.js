@@ -18,6 +18,8 @@ var cardActionOpen = false;
 
 var stompClient = null;
 
+var infoMessageSection = 0
+
 $(document).ready(function() {
     $.ajaxSetup({ cache: false });
 
@@ -146,10 +148,16 @@ function refreshGame() {
 }
 
 function showInfoMessage(message) {
-    $('#infoMessageText').html(message)
-    $('#infoMessageDiv').show()
+    if (infoMessageSection == 4) {
+        infoMessageSection = 1
+    } else {
+        infoMessageSection = infoMessageSection + 1
+    }
+
+    $('#infoMessageText' + infoMessageSection).html(message)
+    $('#infoMessageDiv' + infoMessageSection).show()
     setTimeout(function() {
-        $('#infoMessageDiv').hide()
+        $('#infoMessageDiv' + infoMessageSection).hide()
     }, 1500)
 }
 

@@ -25,7 +25,23 @@
         <#include "cardActionDiv.ftl">
     </div>
 
-    <div id="infoMessageDiv" style="display: none;">
+    <div id="infoMessageDiv1" style="display: none;">
+        <#assign messageSectionNumber = 1>
+        <#include "infoMessageDiv.ftl">
+    </div>
+
+    <div id="infoMessageDiv2" style="display: none;">
+        <#assign messageSectionNumber = 2>
+        <#include "infoMessageDiv.ftl">
+    </div>
+
+    <div id="infoMessageDiv3" style="display: none;">
+        <#assign messageSectionNumber = 3>
+        <#include "infoMessageDiv.ftl">
+    </div>
+
+    <div id="infoMessageDiv4" style="display: none;">
+        <#assign messageSectionNumber = 4>
         <#include "infoMessageDiv.ftl">
     </div>
 

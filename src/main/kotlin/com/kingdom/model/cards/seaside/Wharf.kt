@@ -18,6 +18,7 @@ class Wharf : SeasideCard(NAME, CardType.ActionDuration, 5), StartOfTurnDuration
     override fun durationStartOfTurnAction(player: Player) {
         player.drawCards(2)
         player.addBuys(1)
+        player.showInfoMessage("Gained +2 Cards and +1 Buy from ${this.cardNameWithBackgroundColor}")
     }
 
     companion object {

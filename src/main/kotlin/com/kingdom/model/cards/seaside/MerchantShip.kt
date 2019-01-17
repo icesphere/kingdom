@@ -17,6 +17,7 @@ class MerchantShip : SeasideCard(NAME, CardType.ActionDuration, 5), StartOfTurnD
 
     override fun durationStartOfTurnAction(player: Player) {
         player.addCoins(2)
+        player.showInfoMessage("Gained +\$2 from ${this.cardNameWithBackgroundColor}")
     }
 
     companion object {
