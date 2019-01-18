@@ -25,24 +25,38 @@
         <#include "cardActionDiv.ftl">
     </div>
 
-    <div id="infoMessageDiv1" style="display: none;">
-        <#assign messageSectionNumber = 1>
-        <#include "infoMessageDiv.ftl">
-    </div>
+    <div class="infoMessageContainer">
 
-    <div id="infoMessageDiv2" style="display: none;">
-        <#assign messageSectionNumber = 2>
-        <#include "infoMessageDiv.ftl">
-    </div>
+        <div id="infoMessageDiv1" style="display: none;">
+            <#assign messageSectionNumber = 1>
+            <#include "infoMessageDiv.ftl">
+        </div>
 
-    <div id="infoMessageDiv3" style="display: none;">
-        <#assign messageSectionNumber = 3>
-        <#include "infoMessageDiv.ftl">
-    </div>
+        <div id="infoMessageDiv2" style="display: none;">
+            <#assign messageSectionNumber = 2>
+            <#include "infoMessageDiv.ftl">
+        </div>
 
-    <div id="infoMessageDiv4" style="display: none;">
-        <#assign messageSectionNumber = 4>
-        <#include "infoMessageDiv.ftl">
+        <div id="infoMessageDiv3" style="display: none;">
+            <#assign messageSectionNumber = 3>
+            <#include "infoMessageDiv.ftl">
+        </div>
+
+        <div id="infoMessageDiv4" style="display: none;">
+            <#assign messageSectionNumber = 4>
+            <#include "infoMessageDiv.ftl">
+        </div>
+
+        <div id="infoMessageDiv5" style="display: none;">
+            <#assign messageSectionNumber = 5>
+            <#include "infoMessageDiv.ftl">
+        </div>
+
+        <div id="infoMessageDiv6" style="display: none;">
+            <#assign messageSectionNumber = 6>
+            <#include "infoMessageDiv.ftl">
+        </div>
+
     </div>
 
     <div id="showCardsDiv" style="display: none;">

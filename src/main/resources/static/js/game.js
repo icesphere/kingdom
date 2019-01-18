@@ -64,7 +64,7 @@ function refreshGameInfo() {
             if (!(localStorage.muteSound == "true")) {
                 playBeep()
             }
-            showInfoMessage("Your turn")
+            showInfoMessage("Your turn", 1200)
         }
     });
 }
@@ -125,7 +125,7 @@ function connect() {
             stompClient.subscribe('/queue/refresh-card-action/' + userId, debouncedCardActionRefresh);
             stompClient.subscribe('/queue/refresh-chat/' + userId, debouncedChatRefresh);
             stompClient.subscribe('/queue/refresh-history/' + userId, debouncedHistoryRefresh);
-            stompClient.subscribe('/queue/show-info-message/' + userId, function(data) { showInfoMessage(data.body) });
+            stompClient.subscribe('/queue/show-info-message/' + userId, function(data) { showInfoMessage(data.body, 2000) });
         });
     });
 }
@@ -147,8 +147,8 @@ function refreshGame() {
     refreshCardAction();
 }
 
-function showInfoMessage(message) {
-    if (infoMessageSection == 4) {
+function showInfoMessage(message, length) {
+    if (infoMessageSection == 6) {
         infoMessageSection = 1
     } else {
         infoMessageSection = infoMessageSection + 1
@@ -156,13 +156,11 @@ function showInfoMessage(message) {
     
     let sectionNum = infoMessageSection
 
-    console.log("showing info message in section " + sectionNum + " with message: " + message)
-
     $('#infoMessageText' + sectionNum).html(message)
     $('#infoMessageDiv' + sectionNum).show()
     setTimeout(function() {
         $('#infoMessageDiv' + sectionNum).hide()
-    }, 1500)
+    }, length)
 }
 
 function refreshPreviousPlayerCardsBought() {
