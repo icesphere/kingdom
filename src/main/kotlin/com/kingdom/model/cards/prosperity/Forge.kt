@@ -23,6 +23,8 @@ class Forge : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitActi
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == totalCost }) {
             player.chooseSupplyCardToGainWithExactCost(totalCost)
+        } else {
+            player.showInfoMessage("There were no cards available costing exactly $totalCost")
         }
     }
 

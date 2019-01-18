@@ -153,8 +153,10 @@ function showInfoMessage(message) {
     } else {
         infoMessageSection = infoMessageSection + 1
     }
-
+    
     let sectionNum = infoMessageSection
+
+    console.log("showing info message in section " + sectionNum + " with message: " + message)
 
     $('#infoMessageText' + sectionNum).html(message)
     $('#infoMessageDiv' + sectionNum).show()

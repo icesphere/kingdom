@@ -3,6 +3,7 @@ package com.kingdom.model.cards.prosperity
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
 class Rabble : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard {
 
@@ -23,6 +24,10 @@ class Rabble : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard {
             val actionsAndTreasures = cards.filter { it.isAction || it.isTreasure }
 
             actionsAndTreasures.forEach { opponent.addCardToDiscard(it, showLog = true) }
+
+            if (actionsAndTreasures.isNotEmpty()) {
+                opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${actionsAndTreasures.groupedString} from your deck")
+            }
 
             val otherCards = cards.filter { !it.isAction && !it.isTreasure }
 

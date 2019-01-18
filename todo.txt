@@ -10,6 +10,7 @@ computer should buy provinces sooner if they have lots of gold
 remind player which tavern cards are available to use at start of turn
 consolidate choose supply card to gain methods
 show all cards gained - not just cards bought in the cards bought section of the page
+move custom card selection above events on create game page
 
 popup about what stuff other people did to you
 
