@@ -64,6 +64,7 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
 
         affectedOpponents.forEach { opponent ->
             opponent.gainSupplyCard(card, true)
+            opponent.showInfoMessage("You gained ${card.cardNameWithBackgroundColor} from ${player.username}'s $cardNameWithBackgroundColor")
         }
     }
 

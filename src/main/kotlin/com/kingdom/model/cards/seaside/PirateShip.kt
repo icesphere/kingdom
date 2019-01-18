@@ -9,6 +9,7 @@ import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
 class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifier, AttackCard, ChoiceActionCard, ChooseCardActionCard {
 
@@ -50,14 +51,21 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
                 opponent.addCardToDiscard(it, showLog = true)
             }
 
+            if (nonTreasureCards.isNotEmpty()) {
+                opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${nonTreasureCards.groupedString} from your deck")
+            }
+
             if (treasureCards.isNotEmpty()) {
                 if (treasureCards.size == 1) {
                     opponent.cardTrashed(treasureCards.first(), true)
+                    opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor trashed ${treasureCards.first().cardNameWithBackgroundColor} from your deck")
                     gainPirateShipCoin(player)
                 } else {
                     if (treasureCards[0].name == treasureCards[1].name) {
                         opponent.addCardToDiscard(treasureCards[0], showLog = true)
+                        opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${treasureCards.first().cardNameWithBackgroundColor} from your deck")
                         opponent.cardTrashed(treasureCards[1], true)
+                        opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor trashed ${treasureCards.first().cardNameWithBackgroundColor} from your deck")
                         gainPirateShipCoin(player)
                     } else {
                         val pirateAttackInfo = PirateAttackInfo(opponent, treasureCards)
@@ -87,7 +95,13 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
 
         pirateAttackInfo.opponent.cardTrashed(card, showLog = true)
 
-        pirateAttackInfo.opponent.addCardToDiscard(pirateAttackInfo.treasureCards.first { it.name != card.name })
+        pirateAttackInfo.opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor trashed ${card.cardNameWithBackgroundColor} from your deck")
+
+        val cardToDiscard = pirateAttackInfo.treasureCards.first { it.name != card.name }
+
+        pirateAttackInfo.opponent.addCardToDiscard(cardToDiscard)
+
+        pirateAttackInfo.opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${cardToDiscard.cardNameWithBackgroundColor} from your deck")
 
         gainPirateShipCoin(player)
     }

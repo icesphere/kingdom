@@ -31,6 +31,7 @@ class Haven : SeasideCard(NAME, CardType.ActionDuration, 2), StartOfTurnDuration
     override fun durationStartOfTurnAction(player: Player) {
         setAsideCard?.let {
             player.addCardToHand(it)
+            player.showInfoMessage("$cardNameWithBackgroundColor added ${it.cardNameWithBackgroundColor} to your hand")
         }
 
         setAsideCard = null

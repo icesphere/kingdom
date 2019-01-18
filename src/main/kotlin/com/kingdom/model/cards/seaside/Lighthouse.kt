@@ -25,6 +25,7 @@ class Lighthouse : SeasideCard(NAME, CardType.ActionDuration, 2), StartOfTurnDur
 
     override fun onBeforeAttack(attackCard: Card, player: Player, attacker: Player) {
         player.addEventLogWithUsername("'s ${this.cardNameWithBackgroundColor} prevented attack from ${attacker.username}'s ${attackCard.cardNameWithBackgroundColor}")
+        attacker.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor prevented attack from ${attackCard.cardNameWithBackgroundColor}")
         attackCard.playersExcludedFromCardEffects.add(player)
     }
 

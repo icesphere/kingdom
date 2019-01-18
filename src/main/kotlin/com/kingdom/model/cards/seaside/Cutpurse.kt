@@ -2,6 +2,7 @@ package com.kingdom.model.cards.seaside
 
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.AttackCard
+import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.players.Player
 
 class Cutpurse : SeasideCard(NAME, CardType.ActionAttack, 4), AttackCard {
@@ -19,6 +20,7 @@ class Cutpurse : SeasideCard(NAME, CardType.ActionAttack, 4), AttackCard {
         affectedOpponents.forEach { opponent ->
             if (opponent.hand.any { it.isCopper }) {
                 opponent.discardCardFromHand(opponent.hand.first { it.isCopper })
+                opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded a ${Copper().cardNameWithBackgroundColor} from your hand")
             } else {
                 opponent.revealHand()
             }

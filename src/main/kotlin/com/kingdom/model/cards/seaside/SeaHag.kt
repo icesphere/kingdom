@@ -19,7 +19,11 @@ class SeaHag : SeasideCard(NAME, CardType.ActionAttack, 4), AttackCard {
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         for (opponent in affectedOpponents) {
             opponent.discardTopCardOfDeck()
-            opponent.gainSupplyCard(Curse(), false, CardLocation.Deck)
+            val curse = Curse()
+            if (opponent.game.isCardAvailableInSupply(curse)) {
+                opponent.gainSupplyCard(curse, false, CardLocation.Deck)
+                opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor put a ${curse.cardNameWithBackgroundColor} on top of your deck")
+            }
         }
     }
 

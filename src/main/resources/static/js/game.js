@@ -154,10 +154,12 @@ function showInfoMessage(message) {
         infoMessageSection = infoMessageSection + 1
     }
 
-    $('#infoMessageText' + infoMessageSection).html(message)
-    $('#infoMessageDiv' + infoMessageSection).show()
+    let sectionNum = infoMessageSection
+
+    $('#infoMessageText' + sectionNum).html(message)
+    $('#infoMessageDiv' + sectionNum).show()
     setTimeout(function() {
-        $('#infoMessageDiv' + infoMessageSection).hide()
+        $('#infoMessageDiv' + sectionNum).hide()
     }, 1500)
 }
 

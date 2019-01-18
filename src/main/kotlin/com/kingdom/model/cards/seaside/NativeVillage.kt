@@ -30,12 +30,14 @@ class NativeVillage : SeasideCard(NAME, CardType.Action, 2), GameSetupModifier, 
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
+            player.addEventLogWithUsername("chose to add a card to their native village")
             val topCardOfDeck = player.removeTopCardOfDeck()
             if (topCardOfDeck != null) {
                 player.nativeVillageCards.add(topCardOfDeck)
                 player.showInfoMessage("Added ${topCardOfDeck.cardNameWithBackgroundColor} to your ${this.cardNameWithBackgroundColor}")
             }
         } else {
+            player.addEventLogWithUsername("chose to put their native village cards into their hand")
             player.hand.addAll(player.nativeVillageCards)
             player.nativeVillageCards.clear()
         }
