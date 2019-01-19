@@ -14,13 +14,14 @@ class Vagrant : DarkAgesCard(NAME, CardType.Action, 2) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val cards = player.revealTopCardsOfDeck(1)
-        if (cards.isNotEmpty()) {
-            player.showInfoMessage("Revealed ${cards.groupedString}")
-            val card = cards.first()
+        val card = player.revealTopCardOfDeck()
+        if (card != null) {
+            player.showInfoMessage("Revealed ${card.cardNameWithBackgroundColor}")
             if (card.isCurse || card.isRuins || card.isShelter || card.isVictory) {
                 player.addCardToHand(player.removeTopCardOfDeck()!!, true)
             }
+        } else {
+            player.showInfoMessage("Deck was empty")
         }
     }
 

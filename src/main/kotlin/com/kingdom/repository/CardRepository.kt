@@ -5,17 +5,18 @@ import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.Event
 import com.kingdom.model.cards.adventures.*
 import com.kingdom.model.cards.adventures.events.*
+import com.kingdom.model.cards.base.*
 import com.kingdom.model.cards.cornucopia.*
 import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.darkages.ruins.*
 import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
+import com.kingdom.model.cards.empires.Encampment
+import com.kingdom.model.cards.empires.Patrician
 import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
-import com.kingdom.model.cards.base.*
-import com.kingdom.model.cards.empires.*
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.seaside.*
 import org.springframework.stereotype.Service
@@ -302,7 +303,8 @@ class CardRepository {
 
     val empiresCards: List<Card>
         get() = listOf(
-            Encampment()
+                Encampment(),
+                Patrician()
         )
 
     val empiresEvents: List<Event>

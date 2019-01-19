@@ -17,10 +17,8 @@ class Encampment : EmpiresCard(NAME, CardType.Action, 2), GameSetupModifier, Mul
         addActions = 2
         special = "You may reveal a Gold or Plunder from your hand. If you don’t, set this aside, and return it to the Supply at the start of Clean-up. (Encampment is the top half of the Plunder pile.)"
         textSize = 77
+        fontSize = 11
     }
-
-    override val pileName: String
-        get() = Encampment.NAME
 
     override val otherCardsInPile: List<Card>
         get() = listOf(Plunder())
