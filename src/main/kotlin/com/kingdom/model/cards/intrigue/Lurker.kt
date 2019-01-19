@@ -4,6 +4,7 @@ import com.kingdom.model.Choice
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
 class Lurker : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
     init {
@@ -12,8 +13,10 @@ class Lurker : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        if (player.game.trashedCards.any { it.isAction }) {
+        val actionCardsInTrash = player.game.trashedCards.filter { it.isAction }
+        if (actionCardsInTrash.isNotEmpty()) {
             player.makeChoice(this,
+                    "Action cards in the trash: ${actionCardsInTrash.groupedString}",
                     Choice(1, "Trash an Action card from the Supply"),
                     Choice(2, "Gain an Action card from the trash")
             )

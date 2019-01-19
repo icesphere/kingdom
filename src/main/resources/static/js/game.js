@@ -159,7 +159,7 @@ function showInfoMessage(message, length) {
     $('#infoMessageText' + sectionNum).html(message)
     $('#infoMessageDiv' + sectionNum).show()
     setTimeout(function() {
-        $('#infoMessageDiv' + sectionNum).hide()
+        $('#infoMessageDiv' + sectionNum).fadeOut()
     }, length)
 }
 

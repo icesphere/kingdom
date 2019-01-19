@@ -936,6 +936,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         return if (game.ruinsPile.isNotEmpty()) {
             val card = game.ruinsPile.removeAt(0)
             cardGained(card)
+            game.refreshSupply()
             addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the Ruins pile")
             card
         } else {
@@ -1241,13 +1242,18 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         cardsSetAsideUntilStartOfTurn.clear()
 
         durationCards.forEach { card ->
-            if (card is StartOfTurnDurationAction) {
-                card.durationStartOfTurnAction(this)
-            } else if (card is CardRepeater && card.cardBeingRepeated is StartOfTurnDurationAction) {
-                val durationCard = card.cardBeingRepeated as StartOfTurnDurationAction
-
-                repeat(card.timesRepeated) {
+            when {
+                card is StartOfTurnDurationAction -> card.durationStartOfTurnAction(this)
+                card.addedAbilityCard is StartOfTurnDurationAction -> {
+                    val durationCard = card.addedAbilityCard as StartOfTurnDurationAction
                     durationCard.durationStartOfTurnAction(this)
+                }
+                card is CardRepeater && card.cardBeingRepeated is StartOfTurnDurationAction -> {
+                    val durationCard = card.cardBeingRepeated as StartOfTurnDurationAction
+
+                    repeat(card.timesRepeated) {
+                        durationCard.durationStartOfTurnAction(this)
+                    }
                 }
             }
         }

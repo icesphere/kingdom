@@ -22,7 +22,7 @@
     </#list>
 
     <#if events?has_content>
-        <div style="float:left;padding-right:2px;padding-top:2px;font-size:14px;position:relative;top:2px;left:5px;width:74px;height:36px;">Events:</div>
+        <div style="float:left;padding-right:2px;padding-top:2px;font-size:14px;position:relative;top:2px;left:5px;width:74px;height:38px;">Events:</div>
 
         <#assign clickType="event">
 
