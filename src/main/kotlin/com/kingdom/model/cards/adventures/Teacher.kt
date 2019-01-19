@@ -35,10 +35,10 @@ class Teacher : AdventuresCard(NAME, CardType.ActionReserve, 6), TavernCard, Cho
         val tokenChoice = info as Int
 
         when (tokenChoice) {
-            1 -> player.plusCardTokenSupplyPile = card.name
-            2 -> player.plusActionTokenSupplyPile = card.name
-            3 -> player.plusBuyTokenSupplyPile = card.name
-            4 -> player.plusCoinTokenSupplyPile = card.name
+            1 -> player.plusCardTokenSupplyPile = card.pileName
+            2 -> player.plusActionTokenSupplyPile = card.pileName
+            3 -> player.plusBuyTokenSupplyPile = card.pileName
+            4 -> player.plusCoinTokenSupplyPile = card.pileName
         }
     }
 

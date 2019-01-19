@@ -15,7 +15,7 @@ class Training : AdventuresEvent(NAME, 6), ChooseCardActionCard {
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.plusCoinTokenSupplyPile = card.name
+        player.plusCoinTokenSupplyPile = card.pileName
     }
 
     companion object {

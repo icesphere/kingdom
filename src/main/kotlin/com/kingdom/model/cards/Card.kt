@@ -49,6 +49,9 @@ abstract class Card(
 
     var addedAbilityCard: Card? = null
 
+    open val pileName: String
+        get() = name
+
     @Suppress("MemberVisibilityCanBePrivate")
     val typeAsString: String
         get() = when (type) {

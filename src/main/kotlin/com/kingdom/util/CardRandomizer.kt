@@ -134,7 +134,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
             }
         }
 
-        game.kingdomCards = selectedCards
+        game.setKingdomCards(selectedCards)
     }
 
     private fun addEvents(game: Game, options: RandomizingOptions) {
@@ -230,7 +230,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
     fun swapCard(game: Game, cardName: String) {
         var cardToReplaceIndex = 0
         var cardToReplace: Card? = null
-        val cards = game.kingdomCards
+        val cards = game.topKingdomCards
         for (i in cards.indices) {
             if (cards[i].name == cardName) {
                 cardToReplace = cards[i]

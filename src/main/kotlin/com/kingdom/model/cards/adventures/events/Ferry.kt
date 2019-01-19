@@ -15,7 +15,7 @@ class Ferry : AdventuresEvent(NAME, 3), ChooseCardActionCard {
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.minusTwoCostTokenSupplyPile = card.name
+        player.minusTwoCostTokenSupplyPile = card.pileName
     }
 
     companion object {

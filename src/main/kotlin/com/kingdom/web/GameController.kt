@@ -306,12 +306,12 @@ class GameController(private val cardManager: CardManager,
     @Throws(TemplateModelException::class)
     private fun showRandomConfirmPage(request: HttpServletRequest, user: User, game: Game): ModelAndView {
 
-        val includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].deck == Deck.Prosperity && !game.isNeverIncludeColonyAndPlatinum
-        val includeShelters = !game.isExcludeShelters && (game.isIncludeShelters || game.kingdomCards[1].deck == Deck.DarkAges)
+        val includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum || game.topKingdomCards[0].deck == Deck.Prosperity && !game.isNeverIncludeColonyAndPlatinum
+        val includeShelters = !game.isExcludeShelters && (game.isIncludeShelters || game.topKingdomCards[1].deck == Deck.DarkAges)
 
         var playTreasureCardsRequired = false
 
-        for (card in game.kingdomCards) {
+        for (card in game.topKingdomCards) {
             if (card.isPlayTreasureCardsRequired) {
                 playTreasureCardsRequired = true
             }
@@ -327,7 +327,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("createGame", KingdomUtil.getRequestBoolean(request, "createGame"))
         modelAndView.addObject("player", HumanPlayer(user, game))
         modelAndView.addObject("currentPlayerId", -1)
-        modelAndView.addObject("cards", game.kingdomCards)
+        modelAndView.addObject("cards", game.topKingdomCards)
         modelAndView.addObject("events", game.events)
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
         modelAndView.addObject("includeShelters", includeShelters)
@@ -472,7 +472,7 @@ class GameController(private val cardManager: CardManager,
                 var playTreasureCardsRequired = false
                 var includePrizes = false
 
-                for (card in game.kingdomCards) {
+                for (card in game.topKingdomCards) {
                     if (card.name == "Black Market") {
                         hasBlackMarket = true
                     } else if (card.name == "Tournament") {
@@ -495,12 +495,12 @@ class GameController(private val cardManager: CardManager,
                 if (playTreasureCardsRequired) {
                     game.isPlayTreasureCards = true
                 }
-                if (game.isAlwaysIncludeColonyAndPlatinum || game.kingdomCards[0].deck == Deck.Prosperity && !game.isNeverIncludeColonyAndPlatinum) {
+                if (game.isAlwaysIncludeColonyAndPlatinum || game.topKingdomCards[0].deck == Deck.Prosperity && !game.isNeverIncludeColonyAndPlatinum) {
                     game.isIncludeColonyCards = true
                     game.isIncludePlatinumCards = true
                 }
 
-                val includeShelters = !game.isExcludeShelters && (game.isIncludeShelters || game.kingdomCards[1].deck == Deck.DarkAges)
+                val includeShelters = !game.isExcludeShelters && (game.isIncludeShelters || game.topKingdomCards[1].deck == Deck.DarkAges)
                 game.isIncludeShelters = includeShelters
 
                 if (includePrizes || hasBlackMarket) {
@@ -522,7 +522,7 @@ class GameController(private val cardManager: CardManager,
 
     private fun setBlackMarketCards(game: Game) {
         val allCards = cardManager.allCards
-        val blackMarketCards = allCards - game.kingdomCards
+        val blackMarketCards = allCards - game.topKingdomCards
         Collections.shuffle(blackMarketCards)
         game.blackMarketCards = blackMarketCards.toMutableList()
     }
@@ -1159,7 +1159,7 @@ class GameController(private val cardManager: CardManager,
     }
 
     private fun addSupplyDataToModelAndView(game: Game, player: Player, modelAndView: ModelAndView) {
-        val kingdomCards = game.kingdomCards.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
+        val kingdomCards = game.topKingdomCards.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
         modelAndView.addObject("kingdomCards", kingdomCards)
 
         val supplyCards = game.cardsInSupply.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
@@ -2079,7 +2079,7 @@ class GameController(private val cardManager: CardManager,
         }
         val modelAndView = ModelAndView("gameCards")
 
-        val cards = game.kingdomCards.map { it.isHighlighted = false; it }.toMutableList()
+        val cards = game.topKingdomCards.map { it.isHighlighted = false; it }.toMutableList()
 
         if (game.cardsNotInSupply.isNotEmpty()) {
             cards.addAll(game.cardsNotInSupply)

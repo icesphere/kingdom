@@ -194,6 +194,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val cardsSetAsideUntilStartOfTurn = mutableSetOf<SetAsideUntilStartOfTurnCard>()
 
+    val cardsSetAsideToReturnToSupplyAtStartOfCleanup = mutableListOf<Card>()
+
     val tavernCards = mutableListOf<Card>()
 
     val tavernCardsString: String
@@ -410,6 +412,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         addInfoLogWithUsername("ending turn")
+
+        cardsSetAsideToReturnToSupplyAtStartOfCleanup.forEach {
+            game.returnCardToSupply(it)
+        }
+
+        cardsSetAsideToReturnToSupplyAtStartOfCleanup.clear()
 
         currentTurnSummary.cardsPlayed.addAll(played)
 

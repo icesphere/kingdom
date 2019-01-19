@@ -15,7 +15,7 @@ class Pathfinding : AdventuresEvent(NAME, 6), ChooseCardActionCard {
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.plusCardTokenSupplyPile = card.name
+        player.plusCardTokenSupplyPile = card.pileName
     }
 
     companion object {

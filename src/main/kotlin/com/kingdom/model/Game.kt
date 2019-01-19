@@ -1,9 +1,6 @@
 package com.kingdom.model
 
-import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.Deck
-import com.kingdom.model.cards.Event
-import com.kingdom.model.cards.GameSetupModifier
+import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.cards.adventures.InheritanceEstate
 import com.kingdom.model.cards.darkages.Spoils
@@ -60,11 +57,26 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var decks: MutableList<Deck> = ArrayList()
 
-    var kingdomCards = mutableListOf<Card>()
+    private var kingdomCards = mutableListOf<Card>()
 
-    private val supplyCards = ArrayList<Card>()
+    fun setKingdomCards(cards: MutableList<Card>) {
+        kingdomCards = cards
+    }
+
+    val topKingdomCards: List<Card>
+        get() {
+            return kingdomCards.map {
+                if (isMultiTypePileCard(it) && multiTypePileMap[it.pileName]!!.isNotEmpty()) {
+                    multiTypePileMap[it.pileName]!!.first()
+                } else {
+                    it
+                }
+            }
+        }
 
     var events = mutableListOf<Event>()
+
+    private val supplyCards = ArrayList<Card>()
 
     val cardsInSupply: List<Card>
         get() {
@@ -81,8 +93,14 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     private val eventMap = HashMap<String, Event>()
 
+    private val multiTypePileMap = HashMap<String, MutableList<Card>>()
+
     val allCards: List<Card>
-        get() = cardsInSupply + kingdomCards
+        get() {
+            val cards = (cardsInSupply + kingdomCards).toMutableList()
+            kingdomCards.filter { it is MultiTypePile }.forEach { cards.addAll((it as MultiTypePile).otherCardsInPile) }
+            return cards
+        }
 
     val allCardsCopy: List<Card>
         get() = allCards.map { getNewInstanceOfCard(it.name) }
@@ -130,8 +148,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     private var determinedWinner = false
 
     var isAbandonedGame: Boolean = false
-
-    var logId: Int = 0
 
     var isTestGame: Boolean = false
 
@@ -309,6 +325,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
             if (it is TavernCard) {
                 isShowTavern = true
+            }
+
+            if (it is MultiTypePile) {
+                it.otherCardsInPile.forEach { cardMap[it.name] = it }
+                multiTypePileMap[it.name] = it.createMultiTypePile(this).toMutableList()
             }
         }
 
@@ -614,14 +635,24 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     fun isCardAvailableInSupply(card: Card): Boolean {
-        return numInPileMap.containsKey(card.name) && numInPileMap[card.name]!! > 0
+        return if (isMultiTypePileCard(card)) {
+            multiTypePileMap[card.pileName]!!.firstOrNull()?.name == card.name
+        } else {
+            numInPileMap.containsKey(card.pileName) && numInPileMap[card.pileName]!! > 0
+        }
     }
+
+    private fun isMultiTypePileCard(card: Card) = multiTypePileMap.containsKey(card.pileName)
 
     fun removeCardFromSupply(card: Card, refreshSupply: Boolean = true) {
         if (card.isRuins) {
             ruinsPile.removeAt(0)
         } else {
-            pileAmounts[card.name] = pileAmounts[card.name]!!.minus(1)
+            pileAmounts[card.pileName] = pileAmounts[card.pileName]!!.minus(1)
+        }
+
+        if (isMultiTypePileCard(card)) {
+            multiTypePileMap[card.pileName]!!.removeAt(0)
         }
 
         if (refreshSupply) {
@@ -635,7 +666,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         if (cardToReturn.isRuins) {
             ruinsPile.add(0, cardToReturn)
         } else {
-            pileAmounts[cardToReturn.name] = pileAmounts[cardToReturn.name]!!.plus(1)
+            pileAmounts[cardToReturn.pileName] = pileAmounts[cardToReturn.pileName]!!.plus(1)
+        }
+
+        if (isMultiTypePileCard(card)) {
+            multiTypePileMap[card.pileName]!!.add(0, card)
         }
 
         refreshSupply()
@@ -647,7 +682,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     private val nonEmptyPiles: Int
-        get() = allCards.filter { numInPileMap[it.name]!! > 0 }.size
+        get() = allCards.filter { numInPileMap[it.pileName]!! > 0 }.size
 
     val emptyPiles
         get() = allCards.size - nonEmptyPiles

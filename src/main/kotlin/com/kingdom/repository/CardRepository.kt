@@ -15,6 +15,7 @@ import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.base.*
+import com.kingdom.model.cards.empires.*
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.seaside.*
 import org.springframework.stereotype.Service
@@ -299,12 +300,22 @@ class CardRepository {
                 TravellingFair()
         )
 
+    val empiresCards: List<Card>
+        get() = listOf(
+            Encampment()
+        )
+
+    val empiresEvents: List<Event>
+        get() = listOf(
+
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
-                hinterlandsCards + darkAgesCards + guildsCards + adventuresCards
+                hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards
 
     val allEvents: List<Event>
-        get() = adventuresEvents
+        get() = adventuresEvents + empiresEvents
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {
@@ -317,6 +328,7 @@ class CardRepository {
             Deck.DarkAges -> darkAgesCards
             Deck.Guilds -> guildsCards
             Deck.Adventures -> adventuresCards
+            Deck.Empires -> empiresCards
             else -> emptyList()
         }
     }

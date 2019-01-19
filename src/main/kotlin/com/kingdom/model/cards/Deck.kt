@@ -10,5 +10,6 @@ enum class Deck {
     DarkAges,
     Guilds,
     Adventures,
+    Empires,
     None
 }

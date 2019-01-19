@@ -15,7 +15,7 @@ class Plan : AdventuresEvent(NAME, 3), ChooseCardActionCard {
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.trashingTokenSupplyPile = card.name
+        player.trashingTokenSupplyPile = card.pileName
     }
 
     companion object {

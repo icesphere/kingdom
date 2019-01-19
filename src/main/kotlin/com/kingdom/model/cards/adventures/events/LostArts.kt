@@ -15,7 +15,7 @@ class LostArts : AdventuresEvent(NAME, 6), ChooseCardActionCard {
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.plusActionTokenSupplyPile = card.name
+        player.plusActionTokenSupplyPile = card.pileName
     }
 
     companion object {
