@@ -2079,7 +2079,9 @@ class GameController(private val cardManager: CardManager,
         }
         val modelAndView = ModelAndView("gameCards")
 
-        val cards = game.topKingdomCards.map { it.isHighlighted = false; it }.toMutableList()
+        val cards = game.kingdomCards.map { it.isHighlighted = false; it }.toMutableList()
+
+        cards.filter { it is MultiTypePile }.forEach { cards.addAll((it as MultiTypePile).otherCardsInPile) }
 
         if (game.cardsNotInSupply.isNotEmpty()) {
             cards.addAll(game.cardsNotInSupply)

@@ -5,6 +5,7 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.darkages.DarkAgesCard
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
 class Survivors : DarkAgesCard(NAME, CardType.ActionRuins, 0), ChoiceActionCard {
 
@@ -15,7 +16,7 @@ class Survivors : DarkAgesCard(NAME, CardType.ActionRuins, 0), ChoiceActionCard 
     override fun cardPlayedSpecialAction(player: Player) {
         val cards = player.revealTopCardsOfDeck(2)
         if (cards.isNotEmpty()) {
-            player.makeChoice(this, Choice(1, "Discard"), Choice(2, "Put back on top of deck in any order"))
+            player.makeChoice(this, "Top cards of deck: ${cards.groupedString}", Choice(1, "Discard"), Choice(2, "Put back on top of deck in any order"))
         }
     }
 

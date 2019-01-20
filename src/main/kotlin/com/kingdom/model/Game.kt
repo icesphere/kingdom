@@ -57,11 +57,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var decks: MutableList<Deck> = ArrayList()
 
-    private var kingdomCards = mutableListOf<Card>()
-
-    fun setKingdomCards(cards: MutableList<Card>) {
-        kingdomCards = cards
-    }
+    var kingdomCards = mutableListOf<Card>()
 
     val topKingdomCards: List<Card>
         get() {

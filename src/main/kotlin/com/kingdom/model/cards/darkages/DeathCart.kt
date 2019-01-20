@@ -19,7 +19,7 @@ class DeathCart : DarkAgesCard(NAME, CardType.ActionLooter, 4), ChoiceActionCard
         if (player.hand.none { it.isAction }) {
             player.trashCardInPlay(this, true)
         } else {
-            player.yesNoChoice(this, "Trash card from hand? If you don't, ${this.cardNameWithBackgroundColor} will be trashed")
+            player.yesNoChoice(this, "Trash action card from hand? If you don't, ${this.cardNameWithBackgroundColor} will be trashed")
         }
     }
 

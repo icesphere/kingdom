@@ -134,7 +134,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
             }
         }
 
-        game.setKingdomCards(selectedCards)
+        game.kingdomCards = selectedCards
     }
 
     private fun addEvents(game: Game, options: RandomizingOptions) {

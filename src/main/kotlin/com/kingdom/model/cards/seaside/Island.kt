@@ -28,7 +28,7 @@ class Island : SeasideCard(NAME, CardType.ActionVictory, 4), GameSetupModifier, 
         player.removeCardFromHand(card)
         player.cardRemovedFromPlay(card)
         player.islandCards.add(card)
-        player.trashCardInPlay(this, false)
+        player.removeCardInPlay(this)
         player.islandCards.add(this)
     }
 
