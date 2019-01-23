@@ -23,6 +23,7 @@ class FortuneTeller : CornucopiaCard(NAME, CardType.ActionAttack, 3), AttackCard
 
             if (card != null) {
                 opponent.addCardToTopOfDeck(card)
+                opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor added ${card.cardNameWithBackgroundColor} to the top of your deck")
             }
         }
     }

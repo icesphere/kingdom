@@ -52,6 +52,8 @@ abstract class Card(
     open val pileName: String
         get() = name
 
+    open val pileSize: Int = 10
+
     @Suppress("MemberVisibilityCanBePrivate")
     val typeAsString: String
         get() = when (type) {

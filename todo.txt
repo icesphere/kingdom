@@ -14,3 +14,9 @@ smoother transition from bot turn to human turn
 add cookie to remember admin user
 
 royal seal shouldn't ask multiple times if answer is no
+
+try showing info messages in reverse order to prevent jumping
+
+let someone know when they haven't ended their turn
+
+

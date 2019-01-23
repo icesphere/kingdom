@@ -13,6 +13,9 @@ class Rats : DarkAgesCard(NAME, CardType.Action, 4), AfterCardTrashedListenerFor
         textSize = 79
     }
 
+    override val pileSize: Int
+        get() = 20
+
     override fun cardPlayedSpecialAction(player: Player) {
         player.gainSupplyCard(Rats(), true)
 

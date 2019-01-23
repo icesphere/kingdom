@@ -28,7 +28,10 @@ class Count : DarkAgesCard(NAME, CardType.Action, 5), ChoiceActionCard {
             player.makeChoiceWithInfo(this, "", false, Choice(1, "+\$3"), Choice(2, "Trash your hand"), Choice(3, "Gain a Duchy"))
         } else {
             when (choice) {
-                1 -> player.addCoins(3)
+                1 -> {
+                    player.addCoins(3)
+                    player.addEventLogWithUsername("Chose to gain +\$3")
+                }
                 2 -> player.trashHand()
                 3 -> player.gainSupplyCard(Duchy(), true)
             }

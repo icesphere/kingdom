@@ -22,7 +22,7 @@ class TreasureHunter : AdventuresCard(NAME, CardType.ActionTraveller, 3), CardDi
             repeat(numCardsGainedLastTurn) {
                 player.gainSupplyCard(Silver(), true)
             }
-            player.showInfoMessage("Gained $numCardsGainedLastTurn ${Silver()} from ${this.cardNameWithBackgroundColor}")
+            player.showInfoMessage("Gained $numCardsGainedLastTurn ${Silver().cardNameWithBackgroundColor} from ${this.cardNameWithBackgroundColor}")
         }
     }
 

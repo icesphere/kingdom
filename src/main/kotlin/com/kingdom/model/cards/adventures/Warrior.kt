@@ -23,11 +23,11 @@ class Warrior : AdventuresCard(NAME, CardType.ActionAttackTraveller, 4), CardDis
         for (opponent in affectedOpponents) {
             repeat(numTravellersInPlay) {
                 val topCardOfDeck = opponent.discardTopCardOfDeck()
-                opponent.showInfoMessage("${player.username}'s ${this.cardNameWithBackgroundColor} discarded $topCardOfDeck from the top of your deck")
                 if (topCardOfDeck != null) {
+                    opponent.showInfoMessage("${player.username}'s ${this.cardNameWithBackgroundColor} discarded ${topCardOfDeck.cardNameWithBackgroundColor} from the top of your deck")
                     val cost = player.getCardCostWithModifiers(topCardOfDeck)
                     if (cost == 3 || cost == 4) {
-                        opponent.showInfoMessage("${player.username}'s ${this.cardNameWithBackgroundColor} trashed $topCardOfDeck")
+                        opponent.showInfoMessage("${player.username}'s ${this.cardNameWithBackgroundColor} trashed ${topCardOfDeck.cardNameWithBackgroundColor}")
                         opponent.trashCardFromDiscard(topCardOfDeck)
                     }
                 }

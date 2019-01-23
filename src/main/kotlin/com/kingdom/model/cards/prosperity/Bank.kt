@@ -16,7 +16,6 @@ class Bank : ProsperityCard(NAME, CardType.Treasure, 7) {
         val numTreasuresInPlay = player.inPlay.count { it.isTreasure }
         player.addCoins(numTreasuresInPlay)
         player.addEventLogWithUsername("gained +\$$numTreasuresInPlay from ${this.cardNameWithBackgroundColor}")
-        player.showInfoMessage("You gained +\$$numTreasuresInPlay from ${this.cardNameWithBackgroundColor}")
     }
 
     companion object {

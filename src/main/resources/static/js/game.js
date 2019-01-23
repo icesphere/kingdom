@@ -125,7 +125,7 @@ function connect() {
             stompClient.subscribe('/queue/refresh-card-action/' + userId, debouncedCardActionRefresh);
             stompClient.subscribe('/queue/refresh-chat/' + userId, debouncedChatRefresh);
             stompClient.subscribe('/queue/refresh-history/' + userId, debouncedHistoryRefresh);
-            stompClient.subscribe('/queue/show-info-message/' + userId, function(data) { showInfoMessage(data.body, 2200) });
+            stompClient.subscribe('/queue/show-info-message/' + userId, function(data) { showInfoMessage(data.body, 2500) });
         });
     });
 }

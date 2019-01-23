@@ -395,7 +395,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     private fun setupSupplyAmounts() {
         for (card in kingdomCards) {
-            var numEachCard = 10
+            var numEachCard = card.pileSize
             if (card.isVictory) {
                 if (numPlayers == 2) {
                     numEachCard = 8

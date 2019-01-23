@@ -26,6 +26,8 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
         for (opponent in affectedOpponents) {
             val topCardsOfDeck = opponent.revealTopCardsOfDeck(2)
+            player.showInfoMessage("${opponent.username} revealed ${topCardsOfDeck.groupedString}")
+
             val cardsThatCanBeTrashed = topCardsOfDeck.filter { player.getCardCostWithModifiers(it) in 3..6 }
             val cardsToDiscard = topCardsOfDeck - cardsThatCanBeTrashed
 
@@ -36,6 +38,7 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
 
             if (cardsToDiscard.isNotEmpty()) {
                 opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${cardsToDiscard.groupedString} from your deck")
+                player.showInfoMessage("Discarded ${opponent.username}'s ${cardsToDiscard.groupedString}")
             }
 
             if (cardsThatCanBeTrashed.isNotEmpty()) {
@@ -45,12 +48,14 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
                         opponent.removeCardFromDeck(card)
                         opponent.cardTrashed(card)
                         opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor trashed ${card.cardNameWithBackgroundColor} from your deck")
+                        player.showInfoMessage("Trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
                         opponent.addEventLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${card.cardNameWithBackgroundColor}")
                     }
                     cardsThatCanBeTrashed[0].name == cardsThatCanBeTrashed[1].name -> {
                         opponent.removeCardFromDeck(cardsThatCanBeTrashed[0])
                         opponent.cardTrashed(cardsThatCanBeTrashed[0])
                         opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor trashed ${cardsThatCanBeTrashed[0].cardNameWithBackgroundColor} from your deck")
+                        player.showInfoMessage("Trashed ${opponent.username}'s ${cardsThatCanBeTrashed[0].cardNameWithBackgroundColor}")
                         opponent.addEventLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${cardsThatCanBeTrashed[0].cardNameWithBackgroundColor}")
 
                         opponent.removeCardFromDeck(cardsThatCanBeTrashed[1])
