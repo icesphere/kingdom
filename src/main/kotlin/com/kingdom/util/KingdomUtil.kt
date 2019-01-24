@@ -226,7 +226,16 @@ object KingdomUtil {
     fun getUser(request: HttpServletRequest): User? {
         return if (request.session == null) {
             null
-        } else request.session.getAttribute("user") as User?
+        } else {
+            val user = request.session.getAttribute("user") as User?
+            if (user?.gameId != null) {
+                val loggedInUser = LoggedInUsers.getUser(user.userId)
+                if (loggedInUser?.gameId == null) {
+                    request.session.removeAttribute("gameId")
+                }
+            }
+            user
+        }
     }
 
     fun isMobile(request: HttpServletRequest): Boolean {

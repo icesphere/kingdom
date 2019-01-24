@@ -540,6 +540,7 @@ class GameController(private val cardManager: CardManager,
                 game.addInfoLog("${user.username} cancelled the game")
                 game.gameOver()
             } else {
+                request.session.removeAttribute("gameId")
                 game.reset()
             }
         }
