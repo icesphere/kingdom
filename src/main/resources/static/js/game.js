@@ -18,7 +18,7 @@ var cardActionOpen = false;
 
 var stompClient = null;
 
-var infoMessageSection = 0
+var infoMessageSection = 1
 
 $(document).ready(function() {
     $.ajaxSetup({ cache: false });
@@ -148,10 +148,10 @@ function refreshGame() {
 }
 
 function showInfoMessage(message, length) {
-    if (infoMessageSection == 6) {
-        infoMessageSection = 1
+    if (infoMessageSection == 1) {
+        infoMessageSection = 6
     } else {
-        infoMessageSection = infoMessageSection + 1
+        infoMessageSection = infoMessageSection - 1
     }
     
     let sectionNum = infoMessageSection

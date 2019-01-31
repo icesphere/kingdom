@@ -18,8 +18,6 @@ bot logic for empty piles
 
 royal seal shouldn't ask multiple times if answer is no
 
-try showing info messages in reverse order to prevent jumping
-
 let someone know when they haven't ended their turn
 
 

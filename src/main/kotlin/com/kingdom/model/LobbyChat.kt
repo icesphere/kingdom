@@ -22,4 +22,11 @@ class LobbyChat(val username: String, val message: String, val time: Date) {
             sb.append(message)
             return sb.toString()
         }
+
+    @Suppress("unused")
+    val isExpired: Boolean
+        get() {
+            val minute = (60 * 1000).toLong()
+            return time.time + 15 * minute < System.currentTimeMillis()
+        }
 }
