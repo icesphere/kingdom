@@ -877,19 +877,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         }
 
-        if (card.name == plusActionTokenSupplyPile) {
+        if (card.pileName == plusActionTokenSupplyPile) {
             addActions(1)
         }
 
-        if (card.name == plusBuyTokenSupplyPile) {
+        if (card.pileName == plusBuyTokenSupplyPile) {
             addBuys(1)
         }
 
-        if (card.name == plusCoinTokenSupplyPile) {
+        if (card.pileName == plusCoinTokenSupplyPile) {
             addCoins(1)
         }
 
-        if (card.name == plusCardTokenSupplyPile) {
+        if (card.pileName == plusCardTokenSupplyPile) {
             drawCard()
         }
 
