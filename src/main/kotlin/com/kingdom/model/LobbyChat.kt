@@ -1,17 +1,19 @@
 package com.kingdom.model
 
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class LobbyChat(val username: String, val message: String, val time: Date) {
     var userId: String? = null
 
+    private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss", Locale.US)
+
     val chat: String
         get() {
-            val sdf = SimpleDateFormat("h:mm:ss")
             val sb = StringBuilder()
             sb.append("<span class='lobbyChat'>")
-            sb.append(sdf.format(time))
+            sb.append(time.toInstant().atZone(ZoneId.of(ZoneId.getAvailableZoneIds().first { it.contains("Mountain") })).format(timeFormatter))
             if (userId != null) {
                 sb.append(" Private message from")
             }
@@ -19,11 +21,5 @@ class LobbyChat(val username: String, val message: String, val time: Date) {
             sb.append("</span>")
             sb.append(message)
             return sb.toString()
-        }
-
-    val isExpired: Boolean
-        get() {
-            val minute = (60 * 1000).toLong()
-            return time.time + 15 * minute < System.currentTimeMillis()
         }
 }

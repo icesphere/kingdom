@@ -17,6 +17,7 @@ import com.kingdom.model.cards.guilds.Stonemason
 import com.kingdom.model.cards.hinterlands.Farmland
 import com.kingdom.model.cards.base.ThroneRoom
 import com.kingdom.model.cards.base.Witch
+import com.kingdom.model.cards.darkages.Armory
 import com.kingdom.model.cards.prosperity.Forge
 import com.kingdom.model.cards.prosperity.KingsCourt
 import com.kingdom.model.cards.prosperity.Mint
@@ -116,6 +117,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Amulet.NAME -> return true
             card.name == Gear.NAME -> return true
             card.name == Storyteller.NAME -> return true
+            card.name == Armory.NAME -> return true
             card.name == Feodum.NAME && cardCountByName(Silver.NAME) < 6 -> return true
             card.name == Farmland.NAME && hand.all { it.isVictory && it.cost > 2 } -> return true
             card is TavernCard -> return true

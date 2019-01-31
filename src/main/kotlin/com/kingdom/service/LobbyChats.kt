@@ -14,19 +14,19 @@ class LobbyChats {
 
     fun addChat(user: User, message: String) {
         if (chats.size == MAX_LOBBY_CHATS) {
-            chats.removeLast()
+            chats.removeFirst()
         }
         val chat = LobbyChat(user.username, message, Date())
-        chats.addFirst(chat)
+        chats.add(chat)
     }
 
     fun addPrivateChat(sender: User, receiver: User, message: String) {
         if (chats.size == MAX_LOBBY_CHATS) {
-            chats.removeLast()
+            chats.removeFirst()
         }
         val chat = LobbyChat(sender.username, message, Date())
         chat.userId = receiver.userId
-        chats.addFirst(chat)
+        chats.add(chat)
     }
 
     companion object {

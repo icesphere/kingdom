@@ -198,7 +198,7 @@ object KingdomUtil {
             numOfEach++
         }
         if (sb.isNotEmpty()) {
-            sb.append(", and ")
+            sb.append(", ")
         }
         if (addColor) {
             if (numOfEach == 1) {
