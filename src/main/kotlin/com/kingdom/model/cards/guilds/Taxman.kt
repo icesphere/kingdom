@@ -27,7 +27,7 @@ class Taxman : GuildsCard(NAME, CardType.ActionAttack, 4), TrashCardsForBenefitA
         }
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             if (opponent.hand.size >= 5) {
                 val treasureCard = opponent.hand.firstOrNull { it.name == treasureCard!!.name }

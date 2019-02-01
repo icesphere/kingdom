@@ -20,7 +20,7 @@ class Mountebank : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard, C
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             if (opponent.hand.any { it.isCurse }) {
                 opponent.makeChoice(this, Choice(1, "Discard Curse"), Choice(2, "Gain Curse and Copper"))

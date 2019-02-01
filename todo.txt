@@ -15,9 +15,9 @@ add cookie to remember admin user
 bot logic for Lurker
 bot logic for Peddler
 bot logic for empty piles
+let someone know when they haven't ended their turn
 
 royal seal shouldn't ask multiple times if answer is no
 
-let someone know when they haven't ended their turn
 
 

@@ -21,7 +21,7 @@ class Soldier : AdventuresCard(NAME, CardType.ActionAttackTraveller, 3), CardDis
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             if (opponent.hand.size >= 4) {
                 opponent.discardCardFromHand()

@@ -59,7 +59,7 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
         }
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         val card = revealedCard ?: return
 
         affectedOpponents.forEach { opponent ->

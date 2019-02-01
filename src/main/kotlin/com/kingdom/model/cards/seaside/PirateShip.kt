@@ -39,7 +39,7 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
         }
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         affectedOpponents.forEach { opponent ->
             val topCardsOfDeck = opponent.removeTopCardsOfDeck(2, true)
 

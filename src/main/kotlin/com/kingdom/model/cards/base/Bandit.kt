@@ -21,7 +21,7 @@ class Bandit : BaseCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCardA
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
 
         affectedOpponents
                 .forEach { opponent ->

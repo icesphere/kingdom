@@ -4,5 +4,5 @@ import com.kingdom.model.players.Player
 
 interface AttackCard {
 
-    fun resolveAttack(player: Player, affectedOpponents: List<Player>)
+    fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?)
 }

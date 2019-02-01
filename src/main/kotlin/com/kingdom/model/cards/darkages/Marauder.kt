@@ -22,7 +22,7 @@ class Marauder : DarkAgesCard(NAME, CardType.ActionAttackLooter, 4), GameSetupMo
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             val ruins = opponent.gainRuins()
             if (ruins != null) {

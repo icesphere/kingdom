@@ -20,7 +20,7 @@ class Jester : CornucopiaCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             val card = opponent.discardTopCardOfDeck()
             if (card != null) {

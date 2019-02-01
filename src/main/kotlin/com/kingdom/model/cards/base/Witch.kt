@@ -17,7 +17,7 @@ class Witch : BaseCard(NAME, CardType.ActionAttack, 5), AttackCard {
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         affectedOpponents.forEach { opponent ->
             val curse = Curse()
             if (opponent.game.isCardAvailableInSupply(curse)) {

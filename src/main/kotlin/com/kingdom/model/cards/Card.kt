@@ -434,7 +434,7 @@ abstract class Card(
 
     private fun isHandCardActionable(player: Player): Boolean {
         return when {
-            isAction -> player.actions > 0 && !player.isTreasureCardsPlayedInBuyPhase && !player.isCardsBought
+            isAction -> player.actions > 0 && !player.isBuyPhase
             isTreasure -> player.isPlayTreasureCards && !player.isCardsBought
             else -> false
         }

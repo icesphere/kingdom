@@ -16,7 +16,7 @@ class Swindler : IntrigueCard(NAME, CardType.ActionAttack, 3), AttackCard {
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         affectedOpponents
                 .forEach { opponent ->
                     val card = opponent.removeTopCardOfDeck()

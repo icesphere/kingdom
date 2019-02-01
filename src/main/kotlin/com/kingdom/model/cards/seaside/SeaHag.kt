@@ -16,7 +16,7 @@ class SeaHag : SeasideCard(NAME, CardType.ActionAttack, 4), AttackCard {
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             opponent.discardTopCardOfDeck()
             val curse = Curse()

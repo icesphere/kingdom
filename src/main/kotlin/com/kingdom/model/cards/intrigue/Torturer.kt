@@ -19,7 +19,7 @@ class Torturer : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         affectedOpponents
                 .forEach { opponent ->
                     opponent.makeChoice(this, Choice(1, "Discard 2 cards"), Choice(2, "Gain Curse to hand"))

@@ -26,7 +26,7 @@ class BridgeTroll : AdventuresCard(NAME, CardType.ActionAttackDuration, 5), Star
         player.showInfoMessage("Gained +1 Buy from ${this.cardNameWithBackgroundColor}")
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             opponent.isMinusCoinTokenInFrontOfPlayer = true
             opponent.showInfoMessage("${player.username}'s ${this.cardNameWithBackgroundColor} gave you your -\$1 token")

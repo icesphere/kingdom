@@ -18,7 +18,7 @@ class Minion : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, ChoiceA
         player.makeChoice(this, special, Choice(1, "+\$2"), Choice(2, "Discard hands"))
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         affectedOpponents
                 .forEach { opponent ->
                     opponent.discardHand()

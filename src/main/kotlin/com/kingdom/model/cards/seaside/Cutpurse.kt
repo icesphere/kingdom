@@ -16,7 +16,7 @@ class Cutpurse : SeasideCard(NAME, CardType.ActionAttack, 4), AttackCard {
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         affectedOpponents.forEach { opponent ->
             if (opponent.hand.any { it.isCopper }) {
                 opponent.discardCardFromHand(opponent.hand.first { it.isCopper })

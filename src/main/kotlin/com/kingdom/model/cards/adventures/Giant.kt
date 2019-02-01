@@ -32,7 +32,7 @@ class Giant : AdventuresCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
         }
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             val cards = opponent.removeTopCardsOfDeck(1, true)
             if (cards.isNotEmpty()) {

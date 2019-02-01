@@ -24,7 +24,7 @@ class Pillage : DarkAgesCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             if (opponent.hand.size >= 5) {
                 opponent.revealHand()

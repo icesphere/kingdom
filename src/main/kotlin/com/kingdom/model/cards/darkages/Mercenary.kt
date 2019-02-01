@@ -32,7 +32,7 @@ class Mercenary : DarkAgesCard(NAME, CardType.ActionAttack, 0), ChoiceActionCard
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             if (opponent.hand.size > 3) {
                 opponent.discardCardsFromHand(opponent.hand.size - 3, false)

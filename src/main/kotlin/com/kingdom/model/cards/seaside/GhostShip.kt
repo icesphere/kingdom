@@ -19,7 +19,7 @@ class GhostShip : SeasideCard(NAME, CardType.ActionAttack, 5), AttackCard, Choos
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             if (opponent.hand.size >= 4) {
                 opponent.addCardFromHandToTopOfDeck(chooseCardActionCard = this)

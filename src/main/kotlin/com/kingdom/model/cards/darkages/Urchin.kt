@@ -27,7 +27,7 @@ class Urchin : DarkAgesCard(NAME, CardType.ActionAttack, 3), GameSetupModifier, 
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             if (opponent.hand.size > 4) {
                 opponent.discardCardsFromHand(opponent.hand.size - 4, false)

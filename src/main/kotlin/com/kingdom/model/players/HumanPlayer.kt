@@ -143,8 +143,8 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(WaitForOtherPlayersActions(this))
     }
 
-    override fun waitForOtherPlayersForResolveAttack(attackCard: Card) {
-        addAction(WaitForOtherPlayersForResolveAttack(this, attackCard))
+    override fun waitForOtherPlayersForResolveAttack(attackCard: Card, info: Any?) {
+        addAction(WaitForOtherPlayersForResolveAttack(this, attackCard, info))
     }
 
     override fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler) {

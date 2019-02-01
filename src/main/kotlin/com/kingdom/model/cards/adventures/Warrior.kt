@@ -18,7 +18,7 @@ class Warrior : AdventuresCard(NAME, CardType.ActionAttackTraveller, 4), CardDis
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         val numTravellersInPlay = player.inPlayWithDuration.count { it.isTraveller }
         for (opponent in affectedOpponents) {
             repeat(numTravellersInPlay) {

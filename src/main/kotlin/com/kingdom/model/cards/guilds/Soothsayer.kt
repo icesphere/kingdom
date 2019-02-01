@@ -17,7 +17,7 @@ class Soothsayer : GuildsCard(NAME, CardType.ActionAttack, 5), AttackCard {
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             val curse = Curse()
             if (player.game.isCardAvailableInSupply(curse)) {

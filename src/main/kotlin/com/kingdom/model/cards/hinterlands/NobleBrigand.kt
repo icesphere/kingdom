@@ -33,7 +33,7 @@ class NobleBrigand : HinterlandsCard(NAME, CardType.ActionAttack, 4), AfterCardB
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             val cards = opponent.removeTopCardsOfDeck(2, true)
             val silverAndGoldCards = cards.filter { it.isSilver || it.isGold }

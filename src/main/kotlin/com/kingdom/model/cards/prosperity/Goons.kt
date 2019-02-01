@@ -25,7 +25,7 @@ class Goons : ProsperityCard(NAME, CardType.ActionAttack, 6), AttackCard, GameSe
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             if (opponent.hand.size > 3) {
                 opponent.discardCardsFromHand(opponent.hand.size - 3, false)

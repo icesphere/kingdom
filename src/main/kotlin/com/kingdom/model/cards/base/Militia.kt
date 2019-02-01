@@ -15,13 +15,12 @@ class Militia : BaseCard(NAME, CardType.ActionAttack, 4), AttackCard {
         player.triggerAttack(this)
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
-        affectedOpponents
-                .forEach { p ->
-                    if (p.hand.size > 3) {
-                        p.discardCardsFromHand(p.hand.size - 3, false)
-                    }
-                }
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
+        for (opponent in affectedOpponents) {
+            if (opponent.hand.size > 3) {
+                opponent.discardCardsFromHand(opponent.hand.size - 3, false)
+            }
+        }
     }
 
     companion object {

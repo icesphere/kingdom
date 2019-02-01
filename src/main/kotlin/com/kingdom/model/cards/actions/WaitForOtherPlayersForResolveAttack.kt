@@ -3,7 +3,7 @@ package com.kingdom.model.cards.actions
 import com.kingdom.model.cards.Card
 import com.kingdom.model.players.Player
 
-open class WaitForOtherPlayersForResolveAttack(private val currentTurnPlayer: Player, private val attackCard: Card) : WaitForOtherPlayersActions(currentTurnPlayer) {
+open class WaitForOtherPlayersForResolveAttack(private val currentTurnPlayer: Player, private val attackCard: Card, private val info: Any?) : WaitForOtherPlayersActions(currentTurnPlayer) {
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
         if (!currentTurnPlayer.isOpponentHasAction) {
@@ -11,7 +11,7 @@ open class WaitForOtherPlayersForResolveAttack(private val currentTurnPlayer: Pl
 
             val affectedOpponents = currentTurnPlayer.opponentsInOrder.filterNot { attackCard.playersExcludedFromCardEffects.contains(it) }
 
-            attackResolver.resolveAttack(currentTurnPlayer, affectedOpponents)
+            attackResolver.resolveAttack(currentTurnPlayer, affectedOpponents, info)
 
             if (currentTurnPlayer.isOpponentHasAction) {
                 currentTurnPlayer.waitForOtherPlayersToResolveActions()

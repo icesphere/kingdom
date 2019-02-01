@@ -12,6 +12,7 @@ import com.kingdom.model.cards.darkages.ruins.*
 import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
+import com.kingdom.model.cards.empires.Catapult
 import com.kingdom.model.cards.empires.Encampment
 import com.kingdom.model.cards.empires.Patrician
 import com.kingdom.model.cards.empires.Settlers
@@ -304,6 +305,7 @@ class CardRepository {
 
     val empiresCards: List<Card>
         get() = listOf(
+                Catapult(),
                 Encampment(),
                 Patrician(),
                 Settlers()

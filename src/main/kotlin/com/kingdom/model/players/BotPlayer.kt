@@ -839,7 +839,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         isWaitingForPlayers = true
     }
 
-    override fun waitForOtherPlayersForResolveAttack(attackCard: Card) {
+    override fun waitForOtherPlayersForResolveAttack(attackCard: Card, info: Any?) {
         isWaitingForPlayers = true
     }
 

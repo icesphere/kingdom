@@ -23,7 +23,7 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
         }
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>) {
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         for (opponent in affectedOpponents) {
             val topCardsOfDeck = opponent.revealTopCardsOfDeck(2)
             player.showInfoMessage("${opponent.username} revealed ${topCardsOfDeck.groupedString}")
