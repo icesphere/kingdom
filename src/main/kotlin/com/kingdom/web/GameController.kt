@@ -865,6 +865,10 @@ class GameController(private val cardManager: CardManager,
 
                 if (highlightEventCard(player, eventCard)) {
                     player.buyEvent(eventCard)
+
+                    if (player.buys == 0 && player.currentAction == null) {
+                        player.endTurn(true)
+                    }
                 }
             }
             CardLocation.Hand -> {

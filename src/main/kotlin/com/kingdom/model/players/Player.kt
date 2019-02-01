@@ -1134,6 +1134,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
     }
 
+    fun addCardsToTopOfDeck(cards: List<Card>) {
+        deck.addAll(0, cards)
+        refreshPlayerHandArea()
+    }
+
     fun addCardToDeck(card: Card) {
         deck.add(card)
         refreshPlayerHandArea()
