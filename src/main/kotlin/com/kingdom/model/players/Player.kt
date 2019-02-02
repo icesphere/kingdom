@@ -96,7 +96,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         val list = mutableListOf<Player>()
 
-        var nextPlayer = game.getPlayerToLeft(this)
+        var nextPlayer = playerToLeft
 
         while (nextPlayer.userId != userId) {
             list.add(nextPlayer)
@@ -236,6 +236,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var numExtraCardsToDrawAtEndOfTurn: Int = 0
 
     var inheritanceActionCard: Card? = null
+
+    val playerToLeft: Player
+        get() = game.getPlayerToLeft(this)
 
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {

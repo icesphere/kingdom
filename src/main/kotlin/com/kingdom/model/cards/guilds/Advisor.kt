@@ -22,7 +22,7 @@ class Advisor : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard {
             cards.size == 1 -> player.addCardToDiscard(cards.first(), showLog = true)
             cards.isNotEmpty() -> {
                 val choices = cards.mapIndexed { index, card -> Choice(index, card.name) }
-                player.game.getPlayerToLeft(player).makeChoiceFromListWithInfo(this, "Choose a card for ${player.username} to discard. The rest will go into their hand", cards, choices)
+                player.playerToLeft.makeChoiceFromListWithInfo(this, "Choose a card for ${player.username} to discard. The rest will go into their hand", cards, choices)
             }
             else -> player.showInfoMessage("There were no cards on top of your deck")
         }
@@ -34,7 +34,7 @@ class Advisor : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard {
 
         val cardToDiscard = cards[choice]
         player.addCardToDiscard(cardToDiscard, showLog = true)
-        player.showInfoMessage("${player.game.getPlayerToLeft(player).username} discarded ${cardToDiscard.cardNameWithBackgroundColor}")
+        player.showInfoMessage("${player.playerToLeft.username} discarded ${cardToDiscard.cardNameWithBackgroundColor}")
 
         val cardsToPutInHand = cards - cardToDiscard
         player.addCardsToHand(cardsToPutInHand)

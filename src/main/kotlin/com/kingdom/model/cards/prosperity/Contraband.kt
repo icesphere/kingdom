@@ -17,7 +17,7 @@ class Contraband : ProsperityCard(NAME, CardType.Treasure, 5), ChooseCardActionC
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.game.getPlayerToLeft(player).chooseCardAction("Chose a card that ${player.username} can't buy this turn", this, player.game.availableCardsCopy.sortedBy { it.cost }, false)
+        player.playerToLeft.chooseCardAction("Chose a card that ${player.username} can't buy this turn", this, player.game.availableCardsCopy.sortedBy { it.cost }, false)
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
