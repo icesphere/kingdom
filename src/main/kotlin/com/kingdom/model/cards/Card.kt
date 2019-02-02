@@ -15,6 +15,7 @@ abstract class Card(
         val deck: Deck,
         val type: CardType,
         val cost: Int,
+        val debtCost: Int = 0,
         var special: String = "",
         var addActions: Int = 0,
         var addCoins: Int = 0,
