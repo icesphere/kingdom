@@ -321,6 +321,8 @@ abstract class Card(
 
     var isCardActuallyBandOfMisfits: Boolean = false
 
+    var isCardActuallyOverlord: Boolean = false
+
     var adjustedCost: Int = cost
 
     fun getNumberPlusNameWithBackgroundColor(num: Int): String {

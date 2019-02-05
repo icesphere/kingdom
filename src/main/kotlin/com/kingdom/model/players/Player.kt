@@ -12,6 +12,7 @@ import com.kingdom.model.cards.darkages.Spoils
 import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
+import com.kingdom.model.cards.empires.Overlord
 import com.kingdom.model.cards.listeners.*
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Curse
@@ -275,6 +276,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun drawCards(numCards: Int): List<Card> {
+        if (numCards == 0) {
+            return emptyList()
+        }
         val cards = getCardsFromDeck(numCards)
         cards.forEach { addCardToHand(it) }
         return cards
@@ -328,15 +332,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun cardRemovedFromPlay(card: Card) {
         card.removedFromPlay(this)
 
-        if (card.isCardActuallyBandOfMisfits) {
+        if (card.isCardActuallyBandOfMisfits || card.isCardActuallyOverlord) {
             card.isCardActuallyBandOfMisfits = false
+            card.isCardActuallyOverlord = false
 
-            val bandOfMisfits = BandOfMisfits()
+            val actualCard: Card = if (card.isCardActuallyOverlord) Overlord() else BandOfMisfits()
 
             when {
                 cardsInDiscard.contains(card) -> {
                     removeCardFromDiscard(card)
-                    addCardToDiscard(bandOfMisfits)
+                    addCardToDiscard(actualCard)
                 }
                 hand.contains(card) -> {
                     removeCardFromHand(card)
@@ -345,7 +350,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 deck.contains(card) -> {
                     deck.replaceAll { deckCard ->
                         if (deckCard.id == card.id) {
-                            bandOfMisfits
+                            actualCard
                         } else {
                             deckCard
                         }
@@ -353,15 +358,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 }
                 islandCards.contains(card) -> {
                     islandCards.remove(card)
-                    islandCards.add(bandOfMisfits)
+                    islandCards.add(actualCard)
                 }
                 nativeVillageCards.contains(card) -> {
                     nativeVillageCards.remove(card)
-                    nativeVillageCards.add(bandOfMisfits)
+                    nativeVillageCards.add(actualCard)
                 }
                 game.trashedCards.contains(card) -> {
                     game.trashedCards.remove(card)
-                    game.trashedCards.add(bandOfMisfits)
+                    game.trashedCards.add(actualCard)
                 }
             }
         }

@@ -304,9 +304,12 @@ class CardRepository {
         get() = listOf(
                 Catapult(),
                 ChariotRace(),
+                CityQuarter(),
                 Encampment(),
                 Engineer(),
+                Overlord(),
                 Patrician(),
+                RoyalBlacksmith(),
                 Settlers()
         )
 
