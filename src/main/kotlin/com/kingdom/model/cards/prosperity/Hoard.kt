@@ -17,6 +17,7 @@ class Hoard : ProsperityCard(NAME, CardType.Treasure, 6), AfterCardBoughtListene
     override fun afterCardBought(card: Card, player: Player) {
         if (card.isVictory) {
             player.gainSupplyCard(Gold(), true)
+            player.showInfoMessage("Gained ${Gold().cardNameWithBackgroundColor} from $cardNameWithBackgroundColor")
         }
     }
 

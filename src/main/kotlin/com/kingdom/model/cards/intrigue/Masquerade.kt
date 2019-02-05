@@ -54,6 +54,7 @@ class Masquerade : IntrigueCard(NAME, CardType.Action, 3), ChooseCardActionCard 
             for ((p, c) in cardsPassedMap) {
                 val playerOnLeft = passToPlayerMap[p]!!
                 playerOnLeft.addCardToHand(c)
+                playerOnLeft.showInfoMessage("${p.username} passed you ${c.cardNameWithBackgroundColor}")
             }
 
             player.game.currentPlayer.trashCardFromHand(true)

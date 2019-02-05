@@ -227,7 +227,18 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val cardCostModifiers: List<CardCostModifier>
         get() {
             val modifiers: MutableList<CardCostModifier> = (currentPlayerCardCostModifiers + gameCardCostModifiers).toMutableList()
+
             currentPlayer.inPlayWithDuration.filter { it is CardCostModifierForCardsInPlay }.forEach { modifiers.add(it as CardCostModifier) }
+
+            currentPlayer.inPlayWithDuration
+                    .filter { it is CardRepeater && it.cardBeingRepeated is CardCostModifierForCardsInPlay }
+                    .forEach {
+                        val cardRepeater = it as CardRepeater
+                        repeat(cardRepeater.timesRepeated) {
+                            modifiers.add(cardRepeater.cardBeingRepeated as CardCostModifier)
+                        }
+                    }
+
             return modifiers
         }
 

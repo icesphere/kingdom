@@ -1,6 +1,16 @@
 <div class="cardName" style="<#if clickType=='supply' && gameStatus == "InProgress" && supply(card.pileName) == 0><#else><#if card.backgroundColor.image>background-image: url(images/${card.backgroundColorMobileColor});background-repeat: repeat-x;<#else>background-color:${card.backgroundColorColor};</#if></#if>">
-    <div style="position:absolute;left:3px;bottom:2px;font-size:10px;">${cost}</div>
-    <div style="position:absolute;<#if cost &gt; 9>left:14px;<#else>left:11px;</#if>bottom:-1px;"><img src="images/coin.png" alt="coin" height="10" width="10"/></div>
+    <#if card.cost != 0 || card.debtCost == 0>
+        <div style="display: flex; position: absolute; left: 3px; bottom: 2px; font-size: 10px; font-weight: bold;">
+            <div style="z-index: 1; position: relative; left: <#if cost &gt; 9>1px<#else>3px</#if>;">${cost}</div>
+            <div style="position: absolute;"><img src="images/coin.png" alt="coin" height="12" width="12"/></div>
+        </div>
+    </#if>
+    <#if card.debtCost != 0>
+        <div style="display: flex; position: absolute; left: <#if card.cost == 0>3px<#else>15px</#if>; bottom: -1px; font-size: 10px; color: white;">
+            <div style="z-index: 1; position: absolute; bottom: 3px; left: <#if cost &gt; 9>1px<#else>4px</#if>;">${card.debtCost}</div>
+            <div style="position: absolute; bottom: 0;"><img src="images/debt.png" alt="debt" height="13" width="13"/></div>
+        </div>
+    </#if>
     <div style="position:absolute;width:68px;text-align:center;left:2px;<#if card.nameLines != 1 || card.fontSize &gt; 11 || card.fontSize == 0>top:2px;<#elseif card.fontSize &gt; 9>top:3px;<#elseif card.fontSize &gt; 8>top:4px;<#else>top:5px;</#if>font-size:<#if card.fontSize &gt; 0>${card.fontSize}<#else>12</#if>px;">
         ${card.name}
     </div>
