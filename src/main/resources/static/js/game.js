@@ -483,6 +483,13 @@ function useCoffers(){
     }
 }
 
+function payOffDebt(){
+    if(gameStatus == "InProgress"){
+        $.post("payOffDebt", function(data) {
+        });
+    }
+}
+
 function showTavernCards() {
     if(gameStatus == "InProgress"){
         $.post("showTavernCards", function(data) {

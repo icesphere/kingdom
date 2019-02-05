@@ -305,6 +305,7 @@ class CardRepository {
                 Catapult(),
                 ChariotRace(),
                 Encampment(),
+                Engineer(),
                 Patrician(),
                 Settlers()
         )

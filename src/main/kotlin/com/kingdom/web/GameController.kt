@@ -2157,6 +2157,51 @@ class GameController(private val cardManager: CardManager,
     }
 
     @ResponseBody
+    @RequestMapping(value = ["/payOffDebt"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun payOffDebt(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+
+        if (user == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        } else if (game == null) {
+            return ModelAndView("redirect:/showGameRooms.html")
+        }
+
+        try {
+            val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
+
+            if (!player.isYourTurn) {
+                player.showInfoMessage("You can only pay off debt on your turn")
+                return emptyModelAndView
+            }
+
+            val choices = mutableListOf<Choice>()
+
+            val debtAvailableToPayOff = minOf(player.availableCoins, player.debt)
+
+            for (i in 0..debtAvailableToPayOff) {
+                choices.add(Choice(i, i.toString()))
+            }
+
+            player.makeChoiceFromList(object : ChoiceActionCard {
+                override val name: String
+                    get() = "Pay off debt"
+
+                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                    player.payOffDebt(choice)
+                }
+            }, "How much debt do you want to pay off?", choices)
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+        }
+
+        return emptyModelAndView
+    }
+
+    @ResponseBody
     @RequestMapping(value = ["/showTavernCards"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun showTavernCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)

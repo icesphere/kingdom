@@ -9,7 +9,7 @@ open class FreeCardFromSupply(private val maxCost: Int?, text: String, private v
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
         return ((cardLocation == CardLocation.Supply)
                 && player.game.isCardAvailableInSupply(card)
-                && (maxCost == null || player.getCardCostWithModifiers(card) <= maxCost))
+                && (maxCost == null || (card.debtCost == 0 && player.getCardCostWithModifiers(card) <= maxCost)))
                 && (cardActionableExpression == null || cardActionableExpression.invoke(card))
     }
 

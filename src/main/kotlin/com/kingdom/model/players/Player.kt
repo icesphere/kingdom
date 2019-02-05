@@ -80,6 +80,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var coinsSpent: Int = 0
 
+    var debt: Int = 0
+
     var buys: Int = 0
         private set
 
@@ -780,6 +782,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (availableCoins >= this.getCardCostWithModifiers(card)) {
             addEventLogWithUsername("bought card: " + card.cardNameWithBackgroundColor)
             coins -= this.getCardCostWithModifiers(card)
+            debt += card.debtCost
             buys -= 1
             cardsBought.add(card)
             game.cardsBought.add(card)
@@ -1514,6 +1517,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun canBuyCard(card: Card): Boolean {
+        if (debt > 0) {
+            return false
+        }
+
         if (cardsUnavailableToBuyThisTurn.any { it.name == card.name }) {
             return false
         }
@@ -1658,6 +1665,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
         this.coffers += coffers
+        refreshPlayerHandArea()
+    }
+
+    fun payOffDebt(numDebtToPayOff: Int) {
+        if (numDebtToPayOff == 0) {
+            return
+        }
+        addCoins(numDebtToPayOff * -1)
+        this.debt -= numDebtToPayOff
         refreshPlayerHandArea()
     }
 

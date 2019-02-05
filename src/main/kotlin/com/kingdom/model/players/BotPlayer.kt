@@ -96,6 +96,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun addCardFromDiscardToTopOfDeck(maxCost: Int?) {
+        //todo handle max cost
         val card = chooseCardFromDiscardToAddToTopOfDeck()
         if (card != null) {
             discard.remove(card)
@@ -270,6 +271,11 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             //todo better logic
             if (coffers > 0) {
                 useCoffers(coffers)
+            }
+
+            //todo better logic
+            if (debt > 0) {
+                //todo pay off debt
             }
 
             val cardsAvailableToBuy = game.availableCards.filter { c -> availableCoins >= this.getCardCostWithModifiers(c) }
@@ -751,7 +757,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     private fun chooseFreeCardToGain(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null): Card? {
         val cards = game.availableCards
                 .filter { c ->
-                    (maxCost == null || this.getCardCostWithModifiers(c) <= maxCost)
+                    (maxCost == null || (c.debtCost == 0 && this.getCardCostWithModifiers(c) <= maxCost))
                             && (cardActionableExpression == null || cardActionableExpression.invoke(c))
                 }
 

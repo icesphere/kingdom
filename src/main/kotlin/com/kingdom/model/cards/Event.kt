@@ -8,6 +8,6 @@ abstract class Event(name: String,
                      private val isOncePerTurnEvent: Boolean = false) : Card(name, deck, CardType.Event, cost) {
 
     open fun isEventActionable(player: Player): Boolean {
-        return player.buys > 0 && player.availableCoins >= this.cost && (!this.isOncePerTurnEvent || player.eventsBought.none { it.name == this.name })
+        return player.buys > 0 && player.debt == 0 && player.availableCoins >= this.cost && (!this.isOncePerTurnEvent || player.eventsBought.none { it.name == this.name })
     }
 }
