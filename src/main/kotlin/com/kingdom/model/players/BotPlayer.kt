@@ -273,9 +273,14 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 useCoffers(coffers)
             }
 
-            //todo better logic
             if (debt > 0) {
-                //todo pay off debt
+                val debtToPayOff = minOf(debt, availableCoins)
+
+                payOffDebt(debtToPayOff)
+
+                if (debt > 0) {
+                    return emptyList()
+                }
             }
 
             val cardsAvailableToBuy = game.availableCards.filter { c -> availableCoins >= this.getCardCostWithModifiers(c) }
