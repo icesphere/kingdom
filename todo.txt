@@ -20,7 +20,5 @@ maybe instead of showing cards bought for other players, hide that section and s
 bot error when playing Plaza?
 royal seal shouldn't ask multiple times if answer is no
 
-check all rules for debt
-
 
 
