@@ -71,6 +71,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val isBuyPhase: Boolean
         get() = isYourTurn && (isTreasureCardsPlayedInBuyPhase || isCardsBought)
 
+    var isPaidOffDebtThisTurn: Boolean = false
+
     private var coins: Int = 0
 
     private var coinsInHand: Int = 0
@@ -333,10 +335,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         card.removedFromPlay(this)
 
         if (card.isCardActuallyBandOfMisfits || card.isCardActuallyOverlord) {
-            card.isCardActuallyBandOfMisfits = false
-            card.isCardActuallyOverlord = false
 
             val actualCard: Card = if (card.isCardActuallyOverlord) Overlord() else BandOfMisfits()
+
+            card.isCardActuallyBandOfMisfits = false
+            card.isCardActuallyOverlord = false
 
             when {
                 cardsInDiscard.contains(card) -> {
@@ -424,6 +427,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
 
+        if (debt > 0 && availableCoins > 0) {
+            addInfoLogWithUsername("auto applying remaining available coins to debt")
+            debt -= availableCoins
+        }
+
         addInfoLogWithUsername("ending turn")
 
         cardsSetAsideToReturnToSupplyAtStartOfCleanup.forEach {
@@ -456,6 +464,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         numCardsTrashedThisTurn = 0
         coinsGainedThisTurn = 0
+
+        isPaidOffDebtThisTurn = false
 
         cardsUnavailableToBuyThisTurn.clear()
 
@@ -1677,6 +1687,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (numDebtToPayOff == 0) {
             return
         }
+        isPaidOffDebtThisTurn = true
         addCoins(numDebtToPayOff * -1)
         this.debt -= numDebtToPayOff
         refreshPlayerHandArea()

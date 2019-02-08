@@ -11,6 +11,8 @@ class Rats : DarkAgesCard(NAME, CardType.Action, 4), AfterCardTrashedListenerFor
         addActions = 1
         special = "Gain a Rats. Trash a card from your hand other than a Rats (or reveal a hand of all Rats). When you trash this, +1 Card."
         textSize = 79
+        isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
     }
 
     override val pileSize: Int

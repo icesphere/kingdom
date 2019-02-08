@@ -31,7 +31,7 @@ class Herald : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard, AfterCard
 
     override fun afterCardBought(player: Player) {
         if (player.availableCoins > 0) {
-            player.yesNoChoice(this, "Overpay to gain a Silver for each \$1 you overpaid?")
+            player.yesNoChoice(this, "Overpay to look through your discard pile and put a card from it onto your deck for each \$1 you overpaid?")
         } else {
             player.showInfoMessage("No coins available for overpaying")
         }

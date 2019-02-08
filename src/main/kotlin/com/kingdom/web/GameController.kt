@@ -848,9 +848,25 @@ class GameController(private val cardManager: CardManager,
                     if (action != null) {
                         handleCardClickedForAction(player, card, source)
                     } else {
+                        if (game.isPlayTreasureCards && player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase && card.debtCost > 0) {
+                            player.yesNoChoice(object : ChoiceActionCard {
+                                override val name: String = "PlayTreasuresBeforeBuyingDebtCard"
+
+                                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                                    if (choice == 1) {
+                                        player.buyCard(card)
+                                        game.refreshCardsBought()
+                                    }
+                                }
+
+                            }, "Are you sure you want to buy ${card.cardNameWithBackgroundColor} before playing your treasure cards?")
+
+                            return
+                        }
+
                         player.buyCard(card)
 
-                        if (player.buys == 0) {
+                        if (player.buys == 0 && (player.debt == 0 || player.availableCoins == 0)) {
                             if (player.currentAction != null) {
                                 game.refreshCardsBought()
                             } else {
@@ -866,7 +882,7 @@ class GameController(private val cardManager: CardManager,
                 if (highlightEventCard(player, eventCard)) {
                     player.buyEvent(eventCard)
 
-                    if (player.buys == 0 && player.currentAction == null) {
+                    if (player.buys == 0 && player.currentAction == null && (player.debt == 0 || player.availableCoins == 0)) {
                         player.endTurn(true)
                     }
                 }
@@ -2133,6 +2149,11 @@ class GameController(private val cardManager: CardManager,
                 return emptyModelAndView
             }
 
+            if (player.isPaidOffDebtThisTurn) {
+                player.showInfoMessage("You can't use Coffers after you have paid off debt")
+                return emptyModelAndView
+            }
+
             val choices = mutableListOf<Choice>()
 
             for (i in 0..player.coffers) {
@@ -2176,22 +2197,22 @@ class GameController(private val cardManager: CardManager,
                 return emptyModelAndView
             }
 
-            val choices = mutableListOf<Choice>()
+            if (game.isPlayTreasureCards && player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase) {
+                player.yesNoChoice(object : ChoiceActionCard {
+                    override val name: String = "PlayTreasuresBeforePayingOffDebt"
 
-            val debtAvailableToPayOff = minOf(player.availableCoins, player.debt)
+                    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                        if (choice == 1) {
+                            player.payOffDebt(player.availableCoins)
+                        }
+                    }
 
-            for (i in 0..debtAvailableToPayOff) {
-                choices.add(Choice(i, i.toString()))
+                }, "Are you sure you want to pay off debt before playing your treasure cards?")
+
+                return emptyModelAndView
             }
 
-            player.makeChoiceFromList(object : ChoiceActionCard {
-                override val name: String
-                    get() = "Pay off debt"
-
-                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-                    player.payOffDebt(choice)
-                }
-            }, "How much debt do you want to pay off?", choices)
+            player.payOffDebt(player.availableCoins)
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))

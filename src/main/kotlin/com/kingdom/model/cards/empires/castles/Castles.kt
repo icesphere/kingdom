@@ -9,6 +9,10 @@ import com.kingdom.model.cards.empires.EmpiresCard
 
 class Castles : EmpiresCard(Castles.NAME, CardType.VictoryCastle, 3), MultiTypePile, GameSetupModifier {
 
+    init {
+        disabled = true
+    }
+
     override fun modifyGameSetup(game: Game) {
         game.isShowVictoryCoins = true
     }

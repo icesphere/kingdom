@@ -13,7 +13,7 @@ class BandOfMisfits : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCa
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val cards = player.game.availableCardsCopy.filter { it.isAction && player.getCardCostWithModifiers(it) < player.getCardCostWithModifiers(this) }
+        val cards = player.game.availableCardsCopy.filter { it.isAction && player.getCardCostWithModifiers(it) < player.getCardCostWithModifiers(this) && it.debtCost == 0 }
         if (cards.isNotEmpty()) {
             player.chooseCardAction("Choose a cheaper Action card from the Supply. ${this.cardNameWithBackgroundColor} will be that card until it leaves play.", this, cards, false)
         } else {
