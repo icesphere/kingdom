@@ -36,10 +36,6 @@ class Plaza : GuildsCard(NAME, CardType.Action, 4), GameSetupModifier, ChoiceAct
         player.addCoffers(1)
     }
 
-    override fun onChoseDoNotUse(player: Player, info: Any?) {
-        //do nothing
-    }
-
     companion object {
         const val NAME: String = "Plaza"
     }

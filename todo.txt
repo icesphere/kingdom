@@ -19,7 +19,6 @@ let someone know when they haven't ended their turn
 maybe instead of showing cards bought for other players, hide that section and show info message anytime they gain a card?
 bot error when playing Plaza?
 royal seal shouldn't ask multiple times if answer is no
-
 Encampment got 11 cards - probably from bot
 
 

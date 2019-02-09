@@ -12,6 +12,7 @@ class CrumblingCastle : EmpiresCard(NAME, CardType.VictoryCastle, 4), AfterCardG
     init {
         victoryPoints = 1
         special = "When you gain or trash this, +1 VP and gain a Silver."
+        fontSize = 9
     }
 
     override fun afterCardGained(player: Player) {

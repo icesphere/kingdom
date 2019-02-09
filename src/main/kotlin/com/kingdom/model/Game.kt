@@ -704,10 +704,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     private val nonEmptyPiles: Int
-        get() = allCards.filter { numInPileMap[it.pileName]!! > 0 }.size
+        get() = (cardsInSupply + kingdomCards).filter { numInPileMap[it.pileName]!! > 0 }.size
 
     val emptyPiles
-        get() = allCards.size - nonEmptyPiles
+        get() = (cardsInSupply + kingdomCards).size - nonEmptyPiles
 
     val availableCards
         get() = allCards.filter { isCardAvailableInSupply(it) }

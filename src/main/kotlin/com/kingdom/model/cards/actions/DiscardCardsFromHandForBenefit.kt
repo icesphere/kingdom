@@ -16,6 +16,6 @@ class DiscardCardsFromHandForBenefit(private val discardCardsForBenefitActionCar
     }
 
     override fun onNotUsed(player: Player) {
-        discardCardsForBenefitActionCard.onChoseDoNotUse(player, info)
+        discardCardsForBenefitActionCard.cardsDiscarded(player, emptyList(), info)
     }
 }

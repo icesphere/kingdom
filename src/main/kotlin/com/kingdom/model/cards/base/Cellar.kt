@@ -7,14 +7,6 @@ import com.kingdom.model.players.Player
 
 class Cellar : BaseCard(NAME, CardType.Action, 2), DiscardCardsForBenefitActionCard {
 
-    override fun cardsDiscarded(player: Player, discardedCards: List<Card>, info: Any?) {
-        player.drawCards(discardedCards.size)
-    }
-
-    override fun onChoseDoNotUse(player: Player, info: Any?) {
-        //do nothing
-    }
-
     init {
         addActions = 1
         special = "Discard any number of cards, then draw that many."
@@ -23,6 +15,10 @@ class Cellar : BaseCard(NAME, CardType.Action, 2), DiscardCardsForBenefitActionC
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.optionallyDiscardCardsForBenefit(this, player.hand.size, special)
+    }
+
+    override fun cardsDiscarded(player: Player, discardedCards: List<Card>, info: Any?) {
+        player.drawCards(discardedCards.size)
     }
 
     companion object {

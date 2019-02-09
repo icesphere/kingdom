@@ -130,11 +130,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         cardsToDiscard.forEach({ this.discardCardFromHand(it) })
 
-        if (!cardsToDiscard.isEmpty()) {
-            card.cardsDiscarded(this, cardsToDiscard, info)
-        } else {
-            card.onChoseDoNotUse(this, info)
-        }
+        card.cardsDiscarded(this, cardsToDiscard, info)
     }
 
     override fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
@@ -142,12 +138,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         val cardsToDiscard = getCardsToDiscard(numCardsToDiscard, false)
 
-        if (!cardsToDiscard.isEmpty()) {
-            cardsToDiscard.forEach({ this.discardCardFromHand(it) })
-            card.cardsDiscarded(this, cardsToDiscard, null)
-        } else {
-            card.onChoseDoNotUse(this, null)
-        }
+        cardsToDiscard.forEach({ this.discardCardFromHand(it) })
+
+        card.cardsDiscarded(this, cardsToDiscard, null)
     }
 
     override fun makeChoice(card: ChoiceActionCard, vararg choices: Choice) {

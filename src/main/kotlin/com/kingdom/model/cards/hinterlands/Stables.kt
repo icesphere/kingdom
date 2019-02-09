@@ -29,10 +29,6 @@ class Stables : HinterlandsCard(NAME, CardType.Action, 5), ChoiceActionCard, Dis
         player.addActions(1)
     }
 
-    override fun onChoseDoNotUse(player: Player, info: Any?) {
-        //do nothing
-    }
-
     companion object {
         const val NAME: String = "Stables"
     }

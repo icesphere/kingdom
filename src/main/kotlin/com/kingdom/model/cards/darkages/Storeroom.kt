@@ -35,15 +35,6 @@ class Storeroom : DarkAgesCard(NAME, CardType.Action, 3), DiscardCardsForBenefit
         player.optionallyDiscardCardsForBenefit(this, player.hand.size, "Discard any number of cards for +\$1 each", false)
     }
 
-    override fun onChoseDoNotUse(player: Player, info: Any?) {
-
-        val discardToGainCards = info as Boolean
-
-        if (discardToGainCards) {
-            discardCardsForCoins(player)
-        }
-    }
-
     companion object {
         const val NAME: String = "Storeroom"
     }

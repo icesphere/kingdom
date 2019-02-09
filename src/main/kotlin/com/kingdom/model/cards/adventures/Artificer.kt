@@ -31,10 +31,6 @@ class Artificer : AdventuresCard(NAME, CardType.Action, 5), DiscardCardsForBenef
         }
     }
 
-    override fun onChoseDoNotUse(player: Player, info: Any?) {
-        //do nothing
-    }
-
     companion object {
         const val NAME: String = "Artificer"
     }

@@ -9,6 +9,10 @@ import com.kingdom.model.cards.empires.EmpiresCard
 
 class Castles : EmpiresCard(Castles.NAME, CardType.VictoryCastle, 3), MultiTypePile, GameSetupModifier {
 
+    init {
+        special = "Split pile with 8 differently named unique Castles"
+    }
+
     override fun modifyGameSetup(game: Game) {
         game.isShowVictoryCoins = true
     }
@@ -17,7 +21,12 @@ class Castles : EmpiresCard(Castles.NAME, CardType.VictoryCastle, 3), MultiTypeP
         get() = listOf(
                 HumbleCastle(),
                 CrumblingCastle(),
-                SmallCastle()
+                SmallCastle(),
+                HauntedCastle(),
+                OpulentCastle(),
+                SprawlingCastle(),
+                GrandCastle(),
+                KingsCastle()
         )
 
     override fun createMultiTypePile(game: Game): List<Card> {
@@ -25,7 +34,12 @@ class Castles : EmpiresCard(Castles.NAME, CardType.VictoryCastle, 3), MultiTypeP
             listOf(
                     HumbleCastle(),
                     CrumblingCastle(),
-                    SmallCastle()
+                    SmallCastle(),
+                    HauntedCastle(),
+                    OpulentCastle(),
+                    SprawlingCastle(),
+                    GrandCastle(),
+                    KingsCastle()
             )
         } else {
             listOf(
@@ -33,7 +47,14 @@ class Castles : EmpiresCard(Castles.NAME, CardType.VictoryCastle, 3), MultiTypeP
                     HumbleCastle(),
                     CrumblingCastle(),
                     SmallCastle(),
-                    SmallCastle()
+                    SmallCastle(),
+                    HauntedCastle(),
+                    OpulentCastle(),
+                    OpulentCastle(),
+                    SprawlingCastle(),
+                    GrandCastle(),
+                    KingsCastle(),
+                    KingsCastle()
             )
         }
     }

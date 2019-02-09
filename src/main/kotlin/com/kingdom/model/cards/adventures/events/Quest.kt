@@ -70,10 +70,6 @@ class Quest : AdventuresEvent(NAME, 0), ChoiceActionCard, DiscardCardsForBenefit
         player.gainSupplyCard(Gold(), true)
     }
 
-    override fun onChoseDoNotUse(player: Player, info: Any?) {
-        //not applicable
-    }
-
     companion object {
         const val NAME: String = "Quest"
     }

@@ -5,23 +5,22 @@ import com.kingdom.model.cards.empires.EmpiresCard
 import com.kingdom.model.cards.supply.VictoryPointsCalculator
 import com.kingdom.model.players.Player
 
-class HumbleCastle : EmpiresCard(NAME, CardType.TreasureVictoryCastle, 3), VictoryPointsCalculator {
+class KingsCastle : EmpiresCard(NAME, CardType.VictoryCastle, 10), VictoryPointsCalculator {
 
     init {
-        addCoins = 1
-        special = "Worth 1 VP per Castle you have."
+        special = "Worth 2 VP per Castle you have."
         fontSize = 10
     }
 
     override fun calculatePoints(player: Player): Int {
-        return player.allCards.count { it.isCastle }
+        return player.allCards.count { it.isCastle } * 2
     }
 
     override val pileName: String
         get() = Castles.NAME
 
     companion object {
-        const val NAME: String = "Humble Castle"
+        const val NAME: String = "Kings Castle"
     }
 }
 
