@@ -356,6 +356,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             return -1
         }
 
+        if (excludeCard(card)) {
+            return 0
+        }
+
         return card.cost
     }
 

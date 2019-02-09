@@ -23,12 +23,17 @@ import com.kingdom.service.GameMessageService
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.toCardNames
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.full.createInstance
 
 class Game(private val gameManager: GameManager, private val gameMessageService: GameMessageService) {
+
     val gameId: String = UUID.randomUUID().toString()
+
+    var startTime: String? = null
 
     var turn: Int = 0
 
@@ -46,6 +51,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var players: MutableList<Player> = ArrayList()
 
+    @Suppress("unused")
+    val playerList: String
+        get() = players.map { it.username }.joinToString(", ")
+
     val humanPlayers: List<Player>
         get() = players.filterNot { it.isBot }
 
@@ -58,6 +67,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var decks: MutableList<Deck> = ArrayList()
 
     var kingdomCards = mutableListOf<Card>()
+
+    @Suppress("unused")
+    val cardList: String
+        get() = kingdomCards.map { it.name }.joinToString(", ")
 
     val topKingdomCards: List<Card>
         get() {
@@ -495,6 +508,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     private fun startGame() {
+        startTime = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+
         players.shuffle()
         status = GameStatus.InProgress
 

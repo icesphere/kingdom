@@ -20,11 +20,7 @@ maybe instead of showing cards bought for other players, hide that section and s
 bot error when playing Plaza?
 royal seal shouldn't ask multiple times if answer is no
 
-games in progress page is broken
-
 Encampment got 11 cards - probably from bot
-
-computer should never gain Rats if possible
 
 
 
