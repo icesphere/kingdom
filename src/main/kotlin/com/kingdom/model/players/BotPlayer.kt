@@ -267,9 +267,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
 
             if (debt > 0) {
-                val debtToPayOff = minOf(debt, availableCoins)
-
-                payOffDebt(debtToPayOff)
+                payOffDebt()
 
                 if (debt > 0) {
                     return emptyList()
