@@ -10,7 +10,8 @@ class GrandCastle : EmpiresCard(NAME, CardType.VictoryCastle, 9), AfterCardGaine
     init {
         victoryPoints = 5
         special = "When you gain this, reveal your hand. +1 VP per Victory card in your hand and/or in play."
-        fontSize = 11
+        fontSize = 10
+        textSize = 73
     }
 
     override fun afterCardGained(player: Player) {

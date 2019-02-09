@@ -11,7 +11,7 @@ class OpulentCastle : EmpiresCard(NAME, CardType.ActionVictoryCastle, 7), Discar
     init {
         victoryPoints = 3
         special = "Discard any number of Victory cards. +\$2 per card discarded."
-        fontSize = 10
+        fontSize = 9
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

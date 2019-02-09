@@ -10,7 +10,7 @@ class HumbleCastle : EmpiresCard(NAME, CardType.TreasureVictoryCastle, 3), Victo
     init {
         addCoins = 1
         special = "Worth 1 VP per Castle you have."
-        fontSize = 10
+        fontSize = 9
     }
 
     override fun calculatePoints(player: Player): Int {

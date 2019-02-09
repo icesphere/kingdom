@@ -13,8 +13,8 @@ class HauntedCastle : EmpiresCard(NAME, CardType.VictoryCastle, 6), AfterCardGai
     init {
         victoryPoints = 2
         special = "When you gain this during your turn, gain a Gold, and each other player with 5 or more cards in hand puts 2 cards from their hand onto their deck."
-        textSize = 65
-        fontSize = 10
+        textSize = 71
+        fontSize = 9
     }
 
     override fun afterCardGained(player: Player) {

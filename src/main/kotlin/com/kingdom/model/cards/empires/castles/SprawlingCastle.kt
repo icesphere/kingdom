@@ -15,7 +15,7 @@ class SprawlingCastle : EmpiresCard(NAME, CardType.VictoryCastle, 8), AfterCardG
     init {
         victoryPoints = 4
         special = "When you gain this, gain a Duchy or 3 Estates."
-        fontSize = 9
+        fontSize = 8
     }
 
     override fun afterCardGained(player: Player) {
