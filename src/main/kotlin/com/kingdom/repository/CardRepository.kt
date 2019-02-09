@@ -308,6 +308,7 @@ class CardRepository {
                 ChariotRace(),
                 CityQuarter(),
                 Encampment(),
+                Enchantress(),
                 Engineer(),
                 Overlord(),
                 Patrician(),

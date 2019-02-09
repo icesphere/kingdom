@@ -245,6 +245,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val playerToLeft: Player
         get() = game.getPlayerToLeft(this)
 
+    var nextActionEnchanted: Boolean = false
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -1683,13 +1685,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
     }
 
-    fun payOffDebt(numDebtToPayOff: Int) {
-        if (numDebtToPayOff == 0) {
+    fun payOffDebt() {
+        val debtToPayOff = minOf(debt, availableCoins)
+
+        if (debtToPayOff == 0) {
             return
         }
         isPaidOffDebtThisTurn = true
-        addCoins(numDebtToPayOff * -1)
-        this.debt -= numDebtToPayOff
+        addCoins(debtToPayOff * -1)
+        this.debt -= debtToPayOff
         refreshPlayerHandArea()
     }
 

@@ -2203,7 +2203,7 @@ class GameController(private val cardManager: CardManager,
 
                     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
                         if (choice == 1) {
-                            player.payOffDebt(player.availableCoins)
+                            player.payOffDebt()
                         }
                     }
 
@@ -2212,7 +2212,7 @@ class GameController(private val cardManager: CardManager,
                 return emptyModelAndView
             }
 
-            player.payOffDebt(player.availableCoins)
+            player.payOffDebt()
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
