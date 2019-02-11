@@ -310,6 +310,7 @@ class CardRepository {
                 Encampment(),
                 Enchantress(),
                 Engineer(),
+                Gladiator(),
                 Overlord(),
                 Patrician(),
                 RoyalBlacksmith(),

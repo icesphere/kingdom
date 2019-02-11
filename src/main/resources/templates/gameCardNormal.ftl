@@ -23,11 +23,11 @@
             + ${card.addCoffers} Coffers
         </div>
     </#if>
-    <#if (card.name == "Philosopher's Stone" || card.name == "Bank") && card.addCoins == 0>
+    <#if (card.name == "Bank") && card.addCoins == 0>
         <div class="cardRow" style="<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
             <div style="font-size:14px; padding-top:3px;">? <img src="images/coin.png" alt="coin" height="16" width="16"/></div>
         </div>
-    <#elseif (card.addCoins != 0 || card.treasure) && card.name != "Fool's Gold">
+    <#elseif card.addCoins != 0>
         <div class="cardRow" style="<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
             <#if card.treasure>
                 <#if card.special != "">
@@ -35,8 +35,8 @@
                 <#else>
                     <div style="font-size:16px; padding-top:5px;">${card.addCoins} <img src="images/coin.png" alt="coin" height="20" width="20"/></div>
                 </#if>
-                <#else>
-                    <#if card.addCoins &lt; 0>- ${card.addCoins * -1} <#else>+ ${card.addCoins} </#if><img src="images/coin.png" alt="coin" height="12" width="12" style="position: relative; top: 2px;"/>
+            <#else>
+                <#if card.addCoins &lt; 0>- ${card.addCoins * -1} <#else>+ ${card.addCoins} </#if><img src="images/coin.png" alt="coin" height="12" width="12" style="position: relative; top: 2px;"/>
             </#if>
         </div>
     </#if>
@@ -65,5 +65,5 @@
     <div style="position:absolute; left:2px; bottom:16px; display: flex;"><div style="position: absolute; left: <#if cost &gt; 9>2px<#else>4px</#if>; z-index: 1; font-size: 13px; font-weight: bold;">${cost}<#if card.overpayForCardAllowed>+</#if></div><img src="images/coin.png" alt="coin" height="15" width="15" style="position: absolute;"/></div>
 </#if>
 <#if card.debtCost != 0>
-    <div style="position:absolute; <#if card.cost == 0>2px<#else>18px</#if>; bottom:15px; display: flex;"><div style="position: absolute; left: 4px; z-index: 1; font-size: 13px; font-weight: bold; color: white;">${card.debtCost}</div><img src="images/debt.png" alt="debt" height="15" width="15" style="position: absolute;"/></div>
+    <div style="position:absolute; left: <#if card.cost == 0>2px<#else>18px</#if>; bottom:15px; display: flex;"><div style="position: absolute; left: 4px; z-index: 1; font-size: 13px; font-weight: bold; color: white;">${card.debtCost}</div><img src="images/debt.png" alt="debt" height="15" width="15" style="position: absolute;"/></div>
 </#if>

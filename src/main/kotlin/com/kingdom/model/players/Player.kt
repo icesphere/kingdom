@@ -247,6 +247,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var nextActionEnchanted: Boolean = false
 
+    var isMoneyDoubledThisTurn: Boolean = false
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -466,6 +468,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         numActionsPlayed = 0
 
         playedCrossroadsThisTurn = false
+
+        isMoneyDoubledThisTurn = false
 
         isNextCardToTopOfDeck = false
         isNextCardToHand = false
@@ -1762,5 +1766,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     private fun createInheritanceEstate(): Card {
         return InheritanceEstate(inheritanceActionCard!!, InheritanceEstate.calculateInheritanceEstateCardType(inheritanceActionCard!!))
+    }
+
+    fun doubleMoney() {
+        coins *= 2
+        isMoneyDoubledThisTurn = true
+        addEventLogWithUsername("doubled their money")
     }
 }

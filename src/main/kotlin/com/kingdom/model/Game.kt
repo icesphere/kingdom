@@ -651,9 +651,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     fun trashCardFromSupply(card: Card) {
-        removeCardFromSupply(card)
-        addEventLog("Trashed ${card.cardNameWithBackgroundColor} from supply")
-        trashedCards.add(card)
+        if (isCardAvailableInSupply(card)) {
+            removeCardFromSupply(card)
+            addEventLog("Trashed ${card.cardNameWithBackgroundColor} from supply")
+            trashedCards.add(card)
+        }
     }
 
     fun isCardAvailableInSupply(card: Card): Boolean {
