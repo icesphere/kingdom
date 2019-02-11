@@ -16,6 +16,7 @@ class Ferry : AdventuresEvent(NAME, 3), ChooseCardActionCard {
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.minusTwoCostTokenSupplyPile = card.pileName
+        player.addEventLogWithUsername("moved -\$2 cost token to the ${card.pileName} pile")
     }
 
     companion object {

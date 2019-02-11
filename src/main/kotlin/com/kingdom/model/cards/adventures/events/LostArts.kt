@@ -16,6 +16,7 @@ class LostArts : AdventuresEvent(NAME, 6), ChooseCardActionCard {
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.plusActionTokenSupplyPile = card.pileName
+        player.addEventLogWithUsername("moved +1 Action token to the ${card.pileName} pile")
     }
 
     companion object {

@@ -27,6 +27,7 @@ class Mountebank : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard, C
             } else {
                 opponent.gainSupplyCard(Curse(), showLog = true)
                 opponent.gainSupplyCard(Copper(), showLog = true)
+                opponent.showInfoMessage("You gained a ${Curse().cardNameWithBackgroundColor} and a ${Copper().cardNameWithBackgroundColor} from ${player.username}'s $cardNameWithBackgroundColor")
             }
         }
     }

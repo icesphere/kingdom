@@ -17,13 +17,14 @@ class Inheritance : AdventuresEvent(NAME, 7), ChooseCardActionCard {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.chooseCardFromSupply("Choose which non-Victory Action supply pile card to set aside with your Estate token", this, { c -> c.isAction && !c.isVictory && player.getCardCostWithModifiers(c) <= 4 })
+        player.chooseCardFromSupply("Choose which non-Victory Action supply pile card to set aside with your Estate token", this, { c -> c.isAction && !c.isVictory && player.getCardCostWithModifiers(c) <= 4 }, choosingEmptyPilesAllowed = false)
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.game.removeCardFromSupply(card)
         player.inheritanceActionCard = card
         player.replaceAllEstatesWithInheritanceEstates()
+        player.addEventLogWithUsername("Estates gained abilities and types of ${card.cardNameWithBackgroundColor}")
     }
 
     companion object {

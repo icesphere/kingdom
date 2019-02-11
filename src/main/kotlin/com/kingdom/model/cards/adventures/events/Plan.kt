@@ -16,6 +16,7 @@ class Plan : AdventuresEvent(NAME, 3), ChooseCardActionCard {
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.trashingTokenSupplyPile = card.pileName
+        player.addEventLogWithUsername("moved Trashing token to the ${card.pileName} pile")
     }
 
     companion object {

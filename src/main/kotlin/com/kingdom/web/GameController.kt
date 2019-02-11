@@ -1904,6 +1904,7 @@ class GameController(private val cardManager: CardManager,
             val addActionsParam = request.getParameter("addActions_" + player.userId)
             val addBuysParam = request.getParameter("addBuys_" + player.userId)
             val addCoinsParam = request.getParameter("addCoins_" + player.userId)
+            val addDebtParam = request.getParameter("addDebt_" + player.userId)
             val addCardsParam = request.getParameter("addCards_" + player.userId)
 
             val removeCardsFromSupply: Boolean = request.getParameter("removeCardsFromSupply_" + player.userId) == "on"
@@ -1916,6 +1917,9 @@ class GameController(private val cardManager: CardManager,
             }
             if (addCoinsParam.isNotEmpty()) {
                 player.addCoins(addCoinsParam.toInt())
+            }
+            if (addDebtParam.isNotEmpty()) {
+                player.addDebt(addDebtParam.toInt())
             }
             if (addCardsParam.isNotEmpty()) {
                 player.drawCards(addCardsParam.toInt())

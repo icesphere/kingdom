@@ -24,6 +24,10 @@
     </div>
 
     <div style="padding-bottom:10px;">
+        Add # Debt: <input type="text" name="addDebt_${player.userId}" size="5" />
+    </div>
+
+    <div style="padding-bottom:10px;">
         Draw # Cards: <input type="text" name="addCards_${player.userId}" size="5" />
     </div>
 

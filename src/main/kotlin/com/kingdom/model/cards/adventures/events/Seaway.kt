@@ -16,6 +16,7 @@ class Seaway : AdventuresEvent(NAME, 5), FreeCardFromSupplyForBenefitActionCard 
 
     override fun onCardGained(player: Player, card: Card) {
         player.plusBuyTokenSupplyPile = card.name
+        player.addEventLogWithUsername("moved +1 Buy token to the ${card.pileName} pile")
     }
 
     companion object {

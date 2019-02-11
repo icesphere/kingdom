@@ -395,6 +395,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshCardsBought()
     }
 
+    fun addDebt(debt: Int) {
+        this.debt += debt
+        refreshSupply()
+        refreshCardsBought()
+    }
+
     fun addVictoryCoins(victoryCoins: Int) {
         if (victoryCoins == 0) {
             return
@@ -1100,16 +1106,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         discardCardsFromHand(1, false)
     }
 
-    fun discardCardFromHand(card: Card, showLog: Boolean = true) {
+    fun discardCardFromHand(card: Card, showLog: Boolean = true, refresh: Boolean = true) {
         hand.remove(card)
 
-        addCardToDiscard(card)
+        addCardToDiscard(card, refresh)
 
         if (showLog) {
             addEventLogWithUsername(" discarded ${card.cardNameWithBackgroundColor} from hand")
         }
 
-        if (!game.isPlayTreasureCards) {
+        if (!game.isPlayTreasureCards && refresh) {
             refreshCardsBought()
             refreshSupply()
         }
@@ -1601,7 +1607,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun discardHand() {
         addEventLogWithUsername("discarded their hand: ${hand.groupedString}")
-        hand.toMutableList().forEach { discardCardFromHand(it, false) }
+        hand.toMutableList().forEach { discardCardFromHand(it, false, false) }
+        refreshPlayerHandArea()
+        refreshCardsBought()
+        refreshSupply()
     }
 
     abstract fun chooseCardAction(text: String,
@@ -1692,9 +1701,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
         isPaidOffDebtThisTurn = true
-        addCoins(debtToPayOff * -1)
         this.debt -= debtToPayOff
-        refreshPlayerHandArea()
+        addCoins(debtToPayOff * -1)
     }
 
     fun refreshPlayerHandArea() {

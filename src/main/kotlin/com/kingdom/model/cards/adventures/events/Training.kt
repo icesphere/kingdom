@@ -16,6 +16,7 @@ class Training : AdventuresEvent(NAME, 6), ChooseCardActionCard {
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.plusCoinTokenSupplyPile = card.pileName
+        player.addEventLogWithUsername("moved +\$1 token to the ${card.pileName} pile")
     }
 
     companion object {
