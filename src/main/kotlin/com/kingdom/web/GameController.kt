@@ -866,7 +866,7 @@ class GameController(private val cardManager: CardManager,
 
                         player.buyCard(card)
 
-                        if (player.buys == 0 && (player.debt == 0 || player.availableCoins == 0)) {
+                        if (player.buys == 0) {
                             if (player.currentAction != null) {
                                 game.refreshCardsBought()
                             } else {
@@ -882,7 +882,7 @@ class GameController(private val cardManager: CardManager,
                 if (highlightEventCard(player, eventCard)) {
                     player.buyEvent(eventCard)
 
-                    if (player.buys == 0 && player.currentAction == null && (player.debt == 0 || player.availableCoins == 0)) {
+                    if (player.buys == 0 && player.currentAction == null) {
                         player.endTurn(true)
                     }
                 }

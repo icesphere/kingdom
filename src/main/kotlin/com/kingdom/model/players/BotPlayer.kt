@@ -72,6 +72,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
 
             if (availableCoins > 0 && buys > 0) {
+                payOffDebt()
+
                 val cardToBuy = getCardToBuy()
                 if (cardToBuy != null) {
                     endTurn = false

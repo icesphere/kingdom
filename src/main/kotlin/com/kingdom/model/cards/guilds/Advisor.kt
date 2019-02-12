@@ -32,15 +32,17 @@ class Advisor : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard {
         @Suppress("UNCHECKED_CAST")
         val cards = info as List<Card>
 
+        val currentPlayer = player.game.currentPlayer
+
         val cardToDiscard = cards[choice]
-        player.addCardToDiscard(cardToDiscard, showLog = true)
-        player.showInfoMessage("${player.playerToLeft.username} discarded ${cardToDiscard.cardNameWithBackgroundColor}")
+        currentPlayer.addCardToDiscard(cardToDiscard, showLog = true)
+        currentPlayer.showInfoMessage("${player.username} discarded ${cardToDiscard.cardNameWithBackgroundColor}")
 
         val cardsToPutInHand = cards - cardToDiscard
-        player.addCardsToHand(cardsToPutInHand)
+        currentPlayer.addCardsToHand(cardsToPutInHand)
 
-        player.showInfoMessage("${cardsToPutInHand.groupedString} were added to your hand")
-        player.addEventLogWithUsername("added ${cardsToPutInHand.groupedString} to hand")
+        currentPlayer.showInfoMessage("${cardsToPutInHand.groupedString} were added to your hand")
+        currentPlayer.addEventLogWithUsername("added ${cardsToPutInHand.groupedString} to hand")
     }
 
     companion object {

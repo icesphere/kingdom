@@ -806,7 +806,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun buyCard(card: Card) {
-        if (availableCoins >= this.getCardCostWithModifiers(card)) {
+        if (debt == 0 && availableCoins >= this.getCardCostWithModifiers(card)) {
             addEventLogWithUsername("bought card: " + card.cardNameWithBackgroundColor)
             coins -= this.getCardCostWithModifiers(card)
             debt += card.debtCost
@@ -1704,8 +1704,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (debtToPayOff == 0) {
             return
         }
+
         isPaidOffDebtThisTurn = true
+
         this.debt -= debtToPayOff
+
         addCoins(debtToPayOff * -1)
     }
 
@@ -1769,7 +1772,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun doubleMoney() {
-        coins *= 2
+        addCoins(coins)
         isMoneyDoubledThisTurn = true
         addEventLogWithUsername("doubled their money")
     }
