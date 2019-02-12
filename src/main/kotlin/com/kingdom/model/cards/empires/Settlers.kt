@@ -15,7 +15,6 @@ class Settlers : EmpiresCard(NAME, CardType.Action, 2), MultiTypePile, ChoiceAct
         addCards = 1
         addActions = 1
         special = "Look through your discard pile. You may reveal a Copper from it and put it into your hand. (Settlers is the top half of the Bustling Village pile.)"
-        textSize = 79
     }
 
     override val otherCardsInPile: List<Card>

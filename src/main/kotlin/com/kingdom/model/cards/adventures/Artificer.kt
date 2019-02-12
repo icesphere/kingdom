@@ -12,7 +12,6 @@ class Artificer : AdventuresCard(NAME, CardType.Action, 5), DiscardCardsForBenef
         addActions = 1
         addCoins = 1
         special = "Discard any number of cards. You may gain a card onto your deck costing exactly \$1 per card discarded."
-        textSize = 53
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

@@ -13,7 +13,6 @@ class Herald : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard, AfterCard
         addActions = 1
         special = "Reveal the top card of your deck. If it is an Action, play it. When you buy this, you may overpay for it. For each \$1 you overpaid, look through your discard pile and put a card from it onto your deck."
         isOverpayForCardAllowed = true
-        textSize = 85
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

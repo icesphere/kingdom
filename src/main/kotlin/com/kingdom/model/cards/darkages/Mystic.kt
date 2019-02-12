@@ -11,7 +11,6 @@ class Mystic : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
         addActions = 1
         addCoins = 2
         special = "Name a card, then reveal the top card of your deck. If you named it, put it into your hand."
-        textSize = 80
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

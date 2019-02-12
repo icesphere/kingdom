@@ -10,7 +10,6 @@ class RoyalCarriage : AdventuresCard(NAME, CardType.ActionReserve, 5), TavernCar
         addActions = 1
         special = "Put this on your Tavern mat. Directly after you finish playing an Action card, if it’s still in play, you may call this, to replay that Action."
         fontSize = 10
-        textSize = 95
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

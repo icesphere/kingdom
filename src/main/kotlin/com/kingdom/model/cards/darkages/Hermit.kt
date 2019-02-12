@@ -12,7 +12,6 @@ class Hermit : DarkAgesCard(NAME, CardType.Action, 3), GameSetupModifier, Choose
 
     init {
         special = "Look through your discard pile. You may trash a non-Treasure card from your discard pile or hand. Gain a card costing up to \$3. When you discard this from play, if you didn’t buy any cards this turn, trash this and gain a Madman from the Madman pile."
-        textSize = 117
     }
 
     override fun modifyGameSetup(game: Game) {

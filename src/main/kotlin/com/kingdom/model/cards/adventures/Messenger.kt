@@ -13,7 +13,6 @@ class Messenger : AdventuresCard(NAME, CardType.Action, 4), ChoiceActionCard, Af
         addBuys = 1
         addCoins = 2
         special = "You may put your deck into your discard pile. When this is your first buy in a turn, gain a card costing up to \$4, and each other player gains a copy of it."
-        textSize = 83
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

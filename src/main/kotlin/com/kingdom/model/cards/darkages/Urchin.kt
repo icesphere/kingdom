@@ -15,7 +15,6 @@ class Urchin : DarkAgesCard(NAME, CardType.ActionAttack, 3), GameSetupModifier, 
         addCards = 1
         addActions = 1
         special = "Each other player discards down to 4 cards in hand. When you play another Attack card with this in play, you may first trash this, to gain a Mercenary from the Mercenary pile."
-        textSize = 73
     }
 
     override fun modifyGameSetup(game: Game) {

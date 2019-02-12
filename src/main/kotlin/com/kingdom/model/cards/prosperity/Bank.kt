@@ -9,7 +9,6 @@ class Bank : ProsperityCard(NAME, CardType.Treasure, 7) {
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         special = "When you play this, it’s worth \$1 per Treasure card you have in play (counting this)."
-        textSize = 68
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

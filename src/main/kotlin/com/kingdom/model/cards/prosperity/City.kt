@@ -9,7 +9,6 @@ class City : ProsperityCard(NAME, CardType.Action, 5) {
         addCards = 1
         addActions = 2
         special = "If there are one or more empty Supply piles, +1 Card. If there are two or more, +\$1 and +1 Buy."
-        textSize = 78
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

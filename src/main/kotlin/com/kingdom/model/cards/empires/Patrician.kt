@@ -13,7 +13,6 @@ class Patrician : EmpiresCard(NAME, CardType.Action, 2), GameSetupModifier, Mult
         addCards = 1
         addActions = 1
         special = "Reveal the top card of your deck. If it costs \$5 or more, put it into your hand. (Patrician is the top half of the Emporium pile.)"
-        textSize = 79
     }
 
     override val otherCardsInPile: List<Card>

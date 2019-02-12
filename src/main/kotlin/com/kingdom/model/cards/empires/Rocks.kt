@@ -11,7 +11,6 @@ class Rocks : EmpiresCard(NAME, CardType.Treasure, 4), AfterCardGainedListenerFo
     init {
         addCoins = 1
         special = "When you gain or trash this, gain a Silver; if it’s your Buy phase, put the Silver on your deck, otherwise put it into your hand. (Rocks is the bottom half of the Encampment pile.)"
-        textSize = 82
     }
 
     override fun afterCardGained(player: Player) {

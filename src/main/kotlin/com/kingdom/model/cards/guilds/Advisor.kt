@@ -12,7 +12,6 @@ class Advisor : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard {
     init {
         addActions = 1
         special = "Reveal the top 3 cards of your deck. The player to your left chooses one of them. Discard that card and put the rest into your hand."
-        textSize = 98
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

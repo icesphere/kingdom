@@ -11,7 +11,6 @@ class Warrior : AdventuresCard(NAME, CardType.ActionAttackTraveller, 4), CardDis
     init {
         addCards = 2
         special = "Once per Traveller you have in play (including this), each other player discards the top card of their deck and trashes it if it costs \$3 or \$4. When you discard this from play, you may exchange it for a Hero. (This is not in the Supply.)"
-        textSize = 102
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

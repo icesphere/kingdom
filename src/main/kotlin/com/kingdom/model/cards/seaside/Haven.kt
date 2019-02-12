@@ -14,7 +14,6 @@ class Haven : SeasideCard(NAME, CardType.ActionDuration, 2), StartOfTurnDuration
         addCards = 1
         addActions = 1
         special = "Set aside a card from your hand face down (under this). At the start of your next turn, put it into your hand."
-        textSize = 81
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

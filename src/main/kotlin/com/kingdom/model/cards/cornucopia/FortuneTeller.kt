@@ -9,7 +9,6 @@ class FortuneTeller : CornucopiaCard(NAME, CardType.ActionAttack, 3), AttackCard
     init {
         addCoins = 2
         special = "Each other player reveals cards from the top of their deck until they reveal a Victory card or Curse. They put it on top and discard the rest."
-        textSize = 100
         fontSize = 9
     }
 

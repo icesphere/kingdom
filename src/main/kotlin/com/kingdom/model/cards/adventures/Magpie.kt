@@ -9,7 +9,6 @@ class Magpie : AdventuresCard(NAME, CardType.Action, 4) {
         addCards = 1
         addActions = 1
         special = "Reveal the top card of your deck. If it’s a Treasure, put it into your hand. If it’s an Action or Victory card, gain a Magpie."
-        textSize = 84
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

@@ -12,7 +12,6 @@ class Treasury : SeasideCard(NAME, CardType.Action, 5), CardDiscardedFromPlayLis
         addActions = 1
         addCoins = 1
         special = "When you discard this from play, if you didn’t buy a Victory card this turn, you may put this onto your deck."
-        textSize = 50
     }
 
     override fun onCardDiscarded(player: Player) {

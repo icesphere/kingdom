@@ -13,7 +13,6 @@ class Contraband : ProsperityCard(NAME, CardType.Treasure, 5), ChooseCardActionC
         addCoins = 3
         special = "When you play this, the player to your left names a card. You can’t buy that card this turn."
         fontSize = 11
-        textSize = 81
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

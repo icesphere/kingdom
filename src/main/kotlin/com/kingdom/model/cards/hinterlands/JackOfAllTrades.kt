@@ -10,7 +10,6 @@ class JackOfAllTrades : HinterlandsCard(NAME, CardType.Action, 4), ChoiceActionC
     init {
         special = "Gain a Silver. Look at the top card of your deck; you may discard it. Draw until you have 5 cards in hand. You may trash a non-Treasure card from your hand."
         fontSize = 9
-        textSize = 122
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

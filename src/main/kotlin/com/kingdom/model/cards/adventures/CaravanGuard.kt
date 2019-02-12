@@ -14,7 +14,6 @@ class CaravanGuard : AdventuresCard(NAME, CardType.ActionDurationReaction, 3), S
         addActions = 1
         special = "At the start of your next turn, +\$1. When another player plays an Attack card, you may first play this from your hand. (+1 Action has no effect if it’s not your turn.)"
         fontSize = 10
-        textSize = 82
     }
 
     override fun durationStartOfTurnAction(player: Player) {

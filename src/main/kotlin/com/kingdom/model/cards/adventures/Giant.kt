@@ -11,7 +11,6 @@ class Giant : AdventuresCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
 
     init {
         special = "Turn your Journey token over (it starts face up). Then if it’s face down, +\$1. If it’s face up, +\$5, and each other player reveals the top card of their deck, trashes it if it costs from \$3 to \$6, and otherwise discards it and gains a Curse."
-        textSize = 130
     }
 
     override fun modifyGameSetup(game: Game) {

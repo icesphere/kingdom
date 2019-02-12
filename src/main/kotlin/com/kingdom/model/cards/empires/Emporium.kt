@@ -11,7 +11,6 @@ class Emporium : EmpiresCard(NAME, CardType.Action, 5), AfterCardGainedListenerF
         addActions = 1
         addCoins = 1
         special = "When you gain this, if you have at least 5 Action cards in play, +2 VP. (Emporium is the bottom half of the Patrician pile.)"
-        textSize = 63
     }
 
     override val pileName: String

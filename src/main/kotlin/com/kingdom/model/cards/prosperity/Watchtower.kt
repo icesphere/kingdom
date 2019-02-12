@@ -14,7 +14,6 @@ class Watchtower : ProsperityCard(NAME, CardType.ActionReaction, 3), CardGainedL
     init {
         special = "Draw until you have 6 cards in hand. When you gain a card, you may reveal this from your hand, to either trash that card or put it onto your deck."
         fontSize = 11
-        textSize = 123
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

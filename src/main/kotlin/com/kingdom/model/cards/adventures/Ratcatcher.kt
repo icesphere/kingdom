@@ -10,7 +10,6 @@ class Ratcatcher : AdventuresCard(NAME, CardType.ActionReserve, 2), TavernCard {
         addCards = 1
         addActions = 1
         special = "Put this on your Tavern mat. At the start of your turn, you may call this, to trash a card from your hand."
-        textSize = 77
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

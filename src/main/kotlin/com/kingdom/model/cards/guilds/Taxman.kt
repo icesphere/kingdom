@@ -12,7 +12,6 @@ class Taxman : GuildsCard(NAME, CardType.ActionAttack, 4), TrashCardsForBenefitA
 
     init {
         special = "You may trash a Treasure from your hand. Each other player with 5 or more cards in hand discards a copy of it (or reveals they can't). Gain a Treasure onto your deck costing up to \$3 more than it."
-        textSize = 121
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

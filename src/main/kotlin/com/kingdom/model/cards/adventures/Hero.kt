@@ -10,7 +10,6 @@ class Hero : AdventuresCard(NAME, CardType.ActionTraveller, 5), CardDiscardedFro
     init {
         addCoins = 2
         special = "Gain a Treasure. When you discard this from play, you may exchange it for a Champion. (This is not in the Supply.)"
-        textSize = 91
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

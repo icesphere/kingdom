@@ -10,7 +10,6 @@ class Venture : ProsperityCard(NAME, CardType.Treasure, 5) {
         isTreasureExcludedFromAutoPlay = true
         addCoins = 1
         special = "When you play this, reveal cards from your deck until you reveal a Treasure. Discard the rest, then play the Treasure."
-        textSize = 75
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

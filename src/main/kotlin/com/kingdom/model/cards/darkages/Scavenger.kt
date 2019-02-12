@@ -11,7 +11,6 @@ class Scavenger : DarkAgesCard(NAME, CardType.Action, 4), ChoiceActionCard, Choo
     init {
         addCoins = 2
         special = "You may put your deck into your discard pile. Look through your discard pile and put one card from it onto your deck."
-        textSize = 98
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

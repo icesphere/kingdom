@@ -11,7 +11,6 @@ class Mercenary : DarkAgesCard(NAME, CardType.ActionAttack, 0), ChoiceActionCard
 
     init {
         special = "You may trash 2 cards from your hand. If you do, +2 Cards, + \$2, and each other player discards down to 3 cards in hand. (This is not in the Supply.)"
-        textSize = 119
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

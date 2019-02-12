@@ -11,7 +11,6 @@ class Ironmonger : DarkAgesCard(NAME, CardType.Action, 4), ChoiceActionCard {
         addCards = 1
         addActions = 1
         special = "Reveal the top card of your deck; you may discard it. Either way, if it’s an: Action card, +1 Action; Treasure card, +\$1; Victory card, +1 Card"
-        textSize = 84
         fontSize = 11
     }
 

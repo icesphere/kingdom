@@ -12,7 +12,6 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
     init {
         addCoins = 2
         special = "If there are any cards in the trash costing from \$3 to \$6, gain one of them. Otherwise, each other player reveals the top two cards of their deck, trashes one of them costing from \$3 to \$6, and discards the rest."
-        textSize = 92
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

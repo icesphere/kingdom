@@ -11,7 +11,6 @@ class Fugitive : AdventuresCard(NAME, CardType.ActionTraveller, 4), CardDiscarde
         addCards = 2
         addActions = 1
         special = "Discard a card. When you discard this from play, you may exchange it for a Disciple. (This is not in the Supply.)"
-        textSize = 74
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

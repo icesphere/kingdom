@@ -13,7 +13,6 @@ class Storyteller : AdventuresCard(NAME, CardType.Action, 5), ChooseCardsActionC
         addCoins = 1
         isPlayTreasureCardsRequired = true
         special = "Play up to 3 Treasures from your hand. Then pay all of your \$ (including the \$1 from this) and draw a card per \$1 you paid."
-        textSize = 80
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

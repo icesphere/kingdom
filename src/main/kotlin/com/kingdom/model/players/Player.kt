@@ -891,7 +891,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun playCard(card: Card, refresh: Boolean = true, repeatedAction: Boolean = false, showLog: Boolean = true) {
 
         if (showLog) {
-            game.addEventLog("Played card: ${card.cardNameWithBackgroundColor}")
+            addEventLogWithUsername("played ${card.cardNameWithBackgroundColor}")
         }
 
         if (!repeatedAction) {

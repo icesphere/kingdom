@@ -11,7 +11,6 @@ class BustlingVillage : EmpiresCard(NAME, CardType.Action, 5), ChoiceActionCard 
         addCards = 1
         addActions = 3
         special = "Look through your discard pile. You may reveal a Settlers from it and put it into your hand. (Bustling Village is the bottom half of the Settlers pile.)"
-        textSize = 77
         fontSize = 9
     }
 

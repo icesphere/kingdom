@@ -10,7 +10,6 @@ class HuntingParty : CornucopiaCard(NAME, CardType.Action, 5) {
         addActions = 1
         special = "Reveal your hand. Reveal cards from your deck until you reveal one that isn’t a copy of one in your hand. Put it into your hand and discard the rest."
         fontSize = 10
-        textSize = 71
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

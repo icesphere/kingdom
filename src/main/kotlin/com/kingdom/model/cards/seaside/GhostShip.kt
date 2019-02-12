@@ -12,7 +12,6 @@ class GhostShip : SeasideCard(NAME, CardType.ActionAttack, 5), AttackCard, Choos
         addCards = 2
         special = "Each other player with 4 or more cards in hand puts cards from their hand onto their deck until they have 3 cards in hand."
         fontSize = 11
-        textSize = 100
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

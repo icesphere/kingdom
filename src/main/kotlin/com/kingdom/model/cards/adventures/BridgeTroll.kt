@@ -13,7 +13,6 @@ class BridgeTroll : AdventuresCard(NAME, CardType.ActionAttackDuration, 5), Star
         isPlayTreasureCardsRequired = true
         special = "Each other player takes their -\$1 token which will cause those players to get \$1 less the next time they get \$. Now and at the start of your next turn: +1 Buy. While this is in play, cards cost \$1 less on your turns, but not less than \$0."
         fontSize = 11
-        textSize = 126
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

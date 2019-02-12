@@ -11,7 +11,6 @@ class Minion : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, ChoiceA
     init {
         addActions = 1
         special = "Choose one: +\$2; or discard your hand, +4 Cards, and each other player with at least 5 cards in hand discards their hand and draws 4 cards."
-        textSize = 100
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

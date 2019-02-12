@@ -12,7 +12,6 @@ class Champion : AdventuresCard(NAME, CardType.ActionDuration, 6), PermanentDura
     init {
         addActions = 1
         special = "For the rest of the game, when another player plays an attack card, it doesn't affect you, and when you play an Action, +1 Action. (This stays in play. This is not in the supply.)"
-        textSize = 95
     }
 
     override fun onBeforeAttack(attackCard: Card, player: Player, attacker: Player) {

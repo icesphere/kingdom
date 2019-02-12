@@ -16,7 +16,6 @@ class Stonemason : GuildsCard(NAME, CardType.Action, 2), TrashCardsForBenefitAct
         isOverpayForCardAllowed = true
         isTrashingCard = true
         isTrashingFromHandRequiredCard = true
-        textSize = 121
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

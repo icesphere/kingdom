@@ -14,7 +14,6 @@ class NativeVillage : SeasideCard(NAME, CardType.Action, 2), GameSetupModifier, 
         addActions = 2
         special = "Choose one: Put the top card of your deck face down on your Native Village mat (you may look at those cards at any time); or put all the cards from your mat into your hand."
         fontSize = 10
-        textSize = 95
     }
 
     override fun modifyGameSetup(game: Game) {

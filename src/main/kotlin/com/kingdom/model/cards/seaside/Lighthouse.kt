@@ -11,7 +11,6 @@ class Lighthouse : SeasideCard(NAME, CardType.ActionDuration, 2), StartOfTurnDur
     init {
         addActions = 1
         special = "Now and at the start of your next turn: +\$1. While this is in play, when another player plays an Attack card, it doesn’t affect you."
-        textSize = 103
         isDefense = true
     }
 

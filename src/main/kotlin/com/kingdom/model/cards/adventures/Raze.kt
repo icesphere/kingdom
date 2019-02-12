@@ -13,7 +13,6 @@ class Raze : AdventuresCard(NAME, CardType.Action, 2), ChoiceActionCard, TrashCa
     init {
         addActions = 1
         special = "Trash this or a card from your hand. Look at one card from your deck per \$1 the trashed card costs. Put one of them into your hand and discard the rest."
-        textSize = 98
         isTrashingCard = true
     }
 

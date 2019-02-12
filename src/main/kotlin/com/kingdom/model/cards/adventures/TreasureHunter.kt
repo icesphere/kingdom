@@ -13,7 +13,6 @@ class TreasureHunter : AdventuresCard(NAME, CardType.ActionTraveller, 3), CardDi
         addCoins = 1
         special = "Gain a Silver per card the player to your right gained on their last turn. When you discard this from play, you may exchange it for a Warrior. (This is not in the Supply.)"
         fontSize = 10
-        textSize = 83
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

@@ -23,6 +23,13 @@
     -webkit-border-top-right-radius:5px;
 }
 
+.cardContent
+{
+    height: 67px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 
 .clickableCard
 {

@@ -18,7 +18,6 @@ class NobleBrigand : HinterlandsCard(NAME, CardType.ActionAttack, 4), AfterCardB
         addCoins = 1
         special = "When you buy or play this, each other player reveals the top 2 cards of their deck, trashes a revealed Silver or Gold you choose, discards the rest, and gains a Copper if they didn't reveal a Treasure. You gain the trashed cards."
         fontSize = 10
-        textSize = 112
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

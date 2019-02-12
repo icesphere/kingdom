@@ -12,7 +12,6 @@ class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForB
 
     init {
         special = "Trash a card from your hand. Gain a Silver per \$1 it costs. When you would gain a card, you may reveal this from your hand, to instead gain a Silver."
-        textSize = 122
         isTrashingCard = true
         isTrashingFromHandRequiredCard = true
         isDefense = true

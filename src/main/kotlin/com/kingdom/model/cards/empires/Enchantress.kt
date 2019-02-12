@@ -10,7 +10,6 @@ class Enchantress : EmpiresCard(NAME, CardType.ActionAttackDuration, 3), StartOf
     init {
         addActions = 1
         special = "Until your next turn, the first time each other player plays an Action card on their turn, they get +1 Card and +1 Action instead of following its instructions. At the start of your next turn, +2 Cards."
-        textSize = 102
         fontSize = 10
     }
 

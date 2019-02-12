@@ -29,7 +29,6 @@ abstract class Card(
         var disabled: Boolean = false,
         var fontSize: Int = 0,
         var nameLines: Int = 1,
-        var textSize: Int = 0,
         var addCoffers: Int = 0,
         val associatedCards: MutableList<Card> = ArrayList(0),
         var isDisableSelect: Boolean = false,
@@ -152,13 +151,6 @@ abstract class Card(
 
     val isSpecialCard: Boolean
         get() = special != ""
-
-    val truncatedSpecial: String?
-        get() = if (textSize > 0) {
-            special.substring(0, textSize) + "..."
-        } else {
-            special
-        }
 
     val fullCardText: String
         get() {

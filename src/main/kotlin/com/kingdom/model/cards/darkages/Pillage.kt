@@ -12,7 +12,6 @@ class Pillage : DarkAgesCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
 
     init {
         special = "Trash this. Each other player with 5 or more cards in hand reveals their hand and discards a card that you choose. Gain 2 Spoils from the Spoils pile."
-        textSize = 119
     }
 
     override fun modifyGameSetup(game: Game) {

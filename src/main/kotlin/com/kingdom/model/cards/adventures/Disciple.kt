@@ -14,7 +14,6 @@ class Disciple : AdventuresCard(NAME, CardType.ActionTraveller, 5), CardDiscarde
 
     init {
         special = "You may play an Action card from your hand twice. Gain a copy of it. When you discard this from play, you may exchange it for a Teacher. (This is not in the Supply.)"
-        textSize = 119
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

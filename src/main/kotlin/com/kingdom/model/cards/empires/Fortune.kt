@@ -10,7 +10,6 @@ class Fortune : EmpiresCard(NAME, CardType.Treasure, 8, 8), AfterCardGainedListe
     init {
         addBuys = 1
         special = "When you play this, double your \$ if you haven’t yet this turn. When you gain this, gain a Gold per Gladiator you have in play. (Fortune is the bottom half of the Gladiator pile.)"
-        textSize = 99
         isTreasureExcludedFromAutoPlay = true
     }
 

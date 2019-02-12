@@ -16,7 +16,6 @@ class TradeRoute : ProsperityCard(NAME, CardType.Action, 3), GameSetupModifier, 
         isTrashingCard = true
         isTrashingFromHandRequiredCard = true
         fontSize = 10
-        textSize = 89
     }
 
     override fun modifyGameSetup(game: Game) {

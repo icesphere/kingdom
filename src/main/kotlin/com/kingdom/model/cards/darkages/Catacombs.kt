@@ -12,7 +12,6 @@ class Catacombs : DarkAgesCard(NAME, CardType.Action, 5), ChoiceActionCard, Afte
 
     init {
         special = "Look at the top 3 cards of your deck. Choose one: Put them into your hand; or discard them and +3 Cards. When you trash this, gain a cheaper card."
-        textSize = 113
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

@@ -12,7 +12,6 @@ class DeathCart : DarkAgesCard(NAME, CardType.ActionLooter, 4), ChoiceActionCard
         addCoins = 5
         special = "You may trash an Action card from your hand. If you don’t, trash this. When you gain this, gain two Ruins."
         isTrashingCard = true
-        textSize = 95
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

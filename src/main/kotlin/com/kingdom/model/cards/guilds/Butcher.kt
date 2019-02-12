@@ -12,7 +12,6 @@ class Butcher : GuildsCard(NAME, CardType.Action, 5), TrashCardsForBenefitAction
     init {
         addCoffers = 2
         special = "You may trash a card from your hand. If you do, remove any number of tokens from your Coffers and gain a card, costing up to the cost of the trashed card plus \$1 per token removed."
-        textSize = 93
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

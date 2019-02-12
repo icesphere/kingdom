@@ -14,7 +14,6 @@ class Counterfeit : DarkAgesCard(NAME, CardType.Treasure, 5), ChoiceActionCard, 
         special = "When you play this, you may play a treasure from your hand twice. If you do, trash that treasure."
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
-        textSize = 53
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

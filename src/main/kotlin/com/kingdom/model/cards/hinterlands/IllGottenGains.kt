@@ -16,7 +16,6 @@ class IllGottenGains : HinterlandsCard(NAME, CardType.Treasure, 5), AfterCardGai
         isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         fontSize = 9
-        textSize = 74
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

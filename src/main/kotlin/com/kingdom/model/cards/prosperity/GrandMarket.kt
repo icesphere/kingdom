@@ -15,7 +15,6 @@ class GrandMarket : ProsperityCard(NAME, CardType.Action, 6), CardPlayedListener
         isPlayTreasureCardsRequired = true
         special = "You can’t buy this if you have any Coppers in play."
         fontSize = 9
-        textSize = 30
     }
 
     override fun onCardPlayed(card: Card, player: Player) {
