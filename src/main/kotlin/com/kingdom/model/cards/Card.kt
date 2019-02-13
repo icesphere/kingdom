@@ -382,6 +382,16 @@ abstract class Card(
             player.addActions(-1)
         }
 
+        if (player.nextActionEnchanted && this !is Event) {
+            player.nextActionEnchanted = false
+
+            player.addActions(1)
+            player.drawCard()
+            player.showInfoMessage("$cardNameWithBackgroundColor caused $cardNameWithBackgroundColor to get +1 Card and +1 Action instead of following its instructions")
+
+            return
+        }
+
         addCardBonuses(this, player)
 
         if (addedAbilityCard != null) {
@@ -398,17 +408,10 @@ abstract class Card(
                 }
             }
 
-            if (player.nextActionEnchanted) {
-                player.nextActionEnchanted = false
-                player.addActions(1)
-                player.drawCard()
-                player.showInfoMessage("$cardNameWithBackgroundColor caused $cardNameWithBackgroundColor to get +1 Card and +1 Action instead of following its instructions")
-            } else {
-                cardPlayedSpecialAction(player)
+            cardPlayedSpecialAction(player)
 
-                if (addedAbilityCard != null) {
-                    addedAbilityCard?.cardPlayedSpecialAction(player)
-                }
+            if (addedAbilityCard != null) {
+                addedAbilityCard?.cardPlayedSpecialAction(player)
             }
 
             if (player.isOpponentHasAction) {
