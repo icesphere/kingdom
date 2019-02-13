@@ -5,15 +5,15 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import java.util.*
 
-open class ChooseCardsFromHand(private var numCardsToChoose: Int, text: String, optional: Boolean, private val chooseCardsActionCard: ChooseCardsActionCard, private val cardActionableExpression: ((card: Card) -> Boolean)? = null, private val info: Any? = null) : Action(text) {
+open class ChooseCardsFromHand(private var numCardsToChoose: Int, text: String, private val optional: Boolean, private val chooseCardsActionCard: ChooseCardsActionCard, private val cardActionableExpression: ((card: Card) -> Boolean)? = null, private val info: Any? = null, allowDoNotUse: Boolean = true) : Action(text) {
 
     protected var selectedCards: MutableList<Card> = ArrayList()
 
     override val isShowDone: Boolean
-        get() = numCardsToChoose > 1 && ((this.isShowDoNotUse && selectedCards.size <= numCardsToChoose) || selectedCards.size == numCardsToChoose)
+        get() = numCardsToChoose > 1 && ((optional && selectedCards.size <= numCardsToChoose) || selectedCards.size == numCardsToChoose)
 
     init {
-        isShowDoNotUse = optional
+        isShowDoNotUse = allowDoNotUse && optional
 
         if (this.text == "") {
             this.text = "Choose "
@@ -65,5 +65,9 @@ open class ChooseCardsFromHand(private var numCardsToChoose: Int, text: String, 
 
     override fun isCardSelected(card: Card): Boolean {
         return selectedCards.contains(card)
+    }
+
+    override fun onNotUsed(player: Player) {
+        chooseCardsActionCard.onCardsChosen(player, emptyList(), info)
     }
 }

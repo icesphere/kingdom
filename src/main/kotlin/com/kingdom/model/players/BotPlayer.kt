@@ -21,6 +21,7 @@ import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.base.*
+import com.kingdom.model.cards.empires.Temple
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.seaside.*
 import com.kingdom.model.cards.supply.*
@@ -933,18 +934,20 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         chooseCardActionCard.onCardChosen(this, chosenCard)
     }
 
-    override fun chooseCardsFromHand(text: String, numToChoose: Int, optional: Boolean, chooseCardsActionCard: ChooseCardsActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
+    override fun chooseCardsFromHand(text: String, numToChoose: Int, optional: Boolean, chooseCardsActionCard: ChooseCardsActionCard, cardActionableExpression: ((card: Card) -> Boolean)?, info: Any?, allowDoNotUse: Boolean) {
         //todo better logic
+
+        val num = if (chooseCardsActionCard is Temple) 1 else numToChoose
 
         val availableCards = hand.filter { cardActionableExpression == null || cardActionableExpression(it) }
 
-        val cards = if (availableCards.size < numToChoose) {
+        val cards = if (availableCards.size < num) {
             availableCards
         } else {
-            availableCards.subList(0, numToChoose)
+            availableCards.subList(0, num)
         }
 
-        chooseCardsActionCard.onCardsChosen(this, cards)
+        chooseCardsActionCard.onCardsChosen(this, cards, info)
     }
 
     override fun chooseCardFromSupply(text: String, chooseCardActionCard: ChooseCardActionCard, cardActionableExpression: ((card: Card) -> Boolean)?, info: Any?, choosingEmptyPilesAllowed: Boolean) {
