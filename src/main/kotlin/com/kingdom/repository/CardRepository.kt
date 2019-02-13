@@ -315,6 +315,7 @@ class CardRepository {
                 Overlord(),
                 Patrician(),
                 RoyalBlacksmith(),
+                Sacrifice(),
                 Settlers()
         )
 
