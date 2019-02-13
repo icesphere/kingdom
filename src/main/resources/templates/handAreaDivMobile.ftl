@@ -32,7 +32,7 @@
     <#if showCoffers>
         <div class="handAreaTopRowLeft" style="clear:both;"><a href="javascript:useCoffers()">${player.coffers} Coffers</a></div>
     </#if>
-    <#if showVictoryCoins>
+    <#if player.victoryCoins != 0>
         <div class="handAreaTopRowLeft" style="clear:both;">${player.victoryCoins} Victory Coin<#if player.victoryCoins != 1>s</#if></div>
     </#if>
     <#if showJourneyToken>

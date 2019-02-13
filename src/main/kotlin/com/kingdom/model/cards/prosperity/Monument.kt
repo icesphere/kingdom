@@ -1,18 +1,12 @@
 package com.kingdom.model.cards.prosperity
 
-import com.kingdom.model.Game
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.GameSetupModifier
 
-class Monument : ProsperityCard(NAME, CardType.Action, 4), GameSetupModifier {
+class Monument : ProsperityCard(NAME, CardType.Action, 4) {
 
     init {
         addCoins = 2
         addVictoryCoins = 1
-    }
-
-    override fun modifyGameSetup(game: Game) {
-        game.isShowVictoryCoins = true
     }
 
     companion object {

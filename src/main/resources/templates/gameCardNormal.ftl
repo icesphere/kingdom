@@ -4,6 +4,11 @@
     </div>
 
     <div class="cardContent">
+        <#if clickType=='supply' && victoryPointsOnSupplyPile(card.pileName)?? && victoryPointsOnSupplyPile(card.pileName) != 0>
+            <div class="cardRow" style="color: #00BB00";<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
+                ${victoryPointsOnSupplyPile.get(card.pileName)} VP on Supply pile
+            </div>
+        </#if>
         <#if card.addCards != 0>
             <div class="cardRow" style="<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
                 + ${card.addCards} Card<#if card.addCards != 1>s</#if>

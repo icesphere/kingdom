@@ -57,7 +57,7 @@
                             <div class="gameResultsPlayerPointsLabel">Curses:</div>
                             <div class="gameResultsPlayerPoints">${player.cardCountByName("Curse")}</div>
 
-                            <#if showVictoryCoins>
+                            <#if player.victoryCoins != 0>
                                 <div class="gameResultsPlayerPointsLabel">Victory Coins:</div>
                                 <div class="gameResultsPlayerPoints">${player.victoryCoins}</div>
                             </#if>

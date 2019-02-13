@@ -10,7 +10,7 @@ import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.supply.Gold
 import com.kingdom.model.players.Player
 
-class Encampment : EmpiresCard(NAME, CardType.Action, 2), GameSetupModifier, MultiTypePile, ChoiceActionCard {
+class Encampment : EmpiresCard(NAME, CardType.Action, 2), MultiTypePile, ChoiceActionCard {
 
     init {
         addCards = 2
@@ -21,10 +21,6 @@ class Encampment : EmpiresCard(NAME, CardType.Action, 2), GameSetupModifier, Mul
 
     override val otherCardsInPile: List<Card>
         get() = listOf(Plunder())
-
-    override fun modifyGameSetup(game: Game) {
-        game.isShowVictoryCoins = true
-    }
 
     override fun createMultiTypePile(game: Game): List<Card> {
         return listOf(

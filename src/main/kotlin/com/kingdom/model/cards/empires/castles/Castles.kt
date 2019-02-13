@@ -3,18 +3,13 @@ package com.kingdom.model.cards.empires.castles
 import com.kingdom.model.Game
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.MultiTypePile
 import com.kingdom.model.cards.empires.EmpiresCard
 
-class Castles : EmpiresCard(Castles.NAME, CardType.VictoryCastle, 3), MultiTypePile, GameSetupModifier {
+class Castles : EmpiresCard(Castles.NAME, CardType.VictoryCastle, 3), MultiTypePile {
 
     init {
         special = "Split pile with 8 differently named unique Castles"
-    }
-
-    override fun modifyGameSetup(game: Game) {
-        game.isShowVictoryCoins = true
     }
 
     override val otherCardsInPile: List<Card>

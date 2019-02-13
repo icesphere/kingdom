@@ -8,6 +8,7 @@ enum class CardType {
     ActionAttackDurationVictory,
     ActionAttackLooter,
     ActionAttackLooterVictory,
+    ActionGathering,
     Victory,
     VictoryCastle,
     ActionReaction,

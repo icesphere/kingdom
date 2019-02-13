@@ -73,7 +73,7 @@
                                     <div class="discardPile" style=";width:${discardPileWidth}px;">&#160;</div>
                                 </td>
                             </tr>
-                            <#if showVictoryCoins>
+                            <#if p.victoryCoins != 0>
                                 <tr>
                                     <td class="gameInfoLabel">
                                         Victory Coins:

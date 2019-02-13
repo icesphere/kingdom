@@ -1192,6 +1192,7 @@ class GameController(private val cardManager: CardManager,
         try {
             val bw = BeansWrapper()
             modelAndView.addObject("supply", bw.wrap(game.numInPileMap))
+            modelAndView.addObject("victoryPointsOnSupplyPile", bw.wrap(game.victoryPointsOnSupplyPile))
             modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
             if (game.isShowEmbargoTokens) {
                 modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
@@ -1440,7 +1441,6 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
             modelAndView.addObject("showCoffers", game.isShowCoffers)
-            modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
             modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards && !player.isCardsBought)
             return modelAndView
         } catch (t: Throwable) {
@@ -1822,8 +1822,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
         modelAndView.addObject("trashedCards", game.trashedCards.groupedString)
         modelAndView.addObject("prizeCards", game.prizeCardsString)
-
-        modelAndView.addObject("showVictoryCoins", game.isShowVictoryCoins)
 
         modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
 

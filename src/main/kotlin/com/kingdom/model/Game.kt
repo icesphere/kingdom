@@ -104,6 +104,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     private val multiTypePileMap = HashMap<String, MutableList<Card>>()
 
+    val victoryPointsOnSupplyPile = HashMap<String, Int>()
+
     val allCards: List<Card>
         get() {
             val cards = (cardsInSupply + kingdomCards).toMutableList()
@@ -218,7 +220,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 .filter { it.isVictory }
                 .sortedByDescending { it.cost }
 
-    var isShowVictoryCoins: Boolean = false
     var isShowNativeVillage: Boolean = false
     var isShowPirateShipCoins: Boolean = false
 

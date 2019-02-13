@@ -1,13 +1,11 @@
 package com.kingdom.model.cards.prosperity
 
-import com.kingdom.model.Game
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.actions.TrashCardsForBenefitActionCard
 import com.kingdom.model.players.Player
 
-class Bishop : ProsperityCard(NAME, CardType.Action, 4), TrashCardsForBenefitActionCard, GameSetupModifier {
+class Bishop : ProsperityCard(NAME, CardType.Action, 4), TrashCardsForBenefitActionCard {
 
     init {
         addCoins = 1
@@ -15,10 +13,6 @@ class Bishop : ProsperityCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
         special = "Trash a card from your hand. +1 VP per \$2 it costs (round down). Each other player may trash a card from their hand."
         isTrashingCard = true
         isTrashingFromHandRequiredCard = true
-    }
-
-    override fun modifyGameSetup(game: Game) {
-        game.isShowVictoryCoins = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

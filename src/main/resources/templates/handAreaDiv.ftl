@@ -36,7 +36,7 @@
                 <td class="handAreaTopRow">0 Coffers</td>
             </#if>
         </#if>
-        <#if showVictoryCoins>
+        <#if player.victoryCoins != 0>
             <td class="handAreaTopRow">${player.victoryCoins} Victory Coin<#if player.victoryCoins != 1>s</#if></td>
         </#if>
         <#if showJourneyToken>

@@ -5,16 +5,12 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.players.Player
 
-class ChariotRace : EmpiresCard(NAME, CardType.Action, 3), GameSetupModifier {
+class ChariotRace : EmpiresCard(NAME, CardType.Action, 3) {
 
     init {
         addActions = 1
         special = "Reveal the top card of your deck and put it into your hand. The player to your left reveals the top card of their deck. If your card costs more, +\$1 and +1 VP."
         fontSize = 10
-    }
-
-    override fun modifyGameSetup(game: Game) {
-        game.isShowVictoryCoins = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

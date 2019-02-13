@@ -310,6 +310,7 @@ class CardRepository {
                 Encampment(),
                 Enchantress(),
                 Engineer(),
+                FarmersMarket(),
                 Gladiator(),
                 Overlord(),
                 Patrician(),

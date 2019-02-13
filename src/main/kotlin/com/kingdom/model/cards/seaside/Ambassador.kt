@@ -16,6 +16,7 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
         special = "Reveal a card from your hand. Return up to 2 copies of it from your hand to the Supply. Then each other player gains a copy of it."
         fontSize = 11
         isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
