@@ -29,6 +29,8 @@ class Library : BaseCard(NAME, CardType.Action, 5), ChoiceActionCard {
                 if (card.isAction) {
                     cardToAdd = card
                     player.yesNoChoice(this, "Add ${card.cardNameWithBackgroundColor} to your hand?")
+                } else {
+                    player.addCardToHand(card, true)
                 }
             }
         } else {
