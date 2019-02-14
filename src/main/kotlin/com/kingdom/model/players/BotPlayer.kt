@@ -139,7 +139,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     override fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
         //todo better logic
 
-        val cardsToDiscard = getCardsToDiscard(numCardsToDiscard, false)
+        val cardsToDiscard = getCardsToDiscard(numCardsToDiscard, false, cardActionableExpression)
 
         cardsToDiscard.forEach({ this.discardCardFromHand(it) })
 
@@ -556,19 +556,21 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    private fun getCardsToDiscard(cards: Int, optional: Boolean): List<Card> {
+    private fun getCardsToDiscard(cards: Int, optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)? = null): List<Card> {
         var numCardsToDiscard = cards
         val cardsToDiscard = ArrayList<Card>()
 
-        if (!hand.isEmpty()) {
-            if (numCardsToDiscard > hand.size) {
-                numCardsToDiscard = hand.size
+        val actionableCards = hand.filter { cardActionableExpression == null || cardActionableExpression.invoke(it) }
+
+        if (actionableCards.isNotEmpty()) {
+            if (numCardsToDiscard > actionableCards.size) {
+                numCardsToDiscard = actionableCards.size
             }
-            val sortedCards = hand.sortedByDescending { getDiscardCardScore(it) }
+            val sortedCards = actionableCards.sortedByDescending { getDiscardCardScore(it) }
             for (i in 0 until numCardsToDiscard) {
                 val card = sortedCards[i]
                 val score = getDiscardCardScore(card)
-                if (hand.isEmpty() || optional && score < 20) {
+                if (optional && score < 20) {
                     break
                 } else {
                     cardsToDiscard.add(card)

@@ -21,5 +21,7 @@ bot sometimes freezes on buy phase
 royal seal shouldn't ask multiple times if answer is no
 Encampment got 11 cards - probably from bot
 
+adjust height for cards with two lines for card name
+
 
 

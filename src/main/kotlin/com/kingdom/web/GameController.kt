@@ -1236,11 +1236,14 @@ class GameController(private val cardManager: CardManager,
     private fun addPlayingAreaDataToModelView(game: Game, player: Player, modelAndView: ModelAndView) {
         addCardsPlayedDataToModelAndView(game, player, modelAndView)
 
-        game.cardsBought.forEach {
+        val cardsBoughtCopy = game.cardsBought.toMutableList()
+
+        cardsBoughtCopy.forEach {
             it.isHighlighted = false
             it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it)
         }
-        modelAndView.addObject("cardsBought", game.cardsBought)
+
+        modelAndView.addObject("cardsBought", cardsBoughtCopy)
     }
 
     private fun addCardsPlayedDataToModelAndView(game: Game, player: Player, modelAndView: ModelAndView) {

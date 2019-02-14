@@ -7,7 +7,7 @@ import com.kingdom.model.players.Player
 
 class Library : BaseCard(NAME, CardType.Action, 5), ChoiceActionCard {
 
-    val skippedActionCards: MutableList<Card> = ArrayList()
+    private val skippedActionCards: MutableList<Card> = ArrayList()
 
     lateinit var cardToAdd: Card
 

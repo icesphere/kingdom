@@ -317,7 +317,8 @@ class CardRepository {
                 RoyalBlacksmith(),
                 Sacrifice(),
                 Settlers(),
-                Temple()
+                Temple(),
+                Villa()
         )
 
     val empiresEvents: List<Event>

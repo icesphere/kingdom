@@ -1,8 +1,6 @@
 package com.kingdom.model.cards.empires
 
-import com.kingdom.model.Game
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.players.Player
 
 class ChariotRace : EmpiresCard(NAME, CardType.Action, 3) {

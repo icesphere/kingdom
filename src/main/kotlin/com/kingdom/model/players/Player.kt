@@ -68,8 +68,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val isStartOfTurn: Boolean
         get() = isYourTurn && game.cardsPlayed.isEmpty() && !isCardsBought
 
+    var isReturnToActionPhase: Boolean = false
+
     val isBuyPhase: Boolean
-        get() = isYourTurn && (isTreasureCardsPlayedInBuyPhase || isCardsBought)
+        get() = isYourTurn && (isTreasureCardsPlayedInBuyPhase || isCardsBought) && !isReturnToActionPhase
 
     var isPaidOffDebtThisTurn: Boolean = false
 
@@ -458,6 +460,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         game.refreshHistory()
 
+        isReturnToActionPhase = false
+
         turns++
 
         coins = 0
@@ -797,6 +801,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addEventLogWithUsername("bought event: " + event.name)
             coins -= event.cost
             buys -= 1
+            isReturnToActionPhase = false
             eventsBought.add(event)
             currentTurnSummary.eventsBought.add(event)
             refreshCardsBought()
@@ -814,6 +819,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cardsBought.add(card)
             game.cardsBought.add(card)
             currentTurnSummary.cardsBought.add(card)
+            isReturnToActionPhase = false
 
             if (game.isShowEmbargoTokens) {
                 val numEmbargoTokens = game.embargoTokens[card.name] ?: 0
@@ -898,6 +904,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             played.add(card)
             game.cardsPlayed.add(card)
+
+            if (card.isTreasure) {
+                isReturnToActionPhase = false
+            }
 
             val listeners = inPlayWithDuration.filter { it is CardPlayedListener }.toMutableList()
             listeners.addAll(inPlayWithDuration.filter { it.addedAbilityCard is CardPlayedListener }.map { it.addedAbilityCard!! })
