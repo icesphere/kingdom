@@ -93,8 +93,8 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply to the top of your deck costing up to $maxCost", null, CardLocation.Deck))
     }
 
-    override fun chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(maxCost: Int?, cardType: CardType) {
-        addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply to the top of your deck costing up to $maxCost", { c -> c.type == cardType }, CardLocation.Deck))
+    override fun chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(maxCost: Int?, cardType: CardType, text: String?) {
+        addAction(FreeCardFromSupply(maxCost, text ?: "Gain a free card from the supply to the top of your deck costing up to $maxCost", { c -> c.type == cardType }, CardLocation.Deck))
     }
 
     override fun chooseSupplyCardToGainToTopOfDeckWithExactCost(cost: Int) {

@@ -37,7 +37,7 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
                 Choice(1, "1")
         )
 
-        if (player.cardCountByName(card.name) > 1) {
+        if (player.hand.count{ it.name == card.name } > 1) {
             choices.add(Choice(2, "2"))
         }
 

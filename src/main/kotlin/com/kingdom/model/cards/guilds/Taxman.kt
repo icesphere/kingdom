@@ -22,7 +22,7 @@ class Taxman : GuildsCard(NAME, CardType.ActionAttack, 4), TrashCardsForBenefitA
         if (trashedCards.isNotEmpty()) {
             treasureCard = trashedCards.first()
             player.triggerAttack(this)
-            player.chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(player.getCardCostWithModifiers(trashedCards[0]) + 3, CardType.Treasure)
+            player.chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(player.getCardCostWithModifiers(trashedCards[0]) + 3, CardType.Treasure, "Gain a Treasure onto your deck costing up to ${player.getCardCostWithModifiers(trashedCards[0]) + 3}")
         }
     }
 

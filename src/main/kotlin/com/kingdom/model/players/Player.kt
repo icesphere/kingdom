@@ -963,7 +963,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun chooseSupplyCardToGainToTopOfDeck(maxCost: Int?)
 
-    abstract fun chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(maxCost: Int?, cardType: CardType)
+    abstract fun chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(maxCost: Int?, cardType: CardType, text: String? = null)
 
     abstract fun chooseSupplyCardToGainToTopOfDeckWithExactCost(cost: Int)
 

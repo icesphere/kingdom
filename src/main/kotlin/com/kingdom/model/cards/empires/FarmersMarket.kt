@@ -18,6 +18,7 @@ class FarmersMarket : EmpiresCard(NAME, CardType.ActionGathering, 3) {
             player.addEventLogWithUsername("gained $victoryPointsOnSupplyPile VP from $cardNameWithBackgroundColor Supply pile")
             player.game.victoryPointsOnSupplyPile[pileName] = 0
             player.trashCardInPlay(this)
+            player.game.refreshSupply()
         } else {
             player.game.victoryPointsOnSupplyPile[pileName] = victoryPointsOnSupplyPile + 1
             player.addCoins(victoryPointsOnSupplyPile + 1)

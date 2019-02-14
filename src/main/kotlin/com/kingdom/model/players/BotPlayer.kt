@@ -230,7 +230,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(maxCost: Int?, cardType: CardType) {
+    override fun chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(maxCost: Int?, cardType: CardType, text: String?) {
         val card = chooseFreeCardToGain(maxCost, { c -> c.type == cardType })
         if (card != null) {
             game.removeCardFromSupply(card)

@@ -20,6 +20,7 @@ class Temple : EmpiresCard(NAME, CardType.ActionGathering, 4), AfterCardGainedLi
 
         val victoryPointsOnSupplyPile = player.game.victoryPointsOnSupplyPile[pileName] ?: 0
         player.game.victoryPointsOnSupplyPile[pileName] = victoryPointsOnSupplyPile + 1
+        player.game.refreshSupply()
     }
 
     private fun selectCardsToTrash(player: Player) {
