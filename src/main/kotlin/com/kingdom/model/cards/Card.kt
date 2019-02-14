@@ -39,6 +39,7 @@ abstract class Card(
         var isTrashingFromHandRequiredCard: Boolean = false,
         var isTrashingFromHandToUpgradeCard: Boolean = false,
         var isOverpayForCardAllowed: Boolean = false,
+        var isPreventAutoEndTurnWhenBought: Boolean = false,
         var playersExcludedFromCardEffects: MutableSet<Player> = mutableSetOf()) {
 
     var isHighlighted: Boolean = false

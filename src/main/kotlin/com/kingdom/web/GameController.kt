@@ -867,7 +867,7 @@ class GameController(private val cardManager: CardManager,
                         player.buyCard(card)
 
                         if (player.buys == 0) {
-                            if (player.currentAction != null) {
+                            if (player.currentAction != null || card.isPreventAutoEndTurnWhenBought) {
                                 game.refreshCardsBought()
                             } else {
                                 player.endTurn(true)

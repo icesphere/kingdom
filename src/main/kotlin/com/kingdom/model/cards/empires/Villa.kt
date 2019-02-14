@@ -11,6 +11,8 @@ class Villa : EmpiresCard(NAME, CardType.Action, 4), AfterCardGainedListenerForS
         addBuys = 1
         addCoins = 1
         special = "When you gain this, put it into your hand, +1 Action, and if it’s your Buy phase return to your Action phase."
+        isPlayTreasureCardsRequired = true
+        isPreventAutoEndTurnWhenBought = true
     }
 
     override fun afterCardGained(player: Player) {
