@@ -183,8 +183,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var custom: Boolean = false
 
-    var isPlayTreasureCards = false
-
     var isShowVictoryPoints: Boolean = false
     var isIdenticalStartingHands: Boolean = false
 

@@ -8,7 +8,6 @@ class Bonfire : AdventuresEvent(NAME, 3), ChooseCardsActionCard {
 
     init {
         special = "Trash up to 2 cards you have in play."
-        isPlayTreasureCardsRequired = true
     }
 
     override fun isEventActionable(player: Player): Boolean {

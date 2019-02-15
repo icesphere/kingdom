@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Contraband : ProsperityCard(NAME, CardType.Treasure, 5), ChooseCardActionCard {
 
     init {
-        isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         addCoins = 3
         special = "When you play this, the player to your left names a card. You can’t buy that card this turn."

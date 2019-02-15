@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class Raid : AdventuresEvent(NAME, 5) {
 
     init {
-        isPlayTreasureCardsRequired = true
         special = "Gain a Silver per Silver you have in play. Each other player puts their -1 Card token on their deck."
     }
 

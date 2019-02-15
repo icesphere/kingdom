@@ -13,7 +13,6 @@ class Gladiator : EmpiresCard(NAME, CardType.Action, 3), MultiTypePile, ChooseCa
     init {
         addCoins = 2
         special = "Reveal a card from your hand. The player to your left may reveal a copy from their hand. If they don’t, +\$1 and trash a Gladiator from the Supply. (Gladiator is the top half of the Fortune pile.)"
-        isPlayTreasureCardsRequired = true
     }
 
     override val otherCardsInPile: List<Card>

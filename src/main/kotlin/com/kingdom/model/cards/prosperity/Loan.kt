@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Loan : ProsperityCard(NAME, CardType.Treasure, 3), ChoiceActionCard {
 
     init {
-        isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         addCoins = 1
         special = "When you play this, reveal cards from your deck until you reveal a Treasure. Discard it or trash it. Discard the other cards."

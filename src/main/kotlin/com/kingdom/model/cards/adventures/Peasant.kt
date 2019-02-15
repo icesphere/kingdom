@@ -12,7 +12,6 @@ class Peasant : AdventuresCard(NAME, CardType.ActionTraveller, 2), GameSetupModi
     init {
         addBuys = 1
         addCoins = 1
-        isPlayTreasureCardsRequired = true
         special = "When you discard this from play, you may exchange it for a Soldier."
     }
 

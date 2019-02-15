@@ -10,7 +10,6 @@ class TreasureTrove : AdventuresCard(NAME, CardType.Treasure, 5) {
 
     init {
         addCoins = 2
-        isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         fontSize = 9
         special = "When you play this, gain a Gold and a Copper."

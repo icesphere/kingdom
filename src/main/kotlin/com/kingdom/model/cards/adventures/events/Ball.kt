@@ -6,7 +6,6 @@ class Ball : AdventuresEvent(NAME, 5) {
 
     init {
         special = "Take your -\$1 token. Gain 2 cards each costing up to \$4."
-        isPlayTreasureCardsRequired = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

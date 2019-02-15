@@ -6,7 +6,6 @@ class Alms : AdventuresEvent(NAME, 0, true) {
 
     init {
         special = "Once per turn: If you have no Treasures in play, gain a card costing up to \$4."
-        isPlayTreasureCardsRequired = true
     }
 
     override fun isEventActionable(player: Player): Boolean {

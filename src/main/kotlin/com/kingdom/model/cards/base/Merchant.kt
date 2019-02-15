@@ -13,7 +13,6 @@ class Merchant : BaseCard(NAME, CardType.Action, 3), CardPlayedListener {
         addCards = 1
         addActions = 1
         special = "The first time you play a Silver this turn, +\$1."
-        isPlayTreasureCardsRequired = true
     }
 
     override fun onCardPlayed(card: Card, player: Player) {

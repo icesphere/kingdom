@@ -8,7 +8,6 @@ class CoinOfTheRealm : AdventuresCard(NAME, CardType.TreasureReserve, 2), Tavern
 
     init {
         addCoins = 1
-        isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         special = "When you play this, put it on your Tavern mat. Directly after you finish playing an Action card, you may call this, for +2 Actions."
         fontSize = 8

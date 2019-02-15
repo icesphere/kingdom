@@ -81,7 +81,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = hand.filter { it.isTreasure }.sumBy { it.addCoins }
 
     var availableCoins: Int = 0
-        get() = if (game.isPlayTreasureCards) coins else coins + coinsInHand
+        get() = coins
 
     var coinsSpent: Int = 0
 
@@ -164,8 +164,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val allCardsString: String
         get() = allCards.groupedString
-
-    val isPlayTreasureCards: Boolean = game.isPlayTreasureCards
 
     val isTreasureCardsPlayedInBuyPhase: Boolean
         get() = (game.cardsPlayed - game.treasureCardsPlayedInActionPhase).any { it.isTreasure }
@@ -582,11 +580,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         cardTrashed(card)
 
         refreshPlayerHandArea()
-
-        if (!game.isPlayTreasureCards) {
-            refreshCardsBought()
-            refreshSupply()
-        }
     }
 
     fun trashHand() {
@@ -602,11 +595,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         hand.clear()
 
         refreshPlayerHandArea()
-
-        if (!game.isPlayTreasureCards) {
-            refreshCardsBought()
-            refreshSupply()
-        }
     }
 
     fun cardTrashed(card: Card, showLog: Boolean = false) {
@@ -1128,11 +1116,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (showLog) {
             addEventLogWithUsername(" discarded ${card.cardNameWithBackgroundColor} from hand")
         }
-
-        if (!game.isPlayTreasureCards && refresh) {
-            refreshCardsBought()
-            refreshSupply()
-        }
     }
 
     abstract fun discardCardsFromHand(numCardsToDiscard: Int, optional: Boolean)
@@ -1198,11 +1181,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         refreshPlayerHandArea()
-
-        if (!game.isPlayTreasureCards && card.addCoins > 0) {
-            refreshCardsBought()
-            refreshSupply()
-        }
     }
 
     fun addCardsToHand(cards: List<Card>, showLog: Boolean = false) {
@@ -1213,11 +1191,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         refreshPlayerHandArea()
-
-        if (!game.isPlayTreasureCards && cards.any { it.addCoins > 0 }) {
-            refreshCardsBought()
-            refreshSupply()
-        }
     }
 
     fun setup() {
@@ -1462,11 +1435,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         hand.remove(card)
 
         refreshPlayerHandArea()
-
-        if (!game.isPlayTreasureCards && card.addCoins > 0) {
-            refreshCardsBought()
-            refreshSupply()
-        }
     }
 
     val cardOnTopOfDiscard: Card?

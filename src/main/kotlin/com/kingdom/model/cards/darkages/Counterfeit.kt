@@ -12,7 +12,6 @@ class Counterfeit : DarkAgesCard(NAME, CardType.Treasure, 5), ChoiceActionCard, 
         addCoins = 1
         addBuys = 1
         special = "When you play this, you may play a treasure from your hand twice. If you do, trash that treasure."
-        isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
     }
 

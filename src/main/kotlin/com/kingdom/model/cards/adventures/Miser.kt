@@ -10,7 +10,6 @@ import com.kingdom.model.players.Player
 class Miser : AdventuresCard(NAME, CardType.Action, 4), GameSetupModifier, ChoiceActionCard {
 
     init {
-        isPlayTreasureCardsRequired = true
         special = "Choose one: Put a Copper from your hand onto your Tavern mat; or +\$1 per Copper on your Tavern mat."
     }
 

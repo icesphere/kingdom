@@ -5,15 +5,13 @@
                 <tr>
                     <#if gameStatus == "InProgress">
                         <td style="padding-left:10px;">${currentPlayer.buys} Buy<#if currentPlayer.buys != 1>s</#if></td>
-                        <#if currentPlayer.userId == user.userId>
-                            <td style="padding-left:10px;">${currentPlayer.availableCoins}</td>
-                            <td><span style="position:relative; top:2px;"><img src="images/coin.png" alt="Coins" style="height:16px; width:16px;"/></span></td>
-                            <#if currentPlayer.debt != 0>
-                                <td style="padding-left:10px;">${currentPlayer.debt}</td>
-                                <td><span style="position:relative; top:2px;"><img src="images/debt.png" alt="Debt" style="height:18px; width:18px;"/></span></td>
-                                <#if currentPlayer.availableCoins != 0>
-                                    <td style="padding-left:10px;"><a href="javascript:payOffDebt()">Pay off</a></div></td>
-                                </#if>
+                        <td style="padding-left:10px;">${currentPlayer.availableCoins}</td>
+                        <td><span style="position:relative; top:2px;"><img src="images/coin.png" alt="Coins" style="height:16px; width:16px;"/></span></td>
+                        <#if currentPlayer.debt != 0>
+                            <td style="padding-left:10px;">${currentPlayer.debt}</td>
+                            <td><span style="position:relative; top:2px;"><img src="images/debt.png" alt="Debt" style="height:18px; width:18px;"/></span></td>
+                            <#if currentPlayer.availableCoins != 0>
+                                <td style="padding-left:10px;"><a href="javascript:payOffDebt()">Pay off</a></div></td>
                             </#if>
                         </#if>
                     <#else>

@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class Quarry : ProsperityCard(NAME, CardType.Treasure, 4), CardCostModifierForCardsInPlay {
 
     init {
-        isPlayTreasureCardsRequired = true
         addCoins = 1
         special = "While this is in play, Action cards cost \$2 less, but not less than \$0."
     }

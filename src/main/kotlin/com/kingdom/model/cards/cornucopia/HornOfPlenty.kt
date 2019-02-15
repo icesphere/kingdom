@@ -8,7 +8,6 @@ import com.kingdom.model.players.Player
 class HornOfPlenty : CornucopiaCard(NAME, CardType.Treasure, 5), FreeCardFromSupplyForBenefitActionCard {
 
     init {
-        isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         special = "When you play this, gain a card costing up to \$1 per differently named card you have in play (counting this). If it’s a Victory card, trash this."
         fontSize = 9

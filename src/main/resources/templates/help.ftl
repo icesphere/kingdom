@@ -12,22 +12,13 @@
             <dd>
                 Just click on the action card you want to play.
             </dd>
-            <dt>How do I buy cards?</dt>
+            <dt>How do I play treasure cards?</dt>
             <dd>
-                This depends on whether or not the Play Treasure Cards option is enabled for your game.
-                <br>
-                <br>
-                This option will always be enabled if the game includes cards that may depend on the order treasure cards are played.
-                <br>
-                <br>
-                If playing treasure cards is required then there will be a "Play Treasure Cards" link above the cards in your hand when it is your turn.
+                There is a "Play Treasure Cards" link above the cards in your hand when it is your turn.
                 <br>
                 Clicking this link will play all of the treasure cards that do not depend on the order they are played in.
                 <br>
                 All treasure cards can be played by clicking the card you want to play.
-                <br>
-                <br>
-                If this option is not enabled then you do not play treasure cards. When you are ready to buy a card you just click the card you want to buy.
             </dd>
             <dt>Shortcut Keys</dt>
             <dd>

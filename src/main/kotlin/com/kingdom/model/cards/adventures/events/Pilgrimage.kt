@@ -9,7 +9,6 @@ import com.kingdom.model.players.Player
 class Pilgrimage : AdventuresEvent(NAME, 4, true), GameSetupModifier, ChooseCardsActionCard {
 
     init {
-        isPlayTreasureCardsRequired = true
         special = "Once per turn: Turn your Journey token over (it starts face up); then if it’s face up, choose up to 3 differently named cards you have in play and gain a copy of each."
         fontSize = 11
     }

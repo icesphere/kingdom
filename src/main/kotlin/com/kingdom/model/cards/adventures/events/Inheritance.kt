@@ -8,7 +8,6 @@ class Inheritance : AdventuresEvent(NAME, 7), ChooseCardActionCard {
 
     init {
         special = "Once per game: Set aside a non-Victory Action card from the Supply costing up to \$4. Move your Estate token to it. (Your Estates gain the abilities and types of that card.)"
-        isPlayTreasureCardsRequired = true
     }
 
     override fun isEventActionable(player: Player): Boolean {

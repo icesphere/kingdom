@@ -14,7 +14,6 @@ class Catapult : EmpiresCard(NAME, CardType.ActionAttack, 3), MultiTypePile, Att
     init {
         addCoins = 1
         special = "Trash a card from your hand. If it costs \$3 or more, each other player gains a Curse. If it’s a Treasure, each other player discards down to 3 cards in hand. (Catapult is the top half of the Emporium pile.)"
-        isPlayTreasureCardsRequired = true
     }
 
     override val otherCardsInPile: List<Card>

@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class Bank : ProsperityCard(NAME, CardType.Treasure, 7) {
 
     init {
-        isPlayTreasureCardsRequired = true
         isTreasureExcludedFromAutoPlay = true
         special = "When you play this, it’s worth \$1 per Treasure card you have in play (counting this)."
     }

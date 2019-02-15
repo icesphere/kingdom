@@ -84,13 +84,7 @@
                     <div style="padding-top:10px;clear:both;">
                         <div class="label" style="float:left;">Options: </div><#if mobile><div style="float:left;padding-left:5px;"><a href="javascript:toggleOptions()" id="optionsLink">Show</a></div></#if>
                         <div id="options" <#if mobile>style="display:none"</#if>>
-                            <div style="clear:both;">
-                                <input type="checkbox" name="playTreasureCards" id="playTreasureCards" value="true"/> <label for="playTreasureCards">Play Treasure Cards</label> (Default is to assume treasure cards in hand are always played)
-                            </div>
-                            <div>
-                                (Cards marked with an * require treasure cards to be played.  If you select any of these cards, the Play Treasure Cards option will be used)
-                            </div>
-                            <div style="padding-top:10px;">
+                            <div style="clear: both; padding-top: 10px;">
                                 <input type="checkbox" name="showVictoryPoints" id="showVictoryPoints" value="true"/> Show Victory Points (points are calculated as you play and displayed next to each player's name)
                             </div>
                             <div style="padding-top:10px;">
@@ -200,9 +194,6 @@
                     <div class="label" style="padding-top:10px;">
                         Choose Specific Cards:
                     </div>
-                    <div style="clear:both;float:left;padding-left:10px;">
-                        (Cards marked with an * require treasure cards to be played. If you select any of these cards, the Play Treasure Cards option will be used)
-                    </div>
                     <div style="clear:both;float:left;">
                         <div style="float:left;padding-left:10px;color:red;">Cards selected:</div><div id="numCardsSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining cards will be randomized based on selected decks)</div>
                     </div>
@@ -225,9 +216,6 @@
                 <div id="customEvents" style="display:none;float:left;clear:both;">
                     <div class="label" style="padding-top:10px;">
                         Choose Specific Events:
-                    </div>
-                    <div style="clear:both;float:left;padding-left:10px;">
-                        (Events marked with an * require treasure cards to be played. If you select any of these events, the Play Treasure Cards option will be used)
                     </div>
                     <div style="clear:both;float:left;">
                         <div style="float:left;padding-left:10px;color:red;">Events selected:</div><div id="numEventsSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining events will be randomized based on selected decks)</div>

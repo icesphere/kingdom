@@ -201,7 +201,6 @@ class GameController(private val cardManager: CardManager,
                 game.isShowVictoryPoints = KingdomUtil.getRequestBoolean(request, "showVictoryPoints")
                 game.isIdenticalStartingHands = KingdomUtil.getRequestBoolean(request, "identicalStartingHands")
 
-                game.isPlayTreasureCards = KingdomUtil.getRequestBoolean(request, "playTreasureCards")
                 game.title = request.getParameter("title")
                 game.isPrivateGame = KingdomUtil.getRequestBoolean(request, "privateGame")
                 if (game.isPrivateGame) {
@@ -309,20 +308,6 @@ class GameController(private val cardManager: CardManager,
         val includeColonyAndPlatinum = game.isAlwaysIncludeColonyAndPlatinum || game.topKingdomCards[0].deck == Deck.Prosperity && !game.isNeverIncludeColonyAndPlatinum
         val includeShelters = !game.isExcludeShelters && (game.isIncludeShelters || game.topKingdomCards[1].deck == Deck.DarkAges)
 
-        var playTreasureCardsRequired = false
-
-        for (card in game.topKingdomCards) {
-            if (card.isPlayTreasureCardsRequired) {
-                playTreasureCardsRequired = true
-            }
-        }
-
-        for (event in game.events) {
-            if (event.isPlayTreasureCardsRequired) {
-                playTreasureCardsRequired = true
-            }
-        }
-
         val modelAndView = ModelAndView("randomConfirm")
         modelAndView.addObject("createGame", KingdomUtil.getRequestBoolean(request, "createGame"))
         modelAndView.addObject("player", HumanPlayer(user, game))
@@ -331,7 +316,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("events", game.events)
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
         modelAndView.addObject("includeShelters", includeShelters)
-        modelAndView.addObject("playTreasureCardsRequired", playTreasureCardsRequired)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         modelAndView.addObject("randomizerReplacementCardNotFound", game.isRandomizerReplacementCardNotFound)
         return modelAndView
@@ -469,7 +453,6 @@ class GameController(private val cardManager: CardManager,
                 game.status = GameStatus.WaitingForPlayers
                 LoggedInUsers.refreshLobbyGameRooms()
                 var hasBlackMarket = false
-                var playTreasureCardsRequired = false
                 var includePrizes = false
 
                 for (card in game.topKingdomCards) {
@@ -478,22 +461,10 @@ class GameController(private val cardManager: CardManager,
                     } else if (card.name == "Tournament") {
                         includePrizes = true
                     }
-                    if (card.isPlayTreasureCardsRequired) {
-                        playTreasureCardsRequired = true
-                    }
-                }
-
-                for (event in game.events) {
-                    if (event.isPlayTreasureCardsRequired) {
-                        playTreasureCardsRequired = true
-                    }
                 }
 
                 if (hasBlackMarket) {
                     setBlackMarketCards(game)
-                }
-                if (playTreasureCardsRequired) {
-                    game.isPlayTreasureCards = true
                 }
                 if (game.isAlwaysIncludeColonyAndPlatinum || game.topKingdomCards[0].deck == Deck.Prosperity && !game.isNeverIncludeColonyAndPlatinum) {
                     game.isIncludeColonyCards = true
@@ -848,7 +819,7 @@ class GameController(private val cardManager: CardManager,
                     if (action != null) {
                         handleCardClickedForAction(player, card, source)
                     } else {
-                        if (game.isPlayTreasureCards && player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase && card.debtCost > 0) {
+                        if (player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase && card.debtCost > 0) {
                             player.yesNoChoice(object : ChoiceActionCard {
                                 override val name: String = "PlayTreasuresBeforeBuyingDebtCard"
 
@@ -1224,7 +1195,7 @@ class GameController(private val cardManager: CardManager,
 
             addPlayingAreaDataToModelView(game, player, modelAndView)
 
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards && !player.isCardsBought)
+            modelAndView.addObject("playTreasureCards", !player.isCardsBought)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1444,7 +1415,7 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
             modelAndView.addObject("showCoffers", game.isShowCoffers)
-            modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards && !player.isCardsBought)
+            modelAndView.addObject("playTreasureCards", !player.isCardsBought)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1819,7 +1790,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("showIslandCards", game.isShowIslandCards)
         modelAndView.addObject("showTavern", game.isShowTavern)
         modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)
-        modelAndView.addObject("playTreasureCards", game.isPlayTreasureCards && !player.isCardsBought)
+        modelAndView.addObject("playTreasureCards", !player.isCardsBought)
         modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
         modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
         modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
@@ -2202,7 +2173,7 @@ class GameController(private val cardManager: CardManager,
                 return emptyModelAndView
             }
 
-            if (game.isPlayTreasureCards && player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase) {
+            if (player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase) {
                 player.yesNoChoice(object : ChoiceActionCard {
                     override val name: String = "PlayTreasuresBeforePayingOffDebt"
 

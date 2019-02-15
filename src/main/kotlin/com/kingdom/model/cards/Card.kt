@@ -24,7 +24,6 @@ abstract class Card(
         var victoryPoints: Int = 0,
         var testing: Boolean = false,
         var addVictoryCoins: Int = 0,
-        var isPlayTreasureCardsRequired: Boolean = false,
         var isTreasureExcludedFromAutoPlay: Boolean = false,
         var disabled: Boolean = false,
         var fontSize: Int = 0,
@@ -457,7 +456,7 @@ abstract class Card(
     private fun isHandCardActionable(player: Player): Boolean {
         return when {
             isAction -> player.actions > 0 && !player.isBuyPhase
-            isTreasure -> player.isPlayTreasureCards && !player.isCardsBought && !player.isPaidOffDebtThisTurn
+            isTreasure -> !player.isCardsBought && !player.isPaidOffDebtThisTurn
             else -> false
         }
     }

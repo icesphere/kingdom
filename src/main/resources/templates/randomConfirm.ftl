@@ -77,11 +77,6 @@
                     Shelters will NOT replace starting Estates. <a href="toggleShelters.html?includeShelters=true">Replace Estates with Shelters</a>
                 </div>
             </#if>
-            <#if playTreasureCardsRequired>
-                <div style="clear:both;padding-top:5px;">
-                    Playing treasure cards will be required.
-                </div>
-            </#if>
             <div style="clear:both;padding-top:5px;">
                 <table>
                     <tr>
