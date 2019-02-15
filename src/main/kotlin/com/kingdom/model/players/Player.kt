@@ -379,7 +379,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun addCoins(coins: Int) {
+    fun addCoins(coins: Int, refresh: Boolean = true) {
         if (coins == 0) {
             return
         }
@@ -393,14 +393,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         coinsGainedThisTurn += coins
-        refreshSupply()
-        refreshCardsBought()
+
+        if (refresh) {
+            refreshSupply()
+            game.refreshCardsBought()
+        }
     }
 
     fun addDebt(debt: Int) {
         this.debt += debt
         refreshSupply()
-        refreshCardsBought()
+        game.refreshCardsBought()
     }
 
     fun addVictoryCoins(victoryCoins: Int) {
@@ -421,12 +424,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun addBuys(buys: Int) {
+    fun addBuys(buys: Int, refresh: Boolean = true) {
         if (buys == 0) {
             return
         }
         this.buys += buys
-        refreshCardsBought()
+        if (refresh) {
+            game.refreshCardsBought()
+        }
     }
 
     fun endTurn(isAutoEnd: Boolean = false) {
@@ -792,7 +797,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             isReturnToActionPhase = false
             eventsBought.add(event)
             currentTurnSummary.eventsBought.add(event)
-            refreshCardsBought()
+            game.refreshCardsBought()
             refreshSupply()
             event.cardPlayed(this)
         }
@@ -912,15 +917,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (card.pileName == plusActionTokenSupplyPile) {
-            addActions(1)
+            addActions(1, refresh)
         }
 
         if (card.pileName == plusBuyTokenSupplyPile) {
-            addBuys(1)
+            addBuys(1, refresh)
         }
 
         if (card.pileName == plusCoinTokenSupplyPile) {
-            addCoins(1)
+            addCoins(1, refresh)
         }
 
         if (card.pileName == plusCardTokenSupplyPile) {
@@ -943,7 +948,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             (it as CardPlayedListenerForCardsInPlay).onCardPlayed(card, this)
         }
 
-        card.cardPlayed(this)
+        card.cardPlayed(this, refresh)
     }
 
     private fun countCardsByType(cards: List<Card>, typeMatcher: Function<Card, Boolean>): Int {
@@ -1585,14 +1590,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         refreshPlayerHandArea()
         game.refreshCardsPlayed()
+        game.refreshCardsBought()
+        game.refreshSupply()
     }
 
     fun discardHand() {
         addEventLogWithUsername("discarded their hand: ${hand.groupedString}")
         hand.toMutableList().forEach { discardCardFromHand(it, false, false) }
         refreshPlayerHandArea()
-        refreshCardsBought()
-        refreshSupply()
     }
 
     abstract fun chooseCardAction(text: String,
@@ -1732,7 +1737,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         replaceEstatesWithInheritanceEstates(tavernCards)
 
         refreshPlayerHandArea()
-        refreshCardsBought()
+        game.refreshCardsBought()
     }
 
     private fun replaceEstatesWithInheritanceEstates(cards: MutableList<Card>) {

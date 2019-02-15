@@ -382,25 +382,25 @@ abstract class Card(
         removedFromPlay(player)
     }
 
-    fun cardPlayed(player: Player) {
+    fun cardPlayed(player: Player, refresh: Boolean = true) {
         if (isAction) {
-            player.addActions(-1)
+            player.addActions(-1, refresh)
         }
 
         if (player.nextActionEnchanted && this !is Event) {
             player.nextActionEnchanted = false
 
-            player.addActions(1)
+            player.addActions(1, refresh)
             player.drawCard()
             player.showInfoMessage("$cardNameWithBackgroundColor caused $cardNameWithBackgroundColor to get +1 Card and +1 Action instead of following its instructions")
 
             return
         }
 
-        addCardBonuses(this, player)
+        addCardBonuses(this, player, refresh)
 
         if (addedAbilityCard != null) {
-            addCardBonuses(addedAbilityCard!!, player)
+            addCardBonuses(addedAbilityCard!!, player, refresh)
         }
 
         if (special.isNotBlank()) {
@@ -425,10 +425,10 @@ abstract class Card(
         }
     }
 
-    private fun addCardBonuses(card: Card, player: Player) {
-        player.addActions(card.addActions)
-        player.addBuys(card.addBuys)
-        player.addCoins(card.addCoins)
+    private fun addCardBonuses(card: Card, player: Player, refresh: Boolean = true) {
+        player.addActions(card.addActions, refresh)
+        player.addBuys(card.addBuys, refresh)
+        player.addCoins(card.addCoins, refresh)
         player.addVictoryCoins(card.addVictoryCoins)
         player.addCoffers(card.addCoffers)
 
