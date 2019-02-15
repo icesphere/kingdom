@@ -104,6 +104,10 @@ function connect() {
             refreshCardAction()
         }, 200)
 
+        let debouncedPlayersRefresh = debounce(function(data) {
+            refreshPlayers()
+        }, 200)
+
         let debouncedChatRefresh = debounce(function(data) {
             refreshChat()
         }, 200)
@@ -123,6 +127,7 @@ function connect() {
             stompClient.subscribe('/queue/refresh-previous-player-cards-bought/' + userId, refreshPreviousPlayerCardsBought);
             stompClient.subscribe('/queue/refresh-supply/' + userId, debouncedSupplyRefresh);
             stompClient.subscribe('/queue/refresh-card-action/' + userId, debouncedCardActionRefresh);
+            stompClient.subscribe('/queue/refresh-players/' + userId, debouncedPlayersRefresh);
             stompClient.subscribe('/queue/refresh-chat/' + userId, debouncedChatRefresh);
             stompClient.subscribe('/queue/refresh-history/' + userId, debouncedHistoryRefresh);
             stompClient.subscribe('/queue/show-info-message/' + userId, function(data) { showInfoMessage(data.body, 2500) });
@@ -145,6 +150,8 @@ function refreshGame() {
     refreshSupply();
 
     refreshCardAction();
+
+    refreshPlayers();
 }
 
 function showInfoMessage(message, length) {
@@ -191,6 +198,11 @@ function refreshSupply() {
 function refreshCardAction() {
     console.log("refreshing card action")
     $('#cardActionDiv').load('getCardActionDiv.html')
+}
+
+function refreshPlayers() {
+    console.log("refreshing players")
+    $('#playersDiv').load('getPlayersDiv.html')
 }
 
 function refreshChat() {

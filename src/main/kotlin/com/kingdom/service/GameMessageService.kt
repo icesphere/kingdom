@@ -12,6 +12,7 @@ private const val REFRESH_CARDS_BOUGHT_QUEUE = "refresh-cards-bought"
 private const val REFRESH_PREVIOUS_PLAYER_CARDS_BOUGHT_QUEUE = "refresh-previous-player-cards-bought"
 private const val REFRESH_SUPPLY_QUEUE = "refresh-supply"
 private const val REFRESH_CARD_ACTION_QUEUE = "refresh-card-action"
+private const val REFRESH_PLAYERS_QUEUE = "refresh-players"
 private const val REFRESH_CHAT_QUEUE = "refresh-chat"
 private const val REFRESH_HISTORY_QUEUE = "refresh-history"
 private const val SHOW_INFO_MESSAGE_QUEUE = "show-info-message"
@@ -67,6 +68,14 @@ class GameMessageService(private val messagingTemplate: SimpMessagingTemplate) {
 
     fun refreshCardAction(player: Player) {
         refreshPlayerQueue(REFRESH_CARD_ACTION_QUEUE, player)
+    }
+
+    fun refreshPlayers(game: Game) {
+        game.humanPlayers.forEach { refreshPlayers(it) }
+    }
+
+    fun refreshPlayers(player: Player) {
+        refreshPlayerQueue(REFRESH_PLAYERS_QUEUE, player)
     }
 
     fun refreshChat(game: Game) {

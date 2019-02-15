@@ -143,7 +143,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var victoryCoins: Int = 0
         private set
 
-    var victoryPoints: Int = 0
+    val victoryPoints: Int
+        get() = getVictoryPoints(false)
 
     private var finalPointsCalculated = false
     var finalVictoryPoints = 0
@@ -344,6 +345,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             card.isCardActuallyBandOfMisfits = false
             card.isCardActuallyOverlord = false
+
+            if (card.isVictory || card.addVictoryCoins > 0) {
+                game.refreshPlayers()
+            }
 
             when {
                 cardsInDiscard.contains(card) -> {
@@ -754,6 +759,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         for (listener in afterCardGainedListenersForCardsInTavern) {
             (listener as AfterCardGainedListenerForCardsInTavern).afterCardGained(cardToGain, this)
+        }
+
+        if (cardToGain.isVictory || cardToGain.addVictoryCoins > 0) {
+            game.refreshPlayers()
         }
 
         if (isYourTurn) {

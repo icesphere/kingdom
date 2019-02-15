@@ -560,6 +560,12 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         gameMessageService.refreshSupply(player)
     }
 
+    fun refreshPlayers() {
+        if (isShowVictoryPoints) {
+            gameMessageService.refreshPlayers(this)
+        }
+    }
+
     fun refreshCardsBought() {
         gameMessageService.refreshCardsBought(this)
     }
