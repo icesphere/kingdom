@@ -346,7 +346,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             card.isCardActuallyBandOfMisfits = false
             card.isCardActuallyOverlord = false
 
-            if (card.isVictory || card.addVictoryCoins > 0) {
+            if (card.isVictory) {
                 game.refreshPlayers()
             }
 
@@ -417,6 +417,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
         this.victoryCoins += victoryCoins
         refreshPlayerHandArea()
+        game.refreshPlayers()
     }
 
     fun addActions(actions: Int, refresh: Boolean = true) {
@@ -761,7 +762,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             (listener as AfterCardGainedListenerForCardsInTavern).afterCardGained(cardToGain, this)
         }
 
-        if (cardToGain.isVictory || cardToGain.addVictoryCoins > 0) {
+        if (cardToGain.isVictory) {
             game.refreshPlayers()
         }
 
