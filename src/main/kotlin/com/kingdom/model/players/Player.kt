@@ -499,11 +499,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         eventsBought.clear()
 
-        val nonPermanentDurationCards = durationCards.filterNot { it is PermanentDuration || (it is CardRepeater && it.cardBeingRepeated is PermanentDuration) }
+        val durationCardsToDiscard = durationCards.filterNot {
+            it is PermanentDuration
+                    || (it is CardRepeater && it.cardBeingRepeated is PermanentDuration)
+                    || (it is MultipleTurnDuration && it.keepAtEndOfTurn(this)
+                    || (it is CardRepeater && it.cardBeingRepeated is MultipleTurnDuration && (it.cardBeingRepeated as MultipleTurnDuration).keepAtEndOfTurn(this)))
+        }
 
-        nonPermanentDurationCards.forEach { addCardToDiscard(it, false, false) }
+        durationCardsToDiscard.forEach { addCardToDiscard(it, false, false) }
 
-        durationCards.removeAll(nonPermanentDurationCards)
+        durationCards.removeAll(durationCardsToDiscard)
 
         for (card in inPlay) {
             if (card.isDuration || (card is CardRepeater && card.cardBeingRepeated?.isDuration == true)) {
@@ -856,7 +861,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
 
             val cardBoughtListenersForCardsInPlay = inPlayWithDuration.filter { it is AfterCardBoughtListenerForCardsInPlay || it.addedAbilityCard is AfterCardBoughtListenerForCardsInPlay }.toMutableList()
-            cardBoughtListenersForCardsInPlay.addAll(inPlayWithDuration.filter { it.addedAbilityCard is AfterCardBoughtListenerForCardsInPlay}.map { it.addedAbilityCard!! })
+            cardBoughtListenersForCardsInPlay.addAll(inPlayWithDuration.filter { it.addedAbilityCard is AfterCardBoughtListenerForCardsInPlay }.map { it.addedAbilityCard!! })
 
             for (listener in cardBoughtListenersForCardsInPlay) {
                 (listener as AfterCardBoughtListenerForCardsInPlay).afterCardBought(card, this)
@@ -882,7 +887,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cards.addAll(islandCards)
             cards.addAll(durationCards)
             cards.addAll(tavernCards)
-            inheritanceActionCard?.let{ cards.add(it) }
+            inheritanceActionCard?.let { cards.add(it) }
 
             return cards
         }
