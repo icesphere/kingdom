@@ -52,19 +52,23 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
 
             if (nonTreasureCards.isNotEmpty()) {
                 opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${nonTreasureCards.groupedString} from your deck")
+                player.showInfoMessage("discarded ${opponent.username}'s ${nonTreasureCards.groupedString}")
             }
 
             if (treasureCards.isNotEmpty()) {
                 if (treasureCards.size == 1) {
                     opponent.cardTrashed(treasureCards.first(), true)
                     opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor trashed ${treasureCards.first().cardNameWithBackgroundColor} from your deck")
+                    player.showInfoMessage("trashed ${opponent.username}'s ${treasureCards.first().cardNameWithBackgroundColor}")
                     gainPirateShipCoin(player)
                 } else {
                     if (treasureCards[0].name == treasureCards[1].name) {
                         opponent.addCardToDiscard(treasureCards[0], showLog = true)
                         opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${treasureCards.first().cardNameWithBackgroundColor} from your deck")
+                        player.showInfoMessage("discarded ${opponent.username}'s ${treasureCards.first().cardNameWithBackgroundColor}")
                         opponent.cardTrashed(treasureCards[1], true)
-                        opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor trashed ${treasureCards.first().cardNameWithBackgroundColor} from your deck")
+                        opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor trashed ${treasureCards[1].cardNameWithBackgroundColor} from your deck")
+                        player.showInfoMessage("trashed ${opponent.username}'s ${treasureCards[1].cardNameWithBackgroundColor}")
                         gainPirateShipCoin(player)
                     } else {
                         val pirateAttackInfo = PirateAttackInfo(opponent, treasureCards)

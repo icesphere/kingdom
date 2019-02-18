@@ -11,6 +11,8 @@ class Temple : EmpiresCard(NAME, CardType.ActionGathering, 4), AfterCardGainedLi
     init {
         addVictoryCoins = 1
         special = "Trash from 1 to 3 differently named cards from your hand. Add 1 VP to the Temple Supply pile. When you gain this, take the VP from the Temple Supply pile."
+        isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

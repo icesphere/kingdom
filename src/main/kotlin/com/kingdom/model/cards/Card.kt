@@ -385,16 +385,16 @@ abstract class Card(
     fun cardPlayed(player: Player, refresh: Boolean = true) {
         if (isAction) {
             player.addActions(-1, refresh)
-        }
 
-        if (player.nextActionEnchanted && this !is Event) {
-            player.nextActionEnchanted = false
+            if (player.nextActionEnchanted) {
+                player.nextActionEnchanted = false
 
-            player.addActions(1, refresh)
-            player.drawCard()
-            player.showInfoMessage("$cardNameWithBackgroundColor caused $cardNameWithBackgroundColor to get +1 Card and +1 Action instead of following its instructions")
+                player.addActions(1, refresh)
+                player.drawCard()
+                player.showInfoMessage("$cardNameWithBackgroundColor caused $cardNameWithBackgroundColor to get +1 Card and +1 Action instead of following its instructions")
 
-            return
+                return
+            }
         }
 
         addCardBonuses(this, player, refresh)

@@ -27,6 +27,7 @@ class Mountebank : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard, C
             } else {
                 opponent.gainSupplyCard(Curse(), showLog = true)
                 opponent.gainSupplyCard(Copper(), showLog = true)
+                player.showInfoMessage("${opponent.username} gained a Curse and a Copper")
                 opponent.showInfoMessage("You gained a ${Curse().cardNameWithBackgroundColor} and a ${Copper().cardNameWithBackgroundColor} from ${player.username}'s $cardNameWithBackgroundColor")
             }
         }
@@ -35,9 +36,11 @@ class Mountebank : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard, C
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.discardCardFromHand(player.hand.first { it.isCurse })
+            player.game.currentPlayer.showInfoMessage("${player.username} discarded a Curse")
         } else {
             player.gainSupplyCard(Curse(), showLog = true)
             player.gainSupplyCard(Copper(), showLog = true)
+            player.game.currentPlayer.showInfoMessage("${player.username} gained a Curse and a Copper")
         }
     }
 

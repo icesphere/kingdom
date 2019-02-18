@@ -421,7 +421,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun addActions(actions: Int, refresh: Boolean = true) {
-        if (actions == 0) {
+        if (actions == 0 || !isYourTurn) {
             return
         }
         this.actions += actions
@@ -431,7 +431,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun addBuys(buys: Int, refresh: Boolean = true) {
-        if (buys == 0) {
+        if (buys == 0 || !isYourTurn) {
             return
         }
         this.buys += buys
@@ -931,21 +931,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         }
 
-        if (card.pileName == plusActionTokenSupplyPile) {
-            addActions(1, refresh)
-        }
-
-        if (card.pileName == plusBuyTokenSupplyPile) {
-            addBuys(1, refresh)
-        }
-
-        if (card.pileName == plusCoinTokenSupplyPile) {
-            addCoins(1, refresh)
-        }
-
-        if (card.pileName == plusCardTokenSupplyPile) {
-            drawCard()
-        }
+        addTokenBonusesForPlayingCard(card, refresh)
 
         if (card.isAction) {
             numActionsPlayed++
@@ -964,6 +950,24 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         card.cardPlayed(this, refresh)
+    }
+
+    fun addTokenBonusesForPlayingCard(card: Card, refresh: Boolean) {
+        if (card.pileName == plusActionTokenSupplyPile) {
+            addActions(1, refresh)
+        }
+
+        if (card.pileName == plusBuyTokenSupplyPile) {
+            addBuys(1, refresh)
+        }
+
+        if (card.pileName == plusCoinTokenSupplyPile) {
+            addCoins(1, refresh)
+        }
+
+        if (card.pileName == plusCardTokenSupplyPile) {
+            drawCard()
+        }
     }
 
     private fun countCardsByType(cards: List<Card>, typeMatcher: Function<Card, Boolean>): Int {

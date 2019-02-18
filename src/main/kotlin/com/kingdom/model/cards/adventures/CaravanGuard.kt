@@ -29,6 +29,7 @@ class CaravanGuard : AdventuresCard(NAME, CardType.ActionDurationReaction, 3), S
         if (choice == 1) {
             player.removeCardFromHand(this)
             player.drawCard()
+            player.addTokenBonusesForPlayingCard(this, false)
             player.durationCards.add(this)
             player.opponents.forEach { it.showInfoMessage("${player.username} played ${this.cardNameWithBackgroundColor}") }
         }

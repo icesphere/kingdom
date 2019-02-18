@@ -33,6 +33,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     var isWaitingForPlayers = false
 
+    var waitingForPlayersForResolveAttackAction: WaitForOtherPlayersForResolveAttack? = null
+
     abstract val difficulty: Int
 
     open val onlyBuyVictoryCards: Boolean = false
@@ -69,6 +71,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
                 while (isWaitingForPlayers) {
                     Thread.sleep(500)
+                    if (!isWaitingForPlayers && waitingForPlayersForResolveAttackAction != null) {
+                        waitingForPlayersForResolveAttackAction?.processActionResult(this, ActionResult())
+                        waitingForPlayersForResolveAttackAction = null
+                    }
                 }
             }
 
@@ -852,6 +858,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun waitForOtherPlayersForResolveAttack(attackCard: Card, info: Any?) {
         isWaitingForPlayers = true
+        waitingForPlayersForResolveAttackAction = WaitForOtherPlayersForResolveAttack(this, attackCard, info)
     }
 
     override fun waitForOtherPlayersToResolveActionsWithResults(resultHandler: ActionResultHandler) {
