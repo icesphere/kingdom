@@ -19,9 +19,6 @@ class Archive : EmpiresCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurati
 
     override fun cardPlayedSpecialAction(player: Player) {
         setAsideCards = player.removeTopCardsOfDeck(3).toMutableList()
-        if (setAsideCards.isNotEmpty()) {
-            player.showInfoMessage("You set aside ${setAsideCards.groupedString}")
-        }
 
         chooseCardToAddToHand(player)
     }

@@ -228,7 +228,7 @@ class GameController(private val cardManager: CardManager,
                     val deck = Deck.valueOf(request.getParameter(name))
                     val weight: Int = request.getParameter("deck_weight_" + deck.name).toInt()
 
-                    repeat(weight) {
+                    repeat(weight * weight) {
                         decks.add(deck)
                     }
                 }

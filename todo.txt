@@ -22,7 +22,6 @@ royal seal shouldn't ask multiple times if answer is no
 Encampment got 11 cards - probably from bot
 refresh on lobby page should not clear out chats
 separate refresh for coins and buys?
-add more options to deck weights
 bot should not buy too many village type cards
 
 adjust height for cards with two lines for card name
