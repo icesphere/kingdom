@@ -23,6 +23,7 @@ Encampment got 11 cards - probably from bot
 refresh on lobby page should not clear out chats
 separate refresh for coins and buys?
 bot should not buy too many village type cards
+2 Amulets - order of actions - should wait for first one to complete
 
 adjust height for cards with two lines for card name
 

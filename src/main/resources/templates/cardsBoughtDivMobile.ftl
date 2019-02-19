@@ -11,7 +11,7 @@
             <div style="float:left;padding-right:10px;display: flex; position: relative; top: 2px;">
                 <div style="padding-right: 2px;">${currentPlayer.debt}</div>
                 <div><img src="images/debt.png" alt="Debt" style="height:18px; width:18px;"/></div>
-                <#if currentPlayer.availableCoins != 0>
+                <#if currentPlayer.userId == user.userId && currentPlayer.availableCoins != 0>
                     <div><a href="javascript:payOffDebt()">Pay off</a></div>
                 </#if>
             </div>
