@@ -15,7 +15,7 @@ class Treasury : SeasideCard(NAME, CardType.Action, 5), CardDiscardedFromPlayLis
     }
 
     override fun onCardDiscarded(player: Player) {
-        if (player.lastTurnSummary!!.cardsBought.none { it.isVictory }) {
+        if (player.cardsBought.none { it.isVictory }) {
             player.yesNoChoice(this, "Put ${this.cardNameWithBackgroundColor} onto your deck?")
         }
     }

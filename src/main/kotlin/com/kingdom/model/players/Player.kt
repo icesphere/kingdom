@@ -39,7 +39,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val cardsInDiscardCopy: List<Card>
         get() = cardsInDiscard.map { game.getNewInstanceOfCard(it.name) }
 
-    private val cardsBought: MutableList<Card> = ArrayList()
+    val cardsBought: MutableList<Card> = ArrayList()
     val played: MutableList<Card> = ArrayList()
     val inPlay: MutableList<Card> = ArrayList()
 
@@ -405,10 +405,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun addDebt(debt: Int) {
+    fun addDebt(debt: Int, refresh: Boolean = true) {
         this.debt += debt
-        refreshSupply()
-        game.refreshCardsBought()
+
+        if (refresh) {
+            refreshSupply()
+            game.refreshCardsBought()
+        }
     }
 
     fun addVictoryCoins(victoryCoins: Int) {
@@ -448,56 +451,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
 
-        if (debt > 0 && availableCoins > 0) {
-            addInfoLogWithUsername("auto applying remaining available coins to debt")
-            debt -= availableCoins
-        }
-
         addInfoLogWithUsername("ending turn")
-
-        cardsSetAsideToReturnToSupplyAtStartOfCleanup.forEach {
-            game.returnCardToSupply(it)
-        }
-
-        cardsSetAsideToReturnToSupplyAtStartOfCleanup.clear()
-
-        currentTurnSummary.cardsPlayed.addAll(played)
-
-        lastTurnSummary = currentTurnSummary
-
-        currentTurnSummary = TurnSummary(username)
-
-        game.refreshHistory()
-
-        isReturnToActionPhase = false
-
-        turns++
-
-        coins = 0
-        coinsSpent = 0
-        actions = 0
-        buys = 0
-
-        numActionsPlayed = 0
-
-        playedCrossroadsThisTurn = false
-
-        isMoneyDoubledThisTurn = false
-
-        isNextCardToTopOfDeck = false
-        isNextCardToHand = false
-
-        numCardsTrashedThisTurn = 0
-        coinsGainedThisTurn = 0
-
-        isPaidOffDebtThisTurn = false
-
-        cardsUnavailableToBuyThisTurn.clear()
-
-        cardsBought.clear()
-        played.clear()
-
-        eventsBought.clear()
 
         val durationCardsToDiscard = durationCards.filterNot {
             it is PermanentDuration
@@ -548,7 +502,57 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     private fun finishEndTurn(isAutoEnd: Boolean = false) {
+
         finishEndTurnAfterResolvingActions = false
+
+        if (debt > 0 && availableCoins > 0) {
+            addInfoLogWithUsername("auto applying remaining available coins to debt")
+            debt -= availableCoins
+        }
+
+        cardsSetAsideToReturnToSupplyAtStartOfCleanup.forEach {
+            game.returnCardToSupply(it)
+        }
+
+        cardsSetAsideToReturnToSupplyAtStartOfCleanup.clear()
+
+        currentTurnSummary.cardsPlayed.addAll(played)
+
+        lastTurnSummary = currentTurnSummary
+
+        currentTurnSummary = TurnSummary(username)
+
+        game.refreshHistory()
+
+        isReturnToActionPhase = false
+
+        turns++
+
+        coins = 0
+        coinsSpent = 0
+        actions = 0
+        buys = 0
+
+        numActionsPlayed = 0
+
+        playedCrossroadsThisTurn = false
+
+        isMoneyDoubledThisTurn = false
+
+        isNextCardToTopOfDeck = false
+        isNextCardToHand = false
+
+        numCardsTrashedThisTurn = 0
+        coinsGainedThisTurn = 0
+
+        isPaidOffDebtThisTurn = false
+
+        cardsUnavailableToBuyThisTurn.clear()
+
+        cardsBought.clear()
+        played.clear()
+
+        eventsBought.clear()
 
         drawCards(5 + numExtraCardsToDrawAtEndOfTurn)
 

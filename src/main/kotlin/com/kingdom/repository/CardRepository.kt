@@ -304,6 +304,7 @@ class CardRepository {
     val empiresCards: List<Card>
         get() = listOf(
                 Archive(),
+                Capital(),
                 Castles(),
                 Catapult(),
                 ChariotRace(),
