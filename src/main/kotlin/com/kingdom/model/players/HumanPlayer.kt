@@ -82,7 +82,7 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun chooseSupplyCardToGainWithExactCost(cost: Int) {
-        addAction(FreeCardFromSupply(null, "Gain a free card from the supply costing $cost", {c -> getCardCostWithModifiers(c) == cost}))
+        addAction(FreeCardFromSupply(null, "Gain a free card from the supply costing $cost", { c -> c.debtCost == 0 && getCardCostWithModifiers(c) == cost }))
     }
 
     override fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
@@ -98,7 +98,7 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun chooseSupplyCardToGainToTopOfDeckWithExactCost(cost: Int) {
-        addAction(FreeCardFromSupply(null, "Gain a free card from the supply to the top of your deck costing $cost", {c -> getCardCostWithModifiers(c) == cost}, CardLocation.Deck))
+        addAction(FreeCardFromSupply(null, "Gain a free card from the supply to the top of your deck costing $cost", { c -> c.debtCost == 0 && getCardCostWithModifiers(c) == cost }, CardLocation.Deck))
     }
 
     override fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int?) {

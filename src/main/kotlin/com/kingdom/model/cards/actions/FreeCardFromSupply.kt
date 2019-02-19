@@ -14,7 +14,8 @@ open class FreeCardFromSupply(private val maxCost: Int?, text: String, private v
     }
 
     override fun processAction(player: Player): Boolean {
-        return true
+        return player.game.availableCards.any { (maxCost == null || (it.debtCost == 0 && player.getCardCostWithModifiers(it) <= maxCost))
+            && (cardActionableExpression == null || cardActionableExpression.invoke(it)) }
     }
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {

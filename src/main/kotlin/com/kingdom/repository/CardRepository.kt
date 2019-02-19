@@ -308,6 +308,7 @@ class CardRepository {
                 Castles(),
                 Catapult(),
                 ChariotRace(),
+                Charm(),
                 CityQuarter(),
                 Encampment(),
                 Enchantress(),

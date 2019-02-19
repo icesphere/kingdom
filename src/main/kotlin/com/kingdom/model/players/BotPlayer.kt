@@ -777,7 +777,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     private fun chooseFreeCardToGainWithExactCost(cost: Int): Card? {
         val cards = game.availableCards
-                .filter { this.getCardCostWithModifiers(it) == cost }
+                .filter { it.debtCost == 0 && this.getCardCostWithModifiers(it) == cost }
 
         return pickCardBasedOnBuyScore(cards)
     }
