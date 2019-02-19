@@ -401,7 +401,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (refresh) {
             refreshSupply()
-            game.refreshCardsBought()
+            game.refreshCoins()
         }
     }
 
@@ -410,7 +410,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (refresh) {
             refreshSupply()
-            game.refreshCardsBought()
+            game.refreshDebt()
         }
     }
 
@@ -437,9 +437,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (buys == 0 || !isYourTurn) {
             return
         }
+
         this.buys += buys
+
         if (refresh) {
-            game.refreshCardsBought()
+            game.refreshBuys()
         }
     }
 

@@ -566,8 +566,23 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
     }
 
+    fun refreshCoins() {
+        gameMessageService.refreshCardsBought(this)
+    }
+
+    fun refreshDebt() {
+        gameMessageService.refreshCardsBought(this)
+    }
+
+    fun refreshBuys() {
+        gameMessageService.refreshCardsBought(this)
+    }
+
     fun refreshCardsBought() {
         gameMessageService.refreshCardsBought(this)
+        if (currentPlayer.isBot) {
+            Thread.sleep(1000)
+        }
     }
 
     fun refreshPlayerCardsBought(player: Player) {
@@ -580,6 +595,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     fun refreshCardsPlayed() {
         gameMessageService.refreshCardsPlayed(this)
+        if (currentPlayer.isBot) {
+            Thread.sleep(1000)
+        }
     }
 
     fun refreshPlayerCardsPlayed(player: Player) {
