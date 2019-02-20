@@ -10,8 +10,6 @@ import com.kingdom.model.players.Player
 
 class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, ChooseCardActionCard, ChoiceActionCard {
 
-    var revealedCard: Card? = null
-
     init {
         special = "Reveal a card from your hand. Return up to 2 copies of it from your hand to the Supply. Then each other player gains a copy of it."
         fontSize = 11
@@ -19,7 +17,15 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
         isTrashingFromHandRequiredCard = true
     }
 
+    private var affectedOpponents = emptyList<Player>()
+
     override fun cardPlayedSpecialAction(player: Player) {
+        player.triggerAttack(this)
+    }
+
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
+        this.affectedOpponents = affectedOpponents
+
         player.chooseCardFromHand(special, this)
     }
 
@@ -48,24 +54,16 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
         val card = info as Card
 
         if (choice > 0) {
-            revealedCard = card
-
             repeat(choice) {
                 val cardByName = player.hand.first { it.name == card.name }
                 player.removeCardFromHand(cardByName)
                 player.game.returnCardToSupply(cardByName)
             }
 
-            player.triggerAttack(this)
-        }
-    }
-
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
-        val card = revealedCard ?: return
-
-        affectedOpponents.forEach { opponent ->
-            opponent.gainSupplyCard(card, true)
-            opponent.showInfoMessage("You gained ${card.cardNameWithBackgroundColor} from ${player.username}'s $cardNameWithBackgroundColor")
+            affectedOpponents.forEach { opponent ->
+                opponent.gainSupplyCard(card, true)
+                opponent.showInfoMessage("You gained ${card.cardNameWithBackgroundColor} from ${player.username}'s $cardNameWithBackgroundColor")
+            }
         }
     }
 

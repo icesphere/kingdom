@@ -23,7 +23,7 @@ class Trader : HinterlandsCard(NAME, CardType.ActionReaction, 4), TrashCardsForB
         player.trashCardsFromHandForBenefit(this, 1, special)
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val card = trashedCards.first()
 
         repeat(player.getCardCostWithModifiers(card)) {

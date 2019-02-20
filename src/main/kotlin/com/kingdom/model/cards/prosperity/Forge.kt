@@ -16,7 +16,7 @@ class Forge : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitActi
         player.optionallyTrashCardsFromHandForBenefit(this, player.hand.size, special)
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         var totalCost = 0
 
         trashedCards.forEach { totalCost += player.getCardCostWithModifiers(it) }

@@ -26,7 +26,7 @@ class Transmogrify : AdventuresCard(NAME, CardType.ActionReserve, 4), TavernCard
         player.trashCardsFromHandForBenefit(this, 1, "Trash a card from your hand, and gain a card to your hand costing up to \$1 more than it")
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val card = trashedCards.first()
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) <= player.getCardCostWithModifiers(card) + 1 }) {

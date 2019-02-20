@@ -24,12 +24,12 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(TrashCardsFromHand(numCardsToTrash, text, true, cardActionableExpression))
     }
 
-    override fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
-        addAction(TrashCardsFromHandForBenefit(card, numCardsToTrash, text, true, cardActionableExpression))
+    override fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?, info: Any?) {
+        addAction(TrashCardsFromHandForBenefit(card, numCardsToTrash, text, true, cardActionableExpression, info))
     }
 
-    override fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
-        addAction(TrashCardsFromHandForBenefit(card, numCardsToTrash, text, false, cardActionableExpression))
+    override fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?, info: Any?) {
+        addAction(TrashCardsFromHandForBenefit(card, numCardsToTrash, text, false, cardActionableExpression, info))
     }
 
     override fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, info: Any?) {

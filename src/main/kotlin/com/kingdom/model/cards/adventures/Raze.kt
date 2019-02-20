@@ -34,7 +34,7 @@ class Raze : AdventuresCard(NAME, CardType.Action, 2), ChoiceActionCard, TrashCa
         }
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         handleTrashedCard(player, trashedCards.first())
     }
 

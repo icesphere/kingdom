@@ -15,7 +15,7 @@ class Sacrifice : EmpiresCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
         player.trashCardsFromHandForBenefit(this, 1, special)
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val card = trashedCards.first()
 
         if (card.isAction) {

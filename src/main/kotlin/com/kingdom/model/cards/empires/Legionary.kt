@@ -16,24 +16,28 @@ class Legionary : EmpiresCard(NAME, CardType.ActionAttack, 5), ChoiceActionCard,
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
+        player.triggerAttack(this)
+    }
+
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         if (player.hand.any { it.isGold }) {
-            player.yesNoChoice(this, "Reveal ${Gold().cardNameWithBackgroundColor} to have each other player discard down to 2 cards in hand, then draw a card?")
+            player.yesNoChoice(this, "Reveal ${Gold().cardNameWithBackgroundColor} to have each other player discard down to 2 cards in hand, then draw a card?", affectedOpponents)
         }
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.addEventLogWithUsername("revealed a ${Gold().cardNameWithBackgroundColor} from their hand")
-            player.triggerAttack(this)
-        }
-    }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
-        for (opponent in affectedOpponents) {
-            if (opponent.hand.size > 2) {
-                opponent.discardCardsForBenefit(this, opponent.hand.size - 2, "Discard down to 2 cards in hand, then you will draw a card")
-            } else {
-                opponent.drawCard()
+            @Suppress("UNCHECKED_CAST")
+            val affectedOpponents = info as List<Player>
+
+            for (opponent in affectedOpponents) {
+                if (opponent.hand.size > 2) {
+                    opponent.discardCardsForBenefit(this, opponent.hand.size - 2, "Discard down to 2 cards in hand, then you will draw a card")
+                } else {
+                    opponent.drawCard()
+                }
             }
         }
     }

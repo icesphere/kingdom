@@ -18,12 +18,18 @@ class Giant : AdventuresCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
+        player.triggerAttack(this)
+    }
+
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
+
         player.isJourneyTokenFaceUp = !player.isJourneyTokenFaceUp
+
         if (player.isJourneyTokenFaceUp) {
             player.showInfoMessage("Journey token was flipped to face up")
             player.addInfoLogWithUsername("'s Journey token was flipped to face up")
             player.addCoins(5)
-            player.triggerAttack(this)
+            attack(player, affectedOpponents)
         } else {
             player.showInfoMessage("Journey token was flipped to face down")
             player.addInfoLogWithUsername("'s Journey token was flipped to face down")
@@ -31,9 +37,11 @@ class Giant : AdventuresCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
         }
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
+    private fun attack(player: Player, affectedOpponents: List<Player>) {
+
         for (opponent in affectedOpponents) {
             val cards = opponent.removeTopCardsOfDeck(1, true)
+
             if (cards.isNotEmpty()) {
                 val card = cards.first()
                 val cost = player.getCardCostWithModifiers(card)

@@ -25,7 +25,11 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.makeChoice(this, Choice(1, "+\$${player.pirateShipCoins}"), Choice(2, "Attack"))
+        player.triggerAttack(this)
+    }
+
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
+        player.makeChoiceWithInfo(this, "", affectedOpponents, Choice(1, "+\$${player.pirateShipCoins}"), Choice(2, "Attack"))
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
@@ -34,11 +38,16 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
             player.addCoins(player.pirateShipCoins)
         } else {
             player.addEventLogWithUsername("chose to attack with ${this.cardNameWithBackgroundColor}")
-            player.triggerAttack(this)
+
+            @Suppress("UNCHECKED_CAST")
+            val affectedOpponents = info as List<Player>
+
+            attack(player, affectedOpponents)
         }
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
+    private fun attack(player: Player, affectedOpponents: List<Player>) {
+
         affectedOpponents.forEach { opponent ->
             val topCardsOfDeck = opponent.removeTopCardsOfDeck(2, true)
 

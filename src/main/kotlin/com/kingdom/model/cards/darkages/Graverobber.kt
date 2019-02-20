@@ -42,7 +42,7 @@ class Graverobber : DarkAgesCard(NAME, CardType.Action, 5), ChoiceActionCard, Tr
         }
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val card = trashedCards.first()
 
         player.chooseSupplyCardToGain(player.getCardCostWithModifiers(card) + 3)

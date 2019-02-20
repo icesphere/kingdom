@@ -38,7 +38,7 @@ class TradeRoute : ProsperityCard(NAME, CardType.Action, 3), GameSetupModifier, 
         }
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         player.addCoins(player.game.tradeRouteTokensOnMat)
     }
 

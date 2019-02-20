@@ -22,7 +22,7 @@ class Stonemason : GuildsCard(NAME, CardType.Action, 2), TrashCardsForBenefitAct
         player.trashCardsFromHandForBenefit(this, 1, "Trash a card from your hand. Gain 2 cards each costing less than it.")
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val trashedCard = trashedCards.first()
 
         val maxCost = player.getCardCostWithModifiers(trashedCard) - 1

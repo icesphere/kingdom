@@ -15,14 +15,19 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        if (player.game.trashedCards.any { player.getCardCostWithModifiers(it) in 3..6 }) {
-            player.gainCardFromTrash(false, { c -> player.getCardCostWithModifiers(c) in 3..6 })
-        } else {
-            player.triggerAttack(this)
-        }
+        player.triggerAttack(this)
     }
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
+        if (player.game.trashedCards.any { player.getCardCostWithModifiers(it) in 3..6 }) {
+            player.gainCardFromTrash(false, { c -> player.getCardCostWithModifiers(c) in 3..6 })
+        } else {
+            attack(player, affectedOpponents)
+        }
+    }
+
+    private fun attack(player: Player, affectedOpponents: List<Player>) {
+
         for (opponent in affectedOpponents) {
             val topCardsOfDeck = opponent.revealTopCardsOfDeck(2)
             player.showInfoMessage("${opponent.username} revealed ${topCardsOfDeck.groupedString}")

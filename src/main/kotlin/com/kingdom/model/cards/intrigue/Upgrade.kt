@@ -22,7 +22,7 @@ class Upgrade : IntrigueCard(NAME, CardType.Action, 5), TrashCardsForBenefitActi
         }
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val card = trashedCards.first()
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == player.getCardCostWithModifiers(card) + 1 }) {

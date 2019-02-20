@@ -15,28 +15,33 @@ class Taxman : GuildsCard(NAME, CardType.ActionAttack, 4), TrashCardsForBenefitA
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.optionallyTrashCardsFromHandForBenefit(this, 1, special, { c -> c.isTreasure })
-    }
-
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
-        if (trashedCards.isNotEmpty()) {
-            treasureCard = trashedCards.first()
-            player.triggerAttack(this)
-            player.chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(player.getCardCostWithModifiers(trashedCards[0]) + 3, CardType.Treasure, "Gain a Treasure onto your deck costing up to ${player.getCardCostWithModifiers(trashedCards[0]) + 3}")
-        }
+        player.triggerAttack(this)
     }
 
     override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
-        for (opponent in affectedOpponents) {
-            if (opponent.hand.size >= 5) {
-                val treasureCard = opponent.hand.firstOrNull { it.name == treasureCard!!.name }
-                if (treasureCard != null) {
-                    opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${treasureCard.cardNameWithBackgroundColor} from your hand")
-                    opponent.discardCardFromHand(treasureCard, true)
-                } else {
-                    opponent.revealHand()
+        player.optionallyTrashCardsFromHandForBenefit(this, 1, special, { c -> c.isTreasure }, affectedOpponents)
+    }
+
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
+        if (trashedCards.isNotEmpty()) {
+            treasureCard = trashedCards.first()
+
+            @Suppress("UNCHECKED_CAST")
+            val affectedOpponents = info as List<Player>
+
+            for (opponent in affectedOpponents) {
+                if (opponent.hand.size >= 5) {
+                    val treasureCard = opponent.hand.firstOrNull { it.name == treasureCard!!.name }
+                    if (treasureCard != null) {
+                        opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${treasureCard.cardNameWithBackgroundColor} from your hand")
+                        opponent.discardCardFromHand(treasureCard, true)
+                    } else {
+                        opponent.revealHand()
+                    }
                 }
             }
+
+            player.chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(player.getCardCostWithModifiers(trashedCards[0]) + 3, CardType.Treasure, "Gain a Treasure onto your deck costing up to ${player.getCardCostWithModifiers(trashedCards[0]) + 3}")
         }
     }
 

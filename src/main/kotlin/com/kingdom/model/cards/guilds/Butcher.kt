@@ -18,7 +18,7 @@ class Butcher : GuildsCard(NAME, CardType.Action, 5), TrashCardsForBenefitAction
         player.optionallyTrashCardsFromHandForBenefit(this, 1, special)
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         if (trashedCards.isNotEmpty()) {
             if (player.coffers == 0) {
                 player.chooseSupplyCardToGain(player.getCardCostWithModifiers(trashedCards[0]))

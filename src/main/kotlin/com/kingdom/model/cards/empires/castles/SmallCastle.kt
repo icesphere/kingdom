@@ -38,7 +38,7 @@ class SmallCastle : EmpiresCard(NAME, CardType.ActionVictoryCastle, 5), TrashCar
         }
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         gainCastle(player)
     }
 

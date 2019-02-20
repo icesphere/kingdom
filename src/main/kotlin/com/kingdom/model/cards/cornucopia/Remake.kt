@@ -24,7 +24,7 @@ class Remake : CornucopiaCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
         player.trashCardsFromHandForBenefit(this, 1, "Trash a card from your hand, then gain a card costing exactly \$1 more than it.")
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val card = trashedCards.first()
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == player.getCardCostWithModifiers(card) + 1 }) {

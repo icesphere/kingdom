@@ -119,12 +119,12 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         cards.forEach({ this.trashCardFromHand(it) })
     }
 
-    override fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
+    override fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?, info: Any?) {
         val cards = getCardsToOptionallyTrashFromHand(numCardsToTrash, cardActionableExpression)
 
         cards.forEach({ this.trashCardFromHand(it) })
 
-        card.cardsTrashed(this, cards)
+        card.cardsTrashed(this, cards, info)
     }
 
     override fun discardCardsFromHand(numCardsToDiscard: Int, optional: Boolean) {
@@ -805,14 +805,14 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         cards.forEach { addCardToTopOfDeck(it, false) }
     }
 
-    override fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
+    override fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?, info: Any?) {
         if (hand.none { cardActionableExpression == null || cardActionableExpression(it) }) {
             return
         }
 
         val cards = getCardsToTrashFromHand(numCardsToTrash, null, cardActionableExpression)
         cards.forEach { this.trashCardFromHand(it) }
-        card.cardsTrashed(this, cards)
+        card.cardsTrashed(this, cards, info)
     }
 
     override fun chooseSupplyCardToGainToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType) {

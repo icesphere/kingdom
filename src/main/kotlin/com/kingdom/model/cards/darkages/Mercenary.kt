@@ -14,29 +14,34 @@ class Mercenary : DarkAgesCard(NAME, CardType.ActionAttack, 0), ChoiceActionCard
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
+        player.triggerAttack(this)
+    }
+
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         if (player.hand.size >= 2) {
-            player.yesNoChoice(this, "Trash 2 cards from your hand for +2 Cards, + \$2, and each other player discards down to 3 cards in hand?")
+            player.yesNoChoice(this, "Trash 2 cards from your hand for +2 Cards, + \$2, and each other player discards down to 3 cards in hand?", affectedOpponents)
         }
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.trashCardsFromHandForBenefit(this, 2)
+
+            @Suppress("UNCHECKED_CAST")
+            val affectedOpponents = info as List<Player>
+
+            for (opponent in affectedOpponents) {
+                if (opponent.hand.size > 3) {
+                    opponent.discardCardsFromHand(opponent.hand.size - 3, false)
+                }
+            }
         }
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         player.drawCards(2)
         player.addCoins(2)
         player.triggerAttack(this)
-    }
-
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
-        for (opponent in affectedOpponents) {
-            if (opponent.hand.size > 3) {
-                opponent.discardCardsFromHand(opponent.hand.size - 3, false)
-            }
-        }
     }
 
     companion object {

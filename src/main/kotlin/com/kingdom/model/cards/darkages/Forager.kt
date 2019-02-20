@@ -19,7 +19,7 @@ class Forager : DarkAgesCard(NAME, CardType.Action, 3), TrashCardsForBenefitActi
         player.trashCardsFromHandForBenefit(this, 1, special)
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val numDifferentTreasuresInTrash = player.game.trashedCards.filter { it.isTreasure }.groupBy { it.name }.size
 
         val message = if (numDifferentTreasuresInTrash == 1) {

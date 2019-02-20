@@ -17,7 +17,7 @@ class Mine : BaseCard(NAME, CardType.Action, 5), TrashCardsForBenefitActionCard 
         player.optionallyTrashCardsFromHandForBenefit(this, 1, special, { c -> c.isTreasure })
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         if (trashedCards.isNotEmpty()) {
             player.chooseSupplyCardToGainToHandWithMaxCostAndType(player.getCardCostWithModifiers(trashedCards[0]) + 3, CardType.Treasure)
         }

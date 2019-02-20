@@ -15,7 +15,7 @@ class Trade : AdventuresEvent(NAME, 5), TrashCardsForBenefitActionCard {
         player.optionallyTrashCardsFromHandForBenefit(this, 2, special)
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         repeat(trashedCards.size) {
             player.gainSupplyCard(Silver(), true)
         }

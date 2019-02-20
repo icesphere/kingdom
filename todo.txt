@@ -24,8 +24,6 @@ refresh on lobby page should not clear out chats
 bot should not buy too many village type cards
 2 Amulets - order of actions - should wait for first one to complete
 
-trigger attack should happen when attack card is first played
-
 adjust height for cards with two lines for card name
 
 

@@ -17,7 +17,7 @@ class Altar : DarkAgesCard(NAME, CardType.Action, 6), TrashCardsForBenefitAction
         player.trashCardsFromHandForBenefit(this, 1, special)
     }
 
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         player.chooseSupplyCardToGain(5)
     }
 

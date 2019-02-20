@@ -17,23 +17,21 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
         isTrashingFromHandToUpgradeCard = true
     }
 
+    private var affectedOpponents = emptyList<Player>()
+
     override fun cardPlayedSpecialAction(player: Player) {
+        player.triggerAttack(this)
+    }
+
+    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
         if (player.hand.isNotEmpty()) {
+            this.affectedOpponents = affectedOpponents
+
             player.trashCardsFromHandForBenefit(this, 1, special)
         }
     }
 
-    override fun resolveAttack(player: Player, affectedOpponents: List<Player>, info: Any?) {
-        affectedOpponents.forEach { opponent ->
-            val curse = Curse()
-            if (opponent.game.isCardAvailableInSupply(curse)) {
-                opponent.gainSupplyCard(curse, showLog = true)
-                opponent.showInfoMessage("You gained a ${curse.cardNameWithBackgroundColor} when ${player.username} gained a Victory card with $cardNameWithBackgroundColor")
-            }
-        }
-    }
-
-    override fun cardsTrashed(player: Player, trashedCards: List<Card>) {
+    override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val card = trashedCards.first()
         player.chooseSupplyCardToGainForBenefit(player.getCardCostWithModifiers(card) + 2, "Gain a card costing up to \$${player.getCardCostWithModifiers(card) + 2}. If the gained card is an Action or Treasure, put it onto your deck; if it’s a Victory card, each other player gains a Curse.", this)
     }
@@ -48,7 +46,13 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
         }
 
         if (card.isVictory) {
-            player.triggerAttack(this)
+            affectedOpponents.forEach { opponent ->
+                val curse = Curse()
+                if (opponent.game.isCardAvailableInSupply(curse)) {
+                    opponent.gainSupplyCard(curse, showLog = true)
+                    opponent.showInfoMessage("You gained a ${curse.cardNameWithBackgroundColor} when ${player.username} gained a Victory card with $cardNameWithBackgroundColor")
+                }
+            }
         }
     }
 
