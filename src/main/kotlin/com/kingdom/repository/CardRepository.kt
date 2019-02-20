@@ -317,6 +317,7 @@ class CardRepository {
                 Forum(),
                 Gladiator(),
                 Groundskeeper(),
+                Legionary(),
                 Overlord(),
                 Patrician(),
                 RoyalBlacksmith(),
