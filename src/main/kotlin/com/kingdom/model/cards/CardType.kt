@@ -44,5 +44,6 @@ enum class CardType {
     ActionTravellerVictory,
     ActionAttackTraveller,
     ActionAttackTravellerVictory,
+    ActionTreasure,
     Event
 }

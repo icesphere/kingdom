@@ -917,6 +917,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (!repeatedAction) {
 
             played.add(card)
+
+            if (!isTreasureCardsPlayedInBuyPhase && card.isAction && card.isTreasure) {
+                game.treasureCardsPlayedInActionPhase.add(card)
+            }
+
             game.cardsPlayed.add(card)
 
             if (card.isTreasure) {
