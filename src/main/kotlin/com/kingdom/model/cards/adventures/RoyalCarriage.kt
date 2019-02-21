@@ -18,12 +18,12 @@ class RoyalCarriage : AdventuresCard(NAME, CardType.ActionReserve, 5), TavernCar
 
     override fun isTavernCardActionable(player: Player): Boolean {
         val lastInPlay = player.inPlay.lastOrNull()
-        val lastPlayed = player.game.cardsPlayed.lastOrNull()
+        val lastPlayed = player.cardsPlayed.lastOrNull()
         return lastInPlay != null && lastPlayed != null && lastInPlay == lastPlayed
     }
 
     override fun onTavernCardCalled(player: Player) {
-        val lastPlayed = player.game.cardsPlayed.last()
+        val lastPlayed = player.cardsPlayed.last()
         player.addActions(1)
         player.playCard(lastPlayed, repeatedAction = true)
     }

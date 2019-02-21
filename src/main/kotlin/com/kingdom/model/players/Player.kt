@@ -40,7 +40,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = cardsInDiscard.map { game.getNewInstanceOfCard(it.name) }
 
     val cardsBought: MutableList<Card> = ArrayList()
-    val played: MutableList<Card> = ArrayList()
+    val cardsPlayed: MutableList<Card> = ArrayList()
     val inPlay: MutableList<Card> = ArrayList()
 
     val inPlayCopy: List<Card>
@@ -66,7 +66,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         protected set
 
     val isStartOfTurn: Boolean
-        get() = isYourTurn && game.cardsPlayed.isEmpty() && !isCardsBought
+        get() = isYourTurn && cardsPlayed.isEmpty() && !isCardsBought
 
     var isReturnToActionPhase: Boolean = false
 
@@ -167,7 +167,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = allCards.groupedString
 
     val isTreasureCardsPlayedInBuyPhase: Boolean
-        get() = (game.cardsPlayed - game.treasureCardsPlayedInActionPhase).any { it.isTreasure }
+        get() = (cardsPlayed - game.treasureCardsPlayedInActionPhase).any { it.isTreasure }
 
     val isCardsBought: Boolean
         get() = cardsBought.isNotEmpty() || eventsBought.isNotEmpty()
@@ -518,7 +518,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         cardsSetAsideToReturnToSupplyAtStartOfCleanup.clear()
 
-        currentTurnSummary.cardsPlayed.addAll(played)
+        currentTurnSummary.cardsPlayed.addAll(cardsPlayed)
 
         lastTurnSummary = currentTurnSummary
 
@@ -552,7 +552,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         cardsUnavailableToBuyThisTurn.clear()
 
         cardsBought.clear()
-        played.clear()
+        cardsPlayed.clear()
 
         eventsBought.clear()
 
@@ -665,7 +665,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         inPlay.remove(card)
         cardRemovedFromPlay(card)
-        game.cardsPlayed.remove(card)
         cardTrashed(card)
         game.refreshCardsPlayed()
     }
@@ -916,11 +915,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (!repeatedAction) {
 
-            played.add(card)
-
             if (!isTreasureCardsPlayedInBuyPhase && card.isAction && card.isTreasure) {
                 game.treasureCardsPlayedInActionPhase.add(card)
             }
+
+            cardsPlayed.add(card)
 
             game.cardsPlayed.add(card)
 
@@ -1088,7 +1087,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun cardPlayedThisTurn(typeMatcher: Function<Card, Boolean>): Boolean {
-        return countCardsByType(played, typeMatcher) > 0
+        return countCardsByType(cardsPlayed, typeMatcher) > 0
     }
 
     val handAndDeck: List<Card>
