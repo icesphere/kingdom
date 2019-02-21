@@ -3,7 +3,7 @@
         ${card.name}
     </div>
 
-    <div class="cardContent">
+    <div class="cardContent" style="<#if card.nameLines == 2>height: 52px;</#if>">
         <#if clickType=='supply' && victoryPointsOnSupplyPile(card.pileName)?? && victoryPointsOnSupplyPile(card.pileName) != 0>
             <div class="cardRow" style="color: #00BB00";<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
                 ${victoryPointsOnSupplyPile.get(card.pileName)} VP on Supply pile

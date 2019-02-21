@@ -1784,4 +1784,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         isMoneyDoubledThisTurn = true
         addEventLogWithUsername("doubled their money")
     }
+
+    fun takeVictoryPointsFromSupplyPile(card: Card) {
+        val victoryPointsOnSupplyPile = game.victoryPointsOnSupplyPile[card.pileName] ?: 0
+        addVictoryCoins(victoryPointsOnSupplyPile)
+        addEventLogWithUsername("gained $victoryPointsOnSupplyPile VP from ${card.cardNameWithBackgroundColor} Supply pile")
+        game.clearVictoryPointsFromSupplyPile(card.pileName)
+    }
 }

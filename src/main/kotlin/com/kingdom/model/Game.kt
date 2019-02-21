@@ -1008,4 +1008,14 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     fun setupAmountForPile(cardName: String, amount: Int) {
         pileAmounts[cardName] = amount
     }
+
+    fun addVictoryPointToSupplyPile(pileName: String) {
+        victoryPointsOnSupplyPile[pileName] = victoryPointsOnSupplyPile[pileName] ?: 0 + 1
+        refreshSupply()
+    }
+
+    fun clearVictoryPointsFromSupplyPile(pileName: String) {
+        victoryPointsOnSupplyPile[pileName] = 0
+        refreshSupply()
+    }
 }

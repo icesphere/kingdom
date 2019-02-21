@@ -324,7 +324,8 @@ class CardRepository {
                 Sacrifice(),
                 Settlers(),
                 Temple(),
-                Villa()
+                Villa(),
+                WildHunt()
         )
 
     val empiresEvents: List<Event>

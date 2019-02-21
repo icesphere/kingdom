@@ -14,13 +14,11 @@ class FarmersMarket : EmpiresCard(NAME, CardType.ActionGathering, 3) {
     override fun cardPlayedSpecialAction(player: Player) {
         val victoryPointsOnSupplyPile = player.game.victoryPointsOnSupplyPile[pileName] ?: 0
         if (victoryPointsOnSupplyPile >= 4) {
-            player.addVictoryCoins(victoryPointsOnSupplyPile)
-            player.addEventLogWithUsername("gained $victoryPointsOnSupplyPile VP from $cardNameWithBackgroundColor Supply pile")
-            player.game.victoryPointsOnSupplyPile[pileName] = 0
+            player.takeVictoryPointsFromSupplyPile(this)
             player.trashCardInPlay(this)
             player.game.refreshSupply()
         } else {
-            player.game.victoryPointsOnSupplyPile[pileName] = victoryPointsOnSupplyPile + 1
+            player.game.addVictoryPointToSupplyPile(pileName)
             player.addCoins(victoryPointsOnSupplyPile + 1)
             player.addEventLogWithUsername("added 1 VP to $cardNameWithBackgroundColor Supply pile and gained +\$${victoryPointsOnSupplyPile + 1}")
         }

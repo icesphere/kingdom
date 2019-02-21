@@ -20,9 +20,7 @@ class Temple : EmpiresCard(NAME, CardType.ActionGathering, 4), AfterCardGainedLi
             selectCardsToTrash(player)
         }
 
-        val victoryPointsOnSupplyPile = player.game.victoryPointsOnSupplyPile[pileName] ?: 0
-        player.game.victoryPointsOnSupplyPile[pileName] = victoryPointsOnSupplyPile + 1
-        player.game.refreshSupply()
+        player.game.addVictoryPointToSupplyPile(pileName)
     }
 
     private fun selectCardsToTrash(player: Player) {
@@ -48,9 +46,7 @@ class Temple : EmpiresCard(NAME, CardType.ActionGathering, 4), AfterCardGainedLi
     override fun afterCardGained(player: Player) {
         val victoryPointsOnSupplyPile = player.game.victoryPointsOnSupplyPile[pileName] ?: 0
         if (victoryPointsOnSupplyPile > 0) {
-            player.addVictoryCoins(victoryPointsOnSupplyPile)
-            player.addEventLogWithUsername("gained $victoryPointsOnSupplyPile VP from $cardNameWithBackgroundColor Supply pile")
-            player.game.victoryPointsOnSupplyPile[pileName] = 0
+            player.takeVictoryPointsFromSupplyPile(this)
         }
     }
 
