@@ -20,7 +20,7 @@ class Inn : HinterlandsCard(NAME, CardType.Action, 5), AfterCardGainedListenerFo
     }
 
     override fun afterCardGained(player: Player) {
-        val actionCardsInDiscard = player.cardsInDiscard.filter { it.isAction }
+        val actionCardsInDiscard = player.cardsInDiscardCopy.filter { it.isAction }
         if (actionCardsInDiscard.isNotEmpty()) {
             player.chooseCardsAction(actionCardsInDiscard.size, "Reveal any number of Action cards from your discard pile to shuffle into your deck", this, actionCardsInDiscard, true)
         } else {

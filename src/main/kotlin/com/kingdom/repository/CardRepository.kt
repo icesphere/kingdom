@@ -332,6 +332,7 @@ class CardRepository {
 
     val empiresEvents: List<Event>
         get() = listOf(
+                Annex(),
                 Triumph()
         )
 

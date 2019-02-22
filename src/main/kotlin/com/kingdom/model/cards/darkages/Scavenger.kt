@@ -27,7 +27,7 @@ class Scavenger : DarkAgesCard(NAME, CardType.Action, 4), ChoiceActionCard, Choo
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.removeCardFromDiscard(player.cardsInDiscard.first { it.name == card.name })
+        player.removeCardFromDiscard(card)
         player.addCardToTopOfDeck(card)
     }
 

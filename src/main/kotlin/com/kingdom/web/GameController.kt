@@ -851,6 +851,22 @@ class GameController(private val cardManager: CardManager,
                 val eventCard = game.getNewInstanceOfEvent(cardName)
 
                 if (highlightEventCard(player, eventCard)) {
+
+                    if (player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase && eventCard.debtCost > 0) {
+                        player.yesNoChoice(object : ChoiceActionCard {
+                            override val name: String = "PlayTreasuresBeforeBuyingDebtEvent"
+
+                            override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                                if (choice == 1) {
+                                    player.buyEvent(eventCard)
+                                }
+                            }
+
+                        }, "Are you sure you want to buy ${eventCard.cardNameWithBackgroundColor} before playing your treasure cards?")
+
+                        return
+                    }
+
                     player.buyEvent(eventCard)
 
                     if (player.buys == 0 && player.currentAction == null) {

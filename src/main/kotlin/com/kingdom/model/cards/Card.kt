@@ -9,6 +9,7 @@ import com.kingdom.model.players.Player
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.plural
 import java.util.*
+import kotlin.reflect.full.createInstance
 
 abstract class Card(
         val name: String,
@@ -16,6 +17,7 @@ abstract class Card(
         val type: CardType,
         val cost: Int,
         val debtCost: Int = 0,
+        val id: String = UUID.randomUUID().toString(),
         var special: String = "",
         var addActions: Int = 0,
         var addCoins: Int = 0,
@@ -44,8 +46,6 @@ abstract class Card(
     var isHighlighted: Boolean = false
 
     var isSelected: Boolean = false
-
-    val id: String = UUID.randomUUID().toString()
 
     var addedAbilityCard: Card? = null
 
@@ -372,7 +372,11 @@ abstract class Card(
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(name)
+        return Objects.hash(id)
+    }
+
+    fun copy(): Card {
+        return javaClass.kotlin.createInstance()
     }
 
     open fun removedFromPlay(player: Player) {

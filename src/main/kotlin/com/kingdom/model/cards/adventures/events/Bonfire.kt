@@ -19,7 +19,7 @@ class Bonfire : AdventuresEvent(NAME, 3), ChooseCardsActionCard {
     }
 
     override fun onCardsChosen(player: Player, cards: List<Card>, info: Any?) {
-        cards.forEach { card -> player.trashCardInPlay(player.inPlay.first { it.name == card.name }) }
+        cards.forEach { card -> player.trashCardInPlay(card) }
     }
 
     companion object {

@@ -40,7 +40,7 @@ class CardFromDiscardToTopOfDeck(cardsInDiscard: List<Card>, private val maxCost
     override fun onSelectionDone(player: Player) {
         val card = selectedCards.first()
 
-        player.removeCardFromDiscard(player.cardsInDiscard.first { it.name == card.name })
+        player.removeCardFromDiscard(card)
         player.addCardToTopOfDeck(card)
     }
 }

@@ -25,12 +25,12 @@ class Hermit : DarkAgesCard(NAME, CardType.Action, 3), GameSetupModifier, Choose
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        if (player.cardsInDiscard.any { it.name == card.name }) {
-            player.removeCardFromDiscard(player.cardsInDiscard.first { it.name == card.name })
+        if (player.cardsInDiscard.contains(card)) {
+            player.removeCardFromDiscard(card)
             player.cardTrashed(card)
             player.addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor} from their discard")
         } else {
-            player.removeCardFromHand(player.hand.first { it.name == card.name })
+            player.removeCardFromHand(card)
             player.cardTrashed(card)
             player.addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor} from their hand")
         }

@@ -27,7 +27,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.reflect.full.createInstance
 
 class Game(private val gameManager: GameManager, private val gameMessageService: GameMessageService) {
 
@@ -820,13 +819,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
     fun getNewInstanceOfCard(cardName: String): Card {
-        val card = cardMap[cardName]!!
-        return card.javaClass.kotlin.createInstance()
+        return cardMap[cardName]!!.copy()
     }
 
     fun getNewInstanceOfEvent(eventName: String): Event {
-        val event = eventMap[eventName]!!
-        return event.javaClass.kotlin.createInstance()
+        return eventMap[eventName]!!.copy() as Event
     }
 
     private fun addComputerPlayers() {

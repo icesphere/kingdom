@@ -37,7 +37,7 @@ class Pillage : DarkAgesCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         val opponent = info as Player
-        opponent.discardCardFromHand(opponent.hand.first { it.name == card.name }, true)
+        opponent.discardCardFromHand(card, true)
         opponent.showInfoMessage("${player.username}'s ${this.cardNameWithBackgroundColor} discarded ${card.cardNameWithBackgroundColor} from your hand")
     }
 
