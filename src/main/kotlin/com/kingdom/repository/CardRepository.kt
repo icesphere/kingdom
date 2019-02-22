@@ -14,6 +14,7 @@ import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.empires.*
 import com.kingdom.model.cards.empires.castles.Castles
+import com.kingdom.model.cards.empires.events.*
 import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
@@ -331,7 +332,7 @@ class CardRepository {
 
     val empiresEvents: List<Event>
         get() = listOf(
-
+                Triumph()
         )
 
     val allCards: List<Card>

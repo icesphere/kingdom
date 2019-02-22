@@ -132,7 +132,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var lastTurnSummary: TurnSummary? = null
 
-    private var currentTurnSummary = TurnSummary(username)
+    var currentTurnSummary = TurnSummary(username)
 
     var isWaitingForComputer: Boolean = false
 
@@ -813,6 +813,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (event.isEventActionable(this)) {
             addEventLogWithUsername("bought event: " + event.name)
             coins -= event.cost
+            debt += event.debtCost
             buys -= 1
             isReturnToActionPhase = false
             eventsBought.add(event)
