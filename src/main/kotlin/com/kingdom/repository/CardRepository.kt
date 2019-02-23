@@ -337,6 +337,7 @@ class CardRepository {
                 Banquet(),
                 Delve(),
                 Donate(),
+                Tax(),
                 Triumph()
         )
 

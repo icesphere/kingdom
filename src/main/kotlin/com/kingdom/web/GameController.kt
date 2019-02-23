@@ -1180,6 +1180,7 @@ class GameController(private val cardManager: CardManager,
             val bw = BeansWrapper()
             modelAndView.addObject("supply", bw.wrap(game.numInPileMap))
             modelAndView.addObject("victoryPointsOnSupplyPile", bw.wrap(game.victoryPointsOnSupplyPile))
+            modelAndView.addObject("debtOnSupplyPile", bw.wrap(game.debtOnSupplyPile))
             modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
             if (game.isShowEmbargoTokens) {
                 modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))

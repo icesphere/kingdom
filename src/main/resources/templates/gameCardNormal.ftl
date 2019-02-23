@@ -9,6 +9,11 @@
                 ${victoryPointsOnSupplyPile.get(card.pileName)} VP on Supply pile
             </div>
         </#if>
+        <#if clickType=='supply' && debtOnSupplyPile(card.pileName)?? && debtOnSupplyPile(card.pileName) != 0>
+            <div class="cardRow" style="color: #BB0000";<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
+                ${debtOnSupplyPile.get(card.pileName)} debt on Supply pile
+            </div>
+        </#if>
         <#if card.addCards != 0>
             <div class="cardRow" style="<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
                 + ${card.addCards} Card<#if card.addCards != 1>s</#if>

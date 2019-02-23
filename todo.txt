@@ -26,6 +26,9 @@ bot should not buy too many village type cards
 bot - don't buy curse cards if curses low
 bot logic for events
 auto end turn after action if no buys
+probably don't need isShowCoffers var in Game
+weird ending of turn after Crown + Survivors
+Overlord -> Legionary -> reveal Gold didn't wait for players
 
 remove game.cardsPlayed and just use player.cardsPlayed
 remove game.cardsBought and just use player.cardsBought

@@ -105,6 +105,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     val victoryPointsOnSupplyPile = HashMap<String, Int>()
 
+    val debtOnSupplyPile = HashMap<String, Int>()
+
     val allCards: List<Card>
         get() {
             val cards = (cardsInSupply + kingdomCards).toMutableList()
@@ -1016,6 +1018,20 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     fun clearVictoryPointsFromSupplyPile(pileName: String) {
         victoryPointsOnSupplyPile[pileName] = 0
+        refreshSupply()
+    }
+
+    fun getDebtOnSupplyPile(pileName: String): Int {
+        return debtOnSupplyPile[pileName] ?: 0
+    }
+
+    fun addDebtToSupplyPile(pileName: String, debt: Int) {
+        debtOnSupplyPile[pileName] = getDebtOnSupplyPile(pileName) + debt
+        refreshSupply()
+    }
+
+    fun clearDebtFromSupplyPile(pileName: String) {
+        debtOnSupplyPile[pileName] = 0
         refreshSupply()
     }
 }

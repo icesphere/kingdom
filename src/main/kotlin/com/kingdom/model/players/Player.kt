@@ -840,6 +840,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addEventLogWithUsername("bought card: " + card.cardNameWithBackgroundColor)
             coins -= this.getCardCostWithModifiers(card)
             debt += card.debtCost
+
+            val debtOnSupplyPile = game.getDebtOnSupplyPile(card.pileName)
+            if (debtOnSupplyPile > 0) {
+                debt += debtOnSupplyPile
+                addEventLogWithUsername("gained $debtOnSupplyPile debt from ${card.pileName} pile")
+                game.clearDebtFromSupplyPile(card.pileName)
+            }
+
             buys -= 1
             cardsBought.add(card)
             game.cardsBought.add(card)
@@ -1730,6 +1738,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         isPaidOffDebtThisTurn = true
+
+        addInfoLogWithUsername("paid off $debtToPayOff debt")
 
         this.debt -= debtToPayOff
 
