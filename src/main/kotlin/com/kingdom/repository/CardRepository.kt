@@ -334,6 +334,7 @@ class CardRepository {
         get() = listOf(
                 Advance(),
                 Annex(),
+                Delve(),
                 Donate(),
                 Triumph()
         )
