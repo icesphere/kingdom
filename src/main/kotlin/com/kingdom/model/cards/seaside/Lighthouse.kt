@@ -2,7 +2,7 @@ package com.kingdom.model.cards.seaside
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.StartOfTurnDurationAction
+import com.kingdom.model.cards.actions.StartOfTurnDurationAction
 import com.kingdom.model.cards.listeners.DurationBeforeAttackListener
 import com.kingdom.model.players.Player
 

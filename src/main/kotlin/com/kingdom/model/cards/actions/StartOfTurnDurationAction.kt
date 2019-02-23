@@ -1,4 +1,4 @@
-package com.kingdom.model.cards
+package com.kingdom.model.cards.actions
 
 import com.kingdom.model.players.Player
 

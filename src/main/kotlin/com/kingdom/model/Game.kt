@@ -224,6 +224,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var isTrackTradeRouteTokens: Boolean = false
     var tradeRouteTokensOnMat: Int = 0
 
+    val isGameOver: Boolean
+        get() = emptyPiles >= 3
+                || pileAmounts[Province.NAME] == 0
+                || (isIncludeColonyCards && pileAmounts[Colony.NAME] == 0)
+
     val embargoTokens = HashMap<String, Int>()
 
     val cardsPlayed = LinkedList<Card>()
@@ -626,9 +631,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     fun turnEnded(isAutoEnd: Boolean) {
         addInfoLog("End of turn $turn")
 
-        if (emptyPiles >= 3
-                || pileAmounts[Province.NAME] == 0
-                || (isIncludeColonyCards && pileAmounts[Colony.NAME] == 0)) {
+        if (isGameOver) {
             gameOver()
             return
         }

@@ -2,7 +2,7 @@ package com.kingdom.model.cards.adventures
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.StartOfTurnDurationAction
+import com.kingdom.model.cards.actions.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.cards.modifiers.CardCostModifierForCardsInPlay
 import com.kingdom.model.players.Player

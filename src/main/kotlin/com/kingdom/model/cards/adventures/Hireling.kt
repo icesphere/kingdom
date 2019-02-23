@@ -2,7 +2,7 @@ package com.kingdom.model.cards.adventures
 
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.PermanentDuration
-import com.kingdom.model.cards.StartOfTurnDurationAction
+import com.kingdom.model.cards.actions.StartOfTurnDurationAction
 import com.kingdom.model.players.Player
 
 class Hireling : AdventuresCard(NAME, CardType.ActionDuration, 6), StartOfTurnDurationAction, PermanentDuration {

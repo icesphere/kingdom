@@ -336,6 +336,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         shuffles++
     }
 
+    fun shuffleHandIntoDeck() {
+        deck.addAll(hand)
+        hand.clear()
+        addInfoLogWithUsername("shuffling hand into deck")
+        deck.shuffle()
+        shuffles++
+    }
+
     fun cardRemovedFromPlay(card: Card) {
         card.removedFromPlay(this)
 
@@ -492,6 +500,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         hand.clear()
+
+        eventsBought.filter { it is TurnEndedListenerForEventsBought }
+                .forEach { (it as TurnEndedListenerForEventsBought).onTurnEnded(this) }
 
         resolveActions()
 
@@ -1795,5 +1806,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addVictoryCoins(victoryPointsOnSupplyPile)
         addEventLogWithUsername("gained $victoryPointsOnSupplyPile VP from ${card.cardNameWithBackgroundColor} Supply pile")
         game.clearVictoryPointsFromSupplyPile(card.pileName)
+    }
+
+    fun clearDiscard() {
+        discard.clear()
     }
 }

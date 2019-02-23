@@ -1,7 +1,7 @@
 package com.kingdom.model.cards.seaside
 
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.StartOfTurnDurationAction
+import com.kingdom.model.cards.actions.StartOfTurnDurationAction
 import com.kingdom.model.players.Player
 
 class FishingVillage : SeasideCard(NAME, CardType.ActionDuration, 3), StartOfTurnDurationAction {
