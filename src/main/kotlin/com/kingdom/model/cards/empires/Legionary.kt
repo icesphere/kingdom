@@ -39,6 +39,10 @@ class Legionary : EmpiresCard(NAME, CardType.ActionAttack, 5), ChoiceActionCard,
                     opponent.drawCard()
                 }
             }
+
+            if (player.isOpponentHasAction) {
+                player.waitForOtherPlayersToResolveActions()
+            }
         }
     }
 

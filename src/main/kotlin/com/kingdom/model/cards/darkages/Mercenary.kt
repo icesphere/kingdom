@@ -35,6 +35,10 @@ class Mercenary : DarkAgesCard(NAME, CardType.ActionAttack, 0), ChoiceActionCard
                     opponent.discardCardsFromHand(opponent.hand.size - 3, false)
                 }
             }
+
+            if (player.isOpponentHasAction) {
+                player.waitForOtherPlayersToResolveActions()
+            }
         }
     }
 
