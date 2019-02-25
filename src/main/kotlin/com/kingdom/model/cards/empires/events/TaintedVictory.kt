@@ -26,9 +26,7 @@ class TaintedVictory : EmpiresEvent(NAME, 4), TrashCardsForBenefitActionCard {
 
         val cost = player.getCardCostWithModifiers(card)
 
-        player.addVictoryCoins(cost)
-
-        player.addEventLogWithUsername("gained +$cost VP")
+        player.addVictoryCoins(cost, true)
     }
 
     companion object {

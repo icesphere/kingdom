@@ -422,11 +422,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun addVictoryCoins(victoryCoins: Int) {
+    fun addVictoryCoins(victoryCoins: Int, showLog: Boolean = false) {
         if (victoryCoins == 0) {
             return
         }
         this.victoryCoins += victoryCoins
+
+        if (showLog) {
+            addEventLogWithUsername("gained +$victoryCoins VP")
+        }
+
         refreshPlayerHandArea()
         game.refreshPlayers()
     }
@@ -1625,7 +1630,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun playAllTreasureCards() {
-        val treasureCardsToPlay = hand.filter { it.isTreasure && !it.isTreasureExcludedFromAutoPlay }
+
+        val numTreasures = hand.count { it.isTreasure }
+
+        val treasureCardsToPlay = if (numTreasures == 1) hand.filter { it.isTreasure } else hand.filter { it.isTreasure && !it.isTreasureExcludedFromAutoPlay }
 
         if (treasureCardsToPlay.isEmpty()) {
             return

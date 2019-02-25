@@ -335,6 +335,7 @@ class CardRepository {
                 Advance(),
                 Annex(),
                 Banquet(),
+                Conquest(),
                 Delve(),
                 Donate(),
                 SaltTheEarth(),

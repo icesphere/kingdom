@@ -19,7 +19,7 @@ class RoyalCarriage : AdventuresCard(NAME, CardType.ActionReserve, 5), TavernCar
     override fun isTavernCardActionable(player: Player): Boolean {
         val lastInPlay = player.inPlay.lastOrNull()
         val lastPlayed = player.cardsPlayed.lastOrNull()
-        return lastInPlay != null && lastPlayed != null && lastInPlay == lastPlayed
+        return lastInPlay != null && lastPlayed != null && lastInPlay == lastPlayed && lastInPlay.isAction && !player.isBuyPhase
     }
 
     override fun onTavernCardCalled(player: Player) {
