@@ -32,6 +32,6 @@ class TaintedVictory : EmpiresEvent(NAME, 4), TrashCardsForBenefitActionCard {
     }
 
     companion object {
-        const val NAME: String = "Sell Trash"
+        const val NAME: String = "Tainted Victory"
     }
 }

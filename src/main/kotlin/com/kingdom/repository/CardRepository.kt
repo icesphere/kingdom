@@ -340,7 +340,8 @@ class CardRepository {
                 SaltTheEarth(),
                 TaintedVictory(),
                 Tax(),
-                Triumph()
+                Triumph(),
+                Wedding()
         )
 
     val allCards: List<Card>
