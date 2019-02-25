@@ -1431,7 +1431,6 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-            modelAndView.addObject("showCoffers", game.isShowCoffers)
             modelAndView.addObject("playTreasureCards", !player.isCardsBought)
             return modelAndView
         } catch (t: Throwable) {
@@ -1803,7 +1802,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
         modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
         modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-        modelAndView.addObject("showCoffers", game.isShowCoffers)
         modelAndView.addObject("showIslandCards", game.isShowIslandCards)
         modelAndView.addObject("showTavern", game.isShowTavern)
         modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)

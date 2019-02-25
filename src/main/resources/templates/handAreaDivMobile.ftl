@@ -29,7 +29,7 @@
     <#if showPirateShipCoins>
         <div class="handAreaTopRowLeft" style="clear:both;">${player.pirateShipCoins} Pirate Ship Coin<#if player.pirateShipCoins != 1>s</#if></div>
     </#if>   
-    <#if showCoffers>
+    <#if player.coffers != 0>
         <div class="handAreaTopRowLeft" style="clear:both;"><a href="javascript:useCoffers()">${player.coffers} Coffers</a></div>
     </#if>
     <#if player.victoryCoins != 0>

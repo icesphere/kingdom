@@ -202,8 +202,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var isRandomizerReplacementCardNotFound: Boolean = false
 
-    var isShowCoffers: Boolean = false
-
     var isShowTavern: Boolean = false
 
     var isShowJourneyToken: Boolean = false
@@ -342,10 +340,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
             if (it.isLooter) {
                 isIncludeRuins = true
-            }
-
-            if (it.addCoffers > 0) {
-                isShowCoffers = true
             }
 
             if (it is TavernCard) {

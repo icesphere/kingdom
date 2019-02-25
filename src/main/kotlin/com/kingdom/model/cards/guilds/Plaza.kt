@@ -1,23 +1,17 @@
 package com.kingdom.model.cards.guilds
 
-import com.kingdom.model.Game
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.actions.DiscardCardsForBenefitActionCard
 import com.kingdom.model.players.Player
 
-class Plaza : GuildsCard(NAME, CardType.Action, 4), GameSetupModifier, ChoiceActionCard, DiscardCardsForBenefitActionCard {
+class Plaza : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard, DiscardCardsForBenefitActionCard {
 
     init {
         addCards = 1
         addActions = 2
         special = "You may discard a Treasure for +1 Coffers."
-    }
-
-    override fun modifyGameSetup(game: Game) {
-        game.isShowCoffers = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

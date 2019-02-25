@@ -29,12 +29,8 @@
         <#if showPirateShipCoins>
             <td class="handAreaTopRow">${player.pirateShipCoins} Pirate Ship Coin<#if player.pirateShipCoins != 1>s</#if></td>
         </#if>      
-        <#if showCoffers>
-            <#if player.coffers gt 0>
-                <td class="handAreaTopRow"><a href="javascript:useCoffers()">${player.coffers} Coffers</a></td>
-            <#else>
-                <td class="handAreaTopRow">0 Coffers</td>
-            </#if>
+        <#if player.coffers != 0>
+            <td class="handAreaTopRow"><a href="javascript:useCoffers()">${player.coffers} Coffers</a></td>
         </#if>
         <#if player.victoryCoins != 0>
             <td class="handAreaTopRow">${player.victoryCoins} Victory Coin<#if player.victoryCoins != 1>s</#if></td>

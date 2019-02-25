@@ -93,7 +93,7 @@
                                     </td>
                                 </tr>
                             </#if>
-                            <#if showCoffers>
+                            <#if p.coffers != 0>
                                 <tr>
                                     <td class="gameInfoLabel">
                                         Coffers:
