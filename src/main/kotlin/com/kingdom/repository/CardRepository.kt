@@ -3,6 +3,7 @@ package com.kingdom.repository
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.Event
+import com.kingdom.model.cards.Landmark
 import com.kingdom.model.cards.adventures.*
 import com.kingdom.model.cards.adventures.events.*
 import com.kingdom.model.cards.base.*
@@ -15,6 +16,7 @@ import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.empires.*
 import com.kingdom.model.cards.empires.castles.Castles
 import com.kingdom.model.cards.empires.events.*
+import com.kingdom.model.cards.empires.landmarks.*
 import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
@@ -347,12 +349,23 @@ class CardRepository {
                 Windfall()
         )
 
+    val empiresLandmarks: List<Landmark>
+        get() = listOf(
+                Aqueduct()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
                 hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards
 
     val allEvents: List<Event>
         get() = adventuresEvents + empiresEvents
+
+    val allLandmarks: List<Landmark>
+        get() = empiresLandmarks
+
+    val allEventsAndLandmarks: List<Card>
+        get() = allEvents + allLandmarks
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {

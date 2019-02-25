@@ -4,6 +4,8 @@ import com.kingdom.model.Game
 import com.kingdom.model.RandomizingOptions
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
+import com.kingdom.model.cards.Event
+import com.kingdom.model.cards.Landmark
 import com.kingdom.repository.CardRepository
 import org.springframework.stereotype.Service
 import java.util.*
@@ -24,7 +26,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
         addCards(game, options)
 
-        addEvents(game, options)
+        addEventsAndLandmarks(game, options)
     }
 
     private fun addCards(game: Game, options: RandomizingOptions) {
@@ -137,21 +139,25 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         game.kingdomCards = selectedCards
     }
 
-    private fun addEvents(game: Game, options: RandomizingOptions) {
+    private fun addEventsAndLandmarks(game: Game, options: RandomizingOptions) {
 
-        val events = cardRepository.allEvents.filterNot { it.disabled }.shuffled()
+        val eventsAndLandmarks = cardRepository.allEventsAndLandmarks.filterNot { it.disabled }.shuffled()
 
-        val numEvents = options.numEvents
+        val numEventsAndLandmarks = options.numEventsAndLandmarks
 
-        val selectedEvents = LinkedList(options.customEventSelection)
+        val selectedEventsAndLandmarks = LinkedList(options.customEventSelection + options.customLandmarkSelection)
 
-        if (selectedEvents.size < numEvents) {
-            val selectedEventNames = selectedEvents.map { it.name }
-            val availableEvents = events.filterNot { selectedEventNames.contains(it.name) }
-            selectedEvents.addAll(availableEvents.subList(0, numEvents - selectedEvents.size))
+        if (selectedEventsAndLandmarks.size < numEventsAndLandmarks) {
+            val selectedEventAndLandmarkNames = selectedEventsAndLandmarks.map { it.name }
+            val availableEventsAndLandmarks = eventsAndLandmarks.filterNot { selectedEventAndLandmarkNames.contains(it.name) }
+            selectedEventsAndLandmarks.addAll(availableEventsAndLandmarks.subList(0, numEventsAndLandmarks - selectedEventsAndLandmarks.size))
         }
 
-        game.events = selectedEvents
+        @Suppress("UNCHECKED_CAST")
+        game.events = (selectedEventsAndLandmarks.filter { it.isEvent } as List<Event>).toMutableList()
+
+        @Suppress("UNCHECKED_CAST")
+        game.landmarks = (selectedEventsAndLandmarks.filter { it.isLandmark } as List<Landmark>).toMutableList()
     }
 
     private fun addBaneCard(): Boolean {
@@ -248,23 +254,36 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         setRandomKingdomCardsAndEvents(game, swapOptions)
     }
 
-    fun swapEvent(game: Game, eventName: String) {
+    fun swapEventOrLandmark(game: Game, name: String) {
 
-        val events = cardRepository.allEvents.filterNot { it.disabled }.shuffled()
+        val eventsAndLandmarks = cardRepository.allEventsAndLandmarks.filterNot { it.disabled }.shuffled()
 
-        val selectedEvents = LinkedList(game.events)
+        val selectedEventsAndLandmarks = LinkedList(game.events + game.landmarks)
 
-        val selectedEventNames = selectedEvents.map { it.name }
+        val selectedNames = selectedEventsAndLandmarks.map { it.name }
 
-        val availableEvents = events.filterNot { selectedEventNames.contains(it.name) }
+        val availableEventsAndLandmarks = eventsAndLandmarks.filterNot { selectedNames.contains(it.name) }
 
-        game.events = selectedEvents.map {
-            if (it.name == eventName) {
-                availableEvents.first()
-            } else {
-                it
-            }
-        }.toMutableList()
+        val replacement = availableEventsAndLandmarks.first()
+
+        if (replacement.isEvent) {
+            game.events = game.events.map {
+                if (it.name == name) {
+                    replacement as Event
+                } else {
+                    it
+                }
+            }.toMutableList()
+        } else if (replacement.isLandmark) {
+            game.landmarks = game.landmarks.map {
+                if (it.name == name) {
+                    replacement as Landmark
+                } else {
+                    it
+                }
+            }.toMutableList()
+        }
+
     }
 
     private fun getCardsByDeck(deck: Deck): MutableList<Card> {

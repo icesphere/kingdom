@@ -4,6 +4,7 @@ import com.kingdom.model.Game
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.Event
+import com.kingdom.model.cards.Landmark
 import com.kingdom.repository.CardRepository
 import com.kingdom.util.CardRandomizer
 import org.springframework.stereotype.Service
@@ -20,6 +21,9 @@ class CardManager(private val cardRepository: CardRepository,
 
     val allEvents: List<Event>
         get() = cardRepository.allEvents
+
+    val allLandmarks: List<Landmark>
+        get() = cardRepository.allLandmarks
 
     val shelters: List<Card>
         get() = cardRepository.shelters
@@ -39,6 +43,10 @@ class CardManager(private val cardRepository: CardRepository,
         return allEvents.first { it.name == eventName }
     }
 
+    fun getLandmark(landmarkName: String): Landmark {
+        return allLandmarks.first { it.name == landmarkName }
+    }
+
     fun setRandomKingdomCardsAndEvents(game: Game) {
         cardRandomizer.setRandomKingdomCardsAndEvents(game, game.randomizingOptions!!)
     }
@@ -48,7 +56,7 @@ class CardManager(private val cardRepository: CardRepository,
     }
 
     fun swapEvent(game: Game, eventName: String) {
-        cardRandomizer.swapEvent(game, eventName)
+        cardRandomizer.swapEventOrLandmark(game, eventName)
     }
 
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {

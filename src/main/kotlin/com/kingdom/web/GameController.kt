@@ -107,6 +107,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("user", user)
         modelAndView.addObject("decks", getDecks(includeTesting))
         modelAndView.addObject("events", cardManager.allEvents.sortedBy { it.name })
+        modelAndView.addObject("landmarks", cardManager.allLandmarks.sortedBy { it.name })
         modelAndView.addObject("excludedCards", user.excludedCardNames)
     }
 
@@ -122,24 +123,26 @@ class GameController(private val cardManager: CardManager,
         val user = User()
         val game = Game(gameManager, gameMessageService)
 
-        processCardsAndEvents(request, game, user)
+        processCards(request, game, user)
 
         return showRandomConfirmPage(request, user, game)
     }
 
-    private fun processCardsAndEvents(request: HttpServletRequest, game: Game, user: User) {
+    private fun processCards(request: HttpServletRequest, game: Game, user: User) {
         val generateType = request.getParameter("generateType")
 
         val eventSelection = request.getParameter("eventSelection")
+        val landmarkSelection = request.getParameter("landmarkSelection")
 
         val decks = ArrayList<Deck>()
         val customCardSelection = ArrayList<Card>()
         val excludedCards = ArrayList<Card>(0)
         val customEventSelection = ArrayList<Event>()
+        val customLandmarkSelection = ArrayList<Landmark>()
 
-        parseCardAndEventSelectionRequest(request, decks, customCardSelection, excludedCards, customEventSelection)
+        parseCardAndEventSelectionRequest(request, decks, customCardSelection, excludedCards, customEventSelection, customLandmarkSelection)
 
-        setRandomizingOptions(request, game, customCardSelection, excludedCards, generateType, customEventSelection, eventSelection)
+        setRandomizingOptions(request, game, customCardSelection, excludedCards, generateType, customEventSelection, customLandmarkSelection, eventSelection, landmarkSelection)
 
         game.decks = decks
 
@@ -208,7 +211,7 @@ class GameController(private val cardManager: CardManager,
                 }
                 game.mobile = KingdomUtil.isMobile(request)
 
-                processCardsAndEvents(request, game, user)
+                processCards(request, game, user)
 
                 return ModelAndView("redirect:/confirmCards.html")
             }
@@ -219,7 +222,7 @@ class GameController(private val cardManager: CardManager,
 
     }
 
-    private fun parseCardAndEventSelectionRequest(request: HttpServletRequest, decks: MutableList<Deck>, customCardSelection: MutableList<Card>, excludedCards: MutableList<Card>, customEventSelection: MutableList<Event>) {
+    private fun parseCardAndEventSelectionRequest(request: HttpServletRequest, decks: MutableList<Deck>, customCardSelection: MutableList<Card>, excludedCards: MutableList<Card>, customEventSelection: MutableList<Event>, customLandmarkSelection: MutableList<Landmark>) {
         val parameterNames = request.parameterNames
         while (parameterNames.hasMoreElements()) {
             val name = parameterNames.nextElement() as String
@@ -242,6 +245,11 @@ class GameController(private val cardManager: CardManager,
                     val event = cardManager.getEvent(eventName)
                     customEventSelection.add(event)
                 }
+                name.startsWith("landmark_") -> {
+                    val landmarkName = name.substring(6)
+                    val landmark = cardManager.getLandmark(landmarkName)
+                    customLandmarkSelection.add(landmark)
+                }
                 name.startsWith("excluded_card_") -> {
                     val cardName = name.substring(14)
                     val card = cardManager.getCard(cardName)
@@ -251,7 +259,7 @@ class GameController(private val cardManager: CardManager,
         }
     }
 
-    private fun setRandomizingOptions(request: HttpServletRequest, game: Game, customCardSelection: List<Card>, excludedCards: List<Card>, generateType: String, customEventSelection: List<Event>, eventSelection: String) {
+    private fun setRandomizingOptions(request: HttpServletRequest, game: Game, customCardSelection: List<Card>, excludedCards: List<Card>, generateType: String, customEventSelection: List<Event>, customLandmarkSelection: List<Landmark>, eventSelection: String, landmarkSelection: String) {
         val options = RandomizingOptions()
 
         options.excludedCards = excludedCards
@@ -270,10 +278,14 @@ class GameController(private val cardManager: CardManager,
             game.isAlwaysIncludeColonyAndPlatinum = KingdomUtil.getRequestBoolean(request, "alwaysIncludeColonyAndPlatinum")
         }
 
-        options.numEvents = KingdomUtil.getRequestInt(request, "numEvents", 2)
+        options.numEventsAndLandmarks = KingdomUtil.getRequestInt(request, "numEventsAndLandmarks", 2)
 
         if (eventSelection == "custom") {
             options.customEventSelection = customEventSelection
+        }
+
+        if (landmarkSelection == "custom") {
+            options.customLandmarkSelection = customLandmarkSelection
         }
 
         game.randomizingOptions = options
@@ -368,7 +380,7 @@ class GameController(private val cardManager: CardManager,
         }
     }
 
-    @RequestMapping("/swapEvent.html")
+    @RequestMapping("/swapEventOrLandmark.html")
     fun swapEvent(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
         val game = getGame(request)

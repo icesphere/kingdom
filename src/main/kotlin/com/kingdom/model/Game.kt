@@ -84,6 +84,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var events = mutableListOf<Event>()
 
+    var landmarks = mutableListOf<Landmark>()
+
     private val supplyCards = ArrayList<Card>()
 
     val cardsInSupply: List<Card>

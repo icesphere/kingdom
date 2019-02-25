@@ -102,6 +102,7 @@ abstract class Card(
             CardType.ActionGathering -> "Action - Gathering"
             CardType.ActionTreasure -> "Action - Treasure"
             CardType.Event -> "Event"
+            CardType.Landmark -> "Landmark"
         }
 
     val numTypes: Int
@@ -151,6 +152,7 @@ abstract class Card(
             CardType.ActionGathering -> 2
             CardType.ActionTreasure -> 2
             CardType.Event -> 1
+            CardType.Landmark -> 1
         }
 
     val isSpecialCard: Boolean
@@ -262,6 +264,9 @@ abstract class Card(
     val isEvent: Boolean
         get() = type == CardType.Event
 
+    val isLandmark: Boolean
+        get() = type == CardType.Landmark
+
     val isGathering: Boolean
         get() = type == CardType.ActionGathering
 
@@ -296,6 +301,7 @@ abstract class Card(
             type == CardType.ActionReserveVictory -> CardColor.ActionReserveVictory
             type == CardType.TreasureReserve -> CardColor.TreasureReserve
             type == CardType.ActionTreasure -> CardColor.ActionTreasure
+            type == CardType.Landmark -> CardColor.Victory
             isTreasure -> CardColor.Treasure
             isVictory -> CardColor.Victory
             else -> CardColor.Action

@@ -42,7 +42,8 @@ function createGame() {
     var eventSelection = $('input[name=eventSelection]:checked').val();
     var cardsSelected = $("input[name^='card_']:checked:visible").length;
     var eventsSelected = $("input[name^='event_']:checked:visible").length;
-    var numEvents = $("#numEvents option:selected").val()
+    var landmarksSelected = $("input[name^='landmark_']:checked:visible").length;
+    var numEventsAndLandmarks = $("#numEventsAndLandmarks option:selected").val()
     var numHumanPlayers = 0;
     $('[value*="human"]').each(function () {
         if($(this).attr('selected')) {
@@ -55,8 +56,11 @@ function createGame() {
     else if(generateType == "custom" && cardsSelected > 10) {
         alert("You can't select more than 10 cards");
     }
-    else if(eventSelection == "custom" && eventsSelected > numEvents) {
-        alert("You selected too many events");
+    else if(eventSelection == "custom" && eventsSelected + landmarksSelected > numEventsAndLandmarks) {
+        alert("You selected too many events and landmarks");
+    }
+    else if(landmarkSelection == "custom" && eventsSelected + landmarksSelected > numEventsAndLandmarks) {
+        alert("You selected too many events and landmarks");
     }
     else {
         saveSelectedValuesToLocalStorage();
@@ -108,6 +112,11 @@ function selectEvent() {
     $("#numEventsSelected").html(eventsSelected);
 }
 
+function selectLandmark() {
+    var landmarksSelected = $("input[name^='landmark_']:checked:visible").length;
+    $("#numLandmarksSelected").html(landmarksSelected);
+}
+
 function toggleGenerateType(){
     var generateType = $('input[name=generateType]:checked').val();
     if(generateType == "custom") {
@@ -133,6 +142,16 @@ function toggleEventSelection(){
     }
     else {
         $("#customEvents").hide();
+    }
+}
+
+function toggleLandmarkSelection(){
+    var landmarkSelection = $('input[name=landmarkSelection]:checked').val();
+    if (landmarkSelection == "custom") {
+        $("#customLandmarks").show();
+    }
+    else {
+        $("#customLandmarks").hide();
     }
 }
 

@@ -136,9 +136,9 @@
                     </div>
                 </div>
                 <div style="padding-top:10px;float:left;clear:both;">
-                    <div style="float:left;"><span class="label"># Events:</span></div>
+                    <div style="float:left;"><span class="label"># Events/Landmarks:</span></div>
                     <div style="clear:both;float:left;padding-left:10px;">
-                        <select id="numEvents" name="numEvents">
+                        <select id="numEventsAndLandmarks" name="numEventsAndLandmarks">
                             <option value="0">0</option>
                             <option value="1">1</option>
                             <option value="2" selected>2</option>
@@ -153,6 +153,15 @@
                     </div>
                     <div style="float:left;padding-left:10px;">
                         <input id="eventSelectionCustom" type="radio" name="eventSelection" value="custom" onclick="toggleEventSelection()"/> <label for="eventSelectionCustom">Custom</label>
+                    </div>
+                </div>
+                <div style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label">Landmark Selection:</span></div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        <input id="landmarkSelectionRandom" type="radio" name="landmarkSelection" value="random" onclick="toggleLandmarkSelection()" checked="true"/> <label for="landmarkSelectionRandom">Random</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="landmarkSelectionCustom" type="radio" name="landmarkSelection" value="custom" onclick="toggleLandmarkSelection()"/> <label for="landmarkSelectionCustom">Custom</label>
                     </div>
                 </div>
                 <div id="randomizingOptions" style="padding-top:10px;float:left;clear:both;">
@@ -226,6 +235,25 @@
                             <#list events as event>
                                 <div style="float:left;clear:both;">
                                     <#include "createGameEventRow.ftl">
+                                </div>
+                            </#list>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="customLandmarks" style="display:none;float:left;clear:both;">
+                    <div class="label" style="padding-top:10px;">
+                        Choose Specific Landmarks:
+                    </div>
+                    <div style="clear:both;float:left;">
+                        <div style="float:left;padding-left:10px;color:red;">Landmarks selected:</div><div id="numLandmarksSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining landmarks will be randomized based on selected decks)</div>
+                    </div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        <div class="customCardsDeck">
+                            <div style="float:left;" class="label">Landmarks</div>
+                            <#list landmarks as landmark>
+                                <div style="float:left;clear:both;">
+                                    <#include "createGameLandmarkRow.ftl">
                                 </div>
                             </#list>
                         </div>
