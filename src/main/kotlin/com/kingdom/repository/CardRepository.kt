@@ -338,6 +338,7 @@ class CardRepository {
                 Delve(),
                 Donate(),
                 SaltTheEarth(),
+                TaintedVictory(),
                 Tax(),
                 Triumph()
         )
