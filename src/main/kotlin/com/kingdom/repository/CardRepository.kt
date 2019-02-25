@@ -337,6 +337,7 @@ class CardRepository {
                 Banquet(),
                 Conquest(),
                 Delve(),
+                Dominate(),
                 Donate(),
                 SaltTheEarth(),
                 TaintedVictory(),
