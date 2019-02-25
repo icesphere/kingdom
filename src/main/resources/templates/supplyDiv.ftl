@@ -57,7 +57,6 @@
             <#assign clickType="event">
             <td>
                 <table>
-                    <tr><td style="font-weight: bold; font-size: 14px; padding-bottom: 3px;">Events</td></tr>
                     <tr>
                         <#list events as card>
                             <#if card_index == 1>
@@ -65,12 +64,14 @@
                                 <tr>
                             </#if>
                             <td>
-                                <#include "gameCard.ftl">
+                                <table cellpadding="0" cellspacing="0">
+                                    <#if gameStatus == "InProgress">
+                                        <tr><td style="font-size:10px;">Event</td></tr>
+                                    </#if>
+                                    <tr><td><#include "gameCard.ftl"></td></tr>
+                                </table>
                             </td>
                         </#list>
-                        <#if events?size == 1>
-                            <tr><td style="height: 110px;">&#160;</td></tr>
-                        </#if>
                     </tr>
                 </table>
             </td>
