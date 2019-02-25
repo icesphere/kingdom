@@ -341,7 +341,8 @@ class CardRepository {
                 TaintedVictory(),
                 Tax(),
                 Triumph(),
-                Wedding()
+                Wedding(),
+                Windfall()
         )
 
     val allCards: List<Card>
