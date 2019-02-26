@@ -40,6 +40,7 @@ function createGame() {
     var decksSelected = $("input[name^='deck_']:checked").length;
     var generateType = $('input[name=generateType]:checked').val();
     var eventSelection = $('input[name=eventSelection]:checked').val();
+    var landmarkSelection = $('input[name=landmarkSelection]:checked').val();
     var cardsSelected = $("input[name^='card_']:checked:visible").length;
     var eventsSelected = $("input[name^='event_']:checked:visible").length;
     var landmarksSelected = $("input[name^='landmark_']:checked:visible").length;

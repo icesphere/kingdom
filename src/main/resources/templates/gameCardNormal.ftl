@@ -4,7 +4,7 @@
     </div>
 
     <div class="cardContent" style="<#if card.nameLines == 2>height: 52px;</#if>">
-        <#if clickType=='supply' && victoryPointsOnSupplyPile(card.pileName)?? && victoryPointsOnSupplyPile(card.pileName) != 0>
+        <#if (clickType=='supply' || clickType == 'landmark') && victoryPointsOnSupplyPile(card.pileName)?? && victoryPointsOnSupplyPile(card.pileName) != 0>
             <div class="cardRow" style="color: #00BB00";<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
                 ${victoryPointsOnSupplyPile.get(card.pileName)} VP on Supply pile
             </div>
@@ -73,7 +73,7 @@
     </div>
 </div>
 <div style="position:absolute; right:3px; bottom:0;<#if card.attack>color:#C00;</#if> font-size:<#if card.typeAsString?length &gt; 22>6<#elseif card.typeAsString?length &gt; 18>7<#elseif card.typeAsString?length &gt; 14>8<#else>10</#if>px; ">${card.typeAsString}</div>
-<#if card.cost != 0 || card.debtCost == 0>
+<#if !card.landmark && (card.cost != 0 || card.debtCost == 0)>
     <div style="position:absolute; left:2px; bottom:16px; display: flex;"><div style="position: absolute; left: <#if cost &gt; 9>2px<#else>4px</#if>; z-index: 1; font-size: <#if cost &gt; 9>12px<#else>13px</#if>; font-weight: bold;">${cost}<#if card.overpayForCardAllowed>+</#if></div><img src="images/coin.png" alt="coin" height="15" width="15" style="position: absolute;"/></div>
 </#if>
 <#if card.debtCost != 0>

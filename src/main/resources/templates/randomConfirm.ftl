@@ -28,7 +28,7 @@
                 <a href="showGameCards.html" target="_blank">Card Details</a>
             </div>
             <div style="padding-bottom: 5px;">
-                <#if events?has_content>
+                <#if eventsAndLandmarks?has_content>
                     <div style="font-weight: bold; padding-bottom: 5px;">Kingdom Cards:</div>
                 </#if>
                 <#assign clickType="random">
@@ -43,11 +43,11 @@
                     </div>
                 </#list>
             </div>
-            <#if events?has_content>
+            <#if eventsAndLandmarks?has_content>
                 <div style="clear: both; padding-top: 5px; padding-bottom: 5px;">
-                    <div style="font-weight: bold; padding-bottom: 5px;">Events:</div>
+                    <div style="font-weight: bold; font-size: 14px; padding-bottom: 5px;">Events/Landmarks:</div>
                     <#assign clickType="random">
-                    <#list events as card>
+                    <#list eventsAndLandmarks as card>
                         <div style="float:left;padding-right:2px;padding-top:2px;">
                             <#if cards?size == 11 && card_index == 10>
                                 <#assign baneCard = true>

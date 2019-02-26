@@ -716,6 +716,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     (it as CardGainedListenerForCardsInSupply).onCardGained(cardToGain, this)
                 }
 
+        game.landmarks.filter { it is CardGainedListenerForLandmark }
+                .forEach {
+                    (it as CardGainedListenerForLandmark).onCardGained(cardToGain, this)
+                }
+
         val cardGainedListenersForCardsInHand = hand.filter { it is CardGainedListenerForCardsInHand }.toMutableList()
         cardGainedListenersForCardsInHand.addAll(hand.filter { it.addedAbilityCard is CardGainedListenerForCardsInHand }.map { it.addedAbilityCard!! })
 

@@ -53,20 +53,24 @@
                 </tr>
             </table>
         </td>
-        <#if events?has_content>
-            <#assign clickType="event">
+        <#if eventsAndLandmarks?has_content>
             <td>
                 <table>
                     <tr>
-                        <#list events as card>
+                        <#list eventsAndLandmarks as card>
                             <#if card_index == 1>
                                 </tr>
                                 <tr>
                             </#if>
+                            <#if card.event>
+                                <#assign clickType="event">
+                            <#else>
+                                <#assign clickType="landmark">
+                            </#if>
                             <td>
                                 <table cellpadding="0" cellspacing="0">
                                     <#if gameStatus == "InProgress">
-                                        <tr><td style="font-size:10px;">Event</td></tr>
+                                        <tr><td style="font-size:10px;"><#if card.event>Event<#else>Landmark</#if></td></tr>
                                     </#if>
                                     <tr><td><#include "gameCard.ftl"></td></tr>
                                 </table>

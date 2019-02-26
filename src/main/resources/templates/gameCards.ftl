@@ -13,7 +13,7 @@
     <#assign card_index = 1>
     <#assign mobile = false>
 
-    <#if events?has_content>
+    <#if eventsAndLandmarks?has_content>
         <div style="clear:both;float:left;">
             Kingdom Cards:
         </div>
@@ -27,12 +27,12 @@
         </#list>
     </div>
 
-    <#if events?has_content>
+    <#if eventsAndLandmarks?has_content>
         <div style="clear:both;float:left;">
-            Events:
+            Events/Landmarks:
         </div>
         <div style="clear:both;">
-            <#list events as card>
+            <#list eventsAndLandmarks as card>
                 <div style="float:left;padding-right:2px;padding-top:2px;">
                     <#include "gameCard.ftl">
                 </div>

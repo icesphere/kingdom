@@ -16,7 +16,7 @@
         <script type="text/javascript" >
             var createGame = ${createGame?string};
         </script>
-        <script type="text/javascript" src="js/selectCards.js?8"></script>
+        <script type="text/javascript" src="js/selectCards.js?9"></script>
 	</head>
 	<body>
         <div class="topGradient"></div>
@@ -146,59 +146,7 @@
                         </select>
                     </div>
                 </div>
-                <div style="padding-top:10px;float:left;clear:both;">
-                    <div style="float:left;"><span class="label">Event Selection:</span></div>
-                    <div style="clear:both;float:left;padding-left:10px;">
-                        <input id="eventSelectionRandom" type="radio" name="eventSelection" value="random" onclick="toggleEventSelection()" checked="true"/> <label for="eventSelectionRandom">Random</label>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input id="eventSelectionCustom" type="radio" name="eventSelection" value="custom" onclick="toggleEventSelection()"/> <label for="eventSelectionCustom">Custom</label>
-                    </div>
-                </div>
-                <div style="padding-top:10px;float:left;clear:both;">
-                    <div style="float:left;"><span class="label">Landmark Selection:</span></div>
-                    <div style="clear:both;float:left;padding-left:10px;">
-                        <input id="landmarkSelectionRandom" type="radio" name="landmarkSelection" value="random" onclick="toggleLandmarkSelection()" checked="true"/> <label for="landmarkSelectionRandom">Random</label>
-                    </div>
-                    <div style="float:left;padding-left:10px;">
-                        <input id="landmarkSelectionCustom" type="radio" name="landmarkSelection" value="custom" onclick="toggleLandmarkSelection()"/> <label for="landmarkSelectionCustom">Custom</label>
-                    </div>
-                </div>
-                <div id="randomizingOptions" style="padding-top:10px;float:left;clear:both;">
-                    <div style="float:left;"><span class="label">Randomizing Options:</span></div><#if mobile><div style="float:left;padding-left:5px;"><a href="javascript:toggleRandomizingOptions()" id="randomizingOptionsLink">Show</a></div></#if>
-                    <div id="randomizingOptionsContent" <#if mobile>style="display:none"</#if>>
-                        <div style="float:left;padding-left:10px;">
-                            <input type="checkbox" name="oneOfEachCost" id="oneOfEachCost" value="true"/> <label for="oneOfEachCost">At least one card each of cost 2, 3, 4 and 5</label>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            <input type="checkbox" name="alwaysIncludeColonyAndPlatinum" id="alwaysIncludeColonyAndPlatinum" value="true"/> <label for="alwaysIncludeColonyAndPlatinum">Always Include Colony and Platinum</label>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            <input type="checkbox" name="oneWithBuy" id="oneWithBuy" value="true"/> <label for="oneWithBuy">At least one card with additional buys</label>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            <input type="checkbox" name="oneWithActions" id="oneWithActions" value="true"/> <label for="oneWithActions">At least one card with +2 or more actions</label>
-                        </div>
-                        <div style="float:left;padding-left:10px;">
-                            <input type="checkbox" name="defenseForAttack" id="defenseForAttack" value="true"/> <label for="defenseForAttack">Include Moat, Lighthouse or Watchtower if there is an Attack card</label>
-                        </div>
-                    </div>
-                </div>
-                <div id="excludedCards" style="padding-top:10px;float:left;clear:both;">
-                    <div style="float:left;"><span class="label">Excluded Cards:</span></div><div style="float:left;padding-left:5px;"><a href="javascript:toggleExcludedCards()" id="excludedCardsLink">Show</a></div>
-                    <div id="excludedCardsContent" style="display:none;clear:both;float:left;padding-left:10px;">
-                        <#list decks as deck>
-                            <div class="customCardsDeck">
-                                <div style="float:left;" class="label">${deck.displayName}</div>
-                                <#list deck.cards as card>
-                                    <div style="float:left;clear:both;">
-                                        <#include "excludedCardRow.ftl">
-                                    </div>
-                                </#list>
-                            </div>
-                        </#list>
-                    </div>
-                </div>
+
                 <div id="customCards" style="display:none;float:left;clear:both;">
                     <div class="label" style="padding-top:10px;">
                         Choose Specific Cards:
@@ -222,6 +170,16 @@
                     </div>
                 </div>
 
+                <div style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label">Event Selection:</span></div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        <input id="eventSelectionRandom" type="radio" name="eventSelection" value="random" onclick="toggleEventSelection()" checked="true"/> <label for="eventSelectionRandom">Random</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="eventSelectionCustom" type="radio" name="eventSelection" value="custom" onclick="toggleEventSelection()"/> <label for="eventSelectionCustom">Custom</label>
+                    </div>
+                </div>
+
                 <div id="customEvents" style="display:none;float:left;clear:both;">
                     <div class="label" style="padding-top:10px;">
                         Choose Specific Events:
@@ -241,6 +199,16 @@
                     </div>
                 </div>
 
+                <div style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label">Landmark Selection:</span></div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        <input id="landmarkSelectionRandom" type="radio" name="landmarkSelection" value="random" onclick="toggleLandmarkSelection()" checked="true"/> <label for="landmarkSelectionRandom">Random</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="landmarkSelectionCustom" type="radio" name="landmarkSelection" value="custom" onclick="toggleLandmarkSelection()"/> <label for="landmarkSelectionCustom">Custom</label>
+                    </div>
+                </div>
+
                 <div id="customLandmarks" style="display:none;float:left;clear:both;">
                     <div class="label" style="padding-top:10px;">
                         Choose Specific Landmarks:
@@ -257,6 +225,43 @@
                                 </div>
                             </#list>
                         </div>
+                    </div>
+                </div>
+
+                <div id="randomizingOptions" style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label">Randomizing Options:</span></div><#if mobile><div style="float:left;padding-left:5px;"><a href="javascript:toggleRandomizingOptions()" id="randomizingOptionsLink">Show</a></div></#if>
+                    <div id="randomizingOptionsContent" <#if mobile>style="display:none"</#if>>
+                        <div style="float:left;padding-left:10px;">
+                            <input type="checkbox" name="oneOfEachCost" id="oneOfEachCost" value="true"/> <label for="oneOfEachCost">At least one card each of cost 2, 3, 4 and 5</label>
+                        </div>
+                        <div style="float:left;padding-left:10px;">
+                            <input type="checkbox" name="alwaysIncludeColonyAndPlatinum" id="alwaysIncludeColonyAndPlatinum" value="true"/> <label for="alwaysIncludeColonyAndPlatinum">Always Include Colony and Platinum</label>
+                        </div>
+                        <div style="float:left;padding-left:10px;">
+                            <input type="checkbox" name="oneWithBuy" id="oneWithBuy" value="true"/> <label for="oneWithBuy">At least one card with additional buys</label>
+                        </div>
+                        <div style="float:left;padding-left:10px;">
+                            <input type="checkbox" name="oneWithActions" id="oneWithActions" value="true"/> <label for="oneWithActions">At least one card with +2 or more actions</label>
+                        </div>
+                        <div style="float:left;padding-left:10px;">
+                            <input type="checkbox" name="defenseForAttack" id="defenseForAttack" value="true"/> <label for="defenseForAttack">Include Moat, Lighthouse or Watchtower if there is an Attack card</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="excludedCards" style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label">Excluded Cards:</span></div><div style="float:left;padding-left:5px;"><a href="javascript:toggleExcludedCards()" id="excludedCardsLink">Show</a></div>
+                    <div id="excludedCardsContent" style="display:none;clear:both;float:left;padding-left:10px;">
+                        <#list decks as deck>
+                            <div class="customCardsDeck">
+                                <div style="float:left;" class="label">${deck.displayName}</div>
+                                <#list deck.cards as card>
+                                    <div style="float:left;clear:both;">
+                                        <#include "excludedCardRow.ftl">
+                                    </div>
+                                </#list>
+                            </div>
+                        </#list>
                     </div>
                 </div>
 

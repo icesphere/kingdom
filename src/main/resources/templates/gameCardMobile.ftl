@@ -1,5 +1,5 @@
 <div class="cardName" style="<#if clickType=='supply' && gameStatus == "InProgress" && supply(card.pileName) == 0><#else><#if card.backgroundColor.image>background-image: url(images/${card.backgroundColorMobileColor});background-repeat: repeat-x;<#else>background-color:${card.backgroundColorColor};</#if></#if>">
-    <#if card.cost != 0 || card.debtCost == 0>
+    <#if !card.landmark && (card.cost != 0 || card.debtCost == 0)>
         <div style="display: flex; position: absolute; left: 3px; bottom: 2px; font-size: 10px; font-weight: bold;">
             <div style="z-index: 1; position: relative; left: <#if cost &gt; 9>1px<#else>3px</#if>;">${cost}</div>
             <div style="position: absolute;"><img src="images/coin.png" alt="coin" height="12" width="12"/></div>
@@ -36,7 +36,7 @@
         <div style="position:absolute;bottom:2px;font-size:8px;left:28px;">Card</div>
     </#if>
 
-    <#if clickType=='supply' && victoryPointsOnSupplyPile(card.name)?? && victoryPointsOnSupplyPile(card.name) != 0><div style="position: absolute; bottom: 3px; left: 17px; z-index: 5; color: #00BB00; font-size: 8px; font-weight: bold;">${victoryPointsOnSupplyPile(card.name)} VP on pile</div></#if>
+    <#if (clickType=='supply' || clickType == 'landmark') && victoryPointsOnSupplyPile(card.name)?? && victoryPointsOnSupplyPile(card.name) != 0><div style="position: absolute; bottom: 3px; left: 17px; z-index: 5; color: #00BB00; font-size: 8px; font-weight: bold; padding: 0 2px 0 2px;background-color: #ffffffcc;">${victoryPointsOnSupplyPile(card.name)} VP on pile</div></#if>
     <#if clickType=='supply' && debtOnSupplyPile(card.name)?? && debtOnSupplyPile(card.name) != 0><div style="position: absolute; bottom: 10px; left: 17px; z-index: 5; color: #BB0000; font-size: 8px; font-weight: bold;">${debtOnSupplyPile(card.name)} debt on pile</div></#if>
     <#if clickType=='supply' && showEmbargoTokens?? && showEmbargoTokens && embargoTokens(card.name)?? && embargoTokens(card.name) != 0><div style="position: absolute; bottom: 11px; left: 5px; z-index: 5; color: #BB0000; font-size: 8px; font-weight: bold;">(${embargoTokens(card.name)} ET)</div></#if>
     <#if clickType=='supply' && showTradeRouteTokens?? && showTradeRouteTokens && tradeRouteTokenMap(card.name)?? && tradeRouteTokenMap(card.name)><div style="position: absolute; bottom: 11px; right: 4px; z-index: 5; color: #0000BB; font-size: 8px;">(TRT)</div></#if>

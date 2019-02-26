@@ -364,6 +364,12 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         events.sortBy { it.cost }
 
+        landmarks.forEach { landmark ->
+            if (landmark is GameSetupModifier) {
+                landmark.modifyGameSetup(this)
+            }
+        }
+
         if (isIncludeRuins) {
             createRuinsPile()
         }
@@ -1007,8 +1013,16 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         pileAmounts[cardName] = amount
     }
 
+    fun getVictoryPointsOnSupplyPile(pileName: String): Int {
+        return victoryPointsOnSupplyPile[pileName] ?: 0
+    }
+
     fun addVictoryPointToSupplyPile(pileName: String) {
-        victoryPointsOnSupplyPile[pileName] = victoryPointsOnSupplyPile[pileName] ?: 0 + 1
+        addVictoryPointsToSupplyPile(pileName, 1)
+    }
+
+    fun addVictoryPointsToSupplyPile(pileName: String, victoryPoints: Int) {
+        victoryPointsOnSupplyPile[pileName] = getVictoryPointsOnSupplyPile(pileName) + victoryPoints
         refreshSupply()
     }
 

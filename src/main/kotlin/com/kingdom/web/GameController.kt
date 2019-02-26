@@ -246,7 +246,7 @@ class GameController(private val cardManager: CardManager,
                     customEventSelection.add(event)
                 }
                 name.startsWith("landmark_") -> {
-                    val landmarkName = name.substring(6)
+                    val landmarkName = name.substring(9)
                     val landmark = cardManager.getLandmark(landmarkName)
                     customLandmarkSelection.add(landmark)
                 }
@@ -325,7 +325,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("player", HumanPlayer(user, game))
         modelAndView.addObject("currentPlayerId", -1)
         modelAndView.addObject("cards", game.topKingdomCards)
-        modelAndView.addObject("events", game.events)
+        modelAndView.addObject("eventsAndLandmarks", game.events + game.landmarks)
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
         modelAndView.addObject("includeShelters", includeShelters)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
@@ -1186,7 +1186,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("supplyCards", supplyCards)
 
         game.events.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Event) }
-        modelAndView.addObject("events", game.events)
+        modelAndView.addObject("eventsAndLandmarks", game.events + game.landmarks)
 
         try {
             val bw = BeansWrapper()
@@ -2121,7 +2121,7 @@ class GameController(private val cardManager: CardManager,
 
         modelAndView.addObject("adjustFontSizeForMobile", KingdomUtil.isMobile(request))
         modelAndView.addObject("cards", cards)
-        modelAndView.addObject("events", game.events.map { it.isHighlighted = false; it })
+        modelAndView.addObject("eventsAndLandmarks", (game.events + game.landmarks).map { it.isHighlighted = false; it })
         modelAndView.addObject("prizeCards", game.prizeCards)
         modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
         return modelAndView

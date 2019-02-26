@@ -9,7 +9,6 @@ computer should buy provinces sooner if they have lots of gold
 remind player which tavern cards are available to use at start of turn
 consolidate choose supply card to gain methods
 show all cards gained - not just cards bought in the cards bought section of the page
-move custom card selection above events on create game page
 smoother transition from bot turn to human turn
 add cookie to remember admin user
 bot logic for Lurker
@@ -19,7 +18,6 @@ let someone know when they haven't ended their turn
 maybe instead of showing cards bought for other players, hide that section and show info message anytime they gain a card?
 bot sometimes freezes on buy phase
 royal seal shouldn't ask multiple times if answer is no
-Encampment got 11 cards - probably from bot
 refresh on lobby page should not clear out chats
 bot should not buy too many village type cards
 2 Amulets - order of actions - should wait for first one to complete
@@ -28,6 +26,7 @@ bot logic for events
 auto end turn after action if no buys
 weird ending of turn after Crown + Survivors
 maybe check for opponent has action after resolving any action?
+remove extra white space for custom card selection
 
 remove game.cardsPlayed and just use player.cardsPlayed
 remove game.cardsBought and just use player.cardsBought
