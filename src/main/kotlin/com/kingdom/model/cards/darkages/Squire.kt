@@ -28,7 +28,7 @@ class Squire : DarkAgesCard(NAME, CardType.Action, 2), ChoiceActionCard, AfterCa
 
     override fun afterCardTrashed(player: Player) {
         if (player.game.availableCards.any { it.isAttack }) {
-            player.chooseSupplyCardToGain(null, { c -> c.isAttack }, "Gain an Attack card from the supply")
+            player.chooseSupplyCardToGain({ c -> c.isAttack }, "Gain an Attack card from the supply")
         }
     }
 

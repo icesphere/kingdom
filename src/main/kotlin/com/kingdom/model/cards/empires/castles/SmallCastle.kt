@@ -44,7 +44,7 @@ class SmallCastle : EmpiresCard(NAME, CardType.ActionVictoryCastle, 5), TrashCar
 
     private fun gainCastle(player: Player) {
         if (player.game.availableCards.any { it.isCastle }) {
-            player.chooseSupplyCardToGain(null, { c -> c.isCastle }, "Gain a Castle")
+            player.chooseSupplyCardToGain({ c -> c.isCastle }, "Gain a Castle")
         } else {
             player.showInfoMessage("There were no Castles in the supply")
         }

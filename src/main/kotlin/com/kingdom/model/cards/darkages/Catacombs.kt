@@ -36,7 +36,7 @@ class Catacombs : DarkAgesCard(NAME, CardType.Action, 5), ChoiceActionCard, Afte
     }
 
     override fun afterCardTrashed(player: Player) {
-        player.chooseSupplyCardToGain(player.getCardCostWithModifiers(this) - 1)
+        player.chooseSupplyCardToGainWithMaxCost(player.getCardCostWithModifiers(this) - 1)
     }
 
     companion object {

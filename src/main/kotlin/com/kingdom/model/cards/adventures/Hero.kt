@@ -13,7 +13,7 @@ class Hero : AdventuresCard(NAME, CardType.ActionTraveller, 5), CardDiscardedFro
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.chooseSupplyCardToGain(null, { c -> c.isTreasure }, "Gain a Treasure from the Supply")
+        player.chooseSupplyCardToGain({ c -> c.isTreasure }, "Gain a Treasure from the Supply")
     }
 
     override fun onCardDiscarded(player: Player) {

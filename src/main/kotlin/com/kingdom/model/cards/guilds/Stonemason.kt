@@ -28,8 +28,8 @@ class Stonemason : GuildsCard(NAME, CardType.Action, 2), TrashCardsForBenefitAct
         val maxCost = player.getCardCostWithModifiers(trashedCard) - 1
 
         if (maxCost >= 0 && player.game.availableCards.any { player.getCardCostWithModifiers(it) <= maxCost }) {
-            player.chooseSupplyCardToGain(maxCost)
-            player.chooseSupplyCardToGain(maxCost)
+            player.chooseSupplyCardToGainWithMaxCost(maxCost)
+            player.chooseSupplyCardToGainWithMaxCost(maxCost)
         } else {
             player.showInfoMessage("No cards available to gain")
         }
@@ -48,8 +48,8 @@ class Stonemason : GuildsCard(NAME, CardType.Action, 2), TrashCardsForBenefitAct
 
         if (choosingOverpayAmount) {
             player.addCoins(choice * -1)
-            player.chooseSupplyCardToGain(choice)
-            player.chooseSupplyCardToGain(choice)
+            player.chooseSupplyCardToGainWithMaxCost(choice)
+            player.chooseSupplyCardToGainWithMaxCost(choice)
         } else {
             if (choice == 1) {
                 val choices = mutableListOf<Choice>()

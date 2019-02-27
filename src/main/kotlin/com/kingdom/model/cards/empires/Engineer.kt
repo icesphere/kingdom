@@ -11,14 +11,14 @@ class Engineer : EmpiresCard(NAME, CardType.Action, 0, 4), ChoiceActionCard {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.chooseSupplyCardToGain(4)
+        player.chooseSupplyCardToGainWithMaxCost(4)
         player.yesNoChoice(this, "Trash ${this.cardNameWithBackgroundColor} to gain a card costing up to \$4?")
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.trashCardInPlay(this)
-            player.chooseSupplyCardToGain(4)
+            player.chooseSupplyCardToGainWithMaxCost(4)
         }
     }
 

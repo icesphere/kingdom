@@ -27,7 +27,7 @@ class Messenger : AdventuresCard(NAME, CardType.Action, 4), ChoiceActionCard, Af
 
     override fun afterCardBought(player: Player) {
         if (player.game.cardsBought.size == 1) {
-            player.chooseSupplyCardToGainForBenefit(4, "Gain a card costing up to \$4, and each other player gains a copy of it.", this)
+            player.chooseSupplyCardToGainForBenefitWithMaxCost(4, "Gain a card costing up to \$4, and each other player gains a copy of it.", this)
         }
     }
 

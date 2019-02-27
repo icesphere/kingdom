@@ -13,7 +13,7 @@ class Alms : AdventuresEvent(NAME, 0, true) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.chooseSupplyCardToGain(4)
+        player.chooseSupplyCardToGainWithMaxCost(4)
     }
 
     companion object {

@@ -10,7 +10,7 @@ class Workshop : BaseCard(NAME, CardType.Action, 3) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.chooseSupplyCardToGain(4)
+        player.chooseSupplyCardToGainWithMaxCost(4)
     }
 
     companion object {

@@ -1,6 +1,7 @@
 package com.kingdom.model.cards.adventures
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.DiscardCardsForBenefitActionCard
 import com.kingdom.model.players.Player
@@ -22,7 +23,7 @@ class Artificer : AdventuresCard(NAME, CardType.Action, 5), DiscardCardsForBenef
         val cost = discardedCards.size
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == cost }) {
-            player.chooseSupplyCardToGainToTopOfDeckWithExactCost(cost)
+            player.chooseSupplyCardToGainWithExactCost(cost, "Gain a free card from the supply to the top of your deck costing $cost", CardLocation.Deck, true)
         } else {
             val message = "There were no available cards costing exactly \$$cost"
             player.showInfoMessage(message)

@@ -20,7 +20,7 @@ class Remodel : BaseCard(NAME, CardType.Action, 4), TrashCardsForBenefitActionCa
     
     override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         if (trashedCards.isNotEmpty()) {
-            player.chooseSupplyCardToGain(player.getCardCostWithModifiers(trashedCards[0]) + 2)
+            player.chooseSupplyCardToGainWithMaxCost(player.getCardCostWithModifiers(trashedCards[0]) + 2)
         }
     }
 

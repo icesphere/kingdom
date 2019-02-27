@@ -4,18 +4,18 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.players.Player
 
-open class FreeCardFromSupply(private val maxCost: Int?, text: String, private val cardActionableExpression: ((card: Card) -> Boolean)?, private val destination: CardLocation = CardLocation.Discard) : Action(text) {
+open class FreeCardFromSupply(text: String, private val cardActionableExpression: ((card: Card) -> Boolean)?, private val destination: CardLocation = CardLocation.Discard, optional: Boolean = false) : Action(text) {
+
+    override var isShowDoNotUse: Boolean = optional
 
     override fun isCardActionable(card: Card, cardLocation: CardLocation, player: Player): Boolean {
-        return ((cardLocation == CardLocation.Supply)
+        return cardLocation == CardLocation.Supply
                 && player.game.isCardAvailableInSupply(card)
-                && (maxCost == null || (card.debtCost == 0 && player.getCardCostWithModifiers(card) <= maxCost)))
                 && (cardActionableExpression == null || cardActionableExpression.invoke(card))
     }
 
     override fun processAction(player: Player): Boolean {
-        return player.game.availableCards.any { (maxCost == null || (it.debtCost == 0 && player.getCardCostWithModifiers(it) <= maxCost))
-            && (cardActionableExpression == null || cardActionableExpression.invoke(it)) }
+        return player.game.availableCards.any { cardActionableExpression == null || cardActionableExpression.invoke(it) }
     }
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {

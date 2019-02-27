@@ -1,6 +1,7 @@
 package com.kingdom.model.cards.guilds
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.cards.actions.TrashCardsForBenefitActionCard
@@ -41,7 +42,7 @@ class Taxman : GuildsCard(NAME, CardType.ActionAttack, 4), TrashCardsForBenefitA
                 }
             }
 
-            player.chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(player.getCardCostWithModifiers(trashedCards[0]) + 3, CardType.Treasure, "Gain a Treasure onto your deck costing up to ${player.getCardCostWithModifiers(trashedCards[0]) + 3}")
+            player.chooseSupplyCardToGainWithMaxCost(player.getCardCostWithModifiers(trashedCards[0]) + 3, { c -> c.isTreasure }, "Gain a Treasure onto your deck costing up to ${player.getCardCostWithModifiers(trashedCards[0]) + 3}", CardLocation.Deck)
         }
     }
 

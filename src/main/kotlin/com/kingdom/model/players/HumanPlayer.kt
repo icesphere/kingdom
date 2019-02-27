@@ -5,7 +5,6 @@ import com.kingdom.model.Game
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
-import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 
 class HumanPlayer(user: User, game: Game) : Player(user, game) {
@@ -72,41 +71,16 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(ChooseCardToGainFromTrash(game.trashedCards, optional, cardActionableExpression))
     }
 
-    override fun chooseSupplyCardToGain(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?, text: String?) {
+    override fun chooseSupplyCardToGain(cardActionableExpression: ((card: Card) -> Boolean)?, text: String?, destination: CardLocation, optional: Boolean) {
         val actionText = when {
             text != null -> text
-            maxCost != null -> "Gain a free card from the supply costing up to $maxCost"
             else -> "Gain a free card from the supply"
         }
-        addAction(FreeCardFromSupply(maxCost, actionText, cardActionableExpression))
+        addAction(FreeCardFromSupply(actionText, cardActionableExpression, destination, optional))
     }
 
-    override fun chooseSupplyCardToGainWithExactCost(cost: Int) {
-        addAction(FreeCardFromSupply(null, "Gain a free card from the supply costing $cost", { c -> c.debtCost == 0 && getCardCostWithModifiers(c) == cost }))
-    }
-
-    override fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
-        addAction(FreeCardFromSupplyForBenefit(freeCardFromSupplyForBenefitActionCard, maxCost, text, cardActionableExpression))
-    }
-
-    override fun chooseSupplyCardToGainToTopOfDeck(maxCost: Int?) {
-        addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply to the top of your deck costing up to $maxCost", null, CardLocation.Deck))
-    }
-
-    override fun chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(maxCost: Int?, cardType: CardType, text: String?) {
-        addAction(FreeCardFromSupply(maxCost, text ?: "Gain a free card from the supply to the top of your deck costing up to $maxCost", { c -> c.type == cardType }, CardLocation.Deck))
-    }
-
-    override fun chooseSupplyCardToGainToTopOfDeckWithExactCost(cost: Int) {
-        addAction(FreeCardFromSupply(null, "Gain a free card from the supply to the top of your deck costing $cost", { c -> c.debtCost == 0 && getCardCostWithModifiers(c) == cost }, CardLocation.Deck))
-    }
-
-    override fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int?) {
-        addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply to your hand costing up to $maxCost", null, CardLocation.Hand))
-    }
-
-    override fun chooseSupplyCardToGainToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType) {
-        addAction(FreeCardFromSupply(maxCost, "Gain a free card from the supply to your hand costing up to $maxCost", { c -> c.type == cardType }, CardLocation.Hand))
+    override fun chooseSupplyCardToGainForBenefit(text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
+        addAction(FreeCardFromSupplyForBenefit(freeCardFromSupplyForBenefitActionCard, text, cardActionableExpression))
     }
 
     override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String, info: Any?) {

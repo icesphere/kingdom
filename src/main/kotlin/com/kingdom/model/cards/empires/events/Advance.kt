@@ -19,7 +19,7 @@ class Advance : EmpiresEvent(NAME, 0), TrashCardsForBenefitActionCard {
     }
 
     override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
-        player.chooseSupplyCardToGain(6, { c -> c.isAction }, "Gain an Action card costing up to \$6")
+        player.chooseSupplyCardToGainWithMaxCost(6, { c -> c.isAction }, "Gain an Action card costing up to \$6")
     }
 
     companion object {

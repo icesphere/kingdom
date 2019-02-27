@@ -1017,21 +1017,33 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     private val currentDeckNumber: Int
         get() = shuffles + 1
 
-    abstract fun chooseSupplyCardToGain(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null, text: String? = null)
+    abstract fun chooseSupplyCardToGain(cardActionableExpression: ((card: Card) -> Boolean)? = null, text: String? = null, destination: CardLocation = CardLocation.Discard, optional: Boolean = false)
 
-    abstract fun chooseSupplyCardToGainWithExactCost(cost: Int)
+    fun chooseSupplyCardToGainWithMaxCost(maxCost: Int, cardActionableExpression: ((card: Card) -> Boolean)? = null, text: String? = "Gain a free card from the supply costing up to $maxCost", destination: CardLocation = CardLocation.Discard) {
+        chooseSupplyCardToGain({ c -> c.debtCost == 0 && getCardCostWithModifiers(c) <= maxCost && (cardActionableExpression == null || cardActionableExpression(c)) }, text, destination)
+    }
 
-    abstract fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null)
+    fun chooseSupplyCardToGainWithExactCost(cost: Int, text: String? = "Gain a free card from the supply costing $cost", destination: CardLocation = CardLocation.Discard, optional: Boolean = false) {
+        chooseSupplyCardToGain({ c -> c.debtCost == 0 && getCardCostWithModifiers(c) == cost }, text, destination, optional)
+    }
 
-    abstract fun chooseSupplyCardToGainToTopOfDeck(maxCost: Int?)
+    fun chooseSupplyCardToGainToTopOfDeck(maxCost: Int) {
+        chooseSupplyCardToGain({ c -> c.debtCost == 0 && getCardCostWithModifiers(c) <= maxCost }, "Gain a free card from the supply to the top of your deck costing up to $maxCost")
+    }
 
-    abstract fun chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(maxCost: Int?, cardType: CardType, text: String? = null)
+    fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int) {
+        chooseSupplyCardToGainWithMaxCost(maxCost, null, "Gain a free card from the supply to your hand costing up to $maxCost", CardLocation.Hand)
+    }
 
-    abstract fun chooseSupplyCardToGainToTopOfDeckWithExactCost(cost: Int)
+    fun chooseSupplyCardToGainToHandWithMaxCostAndType(maxCost: Int, cardType: CardType) {
+        chooseSupplyCardToGainWithMaxCost(maxCost, { c -> c.type == cardType }, "Gain a free card from the supply to your hand costing up to $maxCost", CardLocation.Hand)
+    }
 
-    abstract fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int?)
+    abstract fun chooseSupplyCardToGainForBenefit(text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
-    abstract fun chooseSupplyCardToGainToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType)
+    fun chooseSupplyCardToGainForBenefitWithMaxCost(maxCost: Int, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null) {
+        chooseSupplyCardToGainForBenefit(text, freeCardFromSupplyForBenefitActionCard, { c -> c.debtCost == 0 && getCardCostWithModifiers(c) <= maxCost && (cardActionableExpression == null || cardActionableExpression(c)) })
+    }
 
     abstract fun drawCardsAndPutSomeBackOnTop(cardsToDraw: Int, cardsToPutBack: Int)
 

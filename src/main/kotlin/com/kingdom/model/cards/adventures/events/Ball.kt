@@ -10,8 +10,8 @@ class Ball : AdventuresEvent(NAME, 5) {
 
     override fun cardPlayedSpecialAction(player: Player) {
         player.isMinusCoinTokenInFrontOfPlayer = true
-        player.chooseSupplyCardToGain(4)
-        player.chooseSupplyCardToGain(4)
+        player.chooseSupplyCardToGainWithMaxCost(4)
+        player.chooseSupplyCardToGainWithMaxCost(4)
     }
 
     companion object {

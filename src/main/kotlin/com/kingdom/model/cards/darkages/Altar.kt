@@ -18,7 +18,7 @@ class Altar : DarkAgesCard(NAME, CardType.Action, 6), TrashCardsForBenefitAction
     }
 
     override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
-        player.chooseSupplyCardToGain(5)
+        player.chooseSupplyCardToGainWithMaxCost(5)
     }
 
     companion object {

@@ -20,7 +20,7 @@ class Expand : ProsperityCard(NAME, CardType.Action, 7), TrashCardsForBenefitAct
 
     override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val card = trashedCards.first()
-        player.chooseSupplyCardToGain(player.getCardCostWithModifiers(card) + 3)
+        player.chooseSupplyCardToGainWithMaxCost(player.getCardCostWithModifiers(card) + 3)
     }
 
     companion object {

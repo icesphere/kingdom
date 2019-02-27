@@ -21,7 +21,7 @@ class Butcher : GuildsCard(NAME, CardType.Action, 5), TrashCardsForBenefitAction
     override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         if (trashedCards.isNotEmpty()) {
             if (player.coffers == 0) {
-                player.chooseSupplyCardToGain(player.getCardCostWithModifiers(trashedCards[0]))
+                player.chooseSupplyCardToGainWithMaxCost(player.getCardCostWithModifiers(trashedCards[0]))
                 return
             }
 
@@ -39,7 +39,7 @@ class Butcher : GuildsCard(NAME, CardType.Action, 5), TrashCardsForBenefitAction
         val trashedCard = info as Card
 
         player.addCoffers(choice * -1)
-        player.chooseSupplyCardToGain(player.getCardCostWithModifiers(trashedCard) + choice)
+        player.chooseSupplyCardToGainWithMaxCost(player.getCardCostWithModifiers(trashedCard) + choice)
     }
 
     companion object {

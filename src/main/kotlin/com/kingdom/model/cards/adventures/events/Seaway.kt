@@ -11,7 +11,7 @@ class Seaway : AdventuresEvent(NAME, 5), FreeCardFromSupplyForBenefitActionCard 
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.chooseSupplyCardToGainForBenefit(4, special, this, { c -> c.isAction })
+        player.chooseSupplyCardToGainForBenefitWithMaxCost(4, special, this, { c -> c.isAction })
     }
 
     override fun onCardGained(player: Player, card: Card) {

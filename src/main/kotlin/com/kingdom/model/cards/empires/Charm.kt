@@ -34,7 +34,7 @@ class Charm : EmpiresCard(NAME, CardType.Treasure, 5), ChoiceActionCard, AfterCa
     override fun afterCardBought(card: Card, player: Player) {
         if (isGainCardOnNextBuyThisTurn) {
             isGainCardOnNextBuyThisTurn = false
-            player.chooseSupplyCardToGain(null, { c -> c.debtCost == card.debtCost && c.cost == player.getCardCostWithModifiers(card) && c.name != card.name })
+            player.chooseSupplyCardToGain({ c -> c.debtCost == card.debtCost && c.cost == player.getCardCostWithModifiers(card) && c.name != card.name })
         }
     }
 

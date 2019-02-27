@@ -35,7 +35,7 @@ class Hermit : DarkAgesCard(NAME, CardType.Action, 3), GameSetupModifier, Choose
             player.addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor} from their hand")
         }
 
-        player.chooseSupplyCardToGain(3)
+        player.chooseSupplyCardToGainWithMaxCost(3)
     }
 
     override fun onCardDiscarded(player: Player) {

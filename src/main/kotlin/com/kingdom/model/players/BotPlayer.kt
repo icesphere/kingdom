@@ -5,11 +5,11 @@ import com.kingdom.model.Game
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
-import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.adventures.Disciple
 import com.kingdom.model.cards.adventures.Messenger
 import com.kingdom.model.cards.adventures.Miser
+import com.kingdom.model.cards.base.*
 import com.kingdom.model.cards.cornucopia.Hamlet
 import com.kingdom.model.cards.cornucopia.HorseTraders
 import com.kingdom.model.cards.cornucopia.Jester
@@ -17,11 +17,10 @@ import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.darkages.ruins.Survivors
 import com.kingdom.model.cards.darkages.shelters.Hovel
+import com.kingdom.model.cards.empires.Temple
 import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
-import com.kingdom.model.cards.base.*
-import com.kingdom.model.cards.empires.Temple
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.seaside.*
 import com.kingdom.model.cards.supply.*
@@ -194,8 +193,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun chooseSupplyCardToGain(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)?, text: String?) {
-        val card = chooseFreeCardToGain(maxCost, cardActionableExpression)
+    override fun chooseSupplyCardToGain(cardActionableExpression: ((card: Card) -> Boolean)?, text: String?, destination: CardLocation, optional: Boolean) {
+        val card = chooseFreeCardToGain(cardActionableExpression)
         if (card != null) {
             game.removeCardFromSupply(card)
 
@@ -205,20 +204,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    override fun chooseSupplyCardToGainWithExactCost(cost: Int) {
-        val card = chooseFreeCardToGainWithExactCost(cost)
-        if (card != null) {
-            game.removeCardFromSupply(card)
-
-            addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the supply")
-
-            cardGained(card)
-        }
-    }
-
-    override fun chooseSupplyCardToGainForBenefit(maxCost: Int?, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
+    override fun chooseSupplyCardToGainForBenefit(text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
         //todo logic for different cards
-        val card = chooseFreeCardToGain(maxCost, cardActionableExpression)
+        val card = chooseFreeCardToGain(cardActionableExpression)
         if (card != null) {
             game.removeCardFromSupply(card)
 
@@ -227,47 +215,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             cardGained(card)
 
             freeCardFromSupplyForBenefitActionCard.onCardGained(this, card)
-        }
-    }
-
-    override fun chooseSupplyCardToGainToTopOfDeck(maxCost: Int?) {
-        val card = chooseFreeCardToGain(maxCost)
-        if (card != null) {
-            game.removeCardFromSupply(card)
-
-            isNextCardToTopOfDeck = true
-
-            cardGained(card)
-        }
-    }
-
-    override fun chooseSupplyCardToGainToTopOfDeckWithMaxCostAndType(maxCost: Int?, cardType: CardType, text: String?) {
-        val card = chooseFreeCardToGain(maxCost, { c -> c.type == cardType })
-        if (card != null) {
-            game.removeCardFromSupply(card)
-
-            isNextCardToTopOfDeck = true
-
-            cardGained(card)
-        }
-    }
-
-    override fun chooseSupplyCardToGainToTopOfDeckWithExactCost(cost: Int) {
-        val card = chooseFreeCardToGainWithExactCost(cost)
-        if (card != null) {
-            game.removeCardFromSupply(card)
-
-            addCardToTopOfDeck(card)
-            cardGained(card)
-        }
-    }
-
-    override fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int?) {
-        val card = chooseFreeCardToGain(maxCost)
-        if (card != null) {
-            game.removeCardFromSupply(card)
-
-            gainCardToHand(card)
         }
     }
 
@@ -770,12 +717,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    private fun chooseFreeCardToGain(maxCost: Int?, cardActionableExpression: ((card: Card) -> Boolean)? = null): Card? {
+    private fun chooseFreeCardToGain(cardActionableExpression: ((card: Card) -> Boolean)? = null): Card? {
         val cards = game.availableCards
-                .filter { c ->
-                    (maxCost == null || (c.debtCost == 0 && this.getCardCostWithModifiers(c) <= maxCost))
-                            && (cardActionableExpression == null || cardActionableExpression.invoke(c))
-                }
+                .filter { c -> cardActionableExpression == null || cardActionableExpression.invoke(c) }
 
         return pickCardBasedOnBuyScore(cards)
     }
@@ -818,17 +762,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         val cards = getCardsToTrashFromHand(numCardsToTrash, null, cardActionableExpression)
         cards.forEach { this.trashCardFromHand(it) }
         card.cardsTrashed(this, cards, info)
-    }
-
-    override fun chooseSupplyCardToGainToHandWithMaxCostAndType(maxCost: Int?, cardType: CardType) {
-        val card = chooseFreeCardToGain(maxCost, { c -> c.type == cardType })
-        if (card != null) {
-            game.removeCardFromSupply(card)
-
-            addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the supply")
-
-            cardGained(card)
-        }
     }
 
     override fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String, info: Any?) {
