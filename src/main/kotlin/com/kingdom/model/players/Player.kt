@@ -365,7 +365,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 }
                 hand.contains(card) -> {
                     removeCardFromHand(card)
-                    addCardToHand(card)
+                    addCardToHand(actualCard)
                 }
                 deck.contains(card) -> {
                     deck.replaceAll { deckCard ->
@@ -523,10 +523,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         finishEndTurnAfterResolvingActions = false
 
-        if (debt > 0 && availableCoins > 0) {
-            addInfoLogWithUsername("auto applying remaining available coins to debt")
-            debt -= availableCoins
-        }
+        payOffDebt(false)
 
         cardsSetAsideToReturnToSupplyAtStartOfCleanup.forEach {
             game.returnCardToSupply(it)
@@ -1755,7 +1752,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
     }
 
-    fun payOffDebt() {
+    fun payOffDebt(refresh: Boolean = true) {
         val debtToPayOff = minOf(debt, availableCoins)
 
         if (debtToPayOff == 0) {
@@ -1768,7 +1765,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         this.debt -= debtToPayOff
 
-        addCoins(debtToPayOff * -1)
+        addCoins(debtToPayOff * -1, refresh)
     }
 
     fun refreshPlayerHandArea() {
