@@ -7,8 +7,8 @@
     </#if>
     <#if card.debtCost != 0>
         <div style="display: flex; position: absolute; left: <#if card.cost == 0>3px<#else>15px</#if>; bottom: -1px; font-size: 10px; color: white;">
-            <div style="z-index: 1; position: absolute; bottom: 3px; left: <#if cost &gt; 9>1px<#else>3px</#if>;">${card.debtCost}</div>
-            <div style="position: absolute; bottom: 0;"><img src="images/debt.png" alt="debt" height="14" width="13"/></div>
+            <div style="z-index: 1; position: absolute; bottom: 3px; left: <#if cost &gt; 9>1px<#else>4px</#if>;">${card.debtCost}</div>
+            <div style="position: absolute; bottom: 0;"><img src="images/debt.png" alt="debt" height="14" width="14"/></div>
         </div>
     </#if>
     <div style="position:absolute;width:68px;text-align:center;left:2px;<#if card.nameLines != 1 || card.fontSize &gt; 11 || card.fontSize == 0>top:2px;<#elseif card.fontSize &gt; 9>top:3px;<#elseif card.fontSize &gt; 8>top:4px;<#else>top:5px;</#if>font-size:<#if card.fontSize &gt; 0>${card.fontSize}<#else>12</#if>px;">

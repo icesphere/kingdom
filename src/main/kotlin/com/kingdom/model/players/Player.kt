@@ -349,6 +349,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (card.isCardActuallyBandOfMisfits || card.isCardActuallyOverlord) {
 
+            //todo handle tavern cards
+
             val actualCard: Card = if (card.isCardActuallyOverlord) Overlord() else BandOfMisfits()
 
             card.isCardActuallyBandOfMisfits = false
