@@ -9,5 +9,6 @@ enum class CardLocation {
     Trash,
     CardAction,
     Event,
+    Landmark,
     Unknown
 }

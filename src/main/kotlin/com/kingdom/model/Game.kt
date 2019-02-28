@@ -833,6 +833,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         return eventMap[eventName]!!.copy() as Event
     }
 
+    fun getNewInstanceOfLandmark(landmarkName: String): Landmark {
+        return landmarks.first { it.name == landmarkName }.copy() as Landmark
+    }
+
     private fun addComputerPlayers() {
         isAllComputerOpponents = numComputerPlayers == numPlayers - 1
         var i = 1

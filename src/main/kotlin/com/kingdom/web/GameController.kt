@@ -812,6 +812,7 @@ class GameController(private val cardManager: CardManager,
             "playArea" -> CardLocation.PlayArea
             "cardAction" -> CardLocation.CardAction
             "event" -> CardLocation.Event
+            "landmark" -> CardLocation.Landmark
             else -> CardLocation.Unknown
         }
     }
@@ -856,6 +857,18 @@ class GameController(private val cardManager: CardManager,
                                 player.endTurn(true)
                             }
                         }
+                    }
+                }
+            }
+            CardLocation.Landmark -> {
+                val landmark = game.getNewInstanceOfLandmark(cardName)
+
+                if (highlightLandmarkCard(player, landmark)) {
+
+                    player.useLandmark(landmark)
+
+                    if (player.buys == 0 && player.currentAction == null) {
+                        player.endTurn(true)
                     }
                 }
             }
@@ -962,6 +975,10 @@ class GameController(private val cardManager: CardManager,
 
     fun highlightEventCard(player: Player, card: Card?): Boolean {
         return player.currentAction == null && card?.isActionable(player, CardLocation.Event) ?: false
+    }
+
+    fun highlightLandmarkCard(player: Player, card: Card?): Boolean {
+        return player.currentAction == null && card?.isActionable(player, CardLocation.Landmark) ?: false
     }
 
     @ResponseBody
@@ -1186,6 +1203,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("supplyCards", supplyCards)
 
         game.events.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Event) }
+        game.landmarks.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Landmark) }
         modelAndView.addObject("eventsAndLandmarks", game.events + game.landmarks)
 
         try {

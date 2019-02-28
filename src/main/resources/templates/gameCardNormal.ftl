@@ -6,12 +6,12 @@
     <div class="cardContent" style="<#if card.nameLines == 2>height: 52px;</#if>">
         <#if (clickType=='supply' || clickType == 'landmark') && victoryPointsOnSupplyPile(card.pileName)?? && victoryPointsOnSupplyPile(card.pileName) != 0>
             <div class="cardRow" style="color: #00BB00";<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
-                ${victoryPointsOnSupplyPile.get(card.pileName)} VP on Supply pile
+                ${victoryPointsOnSupplyPile.get(card.pileName)} VP on pile
             </div>
         </#if>
         <#if clickType=='supply' && debtOnSupplyPile(card.pileName)?? && debtOnSupplyPile(card.pileName) != 0>
             <div class="cardRow" style="color: #BB0000";<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
-                ${debtOnSupplyPile.get(card.pileName)} debt on Supply pile
+                ${debtOnSupplyPile.get(card.pileName)} debt on pile
             </div>
         </#if>
         <#if card.addCards != 0>

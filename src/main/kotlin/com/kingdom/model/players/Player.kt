@@ -71,7 +71,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var isReturnToActionPhase: Boolean = false
 
     val isBuyPhase: Boolean
-        get() = isYourTurn && (isTreasureCardsPlayedInBuyPhase || isCardsBought) && !isReturnToActionPhase
+        get() = isYourTurn && (isTreasureCardsPlayedInBuyPhase || isCardsBought || isActionTakenInBuyPhase) && !isReturnToActionPhase
+
+    var isActionTakenInBuyPhase: Boolean = false
 
     var isPaidOffDebtThisTurn: Boolean = false
 
@@ -541,6 +543,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         game.refreshHistory()
 
+        isActionTakenInBuyPhase = false
+
         isReturnToActionPhase = false
 
         turns++
@@ -829,9 +833,17 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun gainCardFromTrash(optional: Boolean, cardActionableExpression: ((card: Card) -> Boolean)?)
 
+    fun useLandmark(landmark: Landmark) {
+        if (landmark.isLandmarkActionable(this)) {
+            addEventLogWithUsername("used landmark: ${landmark.cardNameWithBackgroundColor}")
+
+            landmark.cardPlayedSpecialAction(this)
+        }
+    }
+
     fun buyEvent(event: Event) {
         if (event.isEventActionable(this)) {
-            addEventLogWithUsername("bought event: " + event.name)
+            addEventLogWithUsername("bought event: ${event.cardNameWithBackgroundColor}")
             coins -= event.cost
             debt += event.debtCost
             buys -= 1

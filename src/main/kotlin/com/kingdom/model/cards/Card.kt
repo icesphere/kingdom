@@ -462,6 +462,7 @@ abstract class Card(
             CardLocation.Hand -> isHandCardActionable(player)
             CardLocation.Supply -> isSupplyCardActionable(player)
             CardLocation.Event -> (this as Event).isEventActionable(player)
+            CardLocation.Landmark -> (this as Landmark).isLandmarkActionable(player)
             else -> false
         }
     }
