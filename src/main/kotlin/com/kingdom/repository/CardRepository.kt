@@ -352,7 +352,8 @@ class CardRepository {
     val empiresLandmarks: List<Landmark>
         get() = listOf(
                 Aqueduct(),
-                Arena()
+                Arena(),
+                BanditFort()
         )
 
     val allCards: List<Card>

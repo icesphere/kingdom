@@ -112,7 +112,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val allCards: List<Card>
         get() {
             val cards = (cardsInSupply + kingdomCards).toMutableList()
-            kingdomCards.filter { it is MultiTypePile }.forEach { cards.addAll((it as MultiTypePile).otherCardsInPile) }
+            kingdomCards.filterIsInstance<MultiTypePile>().forEach { cards.addAll(it.otherCardsInPile) }
             return cards
         }
 
@@ -244,9 +244,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     val cardCostModifiers: List<CardCostModifier>
         get() {
-            val modifiers: MutableList<CardCostModifier> = (currentPlayerCardCostModifiers + gameCardCostModifiers).toMutableList()
-
-            currentPlayer.inPlayWithDuration.filter { it is CardCostModifierForCardsInPlay }.forEach { modifiers.add(it as CardCostModifier) }
+            val modifiers = (currentPlayerCardCostModifiers + gameCardCostModifiers +
+                    currentPlayer.inPlayWithDuration.filterIsInstance<CardCostModifierForCardsInPlay>()).toMutableList()
 
             currentPlayer.inPlayWithDuration
                     .filter { it is CardRepeater && it.cardBeingRepeated is CardCostModifierForCardsInPlay }
@@ -522,7 +521,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         maxHistoryTurnSize = players.size + 1
 
-        kingdomCards.filter { it is GameStartedListener }.forEach { (it as GameStartedListener).onGameStarted(this) }
+        kingdomCards.filterIsInstance<GameStartedListener>().forEach { it.onGameStarted(this) }
 
         startTurnInNewThreadIfComputerVsHuman()
     }
@@ -542,7 +541,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         refreshHistory()
 
         if (currentPlayer.isBot && currentPlayer.opponents.any { it is HumanPlayer }) {
-            currentPlayer.opponents.filter { it is HumanPlayer }.forEach { p ->
+            currentPlayer.opponents.filterIsInstance<HumanPlayer>().forEach { p ->
                 p.isWaitingForComputer = true
             }
 

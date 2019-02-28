@@ -29,6 +29,8 @@ maybe check for opponent has action after resolving any action?
 remove extra white space for custom card selection
 Overlord copying Duplicate didn't turn back into Overlord
 
+show landmark points on game over page
+
 remove game.cardsPlayed and just use player.cardsPlayed
 remove game.cardsBought and just use player.cardsBought
 

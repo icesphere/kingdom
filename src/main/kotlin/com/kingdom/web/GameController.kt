@@ -2123,7 +2123,7 @@ class GameController(private val cardManager: CardManager,
 
         val cards = game.kingdomCards.map { it.isHighlighted = false; it }.toMutableList()
 
-        cards.filter { it is MultiTypePile }.forEach { cards.addAll((it as MultiTypePile).otherCardsInPile) }
+        cards.filterIsInstance<MultiTypePile>().forEach { cards.addAll(it.otherCardsInPile) }
 
         if (game.cardsNotInSupply.isNotEmpty()) {
             cards.addAll(game.cardsNotInSupply)
