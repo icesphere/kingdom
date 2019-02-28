@@ -315,22 +315,8 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return card.cost
     }
 
-    private fun getPlayCardScore(card: Card): Int {
-        return when {
-            card.isTrashingFromHandRequiredCard -> {
-                val cardToTrash = getCardToTrashFromHand(false, { c -> c.id == card.id })
-                return when {
-                    cardToTrash == null -> -1
-                    !card.isTrashingFromHandToUpgradeCard && getBuyCardScore(cardToTrash) > 3 -> -1
-                    card.isTrashingFromHandToUpgradeCard && (cardToTrash.isProvince || cardToTrash.isColony) -> -1
-                    (card.name == Upgrade.NAME || card.name == Remake.NAME) && cardToTrash.cost > 2 && game.availableCards.none { it.cost == card.cost + 1 } -> 1
-                    card.addActions > 0 -> 10
-                    else -> card.cost
-                }
-            }
-            card.addActions > 0 -> 10
-            else -> card.cost
-        }
+    open fun getPlayCardScore(card: Card): Int {
+        return card.cost
     }
 
     fun getCardToTopOfDeckScore(card: Card): Int {
@@ -539,7 +525,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return cardsToDiscard
     }
 
-    private fun getCardToTrashFromHand(optional: Boolean, excludeCardExpression: ((card: Card) -> Boolean)? = null, cardActionableExpression: ((card: Card) -> Boolean)? = null): Card? {
+    protected fun getCardToTrashFromHand(optional: Boolean, excludeCardExpression: ((card: Card) -> Boolean)? = null, cardActionableExpression: ((card: Card) -> Boolean)? = null): Card? {
 
         val cardsAvailableToTrash = hand.filter { (excludeCardExpression == null || !excludeCardExpression(it)) && (cardActionableExpression == null || cardActionableExpression(it)) }
 

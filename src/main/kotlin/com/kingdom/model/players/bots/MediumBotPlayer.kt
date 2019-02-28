@@ -17,8 +17,11 @@ import com.kingdom.model.cards.guilds.Stonemason
 import com.kingdom.model.cards.hinterlands.Farmland
 import com.kingdom.model.cards.base.ThroneRoom
 import com.kingdom.model.cards.base.Witch
+import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.darkages.Armory
 import com.kingdom.model.cards.darkages.BandOfMisfits
+import com.kingdom.model.cards.intrigue.Upgrade
+import com.kingdom.model.cards.prosperity.Contraband
 import com.kingdom.model.cards.prosperity.Forge
 import com.kingdom.model.cards.prosperity.KingsCourt
 import com.kingdom.model.cards.prosperity.Mint
@@ -128,6 +131,25 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             else -> super.excludeCard(card)
         }
 
+    }
+
+    override fun getPlayCardScore(card: Card): Int {
+        return when {
+            card.isTrashingFromHandRequiredCard -> {
+                val cardToTrash = getCardToTrashFromHand(false, { c -> c.id == card.id })
+                return when {
+                    cardToTrash == null -> -1
+                    !card.isTrashingFromHandToUpgradeCard && getBuyCardScore(cardToTrash) > 3 -> -1
+                    card.isTrashingFromHandToUpgradeCard && (cardToTrash.isProvince || cardToTrash.isColony) -> -1
+                    (card.name == Upgrade.NAME || card.name == Remake.NAME) && cardToTrash.cost > 2 && game.availableCards.none { it.cost == card.cost + 1 } -> 1
+                    card.addActions > 0 -> 10
+                    else -> card.cost
+                }
+            }
+            card.addActions > 0 -> 10
+            card is Contraband && availableCoins >= 11 || (availableCoins >= 8 && !game.isIncludeColonyCards) -> -1
+            else -> card.cost
+        }
     }
 
 }

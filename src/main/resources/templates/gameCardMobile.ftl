@@ -1,8 +1,8 @@
 <div class="cardName" style="<#if clickType=='supply' && gameStatus == "InProgress" && supply(card.pileName) == 0><#else><#if card.backgroundColor.image>background-image: url(images/${card.backgroundColorMobileColor});background-repeat: repeat-x;<#else>background-color:${card.backgroundColorColor};</#if></#if>">
     <#if !card.landmark && (card.cost != 0 || card.debtCost == 0)>
-        <div style="display: flex; position: absolute; left: 3px; bottom: 2px; font-size: 10px; font-weight: bold;">
-            <div style="z-index: 1; position: relative; left: <#if cost &gt; 9>1px<#else>3px</#if>;">${cost}</div>
-            <div style="position: absolute;"><img src="images/coin.png" alt="coin" height="12" width="12"/></div>
+        <div style="display: flex; position: absolute; left: 3px; bottom: 3px; font-size: 10px; font-weight: bold;">
+            <div style="z-index: 1; position: relative; top: 1px; left: <#if cost &gt; 9>1px<#else>3px</#if>;">${cost}</div>
+            <div style="position: absolute;"><img src="images/coin.png" alt="coin" height="13" width="12"/></div>
         </div>
     </#if>
     <#if card.debtCost != 0>
