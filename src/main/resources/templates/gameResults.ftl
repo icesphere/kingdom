@@ -62,6 +62,11 @@
                                 <div class="gameResultsPlayerPoints">${player.victoryCoins}</div>
                             </#if>
 
+                            <#if player.pointsFromLandmarks != 0>
+                                <div class="gameResultsPlayerPointsLabel">VP from Landmarks:</div>
+                                <div class="gameResultsPlayerPoints">${player.pointsFromLandmarks}</div>
+                            </#if>
+
                             <div class="gameResultsPlayerPointsLabel">Cards:</div>
                             <div class="gameResultsPlayerPoints">${player.numCards}</div>
 

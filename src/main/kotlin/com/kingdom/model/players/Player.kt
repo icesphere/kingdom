@@ -252,6 +252,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var isMoneyDoubledThisTurn: Boolean = false
 
+    @Suppress("MemberVisibilityCanBePrivate")
+    val pointsFromLandmarks: Int
+        get() = game.landmarks.filterIsInstance<VictoryPointsCalculator>()
+                .sumBy { it.calculatePoints(this) }
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -1588,8 +1593,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         victoryPoints += victoryCoins
 
-        game.landmarks.filterIsInstance<VictoryPointsCalculator>()
-                .forEach { victoryPoints += it.calculatePoints(this) }
+        victoryPoints += pointsFromLandmarks
 
         if (gameOver) {
             finalPointsCalculated = true
