@@ -23,7 +23,7 @@ class WildHunt : EmpiresCard(NAME, CardType.ActionGathering, 5), ChoiceActionCar
             player.addEventLogWithUsername("gained +3 Cards and added 1 VP to $cardNameWithBackgroundColor Supply pile")
         } else {
             player.gainSupplyCard(Estate(), true)
-            player.takeVictoryPointsFromSupplyPile(this)
+            player.takeAllVictoryPointsFromSupplyPile(this)
         }
     }
 

@@ -1029,9 +1029,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         refreshSupply()
     }
 
-    fun clearVictoryPointsFromSupplyPile(pileName: String) {
-        victoryPointsOnSupplyPile[pileName] = 0
-        refreshSupply()
+    fun removeVictoryPointsFromSupplyPile(pileName: String, victoryPoints: Int) {
+        addVictoryPointsToSupplyPile(pileName, victoryPoints * -1)
     }
 
     fun getDebtOnSupplyPile(pileName: String): Int {

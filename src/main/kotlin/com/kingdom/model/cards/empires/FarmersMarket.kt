@@ -14,7 +14,7 @@ class FarmersMarket : EmpiresCard(NAME, CardType.ActionGathering, 3) {
     override fun cardPlayedSpecialAction(player: Player) {
         val victoryPointsOnSupplyPile = player.game.victoryPointsOnSupplyPile[pileName] ?: 0
         if (victoryPointsOnSupplyPile >= 4) {
-            player.takeVictoryPointsFromSupplyPile(this)
+            player.takeAllVictoryPointsFromSupplyPile(this)
             player.trashCardInPlay(this)
             player.game.refreshSupply()
         } else {

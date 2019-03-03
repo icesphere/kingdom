@@ -9,8 +9,6 @@ import com.kingdom.model.cards.adventures.Amulet
 import com.kingdom.model.cards.adventures.Gear
 import com.kingdom.model.cards.adventures.Raze
 import com.kingdom.model.cards.adventures.Storyteller
-import com.kingdom.model.cards.darkages.Feodum
-import com.kingdom.model.cards.darkages.Rats
 import com.kingdom.model.cards.guilds.Doctor
 import com.kingdom.model.cards.guilds.Masterpiece
 import com.kingdom.model.cards.guilds.Stonemason
@@ -18,8 +16,7 @@ import com.kingdom.model.cards.hinterlands.Farmland
 import com.kingdom.model.cards.base.ThroneRoom
 import com.kingdom.model.cards.base.Witch
 import com.kingdom.model.cards.cornucopia.Remake
-import com.kingdom.model.cards.darkages.Armory
-import com.kingdom.model.cards.darkages.BandOfMisfits
+import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.intrigue.Upgrade
 import com.kingdom.model.cards.prosperity.Contraband
 import com.kingdom.model.cards.prosperity.Forge
@@ -123,6 +120,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Storyteller.NAME -> return true
             card.name == Armory.NAME -> return true
             card.name == BandOfMisfits.NAME -> return true
+            card.name == Procession.NAME -> return true
             card.name == Feodum.NAME && cardCountByName(Silver.NAME) < 6 -> return true
             card.name == Farmland.NAME && hand.all { it.isVictory && it.cost > 2 } -> return true
             card is TavernCard -> return true

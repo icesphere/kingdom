@@ -29,7 +29,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val hand: MutableList<Card> = ArrayList()
 
     val handCopy: List<Card>
-        get() = hand.map { game.getNewInstanceOfCard(it.name) }
+        get() = hand.map { it.copy() }
 
     protected val discard: MutableList<Card> = ArrayList()
 
@@ -37,14 +37,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = discard
 
     val cardsInDiscardCopy: List<Card>
-        get() = cardsInDiscard.map { game.getNewInstanceOfCard(it.name) }
+        get() = cardsInDiscard.map { it.copy() }
 
     val cardsBought: MutableList<Card> = ArrayList()
     val cardsPlayed: MutableList<Card> = ArrayList()
     val inPlay: MutableList<Card> = ArrayList()
 
     val inPlayCopy: List<Card>
-        get() = inPlay.map { game.getNewInstanceOfCard(it.name) }
+        get() = inPlay.map { it.copy() }
 
     val eventsBought: MutableList<Event> = ArrayList()
 
@@ -1854,11 +1854,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addEventLogWithUsername("doubled their money")
     }
 
-    fun takeVictoryPointsFromSupplyPile(card: Card) {
-        val victoryPointsOnSupplyPile = game.victoryPointsOnSupplyPile[card.pileName] ?: 0
-        addVictoryCoins(victoryPointsOnSupplyPile)
-        addEventLogWithUsername("gained $victoryPointsOnSupplyPile VP from ${card.cardNameWithBackgroundColor} Supply pile")
-        game.clearVictoryPointsFromSupplyPile(card.pileName)
+    fun takeAllVictoryPointsFromSupplyPile(card: Card) {
+        takeVictoryPointsFromSupplyPile(card, game.getVictoryPointsOnSupplyPile(card.pileName))
+    }
+
+    fun takeVictoryPointsFromSupplyPile(card: Card, points: Int) {
+        val victoryPointsOnSupplyPile = game.getVictoryPointsOnSupplyPile(card.pileName)
+        if (victoryPointsOnSupplyPile == 0) {
+            return
+        }
+        val pointsToTake = minOf(points, victoryPointsOnSupplyPile)
+        addVictoryCoins(pointsToTake)
+        addEventLogWithUsername("gained $pointsToTake VP from ${card.cardNameWithBackgroundColor} Supply pile")
+        game.removeVictoryPointsFromSupplyPile(card.pileName, pointsToTake)
     }
 
     fun clearDiscard() {

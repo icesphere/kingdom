@@ -25,9 +25,7 @@ class Arena : EmpiresLandmark(NAME), GameSetupModifier, DiscardCardsForBenefitAc
     }
 
     override fun cardsDiscarded(player: Player, discardedCards: List<Card>, info: Any?) {
-        player.game.addVictoryPointsToSupplyPile(NAME, -2)
-        player.addVictoryCoins(2)
-        player.addEventLogWithUsername("gained 2 VP from $cardNameWithBackgroundColor")
+        player.takeVictoryPointsFromSupplyPile(this, 2)
         player.isActionTakenInBuyPhase = true
     }
 

@@ -353,7 +353,8 @@ class CardRepository {
         get() = listOf(
                 Aqueduct(),
                 Arena(),
-                BanditFort()
+                BanditFort(),
+                Basilica()
         )
 
     val allCards: List<Card>
