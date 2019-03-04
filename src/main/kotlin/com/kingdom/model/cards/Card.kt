@@ -17,7 +17,6 @@ abstract class Card(
         val type: CardType,
         val cost: Int,
         val debtCost: Int = 0,
-        val id: String = UUID.randomUUID().toString(),
         var special: String = "",
         var addActions: Int = 0,
         var addCoins: Int = 0,
@@ -42,6 +41,8 @@ abstract class Card(
         var isOverpayForCardAllowed: Boolean = false,
         var isPreventAutoEndTurnWhenBought: Boolean = false,
         var playersExcludedFromCardEffects: MutableSet<Player> = mutableSetOf()) {
+
+    var id: String = UUID.randomUUID().toString()
 
     var isHighlighted: Boolean = false
 
@@ -381,8 +382,12 @@ abstract class Card(
         return Objects.hash(id)
     }
 
-    fun copy(): Card {
-        return javaClass.kotlin.createInstance()
+    fun copy(sameId: Boolean): Card {
+        val card = javaClass.kotlin.createInstance()
+        if (sameId) {
+            card.id = id
+        }
+        return card
     }
 
     open fun removedFromPlay(player: Player) {

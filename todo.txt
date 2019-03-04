@@ -30,8 +30,6 @@ remove extra white space for custom card selection
 Overlord copying Duplicate didn't turn back into Overlord
 show card details from game results page
 catapult messages
-herald created duplicate
-check wild hunt gaining of estates - it was probably annex
 archive cards included at end of game
 trashing vp card should update vp
 

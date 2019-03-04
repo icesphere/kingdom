@@ -29,7 +29,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val hand: MutableList<Card> = ArrayList()
 
     val handCopy: List<Card>
-        get() = hand.map { it.copy() }
+        get() = hand.map { it.copy(true) }
 
     protected val discard: MutableList<Card> = ArrayList()
 
@@ -37,14 +37,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = discard
 
     val cardsInDiscardCopy: List<Card>
-        get() = cardsInDiscard.map { it.copy() }
+        get() = cardsInDiscard.map { it.copy(true) }
 
     val cardsBought: MutableList<Card> = ArrayList()
     val cardsPlayed: MutableList<Card> = ArrayList()
     val inPlay: MutableList<Card> = ArrayList()
 
     val inPlayCopy: List<Card>
-        get() = inPlay.map { it.copy() }
+        get() = inPlay.map { it.copy(true) }
 
     val eventsBought: MutableList<Event> = ArrayList()
 

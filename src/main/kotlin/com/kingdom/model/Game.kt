@@ -825,15 +825,15 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
     fun getNewInstanceOfCard(cardName: String): Card {
-        return cardMap[cardName]!!.copy()
+        return cardMap[cardName]!!.copy(false)
     }
 
     fun getNewInstanceOfEvent(eventName: String): Event {
-        return eventMap[eventName]!!.copy() as Event
+        return eventMap[eventName]!!.copy(false) as Event
     }
 
     fun getNewInstanceOfLandmark(landmarkName: String): Landmark {
-        return landmarks.first { it.name == landmarkName }.copy() as Landmark
+        return landmarks.first { it.name == landmarkName }.copy(false) as Landmark
     }
 
     private fun addComputerPlayers() {
