@@ -1242,7 +1242,7 @@ class GameController(private val cardManager: CardManager,
 
             addPlayingAreaDataToModelView(game, player, modelAndView)
 
-            modelAndView.addObject("playTreasureCards", !player.isCardsBought)
+            modelAndView.addObject("playTreasureCards", player.isTreasuresPlayable)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1254,7 +1254,11 @@ class GameController(private val cardManager: CardManager,
     private fun addPlayingAreaDataToModelView(game: Game, player: Player, modelAndView: ModelAndView) {
         addCardsPlayedDataToModelAndView(game, player, modelAndView)
 
-        val cardsBoughtCopy = game.cardsBought.toMutableList()
+        addCardsBoughtToModelAndView(game, modelAndView)
+    }
+
+    private fun addCardsBoughtToModelAndView(game: Game, modelAndView: ModelAndView) {
+        val cardsBoughtCopy = game.cardsBoughtCopy
 
         cardsBoughtCopy.forEach {
             it.isHighlighted = false
@@ -1310,11 +1314,13 @@ class GameController(private val cardManager: CardManager,
             if (KingdomUtil.isMobile(request)) {
                 template = "cardsBoughtDivMobile"
             }
+
             val modelAndView = ModelAndView(template)
 
             addPlayerAndGameDataToModelAndView(game, user, modelAndView, request)
 
-            modelAndView.addObject("cardsBought", game.cardsBought)
+            addCardsBoughtToModelAndView(game, modelAndView)
+
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1461,7 +1467,7 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
-            modelAndView.addObject("playTreasureCards", !player.isCardsBought)
+            modelAndView.addObject("playTreasureCards", player.isTreasuresPlayable)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1835,7 +1841,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("showIslandCards", game.isShowIslandCards)
         modelAndView.addObject("showTavern", game.isShowTavern)
         modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)
-        modelAndView.addObject("playTreasureCards", !player.isCardsBought)
+        modelAndView.addObject("playTreasureCards", player.isTreasuresPlayable)
         modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
         modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
         modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)

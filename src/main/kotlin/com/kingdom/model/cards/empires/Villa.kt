@@ -22,6 +22,8 @@ class Villa : EmpiresCard(NAME, CardType.Action, 4), AfterCardGainedListenerForS
             player.addCardToHand(this, true)
             if (player.isBuyPhase) {
                 player.isReturnToActionPhase = true
+                player.isTreasuresPlayable = true
+                player.refreshCardsBought()
                 player.addEventLogWithUsername("returned to Action phase")
             }
         }

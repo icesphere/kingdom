@@ -174,6 +174,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val isCardsBought: Boolean
         get() = cardsBought.isNotEmpty() || eventsBought.isNotEmpty()
 
+    var isTreasuresPlayable: Boolean = true
+
     val isOpponentHasAction: Boolean
         get() = opponents.any { it.currentAction != null }
 
@@ -552,6 +554,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         isReturnToActionPhase = false
 
+        isTreasuresPlayable = true
+
         turns++
 
         coins = 0
@@ -560,6 +564,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         buys = 0
 
         numActionsPlayed = 0
+
+        nextActionEnchanted = false
 
         playedCrossroadsThisTurn = false
 
@@ -853,6 +859,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             debt += event.debtCost
             buys -= 1
             isReturnToActionPhase = false
+            isTreasuresPlayable = false
             eventsBought.add(event)
             currentTurnSummary.eventsBought.add(event)
             game.refreshCardsBought()
@@ -875,6 +882,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
 
             buys -= 1
+            isTreasuresPlayable = false
             cardsBought.add(card)
             game.cardsBought.add(card)
             currentTurnSummary.cardsBought.add(card)
@@ -1781,6 +1789,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         isPaidOffDebtThisTurn = true
+
+        isTreasuresPlayable = false
 
         addInfoLogWithUsername("paid off $debtToPayOff debt")
 

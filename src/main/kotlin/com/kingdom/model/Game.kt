@@ -234,7 +234,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     val embargoTokens = HashMap<String, Int>()
 
     val cardsPlayed = LinkedList<Card>()
+
     val cardsBought = ArrayList<Card>()
+
+    val cardsBoughtCopy
+        get() = cardsBought.map { it.copy(true) }
 
     val treasureCardsPlayedInActionPhase = mutableListOf<Card>()
 
