@@ -79,10 +79,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     private var coins: Int = 0
 
-    private var coinsInHand: Int = 0
+    private val coinsInHand: Int
         get() = hand.filter { it.isTreasure }.sumBy { it.addCoins }
 
-    var availableCoins: Int = 0
+    val availableCoins: Int
         get() = coins
 
     var coinsSpent: Int = 0
@@ -520,6 +520,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         eventsBought.filterIsInstance<TurnEndedListenerForEventsBought>()
                 .forEach { it.onTurnEnded(this) }
 
+        game.landmarks.filterIsInstance<TurnEndedListenerForLandmark>()
+                .forEach { it.onTurnEnded(this) }
+
         resolveActions()
 
         if (currentAction != null) {
@@ -932,6 +935,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             for (listener in cardBoughtListenersForCardsInHand) {
                 listener.afterCardBought(card, this)
             }
+
+            game.landmarks.filterIsInstance<AfterCardBoughtListenerForLandmark>()
+                    .forEach { it.afterCardBought(card, this) }
         }
     }
 

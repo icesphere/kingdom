@@ -18,7 +18,7 @@ class Basilica : EmpiresLandmark(NAME), GameSetupModifier, AfterCardBoughtListen
 
     override fun afterCardBought(card: Card, player: Player) {
         if (player.availableCoins >= 2 && player.game.getVictoryPointsOnSupplyPile(NAME) > 0) {
-            player.takeVictoryPointsFromSupplyPile(card, 2)
+            player.takeVictoryPointsFromSupplyPile(this, 2)
         }
     }
 
