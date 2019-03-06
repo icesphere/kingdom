@@ -358,7 +358,8 @@ class CardRepository {
                 Baths(),
                 Battlefield(),
                 Colonnade(),
-                CursedMarket()
+                CursedMarket(),
+                Fountain()
         )
 
     val allCards: List<Card>
