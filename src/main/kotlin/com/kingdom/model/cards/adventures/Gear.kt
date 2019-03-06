@@ -4,12 +4,13 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.ChooseCardsActionCard
+import com.kingdom.model.cards.actions.SetAsideCardsDuration
 import com.kingdom.model.players.Player
 import com.kingdom.util.groupedString
 
-class Gear : AdventuresCard(NAME, CardType.ActionDuration, 3), StartOfTurnDurationAction, ChooseCardsActionCard {
+class Gear : AdventuresCard(NAME, CardType.ActionDuration, 3), StartOfTurnDurationAction, ChooseCardsActionCard, SetAsideCardsDuration {
 
-    var setAsideCards: List<Card>? = null
+    override var setAsideCards: List<Card>? = null
 
     init {
         addCards = 2

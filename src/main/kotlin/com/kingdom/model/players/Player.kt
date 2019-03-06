@@ -957,6 +957,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cards.addAll(tavernCards)
             inheritanceActionCard?.let { cards.add(it) }
 
+            inPlayWithDuration.filterIsInstance<SetAsideCardsDuration>()
+                    .forEach { it.setAsideCards?.let { setAsideCards -> cards.addAll(setAsideCards) } }
+
             return cards
         }
 

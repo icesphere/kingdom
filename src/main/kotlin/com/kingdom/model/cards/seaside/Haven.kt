@@ -4,11 +4,15 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.ChooseCardActionCard
+import com.kingdom.model.cards.actions.SetAsideCardsDuration
 import com.kingdom.model.players.Player
 
-class Haven : SeasideCard(NAME, CardType.ActionDuration, 2), StartOfTurnDurationAction, ChooseCardActionCard {
+class Haven : SeasideCard(NAME, CardType.ActionDuration, 2), StartOfTurnDurationAction, ChooseCardActionCard, SetAsideCardsDuration {
 
     var setAsideCard: Card? = null
+
+    override val setAsideCards: List<Card>?
+        get() = setAsideCard?.let { listOf(it) } ?: emptyList()
 
     init {
         addCards = 1

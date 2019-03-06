@@ -5,11 +5,12 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.MultipleTurnDuration
 import com.kingdom.model.cards.actions.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.ChooseCardActionCard
+import com.kingdom.model.cards.actions.SetAsideCardsDuration
 import com.kingdom.model.players.Player
 
-class Archive : EmpiresCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurationAction, MultipleTurnDuration, ChooseCardActionCard {
+class Archive : EmpiresCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurationAction, MultipleTurnDuration, ChooseCardActionCard, SetAsideCardsDuration {
 
-    var setAsideCards = mutableListOf<Card>()
+    override var setAsideCards = mutableListOf<Card>()
 
     init {
         addActions = 1

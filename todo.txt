@@ -30,7 +30,6 @@ remove extra white space for custom card selection
 Overlord copying Duplicate didn't turn back into Overlord
 show card details from game results page
 catapult messages
-archive cards included at end of game
 trashing vp card should update vp
 
 remove game.cardsPlayed and just use player.cardsPlayed
