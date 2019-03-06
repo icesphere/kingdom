@@ -356,7 +356,8 @@ class CardRepository {
                 BanditFort(),
                 Basilica(),
                 Baths(),
-                Battlefield()
+                Battlefield(),
+                Colonnade()
         )
 
     val allCards: List<Card>
