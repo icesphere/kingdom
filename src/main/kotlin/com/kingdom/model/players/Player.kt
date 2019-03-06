@@ -1888,6 +1888,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.removeVictoryPointsFromSupplyPile(card.pileName, pointsToTake)
     }
 
+    fun moveVictoryPointsOnSupplyPile(fromCard: Card, toCard: Card, victoryPoints: Int) {
+        game.removeVictoryPointsFromSupplyPile(fromCard.pileName, victoryPoints)
+        game.addVictoryPointsToSupplyPile(toCard.pileName, victoryPoints)
+        addEventLogWithUsername("moved 1 VP from ${fromCard.cardNameWithBackgroundColor} to ${toCard.cardNameWithArticleAndBackgroundColor}")
+    }
+
     fun clearDiscard() {
         discard.clear()
     }

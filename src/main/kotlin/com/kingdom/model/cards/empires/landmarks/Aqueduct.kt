@@ -21,9 +21,7 @@ class Aqueduct : EmpiresLandmark(NAME), GameSetupModifier, CardGainedListenerFor
 
     override fun onCardGained(card: Card, player: Player) {
         if (card.isTreasure && player.game.getVictoryPointsOnSupplyPile(card.pileName) > 0) {
-            player.game.removeVictoryPointsFromSupplyPile(card.pileName, 1)
-            player.game.addVictoryPointsToSupplyPile(this.pileName, 1)
-            player.addEventLogWithUsername("moved 1 VP from ${card.cardNameWithBackgroundColor} to $cardNameWithBackgroundColor")
+            player.moveVictoryPointsOnSupplyPile(card, this, 1)
         }
 
         if (card.isVictory) {
