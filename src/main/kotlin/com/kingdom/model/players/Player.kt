@@ -810,6 +810,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             listener.afterCardGained(cardToGain, this)
         }
 
+        game.landmarks.filterIsInstance<AfterCardGainedListenerForLandmark>()
+                .forEach { it.afterCardGained(cardToGain, this) }
+
         if (cardToGain.isVictory) {
             game.refreshPlayers()
         }
