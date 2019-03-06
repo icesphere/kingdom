@@ -1,6 +1,7 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.*
+import com.kingdom.model.cards.actions.CardRepeater
 import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.cards.adventures.InheritanceEstate
 import com.kingdom.model.cards.darkages.Spoils

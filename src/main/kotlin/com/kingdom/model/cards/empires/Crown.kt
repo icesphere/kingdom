@@ -1,10 +1,10 @@
 package com.kingdom.model.cards.empires
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.CardRepeater
+import com.kingdom.model.cards.actions.CardRepeater
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChooseCardActionCardOptional
-import com.kingdom.model.cards.handleCardToRepeatChosen
+import com.kingdom.model.cards.actions.handleCardToRepeatChosen
 import com.kingdom.model.players.Player
 
 class Crown : EmpiresCard(NAME, CardType.ActionTreasure, 5), ChooseCardActionCardOptional, CardRepeater {
