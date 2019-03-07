@@ -360,7 +360,8 @@ class CardRepository {
                 Colonnade(),
                 CursedMarket(),
                 Fountain(),
-                Keep()
+                Keep(),
+                Labyrinth()
         )
 
     val allCards: List<Card>

@@ -795,6 +795,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         }
 
+        if (isYourTurn) {
+            currentTurnSummary.cardsGained.add(cardToGain)
+        }
+
         if (cardToGain is AfterCardGainedListenerForSelf) {
             cardToGain.afterCardGained(this)
         }
@@ -815,10 +819,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (cardToGain.isVictory) {
             game.refreshPlayers()
-        }
-
-        if (isYourTurn) {
-            currentTurnSummary.cardsGained.add(cardToGain)
         }
     }
 
