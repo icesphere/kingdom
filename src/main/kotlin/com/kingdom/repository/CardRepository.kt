@@ -362,7 +362,8 @@ class CardRepository {
                 Fountain(),
                 Keep(),
                 Labyrinth(),
-                Museum()
+                Museum(),
+                Orchard()
         )
 
     val allCards: List<Card>
