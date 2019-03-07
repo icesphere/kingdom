@@ -361,7 +361,8 @@ class CardRepository {
                 CursedMarket(),
                 Fountain(),
                 Keep(),
-                Labyrinth()
+                Labyrinth(),
+                Museum()
         )
 
     val allCards: List<Card>
