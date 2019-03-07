@@ -58,7 +58,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
                 if (game.numPlayers > 4) {
                     numEmptyPilesForGameEnd = 4
                 }
-                if (game.emptyPiles + pilesWithOneCard + pilesWithTwoCards == numEmptyPilesForGameEnd) {
+                if (game.numEmptyPiles + pilesWithOneCard + pilesWithTwoCards == numEmptyPilesForGameEnd) {
                     shouldOnlyBuyVictoryCards = true
                 }
             }

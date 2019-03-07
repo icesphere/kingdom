@@ -228,7 +228,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var tradeRouteTokensOnMat: Int = 0
 
     val isGameOver: Boolean
-        get() = emptyPiles >= 3
+        get() = numEmptyPiles >= 3
                 || pileAmounts[Province.NAME] == 0
                 || (isIncludeColonyCards && pileAmounts[Colony.NAME] == 0)
 
@@ -741,8 +741,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     private val nonEmptyPiles: Int
         get() = (cardsInSupply + kingdomCards).filter { numInPileMap[it.pileName]!! > 0 }.size
 
-    val emptyPiles
+    val numEmptyPiles
         get() = (cardsInSupply + kingdomCards).size - nonEmptyPiles
+
+    val emptyPileNames: Set<String>
+        get() = numInPileMap.filterValues { it == 0 }.keys
 
     val availableCards
         get() = allCards.filter { isCardAvailableInSupply(it) }

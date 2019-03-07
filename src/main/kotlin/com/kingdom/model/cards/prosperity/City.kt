@@ -12,7 +12,7 @@ class City : ProsperityCard(NAME, CardType.Action, 5) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val emptyPiles = player.game.emptyPiles
+        val emptyPiles = player.game.numEmptyPiles
 
         if (emptyPiles >= 1) {
             player.drawCard()

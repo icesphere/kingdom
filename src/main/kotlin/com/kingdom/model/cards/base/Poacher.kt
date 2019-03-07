@@ -12,7 +12,7 @@ class Poacher : BaseCard(NAME, CardType.Action, 4) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        val emptySupplyPiles = player.game.emptyPiles
+        val emptySupplyPiles = player.game.numEmptyPiles
         if (emptySupplyPiles > 0) {
             player.discardCardsFromHand(emptySupplyPiles, false)
         }
