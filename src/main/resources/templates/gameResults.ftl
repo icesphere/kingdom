@@ -63,7 +63,7 @@
                             </#if>
 
                             <#if player.pointsFromLandmarks != 0>
-                                <div class="gameResultsPlayerPointsLabel">Landmarks:</div>
+                                <div class="gameResultsPlayerPointsLabel">Landmarks VP:</div>
                                 <div class="gameResultsPlayerPoints">${player.pointsFromLandmarks}</div>
                             </#if>
 
