@@ -2,12 +2,10 @@ package com.kingdom.model.cards.empires
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.listeners.AfterCardBoughtListenerForCardsInPlay
-import com.kingdom.model.cards.listeners.AfterCardBoughtListenerForSelf
-import com.kingdom.model.cards.listeners.AfterCardGainedListenerForSelf
+import com.kingdom.model.cards.listeners.AfterCardGainedListenerForCardsInPlay
 import com.kingdom.model.players.Player
 
-class Groundskeeper : EmpiresCard(NAME, CardType.Action, 5), AfterCardBoughtListenerForCardsInPlay {
+class Groundskeeper : EmpiresCard(NAME, CardType.Action, 5), AfterCardGainedListenerForCardsInPlay {
 
     init {
         addCards = 1
@@ -16,7 +14,7 @@ class Groundskeeper : EmpiresCard(NAME, CardType.Action, 5), AfterCardBoughtList
         fontSize = 9
     }
 
-    override fun afterCardBought(card: Card, player: Player) {
+    override fun afterCardGained(card: Card, player: Player) {
         if (card.isVictory) {
             player.addVictoryCoins(1)
             player.addEventLogWithUsername("gained 1 VP from $cardNameWithBackgroundColor")

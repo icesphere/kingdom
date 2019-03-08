@@ -807,12 +807,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             (cardToGain.addedAbilityCard as AfterCardGainedListenerForSelf).afterCardGained(this)
         }
 
-        val afterCardGainedListenersForCardsInTavern = tavernCards.filterIsInstance<AfterCardGainedListenerForCardsInTavern>() +
-                tavernCards.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardGainedListenerForCardsInTavern>()
+        (tavernCards.filterIsInstance<AfterCardGainedListenerForCardsInTavern>() +
+                tavernCards.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardGainedListenerForCardsInTavern>())
+                .forEach { it.afterCardGained(cardToGain, this) }
 
-        for (listener in afterCardGainedListenersForCardsInTavern) {
-            listener.afterCardGained(cardToGain, this)
-        }
+        (inPlayWithDuration.filterIsInstance<AfterCardGainedListenerForCardsInPlay>() +
+                inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardGainedListenerForCardsInPlay>())
+                .forEach { it.afterCardGained(cardToGain, this) }
 
         game.landmarks.filterIsInstance<AfterCardGainedListenerForLandmark>()
                 .forEach { it.afterCardGained(cardToGain, this) }
@@ -925,19 +926,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 (card.addedAbilityCard as AfterCardBoughtListenerForSelf).afterCardBought(this)
             }
 
-            val cardBoughtListenersForCardsInPlay = inPlayWithDuration.filterIsInstance<AfterCardBoughtListenerForCardsInPlay>() +
-                    inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardBoughtListenerForCardsInPlay>()
+            (inPlayWithDuration.filterIsInstance<AfterCardBoughtListenerForCardsInPlay>() +
+                    inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardBoughtListenerForCardsInPlay>())
+                            .forEach { it.afterCardBought(card, this) }
 
-            for (listener in cardBoughtListenersForCardsInPlay) {
-                listener.afterCardBought(card, this)
-            }
-
-            val cardBoughtListenersForCardsInHand = hand.filterIsInstance<AfterCardBoughtListenerForCardsInHand>() +
-                    hand.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardBoughtListenerForCardsInHand>()
-
-            for (listener in cardBoughtListenersForCardsInHand) {
-                listener.afterCardBought(card, this)
-            }
+            (hand.filterIsInstance<AfterCardBoughtListenerForCardsInHand>() +
+                    hand.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardBoughtListenerForCardsInHand>())
+                    .forEach { it.afterCardBought(card, this) }
 
             game.landmarks.filterIsInstance<AfterCardBoughtListenerForLandmark>()
                     .forEach { it.afterCardBought(card, this) }

@@ -845,6 +845,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 cards.any { it.isVictoryOnly } -> cards.first { it.isVictoryOnly }
                 else -> cards.maxBy { getTrashCardScore(it) }!!
             }
+            Masquerade.NAME -> cards.maxBy { getTrashCardScore(it) }!!
             Mint.NAME -> cards.maxBy { getBuyCardScore(it) }!!
             ThroneRoom.NAME, KingsCourt.NAME, Procession.NAME, Disciple.NAME -> cards.maxBy { getPlayCardScore(it) }!!
             else -> cards.first()
