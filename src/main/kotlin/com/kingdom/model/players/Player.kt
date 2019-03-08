@@ -677,12 +677,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             (cardToTrash.addedAbilityCard as AfterCardTrashedListenerForSelf).afterCardTrashed(this)
         }
 
-        val cardTrashedListenersForCardsInHand = hand.filter { it is AfterCardTrashedListenerForCardsInHand }.toMutableList()
-        cardTrashedListenersForCardsInHand.addAll(hand.filter { it.addedAbilityCard is AfterCardTrashedListenerForCardsInHand }.map { it.addedAbilityCard!! })
+        (hand.filterIsInstance<AfterCardTrashedListenerForCardsInHand>() +
+                hand.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardTrashedListenerForCardsInHand>())
+                .forEach { it.afterCardTrashed(cardToTrash, this) }
 
-        for (listener in cardTrashedListenersForCardsInHand) {
-            (listener as AfterCardTrashedListenerForCardsInHand).afterCardTrashed(cardToTrash, this)
-        }
+        game.landmarks.filterIsInstance<AfterCardTrashedListenerForLandmark>()
+                .forEach { it.afterCardTrashed(cardToTrash, this) }
     }
 
     fun removeCardInPlay(card: Card) {

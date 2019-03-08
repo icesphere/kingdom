@@ -365,6 +365,7 @@ class CardRepository {
                 Museum(),
                 Orchard(),
                 Palace(),
+                Tomb(),
                 Tower()
         )
 
