@@ -367,7 +367,8 @@ class CardRepository {
                 Palace(),
                 Tomb(),
                 Tower(),
-                TriumphalArch()
+                TriumphalArch(),
+                Wall()
         )
 
     val allCards: List<Card>
