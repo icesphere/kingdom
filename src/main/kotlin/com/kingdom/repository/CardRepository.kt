@@ -363,6 +363,7 @@ class CardRepository {
                 Keep(),
                 Labyrinth(),
                 Museum(),
+                Obelisk(),
                 Orchard(),
                 Palace(),
                 Tomb(),
