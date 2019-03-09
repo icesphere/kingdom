@@ -343,6 +343,9 @@ abstract class Card(
 
     var adjustedCost: Int = cost
 
+    val isVictoryPointsCalculator: Boolean
+        get() = this is VictoryPointsCalculator
+
     fun getNumberPlusNameWithBackgroundColor(num: Int): String {
         return KingdomUtil.getWordWithBackgroundColor(name.plural(num), backgroundColor)
     }

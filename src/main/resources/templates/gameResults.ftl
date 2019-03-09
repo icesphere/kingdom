@@ -47,24 +47,30 @@
                         </td>
                         <td style="<#if player.winner>color:green;</#if>">
                             <div class="gameResultsPlayerPointsLabel">Total:</div>
-                            <div class="gameResultsPlayerPoints">${player.finalVictoryPoints}</div>
+                            <div class="gameResultsPlayerPoints">${player.finalVictoryPoints} VP</div>
 
                             <#list victoryCards as card>
-                                <div class="gameResultsPlayerPointsLabel">${card.name}:</div>
-                                <div class="gameResultsPlayerPoints">${player.cardCountByName(card.name)}</div>
+                                <#if player.cardCountByName(card.name) != 0>
+                                    <div class="gameResultsPlayerPointsLabel">${card.name}:</div>
+                                    <div class="gameResultsPlayerPoints">
+                                        ${player.cardCountByName(card.name)} (<#if card.victoryPointsCalculator>${player.cardCountByName(card.name) * card.calculatePoints(player)}<#else>${player.cardCountByName(card.name) * card.victoryPoints}</#if> VP)
+                                    </div>
+                                </#if>
                             </#list>
 
-                            <div class="gameResultsPlayerPointsLabel">Curses:</div>
-                            <div class="gameResultsPlayerPoints">${player.cardCountByName("Curse")}</div>
+                            <#list scoringLandmarks as card>
+                                <div class="gameResultsPlayerPointsLabel">${card.name}:</div>
+                                <div class="gameResultsPlayerPoints">${card.calculatePoints(player)} VP</div>
+                            </#list>
+
+                            <#if player.cardCountByName("Curse") != 0>
+                                <div class="gameResultsPlayerPointsLabel">Curses:</div>
+                                <div class="gameResultsPlayerPoints">${player.cardCountByName("Curse")} (${player.cardCountByName("Curse") * -1} VP)</div>
+                            </#if>
 
                             <#if player.victoryCoins != 0>
                                 <div class="gameResultsPlayerPointsLabel">Victory Coins:</div>
                                 <div class="gameResultsPlayerPoints">${player.victoryCoins}</div>
-                            </#if>
-
-                            <#if player.pointsFromLandmarks != 0>
-                                <div class="gameResultsPlayerPointsLabel">Landmarks VP:</div>
-                                <div class="gameResultsPlayerPoints">${player.pointsFromLandmarks}</div>
                             </#if>
 
                             <div class="gameResultsPlayerPointsLabel">Cards:</div>

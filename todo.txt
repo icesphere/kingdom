@@ -31,7 +31,6 @@ Overlord copying Duplicate didn't turn back into Overlord
 show card details from game results page
 catapult messages
 trashing vp card should update vp
-separate out landmark cards vp on results page
 
 remove game.cardsPlayed and just use player.cardsPlayed
 remove game.cardsBought and just use player.cardsBought

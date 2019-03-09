@@ -4,6 +4,7 @@ import com.kingdom.model.*
 import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.ActionResult
 import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.supply.VictoryPointsCalculator
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
 import com.kingdom.service.*
@@ -1853,6 +1854,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("gameEndReason", game.gameEndReason)
         modelAndView.addObject("winnerString", game.winnerString)
         modelAndView.addObject("victoryCards", game.victoryCards)
+        modelAndView.addObject("scoringLandmarks", game.landmarks.filterIsInstance<VictoryPointsCalculator>())
 
         modelAndView.addObject("showCardsNotInSupply", game.cardsNotInSupply.isNotEmpty())
     }
