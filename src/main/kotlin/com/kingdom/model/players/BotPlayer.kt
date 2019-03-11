@@ -13,11 +13,11 @@ import com.kingdom.model.cards.base.*
 import com.kingdom.model.cards.cornucopia.Hamlet
 import com.kingdom.model.cards.cornucopia.HorseTraders
 import com.kingdom.model.cards.cornucopia.Jester
-import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.darkages.ruins.Survivors
 import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.empires.Temple
+import com.kingdom.model.cards.empires.landmarks.MountainPass
 import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
@@ -436,6 +436,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Miser.NAME -> if (turns < 10 || tavernCards.count { it.isCopper } == 0) 1 else 2
             Moat.NAME -> 1
             Moneylender.NAME -> 1
+            MountainPass.NAME -> 10
             Mountebank.NAME -> 1
             NativeVillage.NAME -> if (nativeVillageCards.size < 2) 1 else 2
             NobleBrigand.NAME -> 2

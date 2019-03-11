@@ -362,6 +362,7 @@ class CardRepository {
                 Fountain(),
                 Keep(),
                 Labyrinth(),
+                MountainPass(),
                 Museum(),
                 Obelisk(),
                 Orchard(),
