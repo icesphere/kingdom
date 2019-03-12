@@ -20,6 +20,8 @@ class MountainPass : EmpiresLandmark(NAME), AfterCardGainedListenerForLandmark, 
 
     var playerBidMap = mutableMapOf<Player, Int>()
 
+    var playersChoices: String = ""
+
     override fun afterCardGained(card: Card, player: Player) {
         if (!firstProvinceGained && card.isProvince) {
             firstProvinceGained = true
@@ -31,13 +33,7 @@ class MountainPass : EmpiresLandmark(NAME), AfterCardGainedListenerForLandmark, 
         if (bidOnEndOfTurn) {
             bidOnEndOfTurn = false
 
-            player.opponents.forEach { opponent ->
-                val choices = mutableListOf<Choice>()
-                for (i in 0..40) {
-                    choices.add(Choice(i, i.toString()))
-                }
-                opponent.makeChoiceFromList(this, "How much debt do you want to bid? High bidder gets +8 VP and takes the debt they bid.", choices)
-            }
+            makeChoice(player.playerToLeft)
         }
     }
 
@@ -46,19 +42,26 @@ class MountainPass : EmpiresLandmark(NAME), AfterCardGainedListenerForLandmark, 
 
         player.addEventLogWithUsername("bid $choice debt")
 
-        //todo show how much previous players bid in choice text
+        playersChoices += "${player.username} bid $choice debt. "
 
-        if (playerBidMap.size == player.opponents.size) {
-            val choices = mutableListOf<Choice>()
-            for (i in 0..40) {
-                choices.add(Choice(i, i.toString()))
-            }
-            player.game.currentPlayer.makeChoiceFromList(this, "How much debt do you want to bid? High bidder gets +8 VP and takes the debt they bid.", choices)
-        } else if (playerBidMap.size == player.game.players.size) {
+        if (playerBidMap.size == player.game.players.size || choice == 40) {
             val highestBidder = playerBidMap.maxBy { it.value }!!.key
+            val highestBid = playerBidMap[highestBidder]!!
             highestBidder.addVictoryCoins(8)
-            highestBidder.addDebt(playerBidMap[highestBidder]!!)
+            highestBidder.addDebt(highestBid)
+        } else {
+            makeChoice(player.playerToLeft)
         }
+    }
+
+    private fun makeChoice(player: Player) {
+
+        val choices = mutableListOf<Choice>()
+        for (i in 0..40) {
+            choices.add(Choice(i, i.toString()))
+        }
+
+        player.makeChoiceFromList(this, playersChoices + "How much debt do you want to bid? High bidder gets +8 VP and takes the debt they bid.", choices)
     }
 
     companion object {

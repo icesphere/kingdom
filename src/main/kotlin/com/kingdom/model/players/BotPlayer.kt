@@ -436,7 +436,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Miser.NAME -> if (turns < 10 || tavernCards.count { it.isCopper } == 0) 1 else 2
             Moat.NAME -> 1
             Moneylender.NAME -> 1
-            MountainPass.NAME -> 10
+            MountainPass.NAME -> 10 + random.nextInt(7)
             Mountebank.NAME -> 1
             NativeVillage.NAME -> if (nativeVillageCards.size < 2) 1 else 2
             NobleBrigand.NAME -> 2
