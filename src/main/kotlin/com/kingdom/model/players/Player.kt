@@ -353,21 +353,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         shuffles++
     }
 
-    fun cardRemovedFromPlay(card: Card) {
+    fun cardRemovedFromPlay(card: Card, removedToLocation: CardLocation) {
         card.removedFromPlay(this)
 
-        if (card.isCardActuallyBandOfMisfits || card.isCardActuallyOverlord) {
+        if (card.isVictory) {
+            game.refreshPlayers()
+        }
 
-            //todo handle tavern cards
+        if (removedToLocation != CardLocation.Tavern && (card.isCardActuallyBandOfMisfits || card.isCardActuallyOverlord)) {
 
             val actualCard: Card = if (card.isCardActuallyOverlord) Overlord() else BandOfMisfits()
 
             card.isCardActuallyBandOfMisfits = false
             card.isCardActuallyOverlord = false
-
-            if (card.isVictory) {
-                game.refreshPlayers()
-            }
 
             when {
                 cardsInDiscard.contains(card) -> {
@@ -661,7 +659,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         game.trashedCards.add(cardToTrash)
 
-        cardRemovedFromPlay(cardToTrash)
+        cardRemovedFromPlay(cardToTrash, CardLocation.Trash)
 
         numCardsTrashedThisTurn++
 
@@ -685,9 +683,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 .forEach { it.afterCardTrashed(cardToTrash, this) }
     }
 
-    fun removeCardInPlay(card: Card) {
+    fun removeCardInPlay(card: Card, removedToLocation: CardLocation) {
         inPlay.remove(card)
-        cardRemovedFromPlay(card)
+        cardRemovedFromPlay(card, removedToLocation)
         game.refreshCardsPlayed()
     }
 
@@ -697,7 +695,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         inPlay.remove(card)
-        cardRemovedFromPlay(card)
+        cardRemovedFromPlay(card, CardLocation.Trash)
         cardTrashed(card)
         game.refreshCardsPlayed()
     }
@@ -1204,7 +1202,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         discard.add(card)
 
-        cardRemovedFromPlay(card)
+        cardRemovedFromPlay(card, CardLocation.Discard)
 
         if (refresh) {
             refreshPlayerHandArea()
@@ -1823,7 +1821,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun moveCardInPlayToTavern(card: Card) {
-        removeCardInPlay(card)
+        removeCardInPlay(card, CardLocation.Tavern)
         tavernCards.add(card)
         refreshPlayerHandArea()
         addEventLogWithUsername("moved ${card.cardNameWithBackgroundColor} to their Tavern mat")

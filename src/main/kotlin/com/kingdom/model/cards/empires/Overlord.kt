@@ -1,6 +1,7 @@
 package com.kingdom.model.cards.empires
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.players.Player
@@ -22,7 +23,7 @@ class Overlord : EmpiresCard(NAME, CardType.Action, 0, 8), ChooseCardActionCard 
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.removeCardInPlay(this)
+        player.removeCardInPlay(this, CardLocation.None)
         val overlordCard = player.game.getNewInstanceOfCard(card.name)
         overlordCard.isCardActuallyOverlord = true
         player.addActions(1)

@@ -2,10 +2,7 @@ package com.kingdom.model.cards.empires
 
 import com.kingdom.model.Choice
 import com.kingdom.model.Game
-import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.GameSetupModifier
-import com.kingdom.model.cards.MultiTypePile
+import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.supply.Gold
 import com.kingdom.model.players.Player
@@ -67,7 +64,7 @@ class Encampment : EmpiresCard(NAME, CardType.Action, 2), MultiTypePile, ChoiceA
     }
 
     private fun setAsideEncampment(player: Player) {
-        player.removeCardInPlay(this)
+        player.removeCardInPlay(this, CardLocation.Supply)
         player.cardsSetAsideToReturnToSupplyAtStartOfCleanup.add(this)
         player.addEventLogWithUsername("set aside $cardNameWithBackgroundColor")
         player.showInfoMessage("$cardNameWithBackgroundColor was set aside and will be returned to the supply at the start of Clean-up")

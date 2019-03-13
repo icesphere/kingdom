@@ -1,5 +1,6 @@
 package com.kingdom.model.cards.hinterlands
 
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.listeners.AfterCardGainedListenerForSelf
 import com.kingdom.model.players.Player
@@ -18,7 +19,7 @@ class Mandarin : HinterlandsCard(NAME, CardType.Action, 5), AfterCardGainedListe
 
     override fun afterCardGained(player: Player) {
         val treasuresInPlay = player.inPlay.filter { it.isTreasure }
-        treasuresInPlay.forEach { player.removeCardInPlay(it) }
+        treasuresInPlay.forEach { player.removeCardInPlay(it, CardLocation.Deck) }
         player.putCardsOnTopOfDeckInAnyOrder(treasuresInPlay)
         player.addEventLogWithUsername("added ${treasuresInPlay.groupedString} to the top of their deck")
     }

@@ -2,6 +2,7 @@ package com.kingdom.model.cards.seaside
 
 import com.kingdom.model.Game
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.actions.ChooseCardActionCard
@@ -26,9 +27,9 @@ class Island : SeasideCard(NAME, CardType.ActionVictory, 4), GameSetupModifier, 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.addEventLogWithUsername("added a card to their ${this.cardNameWithBackgroundColor}")
         player.removeCardFromHand(card)
-        player.cardRemovedFromPlay(card)
+        player.cardRemovedFromPlay(card, CardLocation.Island)
         player.islandCards.add(card)
-        player.removeCardInPlay(this)
+        player.removeCardInPlay(this, CardLocation.Island)
         player.islandCards.add(this)
     }
 

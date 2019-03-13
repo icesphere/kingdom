@@ -1,6 +1,7 @@
 package com.kingdom.model.cards.darkages
 
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.players.Player
@@ -23,7 +24,7 @@ class BandOfMisfits : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCa
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.removeCardInPlay(this)
+        player.removeCardInPlay(this, CardLocation.None)
         val bandOfMisfitsCard = player.game.getNewInstanceOfCard(card.name)
         bandOfMisfitsCard.isCardActuallyBandOfMisfits = true
         player.addActions(1)

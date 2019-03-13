@@ -1,5 +1,6 @@
 package com.kingdom.model.cards.darkages
 
+import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.players.Player
 
@@ -11,7 +12,7 @@ class Madman : DarkAgesCard(NAME, CardType.Action, 0) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.removeCardInPlay(this)
+        player.removeCardInPlay(this, CardLocation.Supply)
         player.game.returnCardToSupply(this)
         player.drawCards(player.hand.size)
     }

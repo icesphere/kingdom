@@ -16,11 +16,12 @@
 </div>
 
 <div style="float:left; padding-bottom:10px;">
-    <div style="float:right;">
+    <div style="display:flex; justify-content: space-between; margin-bottom: 10px;">
         <a href="javascript:showGameInfo()">Game Info</a>
-        &#160;&#160;&#160;<a href="javascript:exitGame();">Exit Game</a>
+        <a href="showGameCards.html" target="_blank">Card Details</a>
+        <a href="javascript:exitGame();">Exit Game</a>
         <#if user.admin>
-            &#160;&#160;&#160;<a href="admin.html">Admin</a>
+            <a href="admin.html">Admin</a>
         </#if>
     </div>
 

@@ -1,4 +1,4 @@
-<div style="padding-bottom: 5px;">
+<div style="padding-bottom: 7px;">
     <a href="showGameCards.html" target="_blank">Card Details</a>
 </div>
 <div style="clear:both;float:left;">
