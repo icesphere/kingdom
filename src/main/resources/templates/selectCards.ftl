@@ -4,9 +4,10 @@
 		<title>${title}</title>
         <#include "commonIncludes.ftl">
         <#if mobile>
-            <link href="css/gameMobile.css" rel="stylesheet" type="text/css">
+            <link href="css/game.css?1" rel="stylesheet" type="text/css">
+            <link href="css/gameMobile.css?1" rel="stylesheet" type="text/css">
         <#else>
-            <link href="css/game.css" rel="stylesheet" type="text/css">
+            <link href="css/game.css?1" rel="stylesheet" type="text/css">
         </#if>
         <#if mobile>
             <script type="text/javascript" >
@@ -154,7 +155,7 @@
                     <div style="clear:both;float:left;">
                         <div style="float:left;padding-left:10px;color:red;">Cards selected:</div><div id="numCardsSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining cards will be randomized based on selected decks)</div>
                     </div>
-                    <div style="clear:both;float:left;padding-left:10px;">
+                    <div class="customCardsDeckContainer">
 
                         <#list decks as deck>
                             <div class="customCardsDeck">
@@ -187,7 +188,7 @@
                     <div style="clear:both;float:left;">
                         <div style="float:left;padding-left:10px;color:red;">Events selected:</div><div id="numEventsSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining events will be randomized based on selected decks)</div>
                     </div>
-                    <div style="clear:both;float:left;padding-left:10px;">
+                    <div class="customCardsDeckContainer">
                         <div class="customCardsDeck">
                             <div style="float:left;" class="label">Events</div>
                             <#list events as event>
@@ -216,7 +217,7 @@
                     <div style="clear:both;float:left;">
                         <div style="float:left;padding-left:10px;color:red;">Landmarks selected:</div><div id="numLandmarksSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining landmarks will be randomized based on selected decks)</div>
                     </div>
-                    <div style="clear:both;float:left;padding-left:10px;">
+                    <div class="customCardsDeckContainer">
                         <div class="customCardsDeck">
                             <div style="float:left;" class="label">Landmarks</div>
                             <#list landmarks as landmark>
@@ -251,7 +252,7 @@
 
                 <div id="excludedCards" style="padding-top:10px;float:left;clear:both;">
                     <div style="float:left;"><span class="label">Excluded Cards:</span></div><div style="float:left;padding-left:5px;"><a href="javascript:toggleExcludedCards()" id="excludedCardsLink">Show</a></div>
-                    <div id="excludedCardsContent" style="display:none;clear:both;float:left;padding-left:10px;">
+                    <div id="excludedCardsContent" class="customCardsDeckContainer" style="display:none;">
                         <#list decks as deck>
                             <div class="customCardsDeck">
                                 <div style="float:left;" class="label">${deck.displayName}</div>

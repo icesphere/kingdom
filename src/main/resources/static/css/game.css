@@ -262,11 +262,19 @@
     width:300px;
 }
 
+.customCardsDeckContainer
+{
+    clear: both;
+    float: left;
+    padding-left: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .customCardsDeck
 {
-    height: 650px;
-    float:left;
-    padding-right:20px;
+    padding-right: 15px;
+    padding-top: 10px;
 }
 
 .historyLabel {
