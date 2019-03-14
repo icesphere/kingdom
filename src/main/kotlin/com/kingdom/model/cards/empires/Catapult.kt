@@ -76,10 +76,6 @@ class Catapult : EmpiresCard(NAME, CardType.ActionAttack, 3), MultiTypePile, Att
                 }
             }
         }
-
-        if (player.isOpponentHasAction) {
-            player.waitForOtherPlayersToResolveActions()
-        }
     }
 
     companion object {

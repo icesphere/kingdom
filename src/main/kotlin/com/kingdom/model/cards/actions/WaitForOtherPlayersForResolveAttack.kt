@@ -13,10 +13,6 @@ open class WaitForOtherPlayersForResolveAttack(private val currentTurnPlayer: Pl
 
             attackResolver.resolveAttack(currentTurnPlayer, affectedOpponents, info)
 
-            if (currentTurnPlayer.isOpponentHasAction) {
-                currentTurnPlayer.waitForOtherPlayersToResolveActions()
-            }
-
             return true
         }
 

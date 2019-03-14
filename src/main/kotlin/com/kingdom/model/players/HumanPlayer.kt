@@ -114,7 +114,9 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun waitForOtherPlayersToResolveActions() {
-        addAction(WaitForOtherPlayersActions(this))
+        if (currentAction !is WaitForOtherPlayersActions && actionsQueue.none { it is WaitForOtherPlayersActions }) {
+            addAction(WaitForOtherPlayersActions(this))
+        }
     }
 
     override fun waitForOtherPlayersForResolveAttack(attackCard: Card, info: Any?) {

@@ -1311,6 +1311,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (result.selectedCard != null || result.choiceSelected != null
                 || result.isDoNotUse || result.isDoneWithAction) {
             if (result.isDoNotUse || action.processActionResult(this, result)) {
+
                 if (result.isDoNotUse) {
                     currentAction!!.onNotUsed(this)
                 }
@@ -1333,6 +1334,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     if (botPlayer.isWaitingForPlayers) {
                         botPlayer.isWaitingForPlayers = false
                     }
+                }
+
+                if (game.currentPlayer.isOpponentHasAction) {
+                    game.currentPlayer.waitForOtherPlayersToResolveActions()
                 }
 
                 if (currentAction == null && finishEndTurnAfterResolvingActions) {

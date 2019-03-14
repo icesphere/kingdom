@@ -439,10 +439,10 @@ abstract class Card(
             if (addedAbilityCard != null) {
                 addedAbilityCard?.cardPlayedSpecialAction(player)
             }
+        }
 
-            if (player.isOpponentHasAction) {
-                player.waitForOtherPlayersToResolveActions()
-            }
+        if (player.isOpponentHasAction) {
+            player.waitForOtherPlayersToResolveActions()
         }
     }
 
