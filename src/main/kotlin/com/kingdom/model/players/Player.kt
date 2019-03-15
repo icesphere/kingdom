@@ -1343,6 +1343,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 if (currentAction == null && finishEndTurnAfterResolvingActions) {
                     finishEndTurn()
                 }
+
+                if (currentAction == null && isYourTurn && buys == 0) {
+                    endTurn(true)
+                }
             }
         }
     }

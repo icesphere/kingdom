@@ -24,5 +24,4 @@ bot should not buy too many village type cards
 bot - don't buy curse cards if curses low
 bot logic for events
 auto end turn after action if no buys
-weird ending of turn after Crown + Survivors
 
