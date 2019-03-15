@@ -112,11 +112,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         get() = availableCardsToBuy.map { it.name }
 
     private fun getEventToBuy(): Event? {
-        val event = game.events.filter { it.isEventActionable(this) }.maxBy { getBuyEventScore(it) }
-        if (event != null && getBuyEventScore(event) > 0) {
-            return event
-        }
-        return null
+        return game.events.filter { it.isEventActionable(this) }.maxBy { getBuyEventScore(it) }
     }
 
     open fun getBuyEventScore(event: Event): Int {
