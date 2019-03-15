@@ -5,6 +5,7 @@ import com.kingdom.model.Game
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
+import com.kingdom.model.cards.Event
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.adventures.Disciple
 import com.kingdom.model.cards.adventures.Messenger
@@ -77,18 +78,26 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 }
             }
 
-            if (availableCoins > 0 && buys > 0) {
-                payOffDebt()
+            payOffDebt()
 
-                //todo better logic
-                if (coffers > 0) {
-                    useCoffers(coffers)
+            //todo better logic
+            if (!isCardsBought && !isPaidOffDebtThisTurn && coffers > 0) {
+                useCoffers(coffers)
+            }
+
+            if (buys > 0 && debt == 0) {
+                val eventToBuy = getEventToBuy()
+                if (eventToBuy != null && getBuyEventScore(eventToBuy) > 0) {
+                    endTurn = false
+                    buyEvent(game.getNewInstanceOfEvent(eventToBuy.name))
                 }
+            }
 
+            if (availableCoins > 0 && buys > 0 && debt == 0) {
                 val cardToBuy = getCardToBuy()
                 if (cardToBuy != null) {
                     endTurn = false
-                    this.buyCard(game.getNewInstanceOfCard(cardToBuy))
+                    buyCard(game.getNewInstanceOfCard(cardToBuy))
                 }
             }
         }
@@ -101,6 +110,18 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     val availableCardsToBuyNames: List<String>
         get() = availableCardsToBuy.map { it.name }
+
+    private fun getEventToBuy(): Event? {
+        val event = game.events.filter { it.isEventActionable(this) }.maxBy { getBuyEventScore(it) }
+        if (event != null && getBuyEventScore(event) > 0) {
+            return event
+        }
+        return null
+    }
+
+    open fun getBuyEventScore(event: Event): Int {
+        return 0
+    }
 
     abstract fun getCardToBuy(): String?
 
@@ -333,7 +354,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         }
     }
 
-    private fun getTrashCardScore(card: Card): Int {
+    protected fun getTrashCardScore(card: Card): Int {
         //todo
         return when (card) {
             is Curse -> 200

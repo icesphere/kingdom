@@ -4,11 +4,15 @@ import com.kingdom.model.Game
 import com.kingdom.model.GameError
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.Event
 import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.cards.adventures.Amulet
 import com.kingdom.model.cards.adventures.Gear
 import com.kingdom.model.cards.adventures.Raze
 import com.kingdom.model.cards.adventures.Storyteller
+import com.kingdom.model.cards.adventures.events.Alms
+import com.kingdom.model.cards.adventures.events.Borrow
+import com.kingdom.model.cards.adventures.events.Trade
 import com.kingdom.model.cards.guilds.Doctor
 import com.kingdom.model.cards.guilds.Masterpiece
 import com.kingdom.model.cards.guilds.Stonemason
@@ -17,6 +21,7 @@ import com.kingdom.model.cards.base.ThroneRoom
 import com.kingdom.model.cards.base.Witch
 import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.darkages.*
+import com.kingdom.model.cards.empires.events.*
 import com.kingdom.model.cards.intrigue.Upgrade
 import com.kingdom.model.cards.prosperity.Contraband
 import com.kingdom.model.cards.prosperity.Forge
@@ -64,6 +69,29 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             }
             return shouldOnlyBuyVictoryCards
         }
+
+    override fun getBuyEventScore(event: Event): Int {
+        return when (event.name) {
+            Advance.NAME -> if (availableCoins < 5 && hand.any { it.isAction && it.cost <= 3 }) 5 else 0
+            Alms.NAME -> if (availableCoins < 4) 5 else 0
+            Borrow.NAME -> {
+                return when (availableCoins) {
+                    10 -> if (cardCountByName(Platinum.NAME) > 0 && game.isIncludeColonyCards && game.isCardAvailableInSupply(Colony())) 30 else 0
+                    8 -> if (cardCountByName(Platinum.NAME) == 0 && game.isIncludePlatinumCards && game.isCardAvailableInSupply(Platinum())) 20 else 0
+                    7 -> if (cardCountByName(Gold.NAME) > 0 && game.isCardAvailableInSupply(Province())) 15 else 0
+                    5 -> if (cardCountByName(Gold.NAME) == 0 && game.isCardAvailableInSupply(Gold())) 5 else 0
+                    else -> 0
+                }
+            }
+            Dominate.NAME -> 100
+            Donate.NAME -> if (cardCountByName(Curse.NAME) >= 3) 7 else 0
+            Trade.NAME -> hand.count { getTrashCardScore(it) > 100 } * 5
+            Triumph.NAME -> if (currentTurnSummary.cardsGained.size >= 3) 5 else 0
+            Wedding.NAME -> if (cardCountByName(Gold.NAME) == 0 || availableCoins == 7) 3 else 0
+            Windfall.NAME -> 10
+            else -> super.getBuyEventScore(event)
+        }
+    }
 
     override fun getCardToBuy(): String? {
         if (onlyBuyVictoryCards) {
