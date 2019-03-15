@@ -1259,7 +1259,7 @@ class GameController(private val cardManager: CardManager,
     }
 
     private fun addCardsBoughtToModelAndView(game: Game, modelAndView: ModelAndView) {
-        val cardsBoughtCopy = game.cardsBoughtCopy
+        val cardsBoughtCopy = game.currentPlayer.cardsBoughtCopy
 
         cardsBoughtCopy.forEach {
             it.isHighlighted = false
@@ -1346,7 +1346,7 @@ class GameController(private val cardManager: CardManager,
 
             addPlayerAndGameDataToModelAndView(game, user, modelAndView, request)
 
-            modelAndView.addObject("cardsBought", game.previousPlayerCardsBought)
+            modelAndView.addObject("cardsBought", game.previousPlayer?.lastTurnSummary?.cardsBought ?: emptyList<Card>())
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()

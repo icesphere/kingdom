@@ -40,6 +40,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = cardsInDiscard.map { it.copy(true) }
 
     val cardsBought: MutableList<Card> = ArrayList()
+
+    val cardsBoughtCopy: List<Card>
+        get() = cardsBought.map { it.copy(true) }
+
     val cardsPlayed: MutableList<Card> = ArrayList()
     val inPlay: MutableList<Card> = ArrayList()
 
@@ -543,8 +547,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         cardsSetAsideToReturnToSupplyAtStartOfCleanup.clear()
 
-        currentTurnSummary.cardsPlayed.addAll(cardsPlayed)
-
         lastTurnSummary = currentTurnSummary
 
         currentTurnSummary = TurnSummary(username)
@@ -889,7 +891,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             buys -= 1
             isTreasuresPlayable = false
             cardsBought.add(card)
-            game.cardsBought.add(card)
             currentTurnSummary.cardsBought.add(card)
             isReturnToActionPhase = false
 
@@ -979,8 +980,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
 
             cardsPlayed.add(card)
-
-            game.cardsPlayed.add(card)
+            currentTurnSummary.cardsPlayed.add(card)
 
             if (card.isTreasure) {
                 isReturnToActionPhase = false

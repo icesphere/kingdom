@@ -234,13 +234,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     val embargoTokens = HashMap<String, Int>()
 
-    val cardsPlayed = LinkedList<Card>()
-
-    val cardsBought = ArrayList<Card>()
-
-    val cardsBoughtCopy
-        get() = cardsBought.map { it.copy(true) }
-
     val treasureCardsPlayedInActionPhase = mutableListOf<Card>()
 
     val currentPlayerCardCostModifiers = mutableListOf<CardCostModifier>()
@@ -644,13 +637,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             return
         }
 
-        previousPlayerCardsPlayed.clear()
-        previousPlayerCardsBought.clear()
-        previousPlayerCardsPlayed.addAll(cardsPlayed)
-        previousPlayerCardsBought.addAll(cardsBought)
-
-        cardsPlayed.clear()
-        cardsBought.clear()
         treasureCardsPlayedInActionPhase.clear()
 
         currentPlayerCardCostModifiers.clear()

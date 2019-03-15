@@ -26,8 +26,3 @@ bot logic for events
 auto end turn after action if no buys
 weird ending of turn after Crown + Survivors
 
-remove game.cardsPlayed and just use player.cardsPlayed
-remove game.cardsBought and just use player.cardsBought
-
-
-
