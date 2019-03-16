@@ -11,5 +11,6 @@ enum class Deck {
     Guilds,
     Adventures,
     Empires,
+    Renaissance,
     None
 }

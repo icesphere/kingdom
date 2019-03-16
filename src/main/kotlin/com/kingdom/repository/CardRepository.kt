@@ -21,6 +21,7 @@ import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.prosperity.*
+import com.kingdom.model.cards.renaissance.*
 import com.kingdom.model.cards.seaside.*
 import org.springframework.stereotype.Service
 
@@ -374,9 +375,15 @@ class CardRepository {
                 WolfDen()
         )
 
+    val renaissanceCards: List<Card>
+        get() = listOf(
+                Ducat()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
-                hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards
+                hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards +
+                renaissanceCards
 
     val allEvents: List<Event>
         get() = adventuresEvents + empiresEvents
@@ -399,6 +406,7 @@ class CardRepository {
             Deck.Guilds -> guildsCards
             Deck.Adventures -> adventuresCards
             Deck.Empires -> empiresCards
+            Deck.Renaissance -> renaissanceCards
             else -> emptyList()
         }
     }

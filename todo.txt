@@ -16,7 +16,6 @@ bot logic for empty piles
 think about timing on waiting for players - can they maybe be resolved later?
 let someone know when they haven't ended their turn
 maybe instead of showing cards bought for other players, hide that section and show info message anytime they gain a card?
-bot sometimes freezes on buy phase
 royal seal shouldn't ask multiple times if answer is no
 refresh on lobby page should not clear out chats
 bot should not buy too many village type cards
