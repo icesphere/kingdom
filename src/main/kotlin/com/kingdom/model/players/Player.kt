@@ -101,6 +101,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var coffers: Int = 0
 
+    var villagers: Int = 0
+
     val opponents: List<Player> by lazy {
         game.players.filterNot { it.userId == userId }
     }
@@ -1792,6 +1794,23 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
         this.coffers += coffers
+        refreshPlayerHandArea()
+    }
+
+    fun useVillagers(numVillagersToUse: Int) {
+        if (numVillagersToUse == 0) {
+            return
+        }
+        addVillagers(numVillagersToUse * -1)
+        addActions(numVillagersToUse)
+        addEventLogWithUsername("used $numVillagersToUse Villagers")
+    }
+
+    fun addVillagers(villagers: Int) {
+        if (villagers == 0) {
+            return
+        }
+        this.villagers += villagers
         refreshPlayerHandArea()
     }
 

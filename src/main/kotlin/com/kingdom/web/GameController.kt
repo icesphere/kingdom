@@ -2207,6 +2207,54 @@ class GameController(private val cardManager: CardManager,
     }
 
     @ResponseBody
+    @RequestMapping(value = ["/useVillagers"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun useVillagers(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+
+        if (user == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        } else if (game == null) {
+            return ModelAndView("redirect:/showGameRooms.html")
+        }
+
+        try {
+            val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
+
+            if (!player.isYourTurn) {
+                player.showInfoMessage("You can only use Villagers on your turn")
+                return emptyModelAndView
+            }
+
+            if (player.isBuyPhase) {
+                player.showInfoMessage("You can't use Villagers in your buy phase")
+                return emptyModelAndView
+            }
+
+            val choices = mutableListOf<Choice>()
+
+            for (i in 0..player.villagers) {
+                choices.add(Choice(i, i.toString()))
+            }
+
+            player.makeChoiceFromList(object : ChoiceActionCard {
+                override val name: String
+                    get() = "Villagers"
+
+                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                    player.useVillagers(choice)
+                }
+            }, "How many Villagers do you want to use?", choices)
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+        }
+
+        return emptyModelAndView
+    }
+
+    @ResponseBody
     @RequestMapping(value = ["/payOffDebt"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
     fun payOffDebt(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)

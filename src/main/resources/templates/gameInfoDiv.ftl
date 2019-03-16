@@ -103,6 +103,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if p.villagers != 0>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        Villagers:
+                                    </td>
+                                    <td>
+                                        ${p.villagers}
+                                    </td>
+                                </tr>
+                            </#if>
                             <#if showIslandCards>
                                 <tr>
                                     <td class="gameInfoLabel">

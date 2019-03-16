@@ -30,6 +30,7 @@ abstract class Card(
         var fontSize: Int = 0,
         var nameLines: Int = 1,
         var addCoffers: Int = 0,
+        var addVillagers: Int = 0,
         val associatedCards: MutableList<Card> = ArrayList(0),
         var isDisableSelect: Boolean = false,
         var isAutoSelect: Boolean = false,
@@ -180,8 +181,11 @@ abstract class Card(
             if (addBuys != 0) {
                 sb.append(getAmountSymbol(addBuys)).append("buy".plural(addBuys)).append(". ")
             }
-            if (addBuys != 0) {
+            if (addCoffers != 0) {
                 sb.append(getAmountSymbol(addCoffers)).append("coffer".plural(addCoffers)).append(". ")
+            }
+            if (addVillagers != 0) {
+                sb.append(getAmountSymbol(addVillagers)).append("villagers".plural(addVillagers)).append(". ")
             }
             if (addVictoryCoins != 0) {
                 sb.append(getAmountSymbol(addVictoryCoins)).append("victory coin".plural(addVictoryCoins)).append(". ")
@@ -452,6 +456,7 @@ abstract class Card(
         player.addCoins(card.addCoins, refresh)
         player.addVictoryCoins(card.addVictoryCoins)
         player.addCoffers(card.addCoffers)
+        player.addVillagers(card.addVillagers)
 
         if (card.addCards > 0) {
             player.drawCards(card.addCards)

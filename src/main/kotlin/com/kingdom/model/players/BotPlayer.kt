@@ -58,6 +58,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         while (!endTurn) {
             endTurn = true
 
+            if (!isBuyPhase && villagers > 0 && actions == 0 && hand.any { it.isAction }) {
+                useVillagers(1)
+            }
+
             while (cardsToPlay.isNotEmpty()) {
                 endTurn = false
 
@@ -76,6 +80,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                         waitingForPlayersForResolveAttackAction?.processActionResult(this, ActionResult())
                         waitingForPlayersForResolveAttackAction = null
                     }
+                }
+
+                if (!isBuyPhase && villagers > 0 && actions == 0 && hand.any { it.isAction }) {
+                    useVillagers(1)
                 }
             }
 

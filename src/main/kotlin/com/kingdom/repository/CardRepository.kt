@@ -377,7 +377,9 @@ class CardRepository {
 
     val renaissanceCards: List<Card>
         get() = listOf(
-                Ducat()
+                BorderGuard(),
+                Ducat(),
+                Lackeys()
         )
 
     val allCards: List<Card>

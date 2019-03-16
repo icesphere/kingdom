@@ -495,6 +495,13 @@ function useCoffers(){
     }
 }
 
+function useVillagers(){
+    if(gameStatus == "InProgress"){
+        $.post("useVillagers", function(data) {
+        });
+    }
+}
+
 function payOffDebt(){
     if(gameStatus == "InProgress"){
         $.post("payOffDebt", function(data) {
