@@ -18,6 +18,7 @@ import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.darkages.ruins.Survivors
 import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.empires.Temple
+import com.kingdom.model.cards.empires.landmarks.Arena
 import com.kingdom.model.cards.empires.landmarks.MountainPass
 import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
@@ -79,6 +80,11 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
 
             payOffDebt()
+
+            val arena = game.landmarks.firstOrNull { it is Arena && it.isLandmarkActionable(this) }
+            if (arena != null) {
+                useLandmark(arena)
+            }
 
             //todo better logic
             if (!isCardsBought && !isPaidOffDebtThisTurn && coffers > 0) {
@@ -319,16 +325,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     open fun getBuyCardScore(card: Card): Int {
-        //todo better logic
-
-        if (card.isCurseOnly) {
-            return -1
-        }
-
-        if (excludeCard(card)) {
-            return 0
-        }
-
         return card.cost
     }
 

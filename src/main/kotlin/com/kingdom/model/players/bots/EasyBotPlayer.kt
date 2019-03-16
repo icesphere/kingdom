@@ -59,7 +59,7 @@ open class EasyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
             //pirateShipStrategy && !onlyBuyVictoryCards() && coins <= 4 && terminalActionsBought - actionsBought < 2 && game.canBuyCard(player, getKingdomCard("Pirate Ship")) -> return getKingdomCard("Pirate Ship")
         }
 
-        val highestCostCard = availableCardsToBuy.maxBy { it.cost }
+        val highestCostCard = availableCardsToBuy.maxBy { getBuyCardScore(it) }
 
         if (highestCostCard != null) {
             val cards = availableCardsToBuy.filter { it.cost == highestCostCard.cost }

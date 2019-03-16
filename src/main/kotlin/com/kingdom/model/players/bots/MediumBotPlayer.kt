@@ -13,15 +13,16 @@ import com.kingdom.model.cards.adventures.Storyteller
 import com.kingdom.model.cards.adventures.events.Alms
 import com.kingdom.model.cards.adventures.events.Borrow
 import com.kingdom.model.cards.adventures.events.Trade
-import com.kingdom.model.cards.guilds.Doctor
-import com.kingdom.model.cards.guilds.Masterpiece
-import com.kingdom.model.cards.guilds.Stonemason
-import com.kingdom.model.cards.hinterlands.Farmland
 import com.kingdom.model.cards.base.ThroneRoom
 import com.kingdom.model.cards.base.Witch
 import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.empires.events.*
+import com.kingdom.model.cards.empires.landmarks.*
+import com.kingdom.model.cards.guilds.Doctor
+import com.kingdom.model.cards.guilds.Masterpiece
+import com.kingdom.model.cards.guilds.Stonemason
+import com.kingdom.model.cards.hinterlands.Farmland
 import com.kingdom.model.cards.intrigue.Upgrade
 import com.kingdom.model.cards.prosperity.Contraband
 import com.kingdom.model.cards.prosperity.Forge
@@ -45,26 +46,27 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
                 val error = GameError(GameError.COMPUTER_ERROR, "Supply was null for Province")
                 game.logError(error)
             }
-            if (game.numPlayers == 2 && game.numInPileMap[Province.NAME]!! <= 3 || game.numPlayers > 2 && game.numInPileMap[Province.NAME]!! <= 4) {
-                shouldOnlyBuyVictoryCards = true
-            } else if (game.isIncludeColonyCards && (game.numPlayers == 2 && game.numInPileMap[Colony.NAME]!! <= 2 || game.numPlayers > 2 && game.numInPileMap[Colony.NAME]!! <= 3)) {
-                shouldOnlyBuyVictoryCards = true
-            } else if (difficulty >= 2) {
-                var pilesWithOneCard = 0
-                var pilesWithTwoCards = 0
-                for (numInSupply in game.numInPileMap.values) {
-                    if (numInSupply == 1) {
-                        pilesWithOneCard++
-                    } else if (numInSupply == 2) {
-                        pilesWithTwoCards++
+            when {
+                game.numPlayers == 2 && game.numInPileMap[Province.NAME]!! <= 3 || game.numPlayers > 2 && game.numInPileMap[Province.NAME]!! <= 4 -> shouldOnlyBuyVictoryCards = true
+                game.isIncludeColonyCards && (game.numPlayers == 2 && game.numInPileMap[Colony.NAME]!! <= 2 || game.numPlayers > 2 && game.numInPileMap[Colony.NAME]!! <= 3) -> shouldOnlyBuyVictoryCards = true
+                game.landmarks.any { it.name == Aqueduct.NAME } && game.getVictoryPointsOnSupplyPile(Aqueduct.NAME) >= 4 -> shouldOnlyBuyVictoryCards = true
+                difficulty >= 2 -> {
+                    var pilesWithOneCard = 0
+                    var pilesWithTwoCards = 0
+                    for (numInSupply in game.numInPileMap.values) {
+                        if (numInSupply == 1) {
+                            pilesWithOneCard++
+                        } else if (numInSupply == 2) {
+                            pilesWithTwoCards++
+                        }
                     }
-                }
-                var numEmptyPilesForGameEnd = 3
-                if (game.numPlayers > 4) {
-                    numEmptyPilesForGameEnd = 4
-                }
-                if (game.numEmptyPiles + pilesWithOneCard + pilesWithTwoCards == numEmptyPilesForGameEnd) {
-                    shouldOnlyBuyVictoryCards = true
+                    var numEmptyPilesForGameEnd = 3
+                    if (game.numPlayers > 4) {
+                        numEmptyPilesForGameEnd = 4
+                    }
+                    if (game.numEmptyPiles + pilesWithOneCard + pilesWithTwoCards == numEmptyPilesForGameEnd) {
+                        shouldOnlyBuyVictoryCards = true
+                    }
                 }
             }
             return shouldOnlyBuyVictoryCards
@@ -107,6 +109,45 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
         return super.getCardToBuy()
     }
 
+    override fun getBuyCardScore(card: Card): Int {
+        //todo better logic
+
+        if (card.isCurseOnly) {
+            return -1
+        }
+
+        if (excludeCard(card)) {
+            return 0
+        }
+
+        if (game.landmarks.any { it is BanditFort } && (card.isSilver || card.isGold)) {
+            return card.cost - 2
+        }
+
+        if (game.landmarks.any { it is Battlefield } && card.isVictory) {
+            return card.cost + 1
+        }
+
+        if (game.landmarks.any { it is Museum } && allCards.none { it.name == card.name }) {
+            return card.cost + 1
+        }
+
+        if (game.landmarks.any { it is Obelisk } && card.name == (game.landmarks.first { it is Obelisk } as Obelisk).chosenPile) {
+            return card.cost + 2
+        }
+
+        if (game.landmarks.any { it is WolfDen }) {
+            val cardCount = cardCountByName(card.name)
+            if (cardCount == 1) {
+                return card.cost + 2
+            } else if (cardCount == 0) {
+                return card.cost - 1
+            }
+        }
+
+        return card.cost
+    }
+
     override fun excludeCard(card: Card): Boolean {
 
         if (game.isShowEmbargoTokens) {
@@ -124,7 +165,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
         val actionsBought = cardCountByExpression { it.isAction }
 
         //todo better logic here
-        val includeVictoryOnlyCards = (!game.isIncludeColonyCards && turns > 8) || turns > 12
+        val includeVictoryOnlyCards = cardCountByName(Platinum.NAME) > 0 || cardCountByName(Gold.NAME) > 1 || cardCountByExpression { it.cost >= 5 } > 3
 
         return when {
             !card.isVictory && !card.isTreasure && getCardCostWithModifiers(card) < 5 && cardCountByName(card.name) >= 3 -> true
@@ -154,6 +195,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card is TavernCard -> return true
             card.isRuins -> return true
             card.debtCost > 0 -> return true
+            game.landmarks.any { it is Wall } && card.cost < 3 || (card.cost < 5 && allCards.size >= 15) -> return true
             else -> super.excludeCard(card)
         }
 
