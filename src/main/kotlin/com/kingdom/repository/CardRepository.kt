@@ -379,6 +379,7 @@ class CardRepository {
         get() = listOf(
                 ActingTroupe(),
                 BorderGuard(),
+                CargoShip(),
                 Ducat(),
                 Lackeys()
         )

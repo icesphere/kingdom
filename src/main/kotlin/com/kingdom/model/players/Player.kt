@@ -1921,4 +1921,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun clearDiscard() {
         discard.clear()
     }
+
+    fun removeCard(card: Card) {
+        when {
+            discard.contains(card) -> removeCardFromDiscard(card)
+            hand.contains(card) -> removeCardFromHand(card)
+            deck.contains(card) -> removeCardFromDeck(card)
+        }
+    }
 }
