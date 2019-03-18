@@ -381,6 +381,7 @@ class CardRepository {
                 BorderGuard(),
                 CargoShip(),
                 Ducat(),
+                Experiment(),
                 Lackeys()
         )
 
