@@ -385,6 +385,7 @@ class CardRepository {
                 FlagBearer(),
                 Hideout(),
                 Improve(),
+                Inventor(),
                 Lackeys()
         )
 
