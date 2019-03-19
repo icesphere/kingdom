@@ -139,12 +139,20 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return card.isCurseOnly
     }
 
-    override fun addCardFromDiscardToTopOfDeck(maxCost: Int?) {
-        //todo handle max cost
+    override fun addCardFromDiscardToTopOfDeck(optional: Boolean, maxCost: Int?) {
+        //todo handle max cost and optional
         val card = chooseCardFromDiscardToAddToTopOfDeck()
         if (card != null) {
             discard.remove(card)
             addCardToTopOfDeck(card)
+        }
+    }
+
+    override fun addCardFromDiscardToHand() {
+        val card = chooseCardFromDiscardToAddToHand()
+        if (card != null) {
+            discard.remove(card)
+            addCardToHand(card)
         }
     }
 
@@ -673,6 +681,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     private fun chooseCardFromDiscardToAddToTopOfDeck(): Card? {
         return pickCardBasedOnBuyScore(discard)
+    }
+
+    private fun chooseCardFromDiscardToAddToHand(): Card? {
+        return pickCardBasedOnBuyScore(hand)
     }
 
     private fun pickCardBasedOnBuyScore(cards: List<Card>?): Card? {

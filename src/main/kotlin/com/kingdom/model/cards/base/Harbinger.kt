@@ -11,7 +11,7 @@ class Harbinger : BaseCard(NAME, CardType.Action, 3) {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.addCardFromDiscardToTopOfDeck(null)
+        player.addCardFromDiscardToTopOfDeck(true, null)
     }
 
     companion object {

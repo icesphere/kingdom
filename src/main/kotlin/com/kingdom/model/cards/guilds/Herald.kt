@@ -42,7 +42,7 @@ class Herald : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard, AfterCard
         if (choosingOverpayAmount) {
             player.addCoins(choice * -1)
             repeat(choice) {
-                player.addCardFromDiscardToTopOfDeck()
+                player.addCardFromDiscardToTopOfDeck(false)
             }
         } else {
             if (choice == 1) {

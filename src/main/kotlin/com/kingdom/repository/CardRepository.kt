@@ -386,7 +386,8 @@ class CardRepository {
                 Hideout(),
                 Improve(),
                 Inventor(),
-                Lackeys()
+                Lackeys(),
+                MountainVillage()
         )
 
     val allCards: List<Card>

@@ -105,8 +105,12 @@ class HumanPlayer(user: User, game: Game) : Player(user, game) {
         addAction(DiscardCardsFromHand(numCards, "", optional))
     }
 
-    override fun addCardFromDiscardToTopOfDeck(maxCost: Int?) {
-        addAction(CardFromDiscardToTopOfDeck(this.cardsInDiscardCopy, maxCost))
+    override fun addCardFromDiscardToTopOfDeck(optional: Boolean, maxCost: Int?) {
+        addAction(CardFromDiscardToTopOfDeck(optional, this.cardsInDiscardCopy, maxCost))
+    }
+
+    override fun addCardFromDiscardToHand() {
+        addAction(CardFromDiscardToHand(this.cardsInDiscardCopy))
     }
 
     override fun addCardFromHandToTopOfDeck(cardFilter: ((Card) -> Boolean)?, chooseCardActionCard: ChooseCardActionCard?) {

@@ -23,7 +23,8 @@ class Rebuild : DarkAgesCard(NAME, CardType.Action, 5), ChooseCardActionCard {
         val victoryCard = player.revealFromDeckUntilCardFoundAndDiscardOthers { c -> c.isVictory && c.name != card.name }
         if (victoryCard != null) {
             player.cardTrashed(victoryCard, true)
-            player.chooseSupplyCardToGainWithMaxCost(player.getCardCostWithModifiers(victoryCard) + 3, { c -> c.isVictory })
+            val maxCost = player.getCardCostWithModifiers(victoryCard) + 3
+            player.chooseSupplyCardToGainWithMaxCost(maxCost, { c -> c.isVictory }, "Gain a free Victory card from the supply costing up to $maxCost")
         } else {
             player.showInfoMessage("You had no victory cards in your deck that are not ${card.cardNameWithBackgroundColor}")
             player.addEventLogWithUsername("had no victory cards in their deck that are not ${card.cardNameWithBackgroundColor}")
