@@ -382,6 +382,9 @@ class CardRepository {
                 CargoShip(),
                 Ducat(),
                 Experiment(),
+                FlagBearer(),
+                Hideout(),
+                Improve(),
                 Lackeys()
         )
 
