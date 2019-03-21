@@ -381,7 +381,7 @@ class GameController(private val cardManager: CardManager,
         }
     }
 
-    @RequestMapping("/swapEventOrLandmark.html")
+    @RequestMapping("/swapEvent.html")
     fun swapEvent(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
         val game = getGame(request)
@@ -391,6 +391,29 @@ class GameController(private val cardManager: CardManager,
         try {
             return if (game.status == GameStatus.BeingConfigured) {
                 cardManager.swapEvent(game, request.getParameter("eventName"))
+                confirmCards(request, response)
+            } else {
+                if (game.status == GameStatus.InProgress) {
+                    ModelAndView("redirect:/showGame.html")
+                } else {
+                    ModelAndView("redirect:/showGameRooms.html")
+                }
+            }
+        } catch (t: Throwable) {
+            return logErrorAndReturnEmpty(t, game)
+        }
+    }
+
+    @RequestMapping("/swapLandmark.html")
+    fun swapLandmark(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        }
+        try {
+            return if (game.status == GameStatus.BeingConfigured) {
+                cardManager.swapLandmark(game, request.getParameter("landmarkName"))
                 confirmCards(request, response)
             } else {
                 if (game.status == GameStatus.InProgress) {

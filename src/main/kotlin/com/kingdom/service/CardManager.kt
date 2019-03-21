@@ -56,7 +56,11 @@ class CardManager(private val cardRepository: CardRepository,
     }
 
     fun swapEvent(game: Game, eventName: String) {
-        cardRandomizer.swapEventOrLandmark(game, eventName)
+        cardRandomizer.swapEvent(game, eventName)
+    }
+
+    fun swapLandmark(game: Game, landmarkName: String) {
+        cardRandomizer.swapLandmark(game, landmarkName)
     }
 
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {

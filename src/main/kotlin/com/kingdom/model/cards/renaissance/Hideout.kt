@@ -12,6 +12,8 @@ class Hideout : RenaissanceCard(NAME, CardType.Action, 4), TrashCardsForBenefitA
         addCards = 1
         addActions = 2
         special = "Trash a card from your hand. If it’s a Victory card, gain a Curse."
+        isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

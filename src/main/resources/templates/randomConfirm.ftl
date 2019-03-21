@@ -16,6 +16,9 @@
             function swapEvent(eventName) {
                 document.location = "swapEvent.html?eventName="+eventName;
             }
+            function swapLandmark(landmarkName) {
+                document.location = "swapLandmark.html?landmarkName="+landmarkName;
+            }
         </script>
 	</head>
 	<body>
