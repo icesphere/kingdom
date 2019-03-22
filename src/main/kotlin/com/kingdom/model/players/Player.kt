@@ -265,6 +265,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = game.landmarks.filterIsInstance<VictoryPointsCalculator>()
                 .sumBy { it.calculatePoints(this) }
 
+    val currentTurnCardTrashedListeners = mutableListOf<AfterCardTrashedListener>()
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -584,6 +586,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         isPaidOffDebtThisTurn = false
 
+        currentTurnCardTrashedListeners.clear()
+
         cardsUnavailableToBuyThisTurn.clear()
 
         cardsBought.clear()
@@ -683,8 +687,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 hand.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardTrashedListenerForCardsInHand>())
                 .forEach { it.afterCardTrashed(cardToTrash, this) }
 
-        game.landmarks.filterIsInstance<AfterCardTrashedListenerForLandmark>()
+        game.landmarks.filterIsInstance<AfterCardTrashedListener>()
                 .forEach { it.afterCardTrashed(cardToTrash, this) }
+
+        currentTurnCardTrashedListeners.forEach { it.afterCardTrashed(cardToTrash, this) }
     }
 
     fun removeCardInPlay(card: Card, removedToLocation: CardLocation) {

@@ -1,10 +1,10 @@
 package com.kingdom.model.cards.empires.landmarks
 
 import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.listeners.AfterCardTrashedListenerForLandmark
+import com.kingdom.model.cards.listeners.AfterCardTrashedListener
 import com.kingdom.model.players.Player
 
-class Tomb : EmpiresLandmark(NAME), AfterCardTrashedListenerForLandmark {
+class Tomb : EmpiresLandmark(NAME), AfterCardTrashedListener {
 
     init {
         special = "When you trash a card, +1 VP."
