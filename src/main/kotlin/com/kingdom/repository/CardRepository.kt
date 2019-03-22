@@ -387,7 +387,8 @@ class CardRepository {
                 Improve(),
                 Inventor(),
                 Lackeys(),
-                MountainVillage()
+                MountainVillage(),
+                Patron()
         )
 
     val allCards: List<Card>

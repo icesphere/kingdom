@@ -1451,15 +1451,31 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun revealHand() {
         addEventLogWithUsername("revealed their hand: ${hand.groupedString}")
+
+        hand.filterIsInstance<AfterCardRevealedListenerForSelf>()
+                .forEach { it.afterCardRevealed(this) }
     }
 
     fun revealCardFromHand(card: Card) {
         addEventLogWithUsername("revealed ${card.cardNameWithBackgroundColor} from their hand")
+
+        if (card is AfterCardRevealedListenerForSelf) {
+            card.afterCardRevealed(this)
+        }
     }
 
-    fun revealTopCardOfDeck(): Card? {
-        val cards = revealTopCardsOfDeck(1)
-        return cards.firstOrNull()
+    fun revealTopCardOfDeck(showLog: Boolean = true): Card? {
+        val card = revealTopCardsOfDeck(1).firstOrNull()
+
+        if (card != null && showLog) {
+            addEventLogWithUsername("revealed ${card.cardNameWithBackgroundColor}")
+        }
+
+        if (card is AfterCardRevealedListenerForSelf) {
+            card.afterCardRevealed(this)
+        }
+
+        return card
     }
 
     fun revealTopCardsOfDeck(cards: Int): List<Card> {
@@ -1485,6 +1501,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 }
             }
         }
+
+        revealedCards.filterIsInstance<AfterCardRevealedListenerForSelf>()
+                .forEach { it.afterCardRevealed(this) }
 
         return revealedCards
     }
@@ -1529,6 +1548,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (cards.isNotEmpty() && revealCards) {
             showInfoMessage("Revealed ${cards.groupedString}")
             addEventLogWithUsername("revealed ${cards.groupedString} from top of deck")
+        }
+
+        if (revealCards) {
+            cards.filterIsInstance<AfterCardRevealedListenerForSelf>()
+                    .forEach { it.afterCardRevealed(this) }
         }
 
         return cards
@@ -1749,6 +1773,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             val card = removeTopCardOfDeck()
             if (card != null) {
                 revealedCards.add(card)
+
+                if (card is AfterCardRevealedListenerForSelf) {
+                    card.afterCardRevealed(this)
+                }
+
                 if (cardExpression.invoke(card)) {
                     cardsFound.add(card)
                     if (cardsFound.size == numToFind) {
