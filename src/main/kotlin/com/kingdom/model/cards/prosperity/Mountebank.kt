@@ -13,6 +13,7 @@ class Mountebank : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard, C
     init {
         addCoins = 2
         special = "Each other player may discard a Curse. If they don’t, they gain a Curse and a Copper."
+        isCurseGiver = true
         fontSize = 10
     }
 

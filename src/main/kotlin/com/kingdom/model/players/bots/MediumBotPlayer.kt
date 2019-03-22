@@ -13,8 +13,7 @@ import com.kingdom.model.cards.adventures.Storyteller
 import com.kingdom.model.cards.adventures.events.Alms
 import com.kingdom.model.cards.adventures.events.Borrow
 import com.kingdom.model.cards.adventures.events.Trade
-import com.kingdom.model.cards.base.ThroneRoom
-import com.kingdom.model.cards.base.Witch
+import com.kingdom.model.cards.base.*
 import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.darkages.*
 import com.kingdom.model.cards.empires.events.*
@@ -106,11 +105,41 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             }?.name
         }
 
+        val silversBought = cardCountByName(Silver.NAME)
+        val goldsBought = cardCountByName(Gold.NAME)
+
+        when {
+            availableCoins < 2 && !isGardensStrategy && !isHasGoons -> return null
+            chapelStrategy && cardCountByName(Chapel.NAME) == 0 && (availableCoins == 3 && silversBought > 0 || availableCoins == 2) -> return Chapel.NAME
+            chapelStrategy && availableCoins <= 3 && silversBought < 2 && goldsBought == 0 && availableCardsToBuyNames.contains(Silver.NAME) -> return Silver.NAME
+            chapelStrategy && laboratoryStrategy && availableCoins <= 5 && availableCardsToBuyNames.contains(Laboratory.NAME) -> return Laboratory.NAME
+            availableCardsToBuyNames.contains(Gold.NAME) && goldsBought == 0 && (!game.isIncludePlatinumCards || !availableCardsToBuyNames.contains(Platinum.NAME)) -> return Gold.NAME
+            isGardensStrategy && turns > 4 && availableCardsToBuyNames.contains(Gardens.NAME) -> return Gardens.NAME
+            /*dukeStrategy -> {
+                val duchiesInSupply = game.pileAmounts[Duchy.NAME]!!
+                if (duchiesInSupply > 0 && (turns > 8 || duchiesInSupply <= 6) && availableCardsToBuyNames.contains(Duke.NAME)) {
+                    if (duchiesBought < 4 || duchiesBought <= dukesBought && (!game.isTrackContrabandCards || !game.contrabandCards.contains(game.duchyCard))) {
+                        return game.duchyCard
+                    } else if (duchiesBought >= 3 && game.canBuyCard(player, getKingdomCard("Duke"))) {
+                        return getKingdomCard("Duke")
+                    }
+                }
+            }*/
+            /*checkPeddler && !onlyBuyVictoryCards() && game.canBuyCard(player, getKingdomCard("Peddler")) -> if (coins < 6) {
+                return getKingdomCard("Peddler")
+            }*/
+            //cityStrategy && !onlyBuyVictoryCards() && coins <= 6 && turns > 8 && game.canBuyCard(player, getKingdomCard("City")) -> return getKingdomCard("City")
+            //ambassadorStrategy && !onlyBuyVictoryCards() && turns < 2 -> return getKingdomCard("Ambassador")
+            //pirateShipStrategy && !onlyBuyVictoryCards() && coins <= 4 && terminalActionsBought - actionsBought < 2 && game.canBuyCard(player, getKingdomCard("Pirate Ship")) -> return getKingdomCard("Pirate Ship")
+        }
+
         return super.getCardToBuy()
     }
 
     override fun getBuyCardScore(card: Card): Int {
         //todo better logic
+
+        val cost = getCardCostWithModifiers(card)
 
         if (card.isCurseOnly) {
             return -1
@@ -121,31 +150,31 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
         }
 
         if (game.landmarks.any { it is BanditFort } && (card.isSilver || card.isGold)) {
-            return card.cost - 2
+            return cost - 2
         }
 
         if (game.landmarks.any { it is Battlefield } && card.isVictory) {
-            return card.cost + 1
+            return cost + 1
         }
 
         if (game.landmarks.any { it is Museum } && allCards.none { it.name == card.name }) {
-            return card.cost + 1
+            return cost + 1
         }
 
         if (game.landmarks.any { it is Obelisk } && card.name == (game.landmarks.first { it is Obelisk } as Obelisk).chosenPile) {
-            return card.cost + 2
+            return cost + 2
         }
 
         if (game.landmarks.any { it is WolfDen }) {
             val cardCount = cardCountByName(card.name)
             if (cardCount == 1) {
-                return card.cost + 2
+                return cost + 2
             } else if (cardCount == 0) {
-                return card.cost - 1
+                return cost - 1
             }
         }
 
-        return card.cost
+        return super.getBuyCardScore(card)
     }
 
     override fun excludeCard(card: Card): Boolean {

@@ -12,6 +12,7 @@ class Torturer : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
     init {
         addCards = 3
         special = "Each other player either discards 2 cards or gains a Curse to their hand, their choice. (They may pick an option they can’t do.)"
+        isCurseGiver = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

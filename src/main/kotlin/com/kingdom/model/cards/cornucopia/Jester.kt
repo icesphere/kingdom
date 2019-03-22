@@ -12,6 +12,7 @@ class Jester : CornucopiaCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
 
     init {
         addCoins = 2
+        isCurseGiver = true
         special = "Each other player discards the top card of their deck. If it’s a Victory card they gain a Curse; otherwise they gain a copy of the discarded card or you do, your choice."
     }
 

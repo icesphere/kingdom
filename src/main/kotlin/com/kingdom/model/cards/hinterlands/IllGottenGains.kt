@@ -14,6 +14,7 @@ class IllGottenGains : HinterlandsCard(NAME, CardType.Treasure, 5), AfterCardGai
         addCoins = 1
         special = "When you play this, you may gain a Copper to your hand. When you gain this, each other player gains a Curse."
         isTreasureExcludedFromAutoPlay = true
+        isCurseGiver = true
         fontSize = 9
     }
 

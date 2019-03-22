@@ -15,6 +15,7 @@ class Replace : IntrigueCard(NAME, CardType.ActionAttack, 5), AttackCard, TrashC
         isTrashingCard = true
         isTrashingFromHandRequiredCard = true
         isTrashingFromHandToUpgradeCard = true
+        isCurseGiver = true
     }
 
     private var affectedOpponents = emptyList<Player>()

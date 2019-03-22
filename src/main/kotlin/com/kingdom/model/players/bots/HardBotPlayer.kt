@@ -3,14 +3,15 @@ package com.kingdom.model.players.bots
 import com.kingdom.model.Game
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.intrigue.WishingWell
 import com.kingdom.model.cards.base.Mine
 import com.kingdom.model.cards.base.Village
 import com.kingdom.model.cards.base.Workshop
+import com.kingdom.model.cards.intrigue.WishingWell
 import com.kingdom.model.cards.prosperity.Expand
 import com.kingdom.model.cards.prosperity.Quarry
+import com.kingdom.model.cards.supply.Curse
 
-class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
+open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
     //todo better buying card strategy
 
@@ -21,6 +22,30 @@ class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
     //todo
     val bigActionsStrategy = false
+
+    override fun getBuyCardScore(card: Card): Int {
+        //todo better logic
+
+        val cost = getCardCostWithModifiers(card)
+
+        if (card.isCurseGiver) {
+            if (game.numInPileMap.getValue(Curse.NAME) <= 5) {
+                return cost - 2
+            } else if (turns < 4) {
+                return cost + 1
+            }
+        }
+
+        if (card.addActions > 1 && turns < 2) {
+            return cost - 1
+        }
+
+        if (cardCountByExpression { it.isAction && it.addActions > 1 } >= cardCountByExpression { it.isAction && it.addActions <= 1 }) {
+            return cost - 1
+        }
+
+        return super.getBuyCardScore(card)
+    }
 
     override fun excludeCard(card: Card): Boolean {
 

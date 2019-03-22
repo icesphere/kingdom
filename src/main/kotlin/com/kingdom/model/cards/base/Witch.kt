@@ -10,6 +10,7 @@ class Witch : BaseCard(NAME, CardType.ActionAttack, 5), AttackCard {
     init {
         addCards = 2
         special = "Each other player gains a Curse card."
+        isCurseGiver = true
         fontSize = 13
     }
 

@@ -10,6 +10,7 @@ class SeaHag : SeasideCard(NAME, CardType.ActionAttack, 4), AttackCard {
 
     init {
         special = "Each other player discards the top card of their deck, then gains a Curse onto their deck."
+        isCurseGiver = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

@@ -341,7 +341,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     open fun getBuyCardScore(card: Card): Int {
-        return card.cost
+        return getCardCostWithModifiers(card)
     }
 
     open fun getPlayCardScore(card: Card): Int {
