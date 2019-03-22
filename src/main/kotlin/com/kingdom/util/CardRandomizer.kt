@@ -251,49 +251,59 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         swapOptions.customCardSelection = cards
         swapOptions.excludedCards.toMutableList().add(cardToReplace!!)
         swapOptions.customEventSelection = game.events
+        swapOptions.customLandmarkSelection = game.landmarks
         setRandomKingdomCardsAndEvents(game, swapOptions)
     }
 
     fun swapEvent(game: Game, eventName: String) {
+        
+        val replacement = getEventOrLandmark(game, eventName)
 
-        val events = cardRepository.allEvents.filterNot { it.disabled }.shuffled()
-
-        val selectedEvents = game.events
-
-        val selectedNames = selectedEvents.map { it.name }
-
-        val availableEvents = events.filterNot { selectedNames.contains(it.name) }
-
-        val replacement = availableEvents.first()
-
-        game.events = game.events.map {
-            if (it.name == eventName) {
-                replacement
-            } else {
-                it
+        when (replacement) {
+            is Event -> game.events = game.events.map {
+                if (it.name == eventName) {
+                    replacement
+                } else {
+                    it
+                }
+            }.toMutableList()
+            is Landmark -> {
+                game.events.removeAll { it.name == eventName }
+                game.landmarks.add(replacement)
             }
-        }.toMutableList()
+        }
     }
 
     fun swapLandmark(game: Game, landmarkName: String) {
 
-        val landmarks = cardRepository.allLandmarks.filterNot { it.disabled }.shuffled()
+        val replacement = getEventOrLandmark(game, landmarkName)
 
-        val selectedLandmarks = game.landmarks
-
-        val selectedNames = selectedLandmarks.map { it.name }
-
-        val availableLandmarks = landmarks.filterNot { selectedNames.contains(it.name) }
-
-        val replacement = availableLandmarks.first()
-
-        game.landmarks = game.landmarks.map {
-            if (it.name == landmarkName) {
-                replacement
-            } else {
-                it
+        when (replacement) {
+            is Landmark -> game.landmarks = game.landmarks.map {
+                if (it.name == landmarkName) {
+                    replacement
+                } else {
+                    it
+                }
+            }.toMutableList()
+            is Event -> {
+                game.landmarks.removeAll { it.name == landmarkName }
+                game.events.add(replacement)
             }
-        }.toMutableList()
+        }
+    }
+
+    fun getEventOrLandmark(game: Game, excludedName: String): Card {
+
+        val cards = cardRepository.allEventsAndLandmarks.filterNot { it.disabled }.shuffled()
+
+        val selectedCards = game.events + game.landmarks
+
+        val selectedNames = selectedCards.map { it.name }
+
+        val availableCards = cards.filterNot { selectedNames.contains(it.name) }
+
+        return availableCards.first()
     }
 
     private fun getCardsByDeck(deck: Deck): MutableList<Card> {

@@ -22,5 +22,3 @@ bot should not buy too many village type cards
 2 Amulets - order of actions - should wait for first one to complete
 bot - don't buy curse cards if curses low
 
-swap card sometimes also swaps event, also swapping event should be able to swap for a landmark and vice versa
-
