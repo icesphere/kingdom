@@ -393,6 +393,7 @@ class CardRepository {
                 Priest(),
                 Recruiter(),
                 Research(),
+                Scepter(),
                 SilkMerchant()
         )
 
