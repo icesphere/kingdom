@@ -388,8 +388,10 @@ class CardRepository {
                 Inventor(),
                 Lackeys(),
                 MountainVillage(),
+                OldWitch(),
                 Patron(),
                 Priest(),
+                Recruiter(),
                 Research(),
                 SilkMerchant()
         )
