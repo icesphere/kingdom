@@ -33,7 +33,7 @@
             <td class="handAreaTopRow"><a href="javascript:useCoffers()">${player.coffers} Coffers</a></td>
         </#if>
         <#if player.villagers != 0>
-            <td class="handAreaTopRow"><a href="javascript:useVillagers()">${player.villagers} Villagers</a></td>
+            <td class="handAreaTopRow"><a href="javascript:useVillagers()">${player.villagers} Villager<#if player.villagers != 1>s</#if></a></td>
         </#if>
         <#if player.victoryCoins != 0>
             <td class="handAreaTopRow">${player.victoryCoins} Victory Coin<#if player.victoryCoins != 1>s</#if></td>

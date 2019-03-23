@@ -1579,8 +1579,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
     }
 
-    fun removeCardFromHand(card: Card) {
+    fun removeCardFromHand(card: Card, refresh: Boolean = true) {
         hand.remove(card)
+
+        if (refresh) {
+            refreshPlayerHandArea()
+        }
+    }
+
+    fun removeCardsFromHand(cards: List<Card>) {
+        cards.forEach { removeCardFromHand(it, false) }
 
         refreshPlayerHandArea()
     }

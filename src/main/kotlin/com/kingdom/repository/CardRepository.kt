@@ -389,7 +389,9 @@ class CardRepository {
                 Lackeys(),
                 MountainVillage(),
                 Patron(),
-                Priest()
+                Priest(),
+                Research(),
+                SilkMerchant()
         )
 
     val allCards: List<Card>

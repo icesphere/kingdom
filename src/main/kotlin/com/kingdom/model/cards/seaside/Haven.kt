@@ -21,9 +21,7 @@ class Haven : SeasideCard(NAME, CardType.ActionDuration, 2), StartOfTurnDuration
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        if (player.hand.isNotEmpty()) {
-            player.chooseCardFromHand(special, this)
-        }
+        player.chooseCardFromHand(special, this)
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
