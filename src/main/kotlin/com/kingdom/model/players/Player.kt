@@ -1079,7 +1079,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun chooseSupplyCardToGainForBenefit(text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
     fun chooseSupplyCardToGainForBenefitWithMaxCost(maxCost: Int, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null) {
-        chooseSupplyCardToGainForBenefit(text, freeCardFromSupplyForBenefitActionCard, { c -> c.debtCost == 0 && getCardCostWithModifiers(c) <= maxCost && (cardActionableExpression == null || cardActionableExpression(c)) })
+        chooseSupplyCardToGainForBenefit(text, freeCardFromSupplyForBenefitActionCard) { c -> c.debtCost == 0 && getCardCostWithModifiers(c) <= maxCost && (cardActionableExpression == null || cardActionableExpression(c)) }
     }
 
     abstract fun drawCardsAndPutSomeBackOnTop(cardsToDraw: Int, cardsToPutBack: Int)
