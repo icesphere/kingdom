@@ -1297,6 +1297,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun addCardsToHand(cards: List<Card>, showLog: Boolean = false) {
+        if (cards.isEmpty()) {
+            return
+        }
+
         hand.addAll(cards)
 
         if (showLog) {

@@ -396,6 +396,7 @@ class CardRepository {
                 Scepter(),
                 Scholar(),
                 Sculptor(),
+                Seer(),
                 SilkMerchant()
         )
 
