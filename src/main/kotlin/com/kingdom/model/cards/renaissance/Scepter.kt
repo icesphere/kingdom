@@ -1,27 +1,50 @@
 package com.kingdom.model.cards.renaissance
 
 import com.kingdom.model.Choice
+import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.players.Player
+import com.kingdom.util.groupedString
 
-class Scepter : RenaissanceCard(NAME, CardType.Treasure, 5), ChoiceActionCard {
+class Scepter : RenaissanceCard(NAME, CardType.Treasure, 5), ChoiceActionCard, ChooseCardActionCard {
 
     init {
-        disabled = true
         special = "When you play this, chose one: +\$2; or replay an Action card you played this turn that’s still in play."
+        isTreasureExcludedFromAutoPlay = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.makeChoice(this, Choice(1, "+\$2"), Choice(2, "Replay Action"))
+        val choices = mutableListOf<Choice>()
+
+        choices.add(Choice(1, "+\$2"))
+
+        val actionsPlayedThatAreStillInPlay = player.cardsPlayed.filter { it.isAction }.intersect(player.inPlay).toList()
+
+        if (actionsPlayedThatAreStillInPlay.isNotEmpty()) {
+            choices.add(Choice(2, "Replay Action"))
+
+            player.makeChoiceFromList(this, "Action cards played that are still in play: ${actionsPlayedThatAreStillInPlay.groupedString}", choices)
+        } else {
+            player.addCoins(2)
+            player.showInfoMessage("Gained +\$2. You had no Action cards still in play.")
+        }
+
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
             player.addCoins(2)
         } else {
-            //todo
+            val actionsPlayedThatAreStillInPlay = player.cardsPlayed.filter { it.isAction }.intersect(player.inPlay).map { it.copy(false) }
+            player.chooseCardAction("Chose an Action card to replay", this, actionsPlayedThatAreStillInPlay, false)
         }
+    }
+
+    override fun onCardChosen(player: Player, card: Card, info: Any?) {
+        player.addActions(1)
+        player.playCard(card, repeatedAction = true)
     }
 
     companion object {
