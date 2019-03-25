@@ -6,7 +6,6 @@ import com.kingdom.model.players.Player
 class Scholar : RenaissanceCard(NAME, CardType.Action, 5) {
 
     init {
-        addCards = 2
         special = "Discard your hand. +7 Cards."
     }
 

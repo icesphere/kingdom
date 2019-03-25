@@ -398,7 +398,8 @@ class CardRepository {
                 Sculptor(),
                 Seer(),
                 SilkMerchant(),
-                Spices()
+                Spices(),
+                Swashbuckler()
         )
 
     val allCards: List<Card>
