@@ -9,6 +9,7 @@ class Swashbuckler : RenaissanceCard(NAME, CardType.Action, 5) {
         disabled = true
         addCards = 3
         special = "If your discard pile has any cards in it: +1 Coffers, then if you have at least 4 Coffers tokens, take the Treasure Chest."
+        fontSize = 9
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
