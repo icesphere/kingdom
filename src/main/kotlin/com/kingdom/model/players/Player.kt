@@ -14,6 +14,7 @@ import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.empires.Overlord
 import com.kingdom.model.cards.listeners.*
+import com.kingdom.model.cards.renaissance.artifacts.*
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.cards.supply.Estate
@@ -1977,5 +1978,25 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             hand.contains(card) -> removeCardFromHand(card)
             deck.contains(card) -> removeCardFromDeck(card)
         }
+    }
+
+    fun takeFlag() {
+        game.artifacts.first { it is Flag }.owner = username
+    }
+
+    fun takeLantern() {
+        game.artifacts.first { it is Lantern }.owner = username
+    }
+
+    fun takeHorn() {
+        game.artifacts.first { it is Horn }.owner = username
+    }
+
+    fun takeKey() {
+        game.artifacts.first { it is Key }.owner = username
+    }
+
+    fun takeTreasureChest() {
+        game.artifacts.first { it is TreasureChest }.owner = username
     }
 }

@@ -286,6 +286,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var isShowPrizeCards: Boolean = false
     var prizeCards: MutableList<Card> = ArrayList(0)
 
+    //artifacts
+    var artifacts = mutableListOf<Artifact>()
+
     fun getPlayerToLeft(player: Player): Player {
         val playerIndex = players.indexOf(player)
 

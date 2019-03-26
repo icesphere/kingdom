@@ -106,6 +106,7 @@ abstract class Card(
             CardType.ActionTreasure -> "Action - Treasure"
             CardType.Event -> "Event"
             CardType.Landmark -> "Landmark"
+            CardType.Artifact -> "Artifact"
         }
 
     val numTypes: Int
@@ -156,6 +157,7 @@ abstract class Card(
             CardType.ActionTreasure -> 2
             CardType.Event -> 1
             CardType.Landmark -> 1
+            CardType.Artifact -> 1
         }
 
     val isSpecialCard: Boolean
