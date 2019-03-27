@@ -11,7 +11,6 @@ import com.kingdom.model.players.Player
 class FlagBearer : RenaissanceCard(NAME, CardType.Action, 4), GameSetupModifier, AfterCardGainedListenerForSelf, AfterCardTrashedListenerForSelf {
 
     init {
-        disabled = true
         addCoins = 2
         special = "When you gain or trash this, take the Flag."
     }

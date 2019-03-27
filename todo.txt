@@ -16,4 +16,4 @@ maybe instead of showing cards bought for other players, hide that section and s
 royal seal shouldn't ask multiple times if answer is no
 refresh on lobby page should not clear out chats
 2 Amulets - order of actions - should wait for first one to complete
-
+show landmarks on card details page and maybe on cards not in supply page?

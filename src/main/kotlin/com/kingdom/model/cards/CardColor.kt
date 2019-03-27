@@ -21,5 +21,7 @@ enum class CardColor(val color: String, val mobileColor: String = color, val isI
     ReactionShelter("blue_red.png", "blue_red_mobile.png", true),
     VictoryShelter("green_red.png", "green_red_mobile.png", true),
     TreasureReserve("gold_tan.png", "gold_tan_mobile.png", true),
-    ActionTreasure("grey_gold.png", "grey_gold_mobile.png", true)
+    ActionTreasure("grey_gold.png", "grey_gold_mobile.png", true),
+    Artifact("#E8A65C"),
+    Project("#F09290")
 }

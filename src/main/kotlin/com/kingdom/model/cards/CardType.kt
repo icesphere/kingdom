@@ -47,5 +47,6 @@ enum class CardType {
     ActionTreasure,
     Event,
     Landmark,
-    Artifact
+    Artifact,
+    Project
 }

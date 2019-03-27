@@ -107,21 +107,18 @@ abstract class Card(
             CardType.Event -> "Event"
             CardType.Landmark -> "Landmark"
             CardType.Artifact -> "Artifact"
+            CardType.Project -> "Project"
         }
 
     val numTypes: Int
         get() = when (type) {
-            CardType.Action -> 1
             CardType.ActionAttack -> 2
             CardType.ActionAttackVictory -> 3
             CardType.ActionAttackLooter -> 3
             CardType.ActionAttackLooterVictory -> 4
             CardType.ActionReaction -> 2
             CardType.ActionReactionVictory -> 3
-            CardType.Victory -> 1
             CardType.VictoryCastle -> 2
-            CardType.Curse -> 1
-            CardType.Treasure -> 1
             CardType.TreasureAttack -> 2
             CardType.ActionVictory -> 2
             CardType.ActionVictoryCastle -> 3
@@ -155,9 +152,7 @@ abstract class Card(
             CardType.ActionAttackTravellerVictory -> 4
             CardType.ActionGathering -> 2
             CardType.ActionTreasure -> 2
-            CardType.Event -> 1
-            CardType.Landmark -> 1
-            CardType.Artifact -> 1
+            else -> 1
         }
 
     val isSpecialCard: Boolean
@@ -310,6 +305,8 @@ abstract class Card(
             type == CardType.TreasureReserve -> CardColor.TreasureReserve
             type == CardType.ActionTreasure -> CardColor.ActionTreasure
             type == CardType.Landmark -> CardColor.Victory
+            type == CardType.Artifact -> CardColor.Artifact
+            type == CardType.Project -> CardColor.Project
             isTreasure -> CardColor.Treasure
             isVictory -> CardColor.Victory
             else -> CardColor.Action

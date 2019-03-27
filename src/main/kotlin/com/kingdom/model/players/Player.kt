@@ -600,6 +600,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         numExtraCardsToDrawAtEndOfTurn = 0
 
+        if (hasArtifact(Flag.NAME)) {
+            drawCard()
+            addEventLogWithUsername("Gained +1 Card from ${Flag().cardNameWithBackgroundColor}")
+        }
+
         if (cardToPutIntoHandAfterDrawingCardsAtEndOfTurn != null) {
             addCardToHand(cardToPutIntoHandAfterDrawingCardsAtEndOfTurn!!)
             cardToPutIntoHandAfterDrawingCardsAtEndOfTurn = null
@@ -1982,21 +1987,30 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun takeFlag() {
         game.artifacts.first { it is Flag }.owner = username
+        addEventLogWithUsername("took the ${Flag().cardNameWithBackgroundColor}")
     }
 
     fun takeLantern() {
         game.artifacts.first { it is Lantern }.owner = username
+        addEventLogWithUsername("took the ${Lantern().cardNameWithBackgroundColor}")
     }
 
     fun takeHorn() {
         game.artifacts.first { it is Horn }.owner = username
+        addEventLogWithUsername("took the ${Horn().cardNameWithBackgroundColor}")
     }
 
     fun takeKey() {
         game.artifacts.first { it is Key }.owner = username
+        addEventLogWithUsername("took the ${Key().cardNameWithBackgroundColor}")
     }
 
     fun takeTreasureChest() {
         game.artifacts.first { it is TreasureChest }.owner = username
+        addEventLogWithUsername("took the ${TreasureChest().cardNameWithBackgroundColor}")
+    }
+
+    fun hasArtifact(artifactName: String): Boolean {
+        return game.artifacts.firstOrNull { it.name == artifactName }?.owner == username
     }
 }
