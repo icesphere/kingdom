@@ -2,14 +2,13 @@ package com.kingdom.model.cards.renaissance
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.actions.ChooseCardsActionCard
 import com.kingdom.model.cards.actions.SetAsideCardsDuration
 import com.kingdom.model.cards.actions.StartOfTurnDurationAction
 import com.kingdom.model.cards.actions.TrashCardsForBenefitActionCard
 import com.kingdom.model.players.Player
 import com.kingdom.util.groupedString
 
-class Research : RenaissanceCard(NAME, CardType.ActionDuration, 4), StartOfTurnDurationAction, TrashCardsForBenefitActionCard, SetAsideCardsDuration, ChooseCardsActionCard {
+class Research : RenaissanceCard(NAME, CardType.ActionDuration, 4), StartOfTurnDurationAction, TrashCardsForBenefitActionCard, SetAsideCardsDuration {
 
     override var setAsideCards = mutableListOf<Card>()
 
@@ -27,16 +26,11 @@ class Research : RenaissanceCard(NAME, CardType.ActionDuration, 4), StartOfTurnD
     override fun cardsTrashed(player: Player, trashedCards: List<Card>, info: Any?) {
         val cost = player.getCardCostWithModifiers(trashedCards.first())
         if (cost > 0) {
-            val cardsText = if (cost == 1) "card" else "cards"
-            player.chooseCardsFromHand("Choose $cost $cardsText to set aside with $cardNameWithBackgroundColor", cost, false, this)
+            setAsideCards = player.removeTopCardsOfDeck(cost).toMutableList()
+            player.showInfoMessage("Set aside ${setAsideCards.groupedString} with $cardNameWithBackgroundColor")
         } else {
             setAsideCards.clear()
         }
-    }
-
-    override fun onCardsChosen(player: Player, cards: List<Card>, info: Any?) {
-        setAsideCards = cards.toMutableList()
-        player.removeCardsFromHand(cards)
     }
 
     override fun durationStartOfTurnAction(player: Player) {
