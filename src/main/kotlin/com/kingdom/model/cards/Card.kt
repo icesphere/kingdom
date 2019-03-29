@@ -273,6 +273,9 @@ abstract class Card(
     val isGathering: Boolean
         get() = type == CardType.ActionGathering
 
+    val isArtifact: Boolean
+        get() = type == CardType.Artifact
+
     val backgroundColor: CardColor
         get() = when {
             type == CardType.ActionVictory -> CardColor.ActionVictory

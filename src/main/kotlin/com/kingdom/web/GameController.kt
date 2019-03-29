@@ -3,6 +3,7 @@ package com.kingdom.web
 import com.kingdom.model.*
 import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.ActionResult
+import com.kingdom.model.cards.actions.ArtifactAction
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.supply.VictoryPointsCalculator
 import com.kingdom.model.players.HumanPlayer
@@ -327,6 +328,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("currentPlayerId", -1)
         modelAndView.addObject("cards", game.topKingdomCards)
         modelAndView.addObject("eventsAndLandmarks", game.events + game.landmarks)
+        modelAndView.addObject("artifacts", game.topKingdomCards.filterIsInstance<ArtifactAction>().flatMap { it.artifacts })
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
         modelAndView.addObject("includeShelters", includeShelters)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))

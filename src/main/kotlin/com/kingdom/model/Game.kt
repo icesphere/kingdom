@@ -1,6 +1,7 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.*
+import com.kingdom.model.cards.actions.ArtifactAction
 import com.kingdom.model.cards.actions.CardRepeater
 import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.cards.adventures.InheritanceEstate
@@ -349,6 +350,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             if (it is MultiTypePile) {
                 it.otherCardsInPile.forEach { cardMap[it.name] = it }
                 multiTypePileMap[it.name] = it.createMultiTypePile(this).toMutableList()
+            }
+
+            if (it is ArtifactAction) {
+                artifacts.addAll(it.artifacts)
             }
         }
 
