@@ -268,6 +268,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val currentTurnCardTrashedListeners = mutableListOf<AfterCardTrashedListener>()
 
+    var isUsedHornThisTurn: Boolean = false
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -578,6 +580,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         playedCrossroadsThisTurn = false
 
         isMoneyDoubledThisTurn = false
+
+        isUsedHornThisTurn = false
 
         isNextCardToTopOfDeck = false
         isNextCardToHand = false
@@ -1986,28 +1990,30 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun takeFlag() {
-        game.artifacts.first { it is Flag }.owner = username
-        addEventLogWithUsername("took the ${Flag().cardNameWithBackgroundColor}")
+        takeArtifact(game.artifacts.first { it is Flag })
     }
 
     fun takeLantern() {
-        game.artifacts.first { it is Lantern }.owner = username
-        addEventLogWithUsername("took the ${Lantern().cardNameWithBackgroundColor}")
+        takeArtifact(game.artifacts.first { it is Lantern })
     }
 
     fun takeHorn() {
-        game.artifacts.first { it is Horn }.owner = username
-        addEventLogWithUsername("took the ${Horn().cardNameWithBackgroundColor}")
+        takeArtifact(game.artifacts.first { it is Horn })
     }
 
     fun takeKey() {
-        game.artifacts.first { it is Key }.owner = username
-        addEventLogWithUsername("took the ${Key().cardNameWithBackgroundColor}")
+        takeArtifact(game.artifacts.first { it is Key })
     }
 
     fun takeTreasureChest() {
-        game.artifacts.first { it is TreasureChest }.owner = username
-        addEventLogWithUsername("took the ${TreasureChest().cardNameWithBackgroundColor}")
+        takeArtifact(game.artifacts.first { it is TreasureChest })
+    }
+
+    private fun takeArtifact(artifact: Artifact) {
+        if (!hasArtifact(artifact.name)) {
+            artifact.owner = username
+            addEventLogWithUsername("took the ${artifact.cardNameWithBackgroundColor}")
+        }
     }
 
     fun hasArtifact(artifactName: String): Boolean {

@@ -32,7 +32,7 @@
             </div>
             <div style="padding-bottom: 5px;">
                 <#if eventsAndLandmarks?has_content || artifacts?has_content>
-                    <div style="font-weight: bold; padding-bottom: 5px;">Kingdom Cards:</div>
+                    <div style="font-weight: bold; font-size: 14px; padding-bottom: 5px;">Kingdom Cards:</div>
                 </#if>
                 <#assign clickType="random">
                 <#list cards as card>
