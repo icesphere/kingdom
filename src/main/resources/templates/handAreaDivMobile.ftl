@@ -68,6 +68,11 @@
     <#if player.inheritanceActionCard??>
         <div class="handAreaTopRowLeft" style="clear:both;">Estate token on: ${player.inheritanceActionCard.name}</div>
     </#if>
+    <#list artifacts as artifact>
+        <#if artifact.owner??>
+            <div class="handAreaTopRowLeft" style="clear:both;">${artifact.name} owned by: ${artifact.owner}</div>
+        </#if>
+    </#list>
 </div>
 <div style="clear:both;">
     <div class="label">

@@ -258,8 +258,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
     var previousPlayerId = ""
-    val previousPlayerCardsPlayed = ArrayList<Card>()
-    val previousPlayerCardsBought = ArrayList<Card>()
     val previousPlayer: Player?
         get() = playerMap[previousPlayerId]
 
@@ -381,6 +379,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         cardsInSupply.forEach { cardMap[it.name] = it }
         cardsNotInSupply.forEach { cardMap[it.name] = it }
+
+        cardsNotInSupply.addAll(artifacts)
 
         if (isIncludeShelters) {
             cardMap[Hovel.NAME] = Hovel()

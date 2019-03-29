@@ -40,6 +40,19 @@
         </div>
     </#if>
 
+    <#if artifacts?has_content>
+        <div style="clear:both;float:left;">
+            Artifacts:
+        </div>
+        <div style="clear:both;">
+            <#list artifacts as card>
+                <div style="float:left;padding-right:2px;padding-top:2px;">
+                    <#include "gameCard.ftl">
+                </div>
+            </#list>
+        </div>
+    </#if>
+
     <#if prizeCards?size != 0>
         <div style="clear:both;float:left;">
             Prize Cards:

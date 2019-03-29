@@ -68,6 +68,11 @@
         <#if player.inheritanceActionCard??>
             <td class="handAreaTopRow">Estate token on: ${player.inheritanceActionCard.name}</td>
         </#if>
+        <#list artifacts as artifact>
+            <#if artifact.owner??>
+                <td class="handAreaTopRow">${artifact.name} owned by: ${artifact.owner}</td>
+            </#if>
+        </#list>
     </tr>
 </table>
 <table style="width:100%">

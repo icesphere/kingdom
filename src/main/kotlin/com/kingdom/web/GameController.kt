@@ -1492,6 +1492,7 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
             modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
             modelAndView.addObject("playTreasureCards", player.isTreasuresPlayable)
+            modelAndView.addObject("artifacts", game.artifacts)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1871,6 +1872,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
         modelAndView.addObject("trashedCards", game.trashedCards.groupedString)
         modelAndView.addObject("prizeCards", game.prizeCardsString)
+        modelAndView.addObject("artifacts", game.artifacts)
 
         modelAndView.addObject("showPrizeCards", game.isShowPrizeCards)
 
@@ -2171,6 +2173,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("adjustFontSizeForMobile", KingdomUtil.isMobile(request))
         modelAndView.addObject("cards", cards)
         modelAndView.addObject("eventsAndLandmarks", (game.events + game.landmarks).map { it.isHighlighted = false; it })
+        modelAndView.addObject("artifacts", game.artifacts)
         modelAndView.addObject("prizeCards", game.prizeCards)
         modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)
         return modelAndView
