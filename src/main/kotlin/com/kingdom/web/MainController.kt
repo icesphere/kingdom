@@ -47,6 +47,10 @@ class MainController(private val gameRoomManager: GameRoomManager) {
 
                 KingdomUtil.addUsernameCookieToResponse(username, response)
 
+                if (request.cookies?.firstOrNull { it.name.trim().toLowerCase() == "kingdomadmin" }?.value?.trim()?.toLowerCase() == "changethekingdom") {
+                    user.admin = true
+                }
+
                 LoggedInUsers.userLoggedIn(user)
                 LoggedInUsers.refreshLobbyPlayers()
 
@@ -103,6 +107,12 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         response.addCookie(accessCookie)
     }
 
+    private fun addAdminCookieToResponse(response: HttpServletResponse) {
+        val adminCookie = Cookie("kingdomadmin", "changethekingdom")
+        adminCookie.maxAge = 24 * 60 * 60 * 365 //1 year
+        response.addCookie(adminCookie)
+    }
+
     @RequestMapping("/logout.html")
     @Throws(Exception::class)
     fun logout(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
@@ -149,6 +159,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         val adminPassword = request.getParameter("adminPassword")
 
         if (adminPassword == "changethekingdom") {
+            addAdminCookieToResponse(response)
             user.admin = true
             return admin(request, response)
         }

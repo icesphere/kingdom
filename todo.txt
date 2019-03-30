@@ -7,7 +7,6 @@ consolidate select card actions
 remind player which tavern cards are available to use at start of turn
 show all cards gained - not just cards bought in the cards bought section of the page
 smoother transition from bot turn to human turn
-add cookie to remember admin user
 bot logic for Lurker
 better bot logic for empty piles
 think about timing on waiting for players - can they maybe be resolved later?
