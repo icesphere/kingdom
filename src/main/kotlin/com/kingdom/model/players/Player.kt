@@ -532,6 +532,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.landmarks.filterIsInstance<TurnEndedListenerForLandmark>()
                 .forEach { it.onTurnEnded(this) }
 
+        cardsPlayed.filterIsInstance<TurnEndedListenerForCardsPlayedThisTurn>()
+                .forEach { it.onTurnEnded(this) }
+
         resolveActions()
 
         if (currentAction != null) {

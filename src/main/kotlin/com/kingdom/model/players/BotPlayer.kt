@@ -24,6 +24,8 @@ import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.prosperity.*
+import com.kingdom.model.cards.renaissance.BorderGuard
+import com.kingdom.model.cards.renaissance.CargoShip
 import com.kingdom.model.cards.seaside.*
 import com.kingdom.model.cards.supply.*
 import java.util.*
@@ -389,6 +391,14 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Ambassador.NAME -> choices.last().choiceNumber
             Baron.NAME -> 1
             Beggar.NAME -> 1
+            BorderGuard.NAME -> when {
+                choices.first().choiceNumber == 1 -> 1
+                else -> 3
+            }
+            CargoShip.NAME -> {
+                val infoCard = info as Card
+                if (getDiscardCardScore(infoCard) > 17) 2 else 1
+            }
             Catacombs.NAME -> {
                 @Suppress("UNCHECKED_CAST")
                 val cards = info as List<Card>
@@ -525,7 +535,18 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Urchin.NAME -> if (allCards.count { it is Mercenary } <= 2 ) 1 else 2
             Vassal.NAME -> 1
             Vault.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 1) 1 else 2
-            Watchtower.NAME -> if (card.cost > 2) 1 else 2
+            Watchtower.NAME -> {
+                val cardGained = info as Card
+                when {
+                    choices.first().choiceNumber == 1 ->
+                        when {
+                            getTrashCardScore(cardGained) > 50 -> 1
+                            !card.isVictoryOnly && getPlayCardScore(cardGained) >= 3 -> 1
+                            else -> 2
+                        }
+                    else -> if (getTrashCardScore(cardGained) > 50) 3 else 4
+                }
+            }
             else -> choices[0].choiceNumber
         }
     }

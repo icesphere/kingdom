@@ -17,3 +17,5 @@ royal seal shouldn't ask multiple times if answer is no
 refresh on lobby page should not clear out chats
 2 Amulets - order of actions - should wait for first one to complete
 show cards not in supply separate from kingdom cards on card details page
+throne room cargo ship will probably allow setting aside two cards
+if you don't set aside card with Cargo Ship it should be discarded that turn

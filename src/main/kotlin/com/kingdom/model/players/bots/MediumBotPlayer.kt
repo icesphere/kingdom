@@ -27,6 +27,7 @@ import com.kingdom.model.cards.prosperity.Contraband
 import com.kingdom.model.cards.prosperity.Forge
 import com.kingdom.model.cards.prosperity.KingsCourt
 import com.kingdom.model.cards.prosperity.Mint
+import com.kingdom.model.cards.renaissance.ActingTroupe
 import com.kingdom.model.cards.seaside.Lookout
 import com.kingdom.model.cards.seaside.TreasureMap
 import com.kingdom.model.cards.supply.*
@@ -194,37 +195,38 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
         val actionsBought = cardCountByExpression { it.isAction }
 
         //todo better logic here
-        val includeVictoryOnlyCards = cardCountByName(Platinum.NAME) > 0 || cardCountByName(Gold.NAME) > 1 || cardCountByExpression { it.cost >= 5 } > 3
+        val includeVictoryOnlyCards = onlyBuyVictoryCards || cardCountByName(Platinum.NAME) > 0 || cardCountByName(Gold.NAME) > 1 || cardCountByExpression { it.cost >= 5 } > 3
 
         return when {
             !card.isVictory && !card.isTreasure && getCardCostWithModifiers(card) < 5 && cardCountByName(card.name) >= 3 -> true
             card.name == ThroneRoom.NAME && (turns < 3 || cardCountByName(card.name) >= 2) -> true
-            card.name == KingsCourt.NAME && cardCountByName(card.name) >= 2 -> return true
+            card.name == KingsCourt.NAME && cardCountByName(card.name) >= 2 -> true
             card.isTerminalAction && (terminalActionsBought - actionsBought > 1 || terminalActionsBought == 1 && actionsBought == 1) -> true
-            card.name == Lookout.NAME -> return true
+            card.name == Lookout.NAME -> true
             card.isVictoryOnly && !includeVictoryOnlyCards -> true
-            card.name == Forge.NAME -> return true
-            card.name == Rats.NAME -> return true
+            card.name == Forge.NAME -> true
+            card.name == Rats.NAME -> true
             card.name == Witch.NAME && turns >= 8 -> true
-            card.name == Mint.NAME && turns >= 5 -> return true
-            card.name == TreasureMap.NAME -> return true
-            card.name == Copper.NAME -> return true
-            card.name == Doctor.NAME -> return true
-            card.name == Masterpiece.NAME -> return true
-            card.name == Stonemason.NAME -> return true
-            card.name == Raze.NAME -> return true
-            card.name == Amulet.NAME -> return true
-            card.name == Gear.NAME -> return true
-            card.name == Storyteller.NAME -> return true
-            card.name == Armory.NAME -> return true
-            card.name == BandOfMisfits.NAME -> return true
-            card.name == Procession.NAME -> return true
-            card.name == Feodum.NAME && cardCountByName(Silver.NAME) < 6 -> return true
-            card.name == Farmland.NAME && hand.all { it.isVictory && it.cost > 2 } -> return true
-            card is TavernCard -> return true
-            card.isRuins -> return true
-            card.debtCost > 0 -> return true
-            game.landmarks.any { it is Wall } && card.cost < 3 || (card.cost < 5 && allCards.size >= 15) -> return true
+            card.name == Mint.NAME && turns >= 5 -> true
+            card.name == TreasureMap.NAME -> true
+            card.name == Copper.NAME -> true
+            card.name == Doctor.NAME -> true
+            card.name == Masterpiece.NAME -> true
+            card.name == Stonemason.NAME -> true
+            card.name == Raze.NAME -> true
+            card.name == Amulet.NAME -> true
+            card.name == Gear.NAME -> true
+            card.name == Storyteller.NAME -> true
+            card.name == Armory.NAME -> true
+            card.name == BandOfMisfits.NAME -> true
+            card.name == Procession.NAME -> true
+            card.name == Feodum.NAME && cardCountByName(Silver.NAME) < 6 -> true
+            card.name == Farmland.NAME && hand.all { it.isVictory && it.cost > 2 } -> true
+            card.name == ActingTroupe.NAME && terminalActionsBought > 0 && villagers == 0 -> true
+            card is TavernCard -> true
+            card.isRuins -> true
+            card.debtCost > 0 -> true
+            game.landmarks.any { it is Wall } && card.cost < 3 || (card.cost < 5 && allCards.size >= 15) -> true
             else -> super.excludeCard(card)
         }
 

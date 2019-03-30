@@ -6,6 +6,7 @@ import com.kingdom.model.cards.actions.ActionResult
 import com.kingdom.model.cards.actions.ArtifactAction
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.supply.VictoryPointsCalculator
+import com.kingdom.model.players.BotPlayer
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
 import com.kingdom.service.*
@@ -580,7 +581,12 @@ class GameController(private val cardManager: CardManager,
         }
         val game = gameRoomManager.getGame(gameId)
         if (game != null && (user.admin || game.creatorId == user.userId)) {
-            game.players.forEach { it.currentAction = null }
+            game.players.forEach {
+                it.currentAction = null
+                if (it.isBot) {
+                    (it as BotPlayer).isWaitingForPlayers = false
+                }
+            }
             game.refreshGame()
         }
         return ModelAndView("redirect:/showGame.html")
