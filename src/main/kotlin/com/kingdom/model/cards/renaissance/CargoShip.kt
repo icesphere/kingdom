@@ -5,11 +5,14 @@ import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.actions.SetAsideCardsDuration
 import com.kingdom.model.cards.actions.StartOfTurnDurationAction
+import com.kingdom.model.cards.listeners.AfterCardAddedToDurationListenerForSelf
 import com.kingdom.model.cards.listeners.AfterCardGainedListenerForCardsInPlay
 import com.kingdom.model.cards.listeners.TurnEndedListenerForCardsPlayedThisTurn
 import com.kingdom.model.players.Player
 
-class CargoShip : RenaissanceCard(NAME, CardType.ActionDuration, 3), StartOfTurnDurationAction, ChoiceActionCard, SetAsideCardsDuration, AfterCardGainedListenerForCardsInPlay, TurnEndedListenerForCardsPlayedThisTurn {
+class CargoShip : RenaissanceCard(NAME, CardType.ActionDuration, 3), StartOfTurnDurationAction, ChoiceActionCard,
+        SetAsideCardsDuration, AfterCardGainedListenerForCardsInPlay,
+        TurnEndedListenerForCardsPlayedThisTurn, AfterCardAddedToDurationListenerForSelf {
 
     var setAsideCard: Card? = null
 
@@ -24,6 +27,7 @@ class CargoShip : RenaissanceCard(NAME, CardType.ActionDuration, 3), StartOfTurn
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
+        setAsideCard = null
         thisTurn = true
     }
 
@@ -49,6 +53,13 @@ class CargoShip : RenaissanceCard(NAME, CardType.ActionDuration, 3), StartOfTurn
         }
 
         setAsideCard = null
+    }
+
+    override fun afterCardAddedToDuration(player: Player) {
+        if (setAsideCard == null) {
+            player.durationCards.remove(this)
+            player.addCardToDiscard(this)
+        }
     }
 
     override fun onTurnEnded(player: Player) {

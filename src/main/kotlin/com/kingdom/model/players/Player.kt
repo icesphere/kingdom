@@ -505,6 +505,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
                 card.isSelected = false
                 card.isHighlighted = false
+
+                if (card is AfterCardAddedToDurationListenerForSelf) {
+                    (card as AfterCardAddedToDurationListenerForSelf).afterCardAddedToDuration(this)
+                }
             } else {
                 addCardToDiscard(card, false, false)
 
