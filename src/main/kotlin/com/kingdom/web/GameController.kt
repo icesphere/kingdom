@@ -1962,6 +1962,8 @@ class GameController(private val cardManager: CardManager,
             val addActionsParam = request.getParameter("addActions_" + player.userId)
             val addBuysParam = request.getParameter("addBuys_" + player.userId)
             val addCoinsParam = request.getParameter("addCoins_" + player.userId)
+            val addCoffersParam = request.getParameter("addCoffers_" + player.userId)
+            val addVillagersParam = request.getParameter("addVillagers_" + player.userId)
             val addDebtParam = request.getParameter("addDebt_" + player.userId)
             val addCardsParam = request.getParameter("addCards_" + player.userId)
 
@@ -1975,6 +1977,12 @@ class GameController(private val cardManager: CardManager,
             }
             if (addCoinsParam.isNotEmpty()) {
                 player.addCoins(addCoinsParam.toInt())
+            }
+            if (addCoffersParam.isNotEmpty()) {
+                player.addCoffers(addCoffersParam.toInt())
+            }
+            if (addVillagersParam.isNotEmpty()) {
+                player.addVillagers(addVillagersParam.toInt())
             }
             if (addDebtParam.isNotEmpty()) {
                 player.addDebt(addDebtParam.toInt())

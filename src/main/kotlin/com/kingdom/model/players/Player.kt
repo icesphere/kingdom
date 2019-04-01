@@ -78,7 +78,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val isBuyPhase: Boolean
         get() = isYourTurn && (isTreasureCardsPlayedInBuyPhase || isCardsBought || isActionTakenInBuyPhase) && !isReturnToActionPhase
 
-    var isActionTakenInBuyPhase: Boolean = false
+    private var isActionTakenInBuyPhase: Boolean = false
 
     var isPaidOffDebtThisTurn: Boolean = false
 
@@ -915,6 +915,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             buys -= 1
             isTreasuresPlayable = false
+
+            if (!isBuyPhase) {
+                handleBeforeBuyPhase()
+            }
+
             cardsBought.add(card)
             currentTurnSummary.cardsBought.add(card)
             isReturnToActionPhase = false
@@ -1002,6 +1007,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             if (!isTreasureCardsPlayedInBuyPhase && card.isAction && card.isTreasure) {
                 game.treasureCardsPlayedInActionPhase.add(card)
+            } else if (card.isTreasure && !isBuyPhase) {
+                handleBeforeBuyPhase()
             }
 
             cardsPlayed.add(card)
@@ -1044,6 +1051,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         card.cardPlayed(this, refresh)
+    }
+
+    private fun handleBeforeBuyPhase() {
+        game.allCards.filterIsInstance<BeforeBuyPhaseListenerForCardsInSupply>()
+                .forEach { it.beforeBuyPhase(this) }
     }
 
     fun addTokenBonusesForPlayingCard(card: Card, refresh: Boolean) {
@@ -2028,5 +2040,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun hasArtifact(artifactName: String): Boolean {
         return game.artifacts.firstOrNull { it.name == artifactName }?.owner == username
+    }
+
+    fun actionTakeInBuyPhase() {
+        handleBeforeBuyPhase()
+        isActionTakenInBuyPhase = true
     }
 }

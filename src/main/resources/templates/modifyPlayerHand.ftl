@@ -24,6 +24,14 @@
     </div>
 
     <div style="padding-bottom:10px;">
+        Add # Coffers: <input type="text" name="addCoffers_${player.userId}" size="5" />
+    </div>
+
+    <div style="padding-bottom:10px;">
+        Add # Villagers: <input type="text" name="addVillagers_${player.userId}" size="5" />
+    </div>
+
+    <div style="padding-bottom:10px;">
         Add # Debt: <input type="text" name="addDebt_${player.userId}" size="5" />
     </div>
 
