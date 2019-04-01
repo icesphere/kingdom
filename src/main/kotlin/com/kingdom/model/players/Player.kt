@@ -753,7 +753,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         val cardToGain = if (card.isEstate && inheritanceActionCard != null) createInheritanceEstate() else if (card is InheritanceEstate) Estate() else card
 
-        game.availableCards.filterIsInstance<CardGainedListenerForCardsInSupply>()
+        game.availableCards.filterIsInstance<CardGainedListenerForCardsAvailableInSupply>()
                 .forEach {
                     it.onCardGained(cardToGain, this)
                 }
@@ -1031,7 +1031,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             numActionsPlayed++
         }
 
-        game.availableCards.filterIsInstance<CardPlayedListenerForCardsInSupply>()
+        game.availableCards.filterIsInstance<CardPlayedListenerForCardsAvailableInSupply>()
                 .forEach {
                     it.onCardPlayed(card, this)
                 }
@@ -1441,6 +1441,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 }
             }
         }
+
+        game.allCards.filterIsInstance<TurnStartedListenerForCardsInSupply>()
+                .forEach { it.turnStarted(this) }
 
         resolveActions()
 
@@ -1981,7 +1984,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun moveVictoryPointsOnSupplyPile(fromCard: Card, toCard: Card, victoryPoints: Int) {
         game.removeVictoryPointsFromSupplyPile(fromCard.pileName, victoryPoints)
         game.addVictoryPointsToSupplyPile(toCard.pileName, victoryPoints)
-        addEventLogWithUsername("moved 1 VP from ${fromCard.cardNameWithBackgroundColor} to ${toCard.cardNameWithArticleAndBackgroundColor}")
+        addEventLogWithUsername("moved 1 VP from ${fromCard.cardNameWithBackgroundColor} to ${toCard.cardNameWithBackgroundColor}")
     }
 
     fun clearDiscard() {

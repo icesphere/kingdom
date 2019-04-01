@@ -2,10 +2,10 @@ package com.kingdom.model.cards.prosperity
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
-import com.kingdom.model.cards.listeners.CardPlayedListenerForCardsInSupply
+import com.kingdom.model.cards.listeners.CardPlayedListenerForCardsAvailableInSupply
 import com.kingdom.model.players.Player
 
-class GrandMarket : ProsperityCard(NAME, CardType.Action, 6), CardPlayedListenerForCardsInSupply {
+class GrandMarket : ProsperityCard(NAME, CardType.Action, 6), CardPlayedListenerForCardsAvailableInSupply {
 
     init {
         addCards = 1

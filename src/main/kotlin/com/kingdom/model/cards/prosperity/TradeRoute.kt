@@ -5,10 +5,10 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.GameSetupModifier
 import com.kingdom.model.cards.actions.TrashCardsForBenefitActionCard
-import com.kingdom.model.cards.listeners.CardGainedListenerForCardsInSupply
+import com.kingdom.model.cards.listeners.CardGainedListenerForCardsAvailableInSupply
 import com.kingdom.model.players.Player
 
-class TradeRoute : ProsperityCard(NAME, CardType.Action, 3), GameSetupModifier, TrashCardsForBenefitActionCard, CardGainedListenerForCardsInSupply {
+class TradeRoute : ProsperityCard(NAME, CardType.Action, 3), GameSetupModifier, TrashCardsForBenefitActionCard, CardGainedListenerForCardsAvailableInSupply {
 
     init {
         addBuys = 1
