@@ -29,6 +29,8 @@ class Remake : CornucopiaCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) == player.getCardCostWithModifiers(card) + 1 }) {
             player.chooseSupplyCardToGainWithExactCost(player.getCardCostWithModifiers(card) + 1)
+        } else {
+            player.showInfoMessage("There were no cards available that cost \$${player.getCardCostWithModifiers(card) + 1}")
         }
 
         if (trashingSecondCard) {

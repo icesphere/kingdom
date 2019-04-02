@@ -480,6 +480,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun endTurn(isAutoEnd: Boolean = false) {
 
+        cardsPlayed.filterIsInstance<StartOfCleanupListenerForCardsPlayedThisTurn>()
+                .forEach { it.onStartOfCleanup(this) }
+
         resolveActions()
 
         if (currentAction != null) {
@@ -712,6 +715,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun removeCardInPlay(card: Card, removedToLocation: CardLocation) {
         inPlay.remove(card)
+        cardRemovedFromPlay(card, removedToLocation)
+        game.refreshCardsPlayed()
+    }
+
+    fun removeDurationCardInPlay(card: Card, removedToLocation: CardLocation) {
+        durationCards.remove(card)
         cardRemovedFromPlay(card, removedToLocation)
         game.refreshCardsPlayed()
     }
@@ -1109,6 +1118,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun chooseSupplyCardToGainForBenefitWithMaxCost(maxCost: Int, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null) {
         chooseSupplyCardToGainForBenefit(text, freeCardFromSupplyForBenefitActionCard) { c -> c.debtCost == 0 && getCardCostWithModifiers(c) <= maxCost && (cardActionableExpression == null || cardActionableExpression(c)) }
+    }
+    fun chooseSupplyCardToGainForBenefitWithExactCost(exactCost: Int, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null) {
+        chooseSupplyCardToGainForBenefit(text, freeCardFromSupplyForBenefitActionCard) { c -> c.debtCost == 0 && getCardCostWithModifiers(c) == exactCost && (cardActionableExpression == null || cardActionableExpression(c)) }
     }
 
     abstract fun drawCardsAndPutSomeBackOnTop(cardsToDraw: Int, cardsToPutBack: Int)

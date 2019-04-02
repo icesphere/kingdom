@@ -13,4 +13,10 @@ class ChooseCardAction(text: String,
         chooseCardActionCard.onCardChosen(player, selectedCards.first(), info)
     }
 
+    override fun onNotUsed(player: Player) {
+        if (chooseCardActionCard is OptionalChooseCardActionCard) {
+            chooseCardActionCard.onCardNotChosen(player, info)
+        }
+    }
+
 }

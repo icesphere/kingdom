@@ -26,6 +26,7 @@ import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.renaissance.BorderGuard
 import com.kingdom.model.cards.renaissance.CargoShip
+import com.kingdom.model.cards.renaissance.Improve
 import com.kingdom.model.cards.seaside.*
 import com.kingdom.model.cards.supply.*
 import java.util.*
@@ -994,6 +995,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                     cardsToSelectFrom.any { it.isDuchy } && turns > 10 -> Duchy()
                     else -> Gold()
                 }
+                Improve.NAME -> cardsToSelectFrom.maxBy { getTrashCardScore(it) }!!
                 Lookout.NAME -> cardsToSelectFrom.minBy { getDiscardCardScore(it) }!!
                 PirateShip.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
                 Smugglers.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
