@@ -9,7 +9,7 @@ import com.kingdom.model.players.Player
 
 class Improve : RenaissanceCard(NAME, CardType.Action, 3), StartOfCleanupListenerForCardsPlayedThisTurn, OptionalChooseCardActionCard, FreeCardFromSupplyForBenefitActionCard {
 
-    //todo if do not use is chosen then don't keep asking
+    var usedImprove: Boolean = false
 
     init {
         addCoins = 2
@@ -18,6 +18,12 @@ class Improve : RenaissanceCard(NAME, CardType.Action, 3), StartOfCleanupListene
     }
 
     override fun onStartOfCleanup(player: Player) {
+        if (usedImprove) {
+            return
+        }
+
+        usedImprove = true
+
         val durationCardsToDiscard = player.durationCards.filterNot {
             it is PermanentDuration
                     || (it is CardRepeater && it.cardBeingRepeated is PermanentDuration)
@@ -55,6 +61,11 @@ class Improve : RenaissanceCard(NAME, CardType.Action, 3), StartOfCleanupListene
 
     override fun onCardGained(player: Player, card: Card) {
         player.endTurn(true)
+    }
+
+    override fun removedFromPlay(player: Player) {
+        super.removedFromPlay(player)
+        usedImprove = false
     }
 
     companion object {

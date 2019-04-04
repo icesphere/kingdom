@@ -54,7 +54,7 @@
                                 <#if player.cardCountByName(card.name) != 0>
                                     <div class="gameResultsPlayerPointsLabel">${card.name}:</div>
                                     <div class="gameResultsPlayerPoints">
-                                        ${player.cardCountByName(card.name)} (<#if card.victoryPointsCalculator>${player.cardCountByName(card.name) * card.calculatePoints(player)}<#else>${player.cardCountByName(card.name) * card.victoryPoints}</#if> VP)
+                                        ${player.cardCountByName(card.name)} (<#if card.victoryPointsCalculator>${player.getVictoryPointsForAllCardsWithName(card.name)}<#else>${player.cardCountByName(card.name) * card.victoryPoints}</#if> VP)
                                     </div>
                                 </#if>
                             </#list>

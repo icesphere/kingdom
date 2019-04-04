@@ -16,6 +16,7 @@ class BorderGuard : RenaissanceCard(NAME, CardType.Action, 2), ArtifactAction, C
 
     init {
         special = "Reveal the top 2 cards of your deck. Put one into your hand and discard the other. If both were Actions, take the Lantern or Horn."
+        fontSize = 10
     }
 
     override val artifacts: List<Artifact>

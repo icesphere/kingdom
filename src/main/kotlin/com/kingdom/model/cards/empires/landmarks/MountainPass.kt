@@ -61,6 +61,15 @@ class MountainPass : EmpiresLandmark(NAME), AfterCardGainedListenerForLandmark, 
             choices.add(Choice(i, i.toString()))
         }
 
+        if (player.isBot && playerBidMap.size == player.opponents.size) {
+            val highestBidder = playerBidMap.maxBy { it.value }!!.key
+            val highestBid = playerBidMap[highestBidder]!!
+            if (highestBid <= 15) {
+                actionChoiceMade(player, highestBid + 1, null)
+                return
+            }
+        }
+
         player.makeChoiceFromList(this, playersChoices + "How much debt do you want to bid? High bidder gets +8 VP and takes the debt they bid.", choices)
     }
 

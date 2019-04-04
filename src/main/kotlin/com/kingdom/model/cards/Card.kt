@@ -208,7 +208,7 @@ abstract class Card(
         get() = type == CardType.Action || type == CardType.ActionAttack || type == CardType.ActionAttackVictory || type == CardType.ActionAttackDuration || type == CardType.ActionAttackDurationVictory || type == CardType.ActionReaction || type == CardType.ActionReactionVictory || type == CardType.ActionVictory || type == CardType.ActionVictoryCastle || type == CardType.ActionDuration || type == CardType.ActionDurationVictory || type == CardType.DurationVictory || type == CardType.ActionRuins || type == CardType.ActionRuinsVictory || type == CardType.ActionGathering || type == CardType.ActionShelter || type == CardType.ActionShelterVictory || type == CardType.ActionLooter || type == CardType.ActionLooterVictory || type == CardType.ActionAttackLooter || type == CardType.ActionAttackLooterVictory || type == CardType.ActionReserve || type == CardType.ActionTreasure || type == CardType.ActionReserveVictory || type == CardType.ActionDurationReaction || type == CardType.ActionDurationReactionVictory || type == CardType.ActionTraveller || type == CardType.ActionTravellerVictory || type == CardType.ActionAttackTraveller || type == CardType.ActionAttackTravellerVictory
 
     open val isTerminalAction: Boolean
-        get() = isAction && addActions == 0
+        get() = isAction && addActions == 0 && addVillagers == 0
 
     val isDuration: Boolean
         get() = type == CardType.ActionDuration || type == CardType.ActionDurationVictory || type == CardType.DurationVictory || type == CardType.ActionDurationReaction || type == CardType.ActionDurationReactionVictory || type == CardType.ActionAttackDuration || type == CardType.ActionAttackDurationVictory
@@ -322,7 +322,7 @@ abstract class Card(
         get() = backgroundColor.mobileColor
 
     val isExtraActionsCard: Boolean
-        get() = addActions >= 2 || name == ThroneRoom.NAME || name == KingsCourt.NAME
+        get() = addActions >= 2 || name == ThroneRoom.NAME || name == KingsCourt.NAME || addVillagers > 0
 
     val isVictoryCoinsCard: Boolean
         get() = addVictoryCoins > 0 || name == Goons.NAME

@@ -2058,4 +2058,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         handleBeforeBuyPhase()
         isActionTakenInBuyPhase = true
     }
+
+    fun getVictoryPointsForAllCardsWithName(cardName: String): Int {
+        return allCards.filter { it.name == cardName }
+                .filterIsInstance<VictoryPointsCalculator>()
+                .sumBy { it.calculatePoints(this) }
+    }
 }
