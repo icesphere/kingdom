@@ -2,6 +2,7 @@ package com.kingdom.model
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Event
+import com.kingdom.model.cards.Project
 import com.kingdom.util.groupedString
 import java.util.ArrayList
 
@@ -19,6 +20,11 @@ class TurnSummary(val username: String) {
 
     val eventsBoughtString
         get() = eventsBought.groupedString
+
+    var projectsBought: MutableList<Project> = ArrayList()
+
+    val projectsBoughtString
+        get() = projectsBought.groupedString
 
     var gameTurn: Int = 0
 

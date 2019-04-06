@@ -111,6 +111,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("decks", getDecks(includeTesting))
         modelAndView.addObject("events", cardManager.allEvents.sortedBy { it.name })
         modelAndView.addObject("landmarks", cardManager.allLandmarks.sortedBy { it.name })
+        modelAndView.addObject("projects", cardManager.allProjects.sortedBy { it.name })
         modelAndView.addObject("excludedCards", user.excludedCardNames)
     }
 
@@ -136,16 +137,18 @@ class GameController(private val cardManager: CardManager,
 
         val eventSelection = request.getParameter("eventSelection")
         val landmarkSelection = request.getParameter("landmarkSelection")
+        val projectSelection = request.getParameter("projectSelection")
 
         val decks = ArrayList<Deck>()
         val customCardSelection = ArrayList<Card>()
         val excludedCards = ArrayList<Card>(0)
         val customEventSelection = ArrayList<Event>()
         val customLandmarkSelection = ArrayList<Landmark>()
+        val customProjectSelection = ArrayList<Project>()
 
-        parseCardAndEventSelectionRequest(request, decks, customCardSelection, excludedCards, customEventSelection, customLandmarkSelection)
+        parseCardAndEventSelectionRequest(request, decks, customCardSelection, excludedCards, customEventSelection, customLandmarkSelection, customProjectSelection)
 
-        setRandomizingOptions(request, game, customCardSelection, excludedCards, generateType, customEventSelection, customLandmarkSelection, eventSelection, landmarkSelection)
+        setRandomizingOptions(request, game, customCardSelection, excludedCards, generateType, customEventSelection, customLandmarkSelection, customProjectSelection, eventSelection, landmarkSelection, projectSelection)
 
         game.decks = decks
 
@@ -225,7 +228,7 @@ class GameController(private val cardManager: CardManager,
 
     }
 
-    private fun parseCardAndEventSelectionRequest(request: HttpServletRequest, decks: MutableList<Deck>, customCardSelection: MutableList<Card>, excludedCards: MutableList<Card>, customEventSelection: MutableList<Event>, customLandmarkSelection: MutableList<Landmark>) {
+    private fun parseCardAndEventSelectionRequest(request: HttpServletRequest, decks: MutableList<Deck>, customCardSelection: MutableList<Card>, excludedCards: MutableList<Card>, customEventSelection: MutableList<Event>, customLandmarkSelection: MutableList<Landmark>, customProjectSelection: MutableList<Project>) {
         val parameterNames = request.parameterNames
         while (parameterNames.hasMoreElements()) {
             val name = parameterNames.nextElement() as String
@@ -253,6 +256,11 @@ class GameController(private val cardManager: CardManager,
                     val landmark = cardManager.getLandmark(landmarkName)
                     customLandmarkSelection.add(landmark)
                 }
+                name.startsWith("project_") -> {
+                    val projectName = name.substring(8)
+                    val project = cardManager.getProject(projectName)
+                    customProjectSelection.add(project)
+                }
                 name.startsWith("excluded_card_") -> {
                     val cardName = name.substring(14)
                     val card = cardManager.getCard(cardName)
@@ -262,7 +270,7 @@ class GameController(private val cardManager: CardManager,
         }
     }
 
-    private fun setRandomizingOptions(request: HttpServletRequest, game: Game, customCardSelection: List<Card>, excludedCards: List<Card>, generateType: String, customEventSelection: List<Event>, customLandmarkSelection: List<Landmark>, eventSelection: String, landmarkSelection: String) {
+    private fun setRandomizingOptions(request: HttpServletRequest, game: Game, customCardSelection: List<Card>, excludedCards: List<Card>, generateType: String, customEventSelection: List<Event>, customLandmarkSelection: List<Landmark>, customProjectSelection: List<Project>, eventSelection: String, landmarkSelection: String, projectSelection: String) {
         val options = RandomizingOptions()
 
         options.excludedCards = excludedCards
@@ -281,7 +289,7 @@ class GameController(private val cardManager: CardManager,
             game.isAlwaysIncludeColonyAndPlatinum = KingdomUtil.getRequestBoolean(request, "alwaysIncludeColonyAndPlatinum")
         }
 
-        options.numEventsAndLandmarks = KingdomUtil.getRequestInt(request, "numEventsAndLandmarks", 2)
+        options.numEventsAndLandmarksAndProjects = KingdomUtil.getRequestInt(request, "numEventsAndLandmarksAndProjects", 2)
 
         if (eventSelection == "custom") {
             options.customEventSelection = customEventSelection
@@ -289,6 +297,10 @@ class GameController(private val cardManager: CardManager,
 
         if (landmarkSelection == "custom") {
             options.customLandmarkSelection = customLandmarkSelection
+        }
+        
+        if (projectSelection == "custom") {
+            options.customProjectSelection = customProjectSelection
         }
 
         game.randomizingOptions = options
@@ -328,7 +340,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("player", HumanPlayer(user, game))
         modelAndView.addObject("currentPlayerId", -1)
         modelAndView.addObject("cards", game.topKingdomCards)
-        modelAndView.addObject("eventsAndLandmarks", game.events + game.landmarks)
+        modelAndView.addObject("eventsAndLandmarksAndProjects", game.events + game.landmarks + game.projects)
         modelAndView.addObject("artifacts", game.topKingdomCards.filterIsInstance<ArtifactAction>().flatMap { it.artifacts })
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
         modelAndView.addObject("includeShelters", includeShelters)
@@ -417,6 +429,29 @@ class GameController(private val cardManager: CardManager,
         try {
             return if (game.status == GameStatus.BeingConfigured) {
                 cardManager.swapLandmark(game, request.getParameter("landmarkName"))
+                confirmCards(request, response)
+            } else {
+                if (game.status == GameStatus.InProgress) {
+                    ModelAndView("redirect:/showGame.html")
+                } else {
+                    ModelAndView("redirect:/showGameRooms.html")
+                }
+            }
+        } catch (t: Throwable) {
+            return logErrorAndReturnEmpty(t, game)
+        }
+    }
+
+    @RequestMapping("/swapProject.html")
+    fun swapProject(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        }
+        try {
+            return if (game.status == GameStatus.BeingConfigured) {
+                cardManager.swapProject(game, request.getParameter("projectName"))
                 confirmCards(request, response)
             } else {
                 if (game.status == GameStatus.InProgress) {
@@ -845,6 +880,7 @@ class GameController(private val cardManager: CardManager,
             "cardAction" -> CardLocation.CardAction
             "event" -> CardLocation.Event
             "landmark" -> CardLocation.Landmark
+            "project" -> CardLocation.Project
             else -> CardLocation.Unknown
         }
     }
@@ -931,6 +967,33 @@ class GameController(private val cardManager: CardManager,
                     }
                 }
             }
+            CardLocation.Project -> {
+                val projectCard = game.getNewInstanceOfProject(cardName)
+
+                if (highlightProjectCard(player, projectCard)) {
+
+                    if (player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase && projectCard.debtCost > 0) {
+                        player.yesNoChoice(object : ChoiceActionCard {
+                            override val name: String = "PlayTreasuresBeforeBuyingDebtProject"
+
+                            override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                                if (choice == 1) {
+                                    player.buyProject(projectCard)
+                                }
+                            }
+
+                        }, "Are you sure you want to buy ${projectCard.cardNameWithBackgroundColor} before playing your treasure cards?")
+
+                        return
+                    }
+
+                    player.buyProject(projectCard)
+
+                    if (player.buys == 0 && player.currentAction == null) {
+                        player.endTurn(true)
+                    }
+                }
+            }
             CardLocation.Hand -> {
                 val card = findCardById(player.hand, cardId)!!
                 if (highlightCard(player, card, source)) {
@@ -1011,6 +1074,10 @@ class GameController(private val cardManager: CardManager,
 
     fun highlightLandmarkCard(player: Player, card: Card?): Boolean {
         return player.currentAction == null && card?.isActionable(player, CardLocation.Landmark) ?: false
+    }
+
+    fun highlightProjectCard(player: Player, card: Card?): Boolean {
+        return player.currentAction == null && card?.isActionable(player, CardLocation.Project) ?: false
     }
 
     @ResponseBody
@@ -1236,7 +1303,8 @@ class GameController(private val cardManager: CardManager,
 
         game.events.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Event) }
         game.landmarks.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Landmark) }
-        modelAndView.addObject("eventsAndLandmarks", game.events + game.landmarks)
+        game.projects.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Project) }
+        modelAndView.addObject("eventsAndLandmarksAndProjects", game.events + game.landmarks + game.projects)
 
         try {
             val bw = BeansWrapper()
@@ -2188,7 +2256,7 @@ class GameController(private val cardManager: CardManager,
 
         modelAndView.addObject("adjustFontSizeForMobile", KingdomUtil.isMobile(request))
         modelAndView.addObject("cards", cards)
-        modelAndView.addObject("eventsAndLandmarks", (game.events + game.landmarks).map { it.isHighlighted = false; it })
+        modelAndView.addObject("eventsAndLandmarksAndProjects", (game.events + game.landmarks + game.projects).map { it.isHighlighted = false; it })
         modelAndView.addObject("artifacts", game.artifacts)
         modelAndView.addObject("prizeCards", game.prizeCards)
         modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)

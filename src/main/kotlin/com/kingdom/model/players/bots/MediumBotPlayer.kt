@@ -5,6 +5,7 @@ import com.kingdom.model.GameError
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Event
+import com.kingdom.model.cards.Project
 import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.cards.adventures.Amulet
 import com.kingdom.model.cards.adventures.Gear
@@ -93,6 +94,12 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             Windfall.NAME -> 10
             else -> super.getBuyEventScore(event)
         }
+    }
+
+    override fun getBuyProjectScore(project: Project): Int {
+        //todo
+
+        return super.getBuyProjectScore(project)
     }
 
     override fun getCardToBuy(): String? {

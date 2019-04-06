@@ -1,7 +1,5 @@
 package com.kingdom.model.cards.renaissance.artifacts
 
-import com.kingdom.model.cards.renaissance.RenaissanceArtifact
-
 class Lantern : RenaissanceArtifact(NAME) {
 
     init {

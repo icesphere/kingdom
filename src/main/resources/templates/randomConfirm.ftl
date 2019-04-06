@@ -19,6 +19,9 @@
             function swapLandmark(landmarkName) {
                 document.location = "swapLandmark.html?landmarkName="+landmarkName;
             }
+            function swapProject(projectName) {
+                document.location = "swapProject.html?projectName="+projectName;
+            }
         </script>
 	</head>
 	<body>
@@ -31,7 +34,7 @@
                 <a href="showGameCards.html" target="_blank">Card Details</a>
             </div>
             <div style="padding-bottom: 5px;">
-                <#if eventsAndLandmarks?has_content || artifacts?has_content>
+                <#if eventsAndLandmarksAndProjects?has_content || artifacts?has_content>
                     <div style="font-weight: bold; font-size: 14px; padding-bottom: 5px;">Kingdom Cards:</div>
                 </#if>
                 <#assign clickType="random">
@@ -46,11 +49,11 @@
                     </div>
                 </#list>
             </div>
-            <#if eventsAndLandmarks?has_content>
+            <#if eventsAndLandmarksAndProjects?has_content>
                 <div style="clear: both; padding-top: 5px; padding-bottom: 5px;">
-                    <div style="font-weight: bold; font-size: 14px; padding-bottom: 5px;">Events/Landmarks:</div>
+                    <div style="font-weight: bold; font-size: 14px; padding-bottom: 5px;">Events/Landmarks/Projects:</div>
                     <#assign clickType="random">
-                    <#list eventsAndLandmarks as card>
+                    <#list eventsAndLandmarksAndProjects as card>
                         <div style="float:left;padding-right:2px;padding-top:2px;">
                             <#include "gameCard.ftl">
                         </div>

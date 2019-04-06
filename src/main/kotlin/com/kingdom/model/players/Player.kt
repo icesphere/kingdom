@@ -51,7 +51,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val inPlayCopy: List<Card>
         get() = inPlay.map { it.copy(true) }
 
-    val eventsBought: MutableList<Event> = ArrayList()
+    val eventsBought = mutableListOf<Event>()
+
+    val projectsBought = mutableListOf<Project>()
 
     val inPlayWithDuration: List<Card>
         get() = inPlay + durationCards
@@ -906,6 +908,22 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             game.refreshCardsBought()
             refreshSupply()
             event.cardPlayed(this)
+        }
+    }
+
+    fun buyProject(project: Project) {
+        if (project.isProjectActionable(this)) {
+            addEventLogWithUsername("bought project: ${project.cardNameWithBackgroundColor}")
+            coins -= project.cost
+            debt += project.debtCost
+            buys -= 1
+            isReturnToActionPhase = false
+            isTreasuresPlayable = false
+            projectsBought.add(project)
+            currentTurnSummary.projectsBought.add(project)
+            game.refreshCardsBought()
+            refreshSupply()
+            project.cardPlayed(this)
         }
     }
 

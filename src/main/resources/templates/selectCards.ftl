@@ -137,9 +137,9 @@
                     </div>
                 </div>
                 <div style="padding-top:10px;float:left;clear:both;">
-                    <div style="float:left;"><span class="label"># Events/Landmarks:</span></div>
+                    <div style="float:left;"><span class="label"># Events/Landmarks/Projects:</span></div>
                     <div style="clear:both;float:left;padding-left:10px;">
-                        <select id="numEventsAndLandmarks" name="numEventsAndLandmarks">
+                        <select id="numEventsAndLandmarksAndProjects" name="numEventsAndLandmarksAndProjects">
                             <option value="0">0</option>
                             <option value="1">1</option>
                             <option value="2" selected>2</option>
@@ -223,6 +223,35 @@
                             <#list landmarks as landmark>
                                 <div style="float:left;clear:both;">
                                     <#include "createGameLandmarkRow.ftl">
+                                </div>
+                            </#list>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label">Project Selection:</span></div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        <input id="projectSelectionRandom" type="radio" name="projectSelection" value="random" onclick="toggleProjectSelection()" checked="true"/> <label for="projectSelectionRandom">Random</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="projectSelectionCustom" type="radio" name="projectSelection" value="custom" onclick="toggleProjectSelection()"/> <label for="projectSelectionCustom">Custom</label>
+                    </div>
+                </div>
+
+                <div id="customProjects" style="display:none;float:left;clear:both;">
+                    <div class="label" style="padding-top:10px;">
+                        Choose Specific Projects:
+                    </div>
+                    <div style="clear:both;float:left;">
+                        <div style="float:left;padding-left:10px;color:red;">Projects selected:</div><div id="numProjectsSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining projects will be randomized based on selected decks)</div>
+                    </div>
+                    <div class="customCardsDeckContainer">
+                        <div class="customCardsDeck">
+                            <div style="float:left;" class="label">Projects</div>
+                            <#list projects as project>
+                                <div style="float:left;clear:both;">
+                                    <#include "createGameProjectRow.ftl">
                                 </div>
                             </#list>
                         </div>

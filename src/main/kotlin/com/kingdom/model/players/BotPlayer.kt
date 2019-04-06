@@ -6,6 +6,7 @@ import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.cards.Event
+import com.kingdom.model.cards.Project
 import com.kingdom.model.cards.actions.*
 import com.kingdom.model.cards.adventures.Disciple
 import com.kingdom.model.cards.adventures.Messenger
@@ -103,6 +104,14 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
 
             if (buys > 0 && debt == 0) {
+                val projectToBuy = getProjectToBuy()
+                if (projectToBuy != null && getBuyProjectScore(projectToBuy) > 0) {
+                    endTurn = false
+                    buyProject(game.getNewInstanceOfProject(projectToBuy.name))
+                }
+            }
+
+            if (buys > 0 && debt == 0) {
                 val eventToBuy = getEventToBuy()
                 if (eventToBuy != null && getBuyEventScore(eventToBuy) > 0) {
                     endTurn = false
@@ -133,6 +142,14 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     open fun getBuyEventScore(event: Event): Int {
+        return 0
+    }
+
+    private fun getProjectToBuy(): Project? {
+        return game.projects.filter { it.isProjectActionable(this) }.maxBy { getBuyProjectScore(it) }
+    }
+
+    open fun getBuyProjectScore(project: Project): Int {
         return 0
     }
 

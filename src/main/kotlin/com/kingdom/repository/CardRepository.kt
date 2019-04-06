@@ -1,9 +1,6 @@
 package com.kingdom.repository
 
-import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.Deck
-import com.kingdom.model.cards.Event
-import com.kingdom.model.cards.Landmark
+import com.kingdom.model.cards.*
 import com.kingdom.model.cards.adventures.*
 import com.kingdom.model.cards.adventures.events.*
 import com.kingdom.model.cards.base.*
@@ -22,6 +19,7 @@ import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.renaissance.*
+import com.kingdom.model.cards.renaissance.projects.*
 import com.kingdom.model.cards.seaside.*
 import org.springframework.stereotype.Service
 
@@ -404,6 +402,11 @@ class CardRepository {
                 Villain()
         )
 
+    val renaissanceProjects: List<Project>
+        get() = listOf(
+                Cathedral()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
                 hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards +
@@ -415,8 +418,11 @@ class CardRepository {
     val allLandmarks: List<Landmark>
         get() = empiresLandmarks
 
-    val allEventsAndLandmarks: List<Card>
-        get() = allEvents + allLandmarks
+    val allProjects: List<Project>
+        get() = renaissanceProjects
+
+    val allEventsAndLandmarksAndProjects: List<Card>
+        get() = allEvents + allLandmarks + allProjects
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {

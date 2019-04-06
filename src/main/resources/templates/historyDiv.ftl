@@ -32,6 +32,12 @@
                     </div>
                 </#if>
 
+                <#if turnSummary.projectsBoughtString?has_content>
+                    <div class="historyLine">
+                        Projects Bought: ${turnSummary.projectsBoughtString}
+                    </div>
+                </#if>
+
                 <#if turnSummary.cardsPlayedString?has_content>
                     <div class="historyLine">
                         Played: ${turnSummary.cardsPlayedString}

@@ -40,10 +40,12 @@ function createGame() {
     var generateType = $('input[name=generateType]:checked').val();
     var eventSelection = $('input[name=eventSelection]:checked').val();
     var landmarkSelection = $('input[name=landmarkSelection]:checked').val();
+    var projectSelection = $('input[name=projectSelection]:checked').val();
     var cardsSelected = $("input[name^='card_']:checked:visible").length;
     var eventsSelected = $("input[name^='event_']:checked:visible").length;
     var landmarksSelected = $("input[name^='landmark_']:checked:visible").length;
-    var numEventsAndLandmarks = $("#numEventsAndLandmarks option:selected").val()
+    var projectsSelected = $("input[name^='project_']:checked:visible").length;
+    var numEventsAndLandmarksAndProjects = $("#numEventsAndLandmarksAndProjects option:selected").val()
     var numHumanPlayers = 0;
     $('[value*="human"]').each(function () {
         if($(this).attr('selected')) {
@@ -56,11 +58,14 @@ function createGame() {
     else if(generateType == "custom" && cardsSelected > 10) {
         alert("You can't select more than 10 cards");
     }
-    else if(eventSelection == "custom" && eventsSelected + landmarksSelected > numEventsAndLandmarks) {
-        alert("You selected too many events and landmarks");
+    else if(eventSelection == "custom" && eventsSelected + landmarksSelected + projectsSelected > numEventsAndLandmarksAndProjects) {
+        alert("You selected too many events and landmarks and projects");
     }
-    else if(landmarkSelection == "custom" && eventsSelected + landmarksSelected > numEventsAndLandmarks) {
-        alert("You selected too many events and landmarks");
+    else if(landmarkSelection == "custom" && eventsSelected + landmarksSelected + projectsSelected > numEventsAndLandmarksAndProjects) {
+        alert("You selected too many events and landmarks and projects");
+    }
+    else if(projectSelection == "custom" && eventsSelected + landmarksSelected + projectsSelected > numEventsAndLandmarksAndProjects) {
+        alert("You selected too many events and landmarks and projects");
     }
     else {
         saveSelectedValuesToLocalStorage();
@@ -116,6 +121,11 @@ function selectLandmark() {
     $("#numLandmarksSelected").html(landmarksSelected);
 }
 
+function selectProject() {
+    var projectsSelected = $("input[name^='project_']:checked:visible").length;
+    $("#numProjectsSelected").html(projectsSelected);
+}
+
 function toggleGenerateType(){
     var generateType = $('input[name=generateType]:checked').val();
     if(generateType == "custom") {
@@ -151,6 +161,16 @@ function toggleLandmarkSelection(){
     }
     else {
         $("#customLandmarks").hide();
+    }
+}
+
+function toggleProjectSelection(){
+    var projectSelection = $('input[name=projectSelection]:checked').val();
+    if (projectSelection == "custom") {
+        $("#customProjects").show();
+    }
+    else {
+        $("#customProjects").hide();
     }
 }
 

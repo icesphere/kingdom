@@ -10,6 +10,7 @@ enum class CardLocation {
     CardAction,
     Event,
     Landmark,
+    Project,
     Island,
     Tavern,
     Unknown,

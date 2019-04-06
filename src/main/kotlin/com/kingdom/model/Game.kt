@@ -87,6 +87,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var events = mutableListOf<Event>()
 
     var landmarks = mutableListOf<Landmark>()
+    
+    var projects = mutableListOf<Project>()
 
     private val supplyCards = ArrayList<Card>()
 
@@ -102,8 +104,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
     private val cardMap = HashMap<String, Card>()
-
-    private val eventMap = HashMap<String, Event>()
 
     private val multiTypePileMap = HashMap<String, MutableList<Card>>()
 
@@ -358,8 +358,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
         events.forEach { event ->
-            eventMap[event.name] = event
-
             if (event is GameSetupModifier) {
                 event.modifyGameSetup(this)
             }
@@ -372,6 +370,14 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 landmark.modifyGameSetup(this)
             }
         }
+
+        projects.forEach { project ->
+            if (project is GameSetupModifier) {
+                project.modifyGameSetup(this)
+            }
+        }
+
+        projects.sortBy { it.cost }
 
         if (isIncludeRuins) {
             createRuinsPile()
@@ -831,11 +837,15 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     fun getNewInstanceOfEvent(eventName: String): Event {
-        return eventMap[eventName]!!.copy(false) as Event
+        return events.first { it.name == eventName }.copy(false) as Event
     }
 
     fun getNewInstanceOfLandmark(landmarkName: String): Landmark {
         return landmarks.first { it.name == landmarkName }.copy(false) as Landmark
+    }
+
+    fun getNewInstanceOfProject(projectName: String): Project {
+        return projects.first { it.name == projectName }.copy(false) as Project
     }
 
     private fun addComputerPlayers() {

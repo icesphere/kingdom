@@ -270,6 +270,9 @@ abstract class Card(
     val isLandmark: Boolean
         get() = type == CardType.Landmark
 
+    val isProject: Boolean
+        get() = type == CardType.Project
+
     val isGathering: Boolean
         get() = type == CardType.ActionGathering
 
@@ -432,7 +435,7 @@ abstract class Card(
         }
 
         if (special.isNotBlank()) {
-            if (this !is Event) {
+            if (this !is Event && this !is Project) {
                 player.opponentsInOrder.forEach { opponent ->
                     val listeners = opponent.hand.filter { it is BeforeOpponentCardPlayedListener }.toMutableList()
                     listeners.addAll(opponent.hand.filter { it is BeforeOpponentCardPlayedListener }.map { it.addedAbilityCard!! })
@@ -479,6 +482,7 @@ abstract class Card(
             CardLocation.Supply -> isSupplyCardActionable(player)
             CardLocation.Event -> (this as Event).isEventActionable(player)
             CardLocation.Landmark -> (this as Landmark).isLandmarkActionable(player)
+            CardLocation.Project -> (this as Project).isProjectActionable(player)
             else -> false
         }
     }
