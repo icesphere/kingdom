@@ -1484,6 +1484,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         }
 
+        projectsBought.filterIsInstance<StartOfTurnProject>()
+                .forEach { it.onStartOfTurn(this) }
+
         game.allCards.filterIsInstance<TurnStartedListenerForCardsInSupply>()
                 .forEach { it.turnStarted(this) }
 
