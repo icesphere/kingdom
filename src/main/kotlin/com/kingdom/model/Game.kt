@@ -113,7 +113,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     val allCards: List<Card>
         get() {
-            val cards = (cardsInSupply + kingdomCards).toMutableList()
+            val cards = (cardsInSupply + kingdomCards + cardsNotInSupply).toMutableList()
             kingdomCards.filterIsInstance<MultiTypePile>().forEach { cards.addAll(it.otherCardsInPile) }
             return cards
         }
@@ -388,16 +388,14 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             pileAmounts[Spoils.NAME] = 15
         }
 
+        if (isIncludeShelters) {
+            cardsNotInSupply.add(Hovel())
+            cardsNotInSupply.add(Necropolis())
+            cardsNotInSupply.add(OvergrownEstate())
+        }
+
         cardsInSupply.forEach { cardMap[it.name] = it }
         cardsNotInSupply.forEach { cardMap[it.name] = it }
-
-        cardsNotInSupply.addAll(artifacts)
-
-        if (isIncludeShelters) {
-            cardMap[Hovel.NAME] = Hovel()
-            cardMap[Necropolis.NAME] = Necropolis()
-            cardMap[OvergrownEstate.NAME] = OvergrownEstate()
-        }
 
         if (isIncludeRuins) {
             ruinsPile.distinctBy { it.name }.forEach { cardMap[it.name] = it }
@@ -693,7 +691,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     fun isCardAvailableInSupply(card: Card): Boolean {
         return if (isMultiTypePileCard(card)) {
-            multiTypePileMap[card.pileName]!!.firstOrNull()?.name == card.name
+            multiTypePileMap[card.pileName]?.firstOrNull()?.name == card.name
         } else {
             numInPileMap.containsKey(card.pileName) && numInPileMap[card.pileName]!! > 0
         }

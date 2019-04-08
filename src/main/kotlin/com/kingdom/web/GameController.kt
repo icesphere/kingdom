@@ -1925,7 +1925,6 @@ class GameController(private val cardManager: CardManager,
 
         addSupplyDataToModelAndView(game, player, modelAndView)
 
-        modelAndView.addObject("supplySize", game.allCards.size)
         modelAndView.addObject("players", game.players)
 
         addPlayingAreaDataToModelView(game, player, modelAndView)

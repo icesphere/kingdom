@@ -671,11 +671,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
 
-        hand.forEach { cardTrashed(it) }
-
-        addEventLogWithUsername("trashed their hand: ${hand.groupedString}")
+        val handCopy = hand.toMutableList()
 
         hand.clear()
+
+        handCopy.forEach { cardTrashed(it) }
+
+        addEventLogWithUsername("trashed their hand: ${hand.groupedString}")
 
         refreshPlayerHandArea()
     }
