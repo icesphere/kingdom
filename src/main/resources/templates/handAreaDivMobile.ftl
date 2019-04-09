@@ -73,6 +73,9 @@
             <div class="handAreaTopRowLeft" style="clear:both;">${artifact.name} owned by: ${artifact.owner}</div>
         </#if>
     </#list>
+    <#if player.projectsString?has_content>
+        <div class="handAreaTopRowLeft" style="clear:both;">Projects: ${player.projectsString}</div>
+    </#if>
 </div>
 <div style="clear:both;">
     <div class="label">

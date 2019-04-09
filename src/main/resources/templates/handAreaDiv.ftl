@@ -73,6 +73,9 @@
                 <td class="handAreaTopRow">${artifact.name} owned by: ${artifact.owner}</td>
             </#if>
         </#list>
+        <#if player.projectsString?has_content>
+            <td class="handAreaTopRow">Projects: ${player.projectsString}</td>
+        </#if>
     </tr>
 </table>
 <table style="width:100%">

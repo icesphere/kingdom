@@ -55,6 +55,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val projectsBought = mutableListOf<Project>()
 
+    val projectsString
+        get() = projectsBought.joinToString(", ") { it.name }
+
     val inPlayWithDuration: List<Card>
         get() = inPlay + durationCards
 

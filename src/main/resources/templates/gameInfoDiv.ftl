@@ -254,6 +254,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if p.projectsString?has_content>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        Projects:
+                                    </td>
+                                    <td>
+                                        ${p.projectsString}
+                                    </td>
+                                </tr>
+                            </#if>
                         </table>
                     </td>
                 </tr>
