@@ -182,6 +182,10 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             }
         }
 
+        if (game.landmarks.any { it is Colonnade } && inPlay.any { it.name == card.name }) {
+            return cost + 1
+        }
+
         return super.getBuyCardScore(card)
     }
 
@@ -233,7 +237,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card is TavernCard -> true
             card.isRuins -> true
             card.debtCost > 0 -> true
-            game.landmarks.any { it is Wall } && card.cost < 3 || (card.cost < 5 && allCards.size >= 15) -> true
+            game.landmarks.any { it is Wall } && (card.cost < 3 || (card.cost < 5 && allCards.size >= 15)) -> true
             else -> super.excludeCard(card)
         }
 
