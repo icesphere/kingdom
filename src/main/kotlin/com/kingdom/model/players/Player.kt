@@ -1923,12 +1923,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addEventLogWithUsername("used $numCoffersToUse Coffers")
     }
 
-    fun addCoffers(coffers: Int) {
+    fun addCoffers(coffers: Int, refresh: Boolean = true) {
         if (coffers == 0) {
             return
         }
         this.coffers += coffers
-        refreshPlayerHandArea()
+        if (refresh) {
+            refreshPlayerHandArea()
+        }
     }
 
     fun useVillagers(numVillagersToUse: Int) {
@@ -1940,12 +1942,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addEventLogWithUsername("used $numVillagersToUse Villagers")
     }
 
-    fun addVillagers(villagers: Int) {
+    fun addVillagers(villagers: Int, refresh: Boolean = true) {
         if (villagers == 0) {
             return
         }
         this.villagers += villagers
-        refreshPlayerHandArea()
+        if (refresh) {
+            refreshPlayerHandArea()
+        }
     }
 
     fun payOffDebt(refresh: Boolean = true) {
