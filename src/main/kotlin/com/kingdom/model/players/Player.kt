@@ -720,6 +720,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.landmarks.filterIsInstance<AfterCardTrashedListener>()
                 .forEach { it.afterCardTrashed(cardToTrash, this) }
 
+        projectsBought.filterIsInstance<AfterCardTrashedListener>()
+                .forEach { it.afterCardTrashed(cardToTrash, this) }
+
         currentTurnCardTrashedListeners.forEach { it.afterCardTrashed(cardToTrash, this) }
     }
 

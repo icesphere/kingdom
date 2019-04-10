@@ -406,7 +406,8 @@ class CardRepository {
         get() = listOf(
                 Cathedral(),
                 CityGate(),
-                Pageant()
+                Pageant(),
+                Sewers()
         )
 
     val allCards: List<Card>
