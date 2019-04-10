@@ -29,6 +29,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var deck: MutableList<Card> = ArrayList()
     val hand: MutableList<Card> = ArrayList()
 
+    val deckCopy: List<Card>
+        get() = deck.map { it.copy(true) }
+
     val handCopy: List<Card>
         get() = hand.map { it.copy(true) }
 
@@ -359,6 +362,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addInfoLogWithUsername("shuffling deck")
         deck.shuffle()
         shuffles++
+
+        projectsBought.filterIsInstance<AfterShuffleListener>()
+                .forEach { it.afterShuffle(this) }
     }
 
     fun shuffleHandIntoDeck() {
@@ -367,6 +373,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addInfoLogWithUsername("shuffling hand into deck")
         deck.shuffle()
         shuffles++
+
+        projectsBought.filterIsInstance<AfterShuffleListener>()
+                .forEach { it.afterShuffle(this) }
     }
 
     fun cardRemovedFromPlay(card: Card, removedToLocation: CardLocation) {

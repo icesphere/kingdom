@@ -407,7 +407,8 @@ class CardRepository {
                 Cathedral(),
                 CityGate(),
                 Pageant(),
-                Sewers()
+                Sewers(),
+                StarChart()
         )
 
     val allCards: List<Card>
