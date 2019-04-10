@@ -4,10 +4,10 @@ import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.CardRepeater
 import com.kingdom.model.cards.actions.FreeCardFromSupplyForBenefitActionCard
 import com.kingdom.model.cards.actions.OptionalChooseCardActionCard
-import com.kingdom.model.cards.listeners.StartOfCleanupListenerForCardsPlayedThisTurn
+import com.kingdom.model.cards.listeners.StartOfCleanupListener
 import com.kingdom.model.players.Player
 
-class Improve : RenaissanceCard(NAME, CardType.Action, 3), StartOfCleanupListenerForCardsPlayedThisTurn, OptionalChooseCardActionCard, FreeCardFromSupplyForBenefitActionCard {
+class Improve : RenaissanceCard(NAME, CardType.Action, 3), StartOfCleanupListener, OptionalChooseCardActionCard, FreeCardFromSupplyForBenefitActionCard {
 
     var usedImprove: Boolean = false
 

@@ -485,7 +485,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun endTurn(isAutoEnd: Boolean = false) {
 
-        cardsPlayed.filterIsInstance<StartOfCleanupListenerForCardsPlayedThisTurn>()
+        cardsPlayed.filterIsInstance<StartOfCleanupListener>()
+                .forEach { it.onStartOfCleanup(this) }
+
+        projectsBought.filterIsInstance<StartOfCleanupListener>()
                 .forEach { it.onStartOfCleanup(this) }
 
         resolveActions()
