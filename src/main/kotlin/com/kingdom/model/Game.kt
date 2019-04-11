@@ -681,14 +681,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         refreshGame()
     }
 
-    fun trashCardFromSupply(card: Card) {
-        if (isCardAvailableInSupply(card)) {
-            removeCardFromSupply(card)
-            addEventLog("Trashed ${card.cardNameWithBackgroundColor} from supply")
-            trashedCards.add(card)
-        }
-    }
-
     fun isCardAvailableInSupply(card: Card): Boolean {
         return if (isMultiTypePileCard(card)) {
             multiTypePileMap[card.pileName]?.firstOrNull()?.name == card.name

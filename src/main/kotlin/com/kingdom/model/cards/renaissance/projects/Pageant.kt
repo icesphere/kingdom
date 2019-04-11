@@ -1,16 +1,29 @@
 package com.kingdom.model.cards.renaissance.projects
 
 import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.actions.StartOfTurnProject
 import com.kingdom.model.cards.listeners.StartOfCleanupListener
 import com.kingdom.model.players.Player
 
-class Pageant : RenaissanceProject(NAME, 3), StartOfCleanupListener, ChoiceActionCard {
+class Pageant : RenaissanceProject(NAME, 3), StartOfCleanupListener, ChoiceActionCard, StartOfTurnProject {
 
     init {
         special = "At the end of your Buy phase, you may pay \$1 for +1 Coffers."
     }
 
+    var usedThisTurn: Boolean = false
+
+    override fun onStartOfTurn(player: Player) {
+        usedThisTurn = false
+    }
+
     override fun onStartOfCleanup(player: Player) {
+        if (usedThisTurn) {
+            return
+        }
+
+        usedThisTurn = true
+
         if (player.availableCoins > 0) {
             player.yesNoChoice(this, "Pay \$1 for +1 Coffers?")
         }

@@ -3,11 +3,11 @@ package com.kingdom.model.cards.darkages
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
-import com.kingdom.model.cards.listeners.AfterCardTrashedListenerForCardsInHand
+import com.kingdom.model.cards.listeners.AfterOwnedCardTrashedListenerForCardsInHand
 import com.kingdom.model.cards.supply.Gold
 import com.kingdom.model.players.Player
 
-class MarketSquare : DarkAgesCard(NAME, CardType.ActionReaction, 3), AfterCardTrashedListenerForCardsInHand, ChoiceActionCard {
+class MarketSquare : DarkAgesCard(NAME, CardType.ActionReaction, 3), AfterOwnedCardTrashedListenerForCardsInHand, ChoiceActionCard {
 
     init {
         addCards = 1

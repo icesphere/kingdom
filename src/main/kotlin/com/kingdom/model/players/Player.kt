@@ -143,8 +143,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var turn: Int = 0
 
-    private var numCardsTrashedThisTurn: Int = 0
-
     private var coinsGainedThisTurn: Int = 0
 
     var lastTurnSummary: TurnSummary? = null
@@ -613,7 +611,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         isNextCardToTopOfDeck = false
         isNextCardToHand = false
 
-        numCardsTrashedThisTurn = 0
         coinsGainedThisTurn = 0
 
         isPaidOffDebtThisTurn = false
@@ -697,7 +694,16 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
     }
 
-    fun cardTrashed(card: Card, showLog: Boolean = false) {
+    fun trashCardFromSupply(card: Card) {
+        if (game.isCardAvailableInSupply(card)) {
+            game.removeCardFromSupply(card)
+            addEventLogWithUsername("trashed ${card.cardNameWithBackgroundColor} from supply")
+
+            cardTrashed(card, showLog = false, trashedCardFromSupply = true)
+        }
+    }
+
+    fun cardTrashed(card: Card, showLog: Boolean = false, trashedCardFromSupply: Boolean = false) {
         val cardToTrash = if (card is InheritanceEstate) Estate() else card
 
         if (showLog) {
@@ -706,9 +712,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         game.trashedCards.add(cardToTrash)
 
-        cardRemovedFromPlay(cardToTrash, CardLocation.Trash)
-
-        numCardsTrashedThisTurn++
+        if (!trashedCardFromSupply) {
+            cardRemovedFromPlay(cardToTrash, CardLocation.Trash)
+        }
 
         if (isYourTurn) {
             currentTurnSummary.trashedCards.add(cardToTrash)
@@ -722,9 +728,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             (cardToTrash.addedAbilityCard as AfterCardTrashedListenerForSelf).afterCardTrashed(this)
         }
 
-        (hand.filterIsInstance<AfterCardTrashedListenerForCardsInHand>() +
-                hand.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardTrashedListenerForCardsInHand>())
-                .forEach { it.afterCardTrashed(cardToTrash, this) }
+        if (!trashedCardFromSupply) {
+            (hand.filterIsInstance<AfterOwnedCardTrashedListenerForCardsInHand>() +
+                    hand.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterOwnedCardTrashedListenerForCardsInHand>())
+                    .forEach { it.afterCardTrashed(cardToTrash, this) }
+        }
 
         game.landmarks.filterIsInstance<AfterCardTrashedListener>()
                 .forEach { it.afterCardTrashed(cardToTrash, this) }

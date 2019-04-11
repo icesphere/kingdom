@@ -60,7 +60,7 @@ class Gladiator : EmpiresCard(NAME, CardType.Action, 3), MultiTypePile, ChooseCa
     private fun noCopyRevealed(player: Player, playerToLeft: Player) {
         player.showInfoMessage("${playerToLeft.username} did not reveal a copy")
         player.addCoins(1)
-        player.game.trashCardFromSupply(Gladiator())
+        player.trashCardFromSupply(Gladiator())
     }
 
     companion object {

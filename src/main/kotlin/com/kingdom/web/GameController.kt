@@ -945,7 +945,7 @@ class GameController(private val cardManager: CardManager,
 
                 if (highlightEventCard(player, eventCard)) {
 
-                    if (player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase && eventCard.debtCost > 0) {
+                    if (player.hand.any { it.isTreasure }) {
                         player.yesNoChoice(object : ChoiceActionCard {
                             override val name: String = "PlayTreasuresBeforeBuyingDebtEvent"
 
@@ -972,7 +972,7 @@ class GameController(private val cardManager: CardManager,
 
                 if (highlightProjectCard(player, projectCard)) {
 
-                    if (player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase && projectCard.debtCost > 0) {
+                    if (player.hand.any { it.isTreasure }) {
                         player.yesNoChoice(object : ChoiceActionCard {
                             override val name: String = "PlayTreasuresBeforeBuyingDebtProject"
 

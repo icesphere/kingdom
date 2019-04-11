@@ -64,7 +64,7 @@ class TrashCardsFromSupply(private var numCardsToTrash: Int, val optional: Boole
     }
 
     private fun applyActionToSelectedCards(player: Player) {
-        selectedCards.forEach { c -> player.game.trashCardFromSupply(c) }
+        selectedCards.forEach { c -> player.trashCardFromSupply(c) }
     }
 
     override fun isCardSelected(card: Card): Boolean {
