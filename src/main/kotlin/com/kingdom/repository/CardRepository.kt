@@ -407,6 +407,7 @@ class CardRepository {
                 Cathedral(),
                 CityGate(),
                 Exploration(),
+                Fair(),
                 Pageant(),
                 Sewers(),
                 StarChart()
