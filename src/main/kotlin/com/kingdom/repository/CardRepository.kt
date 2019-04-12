@@ -410,6 +410,7 @@ class CardRepository {
                 Fair(),
                 Pageant(),
                 Sewers(),
+                Silos(),
                 StarChart()
         )
 
