@@ -3,11 +3,11 @@ package com.kingdom.model.cards.empires.landmarks
 import com.kingdom.model.Choice
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.actions.ChoiceActionCard
-import com.kingdom.model.cards.listeners.AfterCardGainedListenerForLandmark
+import com.kingdom.model.cards.listeners.AfterCardGainedListener
 import com.kingdom.model.cards.listeners.TurnEndedListenerForLandmark
 import com.kingdom.model.players.Player
 
-class MountainPass : EmpiresLandmark(NAME), AfterCardGainedListenerForLandmark, TurnEndedListenerForLandmark, ChoiceActionCard {
+class MountainPass : EmpiresLandmark(NAME), AfterCardGainedListener, TurnEndedListenerForLandmark, ChoiceActionCard {
 
     init {
         special = "When you are the first player to gain a Province, after that turn, each player bids once, up to 40 debt, ending with you. High bidder gets +8 VP and takes the debt they bid."

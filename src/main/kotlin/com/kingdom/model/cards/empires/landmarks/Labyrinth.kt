@@ -3,11 +3,10 @@ package com.kingdom.model.cards.empires.landmarks
 import com.kingdom.model.Game
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.GameSetupModifier
-import com.kingdom.model.cards.listeners.AfterCardBoughtListenerForLandmark
-import com.kingdom.model.cards.listeners.AfterCardGainedListenerForLandmark
+import com.kingdom.model.cards.listeners.AfterCardGainedListener
 import com.kingdom.model.players.Player
 
-class Labyrinth : EmpiresLandmark(NAME), GameSetupModifier, AfterCardGainedListenerForLandmark {
+class Labyrinth : EmpiresLandmark(NAME), GameSetupModifier, AfterCardGainedListener {
 
     init {
         special = "When you gain a 2nd card in one of your turns, take 2 VP from here. Setup: Put 6 VP here per player."

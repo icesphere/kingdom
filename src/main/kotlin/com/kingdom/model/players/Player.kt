@@ -879,7 +879,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardGainedListenerForCardsInPlay>())
                 .forEach { it.afterCardGained(cardToGain, this) }
 
-        game.landmarks.filterIsInstance<AfterCardGainedListenerForLandmark>()
+        game.landmarks.filterIsInstance<AfterCardGainedListener>()
+                .forEach { it.afterCardGained(cardToGain, this) }
+
+        projectsBought.filterIsInstance<AfterCardGainedListener>()
                 .forEach { it.afterCardGained(cardToGain, this) }
 
         if (cardToGain.isVictory || game.landmarks.any { it is VictoryPointsCalculator }) {
