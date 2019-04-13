@@ -405,10 +405,13 @@ class CardRepository {
     val renaissanceProjects: List<Project>
         get() = listOf(
                 Academy(),
+                Capitalism(),
                 Cathedral(),
                 CityGate(),
                 Exploration(),
                 Fair(),
+                Fleet(),
+                Guildhall(),
                 Pageant(),
                 Sewers(),
                 Silos(),
