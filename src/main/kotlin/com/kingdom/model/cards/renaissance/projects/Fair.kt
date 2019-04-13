@@ -11,6 +11,7 @@ class Fair : RenaissanceProject(NAME, 4), StartOfTurnProject {
 
     override fun onStartOfTurn(player: Player) {
         player.addBuys(1)
+        player.showInfoMessage("Gained +1 Buy from $cardNameWithBackgroundColor")
     }
 
     companion object {
