@@ -409,6 +409,7 @@ class CardRepository {
                 Capitalism(),
                 Cathedral(),
                 CityGate(),
+                CropRotation(),
                 Exploration(),
                 Fair(),
                 Fleet(),
