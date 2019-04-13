@@ -1570,12 +1570,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun revealTopCardOfDeck(showLog: Boolean = true): Card? {
+    fun revealTopCardOfDeck(): Card? {
         val card = revealTopCardsOfDeck(1).firstOrNull()
-
-        if (card != null && showLog) {
-            addEventLogWithUsername("revealed ${card.cardNameWithBackgroundColor}")
-        }
 
         if (card is AfterCardRevealedListenerForSelf) {
             card.afterCardRevealed(this)

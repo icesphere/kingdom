@@ -413,6 +413,7 @@ class CardRepository {
                 Fleet(),
                 Guildhall(),
                 Pageant(),
+                Piazza(),
                 Sewers(),
                 Silos(),
                 SinisterPlot(),
