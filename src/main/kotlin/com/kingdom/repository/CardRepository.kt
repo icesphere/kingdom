@@ -414,6 +414,7 @@ class CardRepository {
                 Guildhall(),
                 Pageant(),
                 Piazza(),
+                RoadNetwork(),
                 Sewers(),
                 Silos(),
                 SinisterPlot(),
