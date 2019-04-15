@@ -406,6 +406,7 @@ class CardRepository {
         get() = listOf(
                 Academy(),
                 Barracks(),
+                Canal(),
                 Capitalism(),
                 Cathedral(),
                 CityGate(),
