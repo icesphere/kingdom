@@ -414,6 +414,7 @@ class CardRepository {
                 Fair(),
                 Fleet(),
                 Guildhall(),
+                Innovation(),
                 Pageant(),
                 Piazza(),
                 RoadNetwork(),
