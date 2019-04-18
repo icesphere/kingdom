@@ -52,6 +52,8 @@ abstract class Card(
 
     var addedAbilityCard: Card? = null
 
+    var durationCardCopiedByCitadel: Boolean = false
+
     open val pileName: String
         get() = name
 

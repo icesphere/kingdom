@@ -20,7 +20,7 @@ class Scepter : RenaissanceCard(NAME, CardType.Treasure, 5), ChoiceActionCard, C
 
         choices.add(Choice(1, "+\$2"))
 
-        val actionsPlayedThatAreStillInPlay = player.cardsPlayed.filter { it.isAction }.intersect(player.inPlay).toList()
+        val actionsPlayedThatAreStillInPlay = player.inPlay.filter { it.isAction }.intersect(player.cardsPlayed).toList()
 
         if (actionsPlayedThatAreStillInPlay.isNotEmpty()) {
             choices.add(Choice(2, "Replay Action"))
@@ -37,7 +37,7 @@ class Scepter : RenaissanceCard(NAME, CardType.Treasure, 5), ChoiceActionCard, C
         if (choice == 1) {
             player.addCoins(2)
         } else {
-            val actionsPlayedThatAreStillInPlay = player.cardsPlayed.filter { it.isAction }.intersect(player.inPlay).map { it.copy(false) }
+            val actionsPlayedThatAreStillInPlay = player.inPlay.filter { it.isAction }.intersect(player.cardsPlayed).map { it.copy(false) }
             player.chooseCardAction("Chose an Action card to replay", this, actionsPlayedThatAreStillInPlay, false)
         }
     }

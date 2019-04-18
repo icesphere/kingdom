@@ -18,7 +18,7 @@ class Archive : EmpiresCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurati
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        setAsideCards = player.removeTopCardsOfDeck(3).toMutableList()
+        setAsideCards.addAll(player.removeTopCardsOfDeck(3).toMutableList())
 
         chooseCardToAddToHand(player)
     }

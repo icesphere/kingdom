@@ -15,6 +15,7 @@ import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.empires.Overlord
 import com.kingdom.model.cards.listeners.*
 import com.kingdom.model.cards.renaissance.artifacts.*
+import com.kingdom.model.cards.renaissance.projects.Citadel
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.cards.supply.Estate
@@ -513,7 +514,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     || (it is CardRepeater && it.cardBeingRepeated is MultipleTurnDuration && (it.cardBeingRepeated as MultipleTurnDuration).keepAtEndOfTurn(this)))
         }
 
-        durationCardsToDiscard.forEach { addCardToDiscard(it, false, false) }
+        durationCardsToDiscard.forEach {
+            it.durationCardCopiedByCitadel = false
+            addCardToDiscard(it, false, false)
+        }
 
         durationCards.removeAll(durationCardsToDiscard)
 
@@ -1066,6 +1070,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addEventLogWithUsername("played ${card.cardNameWithBackgroundColor}")
         }
 
+        cardsPlayed.add(card)
+
         if (!repeatedAction) {
 
             if (!isTreasureCardsPlayedInBuyPhase && card.isAction && card.isTreasure) {
@@ -1074,7 +1080,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 handleBeforeBuyPhase()
             }
 
-            cardsPlayed.add(card)
             currentTurnSummary.cardsPlayed.add(card)
 
             if (card.isTreasure) {
@@ -1102,9 +1107,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         game.availableCards.filterIsInstance<CardPlayedListenerForCardsAvailableInSupply>()
-                .forEach {
-                    it.onCardPlayed(card, this)
-                }
+                .forEach { it.onCardPlayed(card, this) }
+
+        projectsBought.filterIsInstance<CardPlayedListener>()
+                .forEach { it.onCardPlayed(card, this) }
 
         val cardPlayedListenersForCardsInPlay = inPlayWithDuration.filterIsInstance<CardPlayedListenerForCardsInPlay>() +
                 inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<CardPlayedListenerForCardsInPlay>()
@@ -1505,7 +1511,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         durationCards.forEach { card ->
             when {
-                card is StartOfTurnDurationAction -> card.durationStartOfTurnAction(this)
+                card is StartOfTurnDurationAction -> {
+                    card.durationStartOfTurnAction(this)
+                    if (card.durationCardCopiedByCitadel) {
+                        addEventLog("${Citadel().cardNameWithBackgroundColor} is repeating duration start of turn action for ${card.cardNameWithBackgroundColor}")
+                        card.durationStartOfTurnAction(this)
+                    }
+                }
                 card.addedAbilityCard is StartOfTurnDurationAction -> {
                     val durationCard = card.addedAbilityCard as StartOfTurnDurationAction
                     durationCard.durationStartOfTurnAction(this)
