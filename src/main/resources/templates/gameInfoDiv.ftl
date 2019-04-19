@@ -113,6 +113,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if p.sinisterPlotTokens != 0>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        Sinister Plot Tokens:
+                                    </td>
+                                    <td>
+                                        ${p.sinisterPlotTokens}
+                                    </td>
+                                </tr>
+                            </#if>
                             <#if showIslandCards>
                                 <tr>
                                     <td class="gameInfoLabel">

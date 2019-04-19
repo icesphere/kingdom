@@ -277,6 +277,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var isUsedHornThisTurn: Boolean = false
 
+    var sinisterPlotTokens: Int = 0
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]

@@ -38,6 +38,9 @@
     <#if player.victoryCoins != 0>
         <div class="handAreaTopRowLeft" style="clear:both;">${player.victoryCoins} Victory Coin<#if player.victoryCoins != 1>s</#if></div>
     </#if>
+    <#if player.sinisterPlotTokens != 0>
+        <div class="handAreaTopRowLeft" style="clear:both;">${player.sinisterPlotTokens} Sinister Plot Token<#if player.sinisterPlotTokens != 1>s</#if></div>
+    </#if>
     <#if showJourneyToken>
         <div class="handAreaTopRowLeft" style="clear:both;">Journey token: <#if player.journeyTokenFaceUp>Face up<#else>Face down</#if></div>
     </#if>
