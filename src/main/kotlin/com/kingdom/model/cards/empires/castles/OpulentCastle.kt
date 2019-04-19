@@ -10,6 +10,7 @@ class OpulentCastle : EmpiresCard(NAME, CardType.ActionVictoryCastle, 7), Discar
 
     init {
         victoryPoints = 3
+        isAddCoinsCard = true
         special = "Discard any number of Victory cards. +\$2 per card discarded."
         fontSize = 9
     }

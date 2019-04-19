@@ -12,6 +12,7 @@ class Lighthouse : SeasideCard(NAME, CardType.ActionDuration, 2), StartOfTurnDur
         addActions = 1
         special = "Now and at the start of your next turn: +\$1. While this is in play, when another player plays an Attack card, it doesn’t affect you."
         isDefense = true
+        isAddCoinsCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

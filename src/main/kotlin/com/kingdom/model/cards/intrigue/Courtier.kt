@@ -22,6 +22,7 @@ class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, Choos
     var numChoices = 0
 
     init {
+        isAddCoinsCard = true
         special = "Reveal a card from your hand. For each type it has (Action, Attack, etc.), choose one: +1 Action; or +1 Buy; or +\$3; or gain a Gold. The choices must be different."
     }
 

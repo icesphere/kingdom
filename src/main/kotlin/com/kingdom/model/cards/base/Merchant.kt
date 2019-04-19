@@ -12,6 +12,7 @@ class Merchant : BaseCard(NAME, CardType.Action, 3), CardPlayedListener {
     init {
         addCards = 1
         addActions = 1
+        isAddCoinsCard = true
         special = "The first time you play a Silver this turn, +\$1."
     }
 

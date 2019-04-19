@@ -16,6 +16,7 @@ class PirateShip : SeasideCard(NAME, CardType.ActionAttack, 4), GameSetupModifie
     init {
         special = "Choose one: +\$1 per Coin token on your Pirate Ship mat; or each other player reveals the top 2 cards of their deck, trashes one of those Treasures that you choose, and discards the rest, and then if anyone trashed a Treasure you add a Coin token to your Pirate Ship mat."
         fontSize = 11
+        isAddCoinsCard = true
     }
 
     private var gainedPirateShipCoin = false

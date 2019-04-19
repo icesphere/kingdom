@@ -10,6 +10,7 @@ import com.kingdom.model.players.Player
 class Count : DarkAgesCard(NAME, CardType.Action, 5), ChoiceActionCard {
 
     init {
+        isAddCoinsCard = true
         special = "Choose one: Discard 2 cards; or put a card from your hand onto your deck; or gain a Copper. Choose one: +\$3; trash your hand; or gain a Duchy."
     }
 

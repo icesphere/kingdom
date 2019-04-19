@@ -8,6 +8,7 @@ class City : ProsperityCard(NAME, CardType.Action, 5) {
     init {
         addCards = 1
         addActions = 2
+        isAddCoinsCard = true
         special = "If there are one or more empty Supply piles, +1 Card. If there are two or more, +\$1 and +1 Buy."
     }
 

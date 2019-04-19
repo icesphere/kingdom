@@ -9,6 +9,7 @@ class Sacrifice : EmpiresCard(NAME, CardType.Action, 4), TrashCardsForBenefitAct
 
     init {
         special = "Trash a card from your hand. If it’s an: Action card, +2 Cards, +2 Actions; Treasure card, +\$2; Victory card, +2 VP"
+        isAddCoinsCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

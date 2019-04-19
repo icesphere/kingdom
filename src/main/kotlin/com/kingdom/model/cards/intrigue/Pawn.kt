@@ -9,6 +9,7 @@ class Pawn : IntrigueCard(NAME, CardType.Action, 2), ChoiceActionCard {
 
     init {
         special = "Choose two: +1 Card; +1 Action; +1 Buy; +\$1. The choices must be different."
+        isAddCoinsCard = true
     }
 
     override val isTerminalAction: Boolean = false

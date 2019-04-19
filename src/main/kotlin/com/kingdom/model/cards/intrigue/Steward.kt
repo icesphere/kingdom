@@ -10,6 +10,7 @@ class Steward : IntrigueCard(NAME, CardType.Action, 3), ChoiceActionCard {
     init {
         special = "Choose one: +2 Cards; or +\$2; or trash 2 cards from your hand."
         isTrashingCard = true
+        isAddCoinsCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

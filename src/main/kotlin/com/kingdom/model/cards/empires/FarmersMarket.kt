@@ -9,6 +9,7 @@ class FarmersMarket : EmpiresCard(NAME, CardType.ActionGathering, 3) {
         addBuys = 1
         special = "If there are 4 VP or more on the Farmers Market Supply pile, take them and trash this. Otherwise, add 1 VP to the pile and then +\$1 per 1 VP on the pile."
         fontSize = 9
+        isAddCoinsCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

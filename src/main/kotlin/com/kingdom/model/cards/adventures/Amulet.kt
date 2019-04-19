@@ -12,6 +12,7 @@ class Amulet : AdventuresCard(NAME, CardType.ActionDuration, 3), StartOfTurnDura
     init {
         special = "Now and at the start of your next turn, choose one: +\$1; or trash a card from your hand; or gain a Silver."
         isTrashingCard = true
+        isAddCoinsCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

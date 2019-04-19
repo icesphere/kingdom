@@ -9,6 +9,7 @@ class ChariotRace : EmpiresCard(NAME, CardType.Action, 3) {
         addActions = 1
         special = "Reveal the top card of your deck and put it into your hand. The player to your left reveals the top card of their deck. If your card costs more, +\$1 and +1 VP."
         fontSize = 10
+        isAddCoinsCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

@@ -7,6 +7,7 @@ import com.kingdom.model.players.Player
 class MerchantShip : SeasideCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurationAction {
 
     init {
+        isAddCoinsCard = true
         special = "Now and at the start of your next turn: +\$2."
         fontSize = 9
     }

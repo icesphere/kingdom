@@ -10,6 +10,7 @@ import com.kingdom.model.players.Player
 class SpiceMerchant : HinterlandsCard(NAME, CardType.Action, 4), ChoiceActionCard, TrashCardsForBenefitActionCard {
 
     init {
+        isAddCoinsCard = true
         special = "You may trash a Treasure from your hand. If you do, choose one: +2 Cards and +1 Action; or +1 Buy and \$2."
         fontSize = 9
     }

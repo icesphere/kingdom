@@ -9,6 +9,7 @@ class MiningVillage : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
     init {
         addCards = 1
         addActions = 2
+        isAddCoinsCard = true
         special = "You may trash this for +\$2."
         fontSize = 9
     }

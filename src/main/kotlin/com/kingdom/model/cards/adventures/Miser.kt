@@ -11,6 +11,7 @@ class Miser : AdventuresCard(NAME, CardType.Action, 4), GameSetupModifier, Choic
 
     init {
         special = "Choose one: Put a Copper from your hand onto your Tavern mat; or +\$1 per Copper on your Tavern mat."
+        isAddCoinsCard = true
     }
 
     override fun modifyGameSetup(game: Game) {

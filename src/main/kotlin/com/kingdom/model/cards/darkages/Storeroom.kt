@@ -9,6 +9,7 @@ class Storeroom : DarkAgesCard(NAME, CardType.Action, 3), DiscardCardsForBenefit
 
     init {
         addBuys = 1
+        isAddCoinsCard = true
         special = "Discard any number of cards, then draw that many. Then discard any number of cards for +\$1 each."
     }
 

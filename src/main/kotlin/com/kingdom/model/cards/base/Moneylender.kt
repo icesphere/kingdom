@@ -11,6 +11,7 @@ class Moneylender : BaseCard(NAME, CardType.Action, 4), ChoiceActionCard {
         special = "You may trash a Copper from your hand. If you do, +\$3."
         fontSize = 10
         isTrashingCard = true
+        isAddCoinsCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

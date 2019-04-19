@@ -10,6 +10,7 @@ class Mill : IntrigueCard(NAME, CardType.ActionVictory, 4), ChoiceActionCard {
         addCards = 1
         addActions = 1
         victoryPoints = 1
+        isAddCoinsCard = true
         special = "You may discard 2 cards, for +\$2."
     }
 

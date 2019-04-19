@@ -9,6 +9,7 @@ class Baron : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard {
 
     init {
         addBuys = 1
+        isAddCoinsCard = true
         special = "You may discard an Estate for +\$4. If you don’t gain an Estate."
     }
 

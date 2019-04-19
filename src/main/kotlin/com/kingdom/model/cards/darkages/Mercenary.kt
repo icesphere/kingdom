@@ -10,6 +10,7 @@ import com.kingdom.model.players.Player
 class Mercenary : DarkAgesCard(NAME, CardType.ActionAttack, 0), ChoiceActionCard, TrashCardsForBenefitActionCard, AttackCard {
 
     init {
+        isAddCoinsCard = true
         special = "You may trash 2 cards from your hand. If you do, +2 Cards, + \$2, and each other player discards down to 3 cards in hand. (This is not in the Supply.)"
     }
 

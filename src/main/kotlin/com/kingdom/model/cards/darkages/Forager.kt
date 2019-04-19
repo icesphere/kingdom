@@ -12,6 +12,7 @@ class Forager : DarkAgesCard(NAME, CardType.Action, 3), TrashCardsForBenefitActi
         addBuys = 1
         isTrashingCard = true
         isTrashingFromHandRequiredCard = true
+        isAddCoinsCard = true
         special = "Trash a card from your hand, then +\$1 per differently named Treasure in the trash."
     }
 
