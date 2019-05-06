@@ -49,6 +49,9 @@ class MountainPass : EmpiresLandmark(NAME), AfterCardGainedListener, TurnEndedLi
             val highestBid = playerBidMap[highestBidder]!!
             highestBidder.addVictoryCoins(8)
             highestBidder.addDebt(highestBid)
+            highestBidder.addEventLogWithUsername("gained 8 Victory Coins")
+            highestBidder.showInfoMessage("You won the bid and gained 8 Victory Coins and $highestBid debt")
+            highestBidder.opponents.forEach { it.showInfoMessage("${highestBidder.username} won the bid and gained 8 Victory Coins and $highestBid debt") }
         } else {
             makeChoice(player.playerToLeft)
         }

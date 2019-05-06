@@ -44,7 +44,7 @@
                         <td>
                             <table cellpadding="0" cellspacing="0">
                                 <#if gameStatus == "InProgress">
-                                    <tr><td style="font-size:10px;">${supply.get(card.name)}<#if showEmbargoTokens && embargoTokens.get(card.name)?? && embargoTokens.get(card.name) != 0> (${embargoTokens.get(card.name)} embargo token<#if embargoTokens.get(card.name) != 1>s</#if>)</#if><#if showTradeRouteTokens && tradeRouteTokenMap.get(card.name)?? && tradeRouteTokenMap.get(card.name)> (trade route token)</#if></td></tr>
+                                    <tr><td style="font-size:10px;">${supply.get(card.name)}<#if showEmbargoTokens && embargoTokens.get(card.name)?? && embargoTokens.get(card.name) != 0> (${embargoTokens.get(card.name)} embargo token<#if embargoTokens.get(card.name) != 1>s</#if>)</#if><#if showTradeRouteTokens && tradeRouteTokenMap.get(card.pileName)?? && tradeRouteTokenMap.get(card.pileName)> (trade route token)</#if></td></tr>
                                 </#if>
                                 <tr><td><#include "gameCard.ftl"></td></tr>
                             </table>

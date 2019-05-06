@@ -26,22 +26,39 @@ class Mountebank : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard, C
             if (opponent.hand.any { it.isCurse }) {
                 opponent.makeChoice(this, Choice(1, "Discard Curse"), Choice(2, "Gain Curse and Copper"))
             } else {
-                opponent.gainSupplyCard(Curse(), showLog = true)
-                opponent.gainSupplyCard(Copper(), showLog = true)
-                player.showInfoMessage("${opponent.username} gained a Curse and a Copper")
-                opponent.showInfoMessage("You gained a ${Curse().cardNameWithBackgroundColor} and a ${Copper().cardNameWithBackgroundColor} from ${player.username}'s $cardNameWithBackgroundColor")
+                val curse = Curse()
+                val copper = Copper()
+
+                if (player.game.isCardAvailableInSupply(curse)) {
+                    opponent.gainSupplyCard(curse, showLog = true)
+                    opponent.gainSupplyCard(copper, showLog = true)
+                    player.showInfoMessage("${opponent.username} gained a ${curse.cardNameWithBackgroundColor} and a ${copper.cardNameWithBackgroundColor}")
+                    opponent.showInfoMessage("You gained a ${curse.cardNameWithBackgroundColor} and a ${copper.cardNameWithBackgroundColor} from ${player.username}'s $cardNameWithBackgroundColor")
+                } else {
+                    opponent.gainSupplyCard(copper, showLog = true)
+                    player.showInfoMessage("${opponent.username} gained a ${copper.cardNameWithBackgroundColor}")
+                    opponent.showInfoMessage("You gained a ${copper.cardNameWithBackgroundColor} from ${player.username}'s $cardNameWithBackgroundColor")
+                }
             }
         }
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+        val curse = Curse()
+        val copper = Copper()
+
         if (choice == 1) {
             player.discardCardFromHand(player.hand.first { it.isCurse })
-            player.game.currentPlayer.showInfoMessage("${player.username} discarded a Curse")
+            player.game.currentPlayer.showInfoMessage("${player.username} discarded a ${curse.cardNameWithBackgroundColor}")
         } else {
-            player.gainSupplyCard(Curse(), showLog = true)
-            player.gainSupplyCard(Copper(), showLog = true)
-            player.game.currentPlayer.showInfoMessage("${player.username} gained a Curse and a Copper")
+            if (player.game.isCardAvailableInSupply(curse)) {
+                player.gainSupplyCard(curse, showLog = true)
+                player.gainSupplyCard(copper, showLog = true)
+                player.game.currentPlayer.showInfoMessage("${player.username} gained a ${curse.cardNameWithBackgroundColor} and a ${copper.cardNameWithBackgroundColor}")
+            } else {
+                player.gainSupplyCard(copper, showLog = true)
+                player.game.currentPlayer.showInfoMessage("${player.username} gained a ${copper.cardNameWithBackgroundColor}")
+            }
         }
     }
 

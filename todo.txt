@@ -18,3 +18,7 @@ refresh on lobby page should not clear out chats
 show cards not in supply separate from kingdom cards on card details page
 Sewers should be able to trash card per card trashed when trashing more than one card
 figure out how to do Star Chart
+bot logic for Teacher
+Scavenger choice didn't work bug
+Add "are you sure you want to play treasure cards" if player still has actions to play
+Computer froze after playing Jester

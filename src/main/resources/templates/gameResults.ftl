@@ -71,7 +71,7 @@
 
                             <#if player.victoryCoins != 0>
                                 <div class="gameResultsPlayerPointsLabel">Victory Coins:</div>
-                                <div class="gameResultsPlayerPoints">${player.victoryCoins}</div>
+                                <div class="gameResultsPlayerPoints">${player.victoryCoins} VP</div>
                             </#if>
 
                             <div class="gameResultsPlayerPointsLabel">Cards:</div>

@@ -641,6 +641,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     fun showInfoMessage(player: Player, message: String) {
+        if (player.isBot) {
+            return
+        }
         gameMessageService.showInfoMessage(player, message)
     }
 

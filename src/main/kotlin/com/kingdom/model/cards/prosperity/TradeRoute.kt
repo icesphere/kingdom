@@ -22,13 +22,13 @@ class TradeRoute : ProsperityCard(NAME, CardType.Action, 3), GameSetupModifier, 
     override fun modifyGameSetup(game: Game) {
         game.isTrackTradeRouteTokens = true
         (game.allCards).filter { it.isVictory }.forEach {
-            game.tradeRouteTokenMap[it.name] = true
+            game.tradeRouteTokenMap[it.pileName] = true
         }
     }
 
     override fun onCardGained(card: Card, player: Player) {
-        if (card.isVictory && player.game.tradeRouteTokenMap[card.name] == true) {
-            player.game.tradeRouteTokenMap[card.name] = false
+        if (card.isVictory && player.game.tradeRouteTokenMap[card.pileName] == true) {
+            player.game.tradeRouteTokenMap[card.pileName] = false
             player.game.tradeRouteTokensOnMat++
         }
     }

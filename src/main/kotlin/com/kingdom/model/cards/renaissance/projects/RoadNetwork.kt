@@ -14,6 +14,7 @@ class RoadNetwork : RenaissanceProject(NAME, 5), AfterOtherPlayerCardGainedListe
     override fun afterCardGainedByOtherPlayer(card: Card, player: Player, otherPlayer: Player) {
         if (card.isVictory) {
             player.addEventLogWithUsername("gained +1 Card from $cardNameWithBackgroundColor")
+            player.showInfoMessage("Gained +1 Card from $cardNameWithBackgroundColor")
             player.drawCard()
         }
     }
