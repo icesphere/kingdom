@@ -20,5 +20,4 @@ Sewers should be able to trash card per card trashed when trashing more than one
 figure out how to do Star Chart
 bot logic for Teacher
 Scavenger choice didn't work bug
-Add "are you sure you want to play treasure cards" if player still has actions to play
 Computer froze after playing Jester

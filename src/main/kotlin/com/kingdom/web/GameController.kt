@@ -997,6 +997,28 @@ class GameController(private val cardManager: CardManager,
             CardLocation.Hand -> {
                 val card = findCardById(player.hand, cardId)!!
                 if (highlightCard(player, card, source)) {
+
+                    if (!player.isBuyPhase && card.isTreasure && !card.isAction && player.hand.any { it.isAction } && player.actions > 0) {
+
+                        player.yesNoChoice(object : ChoiceActionCard {
+                            override val name: String = "PlayActionsBeforePlayingTreasures"
+
+                            override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                                if (choice == 1) {
+                                    if (action != null) {
+                                        handleCardClickedForAction(player, card, source)
+                                    } else {
+                                        player.playCard(card)
+                                        player.refreshPlayerHandArea()
+                                    }
+                                }
+                            }
+
+                        }, "Are you sure you want to play ${card.cardNameWithBackgroundColor} before playing your action cards?")
+
+                        return
+                    }
+
                     if (action != null) {
                         handleCardClickedForAction(player, card, source)
                     } else {
@@ -1095,6 +1117,22 @@ class GameController(private val cardManager: CardManager,
         val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
 
         if (player.currentAction != null) {
+            return emptyModelAndView
+        }
+
+        if (!player.isBuyPhase && player.hand.any { it.isAction } && player.actions > 0) {
+
+            player.yesNoChoice(object : ChoiceActionCard {
+                override val name: String = "PlayActionsBeforePlayingTreasures"
+
+                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                    if (choice == 1) {
+                        player.playAllTreasureCards()
+                    }
+                }
+
+            }, "Are you sure you want to play treasure cards before playing your action cards?")
+
             return emptyModelAndView
         }
 
