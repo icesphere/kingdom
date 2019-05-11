@@ -998,19 +998,15 @@ class GameController(private val cardManager: CardManager,
                 val card = findCardById(player.hand, cardId)!!
                 if (highlightCard(player, card, source)) {
 
-                    if (!player.isBuyPhase && card.isTreasure && !card.isAction && player.hand.any { it.isAction } && player.actions > 0) {
+                    if (action == null && !player.isBuyPhase && card.isTreasure && !card.isAction && player.hand.any { it.isAction } && player.actions > 0) {
 
                         player.yesNoChoice(object : ChoiceActionCard {
                             override val name: String = "PlayActionsBeforePlayingTreasures"
 
                             override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
                                 if (choice == 1) {
-                                    if (action != null) {
-                                        handleCardClickedForAction(player, card, source)
-                                    } else {
-                                        player.playCard(card)
-                                        player.refreshPlayerHandArea()
-                                    }
+                                    player.playCard(card)
+                                    player.refreshPlayerHandArea()
                                 }
                             }
 
