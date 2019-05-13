@@ -21,4 +21,3 @@ figure out how to do Star Chart
 bot logic for Teacher
 Scavenger choice didn't work bug
 Computer froze after playing Jester
-Games in progress page error

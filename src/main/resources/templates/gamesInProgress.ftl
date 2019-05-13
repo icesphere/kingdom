@@ -21,7 +21,7 @@
                 <#list games as room>
                     <tr>
                         <td style="text-align:left;padding-left:20px;">${room.game.startTime}</td>
-                        <td style="text-align:left;padding-left:20px;">${room.game.emptyPiles}</td>
+                        <td style="text-align:left;padding-left:20px;">${room.game.numEmptyPiles}</td>
                         <td style="text-align:left;padding-left:20px;">${room.game.playerList}</td>
                         <td style="text-align:left;padding-left:20px;">${room.game.cardList}</td>
                     </tr>
