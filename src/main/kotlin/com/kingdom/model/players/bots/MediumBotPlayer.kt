@@ -17,6 +17,7 @@ import com.kingdom.model.cards.adventures.events.Trade
 import com.kingdom.model.cards.base.*
 import com.kingdom.model.cards.cornucopia.Remake
 import com.kingdom.model.cards.darkages.*
+import com.kingdom.model.cards.empires.Temple
 import com.kingdom.model.cards.empires.events.*
 import com.kingdom.model.cards.empires.landmarks.*
 import com.kingdom.model.cards.guilds.Doctor
@@ -157,33 +158,46 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             return 0
         }
 
+        var costModification = 0
+
+        if (card is Temple) {
+            val victoryPointsOnPile = game.getVictoryPointsOnSupplyPile(card.pileName)
+            if (victoryPointsOnPile > 0) {
+                costModification += victoryPointsOnPile - 1
+            }
+        }
+
         if (game.landmarks.any { it is BanditFort } && (card.isSilver || card.isGold)) {
-            return cost - 2
+            costModification -= 2
         }
 
         if (game.landmarks.any { it is Battlefield } && card.isVictory) {
-            return cost + 1
+            costModification += 1
         }
 
         if (game.landmarks.any { it is Museum } && allCards.none { it.name == card.name }) {
-            return cost + 1
+            costModification += 1
         }
 
         if (game.landmarks.any { it is Obelisk } && card.name == (game.landmarks.first { it is Obelisk } as Obelisk).chosenPile) {
-            return cost + 2
+            costModification += 2
         }
 
         if (game.landmarks.any { it is WolfDen }) {
             val cardCount = cardCountByName(card.name)
             if (cardCount == 1) {
-                return cost + 2
+                costModification += 2
             } else if (cardCount == 0) {
-                return cost - 1
+                costModification -= 1
             }
         }
 
         if (game.landmarks.any { it is Colonnade } && inPlay.any { it.name == card.name }) {
-            return cost + 1
+            costModification += 1
+        }
+
+        if (costModification != 0) {
+            return cost + costModification
         }
 
         return super.getBuyCardScore(card)

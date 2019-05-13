@@ -44,7 +44,7 @@ class Temple : EmpiresCard(NAME, CardType.ActionGathering, 4), AfterCardGainedLi
     }
 
     override fun afterCardGained(player: Player) {
-        val victoryPointsOnSupplyPile = player.game.victoryPointsOnSupplyPile[pileName] ?: 0
+        val victoryPointsOnSupplyPile = player.game.getVictoryPointsOnSupplyPile(pileName)
         if (victoryPointsOnSupplyPile > 0) {
             player.takeAllVictoryPointsFromSupplyPile(this)
         }
