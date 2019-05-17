@@ -15,7 +15,6 @@ maybe instead of showing cards bought for other players, hide that section and s
 royal seal shouldn't ask multiple times if answer is no
 refresh on lobby page should not clear out chats
 2 Amulets - order of actions - should wait for first one to complete
-show cards not in supply separate from kingdom cards on card details page
 Sewers should be able to trash card per card trashed when trashing more than one card
 figure out how to do Star Chart
 bot logic for Teacher

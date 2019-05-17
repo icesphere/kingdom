@@ -27,6 +27,19 @@
         </#list>
     </div>
 
+    <#if cardsNotInSupply?has_content>
+        <div style="clear:both;float:left;">
+            Cards not in Supply:
+        </div>
+        <div style="clear:both;">
+            <#list cardsNotInSupply as card>
+                <div style="float:left;padding-right:2px;padding-top:2px;">
+                    <#include "gameCard.ftl">
+                </div>
+            </#list>
+        </div>
+    </#if>
+
     <#if eventsAndLandmarksAndProjects?has_content>
         <div style="clear:both;float:left;">
             Events/Landmarks/Projects:

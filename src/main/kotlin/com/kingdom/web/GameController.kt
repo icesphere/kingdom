@@ -2275,10 +2275,6 @@ class GameController(private val cardManager: CardManager,
 
         cards.filterIsInstance<MultiTypePile>().forEach { cards.addAll(it.otherCardsInPile) }
 
-        if (game.cardsNotInSupply.isNotEmpty()) {
-            cards.addAll(game.cardsNotInSupply)
-        }
-
         if (game.isIncludeShelters) {
             cards.addAll(cardManager.shelters)
         }
@@ -2289,6 +2285,7 @@ class GameController(private val cardManager: CardManager,
 
         modelAndView.addObject("adjustFontSizeForMobile", KingdomUtil.isMobile(request))
         modelAndView.addObject("cards", cards)
+        modelAndView.addObject("cardsNotInSupply", game.cardsNotInSupply)
         modelAndView.addObject("eventsAndLandmarksAndProjects", (game.events + game.landmarks + game.projects).map { it.isHighlighted = false; it })
         modelAndView.addObject("artifacts", game.artifacts)
         modelAndView.addObject("prizeCards", game.prizeCards)
