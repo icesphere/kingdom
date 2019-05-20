@@ -183,7 +183,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = allCards.groupedString
 
     val isTreasureCardsPlayedInBuyPhase: Boolean
-        get() = (cardsPlayed - game.treasureCardsPlayedInActionPhase).any { it.isTreasure }
+        get() = (cardsPlayed - game.treasureCardsPlayedInActionPhase).any { it.isTreasure && !it.isAction }
 
     val isCardsBought: Boolean
         get() = cardsBought.isNotEmpty() || eventsBought.isNotEmpty()

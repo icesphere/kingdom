@@ -24,7 +24,7 @@ class Crown : EmpiresCard(NAME, CardType.ActionTreasure, 5), ChooseCardActionCar
         } else {
             "Choose a Treasure card from your hand to play twice"
         }
-        player.chooseCardFromHandOptional(text, this, { c -> c.isTreasure || (!player.isBuyPhase && c.isAction) })
+        player.chooseCardFromHandOptional(text, this) { c -> c.isTreasure || (!player.isBuyPhase && c.isAction) }
     }
 
     override fun onCardChosen(player: Player, card: Card?, info: Any?) {

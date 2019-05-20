@@ -20,3 +20,4 @@ figure out how to do Star Chart
 bot logic for Teacher
 Scavenger choice didn't work bug
 Computer froze after playing Jester
+add option to not show playing of bot turn

@@ -234,7 +234,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Witch.NAME && turns >= 8 -> true
             card.name == Mint.NAME && turns >= 5 -> true
             card.name == TreasureMap.NAME -> true
-            card.name == Copper.NAME -> true
+            card.name == Copper.NAME -> !(includeVictoryOnlyCards && game.landmarks.any { it is Fountain })
             card.name == Doctor.NAME -> true
             card.name == Masterpiece.NAME -> true
             card.name == Stonemason.NAME -> true

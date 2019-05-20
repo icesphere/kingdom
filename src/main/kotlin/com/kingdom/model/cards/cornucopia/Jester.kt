@@ -31,6 +31,7 @@ class Jester : CornucopiaCard(NAME, CardType.ActionAttack, 5), AttackCard, Choic
                     if (opponent.game.isCardAvailableInSupply(curse)) {
                         opponent.showInfoMessage("You gained a ${curse.cardNameWithBackgroundColor} from ${player.username}'s ${this.cardNameWithBackgroundColor}")
                         opponent.gainSupplyCard(curse, true)
+                        player.showInfoMessage("${opponent.username} gained a ${curse.cardNameWithBackgroundColor}")
                     }
                 } else {
                     if (player.game.isCardAvailableInSupply(card)) {
