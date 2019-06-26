@@ -1,17 +1,14 @@
 handle throne room a throne room which then copies a duration card
-cancel a created game that hasn't started yet has issues
 cards overflow weird when too many on desktop (use flexbox?)
 figure out why create game page takes a long time to load the bottom of the page - or at least show spinner or something until it loads
 better bots
 consolidate select card actions
-remind player which tavern cards are available to use at start of turn
 show all cards gained - not just cards bought in the cards bought section of the page
 smoother transition from bot turn to human turn
 bot logic for Lurker
 better bot logic for empty piles
 think about timing on waiting for players - can they maybe be resolved later?
 let someone know when they haven't ended their turn
-maybe instead of showing cards bought for other players, hide that section and show info message anytime they gain a card?
 royal seal shouldn't ask multiple times if answer is no
 refresh on lobby page should not clear out chats
 2 Amulets - order of actions - should wait for first one to complete
@@ -21,3 +18,4 @@ bot logic for Teacher
 Scavenger choice didn't work bug
 Computer froze after playing Jester
 add option to not show playing of bot turn
+remind player which tavern cards are available to use at start of turn

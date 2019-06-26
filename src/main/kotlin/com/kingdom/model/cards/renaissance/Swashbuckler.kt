@@ -33,6 +33,7 @@ class Swashbuckler : RenaissanceCard(NAME, CardType.Action, 5), BeforeBuyPhaseLi
     override fun beforeBuyPhase(player: Player) {
         if (player.hasArtifact(TreasureChest.NAME)) {
             player.gainSupplyCard(Gold())
+            player.showInfoMessage("Gained ${Gold().cardNameWithBackgroundColor} from ${TreasureChest().cardNameWithBackgroundColor}")
             player.addEventLogWithUsername("gained ${Gold().cardNameWithBackgroundColor} from ${TreasureChest().cardNameWithBackgroundColor}")
         }
     }

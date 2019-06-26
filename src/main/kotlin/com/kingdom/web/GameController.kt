@@ -589,6 +589,11 @@ class GameController(private val cardManager: CardManager,
                 game.reset()
             }
         }
+
+        if (user.gameId == gameId) {
+            return ModelAndView("redirect:/showGameResults.html")
+        }
+
         return ModelAndView("redirect:/showGameRooms.html")
     }
 
