@@ -1072,26 +1072,26 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addEventLogWithUsername("played ${card.cardNameWithBackgroundColor}")
         }
 
+        if (!isTreasureCardsPlayedInBuyPhase && card.isAction && card.isTreasure) {
+            game.treasureCardsPlayedInActionPhase.add(card)
+        } else if (card.isTreasure && !isBuyPhase) {
+            handleBeforeBuyPhase()
+        }
+
         cardsPlayed.add(card)
 
+        currentTurnSummary.cardsPlayed.add(card)
+
+        if (card.isTreasure) {
+            isReturnToActionPhase = false
+        }
+
+        val listeners = inPlayWithDuration.filterIsInstance<CardPlayedListener>() +
+                inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<CardPlayedListener>()
+
+        listeners.forEach { it.onCardPlayed(card, this) }
+
         if (!repeatedAction) {
-
-            if (!isTreasureCardsPlayedInBuyPhase && card.isAction && card.isTreasure) {
-                game.treasureCardsPlayedInActionPhase.add(card)
-            } else if (card.isTreasure && !isBuyPhase) {
-                handleBeforeBuyPhase()
-            }
-
-            currentTurnSummary.cardsPlayed.add(card)
-
-            if (card.isTreasure) {
-                isReturnToActionPhase = false
-            }
-
-            val listeners = inPlayWithDuration.filterIsInstance<CardPlayedListener>() +
-                    inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<CardPlayedListener>()
-
-            listeners.forEach { it.onCardPlayed(card, this) }
 
             inPlay.add(card)
             hand.remove(card)
@@ -2125,7 +2125,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         return game.artifacts.firstOrNull { it.name == artifactName }?.owner == username
     }
 
-    fun actionTakeInBuyPhase() {
+    fun actionTakenInBuyPhase() {
         handleBeforeBuyPhase()
         isActionTakenInBuyPhase = true
     }

@@ -26,7 +26,7 @@ class Arena : EmpiresLandmark(NAME), GameSetupModifier, DiscardCardsForBenefitAc
 
     override fun cardsDiscarded(player: Player, discardedCards: List<Card>, info: Any?) {
         player.takeVictoryPointsFromSupplyPile(this, 2)
-        player.actionTakeInBuyPhase()
+        player.actionTakenInBuyPhase()
     }
 
     companion object {
