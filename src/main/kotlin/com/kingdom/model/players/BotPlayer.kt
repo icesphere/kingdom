@@ -253,7 +253,13 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     override fun chooseSupplyCardToGain(cardActionableExpression: ((card: Card) -> Boolean)?, text: String?, destination: CardLocation, optional: Boolean) {
-        val card = chooseFreeCardToGain(cardActionableExpression)
+
+        val addRandomPick = when (cardsPlayed.lastOrNull()?.pileName) {
+            Rebuild.NAME -> false
+            else -> true
+        }
+
+        val card = chooseFreeCardToGain(cardActionableExpression, optional, addRandomPick)
         if (card != null) {
             game.removeCardFromSupply(card)
 
@@ -265,7 +271,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     override fun chooseSupplyCardToGainForBenefit(text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)?) {
         //todo logic for different cards
-        val card = chooseFreeCardToGain(cardActionableExpression)
+        val card = chooseFreeCardToGain(cardActionableExpression, false)
         if (card != null) {
             game.removeCardFromSupply(card)
 
@@ -726,7 +732,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         return pickCardBasedOnBuyScore(hand)
     }
 
-    private fun pickCardBasedOnBuyScore(cards: List<Card>?): Card? {
+    private fun pickCardBasedOnBuyScore(cards: List<Card>?, nullAllowed: Boolean = true, addRandomPick: Boolean = true): Card? {
         if (cards == null || cards.isEmpty()) {
             return null
         }
@@ -735,20 +741,20 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         val firstCard = sortedCards[0]
 
+        if (!addRandomPick) {
+            return firstCard
+        }
+
         val firstBuyScore = getBuyCardScore(firstCard)
 
         val randomPercent = random.nextInt(100)
 
+        if (firstBuyScore == 0 && nullAllowed && addRandomPick && randomPercent > 2) {
+            return null
+        }
+
         if (sortedCards.size == 1) {
-            if (firstBuyScore == 0) {
-                if (randomPercent <= 2) {
-                    return firstCard
-                } else {
-                    return null
-                }
-            } else {
-                return firstCard
-            }
+            return firstCard
         }
 
         val secondCard = sortedCards[1]
@@ -756,10 +762,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         val secondBuyScore = getBuyCardScore(secondCard)
 
         if (secondBuyScore == 0) {
-            if (firstBuyScore < 10 && randomPercent <= 3) {
-                return secondCard
-            } else {
-                return firstCard
+            return when {
+                firstBuyScore < 10 && randomPercent <= 3 -> secondCard
+                else -> firstCard
             }
         }
 
@@ -769,18 +774,18 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
         val percentageForFirstCard = firstBuyScore / (firstBuyScore + secondBuyScore) * 100
 
-        if (randomPercent < percentageForFirstCard + 5) {
-            return firstCard
+        return if (randomPercent < percentageForFirstCard + 5) {
+            firstCard
         } else {
-            return secondCard
+            secondCard
         }
     }
 
-    private fun chooseFreeCardToGain(cardActionableExpression: ((card: Card) -> Boolean)? = null): Card? {
+    private fun chooseFreeCardToGain(cardActionableExpression: ((card: Card) -> Boolean)? = null, optional: Boolean, addRandomPick: Boolean = true): Card? {
         val cards = game.availableCards
                 .filter { c -> cardActionableExpression == null || cardActionableExpression.invoke(c) }
 
-        return pickCardBasedOnBuyScore(cards)
+        return pickCardBasedOnBuyScore(cards, optional)
     }
 
     private fun chooseFreeCardToGainWithExactCost(cost: Int): Card? {
@@ -1014,6 +1019,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 }
                 Improve.NAME -> cardsToSelectFrom.maxBy { getTrashCardScore(it) }!!
                 Lookout.NAME -> cardsToSelectFrom.minBy { getDiscardCardScore(it) }!!
+                Pillage.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
                 PirateShip.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
                 Smugglers.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
                 WishingWell.NAME -> deck.maxBy { cardCountByName(it.name) }!!

@@ -224,8 +224,8 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
 
         return when {
             !card.isVictory && !card.isTreasure && getCardCostWithModifiers(card) < 5 && cardCountByName(card.name) >= 3 -> true
-            card.name == ThroneRoom.NAME && (turns < 3 || cardCountByName(card.name) >= 2) -> true
-            card.name == KingsCourt.NAME && cardCountByName(card.name) >= 2 -> true
+            card.name == ThroneRoom.NAME && (actionsBought < 3 || cardCountByName(card.name) >= 2) -> true
+            card.name == KingsCourt.NAME && (actionsBought < 3 || cardCountByName(card.name) >= 2) -> true
             card.isTerminalAction && (terminalActionsBought - actionsBought > 1 || terminalActionsBought == 1 && actionsBought == 1) -> true
             card.name == Lookout.NAME -> true
             card.isVictoryOnly && !includeVictoryOnlyCards -> true

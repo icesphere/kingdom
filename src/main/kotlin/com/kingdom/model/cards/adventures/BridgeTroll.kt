@@ -17,6 +17,7 @@ class BridgeTroll : AdventuresCard(NAME, CardType.ActionAttackDuration, 5), Star
     override fun cardPlayedSpecialAction(player: Player) {
         player.triggerAttack(this)
         player.addBuys(1)
+        player.game.refreshSupply()
     }
 
     override fun durationStartOfTurnAction(player: Player) {

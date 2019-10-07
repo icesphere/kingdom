@@ -18,7 +18,7 @@ class KingsCourt : ProsperityCard(NAME, CardType.Action, 7), ChooseCardActionCar
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.chooseCardFromHandOptional("Choose an Action card from your hand to play three times", this, { c -> c.isAction })
+        player.chooseCardFromHandOptional("Choose an Action card from your hand to play three times", this) { c -> c.isAction }
     }
 
     override fun onCardChosen(player: Player, card: Card?, info: Any?) {
