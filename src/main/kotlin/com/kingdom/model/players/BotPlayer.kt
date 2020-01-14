@@ -99,7 +99,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
 
             //todo better logic
-            if (!isCardsBought && !isPaidOffDebtThisTurn && coffers > 0) {
+            if (!isCardsBought && coffers > 0) {
                 useCoffers(coffers)
             }
 
@@ -315,7 +315,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 }
             }
 
-            if (!sortedCards.isEmpty() && getBuyCardScore(sortedCards[0]) > 0) {
+            if (sortedCards.isNotEmpty() && getBuyCardScore(sortedCards[0]) > 0) {
                 val cardWithHighestBuyScore = sortedCards[0]
 
                 if (sortedCards.size > 2 && buys > 1) {
@@ -913,6 +913,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     private fun choseCard(card: Card, cards: List<Card>): Card {
         return when (card.name) {
             Ambassador.NAME -> cards.minBy { getBuyCardScore(it) }!!
+            Counterfeit.NAME -> cards.minBy { getBuyCardScore(it) }!!
             Courtier.NAME -> cards.maxBy { it.numTypes }!!
             Haven.NAME -> when {
                 actions == 0 && cards.any { it.isAction && it.cost > 2 } -> cards.filter { it.isAction }.maxBy { it.cost }!!

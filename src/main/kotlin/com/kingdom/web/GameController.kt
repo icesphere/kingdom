@@ -2323,11 +2323,6 @@ class GameController(private val cardManager: CardManager,
                 return emptyModelAndView
             }
 
-            if (player.isPaidOffDebtThisTurn) {
-                player.showInfoMessage("You can't use Coffers after you have paid off debt")
-                return emptyModelAndView
-            }
-
             val choices = mutableListOf<Choice>()
 
             for (i in 0..player.coffers) {

@@ -23,7 +23,7 @@ class Counterfeit : DarkAgesCard(NAME, CardType.Treasure, 5), ChoiceActionCard, 
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
-            player.chooseCardFromHand("Choose a treasure card from your hand to play twice", this, { c -> c.isTreasure })
+            player.chooseCardFromHand("Choose a treasure card from your hand to play twice", this) { c -> c.isTreasure }
         }
     }
 

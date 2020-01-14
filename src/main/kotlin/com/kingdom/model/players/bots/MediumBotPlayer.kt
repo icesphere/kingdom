@@ -272,6 +272,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             }
             card.addActions > 0 -> 10
             card is Contraband && availableCoins >= 11 || (availableCoins >= 8 && !game.isIncludeColonyCards) -> -1
+            card is Counterfeit && hand.any { it !is Counterfeit && it.isTreasure && (buys > 0 || it.cost < 6) } -> 10
             else -> card.cost
         }
     }

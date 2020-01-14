@@ -36,8 +36,8 @@
         <div style="position:absolute;bottom:2px;font-size:8px;left:28px;">Card</div>
     </#if>
 
-    <#if (clickType=='supply' || clickType == 'landmark') && victoryPointsOnSupplyPile(card.name)?? && victoryPointsOnSupplyPile(card.name) != 0><div style="position: absolute; bottom: 3px; left: 17px; z-index: 5; color: #00BB00; font-size: 8px; font-weight: bold; padding: 0 2px 0 2px;background-color: #ffffffcc;">${victoryPointsOnSupplyPile(card.name)} VP on pile</div></#if>
-    <#if clickType=='supply' && debtOnSupplyPile(card.name)?? && debtOnSupplyPile(card.name) != 0><div style="position: absolute; bottom: 10px; left: 14px; z-index: 5; color: #BB0000; font-size: 8px; font-weight: bold; padding: 0 2px 0 2px;background-color: #ffffffcc;">${debtOnSupplyPile(card.name)} debt on pile</div></#if>
+    <#if (clickType=='supply' || clickType == 'landmark') && victoryPointsOnSupplyPile(card.name)?? && victoryPointsOnSupplyPile(card.name) != 0><div style="position: absolute; bottom: 3px; left: 17px; z-index: 5; color: #00BB00; font-size: 8px; font-weight: bold; padding: 0 2px 0 2px;background-color: #ffffff77;">${victoryPointsOnSupplyPile(card.name)} VP on pile</div></#if>
+    <#if clickType=='supply' && debtOnSupplyPile(card.name)?? && debtOnSupplyPile(card.name) != 0><div style="position: absolute; bottom: 10px; left: 14px; z-index: 5; color: #BB0000; font-size: 8px; font-weight: bold; padding: 0 2px 0 2px;background-color: #ffffff77;">${debtOnSupplyPile(card.name)} debt on pile</div></#if>
     <#if clickType=='supply' && showEmbargoTokens?? && showEmbargoTokens && embargoTokens(card.name)?? && embargoTokens(card.name) != 0><div style="position: absolute; bottom: 11px; left: 5px; z-index: 5; color: #BB0000; font-size: 8px; font-weight: bold;">(${embargoTokens(card.name)} ET)</div></#if>
     <#if clickType=='supply' && showTradeRouteTokens?? && showTradeRouteTokens && tradeRouteTokenMap(card.name)?? && tradeRouteTokenMap(card.name)><div style="position: absolute; bottom: 11px; right: 4px; z-index: 5; color: #0000BB; font-size: 8px;">(TRT)</div></#if>
 
