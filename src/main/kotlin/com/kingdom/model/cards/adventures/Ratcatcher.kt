@@ -1,10 +1,12 @@
 package com.kingdom.model.cards.adventures
 
 import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.actions.StartOfTurnTavernCard
 import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.players.Player
 
-class Ratcatcher : AdventuresCard(NAME, CardType.ActionReserve, 2), TavernCard {
+class Ratcatcher : AdventuresCard(NAME, CardType.ActionReserve, 2), TavernCard, StartOfTurnTavernCard, ChoiceActionCard {
 
     init {
         addCards = 1
@@ -22,6 +24,16 @@ class Ratcatcher : AdventuresCard(NAME, CardType.ActionReserve, 2), TavernCard {
 
     override fun onTavernCardCalled(player: Player) {
         player.trashCardFromHand(false)
+    }
+
+    override fun onStartOfTurn(player: Player) {
+        player.yesNoChoice(this, "Use $cardNameWithBackgroundColor to trash a card from your hand?")
+    }
+
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+        if (choice == 1) {
+            player.callTavernCard(this)
+        }
     }
 
     companion object {

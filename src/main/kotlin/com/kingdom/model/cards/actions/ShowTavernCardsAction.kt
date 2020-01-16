@@ -22,9 +22,7 @@ class ShowTavernCardsAction : Action("Tavern cards - if a card is highlighted yo
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
         if (!result.isDoNotUse && result.selectedCard != null) {
-            player.moveCardInTavernToInPlay(result.selectedCard!!)
-            val tavernCard = result.selectedCard as TavernCard
-            tavernCard.onTavernCardCalled(player)
+            player.callTavernCard(result.selectedCard!!)
         }
 
         return true

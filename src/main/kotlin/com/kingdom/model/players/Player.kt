@@ -1540,6 +1540,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.allCards.filterIsInstance<TurnStartedListenerForCardsInSupply>()
                 .forEach { it.turnStarted(this) }
 
+        tavernCards.filterIsInstance<StartOfTurnTavernCard>()
+                .filter { (it as TavernCard).isTavernCardActionable(this) }
+                .forEach { it.onStartOfTurn(this) }
+
         resolveActions()
 
         takeTurn()
@@ -2025,6 +2029,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.refreshCardsPlayed()
         refreshPlayerHandArea()
         addEventLogWithUsername("called ${card.cardNameWithBackgroundColor} from their Tavern mat")
+    }
+
+    fun callTavernCard(card: Card) {
+        moveCardInTavernToInPlay(card)
+        (card as TavernCard).onTavernCardCalled(this)
     }
 
     fun replaceAllEstatesWithInheritanceEstates() {

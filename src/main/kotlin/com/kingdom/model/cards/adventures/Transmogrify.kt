@@ -2,11 +2,13 @@ package com.kingdom.model.cards.adventures
 
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.actions.StartOfTurnTavernCard
 import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.cards.actions.TrashCardsForBenefitActionCard
 import com.kingdom.model.players.Player
 
-class Transmogrify : AdventuresCard(NAME, CardType.ActionReserve, 4), TavernCard, TrashCardsForBenefitActionCard {
+class Transmogrify : AdventuresCard(NAME, CardType.ActionReserve, 4), TavernCard, TrashCardsForBenefitActionCard, StartOfTurnTavernCard, ChoiceActionCard {
 
     init {
         addActions = 1
@@ -31,6 +33,16 @@ class Transmogrify : AdventuresCard(NAME, CardType.ActionReserve, 4), TavernCard
 
         if (player.game.availableCards.any { player.getCardCostWithModifiers(it) <= player.getCardCostWithModifiers(card) + 1 }) {
             player.chooseSupplyCardToGainToHandWithMaxCost(player.getCardCostWithModifiers(card) + 1)
+        }
+    }
+
+    override fun onStartOfTurn(player: Player) {
+        player.yesNoChoice(this, "Use $cardNameWithBackgroundColor to trash a card from your hand, and gain a card to your hand costing up to \$1 more than it?")
+    }
+
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+        if (choice == 1) {
+            player.callTavernCard(this)
         }
     }
 

@@ -5,10 +5,11 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.actions.ChooseCardActionCard
+import com.kingdom.model.cards.actions.StartOfTurnTavernCard
 import com.kingdom.model.cards.actions.TavernCard
 import com.kingdom.model.players.Player
 
-class Teacher : AdventuresCard(NAME, CardType.ActionReserve, 6), TavernCard, ChoiceActionCard, ChooseCardActionCard {
+class Teacher : AdventuresCard(NAME, CardType.ActionReserve, 6), TavernCard, ChoiceActionCard, ChooseCardActionCard, StartOfTurnTavernCard {
 
     init {
         isAddCoinsCard = true
@@ -28,7 +29,13 @@ class Teacher : AdventuresCard(NAME, CardType.ActionReserve, 6), TavernCard, Cho
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-        player.chooseCardFromSupply("Choose which supply pile to put the token on", this, { c -> c.isAction && !player.supplyPilesWithBonusTokens.contains(c.name) }, choice)
+        if (info == "tavernChoice") {
+            if (choice == 1) {
+                player.callTavernCard(this)
+            }
+        } else {
+            player.chooseCardFromSupply("Choose which supply pile to put the token on", this, { c -> c.isAction && !player.supplyPilesWithBonusTokens.contains(c.name) }, choice)
+        }
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
@@ -40,6 +47,10 @@ class Teacher : AdventuresCard(NAME, CardType.ActionReserve, 6), TavernCard, Cho
             3 -> player.plusBuyTokenSupplyPile = card.pileName
             4 -> player.plusCoinTokenSupplyPile = card.pileName
         }
+    }
+
+    override fun onStartOfTurn(player: Player) {
+        player.yesNoChoice(this, "Use $cardNameWithBackgroundColor to move a token to an Action Supply pile?", "tavernChoice")
     }
 
     companion object {
