@@ -426,13 +426,19 @@ class CardRepository {
                 StarChart()
         )
 
+    val menagerieCards : List<Card>
+        get() = listOf()
+
+    val menagerieEvents: List<Event>
+        get() = listOf()
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
                 hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards +
-                renaissanceCards
+                renaissanceCards + menagerieCards
 
     val allEvents: List<Event>
-        get() = adventuresEvents + empiresEvents
+        get() = adventuresEvents + empiresEvents + menagerieEvents
 
     val allLandmarks: List<Landmark>
         get() = empiresLandmarks
@@ -456,6 +462,7 @@ class CardRepository {
             Deck.Adventures -> adventuresCards
             Deck.Empires -> empiresCards
             Deck.Renaissance -> renaissanceCards
+            Deck.Menagerie -> menagerieCards
             else -> emptyList()
         }
     }
