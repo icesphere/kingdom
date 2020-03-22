@@ -2,13 +2,14 @@ package com.kingdom.model.cards.menagerie
 
 import com.kingdom.model.Choice
 import com.kingdom.model.cards.CardType
+import com.kingdom.model.cards.ConditionalDuration
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.actions.StartOfTurnDurationAction
 import com.kingdom.model.players.Player
 
-class Barge : MenagerieCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurationAction, ChoiceActionCard {
+class Barge : MenagerieCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurationAction, ConditionalDuration, ChoiceActionCard {
 
-    private var used: Boolean = false
+    override var isKeepAtEndOfTurn: Boolean = true
 
     init {
         special = "Either now or at the start of your next turn, +3 Cards and +1 Buy."
@@ -22,21 +23,13 @@ class Barge : MenagerieCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurati
         if (choice == 1) {
             player.drawCards(3)
             player.addBuys(1)
-            used = true
+            isKeepAtEndOfTurn = false
         }
     }
 
     override fun durationStartOfTurnAction(player: Player) {
-        if (!used) {
-            player.drawCards(3)
-            player.addBuys(1)
-        }
-        used = false
-    }
-
-    override fun removedFromPlay(player: Player) {
-        super.removedFromPlay(player)
-        used = false
+        player.drawCards(3)
+        player.addBuys(1)
     }
 
     companion object {

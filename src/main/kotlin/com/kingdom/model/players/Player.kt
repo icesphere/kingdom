@@ -44,6 +44,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val cardsInDiscardCopy: List<Card>
         get() = cardsInDiscard.map { it.copy(true) }
 
+    val cardsGained: MutableList<Card> = ArrayList()
+
     val cardsBought: MutableList<Card> = ArrayList()
 
     val cardsBoughtCopy: List<Card>
@@ -524,7 +526,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         durationCards.removeAll(durationCardsToDiscard)
 
         for (card in inPlay) {
-            if (card.isDuration || (card is CardRepeater && card.cardBeingRepeated?.isDuration == true)) {
+            if ((card.isDuration && (card !is ConditionalDuration || card.isKeepAtEndOfTurn)) || (card is CardRepeater && card.cardBeingRepeated?.isDuration == true)) {
                 durationCards.add(card)
 
                 card.isSelected = false
@@ -625,6 +627,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         cardsUnavailableToBuyThisTurn.clear()
 
+        cardsGained.clear()
         cardsBought.clear()
         cardsPlayed.clear()
 
@@ -797,6 +800,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         var gainCardHandled = false
 
         val cardToGain = if (card.isEstate && inheritanceActionCard != null) createInheritanceEstate() else if (card is InheritanceEstate) Estate() else card
+
+        cardsGained.add(cardToGain)
 
         game.availableCards.filterIsInstance<CardGainedListenerForCardsAvailableInSupply>()
                 .forEach {
@@ -1026,7 +1031,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             (inPlayWithDuration.filterIsInstance<AfterCardBoughtListenerForCardsInPlay>() +
                     inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardBoughtListenerForCardsInPlay>())
-                            .forEach { it.afterCardBought(card, this) }
+                    .forEach { it.afterCardBought(card, this) }
 
             (hand.filterIsInstance<AfterCardBoughtListenerForCardsInHand>() +
                     hand.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardBoughtListenerForCardsInHand>())
@@ -1181,6 +1186,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun chooseSupplyCardToGainForBenefitWithMaxCost(maxCost: Int, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null) {
         chooseSupplyCardToGainForBenefit(text, freeCardFromSupplyForBenefitActionCard) { c -> c.debtCost == 0 && getCardCostWithModifiers(c) <= maxCost && (cardActionableExpression == null || cardActionableExpression(c)) }
     }
+
     fun chooseSupplyCardToGainForBenefitWithExactCost(exactCost: Int, text: String, freeCardFromSupplyForBenefitActionCard: FreeCardFromSupplyForBenefitActionCard, cardActionableExpression: ((card: Card) -> Boolean)? = null) {
         chooseSupplyCardToGainForBenefit(text, freeCardFromSupplyForBenefitActionCard) { c -> c.debtCost == 0 && getCardCostWithModifiers(c) == exactCost && (cardActionableExpression == null || cardActionableExpression(c)) }
     }
