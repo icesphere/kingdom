@@ -17,14 +17,6 @@ class HornOfPlenty : CornucopiaCard(NAME, CardType.Treasure, 5), FreeCardFromSup
         val numDifferentCards = player.inPlayWithDuration.groupBy { it.name }.size
 
         player.chooseSupplyCardToGainForBenefitWithMaxCost(numDifferentCards, "Gain a card costing up to \$$numDifferentCards. If it’s a Victory card, ${this.cardNameWithBackgroundColor} will be trashed.", this)
-
-        val cards = player.removeTopCardsOfDeck(4, revealCards = true)
-
-        player.addCardsToDiscard(cards)
-
-        val groupedCards = cards.groupBy { it.name }
-
-        player.addCoins(groupedCards.size)
     }
 
     override fun onCardGained(player: Player, card: Card) {
