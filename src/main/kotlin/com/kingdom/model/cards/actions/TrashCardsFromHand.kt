@@ -47,7 +47,7 @@ open class TrashCardsFromHand(private var numCardsToTrash: Int, text: String, op
 
     override fun processActionResult(player: Player, result: ActionResult): Boolean {
         if (result.isDoneWithAction) {
-            selectedCards.forEach({ player.trashCardFromHand(it) })
+            selectedCards.forEach { player.trashCardFromHand(it) }
             return true
         } else {
             val selectedCard = result.selectedCard!!

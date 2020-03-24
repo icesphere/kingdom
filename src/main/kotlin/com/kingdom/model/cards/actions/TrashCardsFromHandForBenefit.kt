@@ -14,4 +14,10 @@ class TrashCardsFromHandForBenefit(private val trashCardsForBenefitActionCard: T
 
         return doneWithAction
     }
+
+    override fun onNotUsed(player: Player) {
+        if (trashCardsForBenefitActionCard is OptionalTrashCardsForBenefitActionCard) {
+            trashCardsForBenefitActionCard.onCardsNotTrashed(player)
+        }
+    }
 }
