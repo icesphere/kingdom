@@ -24,6 +24,8 @@ import com.kingdom.model.cards.empires.landmarks.MountainPass
 import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
+import com.kingdom.model.cards.menagerie.Kiln
+import com.kingdom.model.cards.menagerie.Mastermind
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.renaissance.BorderGuard
 import com.kingdom.model.cards.renaissance.CargoShip
@@ -482,6 +484,10 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 val cardToGain = info as Card
                 if (getBuyCardScore(cardToGain) > 2) choices.first().choiceNumber else choices.last().choiceNumber
             }
+            Kiln.NAME -> {
+                val cardToGain = info as Card
+                if (getBuyCardScore(cardToGain) > 2) 1 else 2
+            }
             Library.NAME -> if (actions > 0 && hand.none { it.isAction }) 1 else 2
             Loan.NAME -> if (card.isCopper) 2 else 1
             Lurker.NAME -> if (game.trashedCards.any { getBuyCardScore(it) > 4 }) 2 else 1
@@ -926,7 +932,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
             Masquerade.NAME -> cards.maxBy { getTrashCardScore(it) }!!
             Mint.NAME -> cards.maxBy { getBuyCardScore(it) }!!
-            ThroneRoom.NAME, KingsCourt.NAME, Procession.NAME, Disciple.NAME -> cards.maxBy { getPlayCardScore(it) }!!
+            ThroneRoom.NAME, KingsCourt.NAME, Procession.NAME, Disciple.NAME, Mastermind.NAME -> cards.maxBy { getPlayCardScore(it) }!!
             else -> cards.first()
         }
     }

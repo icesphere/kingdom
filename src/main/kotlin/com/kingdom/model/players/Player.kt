@@ -512,10 +512,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         addInfoLogWithUsername("ending turn")
 
         val durationCardsToDiscard = durationCards.filterNot {
-            it is PermanentDuration
-                    || (it is CardRepeater && it.cardBeingRepeated is PermanentDuration)
-                    || (it is MultipleTurnDuration && it.keepAtEndOfTurn(this)
+            (it is MultipleTurnDuration && it.keepAtEndOfTurn(this)
                     || (it is CardRepeater && it.cardBeingRepeated is MultipleTurnDuration && (it.cardBeingRepeated as MultipleTurnDuration).keepAtEndOfTurn(this)))
+                    || (it is NextTurnRepeater && it.keepAtEndOfTurn(this))
         }
 
         durationCardsToDiscard.forEach {
@@ -526,6 +525,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         durationCards.removeAll(durationCardsToDiscard)
 
         for (card in inPlay) {
+            if (card is NextTurnRepeater) {
+                card.isNextTurn = true
+            }
             if ((card.isDuration && (card !is ConditionalDuration || card.isKeepAtEndOfTurn)) || (card is CardRepeater && card.cardBeingRepeated?.isDuration == true)) {
                 durationCards.add(card)
 

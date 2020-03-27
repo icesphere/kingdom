@@ -25,6 +25,7 @@ import com.kingdom.model.cards.guilds.Masterpiece
 import com.kingdom.model.cards.guilds.Stonemason
 import com.kingdom.model.cards.hinterlands.Farmland
 import com.kingdom.model.cards.intrigue.Upgrade
+import com.kingdom.model.cards.menagerie.Mastermind
 import com.kingdom.model.cards.prosperity.Contraband
 import com.kingdom.model.cards.prosperity.Forge
 import com.kingdom.model.cards.prosperity.KingsCourt
@@ -226,6 +227,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             !card.isVictory && !card.isTreasure && getCardCostWithModifiers(card) < 5 && cardCountByName(card.name) >= 3 -> true
             card.name == ThroneRoom.NAME && (actionsBought < 3 || cardCountByName(card.name) >= 2) -> true
             card.name == KingsCourt.NAME && (actionsBought < 3 || cardCountByName(card.name) >= 2) -> true
+            card.name == Mastermind.NAME && (actionsBought < 3 || cardCountByName(card.name) >= 2) -> true
             card.isTerminalAction && (terminalActionsBought - actionsBought > 1 || terminalActionsBought == 1 && actionsBought == 1) -> true
             card.name == Lookout.NAME -> true
             card.isVictoryOnly && !includeVictoryOnlyCards -> true
