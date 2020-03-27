@@ -1,6 +1,7 @@
 package com.kingdom.model.cards
 
 import com.kingdom.model.cards.base.ThroneRoom
+import com.kingdom.model.cards.listeners.BeforeCardPlayedListenerForCardsInPlay
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
 import com.kingdom.model.cards.prosperity.Goons
 import com.kingdom.model.cards.prosperity.KingsCourt
@@ -417,6 +418,10 @@ abstract class Card(
     }
 
     fun cardPlayed(player: Player, refresh: Boolean = true) {
+        player.inPlay.filterIsInstance<BeforeCardPlayedListenerForCardsInPlay>().forEach {
+            it.onBeforeCardPlayed(this, player)
+        }
+
         if (isAction) {
             player.addActions(-1, refresh)
 

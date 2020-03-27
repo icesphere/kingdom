@@ -433,7 +433,8 @@ class CardRepository {
                 Destrier(),
                 Fisherman(),
                 Goatherd(),
-                HuntingLodge()
+                HuntingLodge(),
+                Kiln()
         )
 
     val menagerieEvents: List<Event>
