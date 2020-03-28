@@ -45,6 +45,7 @@ class Procession : DarkAgesCard(NAME, CardType.Action, 4), ChooseCardActionCardO
     }
 
     override fun removedFromPlay(player: Player) {
+        super.removedFromPlay(player)
         cardToPlayTwice = null
         numTimesCardPlayed = 0
     }

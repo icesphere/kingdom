@@ -26,6 +26,7 @@ class KingsCourt : ProsperityCard(NAME, CardType.Action, 7), ChooseCardActionCar
     }
 
     override fun removedFromPlay(player: Player) {
+        super.removedFromPlay(player)
         cardBeingRepeated = null
     }
 

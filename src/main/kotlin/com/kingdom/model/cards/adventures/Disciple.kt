@@ -41,6 +41,7 @@ class Disciple : AdventuresCard(NAME, CardType.ActionTraveller, 5), CardDiscarde
     }
 
     override fun removedFromPlay(player: Player) {
+        super.removedFromPlay(player)
         cardBeingRepeated = null
     }
 

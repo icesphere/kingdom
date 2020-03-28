@@ -32,6 +32,7 @@ class Crown : EmpiresCard(NAME, CardType.ActionTreasure, 5), ChooseCardActionCar
     }
 
     override fun removedFromPlay(player: Player) {
+        super.removedFromPlay(player)
         cardBeingRepeated = null
     }
 

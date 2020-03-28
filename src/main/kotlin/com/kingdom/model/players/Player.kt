@@ -525,9 +525,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         durationCards.removeAll(durationCardsToDiscard)
 
         for (card in inPlay) {
-            if (card is NextTurnRepeater) {
-                card.isNextTurn = true
-            }
             if ((card.isDuration && (card !is ConditionalDuration || card.isKeepAtEndOfTurn)) || (card is CardRepeater && card.cardBeingRepeated?.isDuration == true)) {
                 durationCards.add(card)
 
@@ -557,6 +554,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         hand.clear()
+
+        durationCards.filterIsInstance<TurnEndedListenerForDurationCards>()
+                .forEach { it.onTurnEnded(this) }
 
         eventsBought.filterIsInstance<TurnEndedListenerForEventsBought>()
                 .forEach { it.onTurnEnded(this) }

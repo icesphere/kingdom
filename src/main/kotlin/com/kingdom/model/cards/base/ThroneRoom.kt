@@ -26,6 +26,7 @@ class ThroneRoom : BaseCard(NAME, CardType.Action, 4), ChooseCardActionCardOptio
     }
 
     override fun removedFromPlay(player: Player) {
+        super.removedFromPlay(player)
         cardBeingRepeated = null
     }
 

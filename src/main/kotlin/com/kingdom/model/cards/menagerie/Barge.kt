@@ -9,7 +9,10 @@ import com.kingdom.model.players.Player
 
 class Barge : MenagerieCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurationAction, ConditionalDuration, ChoiceActionCard {
 
-    override var isKeepAtEndOfTurn: Boolean = true
+    private val actionChoices = mutableListOf<Int>()
+
+    override val isKeepAtEndOfTurn: Boolean
+        get() = actionChoices.any { it == 2 }
 
     init {
         special = "Either now or at the start of your next turn, +3 Cards and +1 Buy."
@@ -20,16 +23,30 @@ class Barge : MenagerieCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurati
     }
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+        actionChoices.add(choice)
+
         if (choice == 1) {
             player.drawCards(3)
             player.addBuys(1)
-            isKeepAtEndOfTurn = false
         }
     }
 
     override fun durationStartOfTurnAction(player: Player) {
-        player.drawCards(3)
-        player.addBuys(1)
+        actionChoices.forEach {
+            if (it == 2) {
+                player.drawCards(3)
+                player.addBuys(1)
+            }
+        }
+    }
+
+    override fun removedFromPlay(player: Player) {
+        super.removedFromPlay(player)
+        actionChoices.clear()
+    }
+
+    override fun beforeCardRepeated(player: Player) {
+        //do nothing
     }
 
     companion object {
