@@ -197,6 +197,13 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             costModification += 1
         }
 
+        if (card.isCopper && cardCountByName(card.name) < 15 && game.landmarks.any { it is Fountain } && turns > 5) {
+            costModification += 1
+            if (buys > 1) {
+                costModification += 1
+            }
+        }
+
         if (costModification != 0) {
             return cost + costModification
         }
@@ -236,7 +243,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Witch.NAME && turns >= 8 -> true
             card.name == Mint.NAME && turns >= 5 -> true
             card.name == TreasureMap.NAME -> true
-            card.name == Copper.NAME -> !(includeVictoryOnlyCards && game.landmarks.any { it is Fountain })
+            card.name == Copper.NAME -> !(cardCountByName(card.name) < 15 && game.landmarks.any { it is Fountain } && turns > 5)
             card.name == Doctor.NAME -> true
             card.name == Masterpiece.NAME -> true
             card.name == Stonemason.NAME -> true
