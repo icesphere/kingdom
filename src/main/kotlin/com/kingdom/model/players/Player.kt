@@ -281,6 +281,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var sinisterPlotTokens: Int = 0
 
+    var ignoreAddActionsUntilEndOfTurn: Boolean = false
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -477,6 +479,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (actions == 0 || !isYourTurn) {
             return
         }
+        if (actions > 0 && ignoreAddActionsUntilEndOfTurn) {
+            return
+        }
         this.actions += actions
         if (refresh) {
             game.refreshPlayerCardsPlayed(this)
@@ -580,6 +585,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     private fun finishEndTurn(isAutoEnd: Boolean = false) {
 
         finishEndTurnAfterResolvingActions = false
+
+        ignoreAddActionsUntilEndOfTurn = false
 
         payOffDebt(false)
 

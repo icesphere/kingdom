@@ -435,7 +435,8 @@ class CardRepository {
                 Goatherd(),
                 HuntingLodge(),
                 Kiln(),
-                Mastermind()
+                Mastermind(),
+                SnowyVillage()
         )
 
     val menagerieEvents: List<Event>
