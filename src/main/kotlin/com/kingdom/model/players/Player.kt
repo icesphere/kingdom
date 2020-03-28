@@ -661,7 +661,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.turnEnded(isAutoEnd)
     }
 
-    abstract fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, info: Any? = null)
+    abstract fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, info: Any? = null, cardActionableExpression: ((card: Card) -> Boolean)? = null)
     abstract fun optionallyTrashCardsFromHand(numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null)
     abstract fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String = "", cardActionableExpression: ((card: Card) -> Boolean)? = null, info: Any? = null)
     abstract fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null, info: Any? = null)
@@ -1139,6 +1139,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     private fun handleBeforeBuyPhase() {
+        game.landmarks.filterIsInstance<BeforeBuyPhaseListenerForLandmarks>()
+                .forEach { it.beforeBuyPhase(this) }
         game.allCards.filterIsInstance<BeforeBuyPhaseListenerForCardsInSupply>()
                 .forEach { it.beforeBuyPhase(this) }
     }
@@ -1162,7 +1164,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     private fun countCardsByType(cards: List<Card>, typeMatcher: Function<Card, Boolean>): Int {
-        return cards.filter({ typeMatcher.apply(it) }).count()
+        return cards.filter { typeMatcher.apply(it) }.count()
     }
 
     private val currentDeckNumber: Int
