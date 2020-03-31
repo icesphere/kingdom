@@ -31,10 +31,13 @@ class Library : BaseCard(NAME, CardType.Action, 5), ChoiceActionCard {
                     player.yesNoChoice(this, "Add ${card.cardNameWithBackgroundColor} to your hand?")
                 } else {
                     player.addCardToHand(card, true)
+                    drawCardsForLibrary()
                 }
+            } else {
+                player.addCardsToDiscard(skippedActionCards, true)
             }
         } else {
-            player.addCardsToDiscard(skippedActionCards)
+            player.addCardsToDiscard(skippedActionCards, true)
         }
     }
 
