@@ -18,6 +18,7 @@ import com.kingdom.model.cards.guilds.*
 import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.menagerie.*
+import com.kingdom.model.cards.menagerie.events.*
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.renaissance.*
 import com.kingdom.model.cards.renaissance.projects.*
@@ -441,7 +442,9 @@ class CardRepository {
         )
 
     val menagerieEvents: List<Event>
-        get() = listOf()
+        get() = listOf(
+                Alliance()
+        )
 
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
