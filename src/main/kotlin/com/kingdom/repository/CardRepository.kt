@@ -443,7 +443,9 @@ class CardRepository {
 
     val menagerieEvents: List<Event>
         get() = listOf(
-                Alliance()
+                Alliance(),
+                Commerce(),
+                Delay()
         )
 
     val allCards: List<Card>

@@ -259,6 +259,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var cardToPutIntoHandAfterDrawingCardsAtEndOfTurn: Card? = null
 
+    var cardsToPlayAtStartOfNextTurn = mutableListOf<Card>()
+
     var numExtraCardsToDrawAtEndOfTurn: Int = 0
 
     var inheritanceActionCard: Card? = null
@@ -1527,6 +1529,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         cardsSetAsideUntilStartOfTurn.clear()
+
+        cardsToPlayAtStartOfNextTurn.forEach {
+            addActions(1)
+            playCard(it)
+        }
 
         durationCards.forEach { card ->
             when {
