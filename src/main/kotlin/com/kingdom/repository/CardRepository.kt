@@ -445,7 +445,8 @@ class CardRepository {
         get() = listOf(
                 Alliance(),
                 Commerce(),
-                Delay()
+                Delay(),
+                Desperation()
         )
 
     val allCards: List<Card>

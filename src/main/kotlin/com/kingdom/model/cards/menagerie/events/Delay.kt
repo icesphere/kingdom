@@ -15,7 +15,7 @@ class Delay : MenagerieEvent(NAME, 0), ChooseCardActionCard {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
-        player.chooseCardFromHand("Choose a card to set aside from your hand, that will be played at the start of your next turn.", this)
+        player.chooseCardFromHand("Choose an action card to set aside from your hand, that will be played at the start of your next turn.", this) { it.isAction }
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
