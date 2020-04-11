@@ -37,7 +37,7 @@ class Wayfarer : MenagerieCard(NAME, CardType.Action, 6), GameSetupModifier, Car
 
         val lastCardGainThatIsNotWayfarer = player.game.currentPlayer.cardsGained.reversed().firstOrNull { it.name != name }
         if (lastCardGainThatIsNotWayfarer != null) {
-            return player.getCardCostWithModifiers(lastCardGainThatIsNotWayfarer) * -1
+            return player.getCardCostWithModifiers(lastCardGainThatIsNotWayfarer) - 6
         }
 
         return 0
