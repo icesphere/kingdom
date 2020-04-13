@@ -447,7 +447,9 @@ class CardRepository {
                 Commerce(),
                 Delay(),
                 Desperation(),
-                Enhance()
+                Enhance(),
+                Gamble(),
+                March()
         )
 
     val allCards: List<Card>
