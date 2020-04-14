@@ -449,7 +449,8 @@ class CardRepository {
                 Desperation(),
                 Enhance(),
                 Gamble(),
-                March()
+                March(),
+                Populate()
         )
 
     val allCards: List<Card>
