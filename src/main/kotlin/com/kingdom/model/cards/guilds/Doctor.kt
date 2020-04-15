@@ -11,7 +11,7 @@ import com.kingdom.model.players.Player
 class Doctor : GuildsCard(NAME, CardType.Action, 3), ChooseCardActionCard, AfterCardBoughtListenerForSelf, ChoiceActionCard {
 
     init {
-        special = "Name a card. Reveal the top 3 cards of your deck. Trash the matches. Put the rest in any order. When you buy this, you may overpay for it. For each \$1 you overpaid, look at the top card of your deck; trash it, discard it, or put it back."
+        special = "Name a card. Reveal the top 3 cards of your deck. Trash the matches. Put the rest back in any order. When you buy this, you may overpay for it. For each \$1 you overpaid, look at the top card of your deck; trash it, discard it, or put it back."
         isOverpayForCardAllowed = true
         isTrashingCard = true
     }

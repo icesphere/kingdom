@@ -450,7 +450,9 @@ class CardRepository {
                 Enhance(),
                 Gamble(),
                 March(),
-                Populate()
+                Populate(),
+                Pursue(),
+                Toil()
         )
 
     val allCards: List<Card>
