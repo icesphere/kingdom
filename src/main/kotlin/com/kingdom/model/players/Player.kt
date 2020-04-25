@@ -1184,7 +1184,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun chooseSupplyCardToGainToTopOfDeck(maxCost: Int) {
-        chooseSupplyCardToGain({ c -> c.debtCost == 0 && getCardCostWithModifiers(c) <= maxCost }, "Gain a free card from the supply to the top of your deck costing up to $maxCost")
+        chooseSupplyCardToGain({ c -> c.debtCost == 0 && getCardCostWithModifiers(c) <= maxCost }, "Gain a free card from the supply to the top of your deck costing up to $maxCost", CardLocation.Deck)
     }
 
     fun chooseSupplyCardToGainToHandWithMaxCost(maxCost: Int) {
@@ -1238,7 +1238,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun gainHorse(showLog: Boolean = true) {
-        gainCardNotInSupply(Horse())
+        gainCardNotInSupply(Horse(), showLog)
     }
 
     fun gainSupplyCard(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {

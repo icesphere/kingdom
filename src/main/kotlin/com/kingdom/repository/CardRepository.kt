@@ -454,6 +454,7 @@ class CardRepository {
                 Bargain(),
                 Commerce(),
                 Delay(),
+                Demand(),
                 Desperation(),
                 Enhance(),
                 Gamble(),
