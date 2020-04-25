@@ -451,6 +451,7 @@ class CardRepository {
     val menagerieEvents: List<Event>
         get() = listOf(
                 Alliance(),
+                Bargain(),
                 Commerce(),
                 Delay(),
                 Desperation(),
