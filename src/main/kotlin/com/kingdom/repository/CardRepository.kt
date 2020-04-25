@@ -439,6 +439,7 @@ class CardRepository {
                 Hostelry(),
                 HuntingLodge(),
                 Kiln(),
+                Livery(),
                 Mastermind(),
                 SnowyVillage(),
                 Wayfarer()
