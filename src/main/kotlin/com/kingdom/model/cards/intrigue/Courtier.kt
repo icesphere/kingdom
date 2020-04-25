@@ -62,7 +62,10 @@ class Courtier : IntrigueCard(NAME, CardType.Action, 4), ChoiceActionCard, Choos
 
         if (choicesChosen.size < numChoices) {
             val availableChoices = choices.filterNot { choicesChosen.contains(it.choiceNumber) }
-            player.makeChoice(this, *availableChoices.toTypedArray())
+
+            if (availableChoices.isNotEmpty()) {
+                player.makeChoice(this, *availableChoices.toTypedArray())
+            }
         }
     }
 
