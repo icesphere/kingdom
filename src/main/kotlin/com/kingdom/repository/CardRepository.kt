@@ -441,6 +441,7 @@ class CardRepository {
                 Kiln(),
                 Livery(),
                 Mastermind(),
+                Paddock(),
                 SnowyVillage(),
                 Wayfarer()
         )
