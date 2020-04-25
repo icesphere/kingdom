@@ -436,6 +436,7 @@ class CardRepository {
                 Fisherman(),
                 Goatherd(),
                 Groom(),
+                Hostelry(),
                 HuntingLodge(),
                 Kiln(),
                 Mastermind(),
