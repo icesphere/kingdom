@@ -461,6 +461,8 @@ class CardRepository {
                 March(),
                 Populate(),
                 Pursue(),
+                Ride(),
+                Stampede(),
                 Toil()
         )
 
