@@ -444,6 +444,7 @@ class CardRepository {
                 Paddock(),
                 Scrap(),
                 SnowyVillage(),
+                Supplies(),
                 Wayfarer()
         )
 

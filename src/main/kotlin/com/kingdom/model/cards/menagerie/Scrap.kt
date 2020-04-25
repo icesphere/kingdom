@@ -12,6 +12,8 @@ class Scrap : MenagerieCard(NAME, CardType.Action, 3), TrashCardsForBenefitActio
 
     init {
         special = "Trash a card from your hand. Choose a different thing per \$ it costs: +1 Card; +1 Action; +1 Buy; +\$1 ; gain a Silver; gain a Horse."
+        isTrashingCard = true
+        isTrashingFromHandRequiredCard = true
     }
 
     private val choices = listOf(

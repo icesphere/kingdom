@@ -1209,13 +1209,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     abstract fun yesNoChoice(choiceActionCard: ChoiceActionCard, text: String, info: Any? = null)
 
-    fun gainCardNotInSupply(card: Card) {
+    fun gainCardNotInSupply(card: Card, showLog: Boolean = true) {
         if (game.isCardAvailableInSupply(card)) {
             game.removeCardFromSupply(card)
 
             cardGained(card)
 
-            addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor}")
+            if (showLog) {
+                addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor}")
+            }
         }
     }
 
@@ -1235,7 +1237,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         gainCardNotInSupply(Spoils())
     }
 
-    fun gainHorse() {
+    fun gainHorse(showLog: Boolean = true) {
         gainCardNotInSupply(Horse())
     }
 

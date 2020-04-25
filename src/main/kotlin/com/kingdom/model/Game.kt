@@ -762,10 +762,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         get() = numInPileMap.filterValues { it == 0 }.keys
 
     val availableCards
-        get() = allCards.filter { isCardAvailableInSupply(it) }
+        get() = allCards.filter { isCardAvailableInSupply(it) && !cardsNotInSupply.contains(it) }
 
     val availableCardsCopy
-        get() = allCardsCopy.filter { isCardAvailableInSupply(it) }
+        get() = allCardsCopy.filter { isCardAvailableInSupply(it) && !cardsNotInSupply.contains(it) }
 
     fun addGameChat(message: String) {
         chats.add(ChatMessage(message, "black"))
