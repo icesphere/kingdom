@@ -11,6 +11,8 @@ import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.listeners.GameStartedListener
+import com.kingdom.model.cards.menagerie.Horse
+import com.kingdom.model.cards.menagerie.UsesHorses
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.modifiers.CardCostModifierForCardsInPlay
 import com.kingdom.model.cards.supply.*
@@ -202,6 +204,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var isIncludeRuins: Boolean = false
     var ruinsPile: MutableList<Card> = ArrayList()
 
+    var isIncludeHorse: Boolean = false
+
     var randomizingOptions: RandomizingOptions? = null
 
     var isRandomizerReplacementCardNotFound: Boolean = false
@@ -331,11 +335,17 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         setupSupply()
 
+        val addedHorse = false
+
         kingdomCards.forEach {
             cardMap[it.name] = it
 
             if (it is GameSetupModifier) {
                 it.modifyGameSetup(this)
+            }
+
+            if (it is UsesHorses && !addedHorse) {
+                isIncludeHorse = true
             }
 
             if (it.isDuration) {
@@ -351,7 +361,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             }
 
             if (it is MultiTypePile) {
-                it.otherCardsInPile.forEach { cardMap[it.name] = it }
+                it.otherCardsInPile.forEach { card -> cardMap[card.name] = card }
                 multiTypePileMap[it.name] = it.createMultiTypePile(this).toMutableList()
             }
 
@@ -363,6 +373,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         events.forEach { event ->
             if (event is GameSetupModifier) {
                 event.modifyGameSetup(this)
+            }
+            if (event is UsesHorses) {
+                isIncludeHorse = true
             }
         }
 
@@ -381,6 +394,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
         projects.sortBy { it.cost }
+
+        if (isIncludeHorse) {
+            cardsNotInSupply.add(Horse())
+            pileAmounts[Horse.NAME] = 30
+        }
 
         if (isIncludeRuins) {
             createRuinsPile()

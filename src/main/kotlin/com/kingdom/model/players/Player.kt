@@ -14,6 +14,7 @@ import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.empires.Overlord
 import com.kingdom.model.cards.listeners.*
+import com.kingdom.model.cards.menagerie.Horse
 import com.kingdom.model.cards.renaissance.artifacts.*
 import com.kingdom.model.cards.renaissance.projects.Citadel
 import com.kingdom.model.cards.supply.Copper
@@ -1234,6 +1235,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         gainCardNotInSupply(Spoils())
     }
 
+    fun gainHorse() {
+        gainCardNotInSupply(Horse())
+    }
+
     fun gainSupplyCard(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {
 
         //create copy of card so that it doesn't affect card chosen in case it came from somewhere other than the supply
@@ -2167,5 +2172,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         return allCards.filter { it.name == cardName }
                 .filterIsInstance<VictoryPointsCalculator>()
                 .sumBy { it.calculatePoints(this) }
+    }
+
+    fun returnToActionPhaseIfBuyPhase() {
+        if (isBuyPhase) {
+            isReturnToActionPhase = true
+            isTreasuresPlayable = true
+            refreshCardsBought()
+            refreshSupply()
+            addEventLogWithUsername("returned to Action phase")
+        }
     }
 }
