@@ -431,6 +431,7 @@ class CardRepository {
     val menagerieCards : List<Card>
         get() = listOf(
                 Barge(),
+                BountyHunter(),
                 Cavalry(),
                 Destrier(),
                 Fisherman(),

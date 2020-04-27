@@ -1602,6 +1602,7 @@ class GameController(private val cardManager: CardManager,
 
             modelAndView.addObject("showDuration", game.isShowDuration)
             modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+            modelAndView.addObject("showExileCards", game.isShowExileCards)
             modelAndView.addObject("showTavern", game.isShowTavern)
             modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
@@ -1926,6 +1927,18 @@ class GameController(private val cardManager: CardManager,
         return getShowCardsDiv(request, response, player.islandCards, "Island Cards")
     }
 
+    @RequestMapping("/showExileCards.html")
+    fun showExileCards(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return ModelAndView("redirect:/login.html")
+        }
+        val player = game.playerMap[user.userId]!!
+
+        return getShowCardsDiv(request, response, player.exileCards, "Exile Cards")
+    }
+
     @RequestMapping("/showCardsNotInSupply.html")
     fun showCardsNotInSupply(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)
@@ -1978,6 +1991,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
         modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
         modelAndView.addObject("showIslandCards", game.isShowIslandCards)
+        modelAndView.addObject("showExileCards", game.isShowExileCards)
         modelAndView.addObject("showTavern", game.isShowTavern)
         modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)
         modelAndView.addObject("playTreasureCards", player.isTreasuresPlayable)

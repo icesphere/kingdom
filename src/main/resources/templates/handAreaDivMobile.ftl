@@ -23,6 +23,9 @@
     <#if showIslandCards>
         <div class="handAreaTopRowLeft" style="clear:both;"><#if player.islandCards?size != 0><a href="javascript:showIslandCards()"></#if>${player.islandCards?size} Island Card<#if player.islandCards?size != 1>s</#if><#if player.islandCards?size != 0></a></#if></div>
     </#if>
+    <#if showExileCards>
+        <div class="handAreaTopRowLeft" style="clear:both;"><#if player.exileCards?size != 0><a href="javascript:showExileCards()"></#if>${player.exileCards?size} Exile Card<#if player.exileCards?size != 1>s</#if><#if player.exileCards?size != 0></a></#if></div>
+    </#if>
     <#if showNativeVillage>
         <div class="handAreaTopRowLeft" style="clear:both;"><#if player.nativeVillageCards?size != 0><a href="javascript:showNativeVillageCards()"></#if>${player.nativeVillageCards?size} Native Village Card<#if player.nativeVillageCards?size != 1>s</#if><#if player.nativeVillageCards?size != 0></a></#if></div>
     </#if>

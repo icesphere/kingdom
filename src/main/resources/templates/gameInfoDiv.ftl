@@ -133,6 +133,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if showExileCards>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        Exile Cards:
+                                    </td>
+                                    <td>
+                                        ${p.exileCardsString}
+                                    </td>
+                                </tr>
+                            </#if>
                             <#if showTavern>
                                 <tr>
                                     <td class="gameInfoLabel">

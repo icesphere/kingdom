@@ -210,6 +210,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     val islandCardsString: String
         get() = islandCards.groupedString
 
+    var exileCards = mutableListOf<Card>()
+
+    val exileCardsString: String
+        get() = exileCards.groupedString
+
     var pirateShipCoins: Int = 0
         set(value) {
             field = value
@@ -421,6 +426,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 islandCards.contains(card) -> {
                     islandCards.remove(card)
                     islandCards.add(actualCard)
+                }
+                exileCards.contains(card) -> {
+                    exileCards.remove(card)
+                    exileCards.add(actualCard)
                 }
                 nativeVillageCards.contains(card) -> {
                     nativeVillageCards.remove(card)
@@ -815,6 +824,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         cardsGained.add(cardToGain)
 
+        if (exileCards.any { it.name == card.name }) {
+            yesNoChoice(object : ChoiceActionCard {
+                override val name: String = "DiscardMatchingCardsFromExileMat"
+
+                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                    if (choice == 1) {
+                        player.discardMatchingCardsFromExileMat(info as Card)
+                    }
+                }
+
+            }, "Discard ${card.getNumberPlusNameWithBackgroundColor(exileCards.count { it.name == card.name })} from your Exile mat?", card)
+        }
+
         game.availableCards.filterIsInstance<CardGainedListenerForCardsAvailableInSupply>()
                 .forEach {
                     it.onCardGained(cardToGain, this)
@@ -916,6 +938,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (cardToGain.isVictory || game.landmarks.any { it is VictoryPointsCalculator }) {
             game.refreshPlayers()
         }
+    }
+
+    private fun discardMatchingCardsFromExileMat(card: Card) {
+        val cardsToDiscard = exileCards.filter { it.name == card.name }
+        exileCards.removeAll(cardsToDiscard)
+        addCardsToDiscard(cardsToDiscard, true)
     }
 
     abstract fun makeChoice(card: ChoiceActionCard, vararg choices: Choice)
@@ -1063,6 +1091,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cards.addAll(inPlay)
             cards.addAll(nativeVillageCards)
             cards.addAll(islandCards)
+            cards.addAll(exileCards)
             cards.addAll(durationCards)
             cards.addAll(tavernCards)
             inheritanceActionCard?.let { cards.add(it) }
@@ -2074,6 +2103,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         replaceEstatesWithInheritanceEstates(inPlay)
         replaceEstatesWithInheritanceEstates(nativeVillageCards)
         replaceEstatesWithInheritanceEstates(islandCards)
+        replaceEstatesWithInheritanceEstates(exileCards)
         replaceEstatesWithInheritanceEstates(durationCards)
         replaceEstatesWithInheritanceEstates(tavernCards)
 
@@ -2184,5 +2214,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             refreshSupply()
             addEventLogWithUsername("returned to Action phase")
         }
+    }
+
+    fun exileCardFromHand(card: Card) {
+        removeCardFromHand(card, false)
+        cardRemovedFromPlay(card, CardLocation.ExileMat)
+        exileCards.add(card)
+        refreshPlayerHandArea()
     }
 }

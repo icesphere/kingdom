@@ -12,6 +12,7 @@ import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.listeners.GameStartedListener
 import com.kingdom.model.cards.menagerie.Horse
+import com.kingdom.model.cards.menagerie.UsesExileMat
 import com.kingdom.model.cards.menagerie.UsesHorses
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.modifiers.CardCostModifierForCardsInPlay
@@ -220,6 +221,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var isShowIslandCards: Boolean = false
 
+    var isShowExileCards: Boolean = false
+
     val victoryCards: List<Card>
         get() = allCards
                 .filter { it.isVictory }
@@ -335,8 +338,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         setupSupply()
 
-        val addedHorse = false
-
         kingdomCards.forEach {
             cardMap[it.name] = it
 
@@ -344,8 +345,12 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 it.modifyGameSetup(this)
             }
 
-            if (it is UsesHorses && !addedHorse) {
+            if (it is UsesHorses) {
                 isIncludeHorse = true
+            }
+
+            if (it is UsesExileMat) {
+                isShowExileCards = true
             }
 
             if (it.isDuration) {
@@ -376,6 +381,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             }
             if (event is UsesHorses) {
                 isIncludeHorse = true
+            }
+            if (event is UsesExileMat) {
+                isShowExileCards = true
             }
         }
 

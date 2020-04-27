@@ -270,6 +270,13 @@ function showIslandCards() {
     $('#showCardsDiv').show()
 }
 
+function showExileCards() {
+
+    $('#showCardsDiv').load('showExileCards.html')
+
+    $('#showCardsDiv').show()
+}
+
 function showCardsNotInSupply() {
 
     $('#showCardsDiv').load('showCardsNotInSupply.html')
