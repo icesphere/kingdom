@@ -433,6 +433,7 @@ class CardRepository {
                 Barge(),
                 BountyHunter(),
                 CamelTrain(),
+                Cardinal(),
                 Cavalry(),
                 Destrier(),
                 Fisherman(),

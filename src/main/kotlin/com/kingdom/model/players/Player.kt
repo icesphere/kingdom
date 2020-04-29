@@ -1351,6 +1351,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun addCardsToDiscard(cards: List<Card>, showLog: Boolean = false) {
+        if (cards.isEmpty()) return
+
         cards.forEach { addCardToDiscard(it, refresh = false) }
         if (showLog) {
             addEventLogWithUsername("discarded ${cards.groupedString}")
@@ -2219,13 +2221,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun exileCardFromHand(card: Card) {
         removeCardFromHand(card, false)
         cardRemovedFromPlay(card, CardLocation.ExileMat)
-        exileCards.add(card)
-        refreshPlayerHandArea()
     }
 
     fun exileCardFromSupply(card: Card) {
         game.removeCardFromSupply(card)
+    }
+
+    fun exileCard(card: Card) {
         exileCards.add(card)
         refreshPlayerHandArea()
+        addEventLogWithUsername("exiled ${card.cardNameWithBackgroundColor}")
     }
 }
