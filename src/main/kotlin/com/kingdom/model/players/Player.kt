@@ -2222,4 +2222,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         exileCards.add(card)
         refreshPlayerHandArea()
     }
+
+    fun exileCardFromSupply(card: Card) {
+        game.removeCardFromSupply(card)
+        exileCards.add(card)
+        refreshPlayerHandArea()
+    }
 }

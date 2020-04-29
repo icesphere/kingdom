@@ -432,6 +432,7 @@ class CardRepository {
         get() = listOf(
                 Barge(),
                 BountyHunter(),
+                CamelTrain(),
                 Cavalry(),
                 Destrier(),
                 Fisherman(),
