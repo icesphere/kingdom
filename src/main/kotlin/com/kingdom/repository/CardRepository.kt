@@ -436,6 +436,7 @@ class CardRepository {
                 Cardinal(),
                 Cavalry(),
                 Destrier(),
+                Displace(),
                 Fisherman(),
                 Goatherd(),
                 Groom(),

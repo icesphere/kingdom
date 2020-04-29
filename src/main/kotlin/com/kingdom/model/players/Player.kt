@@ -2221,10 +2221,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun exileCardFromHand(card: Card) {
         removeCardFromHand(card, false)
         cardRemovedFromPlay(card, CardLocation.ExileMat)
+        exileCard(card)
     }
 
     fun exileCardFromSupply(card: Card) {
         game.removeCardFromSupply(card)
+        exileCard(card)
     }
 
     fun exileCard(card: Card) {
