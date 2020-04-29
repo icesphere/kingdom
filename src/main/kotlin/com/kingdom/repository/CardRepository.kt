@@ -446,6 +446,7 @@ class CardRepository {
                 Livery(),
                 Mastermind(),
                 Paddock(),
+                Sanctuary(),
                 Scrap(),
                 SnowyVillage(),
                 Supplies(),
