@@ -2229,6 +2229,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         exileCard(card)
     }
 
+    fun exileCardFromInPlay(card: Card) {
+        removeCardInPlay(card, CardLocation.ExileMat)
+        exileCard(card)
+    }
+
     fun exileCard(card: Card) {
         exileCards.add(card)
         refreshPlayerHandArea()

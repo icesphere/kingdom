@@ -449,6 +449,7 @@ class CardRepository {
                 Sanctuary(),
                 Scrap(),
                 SnowyVillage(),
+                Stockpile(),
                 Supplies(),
                 Wayfarer()
         )

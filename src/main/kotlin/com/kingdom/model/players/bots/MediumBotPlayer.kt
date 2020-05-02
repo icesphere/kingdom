@@ -26,6 +26,7 @@ import com.kingdom.model.cards.guilds.Stonemason
 import com.kingdom.model.cards.hinterlands.Farmland
 import com.kingdom.model.cards.intrigue.Upgrade
 import com.kingdom.model.cards.menagerie.Mastermind
+import com.kingdom.model.cards.menagerie.UsesExileMat
 import com.kingdom.model.cards.prosperity.Contraband
 import com.kingdom.model.cards.prosperity.Forge
 import com.kingdom.model.cards.prosperity.KingsCourt
@@ -222,6 +223,8 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             }
         }
 
+        //todo exile cards
+
         //todo trashing strategy
 
         val terminalActionsBought = cardCountByExpression { it.isTerminalAction }
@@ -259,6 +262,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == ActingTroupe.NAME && terminalActionsBought > 0 && villagers == 0 -> true
             card is TavernCard -> true
             card.isRuins -> true
+            card is UsesExileMat -> true
             card.debtCost > 0 -> true
             game.landmarks.any { it is Wall } && (card.cost < 3 || (card.cost < 5 && allCards.size >= 15)) -> true
             else -> super.excludeCard(card)
