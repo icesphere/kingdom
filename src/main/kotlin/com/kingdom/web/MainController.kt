@@ -4,6 +4,8 @@ import com.kingdom.model.User
 import com.kingdom.service.GameRoomManager
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.util.KingdomUtil
+import com.kingdom.util.USERNAME_COOKIE
+import com.kingdom.util.removeSpaces
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.servlet.ModelAndView
@@ -31,7 +33,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         if (username != null) {
             val usernameCookieValue = getUsernameCookie(request)
 
-            val usernameMatchesCookie = username.toLowerCase() == usernameCookieValue?.toLowerCase()
+            val usernameMatchesCookie = username.removeSpaces().toLowerCase() == usernameCookieValue?.toLowerCase()
 
             val existingUser = LoggedInUsers.getUserByUsername(username)
 
@@ -74,7 +76,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
             request.cookies?.firstOrNull { it.name.trim().toLowerCase() == "kingdomaccess" }?.value?.trim()?.toLowerCase() == "winner"
 
     private fun getUsernameCookie(request: HttpServletRequest): String? =
-            request.cookies?.firstOrNull { it.name.trim().toLowerCase() == "kingdomusername" }?.value?.trim()
+            request.cookies?.firstOrNull { it.name.trim().toLowerCase() == USERNAME_COOKIE }?.value?.trim()
 
     @RequestMapping("/access.html")
     @Throws(Exception::class)
@@ -198,10 +200,5 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         val mobile = KingdomUtil.isMobile(request)
         request.session.setAttribute("mobile", !mobile)
         return ModelAndView("empty")
-    }
-
-    companion object {
-
-        private val MAX_USER_LIMIT = 100
     }
 }

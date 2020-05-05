@@ -15,6 +15,12 @@ import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+const val USERNAME_COOKIE = "kingdomusername"
+
+fun String.removeSpaces(): String {
+    return replace("\\s".toRegex(), "")
+}
+
 fun List<Card>?.toCardNames(addColor: Boolean = true): String {
     if (this == null || this.isEmpty()) {
         return ""
@@ -310,8 +316,8 @@ object KingdomUtil {
         return ArrayList(set)
     }
 
-    fun addUsernameCookieToResponse(username: String?, response: HttpServletResponse) {
-        val usernameCookie = Cookie("kingdomusername", username)
+    fun addUsernameCookieToResponse(username: String, response: HttpServletResponse) {
+        val usernameCookie = Cookie(USERNAME_COOKIE, username.removeSpaces().trim())
         usernameCookie.maxAge = 3 * 60 * 60 //3 hours
         response.addCookie(usernameCookie)
     }

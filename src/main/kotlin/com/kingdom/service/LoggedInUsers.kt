@@ -1,7 +1,7 @@
 package com.kingdom.service
 
 import com.kingdom.model.User
-import com.kingdom.util.KingdomUtil
+import com.kingdom.util.removeSpaces
 import java.util.*
 
 object LoggedInUsers {
@@ -33,7 +33,7 @@ object LoggedInUsers {
     }
 
     fun usernameBeingUsed(username: String): Boolean {
-        return users.values.any { it.username.toLowerCase() == username.toLowerCase() }
+        return users.values.any { it.username.removeSpaces().toLowerCase() == username.removeSpaces().toLowerCase() }
     }
 
     fun getUserByUsername(username: String): User? {

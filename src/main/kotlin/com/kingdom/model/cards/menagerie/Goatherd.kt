@@ -10,6 +10,7 @@ class Goatherd : MenagerieCard(NAME, CardType.Action, 3), OptionalTrashCardsForB
     init {
         addActions = 1
         special = "You may trash a card from your hand. +1 Card per card the player to your right trashed on their last turn"
+        isTrashingCard = true
     }
 
     override fun cardPlayedSpecialAction(player: Player) {

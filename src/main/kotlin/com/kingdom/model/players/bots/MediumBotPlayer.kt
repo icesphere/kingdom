@@ -25,6 +25,7 @@ import com.kingdom.model.cards.guilds.Masterpiece
 import com.kingdom.model.cards.guilds.Stonemason
 import com.kingdom.model.cards.hinterlands.Farmland
 import com.kingdom.model.cards.intrigue.Upgrade
+import com.kingdom.model.cards.menagerie.Goatherd
 import com.kingdom.model.cards.menagerie.Mastermind
 import com.kingdom.model.cards.menagerie.UsesExileMat
 import com.kingdom.model.cards.prosperity.Contraband
@@ -251,6 +252,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
             card.name == Masterpiece.NAME -> true
             card.name == Stonemason.NAME -> true
             card.name == Raze.NAME -> true
+            card.name == Goatherd.NAME -> true
             card.name == Amulet.NAME -> true
             card.name == Gear.NAME -> true
             card.name == Storyteller.NAME -> true
