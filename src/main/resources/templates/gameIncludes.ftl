@@ -11,4 +11,4 @@
         var mobile = false;
     </script>
 </#if>
-<script type="text/javascript" src="js/game.js?13"></script>
+<script type="text/javascript" src="js/game.js?14"></script>

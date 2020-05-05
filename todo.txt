@@ -25,4 +25,3 @@ cutpurse beggar error, also refresh after
 bot doesn't seem to trash anything when playing spice merchant
 num events/landmarks/etc reset when changing cards on card confirmation screen
 fix: labyrinth and crumbling castle = double bonus
-chat doesn't scroll down

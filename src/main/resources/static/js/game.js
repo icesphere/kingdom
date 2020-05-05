@@ -207,7 +207,10 @@ function refreshPlayers() {
 
 function refreshChat() {
     console.log("refreshing chat")
-    $('#chatDiv').load('getChatDiv.html')
+    $('#chatDiv').load('getChatDiv.html', function() {
+      var chatDiv = document.getElementById("chatDiv");
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    });
 }
 
 function refreshHistory() {
