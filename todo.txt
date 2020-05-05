@@ -18,7 +18,6 @@ bot logic for Teacher
 Scavenger choice didn't work bug
 Computer froze after playing Jester
 add option to not show playing of bot turn
-remind player which tavern cards are available to use at start of turn
 kings court play logic for bot
 Other players able to play during other players turn (maybe due to Improve, City Gate, or Arena?)
 cutpurse beggar error, also refresh after
