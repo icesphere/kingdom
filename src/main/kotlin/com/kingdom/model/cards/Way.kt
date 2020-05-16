@@ -1,0 +1,13 @@
+package com.kingdom.model.cards
+
+import com.kingdom.model.players.Player
+
+abstract class Way(name: String,
+                   deck: Deck) : Card(name, deck, CardType.Way, 0) {
+
+    open fun isWayActionable(player: Player, card: Card): Boolean {
+        return true
+    }
+
+    abstract fun onUseWay(player: Player, card: Card)
+}

@@ -32,7 +32,7 @@ class Ambassador : SeasideCard(NAME, CardType.ActionAttack, 3), AttackCard, Choo
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
         player.revealCardFromHand(card)
 
-        if (card.isShelter || player.game.cardsNotInSupply.any { it.name == card.name }) {
+        if (card.isShelter || player.game.isCardNotInSupply(card)) {
             player.showInfoMessage("Revealed card is not in the supply")
             player.addEventLog("Revealed card is not in the supply")
             return

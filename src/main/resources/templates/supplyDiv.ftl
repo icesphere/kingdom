@@ -53,11 +53,11 @@
                 </tr>
             </table>
         </td>
-        <#if eventsAndLandmarksAndProjects?has_content>
+        <#if eventsAndLandmarksAndProjectsAndWays?has_content>
             <td>
                 <table>
                     <tr>
-                        <#list eventsAndLandmarksAndProjects as card>
+                        <#list eventsAndLandmarksAndProjectsAndWays as card>
                             <#if card_index == 1>
                                 </tr>
                                 <tr>
@@ -66,6 +66,8 @@
                                 <#assign clickType="event">
                             <#elseif card.landmark>
                                 <#assign clickType="landmark">
+                            <#elseif card.way>
+                                <#assign clickType="way">
                             <#else>
                                 <#assign clickType="project">
                             </#if>

@@ -25,6 +25,9 @@ class CardManager(private val cardRepository: CardRepository,
     val allProjects: List<Project>
         get() = cardRepository.allProjects
 
+    val allWays: List<Way>
+        get() = cardRepository.allWays
+
     val shelters: List<Card>
         get() = cardRepository.shelters
 
@@ -49,6 +52,10 @@ class CardManager(private val cardRepository: CardRepository,
 
     fun getProject(projectName: String): Project {
         return allProjects.first { it.name == projectName }
+    }
+
+    fun getWay(wayName: String): Way {
+        return allWays.first { it.name == wayName }
     }
 
     fun setRandomKingdomCardsAndEvents(game: Game) {

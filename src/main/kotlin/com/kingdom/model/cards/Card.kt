@@ -112,6 +112,7 @@ abstract class Card(
             CardType.Landmark -> "Landmark"
             CardType.Artifact -> "Artifact"
             CardType.Project -> "Project"
+            CardType.Way -> "Way"
         }
 
     val numTypes: Int
@@ -277,6 +278,9 @@ abstract class Card(
     val isProject: Boolean
         get() = type == CardType.Project
 
+    val isWay: Boolean
+        get() = type == CardType.Way
+
     val isGathering: Boolean
         get() = type == CardType.ActionGathering
 
@@ -317,6 +321,7 @@ abstract class Card(
             type == CardType.Landmark -> CardColor.Victory
             type == CardType.Artifact -> CardColor.Artifact
             type == CardType.Project -> CardColor.Project
+            type == CardType.Way -> CardColor.Way
             isTreasure -> CardColor.Treasure
             isVictory -> CardColor.Victory
             else -> CardColor.Action

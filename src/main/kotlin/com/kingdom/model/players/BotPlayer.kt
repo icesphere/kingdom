@@ -302,7 +302,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 }
             }
 
-            val cardsAvailableToBuy = game.availableCards.filter { c -> !game.cardsNotInSupply.contains(c) && availableCoins >= this.getCardCostWithModifiers(c) }
+            val cardsAvailableToBuy = game.availableCards.filter { c -> !game.isCardNotInSupply(c) && availableCoins >= this.getCardCostWithModifiers(c) }
 
             if (cardsAvailableToBuy.isEmpty()) {
                 return cardsToBuy

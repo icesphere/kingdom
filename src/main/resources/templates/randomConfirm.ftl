@@ -34,7 +34,7 @@
                 <a href="showGameCards.html" target="_blank">Card Details</a>
             </div>
             <div style="padding-bottom: 5px;">
-                <#if eventsAndLandmarksAndProjects?has_content || artifacts?has_content>
+                <#if eventsAndLandmarksAndProjectsAndWays?has_content || artifacts?has_content>
                     <div style="font-weight: bold; font-size: 14px; padding-bottom: 5px;">Kingdom Cards:</div>
                 </#if>
                 <#assign clickType="random">
@@ -49,11 +49,11 @@
                     </div>
                 </#list>
             </div>
-            <#if eventsAndLandmarksAndProjects?has_content>
+            <#if eventsAndLandmarksAndProjectsAndWays?has_content>
                 <div style="clear: both; padding-top: 5px; padding-bottom: 5px;">
-                    <div style="font-weight: bold; font-size: 14px; padding-bottom: 5px;">Events/Landmarks/Projects:</div>
+                    <div style="font-weight: bold; font-size: 14px; padding-bottom: 5px;">Other:</div>
                     <#assign clickType="random">
-                    <#list eventsAndLandmarksAndProjects as card>
+                    <#list eventsAndLandmarksAndProjectsAndWays as card>
                         <div style="float:left;padding-right:2px;padding-top:2px;">
                             <#include "gameCard.ftl">
                         </div>

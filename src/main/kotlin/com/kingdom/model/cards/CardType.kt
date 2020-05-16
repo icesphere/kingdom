@@ -48,5 +48,6 @@ enum class CardType {
     Event,
     Landmark,
     Artifact,
-    Project
+    Project,
+    Way
 }

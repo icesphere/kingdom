@@ -23,7 +23,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
         addCards(game, options)
 
-        addEventsAndLandmarksAndProjects(game, options)
+        addEventsAndLandmarksAndProjectsAndWays(game, options)
     }
 
     private fun addCards(game: Game, options: RandomizingOptions) {
@@ -136,25 +136,27 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         game.kingdomCards = selectedCards
     }
 
-    private fun addEventsAndLandmarksAndProjects(game: Game, options: RandomizingOptions) {
+    private fun addEventsAndLandmarksAndProjectsAndWays(game: Game, options: RandomizingOptions) {
 
-        val eventsAndLandmarksAndProjects = cardRepository.allEventsAndLandmarksAndProjects.filterNot { it.disabled }.shuffled()
+        val eventsAndLandmarksAndProjectsAndWays = cardRepository.allEventsAndLandmarksAndProjectsAndWays.filterNot { it.disabled }.shuffled()
 
-        val numEventsAndLandmarksAndProjects = options.numEventsAndLandmarksAndProjects
+        val numEventsAndLandmarksAndProjectsAndWays = options.numEventsAndLandmarksAndProjectsAndWays
 
-        val selectedEventsAndLandmarksAndProjects = LinkedList(options.customEventSelection + options.customLandmarkSelection + options.customProjectSelection)
+        val selectedEventsAndLandmarksAndProjectsAndWays = LinkedList(options.customEventSelection + options.customLandmarkSelection + options.customProjectSelection + options.customWaySelection)
 
-        if (selectedEventsAndLandmarksAndProjects.size < numEventsAndLandmarksAndProjects) {
-            val selectedEventAndLandmarkAndProjectNames = selectedEventsAndLandmarksAndProjects.map { it.name }
-            val availableEventsAndLandmarksAndProjects = eventsAndLandmarksAndProjects.filterNot { selectedEventAndLandmarkAndProjectNames.contains(it.name) }
-            selectedEventsAndLandmarksAndProjects.addAll(availableEventsAndLandmarksAndProjects.subList(0, numEventsAndLandmarksAndProjects - selectedEventsAndLandmarksAndProjects.size))
+        if (selectedEventsAndLandmarksAndProjectsAndWays.size < numEventsAndLandmarksAndProjectsAndWays) {
+            val selectedNames = selectedEventsAndLandmarksAndProjectsAndWays.map { it.name }
+            val available = eventsAndLandmarksAndProjectsAndWays.filterNot { selectedNames.contains(it.name) }
+            selectedEventsAndLandmarksAndProjectsAndWays.addAll(available.subList(0, numEventsAndLandmarksAndProjectsAndWays - selectedEventsAndLandmarksAndProjectsAndWays.size))
         }
 
-        game.events = selectedEventsAndLandmarksAndProjects.filterIsInstance<Event>().toMutableList()
+        game.events = selectedEventsAndLandmarksAndProjectsAndWays.filterIsInstance<Event>().toMutableList()
 
-        game.landmarks = selectedEventsAndLandmarksAndProjects.filterIsInstance<Landmark>().toMutableList()
+        game.landmarks = selectedEventsAndLandmarksAndProjectsAndWays.filterIsInstance<Landmark>().toMutableList()
 
-        game.projects = selectedEventsAndLandmarksAndProjects.filterIsInstance<Project>().toMutableList()
+        game.projects = selectedEventsAndLandmarksAndProjectsAndWays.filterIsInstance<Project>().toMutableList()
+
+        game.ways = selectedEventsAndLandmarksAndProjectsAndWays.filterIsInstance<Way>().toMutableList()
     }
 
     private fun addBaneCard(): Boolean {
@@ -250,12 +252,13 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         swapOptions.customEventSelection = game.events
         swapOptions.customLandmarkSelection = game.landmarks
         swapOptions.customProjectSelection = game.projects
+        swapOptions.customWaySelection = game.ways
         setRandomKingdomCardsAndEvents(game, swapOptions)
     }
 
     fun swapEvent(game: Game, eventName: String) {
         
-        val replacement = getEventOrLandmarkOrProject(game, eventName)
+        val replacement = getEventOrLandmarkOrProjectOrWay(game, eventName)
 
         when (replacement) {
             is Event -> game.events = game.events.map {
@@ -278,7 +281,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
     fun swapLandmark(game: Game, landmarkName: String) {
 
-        val replacement = getEventOrLandmarkOrProject(game, landmarkName)
+        val replacement = getEventOrLandmarkOrProjectOrWay(game, landmarkName)
 
         when (replacement) {
             is Landmark -> game.landmarks = game.landmarks.map {
@@ -301,7 +304,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
     fun swapProject(game: Game, projectName: String) {
 
-        val replacement = getEventOrLandmarkOrProject(game, projectName)
+        val replacement = getEventOrLandmarkOrProjectOrWay(game, projectName)
 
         when (replacement) {
             is Project -> game.projects = game.projects.map {
@@ -322,11 +325,38 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         }
     }
 
-    fun getEventOrLandmarkOrProject(game: Game, excludedName: String): Card {
+    fun swapWay(game: Game, wayName: String) {
 
-        val cards = cardRepository.allEventsAndLandmarksAndProjects.filterNot { it.disabled }.shuffled()
+        val replacement = getEventOrLandmarkOrProjectOrWay(game, wayName)
 
-        val selectedCards = game.events + game.landmarks + game.projects
+        when (replacement) {
+            is Way -> game.ways = game.ways.map {
+                if (it.name == wayName) {
+                    replacement
+                } else {
+                    it
+                }
+            }.toMutableList()
+            is Event -> {
+                game.ways.removeAll { it.name == wayName }
+                game.events.add(replacement)
+            }
+            is Landmark -> {
+                game.ways.removeAll { it.name == wayName }
+                game.landmarks.add(replacement)
+            }
+            is Project -> {
+                game.ways.removeAll { it.name == wayName }
+                game.projects.add(replacement)
+            }
+        }
+    }
+
+    fun getEventOrLandmarkOrProjectOrWay(game: Game, excludedName: String): Card {
+
+        val cards = cardRepository.allEventsAndLandmarksAndProjectsAndWays.filterNot { it.disabled }.shuffled()
+
+        val selectedCards = game.events + game.landmarks + game.projects + game.ways
 
         val selectedNames = selectedCards.map { it.name }
 

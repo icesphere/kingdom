@@ -17,7 +17,7 @@
         <script type="text/javascript" >
             var createGame = ${createGame?string};
         </script>
-        <script type="text/javascript" src="js/selectCards.js?9"></script>
+        <script type="text/javascript" src="js/selectCards.js?10"></script>
 	</head>
 	<body>
         <div class="topGradient"></div>
@@ -137,9 +137,9 @@
                     </div>
                 </div>
                 <div style="padding-top:10px;float:left;clear:both;">
-                    <div style="float:left;"><span class="label"># Events/Landmarks/Projects:</span></div>
+                    <div style="float:left;"><span class="label"># Events/Landmarks/Projects/Ways:</span></div>
                     <div style="clear:both;float:left;padding-left:10px;">
-                        <select id="numEventsAndLandmarksAndProjects" name="numEventsAndLandmarksAndProjects">
+                        <select id="numEventsAndLandmarksAndProjectsAndWays" name="numEventsAndLandmarksAndProjectsAndWays">
                             <option value="0">0</option>
                             <option value="1">1</option>
                             <option value="2" selected>2</option>
@@ -252,6 +252,35 @@
                             <#list projects as project>
                                 <div style="float:left;clear:both;">
                                     <#include "createGameProjectRow.ftl">
+                                </div>
+                            </#list>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label">Way Selection:</span></div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        <input id="waySelectionRandom" type="radio" name="waySelection" value="random" onclick="toggleWaySelection()" checked="true"/> <label for="waySelectionRandom">Random</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="waySelectionCustom" type="radio" name="waySelection" value="custom" onclick="toggleWaySelection()"/> <label for="waySelectionCustom">Custom</label>
+                    </div>
+                </div>
+
+                <div id="customWays" style="display:none;float:left;clear:both;">
+                    <div class="label" style="padding-top:10px;">
+                        Choose Specific Ways:
+                    </div>
+                    <div style="clear:both;float:left;">
+                        <div style="float:left;padding-left:10px;color:red;">Ways selected:</div><div id="numWaysSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining ways will be randomized based on selected decks)</div>
+                    </div>
+                    <div class="customCardsDeckContainer">
+                        <div class="customCardsDeck">
+                            <div style="float:left;" class="label">Ways</div>
+                            <#list ways as way>
+                                <div style="float:left;clear:both;">
+                                    <#include "createGameWayRow.ftl">
                                 </div>
                             </#list>
                         </div>

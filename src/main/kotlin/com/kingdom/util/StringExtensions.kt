@@ -7,11 +7,13 @@ fun String.plural(num: Int): String {
     } else {
         when {
             wordCopy == "Envoy" -> "$num Envoys"
+            wordCopy == "Highway" -> "$num Highways"
             wordCopy.endsWith("y") -> {
                 wordCopy = wordCopy.substring(0, wordCopy.length - 1) + "ies"
                 "$num $wordCopy"
             }
             wordCopy == "Witch" -> "$num Witches"
+            wordCopy == "Golden Touch" -> "$num Golden Touches"
             else -> num.toString() + " " + wordCopy + "s"
         }
     }

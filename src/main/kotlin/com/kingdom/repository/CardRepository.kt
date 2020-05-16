@@ -19,6 +19,7 @@ import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.menagerie.*
 import com.kingdom.model.cards.menagerie.events.*
+import com.kingdom.model.cards.menagerie.ways.WayOfTheButterfly
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.renaissance.*
 import com.kingdom.model.cards.renaissance.projects.*
@@ -472,6 +473,11 @@ class CardRepository {
                 Toil()
         )
 
+    val menagerieWays: List<Way>
+        get() = listOf(
+            WayOfTheButterfly()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
                 hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards +
@@ -486,8 +492,11 @@ class CardRepository {
     val allProjects: List<Project>
         get() = renaissanceProjects
 
-    val allEventsAndLandmarksAndProjects: List<Card>
-        get() = allEvents + allLandmarks + allProjects
+    val allWays: List<Way>
+        get() = menagerieWays
+
+    val allEventsAndLandmarksAndProjectsAndWays: List<Card>
+        get() = allEvents + allLandmarks + allProjects + allWays
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {

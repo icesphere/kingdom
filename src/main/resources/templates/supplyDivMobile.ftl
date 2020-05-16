@@ -21,15 +21,17 @@
         </div>
     </#list>
 
-    <#if eventsAndLandmarksAndProjects?has_content>
-        <div style="float:left;padding-right:2px;padding-top:2px;font-size:11px;position:relative;top:2px;left:3px;width:74px;height:38px;line-height:1;"><div>Events &</div><div>Landmarks &</div><div>Projects</div></div>
+    <#if eventsAndLandmarksAndProjectsAndWays?has_content>
+        <div style="float:left;display:flex;justify-content: center; align-items: center; flex-direction: column;padding-right:2px;padding-top:2px;font-size:12px;position:relative;width:74px;height:38px;line-height:1;"><div>Other</div><div>Cards</div></div>
 
-        <#list eventsAndLandmarksAndProjects as card>
+        <#list eventsAndLandmarksAndProjectsAndWays as card>
 
             <#if card.event>
                 <#assign clickType="event">
             <#elseif card.landmark>
                 <#assign clickType="landmark">
+            <#elseif card.way>
+                <#assign clickType="way">
             <#else>
                 <#assign clickType="project">
             </#if>

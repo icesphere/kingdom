@@ -23,5 +23,6 @@ enum class CardColor(val color: String, val mobileColor: String = color, val isI
     TreasureReserve("gold_tan.png", "gold_tan_mobile.png", true),
     ActionTreasure("grey_gold.png", "grey_gold_mobile.png", true),
     Artifact("#E8A65C"),
-    Project("#F09290")
+    Project("#F09290"),
+    Way("#91D4EF")
 }

@@ -3,8 +3,6 @@ package com.kingdom.util
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardColor
-import com.kingdom.model.cards.intrigue.Nobles
-import com.kingdom.model.cards.prosperity.Goons
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.service.UAgentInfo
 import org.springframework.web.servlet.ModelAndView
@@ -51,16 +49,6 @@ fun List<Card>?.toCardNames(addColor: Boolean = true): String {
 }
 
 object KingdomUtil {
-    private fun getArticleWithCardName(card: Card): String {
-        val cardName = card.name
-        val cardNameString = card.cardNameWithBackgroundColor
-        if (cardName == Goons.NAME || cardName == Nobles.NAME) {
-            return cardNameString
-        }
-        return if (cardName.toUpperCase().startsWith("A") || cardName.toUpperCase().startsWith("E") || cardName.toUpperCase().startsWith("I") || cardName.toUpperCase().startsWith("O") || cardName.toUpperCase().startsWith("U") || cardName == "Herbalist") {
-            "an $cardNameString"
-        } else "a $cardNameString"
-    }
 
     fun getWordWithBackgroundColor(word: String, color: CardColor): String {
         if (color.isImage) {
@@ -69,67 +57,12 @@ object KingdomUtil {
         return "<span class=\"cardColor\" style=\"background-color:${color.color}\">$word</span>"
     }
 
-    @JvmOverloads
-    fun getCardWithBackgroundColor(card: Card, addArticle: Boolean = false): String {
-        val cardName: String
-        if (addArticle) {
-            cardName = KingdomUtil.getArticleWithCardName(card)
-        } else {
-            cardName = card.name
-        }
-        return getWordWithBackgroundColor(cardName, card.backgroundColor)
-    }
-
-    fun getPlural(num: Int, word: String): String {
-        var wordCopy = word
-        if (num == 1 || num == -1 || wordCopy.endsWith("s")) {
-            return num.toString() + " " + wordCopy
-        } else {
-            if (wordCopy == "Envoy") {
-                return num.toString() + " " + "Envoys"
-            } else if (wordCopy.endsWith("y")) {
-                wordCopy = wordCopy.substring(0, wordCopy.length - 1) + "ies"
-                return num.toString() + " " + wordCopy
-            } else return if (wordCopy == "Witch") {
-                num.toString() + " " + "Witches"
-            } else if (wordCopy == "Golden Touch") {
-                num.toString() + " " + "Golden Touches"
-            } else {
-                num.toString() + " " + wordCopy + "s"
-            }
-        }
-    }
-
-    fun getPlural(num: Double, word: String): String {
-        var wordCopy = word
-        if (num == 1.0) {
-            return "1 " + wordCopy
-        } else {
-            val sb = StringBuffer()
-            if (num * 10 % 10 == 0.0) {
-                sb.append(num.toInt())
-            } else {
-                sb.append(num)
-            }
-            if (wordCopy.endsWith("y")) {
-                wordCopy = wordCopy.substring(0, wordCopy.length - 1) + "ies"
-                sb.append(" ").append(wordCopy)
-            } else {
-                sb.append(" ").append(wordCopy)
-                if (!wordCopy.endsWith("s")) {
-                    sb.append("s")
-                }
-            }
-            return sb.toString()
-        }
-    }
-
     fun getCommaSeparatedCardNames(cards: List<Card>): String {
         val cardNames = ArrayList<String>(cards.size)
         for (card in cards) {
             cardNames.add(card.name)
         }
-        return KingdomUtil.implode(cardNames, ",")
+        return implode(cardNames, ",")
     }
 
     fun getRequestBoolean(request: HttpServletRequest, name: String): Boolean {
@@ -252,28 +185,16 @@ object KingdomUtil {
         return request.session.getAttribute("mobile") as Boolean
     }
 
-    fun isTablet(request: HttpServletRequest): Boolean {
-        if (request.session == null || request.session.getAttribute("tablet") == null) {
-            val agentInfo = UAgentInfo(request.getHeader("User-Agent"), request.getHeader("Accept"))
-            return agentInfo.detectTierTablet()
-        }
-        return request.session.getAttribute("tablet") as Boolean
-    }
-
     fun getAccessModelAndView(request: HttpServletRequest): ModelAndView {
         val modelAndView = ModelAndView("access")
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        modelAndView.addObject("mobile", isMobile(request))
         return modelAndView
     }
 
     fun getLoginModelAndView(request: HttpServletRequest): ModelAndView {
         val modelAndView = ModelAndView("login")
-        modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        modelAndView.addObject("mobile", isMobile(request))
         return modelAndView
-    }
-
-    fun getRandomNumber(min: Int, max: Int): Int {
-        return min + (Math.random() * (max - min + 1)).toInt()
     }
 
     fun logoutUser(user: User?, request: HttpServletRequest) {
@@ -309,11 +230,6 @@ object KingdomUtil {
 
         gameTime.append(" ago")
         return gameTime.toString()
-    }
-
-    fun uniqueCardList(list: List<Card>): MutableList<Card> {
-        val set = HashSet(list)
-        return ArrayList(set)
     }
 
     fun addUsernameCookieToResponse(username: String, response: HttpServletResponse) {

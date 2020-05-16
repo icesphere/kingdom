@@ -93,6 +93,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     
     var projects = mutableListOf<Project>()
 
+    var ways = mutableListOf<Way>()
+
     private val supplyCards = ArrayList<Card>()
 
     val cardsInSupply: List<Card>
@@ -402,6 +404,12 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
         projects.sortBy { it.cost }
+
+        ways.forEach { way ->
+            if (way is GameSetupModifier) {
+                way.modifyGameSetup(this)
+            }
+        }
 
         if (isIncludeHorse) {
             cardsNotInSupply.add(Horse())
@@ -721,6 +729,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
     }
 
+    fun isCardNotInSupply(card: Card): Boolean {
+        return cardsNotInSupply.any { it.name == card.name }
+    }
+
     private fun isMultiTypePileCard(card: Card) = multiTypePileMap.containsKey(card.pileName)
 
     fun removeCardFromSupply(card: Card, refreshSupply: Boolean = true) {
@@ -770,10 +782,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         get() = numInPileMap.filterValues { it == 0 }.keys
 
     val availableCards
-        get() = allCards.filter { isCardAvailableInSupply(it) && !cardsNotInSupply.contains(it) }
+        get() = allCards.filter { isCardAvailableInSupply(it) && !isCardNotInSupply(it) }
 
     val availableCardsCopy
-        get() = allCardsCopy.filter { isCardAvailableInSupply(it) && !cardsNotInSupply.contains(it) }
+        get() = allCardsCopy.filter { isCardAvailableInSupply(it) && !isCardNotInSupply(it) }
 
     fun addGameChat(message: String) {
         chats.add(ChatMessage(message, "black"))
