@@ -12,6 +12,8 @@ class Paddock : MenagerieCard(NAME, CardType.Action, 5), UsesHorses {
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
+        player.gainHorse()
+        player.gainHorse()
         val emptyPiles = player.game.numEmptyPiles
         if (emptyPiles > 0) {
             player.addActions(emptyPiles)
