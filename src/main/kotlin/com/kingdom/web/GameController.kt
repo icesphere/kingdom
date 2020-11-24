@@ -852,6 +852,10 @@ class GameController(private val cardManager: CardManager,
         }
 
         model["refreshGameData"] = RefreshGameData(player.game.status, player.isYourTurn)
+        if (player.isYourTurn) {
+            model["showYourTurnMessage"] = player.isShowYourTurnMessage
+            player.isShowYourTurnMessage = false
+        }
 
         return model
     }

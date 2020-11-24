@@ -82,6 +82,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var isYourTurn: Boolean = false
         protected set
 
+    var isShowYourTurnMessage: Boolean = false
+
     val isStartOfTurn: Boolean
         get() = isYourTurn && cardsPlayed.isEmpty() && !isCardsBought
 
@@ -1533,6 +1535,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         actions = 1
         buys = 1
         isYourTurn = true
+        isShowYourTurnMessage = true
         turn++
 
         if (refreshPreviousPlayerCardsBought) {

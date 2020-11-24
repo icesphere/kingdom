@@ -227,6 +227,10 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
         //todo exile cards
 
         //todo trashing strategy
+        val trashingCards = cardCountByExpression { it.isTrashingCard }
+        if (card.isTrashingCard && (onlyBuyVictoryCards || turns > 7 || trashingCards >= 2 || (turns > 4 && trashingCards > 0))) {
+            return true
+        }
 
         val terminalActionsBought = cardCountByExpression { it.isTerminalAction }
         val actionsBought = cardCountByExpression { it.isAction }
@@ -279,7 +283,7 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
                 return when {
                     cardToTrash == null -> -1
                     !card.isTrashingFromHandToUpgradeCard && getBuyCardScore(cardToTrash) > 3 -> -1
-                    card.isTrashingFromHandToUpgradeCard && (cardToTrash.isProvince || cardToTrash.isColony) -> -1
+                    cardToTrash.isProvince || cardToTrash.isColony -> -1
                     (card.name == Upgrade.NAME || card.name == Remake.NAME) && cardToTrash.cost > 2 && game.availableCards.none { it.cost == card.cost + 1 } -> 1
                     card.addActions > 0 -> 10
                     else -> card.cost

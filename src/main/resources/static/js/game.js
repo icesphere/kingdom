@@ -64,7 +64,9 @@ function refreshGameInfo() {
             if (!(localStorage.muteSound == "true")) {
                 playBeep()
             }
-            showInfoMessage("Your turn", 1200)
+            if (data.showYourTurnMessage) {
+                showInfoMessage("Your turn", 1000)
+            }
         }
     });
 }
