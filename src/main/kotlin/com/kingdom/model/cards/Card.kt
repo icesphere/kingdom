@@ -446,9 +446,8 @@ abstract class Card(
                     if (choice == -1) {
                         cardPlayed(player, ignoreWays = true)
                     } else {
-                        player.addActions(-1, refresh)
                         val way = actionableWays[choice]
-                        way.onUseWay(player, card)
+                        way.playActionAsWay(player, card)
                     }
                 }
             }, "Play card action or use a Way?", choices)
@@ -498,7 +497,7 @@ abstract class Card(
         }
     }
 
-    private fun addCardBonuses(card: Card, player: Player, refresh: Boolean = true) {
+    protected fun addCardBonuses(card: Card, player: Player, refresh: Boolean = true) {
         player.addActions(card.addActions, refresh)
         player.addBuys(card.addBuys, refresh)
         player.addCoins(card.addCoins, refresh)

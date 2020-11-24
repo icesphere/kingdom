@@ -9,5 +9,11 @@ abstract class Way(name: String,
         return true
     }
 
-    abstract fun onUseWay(player: Player, card: Card)
+    fun playActionAsWay(player: Player, card: Card) {
+        player.addActions(-1)
+        addCardBonuses(this, player)
+        waySpecialAction(player, card)
+    }
+
+    abstract fun waySpecialAction(player: Player, card: Card)
 }

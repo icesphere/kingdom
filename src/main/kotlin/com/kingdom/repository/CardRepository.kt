@@ -19,7 +19,7 @@ import com.kingdom.model.cards.hinterlands.*
 import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.menagerie.*
 import com.kingdom.model.cards.menagerie.events.*
-import com.kingdom.model.cards.menagerie.ways.WayOfTheButterfly
+import com.kingdom.model.cards.menagerie.ways.*
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.renaissance.*
 import com.kingdom.model.cards.renaissance.projects.*
@@ -429,7 +429,7 @@ class CardRepository {
                 StarChart()
         )
 
-    val menagerieCards : List<Card>
+    val menagerieCards: List<Card>
         get() = listOf(
                 Barge(),
                 BountyHunter(),
@@ -475,7 +475,8 @@ class CardRepository {
 
     val menagerieWays: List<Way>
         get() = listOf(
-            WayOfTheButterfly()
+                WayOfTheButterfly(),
+                WayOfTheHorse()
         )
 
     val allCards: List<Card>

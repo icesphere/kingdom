@@ -4,10 +4,12 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardLocation
 import com.kingdom.model.players.Player
 
-class WayOfTheButterfly : MenagerieWay(NAME) {
+class WayOfTheHorse : MenagerieWay(NAME) {
 
     init {
-        special = "You may return this to its pile to gain a card costing exactly \$1 more than it."
+        addCards = 2
+        addActions = 1
+        special = "Return this to its pile."
     }
 
     override fun isWayActionable(player: Player, card: Card): Boolean {
@@ -17,11 +19,10 @@ class WayOfTheButterfly : MenagerieWay(NAME) {
     override fun waySpecialAction(player: Player, card: Card) {
         player.removeCardInPlay(card, CardLocation.Supply)
         player.game.returnCardToSupply(card)
-        player.chooseSupplyCardToGainWithExactCost(player.getCardCostWithModifiers(card) + 1)
     }
 
     companion object {
-        const val NAME: String = "Way of the Butterfly"
+        const val NAME: String = "Way of the Horse"
     }
 
 }
