@@ -477,7 +477,8 @@ class CardRepository {
         get() = listOf(
                 WayOfTheButterfly(),
                 WayOfTheHorse(),
-                WayOfTheMole()
+                WayOfTheMole(),
+                WayOfTheOwl()
         )
 
     val allCards: List<Card>
