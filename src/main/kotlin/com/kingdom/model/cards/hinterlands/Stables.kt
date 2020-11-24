@@ -20,7 +20,7 @@ class Stables : HinterlandsCard(NAME, CardType.Action, 5), ChoiceActionCard, Dis
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
-            player.discardCardsForBenefit(this, 1, "Discard a Treasure card", { c -> c.isTreasure })
+            player.discardCardsForBenefit(this, 1, "Discard a Treasure card", null) { c -> c.isTreasure }
         }
     }
 

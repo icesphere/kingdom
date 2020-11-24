@@ -207,14 +207,14 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         card.cardsDiscarded(this, cardsToDiscard, info)
     }
 
-    override fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)?) {
+    override fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, info: Any?, cardActionableExpression: ((card: Card) -> Boolean)?) {
         //todo better logic
 
         val cardsToDiscard = getCardsToDiscard(numCardsToDiscard, false, cardActionableExpression)
 
         cardsToDiscard.forEach({ this.discardCardFromHand(it) })
 
-        card.cardsDiscarded(this, cardsToDiscard, null)
+        card.cardsDiscarded(this, cardsToDiscard, info)
     }
 
     override fun makeChoice(card: ChoiceActionCard, vararg choices: Choice) {

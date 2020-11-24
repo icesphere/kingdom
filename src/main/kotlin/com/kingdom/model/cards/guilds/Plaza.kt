@@ -22,7 +22,7 @@ class Plaza : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard, DiscardCar
 
     override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
         if (choice == 1) {
-            player.discardCardsForBenefit(this, 1, "Discard a Treasure for +1 Coffers", { c -> c.isTreasure })
+            player.discardCardsForBenefit(this, 1, "Discard a Treasure for +1 Coffers", null) { c -> c.isTreasure }
         }
     }
 

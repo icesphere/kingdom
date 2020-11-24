@@ -680,7 +680,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     abstract fun trashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String = "", cardActionableExpression: ((card: Card) -> Boolean)? = null, info: Any? = null)
     abstract fun optionallyTrashCardsFromHandForBenefit(card: TrashCardsForBenefitActionCard, numCardsToTrash: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null, info: Any? = null)
 
-    abstract fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, cardActionableExpression: ((card: Card) -> Boolean)? = null)
+    abstract fun discardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, info: Any? = null, cardActionableExpression: ((card: Card) -> Boolean)? = null)
 
     fun exchangeDiscardedCard(discardedCard: Card, exchangeToCard: Card) {
         removeCardFromDiscard(discardedCard)

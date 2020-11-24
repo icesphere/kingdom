@@ -44,7 +44,7 @@ class Quest : AdventuresEvent(NAME, 0), ChoiceActionCard, DiscardCardsForBenefit
         when(choice) {
             1 -> {
                 if (player.hand.count { it.isAttack } > 1) {
-                    player.discardCardsForBenefit(this, 1, "Discard an Attack card", { c -> c.isAttack })
+                    player.discardCardsForBenefit(this, 1, "Discard an Attack card", null) { c -> c.isAttack }
                 } else {
                     player.discardCardFromHand(player.hand.first { it.isAttack })
                     player.gainSupplyCard(Gold(), true)
