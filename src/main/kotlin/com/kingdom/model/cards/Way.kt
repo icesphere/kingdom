@@ -10,6 +10,7 @@ abstract class Way(name: String,
     }
 
     fun playActionAsWay(player: Player, card: Card) {
+        player.addEventLogWithUsername("used $cardNameWithBackgroundColor for ${card.cardNameWithBackgroundColor}")
         player.addActions(-1)
         addCardBonuses(this, player)
         waySpecialAction(player, card)

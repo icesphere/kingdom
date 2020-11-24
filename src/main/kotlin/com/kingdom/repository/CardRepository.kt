@@ -476,7 +476,8 @@ class CardRepository {
     val menagerieWays: List<Way>
         get() = listOf(
                 WayOfTheButterfly(),
-                WayOfTheHorse()
+                WayOfTheHorse(),
+                WayOfTheMole()
         )
 
     val allCards: List<Card>
