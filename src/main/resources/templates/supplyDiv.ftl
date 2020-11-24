@@ -74,7 +74,7 @@
                             <td>
                                 <table cellpadding="0" cellspacing="0">
                                     <#if gameStatus == "InProgress">
-                                        <tr><td style="font-size:10px;"><#if card.event>Event<#elseif card.landmark>Landmark<#else>Project</#if></td></tr>
+                                        <tr><td style="font-size:10px;"><#if card.event>Event<#elseif card.landmark>Landmark<#elseif card.project>Project<#else>Way</#if></td></tr>
                                     </#if>
                                     <tr><td><#include "gameCard.ftl"></td></tr>
                                 </table>

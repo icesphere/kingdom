@@ -406,7 +406,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     open fun getChoice(choiceActionCard: ChoiceActionCard, choices: Array<Choice>, info: Any?): Int {
-        val card = choiceActionCard as Card
+        val card = choiceActionCard as? Card? ?: return choices[0].choiceNumber
 
         return when (choiceActionCard.name) {
             Advisor.NAME -> {

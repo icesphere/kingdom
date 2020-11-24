@@ -1,5 +1,7 @@
 package com.kingdom.model.cards
 
+import com.kingdom.model.Choice
+import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.base.ThroneRoom
 import com.kingdom.model.cards.listeners.BeforeCardPlayedListenerForCardsInPlay
 import com.kingdom.model.cards.listeners.BeforeOpponentCardPlayedListener
@@ -422,9 +424,36 @@ abstract class Card(
         removedFromPlay(player)
     }
 
-    fun cardPlayed(player: Player, refresh: Boolean = true) {
+    fun cardPlayed(player: Player, refresh: Boolean = true, ignoreWays: Boolean = false) {
         player.inPlay.filterIsInstance<BeforeCardPlayedListenerForCardsInPlay>().forEach {
             it.onBeforeCardPlayed(this, player)
+        }
+
+        val actionableWays = player.game.ways.filter { it.isWayActionable(player, this) }
+
+        if (isAction && !ignoreWays && actionableWays.isNotEmpty()) {
+            val choices = listOf(
+                    Choice(-1, name)
+            ) + actionableWays.mapIndexed { index, way -> Choice(index, way.name) }
+
+            val card = this
+
+            player.makeChoiceFromList(object : ChoiceActionCard {
+                override val name: String
+                    get() = "Ways"
+
+                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                    if (choice == -1) {
+                        cardPlayed(player, ignoreWays = true)
+                    } else {
+                        player.addActions(-1, refresh)
+                        val way = actionableWays[choice]
+                        way.onUseWay(player, card)
+                    }
+                }
+            }, "Play card action or use a Way?", choices)
+
+            return
         }
 
         if (isAction) {
