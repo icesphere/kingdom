@@ -1,13 +1,8 @@
 package com.kingdom.model.cards.adventures.events
 
-import com.kingdom.model.cards.Card
-import com.kingdom.model.cards.actions.ChoiceActionCard
-import com.kingdom.model.cards.listeners.CardGainedListenerForEventsBought
 import com.kingdom.model.players.Player
 
-class TravellingFair : AdventuresEvent(NAME, 2), CardGainedListenerForEventsBought, ChoiceActionCard {
-
-    var ignoreNextCardGained = false
+class TravellingFair : AdventuresEvent(NAME, 2) {
 
     init {
         addBuys = 2
@@ -15,29 +10,8 @@ class TravellingFair : AdventuresEvent(NAME, 2), CardGainedListenerForEventsBoug
         fontSize = 9
     }
 
-    override fun onCardGained(card: Card, player: Player): Boolean {
-        if (ignoreNextCardGained) {
-            ignoreNextCardGained = false
-            return false
-        }
-
-        if (player.isNextCardToTopOfDeck) {
-            return false
-        }
-
-        player.yesNoChoice(this, "Put ${card.cardNameWithBackgroundColor} on top of your deck?", card)
-
-        return true
-    }
-
-    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-        if (choice == 1) {
-            player.isNextCardToTopOfDeck = true
-        } else {
-            ignoreNextCardGained = true
-        }
-
-        player.cardGained(info as Card)
+    override fun cardPlayedSpecialAction(player: Player) {
+        player.numCardGainedMayPutOnTopOfDeck++
     }
 
     companion object {

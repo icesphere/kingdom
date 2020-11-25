@@ -139,6 +139,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         list
     }
 
+    var isIgnoreNextCardGainedForCardGainedMayPutOnTopOfDeck: Boolean = false
+    var numCardGainedMayPutOnTopOfDeck: Int = 0
+
     var isNextCardToTopOfDeck: Boolean = false
 
     var isNextCardToHand: Boolean = false
@@ -649,6 +652,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         isUsedHornThisTurn = false
 
+        isIgnoreNextCardGainedForCardGainedMayPutOnTopOfDeck = false
+        numCardGainedMayPutOnTopOfDeck = 0
         isNextCardToTopOfDeck = false
         isNextCardToHand = false
 
@@ -887,6 +892,32 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             if (handled) {
                 gainCardHandled = true
                 break
+            }
+        }
+
+        if (numCardGainedMayPutOnTopOfDeck > 0 && !isNextCardToTopOfDeck) {
+            if (isIgnoreNextCardGainedForCardGainedMayPutOnTopOfDeck) {
+                isIgnoreNextCardGainedForCardGainedMayPutOnTopOfDeck = false
+            } else {
+                val choiceActionCard = object : ChoiceActionCard {
+                    override val name: String
+                        get() = "PutCardOnTopOfDeck"
+
+                    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                        if (choice == 1) {
+                            player.isNextCardToTopOfDeck = true
+                        } else {
+                            isIgnoreNextCardGainedForCardGainedMayPutOnTopOfDeck = true
+                        }
+
+                        player.cardGained(info as Card)
+                    }
+
+                }
+
+                yesNoChoice(choiceActionCard, "Put ${card.cardNameWithBackgroundColor} on top of your deck?", card)
+
+                gainCardHandled = true
             }
         }
 

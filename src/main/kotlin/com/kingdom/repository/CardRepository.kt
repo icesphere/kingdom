@@ -482,6 +482,7 @@ class CardRepository {
                 WayOfTheMouse(),
                 WayOfTheOwl(),
                 WayOfTheRat(),
+                WayOfTheSeal(),
                 WayOfTheSquirrel()
         )
 
