@@ -479,6 +479,7 @@ class CardRepository {
                 WayOfTheChameleon(),
                 WayOfTheHorse(),
                 WayOfTheMole(),
+                WayOfTheMouse(),
                 WayOfTheOwl(),
                 WayOfTheRat(),
                 WayOfTheSquirrel()
