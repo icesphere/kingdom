@@ -96,6 +96,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var isPaidOffDebtThisTurn: Boolean = false
 
+    var isSwapCardsAndCoins: Boolean = false
+
     private var coins: Int = 0
 
     private val coinsInHand: Int
@@ -325,7 +327,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         drawCards(1)
     }
 
-    fun drawCards(numCards: Int): List<Card> {
+    fun drawCards(numCards: Int, ignoreSwap: Boolean = false): List<Card> {
+        if (!ignoreSwap && isSwapCardsAndCoins) {
+            addCoins(numCards, ignoreSwap = true)
+            return emptyList()
+        }
         if (numCards == 0) {
             return emptyList()
         }
@@ -445,9 +451,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
-    fun addCoins(coins: Int, refresh: Boolean = true) {
+    fun addCoins(coins: Int, refresh: Boolean = true, ignoreSwap: Boolean = false) {
         if (coins == 0) {
             return
+        }
+
+        if (coins > 0 && isSwapCardsAndCoins && !ignoreSwap) {
+            drawCards(coins, ignoreSwap = true)
         }
 
         if (isMinusCoinTokenInFrontOfPlayer) {

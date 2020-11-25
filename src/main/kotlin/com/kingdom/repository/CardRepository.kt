@@ -476,6 +476,7 @@ class CardRepository {
     val menagerieWays: List<Way>
         get() = listOf(
                 WayOfTheButterfly(),
+                WayOfTheChameleon(),
                 WayOfTheHorse(),
                 WayOfTheMole(),
                 WayOfTheOwl(),
