@@ -483,7 +483,8 @@ class CardRepository {
                 WayOfTheOwl(),
                 WayOfTheRat(),
                 WayOfTheSeal(),
-                WayOfTheSquirrel()
+                WayOfTheSquirrel(),
+                WayOfTheTurtle()
         )
 
     val allCards: List<Card>

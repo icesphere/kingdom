@@ -1617,6 +1617,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             playCard(it)
         }
 
+        cardsToPlayAtStartOfNextTurn.clear()
+
         durationCards.forEach { card ->
             when {
                 card is StartOfTurnDurationAction -> {

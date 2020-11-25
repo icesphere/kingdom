@@ -16,5 +16,6 @@ enum class CardLocation {
     ExileMat,
     Tavern,
     Unknown,
+    SetAside,
     None
 }

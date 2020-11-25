@@ -450,7 +450,7 @@ abstract class Card(
                         way.playActionAsWay(player, card)
                     }
                 }
-            }, "Play card action or use a Way?", choices)
+            }, "Use ${card.cardNameWithBackgroundColor} action or use a Way?", choices)
 
             return
         }
