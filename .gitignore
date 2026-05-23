@@ -1,3 +1,5 @@
+.mvn/apache-maven-*/
+.mvn/*.tar.gz
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
@@ -22,3 +24,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+androidApp/.gradle/
+androidApp/**/build/
