@@ -1,5 +1,5 @@
 plugins {
-    id("org.springframework.boot") version "3.5.14"
+    id("org.springframework.boot") version "4.0.6"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("jvm") version "2.3.21"
     kotlin("plugin.spring") version "2.3.21"
@@ -31,8 +31,8 @@ dependencies {
 
     implementation("org.webjars:webjars-locator-core")
     implementation("org.webjars:stomp-websocket:2.3.4")
-    implementation("org.webjars:bootstrap:3.4.1")
-    implementation("org.webjars:jquery:3.7.1")
+    implementation("org.webjars:bootstrap:5.3.8")
+    implementation("org.webjars:jquery:4.0.0")
 
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.mysql:mysql-connector-j")
