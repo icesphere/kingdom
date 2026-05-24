@@ -1324,7 +1324,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             var log = "gained ${supplyCard.cardNameWithBackgroundColor} from the supply"
 
-            @Suppress("NON_EXHAUSTIVE_WHEN")
             when (destination) {
                 CardLocation.Hand -> {
                     isNextCardToHand = true
@@ -1334,6 +1333,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     isNextCardToTopOfDeck = true
                     log += " to the top of their deck"
                 }
+                else -> Unit
             }
 
             if (showLog) {
