@@ -15,6 +15,9 @@ target/
 *.iml
 *.ipr
 
+### Junie ###
+.junie/
+
 ### NetBeans ###
 nbproject/private/
 build/

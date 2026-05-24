@@ -33,7 +33,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         if (username != null) {
             val usernameCookieValue = getUsernameCookie(request)
 
-            val usernameMatchesCookie = username.removeSpaces().toLowerCase() == usernameCookieValue?.toLowerCase()
+            val usernameMatchesCookie = username.removeSpaces().equals(usernameCookieValue, ignoreCase = true)
 
             val existingUser = LoggedInUsers.getUserByUsername(username)
 
@@ -49,7 +49,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
 
                 KingdomUtil.addUsernameCookieToResponse(username, response)
 
-                if (request.cookies?.firstOrNull { it.name.trim().toLowerCase() == "kingdomadmin" }?.value?.trim()?.toLowerCase() == "changethekingdom") {
+                if (request.cookies?.firstOrNull { it.name.trim().lowercase() == "kingdomadmin" }?.value?.trim()?.lowercase() == "changethekingdom") {
                     user.admin = true
                 }
 
@@ -73,10 +73,10 @@ class MainController(private val gameRoomManager: GameRoomManager) {
     }
 
     private fun isAccessAllowed(request: HttpServletRequest): Boolean =
-            request.cookies?.firstOrNull { it.name.trim().toLowerCase() == "kingdomaccess" }?.value?.trim()?.toLowerCase() == "winner"
+            request.cookies?.firstOrNull { it.name.trim().lowercase() == "kingdomaccess" }?.value?.trim()?.lowercase() == "winner"
 
     private fun getUsernameCookie(request: HttpServletRequest): String? =
-            request.cookies?.firstOrNull { it.name.trim().toLowerCase() == USERNAME_COOKIE }?.value?.trim()
+            request.cookies?.firstOrNull { it.name.trim().lowercase() == USERNAME_COOKIE }?.value?.trim()
 
     @RequestMapping("/access.html")
     @Throws(Exception::class)
@@ -92,7 +92,7 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         val mobile = KingdomUtil.isMobile(request)
         modelAndView.addObject("mobile", mobile)
         if (password != null) {
-            if (password.trim().toLowerCase() == "winner") {
+            if (password.trim().lowercase() == "winner") {
                 addAccessCookieToResponse(response)
 
                 return KingdomUtil.getLoginModelAndView(request)

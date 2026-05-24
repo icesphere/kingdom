@@ -33,7 +33,7 @@ object LoggedInUsers {
     }
 
     fun usernameBeingUsed(username: String): Boolean {
-        return users.values.any { it.username.removeSpaces().toLowerCase() == username.removeSpaces().toLowerCase() }
+        return users.values.any { it.username.removeSpaces().equals(username.removeSpaces(), ignoreCase = true) }
     }
 
     fun getUserByUsername(username: String): User? {

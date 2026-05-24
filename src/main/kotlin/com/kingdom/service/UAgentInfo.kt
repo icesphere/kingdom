@@ -133,10 +133,10 @@ class UAgentInfo
 
     init {
         if (userAgent != null) {
-            this.userAgent = userAgent.toLowerCase()
+            this.userAgent = userAgent.lowercase()
         }
         if (httpAccept != null) {
-            this.httpAccept = httpAccept.toLowerCase()
+            this.httpAccept = httpAccept.lowercase()
         }
 
         //Intialize key stored values.

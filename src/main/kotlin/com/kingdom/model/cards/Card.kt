@@ -378,7 +378,7 @@ abstract class Card(
         if (name == "University") {
             return "a $cardNameWithBackgroundColor"
         }
-        return when (name.toUpperCase().first()) {
+        return when (name.uppercase().first()) {
             'A', 'E', 'I', 'O', 'U' -> "an $cardNameWithBackgroundColor"
             else -> "a $cardNameWithBackgroundColor"
         }
