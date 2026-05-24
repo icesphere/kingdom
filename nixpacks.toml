@@ -5,4 +5,4 @@ NIXPACKS_JDK_VERSION = "21"
 cmds = ["./gradlew bootJar -x test"]
 
 [start]
-cmd = "java $JAVA_OPTS -Dserver.port=$PORT -jar $(ls -1 build/libs/*.jar | grep -v 'plain' | head -n 1)"
+cmd = "java -jar build/libs/app.jar"
