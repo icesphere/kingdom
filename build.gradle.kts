@@ -12,7 +12,7 @@ description = "Kingdom deck building game"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(18)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
