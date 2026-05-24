@@ -140,7 +140,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
         get() = availableCardsToBuy.map { it.name }
 
     private fun getEventToBuy(): Event? {
-        return game.events.filter { it.isEventActionable(this) }.maxBy { getBuyEventScore(it) }
+        return game.events.filter { it.isEventActionable(this) }.maxByOrNull { getBuyEventScore(it) }
     }
 
     open fun getBuyEventScore(event: Event): Int {
@@ -148,7 +148,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
     }
 
     private fun getProjectToBuy(): Project? {
-        return game.projects.filter { it.isProjectActionable(this) }.maxBy { getBuyProjectScore(it) }
+        return game.projects.filter { it.isProjectActionable(this) }.maxByOrNull { getBuyProjectScore(it) }
     }
 
     open fun getBuyProjectScore(project: Project): Int {
