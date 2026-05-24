@@ -28,7 +28,8 @@ data class KingdomUiState(
     val selectedCard: CardDto? = null,
     val loading: Boolean = false,
     val error: String? = null,
-    val screen: Screen = Screen.Login
+    val screen: Screen = Screen.Login,
+    val gameLayoutPreference: GameLayoutPreference = GameLayoutPreference.Auto
 )
 
 enum class Screen {
@@ -38,8 +39,25 @@ enum class Screen {
     Game
 }
 
-class KingdomViewModel(private val repository: KingdomRepository) : ViewModel() {
-    private val _state = MutableStateFlow(KingdomUiState())
+enum class GameLayoutPreference {
+    Auto,
+    Compact,
+    Full;
+
+    companion object {
+        fun fromStoredValue(value: String?): GameLayoutPreference {
+            return entries.firstOrNull { it.name == value } ?: Auto
+        }
+    }
+}
+
+class KingdomViewModel(
+    private val repository: KingdomRepository,
+    private val gameLayoutPreferenceStore: GameLayoutPreferenceStore
+) : ViewModel() {
+    private val _state = MutableStateFlow(
+        KingdomUiState(gameLayoutPreference = gameLayoutPreferenceStore.get())
+    )
     val state: StateFlow<KingdomUiState> = _state.asStateFlow()
     private var pollingJob: Job? = null
 
@@ -135,6 +153,11 @@ class KingdomViewModel(private val repository: KingdomRepository) : ViewModel() 
 
     fun selectCard(card: CardDto?) {
         _state.update { it.copy(selectedCard = card) }
+    }
+
+    fun setGameLayoutPreference(preference: GameLayoutPreference) {
+        gameLayoutPreferenceStore.set(preference)
+        _state.update { it.copy(gameLayoutPreference = preference) }
     }
 
     private fun sendCommand(request: GameCommandRequest) {

@@ -3,6 +3,7 @@ package com.kingdom.mobile.ui
 import android.widget.TextView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -24,6 +26,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -55,6 +58,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,6 +71,7 @@ import androidx.core.text.HtmlCompat
 import com.kingdom.mobile.network.CardDto
 import com.kingdom.mobile.network.GameRoomDto
 import com.kingdom.mobile.network.GameSnapshotDto
+import com.kingdom.mobile.state.GameLayoutPreference
 import com.kingdom.mobile.state.KingdomUiState
 import com.kingdom.mobile.state.KingdomViewModel
 import com.kingdom.mobile.state.Screen
@@ -261,6 +266,10 @@ private fun GameScreen(state: KingdomUiState, viewModel: KingdomViewModel) {
     var tab by remember { mutableIntStateOf(0) }
     var showQuitConfirm by remember { mutableStateOf(false) }
     val tabs = listOf("Supply", "Hand", "Play", "Players", "Chat", "History")
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
+    val layoutMode = remember(state.gameLayoutPreference, screenWidthDp) {
+        resolveGameLayout(state.gameLayoutPreference, screenWidthDp)
+    }
 
     Scaffold(
         topBar = {
@@ -268,9 +277,12 @@ private fun GameScreen(state: KingdomUiState, viewModel: KingdomViewModel) {
                 TextButton(onClick = { viewModel.refreshGame() }) { Text("Refresh") }
                 GameMenu(
                     gameStatus = game.status,
+                    layoutPreference = state.gameLayoutPreference,
+                    layoutMode = layoutMode,
                     onLeave = { viewModel.leaveWaitingGame() },
                     onQuit = { showQuitConfirm = true },
-                    onExit = { viewModel.exitGame() }
+                    onExit = { viewModel.exitGame() },
+                    onSetLayoutPreference = viewModel::setGameLayoutPreference
                 )
             }
         },
@@ -281,13 +293,14 @@ private fun GameScreen(state: KingdomUiState, viewModel: KingdomViewModel) {
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            GameHeader(game)
+            GameHeader(game, layoutMode)
             game.actionPrompt?.let { prompt ->
                 ActionPrompt(
                     promptText = prompt.text.orEmpty(),
                     choices = prompt.choices.map { it.choiceNumber to it.text },
                     cardChoices = prompt.cardChoices,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    layoutMode = layoutMode
                 )
             }
             ScrollableTabRow(selectedTabIndex = tab) {
@@ -301,10 +314,11 @@ private fun GameScreen(state: KingdomUiState, viewModel: KingdomViewModel) {
                     cards = game.kingdomCards + game.supplyCards + game.eventsAndLandmarksAndProjectsAndWays,
                     location = "Supply",
                     viewModel = viewModel,
+                    layoutMode = layoutMode,
                     modifier = Modifier.weight(1f)
                 )
-                1 -> CardGrid("Hand", game.viewer.hand, "Hand", viewModel, Modifier.weight(1f))
-                2 -> CardGrid("In Play", game.viewer.inPlay + game.viewer.durationCards + game.viewer.cardsBought, "PlayArea", viewModel, Modifier.weight(1f))
+                1 -> CardGrid("Hand", game.viewer.hand, "Hand", viewModel, layoutMode, Modifier.weight(1f))
+                2 -> CardGrid("In Play", game.viewer.inPlay + game.viewer.durationCards + game.viewer.cardsBought, "PlayArea", viewModel, layoutMode, Modifier.weight(1f))
                 3 -> PlayersList(game, Modifier.weight(1f))
                 4 -> ChatPanel(game, viewModel, Modifier.weight(1f))
                 5 -> HistoryPanel(game, Modifier.weight(1f))
@@ -334,7 +348,7 @@ private fun TopBar(title: String, loading: Boolean, actions: @Composable () -> U
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(title, modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
@@ -344,13 +358,38 @@ private fun TopBar(title: String, loading: Boolean, actions: @Composable () -> U
 }
 
 @Composable
-private fun GameMenu(gameStatus: String, onLeave: () -> Unit, onQuit: () -> Unit, onExit: () -> Unit) {
+private fun GameMenu(
+    gameStatus: String,
+    layoutPreference: GameLayoutPreference,
+    layoutMode: GameLayoutMode,
+    onLeave: () -> Unit,
+    onQuit: () -> Unit,
+    onExit: () -> Unit,
+    onSetLayoutPreference: (GameLayoutPreference) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
     Box {
         OutlinedButton(onClick = { expanded = true }) {
             Text("Game")
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text("View: ${layoutPreference.label()} (${layoutMode.label()})") },
+                onClick = {}
+            )
+            GameLayoutPreference.entries.forEach { preference ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            if (preference == layoutPreference) "• ${preference.label()}" else preference.label()
+                        )
+                    },
+                    onClick = {
+                        expanded = false
+                        onSetLayoutPreference(preference)
+                    }
+                )
+            }
             if (gameStatus == "WaitingForPlayers") {
                 DropdownMenuItem(
                     text = { Text("Leave game") },
@@ -381,28 +420,73 @@ private fun GameMenu(gameStatus: String, onLeave: () -> Unit, onQuit: () -> Unit
 }
 
 @Composable
-private fun GameHeader(game: GameSnapshotDto) {
+@OptIn(ExperimentalLayoutApi::class)
+private fun GameHeader(game: GameSnapshotDto, layoutMode: GameLayoutMode) {
+    val isViewerTurn = game.currentPlayerId == game.viewer.userId
     ElevatedCard(
         Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(
+                horizontal = if (layoutMode == GameLayoutMode.Compact) 8.dp else 12.dp,
+                vertical = if (layoutMode == GameLayoutMode.Compact) 8.dp else 10.dp
+            ),
         colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-        Column(Modifier.padding(12.dp)) {
-            Text("Current: ${game.currentPlayerName ?: "-"}", fontWeight = FontWeight.SemiBold)
-            Text("Status: ${game.status}")
-            Text("Actions ${game.viewer.actions}  Buys ${game.viewer.buys}  Coins ${game.viewer.coins}  Debt ${game.viewer.debt}")
+        Column(
+            Modifier.padding(
+                horizontal = if (layoutMode == GameLayoutMode.Compact) 10.dp else 12.dp,
+                vertical = if (layoutMode == GameLayoutMode.Compact) 8.dp else 10.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(if (layoutMode == GameLayoutMode.Compact) 6.dp else 8.dp)
+        ) {
+            Text(
+                if (isViewerTurn) "Your turn" else "${game.currentPlayerName ?: "-"}'s turn",
+                fontWeight = FontWeight.SemiBold
+            )
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(if (layoutMode == GameLayoutMode.Compact) 6.dp else 8.dp),
+                verticalArrangement = Arrangement.spacedBy(if (layoutMode == GameLayoutMode.Compact) 6.dp else 8.dp)
+            ) {
+                StatPill("Actions ${game.viewer.actions}")
+                StatPill("Buys ${game.viewer.buys}")
+                StatPill("Coins ${game.viewer.coins}")
+                if (game.viewer.debt > 0) StatPill("Debt ${game.viewer.debt}", accent = Color(0xFFA51422))
+                StatPill("Deck ${game.viewer.deckCount}")
+                StatPill("Discard ${game.viewer.discardCount}")
+                StatPill("Hand ${game.viewer.hand.size}")
+                if (game.showVictoryPoints) StatPill("VP ${game.viewer.victoryPoints}")
+                if (game.viewer.coffers > 0) StatPill("Coffers ${game.viewer.coffers}")
+                if (game.viewer.villagers > 0) StatPill("Villagers ${game.viewer.villagers}")
+            }
+            if (game.status != "InProgress") {
+                Text("Status: ${game.status}", style = MaterialTheme.typography.bodySmall)
+            }
         }
     }
 }
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-private fun ActionPrompt(promptText: String, choices: List<Pair<Int, String>>, cardChoices: List<CardDto>, viewModel: KingdomViewModel) {
-    OutlinedCard(Modifier.padding(horizontal = 12.dp, vertical = 6.dp)) {
-        Column(Modifier.padding(12.dp)) {
+private fun ActionPrompt(
+    promptText: String,
+    choices: List<Pair<Int, String>>,
+    cardChoices: List<CardDto>,
+    viewModel: KingdomViewModel,
+    layoutMode: GameLayoutMode
+) {
+    OutlinedCard(
+        Modifier.padding(
+            horizontal = if (layoutMode == GameLayoutMode.Compact) 8.dp else 12.dp,
+            vertical = if (layoutMode == GameLayoutMode.Compact) 4.dp else 6.dp
+        )
+    ) {
+        Column(Modifier.padding(if (layoutMode == GameLayoutMode.Compact) 10.dp else 12.dp)) {
             HtmlText(promptText, modifier = Modifier.fillMaxWidth())
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 8.dp)) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
                 choices.forEach { choice ->
                     AssistChip(onClick = { viewModel.submitChoice(choice.first) }, label = { Text(choice.second) })
                 }
@@ -411,9 +495,14 @@ private fun ActionPrompt(promptText: String, choices: List<Pair<Int, String>>, c
                 Spacer(Modifier.height(8.dp))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     cardChoices.forEach { card ->
-                        KingdomCardTile(card, modifier = Modifier.width(96.dp), onClick = {
-                            if (card.highlighted) viewModel.clickCard(card, "CardAction") else viewModel.selectCard(card)
-                        })
+                        KingdomCardTile(
+                            card = card,
+                            layoutMode = layoutMode,
+                            modifier = Modifier.width(if (layoutMode == GameLayoutMode.Compact) 88.dp else 96.dp),
+                            onClick = {
+                                if (card.highlighted) viewModel.clickCard(card, "CardAction") else viewModel.selectCard(card)
+                            }
+                        )
                     }
                 }
             }
@@ -422,25 +511,35 @@ private fun ActionPrompt(promptText: String, choices: List<Pair<Int, String>>, c
 }
 
 @Composable
-private fun CardGrid(title: String, cards: List<CardDto>, location: String, viewModel: KingdomViewModel, modifier: Modifier = Modifier) {
+private fun CardGrid(
+    title: String,
+    cards: List<CardDto>,
+    location: String,
+    viewModel: KingdomViewModel,
+    layoutMode: GameLayoutMode,
+    modifier: Modifier = Modifier
+) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 92.dp),
+        columns = GridCells.Adaptive(minSize = if (layoutMode == GameLayoutMode.Compact) 76.dp else 92.dp),
         modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(10.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        contentPadding = PaddingValues(
+            horizontal = if (layoutMode == GameLayoutMode.Compact) 8.dp else 10.dp,
+            vertical = if (layoutMode == GameLayoutMode.Compact) 6.dp else 10.dp
+        ),
+        horizontalArrangement = Arrangement.spacedBy(if (layoutMode == GameLayoutMode.Compact) 6.dp else 8.dp),
+        verticalArrangement = Arrangement.spacedBy(if (layoutMode == GameLayoutMode.Compact) 6.dp else 10.dp)
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             Text(
-                title,
+                "$title · ${cards.size}",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(bottom = 2.dp)
+                modifier = Modifier.padding(bottom = 2.dp, start = 2.dp)
             )
         }
         items(cards, key = { it.id + locationForCard(it, location) }) { card ->
             val resolvedLocation = locationForCard(card, location)
-            KingdomCardTile(card, onClick = {
+            KingdomCardTile(card = card, layoutMode = layoutMode, onClick = {
                 if (card.highlighted) viewModel.clickCard(card, resolvedLocation) else viewModel.selectCard(card)
             })
         }
@@ -448,13 +547,126 @@ private fun CardGrid(title: String, cards: List<CardDto>, location: String, view
 }
 
 @Composable
-private fun KingdomCardTile(card: CardDto, modifier: Modifier = Modifier, onClick: () -> Unit) {
+@OptIn(ExperimentalLayoutApi::class)
+private fun KingdomCardTile(
+    card: CardDto,
+    layoutMode: GameLayoutMode,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     val border = when {
         card.highlighted -> BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
         card.selected -> BorderStroke(2.dp, MaterialTheme.colorScheme.secondary)
         else -> BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     }
     val colors = cardPalette(card)
+
+    if (layoutMode == GameLayoutMode.Full) {
+        FullKingdomCardTile(card = card, modifier = modifier, border = border, colors = colors, onClick = onClick)
+        return
+    }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 62.dp)
+            .clickable(onClick = onClick),
+        border = border,
+        colors = CardDefaults.cardColors(containerColor = colors.body)
+    ) {
+        Column(Modifier.fillMaxWidth()) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(24.dp)
+                    .background(colors.header),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    card.name,
+                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp),
+                    color = colors.headerText,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
+            FlowRow(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp, vertical = 5.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                if (!card.type.contains("Landmark") && !card.type.contains("Way")) {
+                    CompactCardBadge(
+                        label = "${'$'}${card.adjustedCost}",
+                        background = Color(0xFFF3E8B4),
+                        content = Color(0xFF4E3A00)
+                    )
+                }
+                if (card.debtCost > 0) {
+                    CompactCardBadge(
+                        label = "${card.debtCost} debt",
+                        background = Color(0xFFF7DBDE),
+                        content = Color(0xFFA51422)
+                    )
+                }
+                card.pileCount?.let {
+                    CompactCardBadge(
+                        label = "x$it",
+                        background = MaterialTheme.colorScheme.surfaceVariant,
+                        content = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                card.victoryPointsOnPile?.let {
+                    CompactCardBadge(
+                        label = "$it VP",
+                        background = Color(0xFFDFF1E2),
+                        content = Color(0xFF087A27)
+                    )
+                }
+                card.debtOnPile?.let {
+                    CompactCardBadge(
+                        label = "$it pile debt",
+                        background = Color(0xFFF7DBDE),
+                        content = Color(0xFFA51422)
+                    )
+                }
+                card.embargoTokens?.takeIf { it > 0 }?.let {
+                    CompactCardBadge(
+                        label = "$it ET",
+                        background = Color(0xFFFCE6CC),
+                        content = Color(0xFF9C5C00)
+                    )
+                }
+                if (card.tradeRouteToken) {
+                    CompactCardBadge(
+                        label = "TR",
+                        background = Color(0xFFDCE8F7),
+                        content = Color(0xFF184C8C)
+                    )
+                }
+                CompactCardBadge(
+                    label = compactTypeLabel(card.type),
+                    background = Color.Transparent,
+                    content = MaterialTheme.colorScheme.onSurfaceVariant,
+                    outlined = true
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FullKingdomCardTile(
+    card: CardDto,
+    modifier: Modifier = Modifier,
+    border: BorderStroke,
+    colors: CardPalette,
+    onClick: () -> Unit
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -579,20 +791,22 @@ private fun HistoryPanel(game: GameSnapshotDto, modifier: Modifier = Modifier) {
 }
 
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
 private fun GameActions(game: GameSnapshotDto, viewModel: KingdomViewModel) {
-    Row(
+    FlowRow(
         Modifier
             .fillMaxWidth()
-            .padding(10.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(horizontal = 8.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (game.canPlayTreasures) {
-            Button(onClick = { viewModel.playAllTreasures() }, modifier = Modifier.weight(1f)) { Text("Treasures") }
+            Button(onClick = { viewModel.playAllTreasures() }) { Text("Treasures") }
         }
         if (game.viewer.debt > 0) {
-            OutlinedButton(onClick = { viewModel.payDebt() }, modifier = Modifier.weight(1f)) { Text("Debt") }
+            OutlinedButton(onClick = { viewModel.payDebt() }) { Text("Debt") }
         }
-        Button(onClick = { viewModel.endTurn() }, modifier = Modifier.weight(1f)) { Text("End") }
+        Button(onClick = { viewModel.endTurn() }) { Text("End Turn") }
         game.actionPrompt?.let {
             if (it.showDoNotUse) OutlinedButton(onClick = { viewModel.doNotUse() }) { Text("Skip") }
             if (it.showDone) OutlinedButton(onClick = { viewModel.done() }) { Text("Done") }
@@ -656,6 +870,46 @@ private fun HtmlText(html: String, modifier: Modifier = Modifier) {
 
 private data class CardPalette(val header: Color, val body: Color, val headerText: Color = Color.Black)
 
+private enum class GameLayoutMode {
+    Compact,
+    Full
+}
+
+@Composable
+private fun StatPill(label: String, accent: Color = MaterialTheme.colorScheme.primary) {
+    Box(
+        modifier = Modifier
+            .background(accent.copy(alpha = 0.12f), RoundedCornerShape(999.dp))
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    ) {
+        Text(label, style = MaterialTheme.typography.labelMedium, color = accent, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+@Composable
+private fun CompactCardBadge(label: String, background: Color, content: Color, outlined: Boolean = false) {
+    val shape = RoundedCornerShape(6.dp)
+    Box(
+        modifier = Modifier
+            .then(
+                if (outlined) Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape) else Modifier
+            )
+            .background(
+                color = if (outlined) Color.Transparent else background,
+                shape = shape
+            )
+            .padding(horizontal = 5.dp, vertical = 2.dp)
+    ) {
+        Text(
+            label,
+            color = content,
+            style = MaterialTheme.typography.labelSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
 private fun cardPalette(card: CardDto): CardPalette {
     val type = card.type
     return when {
@@ -670,6 +924,37 @@ private fun cardPalette(card: CardDto): CardPalette {
         type.contains("Project") -> CardPalette(Color(0xFF6C7F99), Color(0xFFE1E8F1), Color.White)
         type.contains("Way") -> CardPalette(Color(0xFF8D7A5D), Color(0xFFECE4D6), Color.White)
         else -> CardPalette(Color(0xFFCFC6A2), Color(0xFFF5F0DA))
+    }
+}
+
+private fun compactTypeLabel(type: String): String {
+    return type
+        .split(", ", " - ")
+        .firstOrNull()
+        ?.takeIf { it.isNotBlank() }
+        ?: type
+}
+
+private fun GameLayoutPreference.label(): String {
+    return when (this) {
+        GameLayoutPreference.Auto -> "Auto"
+        GameLayoutPreference.Compact -> "Compact"
+        GameLayoutPreference.Full -> "Full"
+    }
+}
+
+private fun GameLayoutMode.label(): String {
+    return when (this) {
+        GameLayoutMode.Compact -> "Compact"
+        GameLayoutMode.Full -> "Full"
+    }
+}
+
+private fun resolveGameLayout(preference: GameLayoutPreference, screenWidthDp: Int): GameLayoutMode {
+    return when (preference) {
+        GameLayoutPreference.Auto -> if (screenWidthDp >= 600) GameLayoutMode.Full else GameLayoutMode.Compact
+        GameLayoutPreference.Compact -> GameLayoutMode.Compact
+        GameLayoutPreference.Full -> GameLayoutMode.Full
     }
 }
 
