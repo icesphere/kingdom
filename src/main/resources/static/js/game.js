@@ -118,7 +118,7 @@ function connect() {
             refreshHistory()
         }, 500)
 
-        var socket = new SockJS('/kingdom-websocket');
+        var socket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/kingdom-websocket');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);

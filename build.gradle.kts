@@ -30,7 +30,6 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     implementation("org.webjars:webjars-locator-core")
-    implementation("org.webjars:sockjs-client:1.5.1")
     implementation("org.webjars:stomp-websocket:2.3.4")
     implementation("org.webjars:bootstrap:3.4.1")
     implementation("org.webjars:jquery:3.7.1")
