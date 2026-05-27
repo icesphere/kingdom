@@ -25,9 +25,7 @@ var reconnectTimeout = null;
 var reconnectAttempts = 0;
 var fallbackRefreshInterval = null;
 var manualDisconnect = false;
-var lastWebsocketMessageAt = 0;
 var fallbackRefreshDelay = 3000;
-var websocketIdleFallbackDelay = 10000;
 
 var infoMessageSection = 1
 
@@ -151,7 +149,6 @@ function connectToWebsocket() {
             websocketConnected = true;
             websocketConnecting = false;
             reconnectAttempts = 0;
-            lastWebsocketMessageAt = new Date().getTime();
             console.log('Connected: ' + frame);
             subscribeToRefreshQueues();
             refreshGame();
@@ -223,7 +220,6 @@ function subscribeToRefreshQueues() {
 
 function markWebsocketMessage(refreshFunction) {
     return function(data) {
-        lastWebsocketMessageAt = new Date().getTime();
         refreshFunction(data);
     };
 }
@@ -265,11 +261,7 @@ function startFallbackRefresh() {
 }
 
 function shouldFallbackRefresh() {
-    if (!websocketConnected) {
-        return true;
-    }
-
-    return lastWebsocketMessageAt === 0 || new Date().getTime() - lastWebsocketMessageAt > websocketIdleFallbackDelay;
+    return !websocketConnected;
 }
 
 function cleanupWebsocketClient(disconnectClient) {
