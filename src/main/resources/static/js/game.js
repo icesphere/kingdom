@@ -17,6 +17,17 @@ var submittingCardAction = false;
 var cardActionOpen = false;
 
 var stompClient = null;
+var websocket = null;
+var userId = null;
+var websocketConnected = false;
+var websocketConnecting = false;
+var reconnectTimeout = null;
+var reconnectAttempts = 0;
+var fallbackRefreshInterval = null;
+var manualDisconnect = false;
+var lastWebsocketMessageAt = 0;
+var fallbackRefreshDelay = 3000;
+var websocketIdleFallbackDelay = 10000;
 
 var infoMessageSection = 1
 
@@ -24,6 +35,7 @@ $(document).ready(function() {
     $.ajaxSetup({ cache: false });
 
     connect()
+    startFallbackRefresh();
 
     resizeSupplyCardsDiv();
 
@@ -48,9 +60,38 @@ $(function(){
     });
 });
 
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        refreshGameInfo();
+        if (!websocketConnected) {
+            connectToWebsocket();
+        }
+    }
+});
+
+$(window).on('focus', function() {
+    refreshGameInfo();
+    if (!websocketConnected) {
+        connectToWebsocket();
+    }
+});
+
+$(window).on('beforeunload', function() {
+    manualDisconnect = true;
+    disconnect();
+});
+
 function refreshGameInfo() {
     $.post("getGameInfo", function(data) {
+        if(data.redirectToLogin) {
+            document.location = "login.html";
+            return;
+        }
+
         let gameData = data.refreshGameData
+        if (!gameData) {
+            return;
+        }
 
         gameStatus = gameData.gameStatus;
 
@@ -60,13 +101,11 @@ function refreshGameInfo() {
             if (!document.location.pathname.includes("showGameResults")) {
                 document.location = "showGameResults.html";
             }
-        } else if (currentPlayer) {
+        } else if (currentPlayer && data.showYourTurnMessage) {
             if (!(localStorage.muteSound == "true")) {
                 playBeep()
             }
-            if (data.showYourTurnMessage) {
-                showInfoMessage("Your turn", 1000)
-            }
+            showInfoMessage("Your turn", 1000)
         }
     });
 }
@@ -79,62 +118,180 @@ function connect() {
             return;
         }
 
-        var userId = data.userId
+        userId = data.userId
         console.log("connect to game for user id: " + userId)
 
-        let debouncedGameRefresh = debounce(function(data) {
-            refreshGame()
-        }, 200)
-
-        let debouncedHandAreaRefresh = debounce(function(data) {
-            refreshHandArea()
-        }, 200)
-
-        let debouncedCardsPlayedRefresh = debounce(function(data) {
-            refreshCardsPlayed()
-        }, 200)
-
-        let debouncedCardsBoughtRefresh = debounce(function(data) {
-            refreshCardsBought()
-        }, 200)
-
-        let debouncedSupplyRefresh = debounce(function(data) {
-            refreshSupply()
-        }, 200)
-
-        let debouncedCardActionRefresh = debounce(function(data) {
-            refreshCardAction()
-        }, 200)
-
-        let debouncedPlayersRefresh = debounce(function(data) {
-            refreshPlayers()
-        }, 200)
-
-        let debouncedChatRefresh = debounce(function(data) {
-            refreshChat()
-        }, 200)
-
-        let debouncedHistoryRefresh = debounce(function(data) {
-            refreshHistory()
-        }, 500)
-
-        var socket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/kingdom-websocket');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('/queue/refresh-game/' + userId, debouncedGameRefresh);
-            stompClient.subscribe('/queue/refresh-hand-area/' + userId, debouncedHandAreaRefresh);
-            stompClient.subscribe('/queue/refresh-cards-played/' + userId, debouncedCardsPlayedRefresh);
-            stompClient.subscribe('/queue/refresh-cards-bought/' + userId, debouncedCardsBoughtRefresh);
-            stompClient.subscribe('/queue/refresh-previous-player-cards-bought/' + userId, refreshPreviousPlayerCardsBought);
-            stompClient.subscribe('/queue/refresh-supply/' + userId, debouncedSupplyRefresh);
-            stompClient.subscribe('/queue/refresh-card-action/' + userId, debouncedCardActionRefresh);
-            stompClient.subscribe('/queue/refresh-players/' + userId, debouncedPlayersRefresh);
-            stompClient.subscribe('/queue/refresh-chat/' + userId, debouncedChatRefresh);
-            stompClient.subscribe('/queue/refresh-history/' + userId, debouncedHistoryRefresh);
-            stompClient.subscribe('/queue/show-info-message/' + userId, function(data) { showInfoMessage(data.body, 2500) });
-        });
+        manualDisconnect = false;
+        connectToWebsocket();
     });
+}
+
+function connectToWebsocket() {
+    if (!userId || websocketConnected || websocketConnecting) {
+        return;
+    }
+
+    if (reconnectTimeout !== null) {
+        clearTimeout(reconnectTimeout);
+        reconnectTimeout = null;
+    }
+
+    cleanupWebsocketClient(false);
+    websocketConnecting = true;
+
+    try {
+        websocket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/kingdom-websocket');
+
+        stompClient = Stomp.over(websocket);
+        stompClient.heartbeat.outgoing = 10000;
+        stompClient.heartbeat.incoming = 10000;
+        stompClient.debug = function() {};
+
+        stompClient.connect({}, function(frame) {
+            websocketConnected = true;
+            websocketConnecting = false;
+            reconnectAttempts = 0;
+            lastWebsocketMessageAt = new Date().getTime();
+            console.log('Connected: ' + frame);
+            subscribeToRefreshQueues();
+            refreshGame();
+        }, function(error) {
+            websocketConnecting = false;
+            console.log("STOMP error", error);
+            handleDisconnect("STOMP error");
+        });
+    } catch (e) {
+        websocketConnecting = false;
+        console.log("WebSocket connection error", e);
+        handleDisconnect("WebSocket connection error");
+    }
+}
+
+function subscribeToRefreshQueues() {
+    if (!stompClient || !userId) {
+        return;
+    }
+
+    let debouncedGameRefresh = debounce(function(data) {
+        refreshGame()
+    }, 200)
+
+    let debouncedHandAreaRefresh = debounce(function(data) {
+        refreshHandArea()
+    }, 200)
+
+    let debouncedCardsPlayedRefresh = debounce(function(data) {
+        refreshCardsPlayed()
+    }, 200)
+
+    let debouncedCardsBoughtRefresh = debounce(function(data) {
+        refreshCardsBought()
+    }, 200)
+
+    let debouncedSupplyRefresh = debounce(function(data) {
+        refreshSupply()
+    }, 200)
+
+    let debouncedCardActionRefresh = debounce(function(data) {
+        refreshCardAction()
+    }, 200)
+
+    let debouncedPlayersRefresh = debounce(function(data) {
+        refreshPlayers()
+    }, 200)
+
+    let debouncedChatRefresh = debounce(function(data) {
+        refreshChat()
+    }, 200)
+
+    let debouncedHistoryRefresh = debounce(function(data) {
+        refreshHistory()
+    }, 500)
+
+    stompClient.subscribe('/queue/refresh-game/' + userId, markWebsocketMessage(debouncedGameRefresh));
+    stompClient.subscribe('/queue/refresh-hand-area/' + userId, markWebsocketMessage(debouncedHandAreaRefresh));
+    stompClient.subscribe('/queue/refresh-cards-played/' + userId, markWebsocketMessage(debouncedCardsPlayedRefresh));
+    stompClient.subscribe('/queue/refresh-cards-bought/' + userId, markWebsocketMessage(debouncedCardsBoughtRefresh));
+    stompClient.subscribe('/queue/refresh-previous-player-cards-bought/' + userId, markWebsocketMessage(refreshPreviousPlayerCardsBought));
+    stompClient.subscribe('/queue/refresh-supply/' + userId, markWebsocketMessage(debouncedSupplyRefresh));
+    stompClient.subscribe('/queue/refresh-card-action/' + userId, markWebsocketMessage(debouncedCardActionRefresh));
+    stompClient.subscribe('/queue/refresh-players/' + userId, markWebsocketMessage(debouncedPlayersRefresh));
+    stompClient.subscribe('/queue/refresh-chat/' + userId, markWebsocketMessage(debouncedChatRefresh));
+    stompClient.subscribe('/queue/refresh-history/' + userId, markWebsocketMessage(debouncedHistoryRefresh));
+    stompClient.subscribe('/queue/show-info-message/' + userId, markWebsocketMessage(function(data) { showInfoMessage(data.body, 2500) }));
+}
+
+function markWebsocketMessage(refreshFunction) {
+    return function(data) {
+        lastWebsocketMessageAt = new Date().getTime();
+        refreshFunction(data);
+    };
+}
+
+function handleDisconnect(reason) {
+    console.log(reason);
+    cleanupWebsocketClient(true);
+
+    if (!manualDisconnect) {
+        scheduleReconnect();
+    }
+}
+
+function scheduleReconnect() {
+    if (reconnectTimeout !== null) {
+        return;
+    }
+
+    reconnectAttempts++;
+    var timeout = Math.min(10000, reconnectAttempts * 1000);
+    reconnectTimeout = setTimeout(function() {
+        reconnectTimeout = null;
+        connectToWebsocket();
+    }, timeout);
+}
+
+function startFallbackRefresh() {
+    if (fallbackRefreshInterval !== null) {
+        return;
+    }
+
+    fallbackRefreshInterval = setInterval(function() {
+        if (shouldFallbackRefresh()) {
+            refreshGame();
+            refreshChat();
+            refreshHistory();
+        }
+    }, fallbackRefreshDelay);
+}
+
+function shouldFallbackRefresh() {
+    if (!websocketConnected) {
+        return true;
+    }
+
+    return lastWebsocketMessageAt === 0 || new Date().getTime() - lastWebsocketMessageAt > websocketIdleFallbackDelay;
+}
+
+function cleanupWebsocketClient(disconnectClient) {
+    var client = stompClient;
+    var socket = websocket;
+
+    websocketConnected = false;
+    websocketConnecting = false;
+    stompClient = null;
+    websocket = null;
+
+    if (disconnectClient) {
+        try {
+            if (client !== null && client.connected) {
+                client.disconnect();
+            } else if (socket !== null && socket.readyState !== WebSocket.CLOSED && socket.readyState !== WebSocket.CLOSING) {
+                socket.close();
+            }
+        } catch (e) {
+            console.log("Error disconnecting STOMP client", e);
+        }
+    }
 }
 
 function refreshGame() {
@@ -249,9 +406,12 @@ function debounce(func, wait, immediate) {
 };
 
 function disconnect() {
-    if (stompClient !== null) {
-        stompClient.disconnect();
+    if (reconnectTimeout !== null) {
+        clearTimeout(reconnectTimeout);
+        reconnectTimeout = null;
     }
+
+    cleanupWebsocketClient(true);
     console.log("Disconnected");
 }
 
