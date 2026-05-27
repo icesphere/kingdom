@@ -80,13 +80,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                     playCard(card)
                 }
 
-                while (isWaitingForPlayers) {
-                    Thread.sleep(500)
-                    if (!isWaitingForPlayers && waitingForPlayersForResolveAttackAction != null) {
-                        waitingForPlayersForResolveAttackAction?.processActionResult(this, ActionResult())
-                        waitingForPlayersForResolveAttackAction = null
-                    }
-                }
+                waitForPendingPlayerActions()
 
                 if (!isBuyPhase && villagers > 0 && actions == 0 && hand.any { it.isAction }) {
                     useVillagers(1)
@@ -98,6 +92,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             val arena = game.landmarks.firstOrNull { it is Arena && it.isLandmarkActionable(this) }
             if (arena != null) {
                 useLandmark(arena)
+                waitForPendingPlayerActions()
             }
 
             //todo better logic
@@ -110,6 +105,7 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 if (projectToBuy != null && getBuyProjectScore(projectToBuy) > 0) {
                     endTurn = false
                     buyProject(game.getNewInstanceOfProject(projectToBuy.name))
+                    waitForPendingPlayerActions()
                 }
             }
 
@@ -118,19 +114,39 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 if (eventToBuy != null && getBuyEventScore(eventToBuy) > 0) {
                     endTurn = false
                     buyEvent(game.getNewInstanceOfEvent(eventToBuy.name))
+                    waitForPendingPlayerActions()
                 }
             }
 
             if (availableCoins > 0 && buys > 0 && debt == 0) {
                 val cardToBuy = getCardToBuy()
                 if (cardToBuy != null) {
-                    endTurn = false
-                    buyCard(game.getNewInstanceOfCard(cardToBuy))
+                    val card = game.getNewInstanceOfCard(cardToBuy)
+                    if (canBuyCard(card)) {
+                        endTurn = false
+                        buyCard(card)
+                        waitForPendingPlayerActions()
+                    }
                 }
             }
         }
 
         endTurn()
+    }
+
+    private fun waitForPendingPlayerActions() {
+        if (!isWaitingForPlayers && isOpponentHasAction) {
+            waitForOtherPlayersToResolveActions()
+        }
+
+        while (isWaitingForPlayers) {
+            Thread.sleep(500)
+        }
+
+        if (waitingForPlayersForResolveAttackAction != null) {
+            waitingForPlayersForResolveAttackAction?.processActionResult(this, ActionResult())
+            waitingForPlayersForResolveAttackAction = null
+        }
     }
 
     val availableCardsToBuy: List<Card>
