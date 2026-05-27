@@ -17,7 +17,7 @@
         <script type="text/javascript" >
             var createGame = ${createGame?string};
         </script>
-        <script type="text/javascript" src="js/selectCards.js?10"></script>
+        <script type="text/javascript" src="js/selectCards.js?11"></script>
 	</head>
 	<body>
         <div class="topGradient"></div>
@@ -179,6 +179,9 @@
                     <div style="float:left;padding-left:10px;">
                         <input id="eventSelectionCustom" type="radio" name="eventSelection" value="custom" onclick="toggleEventSelection()"/> <label for="eventSelectionCustom">Custom</label>
                     </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="eventSelectionNone" type="radio" name="eventSelection" value="none" onclick="toggleEventSelection()"/> <label for="eventSelectionNone">None</label>
+                    </div>
                 </div>
 
                 <div id="customEvents" style="display:none;float:left;clear:both;">
@@ -207,6 +210,9 @@
                     </div>
                     <div style="float:left;padding-left:10px;">
                         <input id="landmarkSelectionCustom" type="radio" name="landmarkSelection" value="custom" onclick="toggleLandmarkSelection()"/> <label for="landmarkSelectionCustom">Custom</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="landmarkSelectionNone" type="radio" name="landmarkSelection" value="none" onclick="toggleLandmarkSelection()"/> <label for="landmarkSelectionNone">None</label>
                     </div>
                 </div>
 
@@ -237,6 +243,9 @@
                     <div style="float:left;padding-left:10px;">
                         <input id="projectSelectionCustom" type="radio" name="projectSelection" value="custom" onclick="toggleProjectSelection()"/> <label for="projectSelectionCustom">Custom</label>
                     </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="projectSelectionNone" type="radio" name="projectSelection" value="none" onclick="toggleProjectSelection()"/> <label for="projectSelectionNone">None</label>
+                    </div>
                 </div>
 
                 <div id="customProjects" style="display:none;float:left;clear:both;">
@@ -265,6 +274,9 @@
                     </div>
                     <div style="float:left;padding-left:10px;">
                         <input id="waySelectionCustom" type="radio" name="waySelection" value="custom" onclick="toggleWaySelection()"/> <label for="waySelectionCustom">Custom</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="waySelectionNone" type="radio" name="waySelection" value="none" onclick="toggleWaySelection()"/> <label for="waySelectionNone">None</label>
                     </div>
                 </div>
 

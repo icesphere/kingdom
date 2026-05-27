@@ -138,16 +138,31 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
     private fun addEventsAndLandmarksAndProjectsAndWays(game: Game, options: RandomizingOptions) {
 
-        val eventsAndLandmarksAndProjectsAndWays = cardRepository.allEventsAndLandmarksAndProjectsAndWays.filterNot { it.disabled }.shuffled()
+        val eventsAndLandmarksAndProjectsAndWays = cardRepository.allEventsAndLandmarksAndProjectsAndWays
+                .filterNot { it.disabled }
+                .filter { options.includesEventLandmarkProjectOrWay(it) }
+                .shuffled()
 
         val numEventsAndLandmarksAndProjectsAndWays = options.numEventsAndLandmarksAndProjectsAndWays
 
-        val selectedEventsAndLandmarksAndProjectsAndWays = LinkedList(options.customEventSelection + options.customLandmarkSelection + options.customProjectSelection + options.customWaySelection)
+        val selectedEventsAndLandmarksAndProjectsAndWays = LinkedList<Card>()
+        if (options.isIncludeEvents) {
+            selectedEventsAndLandmarksAndProjectsAndWays.addAll(options.customEventSelection)
+        }
+        if (options.isIncludeLandmarks) {
+            selectedEventsAndLandmarksAndProjectsAndWays.addAll(options.customLandmarkSelection)
+        }
+        if (options.isIncludeProjects) {
+            selectedEventsAndLandmarksAndProjectsAndWays.addAll(options.customProjectSelection)
+        }
+        if (options.isIncludeWays) {
+            selectedEventsAndLandmarksAndProjectsAndWays.addAll(options.customWaySelection)
+        }
 
         if (selectedEventsAndLandmarksAndProjectsAndWays.size < numEventsAndLandmarksAndProjectsAndWays) {
             val selectedNames = selectedEventsAndLandmarksAndProjectsAndWays.map { it.name }
             val available = eventsAndLandmarksAndProjectsAndWays.filterNot { selectedNames.contains(it.name) }
-            selectedEventsAndLandmarksAndProjectsAndWays.addAll(available.subList(0, numEventsAndLandmarksAndProjectsAndWays - selectedEventsAndLandmarksAndProjectsAndWays.size))
+            selectedEventsAndLandmarksAndProjectsAndWays.addAll(available.take(numEventsAndLandmarksAndProjectsAndWays - selectedEventsAndLandmarksAndProjectsAndWays.size))
         }
 
         game.events = selectedEventsAndLandmarksAndProjectsAndWays.filterIsInstance<Event>().toMutableList()
@@ -245,6 +260,13 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         }
         val swapOptions = RandomizingOptions()
         swapOptions.isSwappingCard = true
+        game.randomizingOptions?.let {
+            swapOptions.numEventsAndLandmarksAndProjectsAndWays = it.numEventsAndLandmarksAndProjectsAndWays
+            swapOptions.isIncludeEvents = it.isIncludeEvents
+            swapOptions.isIncludeLandmarks = it.isIncludeLandmarks
+            swapOptions.isIncludeProjects = it.isIncludeProjects
+            swapOptions.isIncludeWays = it.isIncludeWays
+        }
         swapOptions.cardToReplace = cardToReplace
         swapOptions.cardToReplaceIndex = cardToReplaceIndex
         swapOptions.customCardSelection = cards
@@ -354,7 +376,11 @@ class CardRandomizer(private val cardRepository: CardRepository) {
 
     fun getEventOrLandmarkOrProjectOrWay(game: Game, excludedName: String): Card {
 
-        val cards = cardRepository.allEventsAndLandmarksAndProjectsAndWays.filterNot { it.disabled }.shuffled()
+        val options = game.randomizingOptions
+        val cards = cardRepository.allEventsAndLandmarksAndProjectsAndWays
+                .filterNot { it.disabled }
+                .filter { options?.includesEventLandmarkProjectOrWay(it) ?: true }
+                .shuffled()
 
         val selectedCards = game.events + game.landmarks + game.projects + game.ways
 
@@ -363,6 +389,16 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         val availableCards = cards.filterNot { selectedNames.contains(it.name) }
 
         return availableCards.first()
+    }
+
+    private fun RandomizingOptions.includesEventLandmarkProjectOrWay(card: Card): Boolean {
+        return when (card) {
+            is Event -> isIncludeEvents
+            is Landmark -> isIncludeLandmarks
+            is Project -> isIncludeProjects
+            is Way -> isIncludeWays
+            else -> true
+        }
     }
 
     private fun getCardsByDeck(deck: Deck): MutableList<Card> {

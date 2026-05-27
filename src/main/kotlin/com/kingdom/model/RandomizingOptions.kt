@@ -14,6 +14,10 @@ class RandomizingOptions {
     var customLandmarkSelection: List<Landmark> = ArrayList(0)
     var customProjectSelection: List<Project> = ArrayList(0)
     var customWaySelection: List<Way> = ArrayList(0)
+    var isIncludeEvents: Boolean = true
+    var isIncludeLandmarks: Boolean = true
+    var isIncludeProjects: Boolean = true
+    var isIncludeWays: Boolean = true
     var excludedCards: List<Card> = ArrayList(0)
     var isSwappingCard: Boolean = false
     var cardToReplaceIndex: Int = 0

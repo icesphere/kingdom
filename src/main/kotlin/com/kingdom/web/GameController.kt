@@ -298,6 +298,10 @@ class GameController(private val cardManager: CardManager,
         }
 
         options.numEventsAndLandmarksAndProjectsAndWays = KingdomUtil.getRequestInt(request, "numEventsAndLandmarksAndProjectsAndWays", 2)
+        options.isIncludeEvents = eventSelection != "none"
+        options.isIncludeLandmarks = landmarkSelection != "none"
+        options.isIncludeProjects = projectSelection != "none"
+        options.isIncludeWays = waySelection != "none"
 
         if (eventSelection == "custom") {
             options.customEventSelection = customEventSelection
