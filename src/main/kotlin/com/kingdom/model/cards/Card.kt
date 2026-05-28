@@ -79,6 +79,7 @@ abstract class Card(
             CardType.VictoryCastle -> "Victory - Castle"
             CardType.Curse -> "Curse"
             CardType.Treasure -> "Treasure"
+            CardType.TreasureDuration -> "Treasure - Duration"
             CardType.TreasureAttack -> "Treasure - Attack"
             CardType.ActionVictory -> "Action - Victory"
             CardType.ActionVictoryCastle -> "Action - Victory - Castle"
@@ -127,6 +128,7 @@ abstract class Card(
             CardType.ActionReactionVictory -> 3
             CardType.VictoryCastle -> 2
             CardType.TreasureAttack -> 2
+            CardType.TreasureDuration -> 2
             CardType.ActionVictory -> 2
             CardType.ActionVictoryCastle -> 3
             CardType.TreasureVictory -> 2
@@ -218,10 +220,10 @@ abstract class Card(
         get() = isAction && addActions == 0 && addVillagers == 0
 
     val isDuration: Boolean
-        get() = type == CardType.ActionDuration || type == CardType.ActionDurationVictory || type == CardType.DurationVictory || type == CardType.ActionDurationReaction || type == CardType.ActionDurationReactionVictory || type == CardType.ActionAttackDuration || type == CardType.ActionAttackDurationVictory
+        get() = type == CardType.ActionDuration || type == CardType.ActionDurationVictory || type == CardType.DurationVictory || type == CardType.ActionDurationReaction || type == CardType.ActionDurationReactionVictory || type == CardType.ActionAttackDuration || type == CardType.ActionAttackDurationVictory || type == CardType.TreasureDuration
 
     val isTreasure: Boolean
-        get() = type == CardType.Treasure || type == CardType.TreasureAttack || type == CardType.ActionTreasure || type == CardType.TreasureVictory || type == CardType.TreasureVictoryCastle || type == CardType.TreasureCurse || type == CardType.TreasureReaction || type == CardType.TreasureReserve
+        get() = type == CardType.Treasure || type == CardType.TreasureDuration || type == CardType.TreasureAttack || type == CardType.ActionTreasure || type == CardType.TreasureVictory || type == CardType.TreasureVictoryCastle || type == CardType.TreasureCurse || type == CardType.TreasureReaction || type == CardType.TreasureReserve
 
     val isReaction: Boolean
         get() = type == CardType.ActionReaction || type == CardType.ActionReactionVictory || type == CardType.VictoryReaction || type == CardType.TreasureReaction || type == CardType.ReactionShelter || type == CardType.ReactionShelterVictory || type == CardType.ActionDurationReaction || type == CardType.ActionDurationReactionVictory
@@ -307,6 +309,7 @@ abstract class Card(
             type == CardType.ActionDurationVictory -> CardColor.ActionDuration
             type == CardType.ActionAttackDuration -> CardColor.ActionDuration
             type == CardType.ActionAttackDurationVictory -> CardColor.ActionDuration
+            type == CardType.TreasureDuration -> CardColor.TreasureDuration
             type == CardType.ActionReserve -> CardColor.ActionReserve
             type == CardType.ActionRuins -> CardColor.Ruins
             type == CardType.ActionRuinsVictory -> CardColor.Ruins

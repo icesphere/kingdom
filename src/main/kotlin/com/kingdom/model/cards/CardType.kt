@@ -14,6 +14,7 @@ enum class CardType {
     ActionReaction,
     ActionReactionVictory,
     Treasure,
+    TreasureDuration,
     TreasureAttack,
     Curse,
     ActionVictory,

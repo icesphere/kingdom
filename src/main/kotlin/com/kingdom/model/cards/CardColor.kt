@@ -2,6 +2,7 @@ package com.kingdom.model.cards
 
 enum class CardColor(val color: String, val mobileColor: String = color, val isImage: Boolean = false) {
     Treasure("#F6DC51"),
+    TreasureDuration("gold_orange.gif", "gold_orange_mobile.gif", true),
     Curse("#A17FBC"),
     Victory("#80B75A"),
     ActionReaction("#7FAED8"),

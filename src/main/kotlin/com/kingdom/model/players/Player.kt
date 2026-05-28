@@ -276,6 +276,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var numExtraCardsToDrawAtEndOfTurn: Int = 0
 
+    var numCardsToDrawAtEndOfTurn: Int? = null
+
+    var nextCardGainedSetAsideAction: ((Card) -> Unit)? = null
+
     var inheritanceActionCard: Card? = null
 
     val playerToLeft: Player
@@ -671,8 +675,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         eventsBought.clear()
 
-        drawCards(5 + numExtraCardsToDrawAtEndOfTurn)
+        drawCards((numCardsToDrawAtEndOfTurn ?: 5) + numExtraCardsToDrawAtEndOfTurn)
 
+        numCardsToDrawAtEndOfTurn = null
         numExtraCardsToDrawAtEndOfTurn = 0
 
         if (hasArtifact(Flag.NAME)) {
@@ -922,6 +927,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (gainCardHandled) {
+            nextCardGainedSetAsideAction = null
             return
         }
 
@@ -941,6 +947,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             isNextCardToTopOfDeck -> {
                 isNextCardToTopOfDeck = false
                 addCardToTopOfDeck(cardToGain)
+            }
+            nextCardGainedSetAsideAction != null -> {
+                val setAsideAction = nextCardGainedSetAsideAction!!
+                nextCardGainedSetAsideAction = null
+                setAsideAction(cardToGain)
+                cardRemovedFromPlay(cardToGain, CardLocation.SetAside)
+                refreshPlayerHandArea()
             }
             else -> {
                 addCardToDiscard(cardToGain)
@@ -963,6 +976,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 tavernCards.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardGainedListenerForCardsInTavern>())
                 .forEach { it.afterCardGained(cardToGain, this) }
 
+        (hand.filterIsInstance<AfterCardGainedListenerForCardsInHand>() +
+                hand.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardGainedListenerForCardsInHand>())
+                .forEach { it.afterCardGained(cardToGain, this) }
+
         (inPlayWithDuration.filterIsInstance<AfterCardGainedListenerForCardsInPlay>() +
                 inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterCardGainedListenerForCardsInPlay>())
                 .forEach { it.afterCardGained(cardToGain, this) }
@@ -974,8 +991,20 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 .forEach { it.afterCardGained(cardToGain, this) }
 
         opponents.forEach { opponent ->
+            (opponent.hand.filterIsInstance<AfterOtherPlayerCardGainedListenerForCardsInHand>() +
+                    opponent.hand.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterOtherPlayerCardGainedListenerForCardsInHand>())
+                    .forEach { it.afterCardGainedByOtherPlayer(cardToGain, opponent, this) }
+
+            (opponent.inPlayWithDuration.filterIsInstance<AfterOtherPlayerCardGainedListenerForCardsInPlay>() +
+                    opponent.inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterOtherPlayerCardGainedListenerForCardsInPlay>())
+                    .forEach { it.afterCardGainedByOtherPlayer(cardToGain, opponent, this) }
+
             opponent.projectsBought.filterIsInstance<AfterOtherPlayerCardGainedListenerForProjects>()
                     .forEach { it.afterCardGainedByOtherPlayer(cardToGain, opponent, this) }
+        }
+
+        if (game.currentPlayer.isOpponentHasAction) {
+            game.currentPlayer.waitForOtherPlayersToResolveActions()
         }
 
         if (cardToGain.isVictory || game.landmarks.any { it is VictoryPointsCalculator }) {
@@ -1211,6 +1240,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         card.cardPlayed(this, refresh)
+
+        opponents.forEach { opponent ->
+            (opponent.inPlayWithDuration.filterIsInstance<AfterOtherPlayerCardPlayedListenerForCardsInPlay>() +
+                    opponent.inPlayWithDuration.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterOtherPlayerCardPlayedListenerForCardsInPlay>())
+                    .forEach { it.afterCardPlayedByOtherPlayer(card, opponent, this) }
+        }
     }
 
     private fun handleBeforeBuyPhase() {

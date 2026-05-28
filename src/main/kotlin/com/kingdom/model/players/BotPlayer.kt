@@ -283,7 +283,11 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
             addEventLogWithUsername("gained ${card.cardNameWithBackgroundColor} from the supply")
 
-            cardGained(card)
+            when (destination) {
+                CardLocation.Hand -> gainCardToHand(card)
+                CardLocation.Deck -> gainCardToTopOfDeck(card)
+                else -> cardGained(card)
+            }
         }
     }
 

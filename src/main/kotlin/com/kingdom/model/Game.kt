@@ -151,6 +151,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     private var currentPlayerIndex: Int = 0
 
+    var isExtraTurnForCurrentPlayer: Boolean = false
+
     val currentPlayerId
         get() = currentPlayer.userId
 
@@ -695,7 +697,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         previousPlayerId = currentPlayerId
 
-        if (currentPlayerIndex == players.size - 1) {
+        if (isExtraTurnForCurrentPlayer) {
+            isExtraTurnForCurrentPlayer = false
+        } else if (currentPlayerIndex == players.size - 1) {
             currentPlayerIndex = 0
         } else {
             currentPlayerIndex++
