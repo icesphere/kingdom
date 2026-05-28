@@ -78,6 +78,10 @@ class CardManager(private val cardRepository: CardRepository,
         cardRandomizer.swapProject(game, projectName)
     }
 
+    fun swapWay(game: Game, wayName: String) {
+        cardRandomizer.swapWay(game, wayName)
+    }
+
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {
         var cards = cardRepository.getCardsByDeck(deck)
         if (!includeTesting) {

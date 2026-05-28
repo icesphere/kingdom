@@ -481,6 +481,29 @@ class GameController(private val cardManager: CardManager,
         }
     }
 
+    @RequestMapping("/swapWay.html")
+    fun swapWay(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        }
+        try {
+            return if (game.status == GameStatus.BeingConfigured) {
+                cardManager.swapWay(game, request.getParameter("wayName"))
+                confirmCards(request, response)
+            } else {
+                if (game.status == GameStatus.InProgress) {
+                    ModelAndView("redirect:/showGame.html")
+                } else {
+                    ModelAndView("redirect:/showGameRooms.html")
+                }
+            }
+        } catch (t: Throwable) {
+            return logErrorAndReturnEmpty(t, game)
+        }
+    }
+
     @RequestMapping("/togglePlatinumAndColony.html")
     fun togglePlatinumAndColony(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
         val user = getUser(request)

@@ -298,6 +298,10 @@ class CardRandomizer(private val cardRepository: CardRepository) {
                 game.events.removeAll { it.name == eventName }
                 game.projects.add(replacement)
             }
+            is Way -> {
+                game.events.removeAll { it.name == eventName }
+                game.ways.add(replacement)
+            }
         }
     }
 
@@ -321,6 +325,10 @@ class CardRandomizer(private val cardRepository: CardRepository) {
                 game.landmarks.removeAll { it.name == landmarkName }
                 game.projects.add(replacement)
             }
+            is Way -> {
+                game.landmarks.removeAll { it.name == landmarkName }
+                game.ways.add(replacement)
+            }
         }
     }
 
@@ -343,6 +351,10 @@ class CardRandomizer(private val cardRepository: CardRepository) {
             is Landmark -> {
                 game.projects.removeAll { it.name == projectName }
                 game.landmarks.add(replacement)
+            }
+            is Way -> {
+                game.projects.removeAll { it.name == projectName }
+                game.ways.add(replacement)
             }
         }
     }

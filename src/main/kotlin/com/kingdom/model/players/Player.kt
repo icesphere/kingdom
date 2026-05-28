@@ -1916,7 +1916,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         val cost = getCardCostWithModifiers(card)
-        return game.isCardAvailableInSupply(card) && availableCoins >= cost
+        return game.isCardAvailableInSupply(card) && !game.isCardNotInSupply(card) && availableCoins >= cost
     }
 
     abstract fun chooseCardForOpponentToGain(cost: Int, text: String, destination: CardLocation, opponent: Player)

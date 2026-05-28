@@ -30,6 +30,8 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
     override val difficulty: Int = 3
 
+    private val scorePerCoin = 4
+
     private val preferredMaxCopies = mapOf(
             SeaHag.NAME to 2,
             Witch.NAME to 2,
@@ -104,7 +106,7 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
         return candidates.maxWithOrNull(
                 compareBy<Card> { getBuyCardScore(it) }
                         .thenBy { getCardCostWithModifiers(it) }
-                        .thenByDescending { cardCountByName(it.name) }
+                        .thenBy { -cardCountByName(it.name) }
         )?.takeIf { getBuyCardScore(it) > 0 }?.name
     }
 
@@ -114,19 +116,19 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
         }
 
         when (card.name) {
-            Colony.NAME -> return 160
-            Platinum.NAME -> return 130
-            Province.NAME -> return 120
-            Duchy.NAME -> return if (shouldBuyDuchy()) 86 else 0
-            Estate.NAME -> return if (shouldBuyEstate()) 54 else 0
-            Gold.NAME -> return when {
-                shouldPreferPayloadOverTreasure() -> 58
-                cardCountByName(Gold.NAME) == 0 -> 100
-                else -> 72
-            }
-            Silver.NAME -> return if (cardCountByName(Silver.NAME) < 2 || turns < 5) 38 else 30
-            Copper.NAME -> return if (goonsInPlay > 0) 18 + goonsInPlay else 0
-            Chapel.NAME -> return if (shouldBuyChapel()) 94 else 0
+            Colony.NAME -> return scoreWithInheritedAdjustments(44, card)
+            Platinum.NAME -> return scoreWithInheritedAdjustments(38, card)
+            Province.NAME -> return scoreWithInheritedAdjustments(34, card)
+            Duchy.NAME -> return scoreWithInheritedAdjustments(if (shouldBuyDuchy()) 30 else 0, card)
+            Estate.NAME -> return scoreWithInheritedAdjustments(if (shouldBuyEstate()) 27 else 0, card)
+            Gold.NAME -> return scoreWithInheritedAdjustments(when {
+                shouldPreferPayloadOverTreasure() -> 18
+                cardCountByName(Gold.NAME) == 0 -> 26
+                else -> 24
+            }, card)
+            Silver.NAME -> return scoreWithInheritedAdjustments(if (cardCountByName(Silver.NAME) < 2 || turns < 5) 10 else 7, card)
+            Copper.NAME -> return maxOf(scoreWithInheritedAdjustments(if (goonsInPlay > 0) 3 + goonsInPlay else 0, card), inheritedScore(card))
+            Chapel.NAME -> return if (shouldBuyChapel()) 28 else 0
         }
 
         val cap = preferredMaxCopies[card.name]
@@ -134,33 +136,33 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
             return 0
         }
 
-        var score = super.getBuyCardScore(card)
+        var score = maxOf(super.getBuyCardScore(card), kingdomPayloadScoreFloor(card))
 
         if (card.isVictoryPointsCalculator && card.isVictory) {
-            val victoryPoints = alternativeVictoryPoints(card)
-            score = maxOf(score, victoryPoints * 12)
+            val victoryPoints = victoryPointsFromGain(card)
+            score = maxOf(score, victoryPoints * 4)
         }
 
         if (card.isAlternativeScoringCardForBot()) {
-            score = maxOf(score, alternativeVictoryPoints(card) * 18 + if (isPilePressureLikely()) 8 else 0)
+            score = maxOf(score, victoryPointsFromGain(card) * 6 + if (isPilePressureLikely()) 3 else 0)
         }
 
         if (card.isAttack && turns < 7) {
-            score += 8
+            score += 3
         }
 
         if (card.addCards > 1 && !card.isTerminalAction) {
-            score += 12
+            score += 5
         } else if (card.addCards > 1) {
-            score += 6
+            score += 2
         }
 
         if (card.addActions > 1 && terminalActionCount() > extraActionCount()) {
-            score += 10
+            score += 4
         }
 
         if (card.addBuys > 0 && (goonsInPlay > 0 || availableCoins >= 6)) {
-            score += 5
+            score += 2
         }
 
         return score + generalizedKingdomAnalysisAdjustment(card) + simulatedDominionTieBreaker(card)
@@ -241,15 +243,49 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
                 .filter { canBuyCard(it) && it.isVictory && !buyingCardWouldEndGameWhileBehind(it) }
                 .maxByOrNull {
                     if (it is VictoryPointsCalculator) {
-                        it.calculatePoints(this)
+                        victoryPointsFromGain(it)
                     } else {
                         it.victoryPoints
                     }
                 }
     }
 
+    private fun scoreWithInheritedAdjustments(baseScore: Int, card: Card): Int {
+        if (baseScore <= 0) {
+            return 0
+        }
+
+        return baseScore + inheritedScoreAdjustment(card)
+    }
+
+    private fun inheritedScore(card: Card): Int {
+        return super.getBuyCardScore(card).coerceAtLeast(0)
+    }
+
+    private fun inheritedScoreAdjustment(card: Card): Int {
+        val inheritedScore = inheritedScore(card)
+        if (inheritedScore <= 0) {
+            return 0
+        }
+
+        return inheritedScore - getCardCostWithModifiers(card)
+    }
+
     private fun simulatedDominionTieBreaker(card: Card): Int {
-        return simulatedDominionScores[card.name]?.div(10) ?: 0
+        return simulatedDominionScores[card.name]?.div(30) ?: 0
+    }
+
+    private fun kingdomPayloadScoreFloor(card: Card): Int {
+        if (!card.isKingdomPayloadCardForBot() || card.isVictoryOnly) {
+            return 0
+        }
+
+        val cost = getCardCostWithModifiers(card)
+        if (cost < 4) {
+            return 0
+        }
+
+        return cost * scorePerCoin
     }
 
     private fun generalizedKingdomAnalysisAdjustment(card: Card): Int {
@@ -257,51 +293,51 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
         if (turns < 6) {
             if (card.isTrashingCard && needsThinning()) {
-                adjustment += 32
+                adjustment += 9
             }
 
             if (card.isDeckControlCard()) {
-                adjustment += 12
+                adjustment += 4
             }
 
             if (card.addActions > 1 && terminalActionCount() > extraActionCount()) {
-                adjustment += 12
+                adjustment += 4
             }
         }
 
         if (card.isCurseGiver) {
             adjustment += when {
-                (game.numInPileMap[Curse.NAME] ?: 0) <= 3 -> -18
-                turns < 6 -> 46
-                turns < 9 -> 24
+                (game.numInPileMap[Curse.NAME] ?: 0) <= 3 -> -4
+                turns < 6 -> 12
+                turns < 9 -> 6
                 else -> 0
             }
         }
 
         if (card.isVictoryCoinsCard) {
-            adjustment += if (deckControlCardCount() > 0 || hasDeckControlAvailable()) 44 else 34
+            adjustment += if (deckControlCardCount() > 0 || hasDeckControlAvailable()) 12 else 9
         }
 
         if (card.addBuys > 0 && hasAlternativeScoringAvailable) {
-            adjustment += 12
+            adjustment += 3
         }
 
         if (deckControlCardCount() > 0 && (card.addCards > 1 || card.addBuys > 0 || card.isVictoryCoinsCard)) {
-            adjustment += 10
+            adjustment += 3
         }
 
         if (card.addCards >= 3) {
-            adjustment += 34
+            adjustment += 8
         } else if (card.addCards > 1) {
-            adjustment += 22
+            adjustment += 5
         }
 
         if (card.addCards > 0 && card.addActions > 0) {
-            adjustment += 18
+            adjustment += 5
         }
 
         if (isPilePressureLikely() && card.isVictory) {
-            adjustment += 8
+            adjustment += 3
         }
 
         return adjustment
@@ -349,7 +385,7 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
     }
 
     private fun shouldPursueAlternativeScoring(card: Card): Boolean {
-        val points = alternativeVictoryPoints(card)
+        val points = victoryPointsFromGain(card)
 
         return points >= 3 || points > 0 && isPilePressureLikely()
     }
@@ -399,6 +435,11 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
         return isTrashingCard || addCards > 0 && addActions > 0 || addVillagers > 0
     }
 
+    private fun Card.isKingdomPayloadCardForBot(): Boolean {
+        return !isCopper && !isSilver && !isGold && !isPlatinum &&
+                !isEstate && !isDuchy && !isProvince && !isColony && !isCurseOnly
+    }
+
     private fun Card.isAlternativeScoringCardForBot(): Boolean {
         return isAlternativeScoringCard(this)
     }
@@ -407,9 +448,9 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
         return card.isVictory && card is VictoryPointsCalculator && !card.isProvince && !card.isColony && !card.isDuchy && !card.isEstate
     }
 
-    private fun alternativeVictoryPoints(card: Card): Int {
+    private fun victoryPointsFromGain(card: Card): Int {
         if (card !is VictoryPointsCalculator) {
-            return 0
+            return if (card.isVictory || card.isCurse) card.victoryPoints else 0
         }
 
         return when (card.name) {
@@ -517,7 +558,7 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
     private fun victoryPointsAfterBuying(card: Card): Int {
         val gainedVictoryPoints = when {
-            card is VictoryPointsCalculator -> card.calculatePoints(this)
+            card is VictoryPointsCalculator -> victoryPointsFromGain(card)
             card.isVictory || card.isCurse -> card.victoryPoints
             else -> 0
         }

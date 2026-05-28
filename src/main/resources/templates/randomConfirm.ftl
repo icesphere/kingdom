@@ -22,6 +22,9 @@
             function swapProject(projectName) {
                 document.location = "swapProject.html?projectName="+projectName;
             }
+            function swapWay(wayName) {
+                document.location = "swapWay.html?wayName="+wayName;
+            }
         </script>
 	</head>
 	<body>

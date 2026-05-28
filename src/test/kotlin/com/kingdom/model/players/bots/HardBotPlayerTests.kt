@@ -6,17 +6,25 @@ import com.kingdom.model.User
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.base.Chapel
 import com.kingdom.model.cards.base.Gardens
+import com.kingdom.model.cards.base.Sentry
 import com.kingdom.model.cards.base.Witch
 import com.kingdom.model.cards.intrigue.Minion
+import com.kingdom.model.cards.menagerie.Horse
+import com.kingdom.model.cards.menagerie.Paddock
 import com.kingdom.model.cards.prosperity.Goons
+import com.kingdom.model.cards.seaside.Wharf
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Duchy
+import com.kingdom.model.cards.supply.Estate
+import com.kingdom.model.cards.supply.Gold
 import com.kingdom.model.cards.supply.Province
 import com.kingdom.model.cards.supply.Silver
 import com.kingdom.service.GameManager
 import com.kingdom.service.GameMessageService
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -37,6 +45,15 @@ class HardBotPlayerTests {
 
         assertEquals(Silver.NAME, earlyBot.getCardToBuy())
         assertEquals(Duchy.NAME, lateBot.getCardToBuy())
+    }
+
+    @Test
+    fun greeningScoresBeatGoldWhenTheyAreEnabled() {
+        val duchyBot = hardBot(6, emptyList(), provincesLeft = 5)
+        val estateBot = hardBot(6, emptyList(), provincesLeft = 2)
+
+        assertTrue(duchyBot.getBuyCardScore(Duchy()) > duchyBot.getBuyCardScore(Gold()))
+        assertTrue(estateBot.getBuyCardScore(Estate()) > estateBot.getBuyCardScore(Gold()))
     }
 
     @Test
@@ -63,6 +80,37 @@ class HardBotPlayerTests {
         repeat(20) { bot.deck.add(Copper()) }
 
         assertEquals(Gardens.NAME, bot.getCardToBuy())
+    }
+
+    @Test
+    fun buysFiveCostPayloadOverSilverEvenWithoutNamedStrategy() {
+        val bot = hardBot(5, listOf(Wharf()))
+
+        assertEquals(Wharf.NAME, bot.getCardToBuy())
+    }
+
+    @Test
+    fun keepsBuyScoresOnComparableScale() {
+        val bot = hardBot(8, listOf(Wharf()))
+        val wharfScore = bot.getBuyCardScore(Wharf())
+
+        assertTrue(bot.getBuyCardScore(Silver()) < wharfScore)
+        assertTrue(bot.getBuyCardScore(Province()) < wharfScore * 2)
+    }
+
+    @Test
+    fun buysFiveCostDeckControlOverSilver() {
+        val bot = hardBot(5, listOf(Sentry()))
+
+        assertEquals(Sentry.NAME, bot.getCardToBuy())
+    }
+
+    @Test
+    fun doesNotBuyHorseFromNonSupplyPile() {
+        val bot = hardBot(3, listOf(Paddock()))
+
+        assertFalse(bot.canBuyCard(Horse()))
+        assertEquals(Silver.NAME, bot.getCardToBuy())
     }
 
     @Test

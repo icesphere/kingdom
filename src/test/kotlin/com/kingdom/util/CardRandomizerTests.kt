@@ -4,9 +4,12 @@ import com.kingdom.model.Game
 import com.kingdom.model.RandomizingOptions
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.adventures.events.Alms
+import com.kingdom.model.cards.menagerie.ways.WayOfTheSquirrel
 import com.kingdom.repository.CardRepository
 import com.kingdom.service.GameManager
 import com.kingdom.service.GameMessageService
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
@@ -34,5 +37,41 @@ class CardRandomizerTests {
         assertTrue(game.landmarks.isEmpty())
         assertTrue(game.projects.isEmpty())
         assertTrue(game.ways.isEmpty())
+    }
+
+    @Test
+    fun swapsWayForAnotherWay() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java)))
+        val wayToReplace = WayOfTheSquirrel()
+        game.ways = mutableListOf(wayToReplace)
+        game.randomizingOptions = RandomizingOptions().apply {
+            isIncludeEvents = false
+            isIncludeLandmarks = false
+            isIncludeProjects = false
+            isIncludeWays = true
+        }
+
+        CardRandomizer(CardRepository()).swapWay(game, wayToReplace.name)
+
+        assertEquals(1, game.ways.size)
+        assertNotEquals(wayToReplace.name, game.ways.first().name)
+    }
+
+    @Test
+    fun swapsEventForWayWhenOnlyWaysAreAvailable() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java)))
+        val eventToReplace = Alms()
+        game.events = mutableListOf(eventToReplace)
+        game.randomizingOptions = RandomizingOptions().apply {
+            isIncludeEvents = false
+            isIncludeLandmarks = false
+            isIncludeProjects = false
+            isIncludeWays = true
+        }
+
+        CardRandomizer(CardRepository()).swapEvent(game, eventToReplace.name)
+
+        assertTrue(game.events.isEmpty())
+        assertEquals(1, game.ways.size)
     }
 }
