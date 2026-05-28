@@ -4,10 +4,17 @@ import com.kingdom.model.Choice
 import com.kingdom.model.Game
 import com.kingdom.model.User
 import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.Event
+import com.kingdom.model.cards.Landmark
+import com.kingdom.model.cards.adventures.events.Seaway
 import com.kingdom.model.cards.base.Chapel
 import com.kingdom.model.cards.base.Gardens
+import com.kingdom.model.cards.base.Market
+import com.kingdom.model.cards.base.Militia
 import com.kingdom.model.cards.base.Sentry
 import com.kingdom.model.cards.base.Witch
+import com.kingdom.model.cards.empires.events.Delve
+import com.kingdom.model.cards.empires.landmarks.Orchard
 import com.kingdom.model.cards.intrigue.Minion
 import com.kingdom.model.cards.menagerie.Horse
 import com.kingdom.model.cards.menagerie.Paddock
@@ -128,6 +135,33 @@ class HardBotPlayerTests {
     }
 
     @Test
+    fun skipsDelveWhenItWouldTradeGoldForSilver() {
+        val bot = hardBot(6, emptyList(), events = listOf(Delve()))
+
+        assertEquals(0, bot.getBuyEventScore(Delve()))
+        assertEquals(Gold.NAME, bot.getCardToBuy())
+    }
+
+    @Test
+    fun valuesSeawayWhenItGainsAUsefulActionAndBuyToken() {
+        val bot = hardBot(5, listOf(Militia()), events = listOf(Seaway()))
+
+        assertTrue(bot.getBuyEventScore(Seaway()) > bot.getBuyCardScore(Militia()))
+    }
+
+    @Test
+    fun landmarkScoringPushesTowardOrchardThresholds() {
+        val botWithoutOrchard = hardBot(5, listOf(Market()))
+        val botWithOrchard = hardBot(5, listOf(Market()), landmarks = listOf(Orchard()))
+        repeat(2) {
+            botWithoutOrchard.deck.add(Market())
+            botWithOrchard.deck.add(Market())
+        }
+
+        assertTrue(botWithOrchard.getBuyCardScore(Market()) >= botWithoutOrchard.getBuyCardScore(Market()) + 12)
+    }
+
+    @Test
     fun minionUsesMoneyWhenAnotherMinionIsStillInHand() {
         val bot = hardBot(0, listOf(Minion()))
         bot.inPlay.add(Minion())
@@ -149,19 +183,35 @@ class HardBotPlayerTests {
         assertEquals(2, choice)
     }
 
-    private fun hardBot(coins: Int, kingdomCards: List<Card>, provincesLeft: Int = 8): HardBotPlayer {
+    private fun hardBot(
+            coins: Int,
+            kingdomCards: List<Card>,
+            provincesLeft: Int = 8,
+            events: List<Event> = emptyList(),
+            landmarks: List<Landmark> = emptyList()
+    ): HardBotPlayer {
         val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java)))
         game.numPlayers = 2
         game.kingdomCards = kingdomCards.toMutableList()
+        game.events = events.toMutableList()
+        game.landmarks = landmarks.toMutableList()
         game.setupGame()
         game.setupAmountForPile(Province.NAME, provincesLeft)
 
         val user = User().apply { username = "Hard Bot" }
-        val bot = HardBotPlayer(user, game)
+        val bot = TestHardBotPlayer(user, game)
         bot.chatColor = "red"
         game.players.add(bot)
+        bot.enterBuyPhaseForTesting()
         bot.addCoins(coins, refresh = false)
 
         return bot
+    }
+
+    private class TestHardBotPlayer(user: User, game: Game) : HardBotPlayer(user, game) {
+        fun enterBuyPhaseForTesting() {
+            isYourTurn = true
+            addBuys(1, refresh = false)
+        }
     }
 }
