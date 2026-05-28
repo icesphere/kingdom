@@ -90,6 +90,20 @@ class HardBotPlayerTests {
     }
 
     @Test
+    fun buysStrongPayloadOverGoldWhenTheBoardSupportsIt() {
+        val bot = hardBot(6, listOf(Wharf()))
+
+        assertEquals(Wharf.NAME, bot.getCardToBuy())
+    }
+
+    @Test
+    fun buysGoldOnMoneyBoardsWithoutPayload() {
+        val bot = hardBot(6, emptyList())
+
+        assertEquals(Gold.NAME, bot.getCardToBuy())
+    }
+
+    @Test
     fun keepsBuyScoresOnComparableScale() {
         val bot = hardBot(8, listOf(Wharf()))
         val wharfScore = bot.getBuyCardScore(Wharf())
