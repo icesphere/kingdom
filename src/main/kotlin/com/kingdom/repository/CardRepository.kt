@@ -83,7 +83,7 @@ class CardRepository {
                 Swindler(),
                 Torturer(),
                 TradingPost(),
-                TreasureRoom(),
+                Farm(),
                 Upgrade(),
                 WishingWell()
         )
