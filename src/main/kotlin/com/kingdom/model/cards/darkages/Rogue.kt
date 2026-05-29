@@ -37,7 +37,7 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
 
             cardsToDiscard.forEach {
                 opponent.removeCardFromDeck(it)
-                opponent.addCardToDiscard(it)
+                opponent.discardCard(it)
             }
 
             if (cardsToDiscard.isNotEmpty()) {
@@ -63,7 +63,7 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
                         opponent.addEventLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${cardsThatCanBeTrashed[0].cardNameWithBackgroundColor}")
 
                         opponent.removeCardFromDeck(cardsThatCanBeTrashed[1])
-                        opponent.addCardToDiscard(cardsThatCanBeTrashed[1])
+                        opponent.discardCard(cardsThatCanBeTrashed[1])
                     }
                     else -> {
                         opponent.chooseCardAction("Select a card to trash from the top of your deck. The other card will be discarded.", this, cardsThatCanBeTrashed, false, cardsThatCanBeTrashed.toMutableList())
@@ -83,11 +83,10 @@ class Rogue : DarkAgesCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCa
         cardsThatCanBeTrashed.remove(card)
         val remainingCard = cardsThatCanBeTrashed.first()
         player.removeCardFromDeck(remainingCard)
-        player.addCardToDiscard(remainingCard)
+        player.discardCard(remainingCard)
     }
 
     companion object {
         const val NAME: String = "Rogue"
     }
 }
-

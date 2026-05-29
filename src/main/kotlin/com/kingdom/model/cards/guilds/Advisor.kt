@@ -18,7 +18,7 @@ class Advisor : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard {
         val cards = player.removeTopCardsOfDeck(3, true)
 
         when {
-            cards.size == 1 -> player.addCardToDiscard(cards.first(), showLog = true)
+            cards.size == 1 -> player.discardCard(cards.first(), showLog = true)
             cards.isNotEmpty() -> {
                 val choices = cards.mapIndexed { index, card -> Choice(index, card.name) }
                 player.playerToLeft.makeChoiceFromListWithInfo(this, "Choose a card for ${player.username} to discard. The rest will go into their hand", cards, choices)
@@ -34,7 +34,7 @@ class Advisor : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard {
         val currentPlayer = player.game.currentPlayer
 
         val cardToDiscard = cards[choice]
-        currentPlayer.addCardToDiscard(cardToDiscard, showLog = true)
+        currentPlayer.discardCard(cardToDiscard, showLog = true)
         currentPlayer.showInfoMessage("${player.username} discarded ${cardToDiscard.cardNameWithBackgroundColor}")
 
         val cardsToPutInHand = cards - cardToDiscard
@@ -48,4 +48,3 @@ class Advisor : GuildsCard(NAME, CardType.Action, 4), ChoiceActionCard {
         const val NAME: String = "Advisor"
     }
 }
-

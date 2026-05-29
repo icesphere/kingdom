@@ -165,25 +165,32 @@ class CardRepository {
 
     val hinterlandsCards: List<Card>
         get() = listOf(
+                Berserker(),
                 BorderVillage(),
-                Cache(),
+                Cartographer(),
+                Cauldron(),
                 Crossroads(),
-                Embassy(),
-                Farmland(),
+                Develop(),
+                FoolsGold(),
+                GuardDog(),
                 Haggler(),
                 Highway(),
-                IllGottenGains(),
                 Inn(),
                 JackOfAllTrades(),
-                Mandarin(),
                 Margrave(),
-                NobleBrigand(),
-                NomadCamp(),
+                Nomads(),
                 Oasis(),
-                SilkRoad(),
+                Scheme(),
+                Souk(),
                 SpiceMerchant(),
                 Stables(),
-                Trader()
+                Trader(),
+                Trail(),
+                Weaver(),
+                Wheelwright(),
+                WitchsHut(),
+                Farmland(),
+                Tunnel()
         )
 
     val darkAgesCards: List<Card>

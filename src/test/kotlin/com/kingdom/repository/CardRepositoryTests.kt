@@ -100,4 +100,52 @@ class CardRepositoryTests {
             assertFalse(prosperityCardNames.contains(removedCardName))
         }
     }
+
+    @Test
+    fun hinterlandsCardsUseSecondEditionList() {
+        val hinterlandsCardNames = CardRepository().hinterlandsCards.map { it.name }
+
+        assertEquals(listOf(
+                "Berserker",
+                "Border Village",
+                "Cartographer",
+                "Cauldron",
+                "Crossroads",
+                "Develop",
+                "Fool's Gold",
+                "Guard Dog",
+                "Haggler",
+                "Highway",
+                "Inn",
+                "Jack of All Trades",
+                "Margrave",
+                "Nomads",
+                "Oasis",
+                "Scheme",
+                "Souk",
+                "Spice Merchant",
+                "Stables",
+                "Trader",
+                "Trail",
+                "Weaver",
+                "Wheelwright",
+                "Witch's Hut",
+                "Farmland",
+                "Tunnel"
+        ), hinterlandsCardNames)
+
+        listOf(
+                "Cache",
+                "Duchess",
+                "Embassy",
+                "Ill-Gotten Gains",
+                "Mandarin",
+                "Noble Brigand",
+                "Nomad Camp",
+                "Oracle",
+                "Silk Road"
+        ).forEach { removedCardName ->
+            assertFalse(hinterlandsCardNames.contains(removedCardName))
+        }
+    }
 }

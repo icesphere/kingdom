@@ -1419,7 +1419,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun addCardsToDiscard(cards: List<Card>, showLog: Boolean = false) {
         if (cards.isEmpty()) return
 
-        cards.forEach { addCardToDiscard(it, refresh = false) }
+        cards.forEach { discardCard(it, refresh = false) }
         if (showLog) {
             addEventLogWithUsername("discarded ${cards.groupedString}")
         }
@@ -1443,6 +1443,21 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
     }
 
+    fun discardCard(card: Card, refresh: Boolean = true, showLog: Boolean = false) {
+        addCardToDiscard(card, refresh, showLog)
+        cardDiscarded(card)
+    }
+
+    private fun cardDiscarded(card: Card) {
+        if (card is AfterCardDiscardedListenerForSelf) {
+            card.afterCardDiscarded(this)
+        }
+
+        if (card.addedAbilityCard is AfterCardDiscardedListenerForSelf) {
+            (card.addedAbilityCard as AfterCardDiscardedListenerForSelf).afterCardDiscarded(this)
+        }
+    }
+
     fun discardCardFromHand() {
         discardCardsFromHand(1, false)
     }
@@ -1450,7 +1465,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     fun discardCardFromHand(card: Card, showLog: Boolean = true, refresh: Boolean = true) {
         hand.remove(card)
 
-        addCardToDiscard(card, refresh)
+        discardCard(card, refresh)
 
         if (showLog) {
             addEventLogWithUsername(" discarded ${card.cardNameWithBackgroundColor} from hand")
@@ -1877,7 +1892,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         val topCardOfDeck = removeTopCardOfDeck()
 
         if (topCardOfDeck != null) {
-            addCardToDiscard(topCardOfDeck, showLog = true)
+            discardCard(topCardOfDeck, showLog = true)
         }
 
         return topCardOfDeck

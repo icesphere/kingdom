@@ -57,7 +57,7 @@ class Giant : AdventuresCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
                         message += " and gave you a ${curse.cardNameWithBackgroundColor}"
                     }
                     opponent.showInfoMessage(message)
-                    opponent.addCardToDiscard(card, showLog = true)
+                    opponent.discardCard(card, showLog = true)
                     opponent.gainSupplyCard(curse, true)
                 }
             }
@@ -68,4 +68,3 @@ class Giant : AdventuresCard(NAME, CardType.ActionAttack, 5), GameSetupModifier,
         const val NAME: String = "Giant"
     }
 }
-

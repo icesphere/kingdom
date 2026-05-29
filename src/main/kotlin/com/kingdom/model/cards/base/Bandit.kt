@@ -29,7 +29,7 @@ class Bandit : BaseCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCardA
                     val cardsToDiscard = topCardsOfDeck.filter { !it.isTreasure || it.isCopper }
                     cardsToDiscard.forEach {
                         opponent.removeCardFromDeck(it)
-                        opponent.addCardToDiscard(it)
+                        opponent.discardCard(it)
                     }
                     if (cardsToDiscard.isNotEmpty()) {
                         opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${cardsToDiscard.groupedString} from your deck")
@@ -50,7 +50,7 @@ class Bandit : BaseCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCardA
                                 opponent.addEventLog("${this.cardNameWithBackgroundColor} trashed ${opponent.username}'s ${cardsThatCanBeTrashed[0].cardNameWithBackgroundColor}")
 
                                 opponent.removeCardFromDeck(cardsThatCanBeTrashed[1])
-                                opponent.addCardToDiscard(cardsThatCanBeTrashed[1])
+                                opponent.discardCard(cardsThatCanBeTrashed[1])
                                 opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${cardsThatCanBeTrashed[1].cardNameWithBackgroundColor} from your deck")
                             }
                             else -> {
@@ -71,11 +71,10 @@ class Bandit : BaseCard(NAME, CardType.ActionAttack, 5), AttackCard, ChooseCardA
         cardsThatCanBeTrashed.remove(card)
         val remainingCard = cardsThatCanBeTrashed.first()
         player.removeCardFromDeck(remainingCard)
-        player.addCardToDiscard(remainingCard)
+        player.discardCard(remainingCard)
     }
 
     companion object {
         const val NAME: String = "Bandit"
     }
 }
-

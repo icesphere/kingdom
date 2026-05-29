@@ -15,7 +15,6 @@ import com.kingdom.model.cards.darkages.Feodum
 import com.kingdom.model.cards.empires.events.*
 import com.kingdom.model.cards.empires.landmarks.*
 import com.kingdom.model.cards.hinterlands.Trader
-import com.kingdom.model.cards.hinterlands.SilkRoad
 import com.kingdom.model.cards.intrigue.Duke
 import com.kingdom.model.cards.intrigue.Minion
 import com.kingdom.model.cards.intrigue.WishingWell
@@ -1055,7 +1054,6 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
         return when (card.name) {
             Gardens.NAME -> (numCards + 1) / 10
-            SilkRoad.NAME -> (cardCountByExpression { it.isVictory } + 1) / 4
             Duke.NAME -> cardCountByName(Duchy.NAME)
             Feodum.NAME -> cardCountByName(Silver.NAME) / 3
             Fairgrounds.NAME -> ((allCards.map { it.name }.toSet() + card.name).size / 5) * 2
@@ -1070,7 +1068,6 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
         return when (card.name) {
             Gardens.NAME -> (numCards + 11) / 10
-            SilkRoad.NAME -> (cardCountByExpression { it.isVictory } + 3) / 4
             Duke.NAME -> maxOf(1, cardCountByName(Duchy.NAME))
             Feodum.NAME -> maxOf(1, (cardCountByName(Silver.NAME) + 2) / 3)
             Fairgrounds.NAME -> ((allCards.map { it.name }.toSet() + card.name).size + 2) / 5 * 2

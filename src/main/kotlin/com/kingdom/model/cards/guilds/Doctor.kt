@@ -56,7 +56,7 @@ class Doctor : GuildsCard(NAME, CardType.Action, 3), ChooseCardActionCard, After
             is Card -> {
                 when (choice) {
                     1 -> player.cardTrashed(info, true)
-                    2 -> player.addCardToDiscard(info, showLog = true)
+                    2 -> player.discardCard(info, showLog = true)
                     3 -> player.addCardToTopOfDeck(info, true)
                 }
             }
@@ -76,4 +76,3 @@ class Doctor : GuildsCard(NAME, CardType.Action, 3), ChooseCardActionCard, After
         const val NAME: String = "Doctor"
     }
 }
-

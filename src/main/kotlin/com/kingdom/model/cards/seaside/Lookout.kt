@@ -48,7 +48,7 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
 
             if (topDeckCards.isNotEmpty()) {
                 if (topDeckCards.size == 1) {
-                    player.addCardToDiscard(card)
+                    player.discardCard(card)
                     player.addEventLogWithUsername(" discarded ${card.cardNameWithBackgroundColor}")
                 } else {
                     choosingCardToDiscard = true
@@ -58,7 +58,7 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
         } else if (choosingCardToDiscard) {
             choosingCardToDiscard = false
 
-            player.addCardToDiscard(card)
+            player.discardCard(card)
             player.addEventLogWithUsername(" discarded ${card.cardNameWithBackgroundColor}")
 
             topDeckCards.remove(card)
@@ -73,4 +73,3 @@ class Lookout : SeasideCard(NAME, CardType.Action, 3), ChooseCardActionCard {
         const val NAME: String = "Lookout"
     }
 }
-

@@ -42,7 +42,7 @@ class Sentry : BaseCard(NAME, CardType.Action, 5), ChoiceActionCard {
             }
             2 -> {
                 player.addEventLogWithUsername("discarded ${card.cardNameWithBackgroundColor}")
-                player.addCardToDiscard(card)
+                player.discardCard(card)
             }
             else -> cardsToPutOnTopOfDeck.add(card)
         }
@@ -66,4 +66,3 @@ class Sentry : BaseCard(NAME, CardType.Action, 5), ChoiceActionCard {
         const val NAME: String = "Sentry"
     }
 }
-

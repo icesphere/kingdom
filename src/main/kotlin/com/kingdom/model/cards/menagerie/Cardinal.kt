@@ -35,7 +35,7 @@ class Cardinal : MenagerieCard(NAME, CardType.ActionAttack, 4), UsesExileMat, At
                     if (player.getCardCostWithModifiers(card) in 3..6) {
                         opponent.exileCard(card)
                     } else {
-                        opponent.addCardToDiscard(card, showLog = true)
+                        opponent.discardCard(card, showLog = true)
                     }
                 }
                 2 -> {
@@ -50,11 +50,10 @@ class Cardinal : MenagerieCard(NAME, CardType.ActionAttack, 4), UsesExileMat, At
         val cardsThatCanBeExiled = info as MutableList<Card>
         player.exileCard(card)
         cardsThatCanBeExiled.remove(card)
-        player.addCardToDiscard(cardsThatCanBeExiled.first(), showLog = true)
+        player.discardCard(cardsThatCanBeExiled.first(), showLog = true)
     }
 
     companion object {
         const val NAME: String = "Cardinal"
     }
 }
-

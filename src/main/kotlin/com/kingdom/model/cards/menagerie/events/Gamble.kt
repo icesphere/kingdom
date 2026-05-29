@@ -17,7 +17,7 @@ class Gamble : MenagerieEvent(NAME, 2), ChoiceActionCard {
             if (topCard.isTreasure || topCard.isAction) {
                 player.yesNoChoice(this, "Play ${topCard.cardNameWithBackgroundColor}?", topCard)
             } else {
-                player.addCardToDiscard(topCard, true, true)
+                player.discardCard(topCard, true, true)
             }
         }
     }
@@ -29,7 +29,7 @@ class Gamble : MenagerieEvent(NAME, 2), ChoiceActionCard {
             player.addActions(1)
             player.playCard(topCard)
         } else {
-            player.addCardToDiscard(topCard, true, true)
+            player.discardCard(topCard, true, true)
         }
     }
 

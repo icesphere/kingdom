@@ -22,7 +22,7 @@ class Rabble : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard {
 
             val actionsAndTreasures = cards.filter { it.isAction || it.isTreasure }
 
-            actionsAndTreasures.forEach { opponent.addCardToDiscard(it, showLog = true) }
+            actionsAndTreasures.forEach { opponent.discardCard(it, showLog = true) }
 
             if (actionsAndTreasures.isNotEmpty()) {
                 opponent.showInfoMessage("${player.username}'s $cardNameWithBackgroundColor discarded ${actionsAndTreasures.groupedString} from your deck")
@@ -42,4 +42,3 @@ class Rabble : ProsperityCard(NAME, CardType.ActionAttack, 5), AttackCard {
         const val NAME: String = "Rabble"
     }
 }
-

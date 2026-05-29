@@ -40,7 +40,7 @@ class CrystalBall : ProsperityCard(NAME, CardType.Treasure, 5), ChoiceActionCard
 
         when (choice) {
             1 -> player.removeTopCardOfDeck()?.let { player.cardTrashed(it, showLog = true) }
-            2 -> player.removeTopCardOfDeck()?.let { player.addCardToDiscard(it, showLog = true) }
+            2 -> player.removeTopCardOfDeck()?.let { player.discardCard(it, showLog = true) }
             3 -> {
                 val cardToPlay = player.removeTopCardOfDeck()
                 if (cardToPlay != null) {

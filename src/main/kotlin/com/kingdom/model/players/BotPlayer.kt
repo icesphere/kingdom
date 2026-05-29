@@ -491,7 +491,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             HorseTraders.NAME -> 1
             Hovel.NAME -> 1
             HuntingGrounds.NAME -> 1
-            IllGottenGains.NAME -> if (availableCoins == 4 || availableCoins == 5 || availableCoins == 7 || (availableCoins == 10 && game.isIncludeColonyCards)) 1 else 2
             Ironmonger.NAME -> {
                 val cardToDiscard = info as Card
                 if (getDiscardCardScore(cardToDiscard) > 50) 1 else 2
@@ -523,7 +522,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Moneylender.NAME -> 1
             MountainPass.NAME -> 10 + random.nextInt(7)
             NativeVillage.NAME -> if (nativeVillageCards.size < 2) 1 else 2
-            NobleBrigand.NAME -> 2
             Nobles.NAME -> if (actions == 0 && hand.any { it.isAction }) 2 else 1
             Pawn.NAME -> when {
                 actions == 0 && hand.any { it.isAction } -> when {
