@@ -28,7 +28,6 @@ import com.kingdom.model.cards.intrigue.Upgrade
 import com.kingdom.model.cards.menagerie.Goatherd
 import com.kingdom.model.cards.menagerie.Mastermind
 import com.kingdom.model.cards.menagerie.UsesExileMat
-import com.kingdom.model.cards.prosperity.Contraband
 import com.kingdom.model.cards.prosperity.Forge
 import com.kingdom.model.cards.prosperity.KingsCourt
 import com.kingdom.model.cards.prosperity.Mint
@@ -121,22 +120,12 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
         val goldsBought = cardCountByName(Gold.NAME)
 
         when {
-            availableCoins < 2 && !isGardensStrategy && !isHasGoons -> return null
+            availableCoins < 2 && !isGardensStrategy -> return null
             chapelStrategy && cardCountByName(Chapel.NAME) == 0 && (availableCoins == 3 && silversBought > 0 || availableCoins == 2) -> return Chapel.NAME
             chapelStrategy && availableCoins <= 3 && silversBought < 2 && goldsBought == 0 && availableCardsToBuyNames.contains(Silver.NAME) -> return Silver.NAME
             chapelStrategy && laboratoryStrategy && availableCoins <= 5 && availableCardsToBuyNames.contains(Laboratory.NAME) -> return Laboratory.NAME
             availableCardsToBuyNames.contains(Gold.NAME) && goldsBought == 0 && (!game.isIncludePlatinumCards || !availableCardsToBuyNames.contains(Platinum.NAME)) -> return Gold.NAME
             isGardensStrategy && turns > 4 && availableCardsToBuyNames.contains(Gardens.NAME) -> return Gardens.NAME
-            /*dukeStrategy -> {
-                val duchiesInSupply = game.pileAmounts[Duchy.NAME]!!
-                if (duchiesInSupply > 0 && (turns > 8 || duchiesInSupply <= 6) && availableCardsToBuyNames.contains(Duke.NAME)) {
-                    if (duchiesBought < 4 || duchiesBought <= dukesBought && (!game.isTrackContrabandCards || !game.contrabandCards.contains(game.duchyCard))) {
-                        return game.duchyCard
-                    } else if (duchiesBought >= 3 && game.canBuyCard(player, getKingdomCard("Duke"))) {
-                        return getKingdomCard("Duke")
-                    }
-                }
-            }*/
             /*checkPeddler && !onlyBuyVictoryCards() && game.canBuyCard(player, getKingdomCard("Peddler")) -> if (coins < 6) {
                 return getKingdomCard("Peddler")
             }*/
@@ -279,7 +268,6 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
                 }
             }
             card.addActions > 0 -> 10
-            card is Contraband && availableCoins >= 11 || (availableCoins >= 8 && !game.isIncludeColonyCards) -> -1
             card is Counterfeit && hand.any { it !is Counterfeit && it.isTreasure && (buys > 0 || it.cost < 6) } -> 10
             else -> card.cost
         }

@@ -18,6 +18,7 @@ class InheritanceEstate(associatedActionCard: Card, cardType: CardType) : Advent
             return when (card.type) {
                 CardType.Action -> CardType.ActionVictory
                 CardType.ActionAttack -> CardType.ActionAttackVictory
+                CardType.ActionAttackReaction -> CardType.ActionAttackVictory
                 CardType.ActionAttackDuration -> CardType.ActionAttackDurationVictory
                 CardType.ActionAttackLooter -> CardType.ActionAttackLooterVictory
                 CardType.ActionReaction -> CardType.ActionReactionVictory
@@ -35,4 +36,3 @@ class InheritanceEstate(associatedActionCard: Card, cardType: CardType) : Advent
         }
     }
 }
-

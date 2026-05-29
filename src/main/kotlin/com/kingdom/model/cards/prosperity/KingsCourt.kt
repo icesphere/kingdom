@@ -31,7 +31,6 @@ class KingsCourt : ProsperityCard(NAME, CardType.Action, 7), ChooseCardActionCar
     }
 
     companion object {
-        const val NAME: String = "Kings Court"
+        const val NAME: String = "King's Court"
     }
 }
-

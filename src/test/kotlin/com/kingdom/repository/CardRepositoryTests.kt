@@ -53,4 +53,51 @@ class CardRepositoryTests {
             assertFalse(seasideCardNames.contains(removedCardName))
         }
     }
+
+    @Test
+    fun prosperityCardsUseSecondEditionList() {
+        val prosperityCardNames = CardRepository().prosperityCards.map { it.name }
+
+        assertEquals(listOf(
+                "Anvil",
+                "Bank",
+                "Bishop",
+                "Charlatan",
+                "City",
+                "Clerk",
+                "Collection",
+                "Crystal Ball",
+                "Expand",
+                "Forge",
+                "Grand Market",
+                "Hoard",
+                "Investment",
+                "King's Court",
+                "Magnate",
+                "Mint",
+                "Monument",
+                "Peddler",
+                "Quarry",
+                "Rabble",
+                "Tiara",
+                "Vault",
+                "War Chest",
+                "Watchtower",
+                "Worker's Village"
+        ), prosperityCardNames)
+
+        listOf(
+                "Contraband",
+                "Counting House",
+                "Goons",
+                "Loan",
+                "Mountebank",
+                "Royal Seal",
+                "Talisman",
+                "Trade Route",
+                "Venture"
+        ).forEach { removedCardName ->
+            assertFalse(prosperityCardNames.contains(removedCardName))
+        }
+    }
 }

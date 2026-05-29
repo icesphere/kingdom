@@ -3,13 +3,13 @@ package com.kingdom.model.cards.prosperity
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChooseCardActionCard
-import com.kingdom.model.cards.listeners.AfterCardBoughtListenerForSelf
+import com.kingdom.model.cards.listeners.AfterCardGainedListenerForSelf
 import com.kingdom.model.players.Player
 
-class Mint : ProsperityCard(NAME, CardType.Action, 5), AfterCardBoughtListenerForSelf, ChooseCardActionCard {
+class Mint : ProsperityCard(NAME, CardType.Action, 5), AfterCardGainedListenerForSelf, ChooseCardActionCard {
 
     init {
-        special = "You may reveal a Treasure card from your hand. Gain a copy of it. When you buy this, trash all Treasures you have in play."
+        special = "You may reveal a Treasure card from your hand. Gain a copy of it. When you gain this, trash all non-Duration Treasures you have in play."
     }
 
     override fun cardPlayedSpecialAction(player: Player) {
@@ -23,8 +23,8 @@ class Mint : ProsperityCard(NAME, CardType.Action, 5), AfterCardBoughtListenerFo
         player.gainSupplyCard(card, true)
     }
 
-    override fun afterCardBought(player: Player) {
-        player.inPlay.filter { it.isTreasure }.forEach {
+    override fun afterCardGained(player: Player) {
+        player.inPlay.filter { it.isTreasure && !it.isDuration }.forEach {
             player.trashCardInPlay(it)
         }
     }
@@ -33,4 +33,3 @@ class Mint : ProsperityCard(NAME, CardType.Action, 5), AfterCardBoughtListenerFo
         const val NAME: String = "Mint"
     }
 }
-

@@ -23,7 +23,7 @@
                         <td>
                             <table cellpadding="0" cellspacing="0">
                                 <#if gameStatus == "InProgress">
-                                    <tr><td style="font-size:10px;">${supply.get(card.pileName)}<#if showTradeRouteTokens && tradeRouteTokenMap(card.pileName)??> (trade route token)</#if></td></tr>
+                                    <tr><td style="font-size:10px;">${supply.get(card.pileName)}</td></tr>
                                 </#if>
                                 <tr><td><#include "gameCard.ftl"></td></tr>
                             </table>
@@ -44,7 +44,7 @@
                         <td>
                             <table cellpadding="0" cellspacing="0">
                                 <#if gameStatus == "InProgress">
-                                    <tr><td style="font-size:10px;">${supply.get(card.name)}<#if showTradeRouteTokens && tradeRouteTokenMap.get(card.pileName)?? && tradeRouteTokenMap.get(card.pileName)> (trade route token)</#if></td></tr>
+                                    <tr><td style="font-size:10px;">${supply.get(card.name)}</td></tr>
                                 </#if>
                                 <tr><td><#include "gameCard.ftl"></td></tr>
                             </table>
@@ -85,9 +85,4 @@
             </td>
         </#if>
     </tr>
-    <#if showTradeRouteTokens>
-        <tr>
-            <td colspan="3" style="padding-left: 45px;">Trade Route Mat: ${tradeRouteTokensOnMat} token<#if tradeRouteTokensOnMat != 1>s</#if></td>
-        </tr>
-    </#if>
 </table>

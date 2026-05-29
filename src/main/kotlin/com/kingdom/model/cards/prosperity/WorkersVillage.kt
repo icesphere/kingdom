@@ -12,7 +12,6 @@ class WorkersVillage : ProsperityCard(NAME, CardType.Action, 4) {
     }
 
     companion object {
-        const val NAME: String = "Workers Village"
+        const val NAME: String = "Worker's Village"
     }
 }
-

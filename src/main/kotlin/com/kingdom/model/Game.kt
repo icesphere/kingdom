@@ -211,6 +211,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var isIncludeHorse: Boolean = false
 
+    var isCurseTreasure: Boolean = false
+
     var randomizingOptions: RandomizingOptions? = null
 
     var isRandomizerReplacementCardNotFound: Boolean = false
@@ -231,10 +233,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 .sortedByDescending { it.cost }
 
     var isShowNativeVillage: Boolean = false
-
-    val tradeRouteTokenMap = HashMap<String, Boolean>(0)
-    var isTrackTradeRouteTokens: Boolean = false
-    var tradeRouteTokensOnMat: Int = 0
 
     val isGameOver: Boolean
         get() = numEmptyPiles >= 3
@@ -426,6 +424,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             cardsNotInSupply.add(Hovel())
             cardsNotInSupply.add(Necropolis())
             cardsNotInSupply.add(OvergrownEstate())
+        }
+
+        if (isCurseTreasure) {
+            (supplyCards + cardsNotInSupply + kingdomCards).forEach { applyGameSetupCardChanges(it) }
         }
 
         cardsInSupply.forEach { cardMap[it.name] = it }
@@ -866,7 +868,16 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
     fun getNewInstanceOfCard(cardName: String): Card {
-        return cardMap[cardName]!!.copy(false)
+        return applyGameSetupCardChanges(cardMap[cardName]!!.copy(false))
+    }
+
+    private fun applyGameSetupCardChanges(card: Card): Card {
+        if (isCurseTreasure && card.isCurseOnly) {
+            card.isAlsoTreasure = true
+            card.addCoins = 1
+        }
+
+        return card
     }
 
     fun getNewInstanceOfEvent(eventName: String): Event {

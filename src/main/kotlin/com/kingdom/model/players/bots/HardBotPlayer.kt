@@ -21,9 +21,7 @@ import com.kingdom.model.cards.intrigue.Minion
 import com.kingdom.model.cards.intrigue.WishingWell
 import com.kingdom.model.cards.menagerie.events.*
 import com.kingdom.model.cards.prosperity.Expand
-import com.kingdom.model.cards.prosperity.Goons
 import com.kingdom.model.cards.prosperity.Monument
-import com.kingdom.model.cards.prosperity.Mountebank
 import com.kingdom.model.cards.prosperity.Quarry
 import com.kingdom.model.cards.seaside.Bazaar
 import com.kingdom.model.cards.seaside.Cutpurse
@@ -44,8 +42,6 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
     private val preferredMaxCopies = mapOf(
             Witch.NAME to 2,
-            Mountebank.NAME to 2,
-            Goons.NAME to 3,
             Monument.NAME to 2,
             Militia.NAME to 2,
             Cutpurse.NAME to 2,
@@ -62,8 +58,6 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
     private val namedCardTieBreakers = mapOf(
             Witch.NAME to 3,
-            Mountebank.NAME to 3,
-            Goons.NAME to 3,
             Monument.NAME to 2,
             Militia.NAME to 2,
             Smithy.NAME to 2,
@@ -89,12 +83,6 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
 
     private val hasLaboratoryInSupply: Boolean
         get() = game.allCards.any { it.name == Laboratory.NAME }
-
-    private val hasGoonsInSupply: Boolean
-        get() = game.allCards.any { it.name == Goons.NAME }
-
-    private val goonsInPlay: Int
-        get() = inPlay.count { it.name == Goons.NAME }
 
     private val hasAlternativeScoringAvailable: Boolean
         get() = game.allCards.any { isAlternativeScoringCard(it) || it.isVictoryCoinsCard }
@@ -157,7 +145,7 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
                 else -> 24
             }, card)
             Silver.NAME -> return scoreWithInheritedAdjustments(if (cardCountByName(Silver.NAME) < 2 || turns < 5) 10 else 7, card)
-            Copper.NAME -> return maxOf(scoreWithInheritedAdjustments(if (goonsInPlay > 0) 3 + goonsInPlay else 0, card), inheritedScore(card))
+            Copper.NAME -> return inheritedScore(card)
             Chapel.NAME -> return if (shouldBuyChapel()) 28 else 0
         }
 
@@ -191,7 +179,7 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
             score += 4
         }
 
-        if (card.addBuys > 0 && (goonsInPlay > 0 || availableCoins >= 6)) {
+        if (card.addBuys > 0 && availableCoins >= 6) {
             score += 2
         }
 
@@ -215,7 +203,7 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
             Chapel.NAME -> return !shouldBuyChapel()
             Duchy.NAME -> return !shouldBuyDuchy() && !shouldBuyVictoryForLandmark(card)
             Estate.NAME -> return !shouldBuyEstate() && !shouldBuyVictoryForLandmark(card)
-            Copper.NAME -> return goonsInPlay == 0 && super.excludeCard(card)
+            Copper.NAME -> return super.excludeCard(card)
         }
 
         if (card.isAlternativeScoringCardForBot() && shouldPursueAlternativeScoring(card)) {
@@ -942,7 +930,7 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
     private fun maxActionCardsToOwn(): Int {
         return when {
             currentBuildPlan() == BuildPlan.Engine -> 10
-            hasGoonsInSupply || hasLaboratoryInSupply -> 8
+            hasLaboratoryInSupply -> 8
             extraActionCount() > 1 -> 7
             else -> 5
         }
@@ -963,7 +951,7 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
     private fun hasUsableAlternativeScoringAvailable(): Boolean {
         return game.allCards.any {
             it.isAlternativeScoringCardForBot() && potentialVictoryPointsFromGain(it) >= 2
-        } || hasGoonsInSupply
+        } || game.allCards.any { it.isVictoryCoinsCard }
     }
 
     private fun hasEngineSupportAvailable(): Boolean {
@@ -1190,6 +1178,6 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
             else -> 0
         }
 
-        return victoryPoints + gainedVictoryPoints + goonsInPlay
+        return victoryPoints + gainedVictoryPoints
     }
 }

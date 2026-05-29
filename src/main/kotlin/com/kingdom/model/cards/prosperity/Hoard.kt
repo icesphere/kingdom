@@ -10,7 +10,7 @@ class Hoard : ProsperityCard(NAME, CardType.Treasure, 6), AfterCardBoughtListene
 
     init {
         addCoins = 2
-        special = "While this is in play, when you buy a Victory card, gain a Gold."
+        special = "This turn, when you gain a Victory card, if you bought it, gain a Gold."
     }
 
     override fun afterCardBought(card: Card, player: Player) {
@@ -24,4 +24,3 @@ class Hoard : ProsperityCard(NAME, CardType.Treasure, 6), AfterCardBoughtListene
         const val NAME: String = "Hoard"
     }
 }
-

@@ -18,7 +18,7 @@ import com.kingdom.model.cards.empires.landmarks.Orchard
 import com.kingdom.model.cards.intrigue.Minion
 import com.kingdom.model.cards.menagerie.Horse
 import com.kingdom.model.cards.menagerie.Paddock
-import com.kingdom.model.cards.prosperity.Goons
+import com.kingdom.model.cards.prosperity.Collection
 import com.kingdom.model.cards.seaside.Wharf
 import com.kingdom.model.cards.supply.Copper
 import com.kingdom.model.cards.supply.Duchy
@@ -76,9 +76,9 @@ class HardBotPlayerTests {
 
     @Test
     fun prioritizesScoringPayloadOverRawTreasure() {
-        val bot = hardBot(6, listOf(Goons()))
+        val bot = hardBot(6, listOf(Collection()))
 
-        assertEquals(Goons.NAME, bot.getCardToBuy())
+        assertEquals(Collection.NAME, bot.getCardToBuy())
     }
 
     @Test

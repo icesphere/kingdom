@@ -295,6 +295,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var ignoreAddActionsUntilEndOfTurn: Boolean = false
 
+    val warChestCardNamesThisTurn = mutableSetOf<String>()
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -661,6 +663,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         currentTurnCardTrashedListeners.clear()
 
         cardsUnavailableToBuyThisTurn.clear()
+
+        warChestCardNamesThisTurn.clear()
 
         cardsGained.clear()
         cardsBought.clear()
@@ -1665,6 +1669,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 .forEach { it.onStartOfTurn(this) }
 
         game.allCards.filterIsInstance<TurnStartedListenerForCardsInSupply>()
+                .forEach { it.turnStarted(this) }
+
+        hand.toList().filterIsInstance<TurnStartedListenerForCardsInHand>()
                 .forEach { it.turnStarted(this) }
 
         tavernCards.filterIsInstance<StartOfTurnTavernCard>()

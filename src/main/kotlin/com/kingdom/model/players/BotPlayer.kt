@@ -462,7 +462,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 }
             }
             Counterfeit.NAME -> 1
-            CountingHouse.NAME -> choices.last().choiceNumber
             Courtier.NAME -> when {
                 actions == 0 && hand.any { it.isAction && it.cost > 3 } -> 1
                 buys < 2 && availableCoins > 11 -> 2
@@ -507,7 +506,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 if (getBuyCardScore(cardToGain) > 2) 1 else 2
             }
             Library.NAME -> if (actions > 0 && hand.none { it.isAction }) 1 else 2
-            Loan.NAME -> if (card.isCopper) 2 else 1
             Lurker.NAME -> if (game.trashedCards.any { getBuyCardScore(it) > 4 }) 2 else 1
             MarketSquare.NAME -> if (turns < 10 || game.numInPileMap[Province.NAME]!! > 3) 1 else 2
             Masterpiece.NAME -> 2
@@ -524,11 +522,9 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             Moat.NAME -> 1
             Moneylender.NAME -> 1
             MountainPass.NAME -> 10 + random.nextInt(7)
-            Mountebank.NAME -> 1
             NativeVillage.NAME -> if (nativeVillageCards.size < 2) 1 else 2
             NobleBrigand.NAME -> 2
             Nobles.NAME -> if (actions == 0 && hand.any { it.isAction }) 2 else 1
-            RoyalSeal.NAME -> if (card.cost > 2) 1 else 2
             Pawn.NAME -> when {
                 actions == 0 && hand.any { it.isAction } -> when {
                     availableCoins > 11 && buys == 1 -> 4
@@ -1032,13 +1028,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
             val chosenCard: Card = when (card.name) {
                 Bandit.NAME -> cardsToSelectFrom.minBy { getBuyCardScore(it) }!!
-                Contraband.NAME -> when {
-                    cardsToSelectFrom.any { it.isPlatinum } && turns > 5 && game.currentPlayer.cardCountByName(Platinum.NAME) == 0 -> Platinum()
-                    cardsToSelectFrom.any { it.isColony } && turns > 8 -> Colony()
-                    cardsToSelectFrom.any { it.isProvince } && turns > 3 && (game.currentPlayer.cardCountByName(Gold.NAME) > 2 || turns > 10) -> Province()
-                    cardsToSelectFrom.any { it.isDuchy } && turns > 10 -> Duchy()
-                    else -> Gold()
-                }
                 Improve.NAME -> cardsToSelectFrom.maxBy { getTrashCardScore(it) }!!
                 Lookout.NAME -> cardsToSelectFrom.minBy { getDiscardCardScore(it) }!!
                 Pillage.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!

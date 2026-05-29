@@ -1394,9 +1394,6 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("supply", bw.wrap(game.numInPileMap))
             modelAndView.addObject("victoryPointsOnSupplyPile", bw.wrap(game.victoryPointsOnSupplyPile))
             modelAndView.addObject("debtOnSupplyPile", bw.wrap(game.debtOnSupplyPile))
-            if (game.isTrackTradeRouteTokens) {
-                modelAndView.addObject("tradeRouteTokenMap", bw.wrap(game.tradeRouteTokenMap))
-            }
         } catch (e: TemplateModelException) {
             //
         }
@@ -2033,8 +2030,6 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)
         modelAndView.addObject("playTreasureCards", player.isTreasuresPlayable)
         modelAndView.addObject("showVictoryPoints", game.isShowVictoryPoints)
-        modelAndView.addObject("showTradeRouteTokens", game.isTrackTradeRouteTokens)
-        modelAndView.addObject("tradeRouteTokensOnMat", game.tradeRouteTokensOnMat)
         modelAndView.addObject("trashedCards", game.trashedCards.groupedString)
         modelAndView.addObject("prizeCards", game.prizeCardsString)
         modelAndView.addObject("artifacts", game.artifacts)

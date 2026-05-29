@@ -42,9 +42,3 @@
         </#list>
     </#if>
 </div>
-
-<#if showTradeRouteTokens>
-    <div style="clear:both;">
-        Trade Route Mat: ${tradeRouteTokensOnMat} token<#if tradeRouteTokensOnMat != 1>s</#if>
-    </div>
-</#if>

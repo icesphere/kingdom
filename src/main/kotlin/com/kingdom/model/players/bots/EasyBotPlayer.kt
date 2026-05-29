@@ -17,15 +17,10 @@ open class EasyBotPlayer(user: User, game: Game) : BotPlayer(user, game) {
     val isGardensStrategy = false
 
     //todo
-    val isHasGoons = false
-
-    //todo
     val chapelStrategy = false
 
     //todo
     val laboratoryStrategy = false
-
-    //todo check !isTrackContrabandCards || !game.contrabandCards.contains(getKingdomCard("Chapel")
 
     override val difficulty: Int = 1
 
