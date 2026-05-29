@@ -3,6 +3,7 @@ package com.kingdom.repository
 import com.kingdom.model.cards.*
 import com.kingdom.model.cards.adventures.*
 import com.kingdom.model.cards.adventures.events.*
+import com.kingdom.model.cards.allies.*
 import com.kingdom.model.cards.base.*
 import com.kingdom.model.cards.cornucopia.*
 import com.kingdom.model.cards.darkages.*
@@ -498,10 +499,45 @@ class CardRepository {
                 WayOfTheTurtle()
         )
 
+    val alliesCards: List<Card>
+        get() = listOf(
+                Augurs(),
+                Barbarian(),
+                Bauble(),
+                Broker(),
+                CapitalCity(),
+                Carpenter(),
+                Clashes(),
+                Contract(),
+                Courier(),
+                Emissary(),
+                Forts(),
+                Galleria(),
+                Guildmaster(),
+                Highwayman(),
+                Hunter(),
+                Importer(),
+                Innkeeper(),
+                Marquis(),
+                MerchantCamp(),
+                Modify(),
+                Odysseys(),
+                RoyalGalley(),
+                Sentinel(),
+                Skirmisher(),
+                Specialist(),
+                Swap(),
+                Sycophant(),
+                Town(),
+                Townsfolk(),
+                Underling(),
+                Wizards()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
                 hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards +
-                renaissanceCards + menagerieCards
+                renaissanceCards + menagerieCards + alliesCards
 
     val allEvents: List<Event>
         get() = adventuresEvents + empiresEvents + menagerieEvents
@@ -532,6 +568,7 @@ class CardRepository {
             Deck.Empires -> empiresCards
             Deck.Renaissance -> renaissanceCards
             Deck.Menagerie -> menagerieCards
+            Deck.Allies -> alliesCards
             else -> emptyList()
         }
     }

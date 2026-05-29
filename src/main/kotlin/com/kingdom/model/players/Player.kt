@@ -13,6 +13,8 @@ import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.empires.Overlord
+import com.kingdom.model.cards.allies.Highwayman
+import com.kingdom.model.cards.allies.Warlord
 import com.kingdom.model.cards.listeners.*
 import com.kingdom.model.cards.menagerie.Horse
 import com.kingdom.model.cards.renaissance.artifacts.*
@@ -118,6 +120,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var coffers: Int = 0
 
     var villagers: Int = 0
+
+    var favors: Int = 0
 
     val opponents: List<Player> by lazy {
         game.players.filterNot { it.userId == userId }
@@ -296,6 +300,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var ignoreAddActionsUntilEndOfTurn: Boolean = false
 
     val warChestCardNamesThisTurn = mutableSetOf<String>()
+
+    var maxCardsToPlayFromHandThisTurn: Int? = null
+
+    var maxCardsToPlayFromHandNextTurn: Int? = null
+
+    private var cardsPlayedFromHandThisTurn: Int = 0
+
+    private val remainingCardsToPlayFromHandThisTurn: Int?
+        get() = maxCardsToPlayFromHandThisTurn?.let { maxOf(0, it - cardsPlayedFromHandThisTurn) }
+
+    var skipNextTurn: Boolean = false
+
+    private var highwaymanBlockedTreasureThisTurn: Boolean = false
 
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
@@ -665,6 +682,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         cardsUnavailableToBuyThisTurn.clear()
 
         warChestCardNamesThisTurn.clear()
+
+        maxCardsToPlayFromHandThisTurn = null
+        cardsPlayedFromHandThisTurn = 0
+        highwaymanBlockedTreasureThisTurn = false
 
         cardsGained.clear()
         cardsBought.clear()
@@ -1173,6 +1194,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
     fun playCard(card: Card, refresh: Boolean = true, repeatedAction: Boolean = false, showLog: Boolean = true) {
+        if (!repeatedAction && hand.contains(card) && !canPlayCardFromHand(card)) {
+            showInfoMessage("You cannot play more cards from your hand this turn")
+            return
+        }
 
         if (showLog) {
             addEventLogWithUsername("played ${card.cardNameWithBackgroundColor}")
@@ -1201,6 +1226,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             inPlay.add(card)
             hand.remove(card)
+            cardsPlayedFromHandThisTurn++
 
             if (refresh) {
                 refreshPlayerHandArea()
@@ -1527,6 +1553,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         refreshPlayerHandArea()
     }
 
+    fun addCardToBottomOfDeck(card: Card, showLog: Boolean = true) {
+        deck.add(card)
+        if (showLog) {
+            addEventLogWithUsername("added ${card.cardNameWithBackgroundColor} to the bottom of their deck")
+        }
+        refreshPlayerHandArea()
+    }
+
     fun addCardToHand(card: Card, showLog: Boolean = false) {
         hand.add(card)
 
@@ -1617,6 +1651,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         isShowYourTurnMessage = true
         turn++
 
+        maxCardsToPlayFromHandThisTurn = maxCardsToPlayFromHandNextTurn
+        maxCardsToPlayFromHandNextTurn = null
+
         if (refreshPreviousPlayerCardsBought) {
             val previousPlayer = game.previousPlayer!!
 
@@ -1644,6 +1681,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         currentTurnSummary = TurnSummary(username)
         currentTurnSummary.gameTurn = game.turn
 
+        if (skipNextTurn) {
+            skipNextTurn = false
+            addEventLogWithUsername("skipped their turn")
+            isYourTurn = false
+            game.turnEnded(true)
+            return
+        }
+
         cardsSetAsideUntilStartOfTurn.forEach {
             it.onStartOfTurn(this)
         }
@@ -1657,7 +1702,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         cardsToPlayAtStartOfNextTurn.clear()
 
-        durationCards.forEach { card ->
+        durationCards.toList().forEach { card ->
             when {
                 card is StartOfTurnDurationAction -> {
                     card.durationStartOfTurnAction(this)
@@ -2000,7 +2045,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         val numTreasures = hand.count { it.isTreasure }
 
-        val treasureCardsToPlay = if (numTreasures == 1) hand.filter { it.isTreasure } else hand.filter { it.isTreasure && !it.isTreasureExcludedFromAutoPlay }
+        val playableTreasures = if (numTreasures == 1) {
+            hand.filter { it.isTreasure }
+        } else {
+            hand.filter { it.isTreasure && !it.isTreasureExcludedFromAutoPlay }
+        }
+        val treasureCardsToPlay = remainingCardsToPlayFromHandThisTurn?.let { playableTreasures.take(it) } ?: playableTreasures
 
         if (treasureCardsToPlay.isEmpty()) {
             return
@@ -2129,6 +2179,60 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (refresh) {
             refreshPlayerHandArea()
         }
+    }
+
+    fun addFavors(favors: Int, refresh: Boolean = true) {
+        if (favors == 0) {
+            return
+        }
+        this.favors += favors
+        if (refresh) {
+            refreshPlayerHandArea()
+        }
+    }
+
+    fun spendFavors(favorsToSpend: Int): Boolean {
+        if (favorsToSpend <= 0 || favors < favorsToSpend) {
+            return false
+        }
+        addFavors(favorsToSpend * -1)
+        addEventLogWithUsername("spent $favorsToSpend Favor${if (favorsToSpend == 1) "" else "s"}")
+        return true
+    }
+
+    fun wouldShuffleToDraw(numCards: Int): Boolean {
+        return deck.size < numCards && discard.isNotEmpty()
+    }
+
+    fun canPlayCardFromHand(card: Card): Boolean {
+        val maxCards = maxCardsToPlayFromHandThisTurn
+        if (maxCards != null && cardsPlayedFromHandThisTurn >= maxCards) {
+            return false
+        }
+
+        if (card.isAction && opponents.any { opponent ->
+                    opponent.durationCards.filterIsInstance<Warlord>().any { it.isAttackActive }
+                            && inPlay.count { it.name == card.name } >= 2
+                }) {
+            return false
+        }
+
+        return true
+    }
+
+    fun shouldIgnoreTreasureFromHighwayman(card: Card): Boolean {
+        if (!card.isTreasure || highwaymanBlockedTreasureThisTurn) {
+            return false
+        }
+
+        val highwaymanPlayer = opponents.firstOrNull { opponent ->
+            opponent.durationCards.filterIsInstance<Highwayman>().any { it.isAttackActive }
+        } ?: return false
+
+        highwaymanBlockedTreasureThisTurn = true
+        showInfoMessage("${highwaymanPlayer.username}'s ${Highwayman().cardNameWithBackgroundColor} stopped ${card.cardNameWithBackgroundColor}")
+        addEventLogWithUsername("'s ${card.cardNameWithBackgroundColor} did nothing due to ${Highwayman().cardNameWithBackgroundColor}")
+        return true
     }
 
     fun payOffDebt(refresh: Boolean = true) {

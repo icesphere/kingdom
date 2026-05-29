@@ -363,8 +363,21 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             }
 
             if (it is MultiTypePile) {
-                it.otherCardsInPile.forEach { card -> cardMap[card.name] = card }
+                val otherCardsInPile = it.otherCardsInPile
+                otherCardsInPile.forEach { card -> cardMap[card.name] = card }
                 multiTypePileMap[it.name] = it.createMultiTypePile(this).toMutableList()
+                if (otherCardsInPile.any { card -> card.isDuration }) {
+                    isShowDuration = true
+                }
+                if (otherCardsInPile.any { card -> card.isLooter }) {
+                    isIncludeRuins = true
+                }
+                if (otherCardsInPile.any { card -> card is UsesHorses }) {
+                    isIncludeHorse = true
+                }
+                if (otherCardsInPile.any { card -> card is UsesExileMat }) {
+                    isShowExileCards = true
+                }
             }
 
             if (it is ArtifactAction) {
@@ -567,6 +580,13 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         maxHistoryTurnSize = players.size + 1
 
+        if (allCards.any { it.additionalTypes.contains("Liaison") }) {
+            players.forEach {
+                it.addFavors(1)
+                it.showInfoMessage("Each player starts with +1 Favor because the Kingdom has a Liaison")
+            }
+        }
+
         kingdomCards.filterIsInstance<GameStartedListener>().forEach { it.onGameStarted(this) }
 
         startTurnInNewThreadIfComputerVsHuman()
@@ -735,6 +755,52 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     private fun isMultiTypePileCard(card: Card) = multiTypePileMap.containsKey(card.pileName)
+
+    fun rotatePile(pileName: String) {
+        val pile = multiTypePileMap[pileName] ?: return
+        val topCardName = pile.firstOrNull()?.name ?: return
+        val cardsToRotate = pile.takeWhile { it.name == topCardName }
+
+        if (cardsToRotate.isEmpty() || cardsToRotate.size == pile.size) {
+            return
+        }
+
+        repeat(cardsToRotate.size) {
+            pile.removeAt(0)
+        }
+        pile.addAll(cardsToRotate)
+        refreshSupply()
+    }
+
+    fun getTopCardFromPile(pileName: String): Card? {
+        return multiTypePileMap[pileName]?.firstOrNull()
+    }
+
+    fun getCardsInPile(pileName: String): List<Card> {
+        return multiTypePileMap[pileName]?.toList() ?: emptyList()
+    }
+
+    fun removeCardFromSupplyPileByName(card: Card, refreshSupply: Boolean = true): Boolean {
+        if (!isMultiTypePileCard(card)) {
+            if (!isCardAvailableInSupply(card)) {
+                return false
+            }
+            removeCardFromSupply(card, refreshSupply)
+            return true
+        }
+
+        val pile = multiTypePileMap[card.pileName] ?: return false
+        val index = pile.indexOfFirst { it.name == card.name }
+        if (index < 0) {
+            return false
+        }
+        pile.removeAt(index)
+        pileAmounts[card.pileName] = pileAmounts[card.pileName]!!.minus(1)
+        if (refreshSupply) {
+            refreshSupply()
+        }
+        return true
+    }
 
     fun removeCardFromSupply(card: Card, refreshSupply: Boolean = true) {
         if (card.isRuins) {

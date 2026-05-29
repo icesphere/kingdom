@@ -38,6 +38,7 @@ abstract class Card(
         var isDisableSelect: Boolean = false,
         var isAutoSelect: Boolean = false,
         var isActivated: Boolean = false,
+        var addFavors: Int = 0,
         var isDefense: Boolean = false,
         var isTrashingCard: Boolean = false,
         var isTrashingFromHandRequiredCard: Boolean = false,
@@ -46,7 +47,8 @@ abstract class Card(
         var isCurseGiver: Boolean = false,
         var isOverpayForCardAllowed: Boolean = false,
         var isPreventAutoEndTurnWhenBought: Boolean = false,
-        var playersExcludedFromCardEffects: MutableSet<Player> = mutableSetOf()) {
+        var playersExcludedFromCardEffects: MutableSet<Player> = mutableSetOf(),
+        val additionalTypes: Set<String> = emptySet()) {
 
     var id: String = UUID.randomUUID().toString()
 
@@ -67,66 +69,70 @@ abstract class Card(
 
     @Suppress("MemberVisibilityCanBePrivate")
     val typeAsString: String
-        get() = if (isCurseOnly && isAlsoTreasure) {
-            "Treasure - Curse"
-        } else when (type) {
-            CardType.Action -> "Action"
-            CardType.ActionAttack -> "Action - Attack"
-            CardType.ActionAttackReaction -> "Action - Attack - Reaction"
-            CardType.ActionAttackVictory -> "Action - Attack - Victory"
-            CardType.ActionAttackDuration -> "Action - Attack - Duration"
-            CardType.ActionAttackDurationVictory -> "Action - Attack - Duration - Victory"
-            CardType.ActionAttackLooter -> "Action - Attack - Looter"
-            CardType.ActionAttackLooterVictory -> "Action - Attack - Looter - Victory"
-            CardType.ActionReaction -> "Action - Reaction"
-            CardType.ActionReactionVictory -> "Action - Reaction - Victory"
-            CardType.Victory -> "Victory"
-            CardType.VictoryCastle -> "Victory - Castle"
-            CardType.Curse -> "Curse"
-            CardType.Treasure -> "Treasure"
-            CardType.TreasureDuration -> "Treasure - Duration"
-            CardType.TreasureAttack -> "Treasure - Attack"
-            CardType.ActionVictory -> "Action - Victory"
-            CardType.ActionVictoryCastle -> "Action - Victory - Castle"
-            CardType.TreasureVictory -> "Treasure - Victory"
-            CardType.TreasureVictoryCastle -> "Treasure - Victory - Castle"
-            CardType.ActionDuration -> "Action - Duration"
-            CardType.ActionDurationVictory -> "Action - Duration - Victory"
-            CardType.VictoryReaction -> "Victory - Reaction"
-            CardType.TreasureCurse -> "Treasure - Curse"
-            CardType.DurationVictory -> "Duration - Victory"
-            CardType.TreasureReaction -> "Treasure - Reaction"
-            CardType.ActionRuins -> "Action - Ruins"
-            CardType.ActionRuinsVictory -> "Action - Ruins - Victory"
-            CardType.ActionShelter -> "Action - Shelter"
-            CardType.ActionShelterVictory -> "Action - Shelter - Victory"
-            CardType.ReactionShelter -> "Reaction - Shelter"
-            CardType.ReactionShelterVictory -> "Reaction - Shelter - Victory"
-            CardType.VictoryShelter -> "Victory - Shelter"
-            CardType.ActionLooter -> "Action - Looter"
-            CardType.ActionLooterVictory -> "Action - Looter - Victory"
-            CardType.TreasureReserve -> "Treasure - Reserve"
-            CardType.ActionReserve -> "Action - Reserve"
-            CardType.ActionReserveVictory -> "Action - Reserve - Victory"
-            CardType.ActionDurationReaction -> "Action - Duration - Reaction"
-            CardType.ActionDurationReactionVictory -> "Action - Duration - Reaction - Victory"
-            CardType.ActionTraveller -> "Action - Traveller"
-            CardType.ActionTravellerVictory -> "Action - Traveller - Victory"
-            CardType.ActionAttackTraveller -> "Action - Attack - Traveller"
-            CardType.ActionAttackTravellerVictory -> "Action - Attack - Traveller - Victory"
-            CardType.ActionGathering -> "Action - Gathering"
-            CardType.ActionTreasure -> "Action - Treasure"
-            CardType.Event -> "Event"
-            CardType.Landmark -> "Landmark"
-            CardType.Artifact -> "Artifact"
-            CardType.Project -> "Project"
-            CardType.Way -> "Way"
+        get() {
+            val baseType = if (isCurseOnly && isAlsoTreasure) {
+                "Treasure - Curse"
+            } else when (type) {
+                CardType.Action -> "Action"
+                CardType.ActionAttack -> "Action - Attack"
+                CardType.ActionAttackReaction -> "Action - Attack - Reaction"
+                CardType.ActionAttackVictory -> "Action - Attack - Victory"
+                CardType.ActionAttackDuration -> "Action - Attack - Duration"
+                CardType.ActionAttackDurationVictory -> "Action - Attack - Duration - Victory"
+                CardType.ActionAttackLooter -> "Action - Attack - Looter"
+                CardType.ActionAttackLooterVictory -> "Action - Attack - Looter - Victory"
+                CardType.ActionReaction -> "Action - Reaction"
+                CardType.ActionReactionVictory -> "Action - Reaction - Victory"
+                CardType.Victory -> "Victory"
+                CardType.VictoryCastle -> "Victory - Castle"
+                CardType.Curse -> "Curse"
+                CardType.Treasure -> "Treasure"
+                CardType.TreasureDuration -> "Treasure - Duration"
+                CardType.TreasureAttack -> "Treasure - Attack"
+                CardType.ActionVictory -> "Action - Victory"
+                CardType.ActionVictoryCastle -> "Action - Victory - Castle"
+                CardType.TreasureVictory -> "Treasure - Victory"
+                CardType.TreasureVictoryCastle -> "Treasure - Victory - Castle"
+                CardType.ActionDuration -> "Action - Duration"
+                CardType.ActionDurationVictory -> "Action - Duration - Victory"
+                CardType.VictoryReaction -> "Victory - Reaction"
+                CardType.TreasureCurse -> "Treasure - Curse"
+                CardType.DurationVictory -> "Duration - Victory"
+                CardType.TreasureReaction -> "Treasure - Reaction"
+                CardType.ActionRuins -> "Action - Ruins"
+                CardType.ActionRuinsVictory -> "Action - Ruins - Victory"
+                CardType.ActionShelter -> "Action - Shelter"
+                CardType.ActionShelterVictory -> "Action - Shelter - Victory"
+                CardType.ReactionShelter -> "Reaction - Shelter"
+                CardType.ReactionShelterVictory -> "Reaction - Shelter - Victory"
+                CardType.VictoryShelter -> "Victory - Shelter"
+                CardType.ActionLooter -> "Action - Looter"
+                CardType.ActionLooterVictory -> "Action - Looter - Victory"
+                CardType.TreasureReserve -> "Treasure - Reserve"
+                CardType.ActionReserve -> "Action - Reserve"
+                CardType.ActionReserveVictory -> "Action - Reserve - Victory"
+                CardType.ActionDurationReaction -> "Action - Duration - Reaction"
+                CardType.ActionDurationReactionVictory -> "Action - Duration - Reaction - Victory"
+                CardType.ActionTraveller -> "Action - Traveller"
+                CardType.ActionTravellerVictory -> "Action - Traveller - Victory"
+                CardType.ActionAttackTraveller -> "Action - Attack - Traveller"
+                CardType.ActionAttackTravellerVictory -> "Action - Attack - Traveller - Victory"
+                CardType.ActionGathering -> "Action - Gathering"
+                CardType.ActionTreasure -> "Action - Treasure"
+                CardType.Event -> "Event"
+                CardType.Landmark -> "Landmark"
+                CardType.Artifact -> "Artifact"
+                CardType.Project -> "Project"
+                CardType.Way -> "Way"
+            }
+            return (listOf(baseType) + additionalTypes).joinToString(" - ")
         }
 
     val numTypes: Int
-        get() = if (isCurseOnly && isAlsoTreasure) {
+        get() {
+            val baseTypes = if (isCurseOnly && isAlsoTreasure) {
             2
-        } else when (type) {
+            } else when (type) {
             CardType.ActionAttack -> 2
             CardType.ActionAttackReaction -> 3
             CardType.ActionAttackVictory -> 3
@@ -170,7 +176,16 @@ abstract class Card(
             CardType.ActionGathering -> 2
             CardType.ActionTreasure -> 2
             else -> 1
+            }
+            return baseTypes + additionalTypes.size
         }
+
+    val typeNames: Set<String>
+        get() = typeAsString.split(" - ").toSet()
+
+    fun sharesTypeWith(card: Card): Boolean {
+        return typeNames.intersect(card.typeNames).isNotEmpty()
+    }
 
     val isSpecialCard: Boolean
         get() = special != ""
@@ -201,6 +216,9 @@ abstract class Card(
             }
             if (addVillagers != 0) {
                 sb.append(getAmountSymbol(addVillagers)).append("villagers".plural(addVillagers)).append(". ")
+            }
+            if (addFavors != 0) {
+                sb.append(getAmountSymbol(addFavors)).append("favor".plural(addFavors)).append(". ")
             }
             if (addVictoryCoins != 0) {
                 sb.append(getAmountSymbol(addVictoryCoins)).append("victory coin".plural(addVictoryCoins)).append(". ")
@@ -486,6 +504,10 @@ abstract class Card(
             }
         }
 
+        if (player.shouldIgnoreTreasureFromHighwayman(this)) {
+            return
+        }
+
         addCardBonuses(this, player, refresh)
 
         if (addedAbilityCard != null) {
@@ -521,6 +543,7 @@ abstract class Card(
         player.addVictoryCoins(card.addVictoryCoins)
         player.addCoffers(card.addCoffers)
         player.addVillagers(card.addVillagers)
+        player.addFavors(card.addFavors)
 
         if (card.addCards > 0) {
             player.drawCards(card.addCards)
@@ -547,8 +570,8 @@ abstract class Card(
 
     private fun isHandCardActionable(player: Player): Boolean {
         return when {
-            isAction -> player.actions > 0 && !player.isBuyPhase
-            isTreasure -> player.isTreasuresPlayable
+            isAction -> player.actions > 0 && !player.isBuyPhase && player.canPlayCardFromHand(this)
+            isTreasure -> player.isTreasuresPlayable && player.canPlayCardFromHand(this)
             else -> false
         }
     }

@@ -35,6 +35,9 @@
     <#if player.villagers != 0>
         <div class="handAreaTopRowLeft" style="clear:both;"><a href="javascript:useVillagers()">${player.villagers} Villager<#if player.villagers != 1>s</#if></a></div>
     </#if>
+    <#if player.favors != 0>
+        <div class="handAreaTopRowLeft" style="clear:both;">${player.favors} Favor<#if player.favors != 1>s</#if></div>
+    </#if>
     <#if player.victoryCoins != 0>
         <div class="handAreaTopRowLeft" style="clear:both;">${player.victoryCoins} Victory Coin<#if player.victoryCoins != 1>s</#if></div>
     </#if>

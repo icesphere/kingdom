@@ -103,6 +103,16 @@
                                     </td>
                                 </tr>
                             </#if>
+                            <#if p.favors != 0>
+                                <tr>
+                                    <td class="gameInfoLabel">
+                                        Favors:
+                                    </td>
+                                    <td>
+                                        ${p.favors}
+                                    </td>
+                                </tr>
+                            </#if>
                             <#if p.sinisterPlotTokens != 0>
                                 <tr>
                                     <td class="gameInfoLabel">

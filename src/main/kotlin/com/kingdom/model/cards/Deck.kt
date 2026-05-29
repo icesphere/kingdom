@@ -13,5 +13,6 @@ enum class Deck {
     Empires,
     Renaissance,
     Menagerie,
+    Allies,
     None
 }
