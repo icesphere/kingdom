@@ -16,6 +16,9 @@ import com.kingdom.model.cards.menagerie.UsesExileMat
 import com.kingdom.model.cards.menagerie.UsesHorses
 import com.kingdom.model.cards.modifiers.CardCostModifier
 import com.kingdom.model.cards.modifiers.CardCostModifierForCardsInPlay
+import com.kingdom.model.cards.plunder.Loot
+import com.kingdom.model.cards.plunder.UsesLoot
+import com.kingdom.model.cards.plunder.allLootCards
 import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.HumanPlayer
 import com.kingdom.model.players.Player
@@ -211,6 +214,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var isIncludeHorse: Boolean = false
 
+    var isIncludeLoot: Boolean = false
+    var lootPile: MutableList<Card> = ArrayList()
+
     var isCurseTreasure: Boolean = false
 
     var randomizingOptions: RandomizingOptions? = null
@@ -346,6 +352,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 isIncludeHorse = true
             }
 
+            if (it is UsesLoot) {
+                isIncludeLoot = true
+            }
+
             if (it is UsesExileMat) {
                 isShowExileCards = true
             }
@@ -374,6 +384,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 }
                 if (otherCardsInPile.any { card -> card is UsesHorses }) {
                     isIncludeHorse = true
+                }
+                if (otherCardsInPile.any { card -> card is UsesLoot }) {
+                    isIncludeLoot = true
                 }
                 if (otherCardsInPile.any { card -> card is UsesExileMat }) {
                     isShowExileCards = true
@@ -433,6 +446,12 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             pileAmounts[Spoils.NAME] = 15
         }
 
+        if (isIncludeLoot) {
+            createLootPile()
+            cardsNotInSupply.add(Loot())
+            pileAmounts[Loot.NAME] = lootPile.size
+        }
+
         if (isIncludeShelters) {
             cardsNotInSupply.add(Hovel())
             cardsNotInSupply.add(Necropolis())
@@ -448,6 +467,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         if (isIncludeRuins) {
             ruinsPile.distinctBy { it.name }.forEach { cardMap[it.name] = it }
+        }
+
+        if (isIncludeLoot) {
+            lootPile.distinctBy { it.name }.forEach { cardMap[it.name] = it }
         }
 
         if (numComputerPlayers > 0) {
@@ -570,6 +593,26 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         ruinsCards.shuffle()
 
         ruinsPile = ruinsCards.subList(0, 10 * (numPlayers - 1))
+    }
+
+    private fun createLootPile() {
+        val lootCards = mutableListOf<Card>()
+        repeat(2) {
+            lootCards.addAll(allLootCards())
+        }
+        lootCards.shuffle()
+        lootPile = lootCards
+    }
+
+    fun takeLoot(): Card? {
+        if (lootPile.isEmpty()) {
+            return null
+        }
+
+        val card = lootPile.removeAt(0)
+        pileAmounts[Loot.NAME] = lootPile.size
+        refreshSupply()
+        return card
     }
 
     private fun startGame() {

@@ -268,6 +268,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
     var cardToPutIntoHandAfterDrawingCardsAtEndOfTurn: Card? = null
+    var cardsToPutIntoHandAfterDrawingCardsAtEndOfTurn = mutableListOf<Card>()
 
     var cardsToPlayAtStartOfNextTurn = mutableListOf<Card>()
 
@@ -706,6 +707,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (cardToPutIntoHandAfterDrawingCardsAtEndOfTurn != null) {
             addCardToHand(cardToPutIntoHandAfterDrawingCardsAtEndOfTurn!!)
             cardToPutIntoHandAfterDrawingCardsAtEndOfTurn = null
+        }
+
+        if (cardsToPutIntoHandAfterDrawingCardsAtEndOfTurn.isNotEmpty()) {
+            addCardsToHand(cardsToPutIntoHandAfterDrawingCardsAtEndOfTurn)
+            cardsToPutIntoHandAfterDrawingCardsAtEndOfTurn.clear()
         }
 
         isYourTurn = false
@@ -1360,6 +1366,32 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun gainHorse(showLog: Boolean = true) {
         gainCardNotInSupply(Horse(), showLog)
+    }
+
+    fun gainLoot(showLog: Boolean = true, destination: CardLocation = CardLocation.Discard): Card? {
+        val loot = game.takeLoot() ?: return null
+
+        var log = "gained ${loot.cardNameWithBackgroundColor} from the Loot pile"
+
+        when (destination) {
+            CardLocation.Hand -> {
+                isNextCardToHand = true
+                log += " to their hand"
+            }
+            CardLocation.Deck -> {
+                isNextCardToTopOfDeck = true
+                log += " to the top of their deck"
+            }
+            else -> Unit
+        }
+
+        cardGained(loot)
+
+        if (showLog) {
+            addEventLogWithUsername(log)
+        }
+
+        return loot
     }
 
     fun gainSupplyCard(card: Card, showLog: Boolean = false, destination: CardLocation = CardLocation.Discard) {

@@ -14,5 +14,6 @@ enum class Deck {
     Renaissance,
     Menagerie,
     Allies,
+    Plunder,
     None
 }

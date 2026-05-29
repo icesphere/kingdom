@@ -21,6 +21,7 @@ import com.kingdom.model.cards.intrigue.*
 import com.kingdom.model.cards.menagerie.*
 import com.kingdom.model.cards.menagerie.events.*
 import com.kingdom.model.cards.menagerie.ways.*
+import com.kingdom.model.cards.plunder.*
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.renaissance.*
 import com.kingdom.model.cards.renaissance.projects.*
@@ -534,10 +535,54 @@ class CardRepository {
                 Wizards()
         )
 
+    val plunderCards: List<Card>
+        get() = listOf(
+                Abundance(),
+                BuriedTreasure(),
+                CabinBoy(),
+                Cage(),
+                Crew(),
+                Crucible(),
+                Cutthroat(),
+                Enlarge(),
+                Figurine(),
+                FirstMate(),
+                Flagship(),
+                FortuneHunter(),
+                Frigate(),
+                Gondola(),
+                Grotto(),
+                HarborVillage(),
+                JewelledEgg(),
+                KingsCache(),
+                LandingParty(),
+                Longship(),
+                Mapmaker(),
+                Maroon(),
+                MiningRoad(),
+                Pendant(),
+                Pickaxe(),
+                Pilgrim(),
+                Quartermaster(),
+                Rope(),
+                SackOfLoot(),
+                Search(),
+                SecludedShrine(),
+                Shaman(),
+                SilverMine(),
+                Siren(),
+                Stowaway(),
+                SwampShacks(),
+                Taskmaster(),
+                Tools(),
+                Trickster(),
+                WealthyVillage()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
                 hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards +
-                renaissanceCards + menagerieCards + alliesCards
+                renaissanceCards + menagerieCards + alliesCards + plunderCards
 
     val allEvents: List<Event>
         get() = adventuresEvents + empiresEvents + menagerieEvents
@@ -569,6 +614,7 @@ class CardRepository {
             Deck.Renaissance -> renaissanceCards
             Deck.Menagerie -> menagerieCards
             Deck.Allies -> alliesCards
+            Deck.Plunder -> plunderCards
             else -> emptyList()
         }
     }

@@ -148,4 +148,52 @@ class CardRepositoryTests {
             assertFalse(hinterlandsCardNames.contains(removedCardName))
         }
     }
+
+    @Test
+    fun plunderCardsUseKingdomList() {
+        val plunderCardNames = CardRepository().plunderCards.map { it.name }
+
+        assertEquals(listOf(
+                "Abundance",
+                "Buried Treasure",
+                "Cabin Boy",
+                "Cage",
+                "Crew",
+                "Crucible",
+                "Cutthroat",
+                "Enlarge",
+                "Figurine",
+                "First Mate",
+                "Flagship",
+                "Fortune Hunter",
+                "Frigate",
+                "Gondola",
+                "Grotto",
+                "Harbor Village",
+                "Jewelled Egg",
+                "King's Cache",
+                "Landing Party",
+                "Longship",
+                "Mapmaker",
+                "Maroon",
+                "Mining Road",
+                "Pendant",
+                "Pickaxe",
+                "Pilgrim",
+                "Quartermaster",
+                "Rope",
+                "Sack of Loot",
+                "Search",
+                "Secluded Shrine",
+                "Shaman",
+                "Silver Mine",
+                "Siren",
+                "Stowaway",
+                "Swamp Shacks",
+                "Taskmaster",
+                "Tools",
+                "Trickster",
+                "Wealthy Village"
+        ), plunderCardNames)
+    }
 }

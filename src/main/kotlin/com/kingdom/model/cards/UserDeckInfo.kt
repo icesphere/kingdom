@@ -11,6 +11,7 @@ class UserDeckInfo(deck: Deck, val cards: List<Card>) {
             Deck.Base -> "Base Set"
             Deck.DarkAges -> "Dark Ages"
             Deck.Allies -> "Allies"
+            Deck.Plunder -> "Plunder"
             else -> deckName
         }
     }
