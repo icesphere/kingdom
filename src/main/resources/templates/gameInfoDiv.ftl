@@ -83,16 +83,6 @@
                                     </td>
                                 </tr>
                             </#if>
-                            <#if showPirateShipCoins>
-                                <tr>
-                                    <td class="gameInfoLabel">
-                                        Pirate Ship Coins:
-                                    </td>
-                                    <td>
-                                        ${p.pirateShipCoins}
-                                    </td>
-                                </tr>
-                            </#if>
                             <#if p.coffers != 0>
                                 <tr>
                                     <td class="gameInfoLabel">

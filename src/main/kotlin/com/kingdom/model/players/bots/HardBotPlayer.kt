@@ -25,10 +25,8 @@ import com.kingdom.model.cards.prosperity.Goons
 import com.kingdom.model.cards.prosperity.Monument
 import com.kingdom.model.cards.prosperity.Mountebank
 import com.kingdom.model.cards.prosperity.Quarry
-import com.kingdom.model.cards.seaside.Ambassador
 import com.kingdom.model.cards.seaside.Bazaar
 import com.kingdom.model.cards.seaside.Cutpurse
-import com.kingdom.model.cards.seaside.SeaHag
 import com.kingdom.model.cards.supply.*
 
 open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
@@ -45,7 +43,6 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
     }
 
     private val preferredMaxCopies = mapOf(
-            SeaHag.NAME to 2,
             Witch.NAME to 2,
             Mountebank.NAME to 2,
             Goons.NAME to 3,
@@ -54,7 +51,6 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
             Cutpurse.NAME to 2,
             Smithy.NAME to 1,
             CouncilRoom.NAME to 1,
-            Ambassador.NAME to 1,
             Bureaucrat.NAME to 1,
             Moneylender.NAME to 1,
             Minion.NAME to 6,
@@ -65,7 +61,6 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
     )
 
     private val namedCardTieBreakers = mapOf(
-            SeaHag.NAME to 3,
             Witch.NAME to 3,
             Mountebank.NAME to 3,
             Goons.NAME to 3,
@@ -74,7 +69,6 @@ open class HardBotPlayer(user: User, game: Game) : MediumBotPlayer(user, game) {
             Smithy.NAME to 2,
             CouncilRoom.NAME to 2,
             Cutpurse.NAME to 2,
-            Ambassador.NAME to 2,
             Minion.NAME to 2,
             Bureaucrat.NAME to 1,
             Market.NAME to 1,

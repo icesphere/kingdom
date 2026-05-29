@@ -18,7 +18,6 @@ import com.kingdom.model.cards.menagerie.Horse
 import com.kingdom.model.cards.renaissance.artifacts.*
 import com.kingdom.model.cards.renaissance.projects.Citadel
 import com.kingdom.model.cards.supply.Copper
-import com.kingdom.model.cards.supply.Curse
 import com.kingdom.model.cards.supply.Estate
 import com.kingdom.model.cards.supply.VictoryPointsCalculator
 import com.kingdom.util.KingdomUtil
@@ -221,12 +220,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     val exileCardsString: String
         get() = exileCards.groupedString
-
-    var pirateShipCoins: Int = 0
-        set(value) {
-            field = value
-            refreshPlayerHandArea()
-        }
 
     var playedCrossroadsThisTurn: Boolean = false
 
@@ -1109,15 +1102,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cardsBought.add(card)
             currentTurnSummary.cardsBought.add(card)
             isReturnToActionPhase = false
-
-            if (game.isShowEmbargoTokens) {
-                val numEmbargoTokens = game.embargoTokens[card.name] ?: 0
-                if (numEmbargoTokens > 0) {
-                    for (i in 1..numEmbargoTokens) {
-                        gainSupplyCard(Curse(), true)
-                    }
-                }
-            }
 
             //if buys=0 then cards bought will be refreshed by previous player cards bought
             if (buys > 0) {

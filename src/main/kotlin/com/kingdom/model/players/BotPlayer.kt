@@ -434,7 +434,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 val cards = info as List<Card>
                 return cards.indexOf(cards.maxBy { if (it.isVictoryOnly) -1 else it.cost })
             }
-            Ambassador.NAME -> choices.last().choiceNumber
             Baron.NAME -> 1
             Beggar.NAME -> 1
             BorderGuard.NAME -> when {
@@ -479,7 +478,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
             }
             Doctor.NAME -> 2
             Diplomat.NAME -> if (hand.count { getDiscardCardScore(it) > 50 } > 2) 1 else 2
-            Explorer.NAME -> 1
             Graverobber.NAME -> if (game.trashedCards.any { getCardCostWithModifiers(it) in 3..6 }) 1 else 2
             Hamlet.NAME -> {
                 val hamlet = card as Hamlet
@@ -539,8 +537,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 availableCoins > 11 && buys == 1 -> 2
                 else -> 3
             }
-            PearlDiver.NAME -> if (getBuyCardScore(card) > 3) 1 else 2
-            PirateShip.NAME -> if (pirateShipCoins > 2) 1 else 2
             Plaza.NAME -> if (hand.any { it.isCopper }) 1 else 2
             Scavenger.NAME -> 1
             Sentry.NAME -> when (card.cost) {
@@ -938,7 +934,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
 
     private fun choseCard(card: Card, cards: List<Card>): Card {
         return when (card.name) {
-            Ambassador.NAME -> cards.minBy { getBuyCardScore(it) }!!
             Counterfeit.NAME -> cards.minBy { getBuyCardScore(it) }!!
             Courtier.NAME -> cards.maxBy { it.numTypes }!!
             Haven.NAME -> when {
@@ -1047,7 +1042,6 @@ abstract class BotPlayer(user: User, game: Game) : Player(user, game) {
                 Improve.NAME -> cardsToSelectFrom.maxBy { getTrashCardScore(it) }!!
                 Lookout.NAME -> cardsToSelectFrom.minBy { getDiscardCardScore(it) }!!
                 Pillage.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
-                PirateShip.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
                 Smugglers.NAME -> cardsToSelectFrom.maxBy { getBuyCardScore(it) }!!
                 WishingWell.NAME -> deck.maxBy { cardCountByName(it.name) }!!
                 else -> cardsToSelectFrom.first()

@@ -29,9 +29,6 @@
     <#if showNativeVillage>
         <div class="handAreaTopRowLeft" style="clear:both;"><#if player.nativeVillageCards?size != 0><a href="javascript:showNativeVillageCards()"></#if>${player.nativeVillageCards?size} Native Village Card<#if player.nativeVillageCards?size != 1>s</#if><#if player.nativeVillageCards?size != 0></a></#if></div>
     </#if>
-    <#if showPirateShipCoins>
-        <div class="handAreaTopRowLeft" style="clear:both;">${player.pirateShipCoins} Pirate Ship Coin<#if player.pirateShipCoins != 1>s</#if></div>
-    </#if>   
     <#if player.coffers != 0>
         <div class="handAreaTopRowLeft" style="clear:both;"><a href="javascript:useCoffers()">${player.coffers} Coffers</a></div>
     </#if>

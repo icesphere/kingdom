@@ -141,8 +141,6 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
                 return getKingdomCard("Peddler")
             }*/
             //cityStrategy && !onlyBuyVictoryCards() && coins <= 6 && turns > 8 && game.canBuyCard(player, getKingdomCard("City")) -> return getKingdomCard("City")
-            //ambassadorStrategy && !onlyBuyVictoryCards() && turns < 2 -> return getKingdomCard("Ambassador")
-            //pirateShipStrategy && !onlyBuyVictoryCards() && coins <= 4 && terminalActionsBought - actionsBought < 2 && game.canBuyCard(player, getKingdomCard("Pirate Ship")) -> return getKingdomCard("Pirate Ship")
         }
 
         return super.getCardToBuy()
@@ -214,15 +212,6 @@ open class MediumBotPlayer(user: User, game: Game) : EasyBotPlayer(user, game) {
     }
 
     override fun excludeCard(card: Card): Boolean {
-
-        if (game.isShowEmbargoTokens) {
-            val embargoTokens = game.embargoTokens[card.name] ?: 0
-            if (embargoTokens > 0) {
-                if (embargoTokens > 2 || !card.isProvince && !card.isColony) {
-                    return true
-                }
-            }
-        }
 
         //todo exile cards
 

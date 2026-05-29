@@ -219,8 +219,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var isShowJourneyToken: Boolean = false
 
-    var isShowEmbargoTokens: Boolean = false
-
     var isShowDuration: Boolean = false
 
     var isShowIslandCards: Boolean = false
@@ -233,7 +231,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 .sortedByDescending { it.cost }
 
     var isShowNativeVillage: Boolean = false
-    var isShowPirateShipCoins: Boolean = false
 
     val tradeRouteTokenMap = HashMap<String, Boolean>(0)
     var isTrackTradeRouteTokens: Boolean = false
@@ -243,8 +240,6 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         get() = numEmptyPiles >= 3
                 || pileAmounts[Province.NAME] == 0
                 || (isIncludeColonyCards && pileAmounts[Colony.NAME] == 0)
-
-    val embargoTokens = HashMap<String, Int>()
 
     val treasureCardsPlayedInActionPhase = mutableListOf<Card>()
 

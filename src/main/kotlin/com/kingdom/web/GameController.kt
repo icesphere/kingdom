@@ -1394,10 +1394,6 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("supply", bw.wrap(game.numInPileMap))
             modelAndView.addObject("victoryPointsOnSupplyPile", bw.wrap(game.victoryPointsOnSupplyPile))
             modelAndView.addObject("debtOnSupplyPile", bw.wrap(game.debtOnSupplyPile))
-            modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
-            if (game.isShowEmbargoTokens) {
-                modelAndView.addObject("embargoTokens", bw.wrap(game.embargoTokens))
-            }
             if (game.isTrackTradeRouteTokens) {
                 modelAndView.addObject("tradeRouteTokenMap", bw.wrap(game.tradeRouteTokenMap))
             }
@@ -1650,7 +1646,6 @@ class GameController(private val cardManager: CardManager,
             modelAndView.addObject("showTavern", game.isShowTavern)
             modelAndView.addObject("showJourneyToken", game.isShowJourneyToken)
             modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
-            modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
             modelAndView.addObject("playTreasureCards", player.isTreasuresPlayable)
             modelAndView.addObject("artifacts", game.artifacts)
             return modelAndView
@@ -2031,9 +2026,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("chats", game.chats)
         modelAndView.addObject("allComputerOpponents", game.isAllComputerOpponents)
         modelAndView.addObject("showDuration", game.isShowDuration)
-        modelAndView.addObject("showEmbargoTokens", game.isShowEmbargoTokens)
         modelAndView.addObject("showNativeVillage", game.isShowNativeVillage)
-        modelAndView.addObject("showPirateShipCoins", game.isShowPirateShipCoins)
         modelAndView.addObject("showIslandCards", game.isShowIslandCards)
         modelAndView.addObject("showExileCards", game.isShowExileCards)
         modelAndView.addObject("showTavern", game.isShowTavern)
