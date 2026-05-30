@@ -500,6 +500,33 @@ class CardRepository {
                 WayOfTheTurtle()
         )
 
+    val alliesAllies: List<Ally>
+        get() = listOf(
+                ArchitectsGuild(),
+                BandOfNomads(),
+                CaveDwellers(),
+                CircleOfWitches(),
+                CityState(),
+                CoastalHaven(),
+                CraftersGuild(),
+                DesertGuides(),
+                FamilyOfInventors(),
+                FellowshipOfScribes(),
+                ForestDwellers(),
+                GangOfPickpockets(),
+                IslandFolk(),
+                LeagueOfBankers(),
+                LeagueOfShopkeepers(),
+                MarketTowns(),
+                MountainFolk(),
+                OrderOfAstrologers(),
+                OrderOfMasons(),
+                PeacefulCult(),
+                PlateauShepherds(),
+                TrappersLodge(),
+                WoodworkersGuild()
+        )
+
     val alliesCards: List<Card>
         get() = listOf(
                 Augurs(),
@@ -595,6 +622,9 @@ class CardRepository {
 
     val allWays: List<Way>
         get() = menagerieWays
+
+    val allAllies: List<Ally>
+        get() = alliesAllies
 
     val allEventsAndLandmarksAndProjectsAndWays: List<Card>
         get() = allEvents + allLandmarks + allProjects + allWays

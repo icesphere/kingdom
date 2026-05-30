@@ -12,6 +12,7 @@ enum class CardLocation {
     Landmark,
     Project,
     Way,
+    Ally,
     Island,
     ExileMat,
     Tavern,

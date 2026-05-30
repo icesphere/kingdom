@@ -32,6 +32,8 @@
                 <#assign clickType="landmark">
             <#elseif card.way>
                 <#assign clickType="way">
+            <#elseif card.ally>
+                <#assign clickType="ally">
             <#else>
                 <#assign clickType="project">
             </#if>

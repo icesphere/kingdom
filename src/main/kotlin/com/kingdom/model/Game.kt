@@ -98,6 +98,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var ways = mutableListOf<Way>()
 
+    var ally: Ally? = null
+
     private val supplyCards = ArrayList<Card>()
 
     val cardsInSupply: List<Card>
@@ -429,6 +431,12 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         ways.forEach { way ->
             if (way is GameSetupModifier) {
                 way.modifyGameSetup(this)
+            }
+        }
+
+        ally?.let {
+            if (it is GameSetupModifier) {
+                it.modifyGameSetup(this)
             }
         }
 
@@ -999,6 +1007,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     fun getNewInstanceOfProject(projectName: String): Project {
         return projects.first { it.name == projectName }.copy(false) as Project
+    }
+
+    fun getNewInstanceOfAlly(allyName: String): Ally {
+        return ally?.takeIf { it.name == allyName }?.copy(false) as? Ally
+                ?: throw IllegalArgumentException("Ally not found: $allyName")
     }
 
     private fun addComputerPlayers() {

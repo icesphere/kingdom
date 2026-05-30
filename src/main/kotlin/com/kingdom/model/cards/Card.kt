@@ -124,6 +124,7 @@ abstract class Card(
                 CardType.Artifact -> "Artifact"
                 CardType.Project -> "Project"
                 CardType.Way -> "Way"
+                CardType.Ally -> "Ally"
             }
             return (listOf(baseType) + additionalTypes).joinToString(" - ")
         }
@@ -311,6 +312,9 @@ abstract class Card(
     val isWay: Boolean
         get() = type == CardType.Way
 
+    val isAlly: Boolean
+        get() = type == CardType.Ally
+
     val isGathering: Boolean
         get() = type == CardType.ActionGathering
 
@@ -355,6 +359,7 @@ abstract class Card(
             type == CardType.Artifact -> CardColor.Artifact
             type == CardType.Project -> CardColor.Project
             type == CardType.Way -> CardColor.Way
+            type == CardType.Ally -> CardColor.Ally
             isTreasure -> CardColor.Treasure
             isVictory -> CardColor.Victory
             else -> CardColor.Action
@@ -564,6 +569,7 @@ abstract class Card(
             CardLocation.Event -> (this as Event).isEventActionable(player)
             CardLocation.Landmark -> (this as Landmark).isLandmarkActionable(player)
             CardLocation.Project -> (this as Project).isProjectActionable(player)
+            CardLocation.Ally -> (this as Ally).isAllyActionable(player)
             else -> false
         }
     }

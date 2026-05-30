@@ -25,6 +25,9 @@
             function swapWay(wayName) {
                 document.location = "swapWay.html?wayName="+wayName;
             }
+            function swapAlly(allyName) {
+                document.location = "swapAlly.html?allyName="+allyName;
+            }
         </script>
 	</head>
 	<body>

@@ -28,6 +28,9 @@ class CardManager(private val cardRepository: CardRepository,
     val allWays: List<Way>
         get() = cardRepository.allWays
 
+    val allAllies: List<Ally>
+        get() = cardRepository.allAllies
+
     val shelters: List<Card>
         get() = cardRepository.shelters
 
@@ -58,6 +61,10 @@ class CardManager(private val cardRepository: CardRepository,
         return allWays.first { it.name == wayName }
     }
 
+    fun getAlly(allyName: String): Ally {
+        return allAllies.first { it.name == allyName }
+    }
+
     fun setRandomKingdomCardsAndEvents(game: Game) {
         cardRandomizer.setRandomKingdomCardsAndEvents(game, game.randomizingOptions!!)
     }
@@ -80,6 +87,10 @@ class CardManager(private val cardRepository: CardRepository,
 
     fun swapWay(game: Game, wayName: String) {
         cardRandomizer.swapWay(game, wayName)
+    }
+
+    fun swapAlly(game: Game, allyName: String) {
+        cardRandomizer.swapAlly(game, allyName)
     }
 
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {

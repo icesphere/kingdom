@@ -24,6 +24,8 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         addCards(game, options)
 
         addEventsAndLandmarksAndProjectsAndWays(game, options)
+
+        addAlly(game)
     }
 
     private fun addCards(game: Game, options: RandomizingOptions) {
@@ -172,6 +174,27 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         game.projects = selectedEventsAndLandmarksAndProjectsAndWays.filterIsInstance<Project>().toMutableList()
 
         game.ways = selectedEventsAndLandmarksAndProjectsAndWays.filterIsInstance<Way>().toMutableList()
+    }
+
+    private fun addAlly(game: Game) {
+        if (!hasLiaison(game.kingdomCards)) {
+            game.ally = null
+            return
+        }
+
+        if (!options!!.isSwappingCard || game.ally == null) {
+            game.ally = cardRepository.allAllies
+                    .filterNot { it.disabled }
+                    .shuffled()
+                    .firstOrNull()
+        }
+    }
+
+    private fun hasLiaison(cards: List<Card>): Boolean {
+        return cards.any {
+            it.additionalTypes.contains("Liaison") ||
+                    it is MultiTypePile && it.otherCardsInPile.any { card -> card.additionalTypes.contains("Liaison") }
+        }
     }
 
     private fun addBaneCard(): Boolean {
@@ -384,6 +407,14 @@ class CardRandomizer(private val cardRepository: CardRepository) {
                 game.projects.add(replacement)
             }
         }
+    }
+
+    fun swapAlly(game: Game, allyName: String) {
+        game.ally = cardRepository.allAllies
+                .filterNot { it.disabled }
+                .filterNot { it.name == allyName }
+                .shuffled()
+                .firstOrNull()
     }
 
     fun getEventOrLandmarkOrProjectOrWay(game: Game, excludedName: String): Card {

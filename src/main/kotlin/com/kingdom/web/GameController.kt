@@ -356,7 +356,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("player", HumanPlayer(user, game))
         modelAndView.addObject("currentPlayerId", -1)
         modelAndView.addObject("cards", game.topKingdomCards)
-        modelAndView.addObject("eventsAndLandmarksAndProjectsAndWays", game.events + game.landmarks + game.projects + game.ways)
+        modelAndView.addObject("eventsAndLandmarksAndProjectsAndWays", game.events + game.landmarks + game.projects + game.ways + listOfNotNull(game.ally))
         modelAndView.addObject("artifacts", game.topKingdomCards.filterIsInstance<ArtifactAction>().flatMap { it.artifacts })
         modelAndView.addObject("includeColonyAndPlatinum", includeColonyAndPlatinum)
         modelAndView.addObject("includeShelters", includeShelters)
@@ -491,6 +491,29 @@ class GameController(private val cardManager: CardManager,
         try {
             return if (game.status == GameStatus.BeingConfigured) {
                 cardManager.swapWay(game, request.getParameter("wayName"))
+                confirmCards(request, response)
+            } else {
+                if (game.status == GameStatus.InProgress) {
+                    ModelAndView("redirect:/showGame.html")
+                } else {
+                    ModelAndView("redirect:/showGameRooms.html")
+                }
+            }
+        } catch (t: Throwable) {
+            return logErrorAndReturnEmpty(t, game)
+        }
+    }
+
+    @RequestMapping("/swapAlly.html")
+    fun swapAlly(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+        if (user == null || game == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        }
+        try {
+            return if (game.status == GameStatus.BeingConfigured) {
+                cardManager.swapAlly(game, request.getParameter("allyName"))
                 confirmCards(request, response)
             } else {
                 if (game.status == GameStatus.InProgress) {
@@ -930,6 +953,7 @@ class GameController(private val cardManager: CardManager,
             "landmark" -> CardLocation.Landmark
             "project" -> CardLocation.Project
             "way" -> CardLocation.Way
+            "ally" -> CardLocation.Ally
             else -> CardLocation.Unknown
         }
     }
@@ -1014,6 +1038,14 @@ class GameController(private val cardManager: CardManager,
                     if (player.buys == 0 && player.currentAction == null) {
                         player.endTurn(true)
                     }
+                }
+            }
+            CardLocation.Ally -> {
+                val ally = game.getNewInstanceOfAlly(cardName)
+
+                if (highlightAllyCard(player, ally)) {
+                    player.useAlly(ally)
+                    game.refreshGame()
                 }
             }
             CardLocation.Project -> {
@@ -1145,6 +1177,10 @@ class GameController(private val cardManager: CardManager,
 
     fun highlightProjectCard(player: Player, card: Card?): Boolean {
         return player.currentAction == null && card?.isActionable(player, CardLocation.Project) ?: false
+    }
+
+    fun highlightAllyCard(player: Player, card: Card?): Boolean {
+        return player.currentAction == null && card?.isActionable(player, CardLocation.Ally) ?: false
     }
 
     @ResponseBody
@@ -1387,7 +1423,8 @@ class GameController(private val cardManager: CardManager,
         game.events.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Event) }
         game.landmarks.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Landmark) }
         game.projects.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Project) }
-        modelAndView.addObject("eventsAndLandmarksAndProjectsAndWays", game.events + game.landmarks + game.projects + game.ways)
+        game.ally?.let { it.isHighlighted = highlightCard(player, it, CardLocation.Ally) }
+        modelAndView.addObject("eventsAndLandmarksAndProjectsAndWays", game.events + game.landmarks + game.projects + game.ways + listOfNotNull(game.ally))
 
         try {
             val bw = BeansWrapper()
@@ -2039,7 +2076,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("gameEndReason", game.gameEndReason)
         modelAndView.addObject("winnerString", game.winnerString)
         modelAndView.addObject("victoryCards", game.victoryCards)
-        modelAndView.addObject("scoringLandmarks", game.landmarks.filterIsInstance<VictoryPointsCalculator>())
+        modelAndView.addObject("scoringLandmarks", (game.landmarks + listOfNotNull(game.ally)).filterIsInstance<VictoryPointsCalculator>())
 
         modelAndView.addObject("showCardsNotInSupply", game.cardsNotInSupply.isNotEmpty())
     }
@@ -2337,7 +2374,7 @@ class GameController(private val cardManager: CardManager,
         modelAndView.addObject("adjustFontSizeForMobile", KingdomUtil.isMobile(request))
         modelAndView.addObject("cards", cards)
         modelAndView.addObject("cardsNotInSupply", game.cardsNotInSupply)
-        modelAndView.addObject("eventsAndLandmarksAndProjectsAndWays", (game.events + game.landmarks + game.projects + game.ways).map { it.isHighlighted = false; it })
+        modelAndView.addObject("eventsAndLandmarksAndProjectsAndWays", (game.events + game.landmarks + game.projects + game.ways + listOfNotNull(game.ally)).map { it.isHighlighted = false; it })
         modelAndView.addObject("artifacts", game.artifacts)
         modelAndView.addObject("prizeCards", game.prizeCards)
         modelAndView.addObject("includesColonyAndPlatinum", game.isIncludeColonyCards && game.isIncludePlatinumCards)

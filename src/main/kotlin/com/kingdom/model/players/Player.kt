@@ -289,7 +289,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     @Suppress("MemberVisibilityCanBePrivate")
     val pointsFromLandmarks: Int
-        get() = game.landmarks.filterIsInstance<VictoryPointsCalculator>()
+        get() = (game.landmarks + listOfNotNull(game.ally)).filterIsInstance<VictoryPointsCalculator>()
                 .sumBy { it.calculatePoints(this) }
 
     val currentTurnCardTrashedListeners = mutableListOf<AfterCardTrashedListener>()
@@ -1075,6 +1075,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addEventLogWithUsername("used landmark: ${landmark.cardNameWithBackgroundColor}")
 
             landmark.cardPlayedSpecialAction(this)
+        }
+    }
+
+    fun useAlly(ally: Ally) {
+        if (ally.isAllyActionable(this)) {
+            addEventLogWithUsername("used ally: ${ally.cardNameWithBackgroundColor}")
+
+            ally.useAlly(this)
         }
     }
 
@@ -2220,6 +2228,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         this.favors += favors
         if (refresh) {
             refreshPlayerHandArea()
+            refreshSupply()
         }
     }
 

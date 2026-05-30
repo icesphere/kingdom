@@ -4,12 +4,16 @@ import com.kingdom.model.Game
 import com.kingdom.model.RandomizingOptions
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.adventures.events.Alms
+import com.kingdom.model.cards.allies.Bauble
+import com.kingdom.model.cards.allies.Wizards
 import com.kingdom.model.cards.menagerie.ways.WayOfTheSquirrel
 import com.kingdom.repository.CardRepository
 import com.kingdom.service.GameManager
 import com.kingdom.service.GameMessageService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
@@ -37,6 +41,53 @@ class CardRandomizerTests {
         assertTrue(game.landmarks.isEmpty())
         assertTrue(game.projects.isEmpty())
         assertTrue(game.ways.isEmpty())
+    }
+
+    @Test
+    fun selectsAllyWhenKingdomHasLiaison() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java)))
+        val repository = CardRepository()
+
+        val options = RandomizingOptions().apply {
+            customCardSelection = repository.baseCards.take(9) + Bauble()
+            numEventsAndLandmarksAndProjectsAndWays = 0
+        }
+
+        CardRandomizer(repository).setRandomKingdomCardsAndEvents(game, options)
+
+        assertNotNull(game.ally)
+    }
+
+    @Test
+    fun selectsAllyWhenSplitPileHasLiaison() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java)))
+        val repository = CardRepository()
+
+        val options = RandomizingOptions().apply {
+            customCardSelection = repository.baseCards.take(9) + Wizards()
+            numEventsAndLandmarksAndProjectsAndWays = 0
+        }
+
+        CardRandomizer(repository).setRandomKingdomCardsAndEvents(game, options)
+
+        assertNotNull(game.ally)
+    }
+
+    @Test
+    fun clearsAllyWhenKingdomHasNoLiaison() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java))).apply {
+            ally = CardRepository().allAllies.first()
+        }
+        val repository = CardRepository()
+
+        val options = RandomizingOptions().apply {
+            customCardSelection = repository.baseCards.take(10)
+            numEventsAndLandmarksAndProjectsAndWays = 0
+        }
+
+        CardRandomizer(repository).setRandomKingdomCardsAndEvents(game, options)
+
+        assertNull(game.ally)
     }
 
     @Test
