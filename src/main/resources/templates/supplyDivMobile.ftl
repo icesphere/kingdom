@@ -34,6 +34,8 @@
                 <#assign clickType="way">
             <#elseif card.ally>
                 <#assign clickType="ally">
+            <#elseif card.trait>
+                <#assign clickType="trait">
             <#else>
                 <#assign clickType="project">
             </#if>

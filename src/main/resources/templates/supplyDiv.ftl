@@ -70,13 +70,15 @@
                                 <#assign clickType="way">
                             <#elseif card.ally>
                                 <#assign clickType="ally">
+                            <#elseif card.trait>
+                                <#assign clickType="trait">
                             <#else>
                                 <#assign clickType="project">
                             </#if>
                             <td>
                                 <table cellpadding="0" cellspacing="0">
                                     <#if gameStatus == "InProgress">
-                                        <tr><td style="font-size:10px;"><#if card.event>Event<#elseif card.landmark>Landmark<#elseif card.project>Project<#elseif card.ally>Ally<#else>Way</#if></td></tr>
+                                        <tr><td style="font-size:10px;"><#if card.event>Event<#elseif card.landmark>Landmark<#elseif card.project>Project<#elseif card.ally>Ally<#elseif card.trait>Trait<#else>Way</#if></td></tr>
                                     </#if>
                                     <tr><td><#include "gameCard.ftl"></td></tr>
                                 </table>

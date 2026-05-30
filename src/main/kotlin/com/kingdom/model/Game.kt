@@ -100,6 +100,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     var ally: Ally? = null
 
+    var traits = mutableListOf<Trait>()
+
     private val supplyCards = ArrayList<Card>()
 
     val cardsInSupply: List<Card>
@@ -258,7 +260,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             val modifiers = (currentPlayerCardCostModifiers +
                     gameCardCostModifiers +
                     currentPlayer.inPlayWithDuration.filterIsInstance<CardCostModifierForCardsInPlay>() +
-                    currentPlayer.projectsBought.filterIsInstance<CardCostModifier>()
+                    currentPlayer.projectsBought.filterIsInstance<CardCostModifier>() +
+                    traits.filterIsInstance<CardCostModifier>()
                     ).toMutableList()
 
             currentPlayer.inPlayWithDuration
@@ -341,6 +344,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
         lastActivity = Date()
 
+        assignTraitsToRandomPiles()
+
         setupSupply()
 
         kingdomCards.forEach {
@@ -407,6 +412,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
             if (event is UsesHorses) {
                 isIncludeHorse = true
             }
+            if (event is UsesLoot) {
+                isIncludeLoot = true
+            }
             if (event is UsesExileMat) {
                 isShowExileCards = true
             }
@@ -433,6 +441,17 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 way.modifyGameSetup(this)
             }
         }
+
+        traits.forEach { trait ->
+            if (trait is GameSetupModifier) {
+                trait.modifyGameSetup(this)
+            }
+            if (trait is UsesLoot) {
+                isIncludeLoot = true
+            }
+        }
+
+        traits.sortBy { it.name }
 
         ally?.let {
             if (it is GameSetupModifier) {
@@ -639,6 +658,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         }
 
         kingdomCards.filterIsInstance<GameStartedListener>().forEach { it.onGameStarted(this) }
+        traits.filterIsInstance<GameStartedListener>().forEach { it.onGameStarted(this) }
 
         startTurnInNewThreadIfComputerVsHuman()
     }
@@ -1007,6 +1027,49 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     fun getNewInstanceOfProject(projectName: String): Project {
         return projects.first { it.name == projectName }.copy(false) as Project
+    }
+
+    fun getNewInstanceOfTrait(traitName: String): Trait {
+        val source = traits.first { it.name == traitName }
+        val trait = source.copy(false) as Trait
+        topKingdomCards.firstOrNull { it.pileName == source.traitPileName }?.let { trait.assignToPile(it) }
+        return trait
+    }
+
+    fun assignTraitsToRandomPiles() {
+        if (traits.isEmpty() || kingdomCards.isEmpty()) {
+            return
+        }
+
+        val eligiblePiles = kingdomCards
+                .filter { it.isAction || it.isTreasure }
+                .shuffled()
+        val usedPileNames = mutableSetOf<String>()
+
+        traits.forEach { trait ->
+            val existingPile = trait.traitPileName?.let { traitPileName ->
+                eligiblePiles.firstOrNull { it.pileName == traitPileName }
+            }
+
+            val pile = if (existingPile != null && !usedPileNames.contains(existingPile.pileName)) {
+                existingPile
+            } else {
+                eligiblePiles.firstOrNull { !usedPileNames.contains(it.pileName) }
+            }
+
+            if (pile != null) {
+                usedPileNames.add(pile.pileName)
+                trait.assignToPile(pile)
+            }
+        }
+    }
+
+    fun traitsForCard(card: Card): List<Trait> {
+        return traits.filter { it.appliesTo(card) }
+    }
+
+    fun topCardForTrait(trait: Trait): Card? {
+        return topKingdomCards.firstOrNull { it.pileName == trait.traitPileName }
     }
 
     fun getNewInstanceOfAlly(allyName: String): Ally {

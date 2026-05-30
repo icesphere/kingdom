@@ -31,6 +31,9 @@ class CardManager(private val cardRepository: CardRepository,
     val allAllies: List<Ally>
         get() = cardRepository.allAllies
 
+    val allTraits: List<Trait>
+        get() = cardRepository.allTraits
+
     val shelters: List<Card>
         get() = cardRepository.shelters
 
@@ -65,6 +68,10 @@ class CardManager(private val cardRepository: CardRepository,
         return allAllies.first { it.name == allyName }
     }
 
+    fun getTrait(traitName: String): Trait {
+        return allTraits.first { it.name == traitName }
+    }
+
     fun setRandomKingdomCardsAndEvents(game: Game) {
         cardRandomizer.setRandomKingdomCardsAndEvents(game, game.randomizingOptions!!)
     }
@@ -91,6 +98,10 @@ class CardManager(private val cardRepository: CardRepository,
 
     fun swapAlly(game: Game, allyName: String) {
         cardRandomizer.swapAlly(game, allyName)
+    }
+
+    fun swapTrait(game: Game, traitName: String) {
+        cardRandomizer.swapTrait(game, traitName)
     }
 
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {

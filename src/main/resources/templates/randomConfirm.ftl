@@ -28,6 +28,9 @@
             function swapAlly(allyName) {
                 document.location = "swapAlly.html?allyName="+allyName;
             }
+            function swapTrait(traitName) {
+                document.location = "swapTrait.html?traitName="+traitName;
+            }
         </script>
 	</head>
 	<body>

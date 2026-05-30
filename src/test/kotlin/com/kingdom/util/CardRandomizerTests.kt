@@ -33,6 +33,7 @@ class CardRandomizerTests {
             isIncludeLandmarks = false
             isIncludeProjects = false
             isIncludeWays = false
+            isIncludeTraits = false
         }
 
         CardRandomizer(CardRepository()).setRandomKingdomCardsAndEvents(game, options)
@@ -41,6 +42,7 @@ class CardRandomizerTests {
         assertTrue(game.landmarks.isEmpty())
         assertTrue(game.projects.isEmpty())
         assertTrue(game.ways.isEmpty())
+        assertTrue(game.traits.isEmpty())
     }
 
     @Test
@@ -100,6 +102,7 @@ class CardRandomizerTests {
             isIncludeLandmarks = false
             isIncludeProjects = false
             isIncludeWays = true
+            isIncludeTraits = false
         }
 
         CardRandomizer(CardRepository()).swapWay(game, wayToReplace.name)
@@ -118,6 +121,7 @@ class CardRandomizerTests {
             isIncludeLandmarks = false
             isIncludeProjects = false
             isIncludeWays = true
+            isIncludeTraits = false
         }
 
         CardRandomizer(CardRepository()).swapEvent(game, eventToReplace.name)

@@ -22,6 +22,8 @@ import com.kingdom.model.cards.menagerie.*
 import com.kingdom.model.cards.menagerie.events.*
 import com.kingdom.model.cards.menagerie.ways.*
 import com.kingdom.model.cards.plunder.*
+import com.kingdom.model.cards.plunder.events.*
+import com.kingdom.model.cards.plunder.traits.*
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.renaissance.*
 import com.kingdom.model.cards.renaissance.projects.*
@@ -606,13 +608,51 @@ class CardRepository {
                 WealthyVillage()
         )
 
+    val plunderEvents: List<Event>
+        get() = listOf(
+                Avoid(),
+                Bury(),
+                Deliver(),
+                Foray(),
+                Invasion(),
+                Journey(),
+                Launch(),
+                Looting(),
+                Maelstrom(),
+                Mirror(),
+                Peril(),
+                Prepare(),
+                Prosper(),
+                Rush(),
+                Scrounge()
+        )
+
+    val plunderTraits: List<Trait>
+        get() = listOf(
+                Cheap(),
+                Cursed(),
+                Fated(),
+                Fawning(),
+                Friendly(),
+                Hasty(),
+                Inherited(),
+                Inspiring(),
+                Nearby(),
+                Patient(),
+                Pious(),
+                Reckless(),
+                Rich(),
+                Shy(),
+                Tireless()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
                 hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards +
                 renaissanceCards + menagerieCards + alliesCards + plunderCards
 
     val allEvents: List<Event>
-        get() = adventuresEvents + empiresEvents + menagerieEvents
+        get() = adventuresEvents + empiresEvents + menagerieEvents + plunderEvents
 
     val allLandmarks: List<Landmark>
         get() = empiresLandmarks
@@ -626,8 +666,11 @@ class CardRepository {
     val allAllies: List<Ally>
         get() = alliesAllies
 
+    val allTraits: List<Trait>
+        get() = plunderTraits
+
     val allEventsAndLandmarksAndProjectsAndWays: List<Card>
-        get() = allEvents + allLandmarks + allProjects + allWays
+        get() = allEvents + allLandmarks + allProjects + allWays + allTraits
 
     fun getCardsByDeck(deck: Deck): List<Card> {
         return when (deck) {

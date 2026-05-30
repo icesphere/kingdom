@@ -17,7 +17,7 @@
         <script type="text/javascript" >
             var createGame = ${createGame?string};
         </script>
-        <script type="text/javascript" src="js/selectCards.js?11"></script>
+        <script type="text/javascript" src="js/selectCards.js?12"></script>
 	</head>
 	<body>
         <div class="topGradient"></div>
@@ -137,7 +137,7 @@
                     </div>
                 </div>
                 <div style="padding-top:10px;float:left;clear:both;">
-                    <div style="float:left;"><span class="label"># Events/Landmarks/Projects/Ways:</span></div>
+                    <div style="float:left;"><span class="label"># Events/Landmarks/Projects/Ways/Traits:</span></div>
                     <div style="clear:both;float:left;padding-left:10px;">
                         <select id="numEventsAndLandmarksAndProjectsAndWays" name="numEventsAndLandmarksAndProjectsAndWays">
                             <option value="0">0</option>
@@ -293,6 +293,38 @@
                             <#list ways as way>
                                 <div style="float:left;clear:both;">
                                     <#include "createGameWayRow.ftl">
+                                </div>
+                            </#list>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding-top:10px;float:left;clear:both;">
+                    <div style="float:left;"><span class="label">Trait Selection:</span></div>
+                    <div style="clear:both;float:left;padding-left:10px;">
+                        <input id="traitSelectionRandom" type="radio" name="traitSelection" value="random" onclick="toggleTraitSelection()" checked="true"/> <label for="traitSelectionRandom">Random</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="traitSelectionCustom" type="radio" name="traitSelection" value="custom" onclick="toggleTraitSelection()"/> <label for="traitSelectionCustom">Custom</label>
+                    </div>
+                    <div style="float:left;padding-left:10px;">
+                        <input id="traitSelectionNone" type="radio" name="traitSelection" value="none" onclick="toggleTraitSelection()"/> <label for="traitSelectionNone">None</label>
+                    </div>
+                </div>
+
+                <div id="customTraits" style="display:none;float:left;clear:both;">
+                    <div class="label" style="padding-top:10px;">
+                        Choose Specific Traits:
+                    </div>
+                    <div style="clear:both;float:left;">
+                        <div style="float:left;padding-left:10px;color:red;">Traits selected:</div><div id="numTraitsSelected" style="float:left; padding-left:5px; color:red">0</div><div style="float:left;padding-left:15px;color:black;">(remaining traits will be randomized based on selected decks)</div>
+                    </div>
+                    <div class="customCardsDeckContainer">
+                        <div class="customCardsDeck">
+                            <div style="float:left;" class="label">Traits</div>
+                            <#list traits as trait>
+                                <div style="float:left;clear:both;">
+                                    <#include "createGameTraitRow.ftl">
                                 </div>
                             </#list>
                         </div>

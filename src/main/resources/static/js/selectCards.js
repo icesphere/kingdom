@@ -42,11 +42,13 @@ function createGame() {
     var landmarkSelection = $('input[name=landmarkSelection]:checked').val();
     var projectSelection = $('input[name=projectSelection]:checked').val();
     var waySelection = $('input[name=waySelection]:checked').val();
+    var traitSelection = $('input[name=traitSelection]:checked').val();
     var cardsSelected = $("input[name^='card_']:checked:visible").length;
     var eventsSelected = $("input[name^='event_']:checked:visible").length;
     var landmarksSelected = $("input[name^='landmark_']:checked:visible").length;
     var projectsSelected = $("input[name^='project_']:checked:visible").length;
     var waysSelected = $("input[name^='way_']:checked:visible").length;
+    var traitsSelected = $("input[name^='trait_']:checked:visible").length;
     var numEventsAndLandmarksAndProjectsAndWays = $("#numEventsAndLandmarksAndProjectsAndWays option:selected").val()
     var numHumanPlayers = 0;
     $('[value*="human"]').each(function () {
@@ -60,17 +62,20 @@ function createGame() {
     else if(generateType == "custom" && cardsSelected > 10) {
         alert("You can't select more than 10 cards");
     }
-    else if(eventSelection == "custom" && eventsSelected + landmarksSelected + projectsSelected + waysSelected > numEventsAndLandmarksAndProjectsAndWays) {
-        alert("You selected too many events and landmarks and projects and ways");
+    else if(eventSelection == "custom" && eventsSelected + landmarksSelected + projectsSelected + waysSelected + traitsSelected > numEventsAndLandmarksAndProjectsAndWays) {
+        alert("You selected too many events and landmarks and projects and ways and traits");
     }
-    else if(landmarkSelection == "custom" && eventsSelected + landmarksSelected + projectsSelected + waysSelected > numEventsAndLandmarksAndProjectsAndWays) {
-        alert("You selected too many events and landmarks and projects and ways");
+    else if(landmarkSelection == "custom" && eventsSelected + landmarksSelected + projectsSelected + waysSelected + traitsSelected > numEventsAndLandmarksAndProjectsAndWays) {
+        alert("You selected too many events and landmarks and projects and ways and traits");
     }
-    else if(projectSelection == "custom" && eventsSelected + landmarksSelected + projectsSelected + waysSelected > numEventsAndLandmarksAndProjectsAndWays) {
-        alert("You selected too many events and landmarks and projects and ways");
+    else if(projectSelection == "custom" && eventsSelected + landmarksSelected + projectsSelected + waysSelected + traitsSelected > numEventsAndLandmarksAndProjectsAndWays) {
+        alert("You selected too many events and landmarks and projects and ways and traits");
     }
-    else if(waySelection == "custom" && eventsSelected + landmarksSelected + projectsSelected + waysSelected > numEventsAndLandmarksAndProjectsAndWays) {
-        alert("You selected too many events and landmarks and projects and ways");
+    else if(waySelection == "custom" && eventsSelected + landmarksSelected + projectsSelected + waysSelected + traitsSelected > numEventsAndLandmarksAndProjectsAndWays) {
+        alert("You selected too many events and landmarks and projects and ways and traits");
+    }
+    else if(traitSelection == "custom" && eventsSelected + landmarksSelected + projectsSelected + waysSelected + traitsSelected > numEventsAndLandmarksAndProjectsAndWays) {
+        alert("You selected too many events and landmarks and projects and ways and traits");
     }
     else {
         saveSelectedValuesToLocalStorage();
@@ -136,6 +141,11 @@ function selectWay() {
     $("#numWaysSelected").html(waysSelected);
 }
 
+function selectTrait() {
+    var traitsSelected = $("input[name^='trait_']:checked:visible").length;
+    $("#numTraitsSelected").html(traitsSelected);
+}
+
 function toggleGenerateType(){
     var generateType = $('input[name=generateType]:checked').val();
     if(generateType == "custom") {
@@ -191,6 +201,16 @@ function toggleWaySelection(){
     }
     else {
         $("#customWays").hide();
+    }
+}
+
+function toggleTraitSelection(){
+    var traitSelection = $('input[name=traitSelection]:checked').val();
+    if (traitSelection == "custom") {
+        $("#customTraits").show();
+    }
+    else {
+        $("#customTraits").hide();
     }
 }
 

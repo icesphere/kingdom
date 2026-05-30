@@ -196,4 +196,50 @@ class CardRepositoryTests {
                 "Wealthy Village"
         ), plunderCardNames)
     }
+
+    @Test
+    fun plunderEventsUseLandscapeList() {
+        val plunderEventNames = CardRepository().plunderEvents.map { it.name }
+
+        assertEquals(listOf(
+                "Avoid",
+                "Bury",
+                "Deliver",
+                "Foray",
+                "Invasion",
+                "Journey",
+                "Launch",
+                "Looting",
+                "Maelstrom",
+                "Mirror",
+                "Peril",
+                "Prepare",
+                "Prosper",
+                "Rush",
+                "Scrounge"
+        ), plunderEventNames)
+    }
+
+    @Test
+    fun plunderTraitsUseLandscapeList() {
+        val plunderTraitNames = CardRepository().plunderTraits.map { it.name }
+
+        assertEquals(listOf(
+                "Cheap",
+                "Cursed",
+                "Fated",
+                "Fawning",
+                "Friendly",
+                "Hasty",
+                "Inherited",
+                "Inspiring",
+                "Nearby",
+                "Patient",
+                "Pious",
+                "Reckless",
+                "Rich",
+                "Shy",
+                "Tireless"
+        ), plunderTraitNames)
+    }
 }

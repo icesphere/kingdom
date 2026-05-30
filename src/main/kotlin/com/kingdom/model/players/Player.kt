@@ -269,8 +269,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var cardToPutIntoHandAfterDrawingCardsAtEndOfTurn: Card? = null
     var cardsToPutIntoHandAfterDrawingCardsAtEndOfTurn = mutableListOf<Card>()
+    var cardsToPutOnTopOfDeckAfterDrawingCardsAtEndOfTurn = mutableListOf<Card>()
 
     var cardsToPlayAtStartOfNextTurn = mutableListOf<Card>()
+    var cardsToDiscardAtStartOfNextTurn = mutableListOf<Card>()
 
     var numExtraCardsToDrawAtEndOfTurn: Int = 0
 
@@ -299,6 +301,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     var sinisterPlotTokens: Int = 0
 
     var ignoreAddActionsUntilEndOfTurn: Boolean = false
+    var isRecklessRepeatInProgress: Boolean = false
+    var keepCardsInPlayAtCleanup: Boolean = false
 
     val warChestCardNamesThisTurn = mutableSetOf<String>()
 
@@ -398,6 +402,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun shuffleDiscardIntoDeck() {
+        eventsBought.filterIsInstance<BeforeShuffleListenerForEventsBought>()
+                .forEach { it.beforeShuffle(this) }
+
         deck.addAll(discard)
         discard.clear()
         addInfoLogWithUsername("shuffling deck")
@@ -406,6 +413,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         projectsBought.filterIsInstance<AfterShuffleListener>()
                 .forEach { it.afterShuffle(this) }
+
+        eventsBought.filterIsInstance<AfterShuffleListener>()
+                .forEach { it.afterShuffle(this) }
+
+        game.traits.forEach { it.afterShuffle(this) }
     }
 
     fun shuffleHandIntoDeck() {
@@ -417,6 +429,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         projectsBought.filterIsInstance<AfterShuffleListener>()
                 .forEach { it.afterShuffle(this) }
+
+        eventsBought.filterIsInstance<AfterShuffleListener>()
+                .forEach { it.afterShuffle(this) }
+
+        game.traits.forEach { it.afterShuffle(this) }
     }
 
     fun cardRemovedFromPlay(card: Card, removedToLocation: CardLocation) {
@@ -552,6 +569,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         projectsBought.filterIsInstance<StartOfCleanupListener>()
                 .forEach { it.onStartOfCleanup(this) }
 
+        game.traits.forEach { it.onStartOfCleanup(this) }
+
         resolveActions()
 
         if (currentAction != null) {
@@ -568,13 +587,18 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         durationCardsToDiscard.forEach {
             it.durationCardCopiedByCitadel = false
-            addCardToDiscard(it, false, false)
+            discardCardFromPlayDuringCleanup(it)
         }
 
         durationCards.removeAll(durationCardsToDiscard)
 
         for (card in inPlay) {
-            if ((card.isDuration && (card !is ConditionalDuration || card.isKeepAtEndOfTurn)) || (card is CardRepeater && card.cardBeingRepeated?.isDuration == true)) {
+            if (keepCardsInPlayAtCleanup) {
+                durationCards.add(card)
+
+                card.isSelected = false
+                card.isHighlighted = false
+            } else if ((card.isDuration && (card !is ConditionalDuration || card.isKeepAtEndOfTurn)) || (card is CardRepeater && card.cardBeingRepeated?.isDuration == true)) {
                 durationCards.add(card)
 
                 card.isSelected = false
@@ -584,19 +608,20 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     (card as AfterCardAddedToDurationListenerForSelf).afterCardAddedToDuration(this)
                 }
             } else {
-                addCardToDiscard(card, false, false)
+                val discarded = discardCardFromPlayDuringCleanup(card)
 
-                if (card is CardDiscardedFromPlayListener) {
+                if (discarded && card is CardDiscardedFromPlayListener) {
                     card.onCardDiscarded(this)
                 }
 
-                if (card.addedAbilityCard is CardDiscardedFromPlayListener) {
+                if (discarded && card.addedAbilityCard is CardDiscardedFromPlayListener) {
                     (card.addedAbilityCard as CardDiscardedFromPlayListener).onCardDiscarded(this)
                 }
             }
         }
 
         inPlay.clear()
+        keepCardsInPlayAtCleanup = false
 
         hand.forEach {
             addCardToDiscard(it, false, false)
@@ -714,9 +739,23 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             cardsToPutIntoHandAfterDrawingCardsAtEndOfTurn.clear()
         }
 
+        if (cardsToPutOnTopOfDeckAfterDrawingCardsAtEndOfTurn.isNotEmpty()) {
+            addCardsToTopOfDeck(cardsToPutOnTopOfDeckAfterDrawingCardsAtEndOfTurn)
+            cardsToPutOnTopOfDeckAfterDrawingCardsAtEndOfTurn.clear()
+        }
+
         isYourTurn = false
 
         game.turnEnded(isAutoEnd)
+    }
+
+    private fun discardCardFromPlayDuringCleanup(card: Card): Boolean {
+        if (game.traits.any { it.handleDiscardFromPlay(card, this) }) {
+            return false
+        }
+
+        addCardToDiscard(card, false, false)
+        return true
     }
 
     abstract fun optionallyDiscardCardsForBenefit(card: DiscardCardsForBenefitActionCard, numCardsToDiscard: Int, text: String, info: Any? = null, cardActionableExpression: ((card: Card) -> Boolean)? = null)
@@ -924,6 +963,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             }
         }
 
+        for (trait in game.traits) {
+            val handled = trait.onCardGained(cardToGain, this)
+            if (handled) {
+                gainCardHandled = true
+                break
+            }
+        }
+
         if (numCardGainedMayPutOnTopOfDeck > 0 && !isNextCardToTopOfDeck) {
             if (isIgnoreNextCardGainedForCardGainedMayPutOnTopOfDeck) {
                 isIgnoreNextCardGainedForCardGainedMayPutOnTopOfDeck = false
@@ -1013,6 +1060,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         projectsBought.filterIsInstance<AfterCardGainedListener>()
                 .forEach { it.afterCardGained(cardToGain, this) }
+
+        game.traits.forEach { it.afterCardGained(cardToGain, this) }
 
         opponents.forEach { opponent ->
             (opponent.hand.filterIsInstance<AfterOtherPlayerCardGainedListenerForCardsInHand>() +
@@ -1268,6 +1317,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         card.cardPlayed(this, refresh)
+
+        game.traits.forEach { it.afterCardPlayed(card, this) }
 
         opponents.forEach { opponent ->
             (opponent.inPlayWithDuration.filterIsInstance<AfterOtherPlayerCardPlayedListenerForCardsInPlay>() +
@@ -1729,6 +1780,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return
         }
 
+        game.traits.forEach { it.onStartOfTurn(this) }
+
         cardsSetAsideUntilStartOfTurn.forEach {
             it.onStartOfTurn(this)
         }
@@ -1736,11 +1789,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         cardsSetAsideUntilStartOfTurn.clear()
 
         cardsToPlayAtStartOfNextTurn.forEach {
+            if (it.isTreasure) {
+                game.treasureCardsPlayedInActionPhase.add(it)
+            }
             addActions(1)
             playCard(it)
         }
 
         cardsToPlayAtStartOfNextTurn.clear()
+
+        if (cardsToDiscardAtStartOfNextTurn.isNotEmpty()) {
+            addCardsToDiscard(cardsToDiscardAtStartOfNextTurn, true)
+            cardsToDiscardAtStartOfNextTurn.clear()
+        }
 
         durationCards.toList().forEach { card ->
             when {
@@ -2396,6 +2457,25 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             hand.contains(card) -> removeCardFromHand(card)
             deck.contains(card) -> removeCardFromDeck(card)
         }
+    }
+
+    fun replaceOneStartingCardWith(card: Card): Boolean {
+        val cardToReplace = hand.firstOrNull { it.isEstate }
+                ?: deck.firstOrNull { it.isEstate }
+                ?: discard.firstOrNull { it.isEstate }
+                ?: hand.firstOrNull { it.isCopper }
+                ?: deck.firstOrNull { it.isCopper }
+                ?: discard.firstOrNull { it.isCopper }
+                ?: return false
+
+        when {
+            hand.remove(cardToReplace) -> hand.add(card)
+            deck.remove(cardToReplace) -> deck.add(card)
+            discard.remove(cardToReplace) -> discard.add(card)
+        }
+
+        refreshPlayerHandArea()
+        return true
     }
 
     fun takeFlag() {

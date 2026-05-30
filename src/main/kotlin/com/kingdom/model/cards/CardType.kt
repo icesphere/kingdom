@@ -52,5 +52,6 @@ enum class CardType {
     Artifact,
     Project,
     Way,
-    Ally
+    Ally,
+    Trait
 }

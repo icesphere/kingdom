@@ -160,6 +160,9 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         if (options.isIncludeWays) {
             selectedEventsAndLandmarksAndProjectsAndWays.addAll(options.customWaySelection)
         }
+        if (options.isIncludeTraits) {
+            selectedEventsAndLandmarksAndProjectsAndWays.addAll(options.customTraitSelection)
+        }
 
         if (selectedEventsAndLandmarksAndProjectsAndWays.size < numEventsAndLandmarksAndProjectsAndWays) {
             val selectedNames = selectedEventsAndLandmarksAndProjectsAndWays.map { it.name }
@@ -174,6 +177,9 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         game.projects = selectedEventsAndLandmarksAndProjectsAndWays.filterIsInstance<Project>().toMutableList()
 
         game.ways = selectedEventsAndLandmarksAndProjectsAndWays.filterIsInstance<Way>().toMutableList()
+
+        game.traits = selectedEventsAndLandmarksAndProjectsAndWays.filterIsInstance<Trait>().toMutableList()
+        game.assignTraitsToRandomPiles()
     }
 
     private fun addAlly(game: Game) {
@@ -289,6 +295,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
             swapOptions.isIncludeLandmarks = it.isIncludeLandmarks
             swapOptions.isIncludeProjects = it.isIncludeProjects
             swapOptions.isIncludeWays = it.isIncludeWays
+            swapOptions.isIncludeTraits = it.isIncludeTraits
         }
         swapOptions.cardToReplace = cardToReplace
         swapOptions.cardToReplaceIndex = cardToReplaceIndex
@@ -298,6 +305,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         swapOptions.customLandmarkSelection = game.landmarks
         swapOptions.customProjectSelection = game.projects
         swapOptions.customWaySelection = game.ways
+        swapOptions.customTraitSelection = game.traits
         setRandomKingdomCardsAndEvents(game, swapOptions)
     }
 
@@ -324,6 +332,11 @@ class CardRandomizer(private val cardRepository: CardRepository) {
             is Way -> {
                 game.events.removeAll { it.name == eventName }
                 game.ways.add(replacement)
+            }
+            is Trait -> {
+                game.events.removeAll { it.name == eventName }
+                game.traits.add(replacement)
+                game.assignTraitsToRandomPiles()
             }
         }
     }
@@ -352,6 +365,11 @@ class CardRandomizer(private val cardRepository: CardRepository) {
                 game.landmarks.removeAll { it.name == landmarkName }
                 game.ways.add(replacement)
             }
+            is Trait -> {
+                game.landmarks.removeAll { it.name == landmarkName }
+                game.traits.add(replacement)
+                game.assignTraitsToRandomPiles()
+            }
         }
     }
 
@@ -378,6 +396,11 @@ class CardRandomizer(private val cardRepository: CardRepository) {
             is Way -> {
                 game.projects.removeAll { it.name == projectName }
                 game.ways.add(replacement)
+            }
+            is Trait -> {
+                game.projects.removeAll { it.name == projectName }
+                game.traits.add(replacement)
+                game.assignTraitsToRandomPiles()
             }
         }
     }
@@ -406,7 +429,45 @@ class CardRandomizer(private val cardRepository: CardRepository) {
                 game.ways.removeAll { it.name == wayName }
                 game.projects.add(replacement)
             }
+            is Trait -> {
+                game.ways.removeAll { it.name == wayName }
+                game.traits.add(replacement)
+                game.assignTraitsToRandomPiles()
+            }
         }
+    }
+
+    fun swapTrait(game: Game, traitName: String) {
+
+        val replacement = getEventOrLandmarkOrProjectOrWay(game, traitName)
+
+        when (replacement) {
+            is Trait -> game.traits = game.traits.map {
+                if (it.name == traitName) {
+                    replacement
+                } else {
+                    it
+                }
+            }.toMutableList()
+            is Event -> {
+                game.traits.removeAll { it.name == traitName }
+                game.events.add(replacement)
+            }
+            is Landmark -> {
+                game.traits.removeAll { it.name == traitName }
+                game.landmarks.add(replacement)
+            }
+            is Project -> {
+                game.traits.removeAll { it.name == traitName }
+                game.projects.add(replacement)
+            }
+            is Way -> {
+                game.traits.removeAll { it.name == traitName }
+                game.ways.add(replacement)
+            }
+        }
+
+        game.assignTraitsToRandomPiles()
     }
 
     fun swapAlly(game: Game, allyName: String) {
@@ -425,7 +486,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
                 .filter { options?.includesEventLandmarkProjectOrWay(it) ?: true }
                 .shuffled()
 
-        val selectedCards = game.events + game.landmarks + game.projects + game.ways
+        val selectedCards = game.events + game.landmarks + game.projects + game.ways + game.traits
 
         val selectedNames = selectedCards.map { it.name }
 
@@ -440,6 +501,7 @@ class CardRandomizer(private val cardRepository: CardRepository) {
             is Landmark -> isIncludeLandmarks
             is Project -> isIncludeProjects
             is Way -> isIncludeWays
+            is Trait -> isIncludeTraits
             else -> true
         }
     }
