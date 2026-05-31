@@ -494,6 +494,14 @@ class CardRandomizer(private val cardRepository: CardRepository) {
                 .firstOrNull()
     }
 
+    fun swapProphecy(game: Game, prophecyName: String) {
+        game.prophecy = cardRepository.allProphecies
+                .filterNot { it.disabled }
+                .filterNot { it.name == prophecyName }
+                .shuffled()
+                .firstOrNull()
+    }
+
     fun getEventOrLandmarkOrProjectOrWay(game: Game, excludedName: String): Card {
 
         val options = game.randomizingOptions

@@ -8,6 +8,7 @@ import com.kingdom.model.cards.allies.Bauble
 import com.kingdom.model.cards.allies.Wizards
 import com.kingdom.model.cards.menagerie.ways.WayOfTheSquirrel
 import com.kingdom.model.cards.risingsun.Kitsune
+import com.kingdom.model.cards.risingsun.Progress
 import com.kingdom.repository.CardRepository
 import com.kingdom.service.GameManager
 import com.kingdom.service.GameMessageService
@@ -123,6 +124,18 @@ class CardRandomizerTests {
         CardRandomizer(repository).setRandomKingdomCardsAndEvents(game, options)
 
         assertNull(game.prophecy)
+    }
+
+    @Test
+    fun swapsProphecyForAnotherProphecy() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java))).apply {
+            prophecy = Progress()
+        }
+
+        CardRandomizer(CardRepository()).swapProphecy(game, Progress.NAME)
+
+        assertNotNull(game.prophecy)
+        assertNotEquals(Progress.NAME, game.prophecy!!.name)
     }
 
     @Test

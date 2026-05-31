@@ -34,6 +34,9 @@ class CardManager(private val cardRepository: CardRepository,
     val allTraits: List<Trait>
         get() = cardRepository.allTraits
 
+    val allProphecies: List<Prophecy>
+        get() = cardRepository.allProphecies
+
     val shelters: List<Card>
         get() = cardRepository.shelters
 
@@ -102,6 +105,10 @@ class CardManager(private val cardRepository: CardRepository,
 
     fun swapTrait(game: Game, traitName: String) {
         cardRandomizer.swapTrait(game, traitName)
+    }
+
+    fun swapProphecy(game: Game, prophecyName: String) {
+        cardRandomizer.swapProphecy(game, prophecyName)
     }
 
     private fun getCardsByDeck(deck: Deck, includeTesting: Boolean): List<Card> {

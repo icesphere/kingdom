@@ -31,6 +31,9 @@
             function swapTrait(traitName) {
                 document.location = "swapTrait.html?traitName="+traitName;
             }
+            function swapProphecy(prophecyName) {
+                document.location = "swapProphecy.html?prophecyName="+prophecyName;
+            }
         </script>
 	</head>
 	<body>
