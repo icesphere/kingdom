@@ -86,6 +86,9 @@
 <#if !card.landmark && !card.artifact && !card.way && !card.ally && !card.trait && !card.prophecy && (card.cost != 0 || card.debtCost == 0)>
     <div style="position:absolute; left:2px; bottom:16px; display: flex;"><div style="position: absolute; left: <#if cost &gt; 9>2px<#else>4px</#if>; z-index: 1; font-size: <#if cost &gt; 9>12px<#else>13px</#if>; font-weight: bold;">${cost}<#if card.overpayForCardAllowed>+</#if></div><img src="images/coin.png" alt="coin" height="15" width="15" style="position: absolute;"/></div>
 </#if>
+<#if card.prophecy && sunTokens??>
+    <div style="position:absolute; left:2px; bottom:0; color:#6A4200; background-color:#FFF4BE; border:1px solid #C98A00; border-radius:5px; padding:1px 2px; font-size:9px; font-weight:bold; line-height:10px;">${sunTokens} Sun</div>
+</#if>
 <#if card.debtCost != 0>
     <div style="position:absolute; left: <#if card.cost == 0>2px<#else>18px</#if>; bottom:17px; display: flex;"><div style="position: absolute; left: 5px; top: 1px; z-index: 1; font-size: 13px; color: white;">${card.debtCost}</div><img src="images/debt.png" alt="debt" height="18" width="16" style="position: absolute;"/></div>
 </#if>

@@ -1471,6 +1471,7 @@ class GameController(private val cardManager: CardManager,
         game.ally?.let { it.isHighlighted = highlightCard(player, it, CardLocation.Ally) }
         game.prophecy?.let { it.isHighlighted = false }
         modelAndView.addObject("eventsAndLandmarksAndProjectsAndWays", game.events + game.landmarks + game.projects + game.ways + game.traits + listOfNotNull(game.ally) + listOfNotNull(game.prophecy))
+        modelAndView.addObject("sunTokens", game.sunTokens)
 
         try {
             val bw = BeansWrapper()

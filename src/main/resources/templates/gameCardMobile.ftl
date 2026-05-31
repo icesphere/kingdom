@@ -11,7 +11,10 @@
             <div style="position: absolute; bottom: 0;"><img src="images/debt.png" alt="debt" height="14" width="14"/></div>
         </div>
     </#if>
-    <div style="position:absolute;width:68px;text-align:center;left:2px;<#if card.nameLines != 1 || card.fontSize &gt; 11 || card.fontSize == 0>top:2px;<#elseif card.fontSize &gt; 9>top:3px;<#elseif card.fontSize &gt; 8>top:4px;<#else>top:5px;</#if>font-size:<#if card.fontSize &gt; 0>${card.fontSize}<#else>12</#if>px;">
+    <#if card.prophecy && sunTokens??>
+        <div style="position:absolute; left:3px; bottom:2px; color:#6A4200; background-color:#FFF4BE; border:1px solid #C98A00; border-radius:4px; padding:0 2px; font-size:8px; font-weight:bold; line-height:10px;">${sunTokens} Sun</div>
+    </#if>
+    <div style="position:absolute;width:68px;text-align:center;left:2px;<#if card.nameLines != 1 || card.fontSize &gt; 11 || card.fontSize == 0>top:2px;<#elseif card.fontSize &gt; 9>top:3px;<#elseif card.fontSize &gt; 8>top:4px;<#else>top:5px;</#if>font-size:<#if card.prophecy && sunTokens?? && card.fontSize == 0>8<#elseif card.fontSize &gt; 0>${card.fontSize}<#else>12</#if>px;">
         ${card.name}
     </div>
     <#if (clickType=="supply" || clickType=="admin") && gameStatus == "InProgress"><div style="position:absolute;right:2px;font-size:10px;bottom:2px;">${supply.get(card.pileName)}</div></#if>
