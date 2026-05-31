@@ -1,0 +1,11 @@
+.git
+.gradle
+build
+target
+out
+.idea
+*.iml
+*.log
+.DS_Store
+kingdom-card-color.xcf
+kingdom-card-mobile-color.xcf

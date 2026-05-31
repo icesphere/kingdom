@@ -28,3 +28,20 @@ Open terminal and cd to the project base directory and run:
 This will create a jar file in the `build/libs` directory
 
 The jar file contains everything needed to play the game, so simply double click on the jar file and wait for it to load up and then you can play the game the same as if you had started it up from the commandline
+
+## Deploying to Render
+
+This project includes a `Dockerfile` and `render.yaml` for Render.
+
+To deploy with the Blueprint:
+
+1. Push this repository to GitHub.
+2. In Render, create a new Blueprint from the repository.
+3. Render will use `render.yaml` to create a Docker web service on the free plan.
+
+To deploy manually instead:
+
+1. In Render, create a new Web Service from the repository.
+2. Set the runtime/language to Docker.
+3. Use the default Dockerfile path, `./Dockerfile`.
+4. Set the health check path to `/ping.html`.

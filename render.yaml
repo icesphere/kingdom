@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: kingdom
+    runtime: docker
+    plan: free
+    healthCheckPath: /ping.html
