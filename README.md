@@ -31,7 +31,7 @@ The jar file contains everything needed to play the game, so simply double click
 
 ## Deploying to Render
 
-This project includes a `Dockerfile` and `render.yaml` for Render.
+This project includes `Dockerfile.render` and `render.yaml` for Render. The Dockerfile uses a non-default name so Railway does not auto-detect it and can continue using the existing Railway build configuration.
 
 To deploy with the Blueprint:
 
@@ -43,5 +43,5 @@ To deploy manually instead:
 
 1. In Render, create a new Web Service from the repository.
 2. Set the runtime/language to Docker.
-3. Use the default Dockerfile path, `./Dockerfile`.
+3. Set the Dockerfile path to `./Dockerfile.render`.
 4. Set the health check path to `/ping.html`.
