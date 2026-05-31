@@ -36,7 +36,7 @@ dependencies {
     implementation("org.webjars:bootstrap:5.3.8")
     implementation("org.webjars:jquery:4.0.0")
 
-    runtimeOnly("org.springframework.boot:spring-boot-devtools")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.mysql:mysql-connector-j")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
