@@ -5,6 +5,8 @@ import com.kingdom.model.cards.plunder.SackOfLoot
 import com.kingdom.model.cards.plunder.Abundance
 import com.kingdom.model.cards.plunder.traits.Cheap
 import com.kingdom.model.cards.plunder.traits.Cursed
+import com.kingdom.model.cards.risingsun.Kitsune
+import com.kingdom.model.cards.risingsun.Progress
 import com.kingdom.service.GameManager
 import com.kingdom.service.GameMessageService
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -57,5 +59,17 @@ class GameSetupTests {
 
         assertTrue(game.isIncludeLoot)
         assertEquals(30, game.lootPile.size)
+    }
+
+    @Test
+    fun setupAddsSunTokensWhenOmenAndProphecyArePresent() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java)))
+        game.numPlayers = 2
+        game.kingdomCards = mutableListOf(Kitsune())
+        game.prophecy = Progress()
+
+        game.setupGame()
+
+        assertEquals(5, game.sunTokens)
     }
 }

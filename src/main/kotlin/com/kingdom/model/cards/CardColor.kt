@@ -27,5 +27,6 @@ enum class CardColor(val color: String, val mobileColor: String = color, val isI
     Project("#F09290"),
     Way("#91D4EF"),
     Ally("#D7BE8B"),
-    Trait("#9D9AB1")
+    Trait("#9D9AB1"),
+    Prophecy("#F3C35D")
 }

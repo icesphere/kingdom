@@ -242,4 +242,78 @@ class CardRepositoryTests {
                 "Tireless"
         ), plunderTraitNames)
     }
+
+    @Test
+    fun risingSunCardsUseKingdomList() {
+        val risingSunCardNames = CardRepository().risingSunCards.map { it.name }
+
+        assertEquals(listOf(
+                "Alley",
+                "Aristocrat",
+                "Artist",
+                "Change",
+                "Craftsman",
+                "Daimyo",
+                "Fishmonger",
+                "Gold Mine",
+                "Imperial Envoy",
+                "Kitsune",
+                "Litter",
+                "Mountain Shrine",
+                "Ninja",
+                "Poet",
+                "Rice",
+                "Rice Broker",
+                "River Shrine",
+                "Riverboat",
+                "Ronin",
+                "Root Cellar",
+                "Rustic Village",
+                "Samurai",
+                "Snake Witch",
+                "Tanuki",
+                "Tea House"
+        ), risingSunCardNames)
+    }
+
+    @Test
+    fun risingSunEventsUseLandscapeList() {
+        val risingSunEventNames = CardRepository().risingSunEvents.map { it.name }
+
+        assertEquals(listOf(
+                "Amass",
+                "Asceticism",
+                "Credit",
+                "Foresight",
+                "Kintsugi",
+                "Practice",
+                "Sea Trade",
+                "Receive Tribute",
+                "Gather",
+                "Continue"
+        ), risingSunEventNames)
+    }
+
+    @Test
+    fun risingSunPropheciesUseLandscapeList() {
+        val risingSunProphecyNames = CardRepository().risingSunProphecies.map { it.name }
+
+        assertEquals(listOf(
+                "Approaching Army",
+                "Biding Time",
+                "Bureaucracy",
+                "Divine Wind",
+                "Enlightenment",
+                "Flourishing Trade",
+                "Good Harvest",
+                "Great Leader",
+                "Growth",
+                "Harsh Winter",
+                "Kind Emperor",
+                "Panic",
+                "Progress",
+                "Rapid Expansion",
+                "Sickness"
+        ), risingSunProphecyNames)
+    }
 }

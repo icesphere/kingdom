@@ -97,6 +97,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var projects = mutableListOf<Project>()
 
     var ways = mutableListOf<Way>()
+    var prophecy: Prophecy? = null
+    var sunTokens: Int = 0
 
     var ally: Ally? = null
 
@@ -261,7 +263,8 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                     gameCardCostModifiers +
                     currentPlayer.inPlayWithDuration.filterIsInstance<CardCostModifierForCardsInPlay>() +
                     currentPlayer.projectsBought.filterIsInstance<CardCostModifier>() +
-                    traits.filterIsInstance<CardCostModifier>()
+                    traits.filterIsInstance<CardCostModifier>() +
+                    listOfNotNull(prophecy).filterIsInstance<CardCostModifier>()
                     ).toMutableList()
 
             currentPlayer.inPlayWithDuration
@@ -456,6 +459,21 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         ally?.let {
             if (it is GameSetupModifier) {
                 it.modifyGameSetup(this)
+            }
+        }
+
+        prophecy?.let {
+            if (it is GameSetupModifier) {
+                it.modifyGameSetup(this)
+            }
+            if (kingdomCards.any { card -> card.isOmen }) {
+                sunTokens = when (numPlayers) {
+                    2 -> 5
+                    3 -> 8
+                    4 -> 10
+                    5 -> 12
+                    else -> 13
+                }
             }
         }
 
@@ -1257,6 +1275,37 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         pileAmounts[cardName] = amount
     }
 
+    fun addKingdomCardPile(card: Card) {
+        if (kingdomCards.any { it.pileName == card.pileName }) {
+            return
+        }
+
+        kingdomCards.add(card)
+        kingdomCards.sortBy { it.cost }
+        pileAmounts[card.name] = if (card.isVictory && numPlayers == 2) 8 else card.pileSize
+        cardMap[card.name] = card
+
+        if (card is MultiTypePile) {
+            val otherCardsInPile = card.otherCardsInPile
+            otherCardsInPile.forEach { cardMap[it.name] = it }
+            multiTypePileMap[card.name] = card.createMultiTypePile(this).toMutableList()
+        }
+
+        refreshSupply()
+    }
+
+    fun replaceKingdomCardPiles(newKingdomCards: List<Card>) {
+        kingdomCards.forEach {
+            pileAmounts.remove(it.pileName)
+            victoryPointsOnSupplyPile.remove(it.pileName)
+            debtOnSupplyPile.remove(it.pileName)
+        }
+        multiTypePileMap.clear()
+        kingdomCards.clear()
+        newKingdomCards.forEach { addKingdomCardPile(it) }
+        refreshSupply()
+    }
+
     fun getVictoryPointsOnSupplyPile(pileName: String): Int {
         return victoryPointsOnSupplyPile[pileName] ?: 0
     }
@@ -1286,5 +1335,21 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     fun clearDebtFromSupplyPile(pileName: String) {
         debtOnSupplyPile[pileName] = 0
         refreshSupply()
+    }
+
+    fun removeSunToken() {
+        if (sunTokens > 0) {
+            sunTokens--
+            addInfoLog("Removed a Sun token from ${prophecy?.name}. $sunTokens tokens remain.")
+            if (sunTokens == 0) {
+                prophecy?.let {
+                    it.isFulfilled = true
+                    it.onFulfilled(this)
+                    addEventLog("${it.cardNameWithBackgroundColor} has been fulfilled!")
+                    players.forEach { player -> it.applyFulfilledEffect(player) }
+                }
+            }
+            refreshSupply()
+        }
     }
 }

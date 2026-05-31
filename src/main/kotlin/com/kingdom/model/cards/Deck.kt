@@ -15,5 +15,6 @@ enum class Deck {
     Menagerie,
     Allies,
     Plunder,
+    RisingSun,
     None
 }

@@ -468,7 +468,7 @@ function endTurnRefreshFinished() {
 }
 
 function clickCard(clickType, cardName, cardId, special){
-    if (!clickingCard && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand" || clickType == "cardAction" || clickType == "event" || clickType == "landmark" || clickType == "project")){
+    if (!clickingCard && gameStatus == "InProgress" && (clickType == "supply" || clickType == "hand" || clickType == "deck" || clickType == "cardAction" || clickType == "event" || clickType == "landmark" || clickType == "project" || clickType == "way" || clickType == "ally" || clickType == "trait")){
         clickingCard = true;
         $.post("clickCard", {clickType: clickType, cardName: cardName, cardId: cardId}, function(data) {
             clickingCard = false;

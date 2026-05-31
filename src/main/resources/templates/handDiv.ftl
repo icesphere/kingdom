@@ -13,3 +13,13 @@
         </div>
     </#list>
 </div>
+<#if player.playableShadowCards?has_content>
+    <div style="clear:both;float:left;padding-top:4px;">
+        <#assign clickType="deck">
+        <#list player.playableShadowCards as card>
+            <div style="float:left; margin-right:5px;<#if mobile>margin-top:2px;</#if>">
+                <#include "gameCard.ftl">
+            </div>
+        </#list>
+    </div>
+</#if>

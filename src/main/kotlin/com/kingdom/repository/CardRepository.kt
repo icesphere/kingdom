@@ -27,6 +27,7 @@ import com.kingdom.model.cards.plunder.traits.*
 import com.kingdom.model.cards.prosperity.*
 import com.kingdom.model.cards.renaissance.*
 import com.kingdom.model.cards.renaissance.projects.*
+import com.kingdom.model.cards.risingsun.*
 import com.kingdom.model.cards.seaside.*
 import org.springframework.stereotype.Service
 
@@ -646,13 +647,75 @@ class CardRepository {
                 Tireless()
         )
 
+    val risingSunCards: List<Card>
+        get() = listOf(
+                Alley(),
+                Aristocrat(),
+                Artist(),
+                Change(),
+                Craftsman(),
+                Daimyo(),
+                Fishmonger(),
+                GoldMine(),
+                ImperialEnvoy(),
+                Kitsune(),
+                Litter(),
+                MountainShrine(),
+                Ninja(),
+                Poet(),
+                Rice(),
+                RiceBroker(),
+                RiverShrine(),
+                Riverboat(),
+                Ronin(),
+                RootCellar(),
+                RusticVillage(),
+                Samurai(),
+                SnakeWitch(),
+                Tanuki(),
+                TeaHouse()
+        )
+
+    val risingSunEvents: List<Event>
+        get() = listOf(
+                Amass(),
+                Asceticism(),
+                Credit(),
+                Foresight(),
+                Kintsugi(),
+                Practice(),
+                SeaTrade(),
+                ReceiveTribute(),
+                Gather(),
+                Continue()
+        )
+
+    val risingSunProphecies: List<Prophecy>
+        get() = listOf(
+                ApproachingArmy(),
+                BidingTime(),
+                Bureaucracy(),
+                DivineWind(),
+                Enlightenment(),
+                FlourishingTrade(),
+                GoodHarvest(),
+                GreatLeader(),
+                Growth(),
+                HarshWinter(),
+                KindEmperor(),
+                Panic(),
+                Progress(),
+                RapidExpansion(),
+                Sickness()
+        )
+
     val allCards: List<Card>
         get() = baseCards + intrigueCards + seasideCards + prosperityCards + cornucopiaCards +
                 hinterlandsCards + darkAgesCards + guildsCards + adventuresCards + empiresCards +
-                renaissanceCards + menagerieCards + alliesCards + plunderCards
+                renaissanceCards + menagerieCards + alliesCards + plunderCards + risingSunCards
 
     val allEvents: List<Event>
-        get() = adventuresEvents + empiresEvents + menagerieEvents + plunderEvents
+        get() = adventuresEvents + empiresEvents + menagerieEvents + plunderEvents + risingSunEvents
 
     val allLandmarks: List<Landmark>
         get() = empiresLandmarks
@@ -668,6 +731,9 @@ class CardRepository {
 
     val allTraits: List<Trait>
         get() = plunderTraits
+
+    val allProphecies: List<Prophecy>
+        get() = risingSunProphecies
 
     val allEventsAndLandmarksAndProjectsAndWays: List<Card>
         get() = allEvents + allLandmarks + allProjects + allWays + allTraits
@@ -688,6 +754,7 @@ class CardRepository {
             Deck.Menagerie -> menagerieCards
             Deck.Allies -> alliesCards
             Deck.Plunder -> plunderCards
+            Deck.RisingSun -> risingSunCards
             else -> emptyList()
         }
     }

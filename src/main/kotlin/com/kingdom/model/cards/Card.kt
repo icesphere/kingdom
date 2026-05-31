@@ -47,6 +47,9 @@ abstract class Card(
         var isCurseGiver: Boolean = false,
         var isOverpayForCardAllowed: Boolean = false,
         var isPreventAutoEndTurnWhenBought: Boolean = false,
+        var isOmen: Boolean = false,
+        var isShadow: Boolean = false,
+        var isCommand: Boolean = false,
         var playersExcludedFromCardEffects: MutableSet<Player> = mutableSetOf(),
         val additionalTypes: Set<String> = emptySet()) {
 
@@ -126,6 +129,7 @@ abstract class Card(
                 CardType.Way -> "Way"
                 CardType.Ally -> "Ally"
                 CardType.Trait -> "Trait"
+                CardType.Prophecy -> "Prophecy"
             }
             return (listOf(baseType) + additionalTypes).joinToString(" - ")
         }
@@ -319,6 +323,9 @@ abstract class Card(
     val isTrait: Boolean
         get() = type == CardType.Trait
 
+    val isProphecy: Boolean
+        get() = type == CardType.Prophecy
+
     val isGathering: Boolean
         get() = type == CardType.ActionGathering
 
@@ -365,6 +372,7 @@ abstract class Card(
             type == CardType.Way -> CardColor.Way
             type == CardType.Ally -> CardColor.Ally
             type == CardType.Trait -> CardColor.Trait
+            type == CardType.Prophecy -> CardColor.Prophecy
             isTreasure -> CardColor.Treasure
             isVictory -> CardColor.Victory
             else -> CardColor.Action
@@ -470,6 +478,12 @@ abstract class Card(
     }
 
     fun cardPlayed(player: Player, refresh: Boolean = true, ignoreWays: Boolean = false) {
+        if (isOmen) {
+            player.game.removeSunToken()
+        }
+
+        player.game.prophecy?.takeIf { it.isActive() }?.beforeCardPlayed(this, player)
+
         player.inPlay.filterIsInstance<BeforeCardPlayedListenerForCardsInPlay>().forEach {
             it.onBeforeCardPlayed(this, player)
         }
@@ -512,6 +526,12 @@ abstract class Card(
 
                 return
             }
+        } else if (player.isTreasurePlayedAsActionByProphecy(this)) {
+            player.addActions(-1, refresh)
+        }
+
+        if (player.game.prophecy?.takeIf { it.isActive() }?.replaceCardPlayed(this, player) == true) {
+            return
         }
 
         if (player.shouldIgnoreTreasureFromHighwayman(this)) {
@@ -576,6 +596,7 @@ abstract class Card(
             CardLocation.Project -> (this as Project).isProjectActionable(player)
             CardLocation.Ally -> (this as Ally).isAllyActionable(player)
             CardLocation.Trait -> false
+            CardLocation.Deck -> isDeckCardActionable(player)
             else -> false
         }
     }
@@ -583,12 +604,17 @@ abstract class Card(
     private fun isHandCardActionable(player: Player): Boolean {
         return when {
             isAction -> player.actions > 0 && !player.isBuyPhase && player.canPlayCardFromHand(this)
+            player.isTreasurePlayedAsActionByProphecy(this) -> player.actions > 0 && !player.isBuyPhase && player.canPlayCardFromHand(this)
             isTreasure -> player.isTreasuresPlayable && player.canPlayCardFromHand(this)
             else -> false
         }
     }
 
+    private fun isDeckCardActionable(player: Player): Boolean {
+        return isShadow && isAction && player.actions > 0 && !player.isBuyPhase
+    }
+
     private fun isSupplyCardActionable(player: Player): Boolean {
-        return player.buys > 0 && player.canBuyCard(this)
+        return player.availableBuys > 0 && player.canBuyCard(this)
     }
 }

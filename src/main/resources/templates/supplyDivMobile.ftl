@@ -36,6 +36,8 @@
                 <#assign clickType="ally">
             <#elseif card.trait>
                 <#assign clickType="trait">
+            <#elseif card.prophecy>
+                <#assign clickType="prophecy">
             <#else>
                 <#assign clickType="project">
             </#if>

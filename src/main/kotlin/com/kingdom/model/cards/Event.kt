@@ -9,6 +9,6 @@ abstract class Event(name: String,
                      debtCost: Int = 0) : Card(name, deck, CardType.Event, cost, debtCost) {
 
     open fun isEventActionable(player: Player): Boolean {
-        return player.buys > 0 && player.debt == 0 && player.availableCoins >= this.cost && (!this.isOncePerTurnEvent || player.eventsBought.none { it.name == this.name })
+        return player.availableBuys > 0 && player.debt == 0 && player.availableCoins >= this.cost && (!this.isOncePerTurnEvent || player.eventsBought.none { it.name == this.name })
     }
 }

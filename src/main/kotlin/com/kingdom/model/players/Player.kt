@@ -207,6 +207,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         get() = opponents.any { it.currentAction != null }
 
     var numActionsPlayed = 0
+    var numDaimyosActive = 0
+    var gainedCardInBuyPhaseThisTurn = false
+    var hasGainedGold = false
+    private val goodHarvestTreasureNamesPlayedThisTurn = mutableSetOf<String>()
 
     var durationCards = mutableListOf<Card>()
 
@@ -319,6 +323,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     private var highwaymanBlockedTreasureThisTurn: Boolean = false
 
+    val availableBuys: Int
+        get() = buys + if (isFlourishingTradeActive()) actions else 0
+
+    val playableShadowCards: List<Card>
+        get() = deck.filter { it.isShadow && it.isActionable(this, CardLocation.Deck) }
+
     init {
         if (game.isIdenticalStartingHands && game.players.size > 0) {
             val firstPlayer = game.players[0]
@@ -418,6 +428,13 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 .forEach { it.afterShuffle(this) }
 
         game.traits.forEach { it.afterShuffle(this) }
+        moveShadowsToBottomOfDeck()
+    }
+
+    fun moveShadowsToBottomOfDeck() {
+        val shadows = deck.filter { it.isShadow }
+        deck.removeAll(shadows)
+        deck.addAll(shadows)
     }
 
     fun shuffleHandIntoDeck() {
@@ -434,6 +451,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 .forEach { it.afterShuffle(this) }
 
         game.traits.forEach { it.afterShuffle(this) }
+        moveShadowsToBottomOfDeck()
     }
 
     fun cardRemovedFromPlay(card: Card, removedToLocation: CardLocation) {
@@ -563,6 +581,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     fun endTurn(isAutoEnd: Boolean = false) {
 
+        game.prophecy?.takeIf { it.isActive() }?.onStartOfCleanup(this)
+
         cardsPlayed.filterIsInstance<StartOfCleanupListener>()
                 .forEach { it.onStartOfCleanup(this) }
 
@@ -685,6 +705,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         buys = 0
 
         numActionsPlayed = 0
+        numDaimyosActive = 0
+        gainedCardInBuyPhaseThisTurn = false
 
         nextActionEnchanted = false
 
@@ -708,6 +730,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         cardsUnavailableToBuyThisTurn.clear()
 
         warChestCardNamesThisTurn.clear()
+        goodHarvestTreasureNamesPlayedThisTurn.clear()
 
         maxCardsToPlayFromHandThisTurn = null
         cardsPlayedFromHandThisTurn = 0
@@ -750,6 +773,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     private fun discardCardFromPlayDuringCleanup(card: Card): Boolean {
+        if (game.prophecy?.takeIf { it.isActive() }?.handleDiscardFromPlay(card, this) == true) {
+            return false
+        }
+
         if (game.traits.any { it.handleDiscardFromPlay(card, this) }) {
             return false
         }
@@ -908,6 +935,12 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         val cardToGain = if (card.isEstate && inheritanceActionCard != null) createInheritanceEstate() else if (card is InheritanceEstate) Estate() else card
 
         cardsGained.add(cardToGain)
+        if (isYourTurn && isBuyPhase) {
+            gainedCardInBuyPhaseThisTurn = true
+        }
+        if (cardToGain.isGold) {
+            hasGainedGold = true
+        }
 
         if (exileCards.any { it.name == card.name }) {
             yesNoChoice(object : ChoiceActionCard {
@@ -969,6 +1002,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 gainCardHandled = true
                 break
             }
+        }
+
+        if (game.prophecy?.takeIf { it.isActive() }?.onCardGained(cardToGain, this) == true) {
+            gainCardHandled = true
         }
 
         if (numCardGainedMayPutOnTopOfDeck > 0 && !isNextCardToTopOfDeck) {
@@ -1063,6 +1100,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         game.traits.forEach { it.afterCardGained(cardToGain, this) }
 
+        game.prophecy?.takeIf { it.isActive() }?.afterCardGained(cardToGain, this)
+
         opponents.forEach { opponent ->
             (opponent.hand.filterIsInstance<AfterOtherPlayerCardGainedListenerForCardsInHand>() +
                     opponent.hand.mapNotNull { it.addedAbilityCard }.filterIsInstance<AfterOtherPlayerCardGainedListenerForCardsInHand>())
@@ -1083,6 +1122,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (cardToGain.isVictory || game.landmarks.any { it is VictoryPointsCalculator }) {
             game.refreshPlayers()
         }
+
     }
 
     private fun discardMatchingCardsFromExileMat(card: Card) {
@@ -1140,7 +1180,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addEventLogWithUsername("bought event: ${event.cardNameWithBackgroundColor}")
             coins -= event.cost
             debt += event.debtCost
-            buys -= 1
+            spendBuy()
             isReturnToActionPhase = false
             isTreasuresPlayable = false
             eventsBought.add(event)
@@ -1156,7 +1196,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             addEventLogWithUsername("bought project: ${project.cardNameWithBackgroundColor}")
             coins -= project.cost
             debt += project.debtCost
-            buys -= 1
+            spendBuy()
             isReturnToActionPhase = false
             isTreasuresPlayable = false
             projectsBought.add(project)
@@ -1168,7 +1208,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun buyCard(card: Card) {
-        if (debt == 0 && availableCoins >= this.getCardCostWithModifiers(card)) {
+        if (availableBuys > 0 && debt == 0 && availableCoins >= this.getCardCostWithModifiers(card)) {
             addEventLogWithUsername("bought card: " + card.cardNameWithBackgroundColor)
             coins -= this.getCardCostWithModifiers(card)
             debt += card.debtCost
@@ -1180,7 +1220,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                 game.clearDebtFromSupplyPile(card.pileName)
             }
 
-            buys -= 1
+            spendBuy()
             isTreasuresPlayable = false
 
             if (!isBuyPhase) {
@@ -1192,7 +1232,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             isReturnToActionPhase = false
 
             //if buys=0 then cards bought will be refreshed by previous player cards bought
-            if (buys > 0) {
+            if (availableBuys > 0) {
                 game.removeCardFromSupply(card)
                 game.refreshCardsBought()
             } else {
@@ -1223,6 +1263,14 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
             game.landmarks.filterIsInstance<AfterCardBoughtListenerForLandmark>()
                     .forEach { it.afterCardBought(card, this) }
+        }
+    }
+
+    private fun spendBuy() {
+        if (buys > 0) {
+            buys -= 1
+        } else if (isFlourishingTradeActive() && actions > 0) {
+            actions -= 1
         }
     }
 
@@ -1257,8 +1305,15 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
     fun playCard(card: Card, refresh: Boolean = true, repeatedAction: Boolean = false, showLog: Boolean = true) {
-        if (!repeatedAction && hand.contains(card) && !canPlayCardFromHand(card)) {
+        val playingFromHand = hand.contains(card)
+        val playingFromDeck = !playingFromHand && deck.contains(card) && card.isShadow && card.isActionable(this, CardLocation.Deck)
+
+        if (!repeatedAction && playingFromHand && !canPlayCardFromHand(card)) {
             showInfoMessage("You cannot play more cards from your hand this turn")
+            return
+        }
+
+        if (!repeatedAction && !playingFromHand && !playingFromDeck) {
             return
         }
 
@@ -1268,7 +1323,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         if (!isTreasureCardsPlayedInBuyPhase && card.isAction && card.isTreasure) {
             game.treasureCardsPlayedInActionPhase.add(card)
-        } else if (card.isTreasure && !isBuyPhase) {
+        } else if (card.isTreasure && !isBuyPhase && !isTreasurePlayedAsActionByProphecy(card)) {
             handleBeforeBuyPhase()
         }
 
@@ -1288,7 +1343,11 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         if (!repeatedAction) {
 
             inPlay.add(card)
-            hand.remove(card)
+            if (playingFromDeck) {
+                deck.remove(card)
+            } else {
+                hand.remove(card)
+            }
             cardsPlayedFromHandThisTurn++
 
             if (refresh) {
@@ -1318,7 +1377,19 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
         card.cardPlayed(this, refresh)
 
+        if (!repeatedAction && card.isAction && !card.isCommand && numDaimyosActive > 0) {
+            val repeats = numDaimyosActive
+            numDaimyosActive = 0
+            repeat(repeats) {
+                addInfoLogWithUsername("will replay ${card.cardNameWithBackgroundColor} due to Daimyo")
+                addRepeatCardAction(card)
+            }
+            resolveActions()
+        }
+
         game.traits.forEach { it.afterCardPlayed(card, this) }
+
+        game.prophecy?.takeIf { it.isActive() }?.afterCardPlayed(card, this)
 
         opponents.forEach { opponent ->
             (opponent.inPlayWithDuration.filterIsInstance<AfterOtherPlayerCardPlayedListenerForCardsInPlay>() +
@@ -1722,7 +1793,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     finishEndTurn()
                 }
 
-                if (currentAction == null && isYourTurn && buys == 0) {
+                if (currentAction == null && isYourTurn && availableBuys == 0) {
                     endTurn(true)
                 }
             }
@@ -1779,6 +1850,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             game.turnEnded(true)
             return
         }
+
+        game.prophecy?.takeIf { it.isActive() }?.onStartOfTurn(this)
 
         game.traits.forEach { it.onStartOfTurn(this) }
 
@@ -2320,6 +2393,22 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         return true
+    }
+
+    fun isTreasurePlayedAsActionByProphecy(card: Card): Boolean {
+        return card.isTreasure && !card.isAction && !isBuyPhase && game.prophecy?.isActive() == true && game.prophecy?.name == "Enlightenment"
+    }
+
+    fun isActionForCurrentGame(card: Card): Boolean {
+        return card.isAction || (card.isTreasure && game.prophecy?.isActive() == true && game.prophecy?.name == "Enlightenment")
+    }
+
+    fun recordGoodHarvestTreasure(card: Card): Boolean {
+        return goodHarvestTreasureNamesPlayedThisTurn.add(card.name)
+    }
+
+    private fun isFlourishingTradeActive(): Boolean {
+        return game.prophecy?.isActive() == true && game.prophecy?.name == "Flourishing Trade"
     }
 
     fun shouldIgnoreTreasureFromHighwayman(card: Card): Boolean {

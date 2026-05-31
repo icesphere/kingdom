@@ -7,6 +7,7 @@ import com.kingdom.model.cards.adventures.events.Alms
 import com.kingdom.model.cards.allies.Bauble
 import com.kingdom.model.cards.allies.Wizards
 import com.kingdom.model.cards.menagerie.ways.WayOfTheSquirrel
+import com.kingdom.model.cards.risingsun.Kitsune
 import com.kingdom.repository.CardRepository
 import com.kingdom.service.GameManager
 import com.kingdom.service.GameMessageService
@@ -90,6 +91,38 @@ class CardRandomizerTests {
         CardRandomizer(repository).setRandomKingdomCardsAndEvents(game, options)
 
         assertNull(game.ally)
+    }
+
+    @Test
+    fun selectsProphecyWhenKingdomHasOmen() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java)))
+        val repository = CardRepository()
+
+        val options = RandomizingOptions().apply {
+            customCardSelection = repository.baseCards.take(9) + Kitsune()
+            numEventsAndLandmarksAndProjectsAndWays = 0
+        }
+
+        CardRandomizer(repository).setRandomKingdomCardsAndEvents(game, options)
+
+        assertNotNull(game.prophecy)
+    }
+
+    @Test
+    fun clearsProphecyWhenKingdomHasNoOmen() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java))).apply {
+            prophecy = CardRepository().allProphecies.first()
+        }
+        val repository = CardRepository()
+
+        val options = RandomizingOptions().apply {
+            customCardSelection = repository.baseCards.take(10)
+            numEventsAndLandmarksAndProjectsAndWays = 0
+        }
+
+        CardRandomizer(repository).setRandomKingdomCardsAndEvents(game, options)
+
+        assertNull(game.prophecy)
     }
 
     @Test

@@ -26,6 +26,8 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         addEventsAndLandmarksAndProjectsAndWays(game, options)
 
         addAlly(game)
+
+        addProphecy(game)
     }
 
     private fun addCards(game: Game, options: RandomizingOptions) {
@@ -200,6 +202,20 @@ class CardRandomizer(private val cardRepository: CardRepository) {
         return cards.any {
             it.additionalTypes.contains("Liaison") ||
                     it is MultiTypePile && it.otherCardsInPile.any { card -> card.additionalTypes.contains("Liaison") }
+        }
+    }
+
+    private fun addProphecy(game: Game) {
+        if (game.kingdomCards.none { it.isOmen }) {
+            game.prophecy = null
+            return
+        }
+
+        if (game.prophecy == null) {
+            game.prophecy = cardRepository.allProphecies
+                    .filterNot { it.disabled }
+                    .shuffled()
+                    .firstOrNull()
         }
     }
 
