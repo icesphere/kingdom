@@ -5,6 +5,7 @@ import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.ActionResult
 import com.kingdom.model.cards.actions.ArtifactAction
 import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.allies.AlliesSplitPile
 import com.kingdom.model.cards.supply.VictoryPointsCalculator
 import com.kingdom.model.players.BotPlayer
 import com.kingdom.model.players.HumanPlayer
@@ -2434,9 +2435,17 @@ class GameController(private val cardManager: CardManager,
         }
         val modelAndView = ModelAndView("gameCards")
 
-        val cards = game.kingdomCards.map { it.isHighlighted = false; it }.toMutableList()
-
-        cards.filterIsInstance<MultiTypePile>().forEach { cards.addAll(it.otherCardsInPile) }
+        val cards = mutableListOf<Card>()
+        game.kingdomCards.map { it.isHighlighted = false; it }.forEach {
+            if (it is AlliesSplitPile) {
+                cards.addAll(it.otherCardsInPile)
+            } else {
+                cards.add(it)
+                if (it is MultiTypePile) {
+                    cards.addAll(it.otherCardsInPile)
+                }
+            }
+        }
 
         if (game.isIncludeShelters) {
             cards.addAll(cardManager.shelters)

@@ -2,7 +2,7 @@
 
 [x] Poet not showing +1 sun
 
-Augurs Fort should not be showing as empty cards in card details
+[x] Augurs Fort should not be showing as empty cards in card details
 
 Duration victory should use split colors
 
