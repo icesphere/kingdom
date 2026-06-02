@@ -20,7 +20,7 @@ Add undo action
 
 [x] Chat should scroll down after refresh
 
-Gladiator should probably auto reveal
+[x] Gladiator should probably auto reveal
 
 Auto end turn if all they have left is a buy and it's been more than 10 seconds
 

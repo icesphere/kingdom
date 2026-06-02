@@ -4,11 +4,10 @@ import com.kingdom.model.Game
 import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.MultiTypePile
-import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.players.Player
 
-class Gladiator : EmpiresCard(NAME, CardType.Action, 3), MultiTypePile, ChooseCardActionCard, ChoiceActionCard {
+class Gladiator : EmpiresCard(NAME, CardType.Action, 3), MultiTypePile, ChooseCardActionCard {
 
     init {
         addCoins = 2
@@ -38,23 +37,20 @@ class Gladiator : EmpiresCard(NAME, CardType.Action, 3), MultiTypePile, ChooseCa
     }
 
     override fun onCardChosen(player: Player, card: Card, info: Any?) {
-        player.addEventLogWithUsername("revealed ${card.cardNameWithBackgroundColor}")
+        player.revealCardFromHand(card)
 
         val playerToLeft = player.playerToLeft
-        if (playerToLeft.hand.any { it.name == card.name }) {
-            playerToLeft.yesNoChoice(this, "Reveal ${card.cardNameWithBackgroundColor}? If you don’t, ${player.username} will get +\$1 and trash a Gladiator from the Supply.", card)
+        val copy = playerToLeft.hand.firstOrNull { it.name == card.name }
+        if (copy != null) {
+            copyRevealed(player, playerToLeft, copy)
         } else {
             noCopyRevealed(player, playerToLeft)
         }
     }
 
-    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-        val card = info as Card
-        if (choice == 1) {
-            player.game.currentPlayer.showInfoMessage("${player.username} revealed ${card.cardNameWithBackgroundColor}")
-        } else {
-            noCopyRevealed(player.game.currentPlayer, player)
-        }
+    private fun copyRevealed(player: Player, playerToLeft: Player, card: Card) {
+        playerToLeft.revealCardFromHand(card)
+        player.showInfoMessage("${playerToLeft.username} revealed ${card.cardNameWithBackgroundColor}")
     }
 
     private fun noCopyRevealed(player: Player, playerToLeft: Player) {
@@ -67,4 +63,3 @@ class Gladiator : EmpiresCard(NAME, CardType.Action, 3), MultiTypePile, ChooseCa
         const val NAME: String = "Gladiator"
     }
 }
-
