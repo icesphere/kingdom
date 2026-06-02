@@ -14,6 +14,11 @@
                 ${debtOnSupplyPile.get(card.pileName)} debt on pile
             </div>
         </#if>
+        <#if card.multiTypePileMember?? && card.multiTypePileMember>
+            <div class="cardRow" style="font-size:8px;">
+                ${card.multiTypePileName} pile
+            </div>
+        </#if>
         <#if card.addCards != 0>
             <div class="cardRow" style="<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
                 + ${card.addCards} Card<#if card.addCards != 1>s</#if>
@@ -83,6 +88,11 @@
                 <#else>
                     ${card.special}
                 </#if>
+            </div>
+        </#if>
+        <#if card.multiTypePileMember?? && card.multiTypePileMember && clickType == "info">
+            <div class="specialRow" style="<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
+                Pile: ${card.multiTypePileCardNames}
             </div>
         </#if>
     </div>

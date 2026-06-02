@@ -15,11 +15,31 @@ abstract class AlliesSplitCard(
         type: CardType,
         cost: Int,
         private val splitPileName: String,
-        splitPileType: String,
+        private val splitPileType: String,
         vararg additionalTypes: String
 ) : AlliesCard(name, type, cost, splitPileType, *additionalTypes) {
     override val pileName: String
         get() = splitPileName
+
+    val isMultiTypePileMember: Boolean
+        get() = true
+
+    val multiTypePileName: String
+        get() = splitPileName
+
+    val multiTypePileCardNames: String
+        get() = splitPileCardNamesByPile[splitPileName] ?: splitPileType
+
+    companion object {
+        private val splitPileCardNamesByPile = mapOf(
+                "Augurs" to "Herb Gatherer, Acolyte, Sorceress, Sibyl",
+                "Clashes" to "Battle Plan, Archer, Warlord, Territory",
+                "Forts" to "Tent, Garrison, Hill Fort, Stronghold",
+                "Odysseys" to "Old Map, Voyage, Sunken Treasure, Distant Shore",
+                "Townsfolk" to "Town Crier, Blacksmith, Miller, Elder",
+                "Wizards" to "Student, Conjurer, Sorcerer, Lich"
+        )
+    }
 }
 
 abstract class AlliesSplitPile(name: String, cost: Int) : AlliesCard(name, CardType.Action, cost), MultiTypePile {
