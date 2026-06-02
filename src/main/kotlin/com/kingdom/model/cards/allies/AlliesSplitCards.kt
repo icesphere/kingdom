@@ -353,10 +353,14 @@ class Garrison : AlliesSplitCard(NAME, CardType.ActionDuration, 4, Forts.NAME, "
 
     override fun afterCardGained(card: Card, player: Player) {
         tokens++
+        player.addEventLogWithUsername("added a token to $cardNameWithBackgroundColor")
     }
 
     override fun durationStartOfTurnAction(player: Player) {
-        player.drawCards(tokens)
+        if (tokens > 0) {
+            player.addEventLogWithUsername("removed $tokens token${if (tokens == 1) "" else "s"} from $cardNameWithBackgroundColor for +$tokens Card${if (tokens == 1) "" else "s"}")
+            player.drawCards(tokens)
+        }
         tokens = 0
     }
 

@@ -6,7 +6,7 @@
 
 [x] Duration victory should use split colors
 
-Garrison might not be working
+[x] Garrison might not be working
 
 Wizards - multi part piles need a way to show which cards are part of the pile and they should indicate they are multi part piles
 
