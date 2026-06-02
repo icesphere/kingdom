@@ -349,9 +349,9 @@ abstract class Card(
             type == CardType.ActionReactionVictory -> CardColor.ActionReaction
             type == CardType.Curse -> CardColor.Curse
             type == CardType.ActionDuration -> CardColor.ActionDuration
-            type == CardType.ActionDurationVictory -> CardColor.ActionDuration
+            type == CardType.ActionDurationVictory -> CardColor.DurationVictory
             type == CardType.ActionAttackDuration -> CardColor.ActionDuration
-            type == CardType.ActionAttackDurationVictory -> CardColor.ActionDuration
+            type == CardType.ActionAttackDurationVictory -> CardColor.DurationVictory
             type == CardType.TreasureDuration -> CardColor.TreasureDuration
             type == CardType.ActionReserve -> CardColor.ActionReserve
             type == CardType.ActionRuins -> CardColor.Ruins

@@ -4,7 +4,7 @@
 
 [x] Augurs Fort should not be showing as empty cards in card details
 
-Duration victory should use split colors
+[x] Duration victory should use split colors
 
 Garrison might not be working
 
