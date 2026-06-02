@@ -18,7 +18,7 @@
 
 Add undo action
 
-Chat should scroll down after refresh
+[x] Chat should scroll down after refresh
 
 Gladiator should probably auto reveal
 

@@ -17,9 +17,17 @@
 
             $(document).ready(function() {
                 $.ajaxSetup({ cache: false });
+                scrollChatToBottom();
 
                 setTimeout ( "refreshLobby()", timeout );
             });
+
+            function scrollChatToBottom() {
+                var chatDiv = document.getElementById("chatDiv");
+                if (chatDiv) {
+                    chatDiv.scrollTop = chatDiv.scrollHeight;
+                }
+            }
 
             function refreshLobby()
             {
@@ -68,6 +76,7 @@
                 }
                 if(data.refreshChat){
                     $('#lobbyChatDiv').load('getLobbyChatDiv', function() {
+                        scrollChatToBottom();
                         divsToLoad--;
                         if(divsToLoad == 0){
                             refreshFinished();
