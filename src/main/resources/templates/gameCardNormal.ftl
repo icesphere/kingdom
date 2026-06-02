@@ -19,6 +19,11 @@
                 ${card.multiTypePileName} pile
             </div>
         </#if>
+        <#if card.omen>
+            <div class="cardRow" style="<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
+                + 1 Sun
+            </div>
+        </#if>
         <#if card.addCards != 0>
             <div class="cardRow" style="<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
                 + ${card.addCards} Card<#if card.addCards != 1>s</#if>
@@ -47,11 +52,6 @@
         <#if card.addFavors != 0>
             <div class="cardRow" style="<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
                 + ${card.addFavors} Favor<#if card.addFavors != 1>s</#if>
-            </div>
-        </#if>
-        <#if card.omen>
-            <div class="cardRow" style="color:#6A4200;<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
-                + 1 Sun
             </div>
         </#if>
         <#if (card.name == "Bank") && card.addCoins == 0>
