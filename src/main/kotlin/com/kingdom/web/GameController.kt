@@ -1503,6 +1503,9 @@ class GameController(private val cardManager: CardManager,
         game.prophecy?.let { it.isHighlighted = false }
         modelAndView.addObject("eventsAndLandmarksAndProjectsAndWays", game.events + game.landmarks + game.projects + game.ways + game.traits + listOfNotNull(game.ally) + listOfNotNull(game.prophecy))
         modelAndView.addObject("sunTokens", game.sunTokens)
+        modelAndView.addObject("addedSunTokens", game.addedSunTokens)
+        modelAndView.addObject("totalSunTokens", game.totalSunTokens)
+        modelAndView.addObject("sunTokenDisplay", "${game.addedSunTokens}/${game.totalSunTokens} Suns")
 
         try {
             val bw = BeansWrapper()

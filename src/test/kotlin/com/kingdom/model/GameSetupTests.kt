@@ -71,5 +71,12 @@ class GameSetupTests {
         game.setupGame()
 
         assertEquals(5, game.sunTokens)
+        assertEquals(5, game.totalSunTokens)
+        assertEquals(0, game.addedSunTokens)
+
+        game.removeSunToken()
+
+        assertEquals(4, game.sunTokens)
+        assertEquals(1, game.addedSunTokens)
     }
 }

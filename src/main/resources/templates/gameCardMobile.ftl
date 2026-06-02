@@ -12,7 +12,7 @@
         </div>
     </#if>
     <#if card.prophecy && sunTokens??>
-        <div style="position:absolute; left:3px; bottom:2px; color:#6A4200; background-color:#FFF4BE; border:1px solid #C98A00; border-radius:4px; padding:0 2px; font-size:8px; font-weight:bold; line-height:10px;">${sunTokens} Sun</div>
+        <div style="position:absolute; left:3px; bottom:2px; color:#6A4200; background-color:#FFF4BE; border:1px solid #C98A00; border-radius:4px; padding:0 2px; font-size:8px; font-weight:bold; line-height:10px;">${sunTokenDisplay}</div>
     </#if>
     <#if card.omen>
         <div style="position:absolute; right:3px; bottom:12px; color:#6A4200; background-color:#FFF4BE; border:1px solid #C98A00; border-radius:4px; padding:0 2px; font-size:8px; font-weight:bold; line-height:10px;">+1 Sun</div>

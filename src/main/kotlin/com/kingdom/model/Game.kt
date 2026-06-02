@@ -99,6 +99,10 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     var ways = mutableListOf<Way>()
     var prophecy: Prophecy? = null
     var sunTokens: Int = 0
+    var totalSunTokens: Int = 0
+
+    val addedSunTokens: Int
+        get() = totalSunTokens - sunTokens
 
     var ally: Ally? = null
 
@@ -467,13 +471,14 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
                 it.modifyGameSetup(this)
             }
             if (kingdomCards.any { card -> card.isOmen }) {
-                sunTokens = when (numPlayers) {
+                totalSunTokens = when (numPlayers) {
                     2 -> 5
                     3 -> 8
                     4 -> 10
                     5 -> 12
                     else -> 13
                 }
+                sunTokens = totalSunTokens
             }
         }
 
@@ -1340,7 +1345,7 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     fun removeSunToken() {
         if (sunTokens > 0) {
             sunTokens--
-            addInfoLog("Removed a Sun token from ${prophecy?.name}. $sunTokens tokens remain.")
+            addInfoLog("Added a Sun token to ${prophecy?.name}. $sunTokens sun tokens until prophecy becomes active.")
             if (sunTokens == 0) {
                 prophecy?.let {
                     it.isFulfilled = true
