@@ -961,7 +961,12 @@ class GameController(private val cardManager: CardManager,
             return model
         }
 
-        model["refreshGameData"] = RefreshGameData(player.game.status, player.isYourTurn)
+        model["refreshGameData"] = RefreshGameData(
+                player.game.status,
+                player.isYourTurn,
+                player.isOnlyBuyDecisionRemaining(),
+                player.availableBuys
+        )
         if (player.isYourTurn) {
             model["showYourTurnMessage"] = player.isShowYourTurnMessage
             player.isShowYourTurnMessage = false
@@ -971,7 +976,9 @@ class GameController(private val cardManager: CardManager,
     }
 
     class RefreshGameData(val gameStatus: GameStatus,
-                          val isCurrentPlayer: Boolean) {
+                          val isCurrentPlayer: Boolean,
+                          val onlyBuyDecisionRemaining: Boolean,
+                          val availableBuys: Int) {
         var title: String? = null
     }
 

@@ -26,6 +26,10 @@ var reconnectAttempts = 0;
 var fallbackRefreshInterval = null;
 var manualDisconnect = false;
 var fallbackRefreshDelay = 3000;
+var onlyBuyDecisionRemaining = false;
+var availableBuys = 0;
+var onlyBuyPromptTimeout = null;
+var onlyBuyPromptDismissed = false;
 
 var infoMessageSection = 1
 
@@ -94,6 +98,10 @@ function refreshGameInfo() {
         gameStatus = gameData.gameStatus;
 
         currentPlayer = gameData.currentPlayer;
+        onlyBuyDecisionRemaining = !!gameData.onlyBuyDecisionRemaining;
+        availableBuys = gameData.availableBuys || 0;
+
+        updateOnlyBuyEndTurnPrompt();
 
         if(gameStatus == "Finished") {
             if (!document.location.pathname.includes("showGameResults")) {
@@ -478,7 +486,44 @@ function clickCard(clickType, cardName, cardId, special){
 
 function endTurn(){
     if(gameStatus == "InProgress" && currentPlayer){
+        clearOnlyBuyEndTurnPrompt();
         $.post("endTurn");
+    }
+}
+
+function updateOnlyBuyEndTurnPrompt() {
+    var shouldPrompt = gameStatus == "InProgress" && currentPlayer && onlyBuyDecisionRemaining;
+
+    if (!shouldPrompt) {
+        clearOnlyBuyEndTurnPrompt();
+        onlyBuyPromptDismissed = false;
+        return;
+    }
+
+    if (onlyBuyPromptDismissed || onlyBuyPromptTimeout !== null) {
+        return;
+    }
+
+    onlyBuyPromptTimeout = setTimeout(function() {
+        onlyBuyPromptTimeout = null;
+
+        if (!(gameStatus == "InProgress" && currentPlayer && onlyBuyDecisionRemaining)) {
+            return;
+        }
+
+        var buyMessage = availableBuys == 1 ? "1 buy left" : availableBuys + " buys left";
+        if (confirm("You still have " + buyMessage + ". End your turn?")) {
+            endTurn();
+        } else {
+            onlyBuyPromptDismissed = true;
+        }
+    }, 10000);
+}
+
+function clearOnlyBuyEndTurnPrompt() {
+    if (onlyBuyPromptTimeout !== null) {
+        clearTimeout(onlyBuyPromptTimeout);
+        onlyBuyPromptTimeout = null;
     }
 }
 

@@ -80,8 +80,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     protected var actionsQueue: MutableList<Action> = ArrayList()
 
     var currentAction: Action? = null
-    private var autoEndOnlyBuyToken = 0
-
     var isYourTurn: Boolean = false
         protected set
 
@@ -1267,7 +1265,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             game.landmarks.filterIsInstance<AfterCardBoughtListenerForLandmark>()
                     .forEach { it.afterCardBought(card, this) }
 
-            scheduleAutoEndTurnIfOnlyBuyRemains()
         }
     }
 
@@ -1402,7 +1399,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
                     .forEach { it.afterCardPlayedByOtherPlayer(card, opponent, this) }
         }
 
-        scheduleAutoEndTurnIfOnlyBuyRemains()
     }
 
     internal fun isOnlyBuyDecisionRemaining(): Boolean {
@@ -1415,23 +1411,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         return hand.none { it.isActionable(this, CardLocation.Hand) } && playableShadowCards.isEmpty()
-    }
-
-    private fun scheduleAutoEndTurnIfOnlyBuyRemains() {
-        val token = ++autoEndOnlyBuyToken
-        if (!isOnlyBuyDecisionRemaining()) {
-            return
-        }
-
-        Thread {
-            Thread.sleep(10000)
-            if (token == autoEndOnlyBuyToken && isOnlyBuyDecisionRemaining()) {
-                endTurn(true)
-            }
-        }.apply {
-            isDaemon = true
-            start()
-        }
     }
 
     private fun handleBeforeBuyPhase() {
@@ -1831,8 +1810,6 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
                 if (currentAction == null && isYourTurn && availableBuys == 0) {
                     endTurn(true)
-                } else {
-                    scheduleAutoEndTurnIfOnlyBuyRemains()
                 }
             }
         }
