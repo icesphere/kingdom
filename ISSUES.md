@@ -1,6 +1,6 @@
 [x] Gang of pickpockets not working - it should have prompted at beginning of turn
 
-Poet not showing +1 sun
+[x] Poet not showing +1 sun
 
 Augurs Fort should not be showing as empty cards in card details
 

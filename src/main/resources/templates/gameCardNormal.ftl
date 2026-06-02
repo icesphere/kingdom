@@ -44,6 +44,11 @@
                 + ${card.addFavors} Favor<#if card.addFavors != 1>s</#if>
             </div>
         </#if>
+        <#if card.omen>
+            <div class="cardRow" style="color:#6A4200;<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
+                + 1 Sun
+            </div>
+        </#if>
         <#if (card.name == "Bank") && card.addCoins == 0>
             <div class="cardRow" style="<#if adjustFontSizeForMobile?? && adjustFontSizeForMobile>font-size: 8px;</#if>">
                 <div style="font-size:14px; padding-top:3px;">? <img src="images/coin.png" alt="coin" height="16" width="16"/></div>
