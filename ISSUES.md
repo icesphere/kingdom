@@ -10,7 +10,7 @@
 
 [x] Wizards - multi part piles need a way to show which cards are part of the pile and they should indicate they are multi part piles
 
-Berserker on gain ability doesn't work and in fact the Berserker never ended up in my deck
+[x] Berserker on gain ability doesn't work and in fact the Berserker never ended up in my deck
 
 Sometimes the cards are highlighted to show you can buy them when it is someone else's turn
 

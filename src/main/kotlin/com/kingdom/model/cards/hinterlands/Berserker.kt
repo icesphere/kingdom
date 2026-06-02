@@ -42,7 +42,15 @@ class Berserker : HinterlandsCard(NAME, CardType.ActionAttack, 5), AttackCard, A
 
     override fun afterCardGained(player: Player) {
         if (player.inPlayWithDuration.any { it.isAction }) {
-            player.removeCard(this)
+            when {
+                player.cardsInDiscard.contains(this) -> player.removeCardFromDiscard(this)
+                player.deck.contains(this) -> player.removeCardFromDeck(this)
+                player.hand.contains(this) -> Unit
+                else -> return
+            }
+            if (!player.hand.contains(this)) {
+                player.addCardToHand(this)
+            }
             if (player.isYourTurn) {
                 player.addActions(1, false)
             }
