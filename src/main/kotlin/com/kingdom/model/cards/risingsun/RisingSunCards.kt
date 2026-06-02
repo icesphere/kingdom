@@ -208,7 +208,7 @@ class ImperialEnvoy : RisingSunCard(NAME, CardType.Action, 5) {
 
 class Kitsune : RisingSunCard(NAME, CardType.ActionAttack, 5, omen = true), AttackCard, ChoiceActionCard {
     init {
-        special = "Choose two different options: +2 Actions; +2 debt; each other player gains a Curse; gain a Silver."
+        special = "Choose two different options: +2 Actions; +\$2; each other player gains a Curse; gain a Silver."
         isCurseGiver = true
     }
 
@@ -219,7 +219,7 @@ class Kitsune : RisingSunCard(NAME, CardType.ActionAttack, 5, omen = true), Atta
     private fun chooseNext(player: Player, selected: MutableList<Int>) {
         val choices = listOf(
                 Choice(1, "+2 Actions"),
-                Choice(2, "+2 debt"),
+                Choice(2, "+\$2"),
                 Choice(3, "Each other player gains a Curse"),
                 Choice(4, "Gain a Silver")
         ).filterNot { selected.contains(it.choiceNumber) }
@@ -239,7 +239,7 @@ class Kitsune : RisingSunCard(NAME, CardType.ActionAttack, 5, omen = true), Atta
         selected.sorted().forEach {
             when (it) {
                 1 -> player.addActions(2)
-                2 -> player.addDebt(2)
+                2 -> player.addCoins(2)
                 3 -> player.triggerAttack(this)
                 4 -> player.gainSupplyCard(Silver(), true)
             }
