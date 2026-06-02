@@ -24,4 +24,4 @@ Add undo action
 
 Auto end turn if all they have left is a buy and it's been more than 10 seconds
 
-Sometimes you have to refresh before it let's you buy cards
+[x] Sometimes you have to refresh before it let's you buy cards

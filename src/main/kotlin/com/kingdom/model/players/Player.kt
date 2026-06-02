@@ -576,6 +576,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         this.buys += buys
 
         if (refresh) {
+            refreshSupply()
             game.refreshBuys()
         }
     }
