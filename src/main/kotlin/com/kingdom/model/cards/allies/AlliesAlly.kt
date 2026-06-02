@@ -225,17 +225,48 @@ class ForestDwellers : AlliesAlly(NAME, 1), ChooseCardsActionCard {
     }
 }
 
-class GangOfPickpockets : AlliesAlly(NAME, 1) {
+class GangOfPickpockets : AlliesAlly(NAME, 1), ChoiceActionCard {
     init {
         special = "At the start of your turn, discard down to 4 cards in hand unless you spend a Favor."
+    }
+
+    fun onStartOfTurn(player: Player) {
+        if (player.hand.size <= 4) {
+            return
+        }
+
+        if (player.favors >= favorCost) {
+            player.yesNoChoice(this, "Spend a Favor to avoid ${cardNameWithBackgroundColor}?", START_OF_TURN)
+        } else {
+            discardDownToFour(player)
+        }
     }
 
     override fun allySpecialAction(player: Player) {
         player.showInfoMessage("Spent a Favor to avoid ${cardNameWithBackgroundColor}.")
     }
 
+    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+        if (info != START_OF_TURN) {
+            return
+        }
+
+        if (choice == 1 && player.spendFavors(favorCost)) {
+            allySpecialAction(player)
+        } else {
+            discardDownToFour(player)
+        }
+    }
+
+    private fun discardDownToFour(player: Player) {
+        if (player.hand.size > 4) {
+            player.discardCardsFromHand(player.hand.size - 4, false)
+        }
+    }
+
     companion object {
         const val NAME = "Gang of Pickpockets"
+        private const val START_OF_TURN = "startOfTurn"
     }
 }
 

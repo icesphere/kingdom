@@ -1,4 +1,4 @@
-Gang of pickpockets not working - it should have prompted at beginning of turn
+[x] Gang of pickpockets not working - it should have prompted at beginning of turn
 
 Poet not showing +1 sun
 

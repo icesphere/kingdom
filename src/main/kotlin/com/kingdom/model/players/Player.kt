@@ -13,6 +13,7 @@ import com.kingdom.model.cards.darkages.shelters.Hovel
 import com.kingdom.model.cards.darkages.shelters.Necropolis
 import com.kingdom.model.cards.darkages.shelters.OvergrownEstate
 import com.kingdom.model.cards.empires.Overlord
+import com.kingdom.model.cards.allies.GangOfPickpockets
 import com.kingdom.model.cards.allies.Highwayman
 import com.kingdom.model.cards.allies.Warlord
 import com.kingdom.model.cards.listeners.*
@@ -1854,6 +1855,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         game.prophecy?.takeIf { it.isActive() }?.onStartOfTurn(this)
 
         game.traits.forEach { it.onStartOfTurn(this) }
+
+        (game.ally as? GangOfPickpockets)?.onStartOfTurn(this)
 
         cardsSetAsideUntilStartOfTurn.forEach {
             it.onStartOfTurn(this)
