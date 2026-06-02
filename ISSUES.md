@@ -22,6 +22,6 @@ Add undo action
 
 [x] Gladiator should probably auto reveal
 
-Auto end turn if all they have left is a buy and it's been more than 10 seconds
+[x] Auto end turn if all they have left is a buy and it's been more than 10 seconds
 
 [x] Sometimes you have to refresh before it let's you buy cards
