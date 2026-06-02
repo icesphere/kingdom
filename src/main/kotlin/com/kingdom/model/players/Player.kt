@@ -1814,6 +1814,8 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         isShowYourTurnMessage = true
         turn++
 
+        game.refreshSupply()
+
         maxCardsToPlayFromHandThisTurn = maxCardsToPlayFromHandNextTurn
         maxCardsToPlayFromHandNextTurn = null
 

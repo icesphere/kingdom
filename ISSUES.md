@@ -12,7 +12,7 @@
 
 [x] Berserker on gain ability doesn't work and in fact the Berserker never ended up in my deck
 
-Sometimes the cards are highlighted to show you can buy them when it is someone else's turn
+[x] Sometimes the cards are highlighted to show you can buy them when it is someone else's turn
 
 Add more options to admin - eg logout a user, allow modifying the hand, played cards, etc
 
