@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import java.util.Date
 
 @Suppress("unused")
 @Controller
@@ -148,9 +149,42 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         val loggedInUser = LoggedInUsers.getUser(user.userId)
         val showGameActions = loggedInUser?.gameId != null
         modelAndView.addObject("showGameActions", showGameActions)
+        modelAndView.addObject("gameId", loggedInUser?.gameId)
         modelAndView.addObject("loggedInUsersCount", LoggedInUsers.getUsers().size)
+        modelAndView.addObject("loggedInUsers", LoggedInUsers.getUsers().sortedBy { it.username.lowercase() })
+        modelAndView.addObject("currentUserId", user.userId)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
         return modelAndView
+    }
+
+    @RequestMapping("/adminLogoutUser.html")
+    @Throws(Exception::class)
+    fun adminLogoutUser(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request) ?: return KingdomUtil.getLoginModelAndView(request)
+
+        if (!isAdmin(request)) {
+            return ModelAndView("adminLogin")
+        }
+
+        val userId = request.getParameter("userId")
+        val targetUser = userId?.let { LoggedInUsers.getUser(it) }
+        if (targetUser != null && targetUser.userId != user.userId) {
+            targetUser.gameId?.let { gameId ->
+                val game = gameRoomManager.getGame(gameId)
+                val player = game?.playerMap?.get(targetUser.userId)
+                if (player != null) {
+                    game.playerQuitGame(player)
+                    game.playerExitedGame(player)
+                }
+            }
+            targetUser.gameId = null
+            targetUser.lastRefresh = Date(0)
+            targetUser.refreshLobby.isRedirectToLogin = true
+            LoggedInUsers.userLoggedOut(targetUser)
+            LoggedInUsers.refreshLobbyPlayers()
+        }
+
+        return ModelAndView("redirect:/admin.html")
     }
 
     @RequestMapping("/adminLogin.html")

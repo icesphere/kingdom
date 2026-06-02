@@ -14,7 +14,7 @@
 
 [x] Sometimes the cards are highlighted to show you can buy them when it is someone else's turn
 
-Add more options to admin - eg logout a user, allow modifying the hand, played cards, etc
+[x] Add more options to admin - eg logout a user, allow modifying the hand, played cards, etc
 
 Add undo action
 
