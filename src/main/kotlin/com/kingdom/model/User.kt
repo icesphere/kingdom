@@ -1,9 +1,10 @@
 package com.kingdom.model
 
 import com.kingdom.service.LoggedInUsers
+import java.io.Serializable
 import java.util.*
 
-class User {
+class User : Serializable {
 
     var userId: String = UUID.randomUUID().toString()
 

@@ -25,11 +25,12 @@ import com.kingdom.model.cards.supply.Estate
 import com.kingdom.model.cards.supply.VictoryPointsCalculator
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.groupedString
+import java.io.Serializable
 import java.util.*
 import java.util.function.Function
 import kotlin.collections.ArrayList
 
-abstract class Player protected constructor(val user: User, val game: Game) {
+abstract class Player protected constructor(val user: User, val game: Game) : Serializable {
     var deck: MutableList<Card> = ArrayList()
     val hand: MutableList<Card> = ArrayList()
 
@@ -123,24 +124,27 @@ abstract class Player protected constructor(val user: User, val game: Game) {
 
     var favors: Int = 0
 
-    val opponents: List<Player> by lazy {
-        game.players.filterNot { it.userId == userId }
-    }
+    val opponents: List<Player>
+        get() = game.players.filterNot { it.userId == userId }
 
-    val opponentsInOrder: List<Player> by lazy {
+    val opponentsInOrder: List<Player>
+        get() {
 
-        val list = mutableListOf<Player>()
+            val list = mutableListOf<Player>()
 
-        var nextPlayer = playerToLeft
+            var nextPlayer = playerToLeft
 
-        while (nextPlayer.userId != userId) {
-            list.add(nextPlayer)
+            while (nextPlayer.userId != userId) {
+                list.add(nextPlayer)
 
-            nextPlayer = game.getPlayerToLeft(nextPlayer)
+                nextPlayer = game.getPlayerToLeft(nextPlayer)
+            }
+
+            return list
         }
 
-        list
-    }
+    val hasPendingActionsForUndo: Boolean
+        get() = actionsQueue.isNotEmpty()
 
     var isIgnoreNextCardGainedForCardGainedMayPutOnTopOfDeck: Boolean = false
     var numCardGainedMayPutOnTopOfDeck: Int = 0
@@ -370,6 +374,9 @@ abstract class Player protected constructor(val user: User, val game: Game) {
             return emptyList()
         }
         val cards = getCardsFromDeck(numCards)
+        if (cards.isNotEmpty()) {
+            game.markUndoRevealSharedInfo(listOf(this))
+        }
         cards.forEach { addCardToHand(it) }
         return cards
     }
@@ -1966,6 +1973,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun revealHand() {
+        game.markUndoRevealSharedInfoForAllHumansExcept(this)
         addEventLogWithUsername("revealed their hand: ${hand.groupedString}")
 
         hand.filterIsInstance<AfterCardRevealedListenerForSelf>()
@@ -1973,6 +1981,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
     }
 
     fun revealCardFromHand(card: Card) {
+        game.markUndoRevealSharedInfoForAllHumansExcept(this)
         addEventLogWithUsername("revealed ${card.cardNameWithBackgroundColor} from their hand")
 
         if (card is AfterCardRevealedListenerForSelf) {
@@ -2017,6 +2026,10 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         revealedCards.filterIsInstance<AfterCardRevealedListenerForSelf>()
                 .forEach { it.afterCardRevealed(this) }
 
+        if (revealedCards.isNotEmpty()) {
+            game.markUndoRevealSharedInfoForAllHumansExcept(this)
+        }
+
         return revealedCards
     }
 
@@ -2058,6 +2071,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (cards.isNotEmpty() && revealCards) {
+            game.markUndoRevealSharedInfoForAllHumansExcept(this)
             showInfoMessage("Revealed ${cards.groupedString}")
             addEventLogWithUsername("revealed ${cards.groupedString} from top of deck")
         }
@@ -2317,6 +2331,7 @@ abstract class Player protected constructor(val user: User, val game: Game) {
         }
 
         if (revealedCards.isNotEmpty()) {
+            game.markUndoRevealSharedInfoForAllHumansExcept(this)
             showInfoMessage("Revealed ${revealedCards.groupedString}")
             addEventLogWithUsername("revealed ${revealedCards.groupedString} from their deck")
         }

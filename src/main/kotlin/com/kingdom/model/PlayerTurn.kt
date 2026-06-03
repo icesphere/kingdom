@@ -1,8 +1,9 @@
 package com.kingdom.model
 
 import com.kingdom.model.players.Player
+import java.io.Serializable
 
-class PlayerTurn(player: Player) {
+class PlayerTurn(player: Player) : Serializable {
     val userId: String = player.userId
     var username = player.username
     val lastTurnSummary = player.lastTurnSummary

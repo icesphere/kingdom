@@ -13,6 +13,9 @@
                         <#if currentPlayer.userId == user.userId>
                             <td style="padding-left:15px;"><a href="javascript:endTurn()">End Turn</a></td>
                         </#if>
+                        <#if canUndoLastCommand>
+                            <td style="padding-left:15px;"><a href="javascript:requestUndo()" title="${undoSummary}">Undo</a></td>
+                        </#if>
                     <#elseif gameStatus == "Finished">
                         Game Finished
                     <#else>

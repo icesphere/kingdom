@@ -11,6 +11,7 @@ import com.kingdom.model.cards.supply.*
 import com.kingdom.model.players.Player
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.plural
+import java.io.Serializable
 import java.util.*
 import kotlin.reflect.full.createInstance
 
@@ -51,7 +52,7 @@ abstract class Card(
         var isShadow: Boolean = false,
         var isCommand: Boolean = false,
         var playersExcludedFromCardEffects: MutableSet<Player> = mutableSetOf(),
-        val additionalTypes: Set<String> = emptySet()) {
+        val additionalTypes: Set<String> = emptySet()) : Serializable {
 
     var id: String = UUID.randomUUID().toString()
 

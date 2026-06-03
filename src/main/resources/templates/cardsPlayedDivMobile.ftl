@@ -14,6 +14,11 @@
             <a href="javascript:endTurn()">End Turn</a>
         </#if>
     </div>
+    <#if canUndoLastCommand>
+        <div style="float:left;padding-left:10px;">
+            <a href="javascript:requestUndo()" title="${undoSummary}">Undo</a>
+        </div>
+    </#if>
 </div>
 <div style="clear:both;" class="label">
     Cards Played:

@@ -5,6 +5,7 @@ import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.ActionResult
 import com.kingdom.model.cards.actions.ArtifactAction
 import com.kingdom.model.cards.actions.ChoiceActionCard
+import com.kingdom.model.cards.actions.UndoApprovalAction
 import com.kingdom.model.cards.allies.AlliesSplitPile
 import com.kingdom.model.cards.supply.VictoryPointsCalculator
 import com.kingdom.model.players.BotPlayer
@@ -965,7 +966,10 @@ class GameController(private val cardManager: CardManager,
                 player.game.status,
                 player.isYourTurn,
                 player.isOnlyBuyDecisionRemaining(),
-                player.availableBuys
+                player.availableBuys,
+                game.canUndoFor(player),
+                game.undoPendingApproval,
+                game.undoSummary
         )
         if (player.isYourTurn) {
             model["showYourTurnMessage"] = player.isShowYourTurnMessage
@@ -978,7 +982,10 @@ class GameController(private val cardManager: CardManager,
     class RefreshGameData(val gameStatus: GameStatus,
                           val isCurrentPlayer: Boolean,
                           val onlyBuyDecisionRemaining: Boolean,
-                          val availableBuys: Int) {
+                          val availableBuys: Int,
+                          val canUndoLastCommand: Boolean,
+                          val undoPendingApproval: Boolean,
+                          val undoSummary: String) {
         var title: String? = null
     }
 
@@ -998,7 +1005,9 @@ class GameController(private val cardManager: CardManager,
             val cardName = request.getParameter("cardName")
             if (cardId != null && cardName != null) {
                 val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
-                cardClicked(game, player, getCardLocationFromSource(clickType), cardName, cardId)
+                runUndoableCommand(game, player, clickUndoSummary(clickType, cardName)) {
+                    cardClicked(game, player, getCardLocationFromSource(clickType), cardName, cardId)
+                }
             }
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -1023,6 +1032,39 @@ class GameController(private val cardManager: CardManager,
             "way" -> CardLocation.Way
             "ally" -> CardLocation.Ally
             else -> CardLocation.Unknown
+        }
+    }
+
+    private fun runUndoableCommand(game: Game, player: Player, summary: String, command: () -> Unit): ModelAndView {
+        synchronized(game.mutationLock) {
+            if (game.undoPendingApproval) {
+                player.showInfoMessage("Waiting for undo approval")
+                return emptyModelAndView
+            }
+
+            game.beforeUndoableCommand(player, summary)
+            try {
+                command()
+                game.afterUndoableCommand()
+            } catch (t: Throwable) {
+                game.discardPendingUndoCommand()
+                throw t
+            }
+        }
+
+        return emptyModelAndView
+    }
+
+    private fun clickUndoSummary(source: String?, cardName: String?): String {
+        return when (source) {
+            "hand" -> "played or selected ${cardName ?: "a card"} from hand"
+            "deck" -> "played or selected ${cardName ?: "a card"} from deck"
+            "supply" -> "bought or selected ${cardName ?: "a card"} from supply"
+            "event" -> "bought event ${cardName ?: ""}".trim()
+            "landmark" -> "used landmark ${cardName ?: ""}".trim()
+            "project" -> "bought project ${cardName ?: ""}".trim()
+            "ally" -> "used ally ${cardName ?: ""}".trim()
+            else -> "resolved ${cardName ?: "card action"}"
         }
     }
 
@@ -1276,24 +1318,26 @@ class GameController(private val cardManager: CardManager,
             return emptyModelAndView
         }
 
-        if (!player.isBuyPhase && player.hand.any { it.isAction } && player.actions > 0) {
+        try {
+            return runUndoableCommand(game, player, "played all treasures") {
+                if (!player.isBuyPhase && player.hand.any { it.isAction } && player.actions > 0) {
 
-            player.yesNoChoice(object : ChoiceActionCard {
-                override val name: String = "PlayActionsBeforePlayingTreasures"
+                    player.yesNoChoice(object : ChoiceActionCard {
+                        override val name: String = "PlayActionsBeforePlayingTreasures"
 
-                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-                    if (choice == 1) {
-                        player.playAllTreasureCards()
-                    }
+                        override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                            if (choice == 1) {
+                                player.playAllTreasureCards()
+                            }
+                        }
+
+                    }, "Are you sure you want to play treasure cards before playing your action cards?")
+
+                    return@runUndoableCommand
                 }
 
-            }, "Are you sure you want to play treasure cards before playing your action cards?")
-
-            return emptyModelAndView
-        }
-
-        try {
-            player.playAllTreasureCards()
+                player.playAllTreasureCards()
+            }
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
@@ -1318,11 +1362,47 @@ class GameController(private val cardManager: CardManager,
 
         val player = game.playerMap[user.userId]!!
 
-        if (player.currentAction != null) {
-            game.refreshGame()
-        } else {
-            player.endTurn()
-            return ModelAndView("redirect:/showGame.html")
+        try {
+            return runUndoableCommand(game, player, "ended turn") {
+                if (player.currentAction != null) {
+                    game.refreshGame()
+                } else {
+                    player.endTurn()
+                }
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+        }
+
+        return emptyModelAndView
+    }
+
+    @ResponseBody
+    @RequestMapping(value = ["/requestUndo"], produces = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun requestUndo(request: HttpServletRequest, response: HttpServletResponse): ModelAndView {
+        val user = getUser(request)
+        val game = getGame(request)
+
+        if (user == null) {
+            return KingdomUtil.getLoginModelAndView(request)
+        } else if (game == null) {
+            return ModelAndView("redirect:/showGameRooms.html")
+        }
+
+        val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
+
+        try {
+            synchronized(game.mutationLock) {
+                if (!game.requestUndo(player)) {
+                    player.showInfoMessage("Undo is not available")
+                }
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
         }
 
         return emptyModelAndView
@@ -1342,15 +1422,32 @@ class GameController(private val cardManager: CardManager,
         }
 
         val player = game.playerMap[user.userId]!!
-        if (player.currentAction != null) {
-            val result = ActionResult()
-            result.choiceSelected = request.getParameter("choice").toInt()
-            player.actionResult(player.currentAction!!, result)
-        }
+        val choice = request.getParameter("choice").toInt()
 
-        game.refreshPlayerCardAction(player)
-        game.refreshSupply()
-        player.refreshPlayerHandArea()
+        try {
+            return if (player.currentAction is UndoApprovalAction) {
+                synchronized(game.mutationLock) {
+                    game.recordUndoApproval(player, choice == 1)
+                }
+                emptyModelAndView
+            } else {
+                runUndoableCommand(game, player, "resolved action choice") {
+                    if (player.currentAction != null) {
+                        val result = ActionResult()
+                        result.choiceSelected = choice
+                        player.actionResult(player.currentAction!!, result)
+                    }
+
+                    game.refreshPlayerCardAction(player)
+                    game.refreshSupply()
+                    player.refreshPlayerHandArea()
+                }
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+        }
 
         return emptyModelAndView
     }
@@ -1369,13 +1466,21 @@ class GameController(private val cardManager: CardManager,
         }
 
         val player = game.playerMap[user.userId]!!
-        if (player.currentAction != null) {
-            player.actionResult(player.currentAction!!, ActionResult().apply { isDoNotUse = true })
-        }
+        try {
+            return runUndoableCommand(game, player, "declined action") {
+                if (player.currentAction != null) {
+                    player.actionResult(player.currentAction!!, ActionResult().apply { isDoNotUse = true })
+                }
 
-        game.refreshPlayerCardAction(player)
-        player.game.refreshSupply()
-        player.refreshPlayerHandArea()
+                game.refreshPlayerCardAction(player)
+                player.game.refreshSupply()
+                player.refreshPlayerHandArea()
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+        }
 
         return emptyModelAndView
     }
@@ -1394,13 +1499,21 @@ class GameController(private val cardManager: CardManager,
         }
 
         val player = game.playerMap[user.userId]!!
-        if (player.currentAction != null) {
-            player.actionResult(player.currentAction!!, ActionResult().apply { isDoneWithAction = true })
-        }
+        try {
+            return runUndoableCommand(game, player, "finished action") {
+                if (player.currentAction != null) {
+                    player.actionResult(player.currentAction!!, ActionResult().apply { isDoneWithAction = true })
+                }
 
-        game.refreshPlayerCardAction(player)
-        game.refreshSupply()
-        player.refreshPlayerHandArea()
+                game.refreshPlayerCardAction(player)
+                game.refreshSupply()
+                player.refreshPlayerHandArea()
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
+            game.logError(error)
+        }
 
         return emptyModelAndView
     }
@@ -1720,6 +1833,9 @@ class GameController(private val cardManager: CardManager,
 
         modelAndView.addObject("gameStatus", game.status)
         modelAndView.addObject("mobile", KingdomUtil.isMobile(request))
+        modelAndView.addObject("canUndoLastCommand", game.canUndoFor(player))
+        modelAndView.addObject("undoPendingApproval", game.undoPendingApproval)
+        modelAndView.addObject("undoSummary", game.undoSummary)
     }
 
     private fun isCardSelected(player: Player, card: Card): Boolean {
@@ -2490,30 +2606,32 @@ class GameController(private val cardManager: CardManager,
         try {
             val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
 
-            if (!player.isYourTurn) {
-                player.showInfoMessage("You can only use Coffers on your turn")
-                return emptyModelAndView
-            }
-
-            if (player.isCardsBought) {
-                player.showInfoMessage("You can't use Coffers after you have bought a card")
-                return emptyModelAndView
-            }
-
-            val choices = mutableListOf<Choice>()
-
-            for (i in 0..player.coffers) {
-                choices.add(Choice(i, i.toString()))
-            }
-
-            player.makeChoiceFromList(object : ChoiceActionCard {
-                override val name: String
-                    get() = "Coffers"
-
-                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-                    player.useCoffers(choice)
+            return runUndoableCommand(game, player, "used Coffers") {
+                if (!player.isYourTurn) {
+                    player.showInfoMessage("You can only use Coffers on your turn")
+                    return@runUndoableCommand
                 }
-            }, "How many Coffers do you want to use?", choices)
+
+                if (player.isCardsBought) {
+                    player.showInfoMessage("You can't use Coffers after you have bought a card")
+                    return@runUndoableCommand
+                }
+
+                val choices = mutableListOf<Choice>()
+
+                for (i in 0..player.coffers) {
+                    choices.add(Choice(i, i.toString()))
+                }
+
+                player.makeChoiceFromList(object : ChoiceActionCard {
+                    override val name: String
+                        get() = "Coffers"
+
+                    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                        player.useCoffers(choice)
+                    }
+                }, "How many Coffers do you want to use?", choices)
+            }
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
@@ -2538,30 +2656,32 @@ class GameController(private val cardManager: CardManager,
         try {
             val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
 
-            if (!player.isYourTurn) {
-                player.showInfoMessage("You can only use Villagers on your turn")
-                return emptyModelAndView
-            }
-
-            if (player.isBuyPhase) {
-                player.showInfoMessage("You can't use Villagers in your buy phase")
-                return emptyModelAndView
-            }
-
-            val choices = mutableListOf<Choice>()
-
-            for (i in 0..player.villagers) {
-                choices.add(Choice(i, i.toString()))
-            }
-
-            player.makeChoiceFromList(object : ChoiceActionCard {
-                override val name: String
-                    get() = "Villagers"
-
-                override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-                    player.useVillagers(choice)
+            return runUndoableCommand(game, player, "used Villagers") {
+                if (!player.isYourTurn) {
+                    player.showInfoMessage("You can only use Villagers on your turn")
+                    return@runUndoableCommand
                 }
-            }, "How many Villagers do you want to use?", choices)
+
+                if (player.isBuyPhase) {
+                    player.showInfoMessage("You can't use Villagers in your buy phase")
+                    return@runUndoableCommand
+                }
+
+                val choices = mutableListOf<Choice>()
+
+                for (i in 0..player.villagers) {
+                    choices.add(Choice(i, i.toString()))
+                }
+
+                player.makeChoiceFromList(object : ChoiceActionCard {
+                    override val name: String
+                        get() = "Villagers"
+
+                    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                        player.useVillagers(choice)
+                    }
+                }, "How many Villagers do you want to use?", choices)
+            }
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
@@ -2586,27 +2706,29 @@ class GameController(private val cardManager: CardManager,
         try {
             val player = game.playerMap[user.userId] ?: return ModelAndView("redirect:/showGameRooms.html")
 
-            if (!player.isYourTurn) {
-                player.showInfoMessage("You can only pay off debt on your turn")
-                return emptyModelAndView
-            }
+            return runUndoableCommand(game, player, "paid off debt") {
+                if (!player.isYourTurn) {
+                    player.showInfoMessage("You can only pay off debt on your turn")
+                    return@runUndoableCommand
+                }
 
-            if (player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase) {
-                player.yesNoChoice(object : ChoiceActionCard {
-                    override val name: String = "PlayTreasuresBeforePayingOffDebt"
+                if (player.hand.any { it.isTreasure } && !player.isTreasureCardsPlayedInBuyPhase) {
+                    player.yesNoChoice(object : ChoiceActionCard {
+                        override val name: String = "PlayTreasuresBeforePayingOffDebt"
 
-                    override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
-                        if (choice == 1) {
-                            player.payOffDebt()
+                        override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
+                            if (choice == 1) {
+                                player.payOffDebt()
+                            }
                         }
-                    }
 
-                }, "Are you sure you want to pay off debt before playing your treasure cards?")
+                    }, "Are you sure you want to pay off debt before playing your treasure cards?")
 
-                return emptyModelAndView
+                    return@runUndoableCommand
+                }
+
+                player.payOffDebt()
             }
-
-            player.payOffDebt()
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))
@@ -2630,7 +2752,9 @@ class GameController(private val cardManager: CardManager,
 
         try {
             val player = game.playerMap[user.userId] as? HumanPlayer ?: return ModelAndView("redirect:/showGameRooms.html")
-            player.showTavernCards()
+            return runUndoableCommand(game, player, "showed Tavern cards") {
+                player.showTavernCards()
+            }
         } catch (t: Throwable) {
             t.printStackTrace()
             val error = GameError(GameError.GAME_ERROR, KingdomUtil.getStackTrace(t))

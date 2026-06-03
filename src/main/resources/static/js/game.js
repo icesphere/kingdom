@@ -30,6 +30,9 @@ var onlyBuyDecisionRemaining = false;
 var availableBuys = 0;
 var onlyBuyPromptTimeout = null;
 var onlyBuyPromptDismissed = false;
+var canUndoLastCommand = false;
+var undoPendingApproval = false;
+var undoSummary = "";
 
 var infoMessageSection = 1
 
@@ -100,6 +103,9 @@ function refreshGameInfo() {
         currentPlayer = gameData.currentPlayer;
         onlyBuyDecisionRemaining = !!gameData.onlyBuyDecisionRemaining;
         availableBuys = gameData.availableBuys || 0;
+        canUndoLastCommand = !!gameData.canUndoLastCommand;
+        undoPendingApproval = !!gameData.undoPendingApproval;
+        undoSummary = gameData.undoSummary || "";
 
         updateOnlyBuyEndTurnPrompt();
 
@@ -488,6 +494,12 @@ function endTurn(){
     if(gameStatus == "InProgress" && currentPlayer){
         clearOnlyBuyEndTurnPrompt();
         $.post("endTurn");
+    }
+}
+
+function requestUndo(){
+    if(gameStatus == "InProgress" && !undoPendingApproval){
+        $.post("requestUndo");
     }
 }
 

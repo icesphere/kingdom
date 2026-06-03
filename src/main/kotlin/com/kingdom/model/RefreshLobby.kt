@@ -1,6 +1,8 @@
 package com.kingdom.model
 
-class RefreshLobby {
+import java.io.Serializable
+
+class RefreshLobby : Serializable {
     var isRefreshPlayers: Boolean = false
     var isRefreshGameRooms: Boolean = false
     var isRefreshChat: Boolean = false

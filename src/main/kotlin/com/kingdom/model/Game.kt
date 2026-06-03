@@ -4,6 +4,8 @@ import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.ArtifactAction
 import com.kingdom.model.cards.actions.CardRepeater
 import com.kingdom.model.cards.actions.TavernCard
+import com.kingdom.model.cards.actions.UndoApprovalAction
+import com.kingdom.model.cards.actions.UndoWaitingAction
 import com.kingdom.model.cards.adventures.InheritanceEstate
 import com.kingdom.model.cards.darkages.Spoils
 import com.kingdom.model.cards.darkages.ruins.*
@@ -31,12 +33,14 @@ import com.kingdom.service.GameMessageService
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.util.KingdomUtil
 import com.kingdom.util.toCardNames
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Game(private val gameManager: GameManager, private val gameMessageService: GameMessageService) {
+class Game(@Transient private val gameManager: GameManager,
+           @Transient private val gameMessageService: GameMessageService) : Serializable {
 
     val gameId: String = UUID.randomUUID().toString()
 
@@ -312,6 +316,199 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
 
     //artifacts
     var artifacts = mutableListOf<Artifact>()
+
+    @Transient
+    val mutationLock: Any = Any()
+
+    @Transient
+    private var pendingUndoCommand: PendingUndoCommand? = null
+
+    @Transient
+    private var lastUndoableCommand: LastUndoableCommand? = null
+
+    @Transient
+    private var undoApprovalRequest: UndoApprovalRequest? = null
+
+    val undoPendingApproval: Boolean
+        get() = undoApprovalRequest != null
+
+    val undoSummary: String
+        get() = undoApprovalRequest?.summary ?: lastUndoableCommand?.summary ?: ""
+
+    private val hasStableUndoState: Boolean
+        get() = undoApprovalRequest == null && players.none { it.currentAction != null || it.hasPendingActionsForUndo }
+
+    fun canUndoFor(player: Player): Boolean {
+        val command = lastUndoableCommand ?: return false
+        return status == GameStatus.InProgress &&
+                hasStableUndoState &&
+                currentPlayerId == player.userId &&
+                command.actorUserId == player.userId
+    }
+
+    fun beforeUndoableCommand(player: Player, summary: String) {
+        if (undoApprovalRequest != null || pendingUndoCommand != null || !hasStableUndoState) {
+            return
+        }
+
+        pendingUndoCommand = try {
+            PendingUndoCommand(
+                    actorUserId = player.userId,
+                    actorUsername = player.username,
+                    summary = summary,
+                    snapshot = GameUndoSnapshot.capture(this)
+            )
+        } catch (_: Throwable) {
+            null
+        }
+        lastUndoableCommand = null
+    }
+
+    fun afterUndoableCommand() {
+        val command = pendingUndoCommand ?: return
+        if (!hasStableUndoState) {
+            return
+        }
+
+        if (command.snapshot.matches(this)) {
+            pendingUndoCommand = null
+            refreshCardsPlayed()
+            return
+        }
+
+        lastUndoableCommand = LastUndoableCommand(
+                actorUserId = command.actorUserId,
+                actorUsername = command.actorUsername,
+                summary = command.summary,
+                snapshot = command.snapshot,
+                revealedSharedInfo = command.revealedSharedInfo
+        )
+        pendingUndoCommand = null
+        refreshCardsPlayed()
+    }
+
+    fun discardPendingUndoCommand() {
+        pendingUndoCommand = null
+    }
+
+    fun markUndoRevealSharedInfo(viewers: Collection<Player>) {
+        if (viewers.any { !it.isBot && !it.isQuit }) {
+            pendingUndoCommand?.revealedSharedInfo = true
+        }
+    }
+
+    fun markUndoRevealSharedInfoForAllHumansExcept(player: Player) {
+        markUndoRevealSharedInfo(humanPlayers.filter { it.userId != player.userId })
+    }
+
+    fun requestUndo(player: Player): Boolean {
+        val command = lastUndoableCommand ?: return false
+        if (!canUndoFor(player)) {
+            return false
+        }
+
+        if (!command.revealedSharedInfo) {
+            restoreUndoCommand(command, "${player.username} undid their last action: ${command.summary}")
+            return true
+        }
+
+        val approvers = humanPlayers
+                .filterNot { it.isQuit }
+                .filter { it.userId != player.userId }
+                .map { it.userId }
+                .toMutableSet()
+
+        if (approvers.isEmpty()) {
+            restoreUndoCommand(command, "${player.username} undid their last action: ${command.summary}")
+            return true
+        }
+
+        undoApprovalRequest = UndoApprovalRequest(
+                actorUserId = command.actorUserId,
+                actorUsername = command.actorUsername,
+                summary = command.summary,
+                snapshot = command.snapshot,
+                pendingApproverUserIds = approvers
+        )
+
+        player.currentAction = UndoWaitingAction(command.summary)
+        player.refreshPlayerHandArea()
+        refreshPlayerCardAction(player)
+
+        approvers.mapNotNull { playerMap[it] }.forEach { approver ->
+            approver.currentAction = UndoApprovalAction(command.actorUsername, command.summary)
+            approver.refreshPlayerHandArea()
+            refreshPlayerCardAction(approver)
+            showInfoMessage(approver, "${command.actorUsername} requested undo approval")
+        }
+
+        refreshGame()
+        return true
+    }
+
+    fun recordUndoApproval(player: Player, approved: Boolean) {
+        val request = undoApprovalRequest ?: return
+        if (!request.pendingApproverUserIds.contains(player.userId)) {
+            return
+        }
+
+        player.currentAction = null
+        refreshPlayerCardAction(player)
+
+        if (!approved) {
+            cancelUndoApproval("${player.username} rejected undo")
+            return
+        }
+
+        request.pendingApproverUserIds.remove(player.userId)
+        request.approvedUserIds.add(player.userId)
+
+        if (request.pendingApproverUserIds.isEmpty()) {
+            restoreUndoRequest(request, "${request.actorUsername} undid their last action: ${request.summary}")
+        } else {
+            showInfoMessage(player, "Undo approval recorded")
+        }
+    }
+
+    private fun cancelUndoApproval(message: String) {
+        undoApprovalRequest?.let { request ->
+            (request.pendingApproverUserIds + request.approvedUserIds + request.actorUserId)
+                    .mapNotNull { playerMap[it] }
+                    .forEach {
+                        it.currentAction = null
+                        refreshPlayerCardAction(it)
+                    }
+        }
+
+        undoApprovalRequest = null
+        lastUndoableCommand = null
+        addEventLog(message)
+        refreshGame()
+    }
+
+    private fun restoreUndoRequest(request: UndoApprovalRequest, logMessage: String) {
+        val command = LastUndoableCommand(
+                actorUserId = request.actorUserId,
+                actorUsername = request.actorUsername,
+                summary = request.summary,
+                snapshot = request.snapshot,
+                revealedSharedInfo = true
+        )
+        restoreUndoCommand(command, logMessage)
+    }
+
+    private fun restoreUndoCommand(command: LastUndoableCommand, logMessage: String) {
+        undoApprovalRequest = null
+        pendingUndoCommand = null
+        lastUndoableCommand = null
+        command.snapshot.restoreInto(this)
+        pendingUndoCommand = null
+        lastUndoableCommand = null
+        undoApprovalRequest = null
+        addEventLog(logMessage)
+        refreshGame()
+        refreshHistory()
+    }
 
     fun getPlayerToLeft(player: Player): Player {
         val playerIndex = players.indexOf(player)
@@ -791,6 +988,9 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
         if (player.isBot) {
             return
         }
+        if (message.contains("revealed", ignoreCase = true)) {
+            markUndoRevealSharedInfo(listOf(player))
+        }
         gameMessageService.showInfoMessage(player, message)
     }
 
@@ -1267,6 +1467,11 @@ class Game(private val gameManager: GameManager, private val gameMessageService:
     }
 
     fun addEventLog(log: String) {
+        if (log.contains("revealed", ignoreCase = true)) {
+            pendingUndoCommand?.actorUserId
+                    ?.let { actorId -> playerMap[actorId] }
+                    ?.let { markUndoRevealSharedInfoForAllHumansExcept(it) }
+        }
         currentTurn?.addEventLog(log)
         refreshHistory()
     }

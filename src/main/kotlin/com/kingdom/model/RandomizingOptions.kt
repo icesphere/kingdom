@@ -1,9 +1,10 @@
 package com.kingdom.model
 
 import com.kingdom.model.cards.*
+import java.io.Serializable
 import java.util.ArrayList
 
-class RandomizingOptions {
+class RandomizingOptions : Serializable {
     var isOneOfEachCost: Boolean = false
     var isOneWithBuy: Boolean = false
     var isOneWithActions: Boolean = false

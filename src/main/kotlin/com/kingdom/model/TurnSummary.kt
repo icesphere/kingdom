@@ -4,10 +4,11 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.Event
 import com.kingdom.model.cards.Project
 import com.kingdom.util.groupedString
+import java.io.Serializable
 import java.util.ArrayList
 
 @Suppress("unused")
-class TurnSummary(val username: String) {
+class TurnSummary(val username: String) : Serializable {
 
     var cardsGained: MutableList<Card> = ArrayList()
 

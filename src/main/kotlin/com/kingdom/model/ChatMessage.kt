@@ -1,3 +1,5 @@
 package com.kingdom.model
 
-class ChatMessage(val message: String, val color: String, var userId: String? = null)
+import java.io.Serializable
+
+class ChatMessage(val message: String, val color: String, var userId: String? = null) : Serializable
