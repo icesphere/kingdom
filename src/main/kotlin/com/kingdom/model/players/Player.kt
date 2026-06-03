@@ -679,6 +679,10 @@ abstract class Player protected constructor(val user: User, val game: Game) : Se
         finishEndTurn(isAutoEnd)
     }
 
+    fun requestFinishEndTurnAfterResolvingActions() {
+        finishEndTurnAfterResolvingActions = true
+    }
+
     private fun finishEndTurn(isAutoEnd: Boolean = false) {
 
         finishEndTurnAfterResolvingActions = false

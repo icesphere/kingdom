@@ -12,6 +12,7 @@ import com.kingdom.model.cards.actions.AttackCard
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.actions.ChooseCardActionCard
 import com.kingdom.model.cards.actions.ChooseCardsActionCard
+import com.kingdom.model.cards.actions.FreeCardFromSupplyForBenefitActionCard
 import com.kingdom.model.cards.actions.StartOfTurnDurationAction
 import com.kingdom.model.cards.base.CouncilRoom
 import com.kingdom.model.cards.base.Festival
@@ -402,7 +403,7 @@ class RiceBroker : RisingSunCard(NAME, CardType.Action, 5), ChooseCardsActionCar
     }
 }
 
-class RiverShrine : RisingSunCard(NAME, CardType.Action, 4, omen = true), ChooseCardsActionCard, StartOfCleanupListener {
+class RiverShrine : RisingSunCard(NAME, CardType.Action, 4, omen = true), ChooseCardsActionCard, StartOfCleanupListener, FreeCardFromSupplyForBenefitActionCard {
     init {
         special = "Trash up to 2 cards from your hand. At the start of Clean-up, if you didn't gain any cards in your Buy phase this turn, gain a card costing up to \$4."
         fontSize = 8
@@ -420,8 +421,12 @@ class RiverShrine : RisingSunCard(NAME, CardType.Action, 4, omen = true), Choose
 
     override fun onStartOfCleanup(player: Player) {
         if (!player.gainedCardInBuyPhaseThisTurn) {
-            player.chooseSupplyCardToGainWithMaxCost(4)
+            player.chooseSupplyCardToGainForBenefitWithMaxCost(4, "Gain a free card from the supply costing up to \$4", this)
         }
+    }
+
+    override fun onCardGained(player: Player, card: Card) {
+        player.requestFinishEndTurnAfterResolvingActions()
     }
 
     companion object {
