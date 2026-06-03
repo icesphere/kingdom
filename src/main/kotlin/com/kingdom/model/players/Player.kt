@@ -1417,6 +1417,10 @@ abstract class Player protected constructor(val user: User, val game: Game) : Se
             return false
         }
 
+        if (availableCoins > 1) {
+            return false
+        }
+
         return hand.none { it.isActionable(this, CardLocation.Hand) } && playableShadowCards.isEmpty()
     }
 

@@ -30,6 +30,15 @@ class PlayerAutoEndTests {
         assertFalse(player.isOnlyBuyDecisionRemaining())
     }
 
+    @Test
+    fun `more than one coin prevents only-buy auto end prompt`() {
+        val player = currentPlayer()
+        player.hand.clear()
+        player.addCoins(2, refresh = false)
+
+        assertFalse(player.isOnlyBuyDecisionRemaining())
+    }
+
     private fun currentPlayer(): HumanPlayer {
         val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java)))
         val player = HumanPlayer(User().apply { username = "Alice" }, game)

@@ -33,6 +33,7 @@ var onlyBuyPromptDismissed = false;
 var canUndoLastCommand = false;
 var undoPendingApproval = false;
 var undoSummary = "";
+var supplyRefreshRequestId = 0;
 
 var infoMessageSection = 1
 
@@ -352,12 +353,19 @@ function refreshCardsPlayed() {
 
 function refreshCardsBought() {
     console.log("refreshing cards bought")
-    $('#cardsBoughtDiv').load('getCardsBoughtDiv.html')
+    $('#cardsBoughtDiv').load('getCardsBoughtDiv.html', function() {
+        refreshGameInfo();
+    })
 }
 
 function refreshSupply() {
     console.log("refreshing supply")
-    $('#supplyDiv').load('getSupplyDiv.html')
+    var requestId = ++supplyRefreshRequestId;
+    $.get('getSupplyDiv.html', function(data) {
+        if (requestId == supplyRefreshRequestId) {
+            $('#supplyDiv').html(data);
+        }
+    })
 }
 
 function refreshCardAction() {
@@ -542,7 +550,14 @@ function clearOnlyBuyEndTurnPrompt() {
 function playAllTreasureCards(){
     if(gameStatus == "InProgress" && currentPlayer){
         refreshingGame = true;
-        $.post("playAllTreasureCards");
+        $.post("playAllTreasureCards", function() {
+            refreshHandArea();
+            refreshCardsPlayed();
+            refreshCardsBought();
+            refreshSupply();
+        }).always(function() {
+            refreshingGame = false;
+        });
     }
 }
 

@@ -1197,6 +1197,7 @@ class GameController(private val cardManager: CardManager,
                             override fun actionChoiceMade(player: Player, choice: Int, info: Any?) {
                                 if (choice == 1) {
                                     player.playCard(card)
+                                    game.refreshSupply()
                                     player.refreshPlayerHandArea()
                                 }
                             }
@@ -1210,6 +1211,7 @@ class GameController(private val cardManager: CardManager,
                         handleCardClickedForAction(player, card, source)
                     } else {
                         player.playCard(card)
+                        game.refreshSupply()
                         player.refreshPlayerHandArea()
                     }
                 }
@@ -1218,6 +1220,7 @@ class GameController(private val cardManager: CardManager,
                 val card = findCardById(player.deck, cardId) ?: return
                 if (highlightCard(player, card, source) && action == null) {
                     player.playCard(card)
+                    game.refreshSupply()
                     player.refreshPlayerHandArea()
                 }
             }
@@ -1602,19 +1605,21 @@ class GameController(private val cardManager: CardManager,
     }
 
     private fun addSupplyDataToModelAndView(game: Game, player: Player, modelAndView: ModelAndView) {
-        val kingdomCards = game.topKingdomCards.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
+        val kingdomCards = game.topKingdomCards.map { getSupplyDisplayCard(game, player, it, CardLocation.Supply) }
         modelAndView.addObject("kingdomCards", kingdomCards)
 
-        val supplyCards = game.cardsInSupply.map { it.isHighlighted = highlightCard(player, it, CardLocation.Supply); it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it); it }
+        val supplyCards = game.cardsInSupply.map { getSupplyDisplayCard(game, player, it, CardLocation.Supply) }
         modelAndView.addObject("supplyCards", supplyCards)
 
-        game.events.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Event) }
-        game.landmarks.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Landmark) }
-        game.projects.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Project) }
-        game.traits.forEach { it.isHighlighted = highlightCard(player, it, CardLocation.Trait) }
-        game.ally?.let { it.isHighlighted = highlightCard(player, it, CardLocation.Ally) }
-        game.prophecy?.let { it.isHighlighted = false }
-        modelAndView.addObject("eventsAndLandmarksAndProjectsAndWays", game.events + game.landmarks + game.projects + game.ways + game.traits + listOfNotNull(game.ally) + listOfNotNull(game.prophecy))
+        val eventsAndLandmarksAndProjectsAndWays =
+                game.events.map { getSupplyDisplayCard(game, player, it, CardLocation.Event) } +
+                        game.landmarks.map { getSupplyDisplayCard(game, player, it, CardLocation.Landmark) } +
+                        game.projects.map { getSupplyDisplayCard(game, player, it, CardLocation.Project) } +
+                        game.ways.map { getSupplyDisplayCard(game, player, it, CardLocation.Way) } +
+                        game.traits.map { getSupplyDisplayCard(game, player, it, CardLocation.Trait) } +
+                        listOfNotNull(game.ally).map { getSupplyDisplayCard(game, player, it, CardLocation.Ally) } +
+                        listOfNotNull(game.prophecy).map { getSupplyDisplayCard(game, player, it, CardLocation.None) }
+        modelAndView.addObject("eventsAndLandmarksAndProjectsAndWays", eventsAndLandmarksAndProjectsAndWays)
         modelAndView.addObject("sunTokens", game.sunTokens)
         modelAndView.addObject("addedSunTokens", game.addedSunTokens)
         modelAndView.addObject("totalSunTokens", game.totalSunTokens)
@@ -1628,6 +1633,22 @@ class GameController(private val cardManager: CardManager,
         } catch (e: TemplateModelException) {
             //
         }
+    }
+
+    private fun getSupplyDisplayCard(game: Game, player: Player, card: Card, cardLocation: CardLocation): Card {
+        val displayCard = card.copy(false)
+        if (card is Trait && displayCard is Trait) {
+            game.topKingdomCards.firstOrNull { it.pileName == card.traitPileName }?.let {
+                displayCard.assignToPile(it)
+            }
+        }
+        displayCard.isHighlighted = when (cardLocation) {
+            CardLocation.Supply -> highlightSupplyCard(player, card)
+            CardLocation.None, CardLocation.Way, CardLocation.Trait -> false
+            else -> highlightCard(player, card, cardLocation)
+        }
+        displayCard.adjustedCost = game.currentPlayer.getCardCostWithModifiers(card)
+        return displayCard
     }
 
     @RequestMapping("/getPlayingAreaDiv.html")

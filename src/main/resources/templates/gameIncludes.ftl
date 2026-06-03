@@ -11,4 +11,4 @@
         var mobile = false;
     </script>
 </#if>
-<script type="text/javascript" src="js/game.js?17"></script>
+<script type="text/javascript" src="js/game.js?${assetVersions.version("js/game.js")}"></script>
