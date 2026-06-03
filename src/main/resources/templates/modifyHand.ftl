@@ -8,6 +8,17 @@
         function cancel() {
             document.location = "showGame.html";
         }
+
+        function updateModifyCardsText(playerId) {
+            var modifyCardsChoice = document.getElementsByName("modifyCardsChoice_" + playerId)[0].value;
+            var modifyingCardsInPlay = modifyCardsChoice == "inPlay";
+
+            document.getElementById("keepCardsText_" + playerId).innerHTML = modifyingCardsInPlay ? "Keep cards in play" : "Keep cards in hand";
+            document.getElementById("discardCardsText_" + playerId).innerHTML = modifyingCardsInPlay ? "Discard cards in play" : "Discard cards in hand";
+            document.getElementById("trashCardsText_" + playerId).innerHTML = modifyingCardsInPlay ? "Trash cards in play" : "Trash cards in hand";
+            document.getElementById("removeCardsText_" + playerId).innerHTML = modifyingCardsInPlay ? "Remove cards in play" : "Remove cards in hand";
+            document.getElementById("addCardsText_" + playerId).innerHTML = modifyingCardsInPlay ? "Add Cards To In Play:" : "Add Cards To Hand:";
+        }
     </script>
 </head>
 <body>

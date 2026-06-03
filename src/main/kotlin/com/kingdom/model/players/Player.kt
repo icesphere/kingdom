@@ -196,6 +196,9 @@ abstract class Player protected constructor(val user: User, val game: Game) : Se
     val currentHand: String
         get() = hand.groupedString
 
+    val currentCardsInPlay: String
+        get() = inPlay.groupedString
+
     val allCardsString: String
         get() = allCards.groupedString
 
@@ -907,6 +910,43 @@ abstract class Player protected constructor(val user: User, val game: Game) : Se
         durationCards.remove(card)
         cardRemovedFromPlay(card, removedToLocation)
         game.refreshCardsPlayed()
+    }
+
+    fun discardAdminCardInPlay(card: Card) {
+        addEventLogWithUsername(" discarded ${card.cardNameWithBackgroundColor} from in play")
+        removeAdminCardInPlay(card, removedToLocation = null, refresh = false)
+        discardCard(card, refresh = false)
+        game.refreshCardsPlayed()
+        refreshPlayerHandArea()
+    }
+
+    fun trashAdminCardInPlay(card: Card) {
+        addEventLogWithUsername("trashed " + card.cardNameWithBackgroundColor + " from in play")
+        removeAdminCardInPlay(card, removedToLocation = null, refresh = false)
+        cardRemovedFromPlay(card, CardLocation.Trash)
+        cardTrashed(card)
+        game.refreshCardsPlayed()
+        refreshPlayerHandArea()
+    }
+
+    fun removeAdminCardsInPlay(cards: List<Card>) {
+        cards.forEach { removeAdminCardInPlay(it, refresh = false) }
+        game.refreshCardsPlayed()
+        refreshPlayerHandArea()
+    }
+
+    private fun removeAdminCardInPlay(card: Card, removedToLocation: CardLocation? = CardLocation.None, refresh: Boolean = true) {
+        inPlay.remove(card)
+        removedToLocation?.let { cardRemovedFromPlay(card, it) }
+
+        if (refresh) {
+            game.refreshCardsPlayed()
+            refreshPlayerHandArea()
+        }
+    }
+
+    fun addAdminCardInPlay(card: Card) {
+        inPlay.add(card)
     }
 
     fun trashCardInPlay(card: Card, showLog: Boolean = true) {

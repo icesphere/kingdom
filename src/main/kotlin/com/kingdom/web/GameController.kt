@@ -2403,12 +2403,27 @@ class GameController(private val cardManager: CardManager,
                 player.drawCards(addCardsParam.toInt())
             }
 
+            val modifyCardsInPlay = request.getParameter("modifyCardsChoice_" + player.userId) == "inPlay"
             val currentHandChoice = request.getParameter("currentHandChoice_" + player.userId)
-            val currentCards = ArrayList(player.hand)
+            val currentCards = if (modifyCardsInPlay) ArrayList(player.inPlay) else ArrayList(player.hand)
             if (currentHandChoice == "discard") {
-                currentCards.forEach { player.discardCardFromHand(it) }
+                if (modifyCardsInPlay) {
+                    currentCards.forEach { player.discardAdminCardInPlay(it) }
+                } else {
+                    currentCards.forEach { player.discardCardFromHand(it) }
+                }
             } else if (currentHandChoice == "trash") {
-                currentCards.forEach { player.trashCardFromHand(it) }
+                if (modifyCardsInPlay) {
+                    currentCards.forEach { player.trashAdminCardInPlay(it) }
+                } else {
+                    currentCards.forEach { player.trashCardFromHand(it) }
+                }
+            } else if (currentHandChoice == "remove") {
+                if (modifyCardsInPlay) {
+                    player.removeAdminCardsInPlay(currentCards)
+                } else {
+                    player.removeCardsFromHand(currentCards)
+                }
             }
 
             val parameterNames = request.parameterNames
@@ -2423,7 +2438,11 @@ class GameController(private val cardManager: CardManager,
                         if (removeCardsFromSupply) {
                             game.removeCardFromSupply(supplyCard, false)
                         }
-                        player.hand.add(supplyCard)
+                        if (modifyCardsInPlay) {
+                            player.addAdminCardInPlay(supplyCard)
+                        } else {
+                            player.hand.add(supplyCard)
+                        }
                     }
                 }
             }

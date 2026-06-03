@@ -4,11 +4,24 @@
     </div>
 
     <div style="padding-bottom:10px;">
-        <input type="radio" name="currentHandChoice_${player.userId}" value="keep" checked /> Keep cards in hand
+        In Play: ${player.currentCardsInPlay}
+    </div>
+
+    <div style="padding-bottom:10px;">
+        <select name="modifyCardsChoice_${player.userId}" onchange="updateModifyCardsText('${player.userId}')">
+            <option value="hand" selected>Modify Hand</option>
+            <option value="inPlay">Modify Cards In Play</option>
+        </select>
+    </div>
+
+    <div style="padding-bottom:10px;">
+        <input type="radio" name="currentHandChoice_${player.userId}" value="keep" checked /> <span id="keepCardsText_${player.userId}">Keep cards in hand</span>
         <br/>
-        <input type="radio" name="currentHandChoice_${player.userId}" value="discard" /> Discard cards in hand
+        <input type="radio" name="currentHandChoice_${player.userId}" value="discard" /> <span id="discardCardsText_${player.userId}">Discard cards in hand</span>
         <br/>
-        <input type="radio" name="currentHandChoice_${player.userId}" value="trash" /> Trash cards in hand
+        <input type="radio" name="currentHandChoice_${player.userId}" value="trash" /> <span id="trashCardsText_${player.userId}">Trash cards in hand</span>
+        <br/>
+        <input type="radio" name="currentHandChoice_${player.userId}" value="remove" /> <span id="removeCardsText_${player.userId}">Remove cards in hand</span>
     </div>
 
     <div style="padding-bottom:10px;">
@@ -40,7 +53,7 @@
     </div>
 
     <div style="padding-bottom:10px;">
-        Add Cards To Hand:
+        <span id="addCardsText_${player.userId}">Add Cards To Hand:</span>
     </div>
 
     <div style="padding-bottom: 10px;">
