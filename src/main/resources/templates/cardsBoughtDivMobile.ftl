@@ -19,7 +19,7 @@
     </#if>
 </div>
 <div style="clear:both;" class="label">
-    Cards Bought:
+    Cards Gained:
 </div>
 <div>
     <#assign clickType="bought">

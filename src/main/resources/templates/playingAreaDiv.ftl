@@ -18,7 +18,7 @@
             <table>
                 <tr>
                     <td style="padding-right:5px;vertical-align:top;">
-                        <img src="images/CardsBought.png" alt="Cards Bought"/>
+                        <div class="label">Cards Gained</div>
                     </td>
                     <td style="vertical-align:top;">
                         <div id="cardsBoughtDiv">

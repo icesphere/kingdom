@@ -50,6 +50,9 @@ abstract class Player protected constructor(val user: User, val game: Game) : Se
 
     val cardsGained: MutableList<Card> = ArrayList()
 
+    val cardsGainedCopy: List<Card>
+        get() = cardsGained.map { it.copy(true) }
+
     val cardsBought: MutableList<Card> = ArrayList()
 
     val cardsBoughtCopy: List<Card>

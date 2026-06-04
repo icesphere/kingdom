@@ -1682,18 +1682,18 @@ class GameController(private val cardManager: CardManager,
     private fun addPlayingAreaDataToModelView(game: Game, player: Player, modelAndView: ModelAndView) {
         addCardsPlayedDataToModelAndView(game, player, modelAndView)
 
-        addCardsBoughtToModelAndView(game, modelAndView)
+        addCardsGainedToModelAndView(game, modelAndView)
     }
 
-    private fun addCardsBoughtToModelAndView(game: Game, modelAndView: ModelAndView) {
-        val cardsBoughtCopy = game.currentPlayer.cardsBoughtCopy
+    private fun addCardsGainedToModelAndView(game: Game, modelAndView: ModelAndView) {
+        val cardsGainedCopy = game.currentPlayer.cardsGainedCopy
 
-        cardsBoughtCopy.forEach {
+        cardsGainedCopy.forEach {
             it.isHighlighted = false
             it.adjustedCost = game.currentPlayer.getCardCostWithModifiers(it)
         }
 
-        modelAndView.addObject("cardsBought", cardsBoughtCopy)
+        modelAndView.addObject("cardsBought", cardsGainedCopy)
     }
 
     private fun addCardsPlayedDataToModelAndView(game: Game, player: Player, modelAndView: ModelAndView) {
@@ -1747,7 +1747,7 @@ class GameController(private val cardManager: CardManager,
 
             addPlayerAndGameDataToModelAndView(game, user, modelAndView, request)
 
-            addCardsBoughtToModelAndView(game, modelAndView)
+            addCardsGainedToModelAndView(game, modelAndView)
 
             return modelAndView
         } catch (t: Throwable) {
@@ -1773,7 +1773,15 @@ class GameController(private val cardManager: CardManager,
 
             addPlayerAndGameDataToModelAndView(game, user, modelAndView, request)
 
-            modelAndView.addObject("cardsBought", game.previousPlayer?.lastTurnSummary?.cardsBought ?: emptyList<Card>())
+            val previousPlayer = game.previousPlayer
+            val previousPlayerCardsGained = previousPlayer?.lastTurnSummary?.cardsGained
+                    ?.map { it.copy(true) }
+                    ?: emptyList<Card>()
+            previousPlayerCardsGained.forEach {
+                it.isHighlighted = false
+                it.adjustedCost = previousPlayer?.getCardCostWithModifiers(it) ?: it.cost
+            }
+            modelAndView.addObject("cardsBought", previousPlayerCardsGained)
             return modelAndView
         } catch (t: Throwable) {
             t.printStackTrace()
