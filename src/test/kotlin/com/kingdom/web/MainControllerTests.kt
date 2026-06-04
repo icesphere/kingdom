@@ -51,6 +51,18 @@ class MainControllerTests {
     }
 
     @Test
+    fun `access success login model includes username max length`() {
+        val controller = MainController(mock(GameRoomManager::class.java))
+        val request = MockHttpServletRequest()
+        request.setParameter("password", "winner")
+
+        val modelAndView = controller.access(request, MockHttpServletResponse())
+
+        assertEquals("login", modelAndView.viewName)
+        assertEquals(20, modelAndView.model["maxUsernameLength"])
+    }
+
+    @Test
     fun `admin model includes logged in users and active game id`() {
         val controller = MainController(mock(GameRoomManager::class.java))
         val admin = User().apply {

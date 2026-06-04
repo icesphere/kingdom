@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 
 const val USERNAME_COOKIE = "kingdomusername"
+const val MAX_USERNAME_LENGTH = 20
 
 fun String.removeSpaces(): String {
     return replace("\\s".toRegex(), "")
@@ -194,6 +195,7 @@ object KingdomUtil {
     fun getLoginModelAndView(request: HttpServletRequest): ModelAndView {
         val modelAndView = ModelAndView("login")
         modelAndView.addObject("mobile", isMobile(request))
+        modelAndView.addObject("maxUsernameLength", MAX_USERNAME_LENGTH)
         return modelAndView
     }
 

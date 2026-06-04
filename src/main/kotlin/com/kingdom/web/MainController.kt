@@ -4,6 +4,7 @@ import com.kingdom.model.User
 import com.kingdom.service.GameRoomManager
 import com.kingdom.service.LoggedInUsers
 import com.kingdom.util.KingdomUtil
+import com.kingdom.util.MAX_USERNAME_LENGTH
 import com.kingdom.util.USERNAME_COOKIE
 import com.kingdom.util.removeSpaces
 import org.springframework.stereotype.Controller
@@ -13,8 +14,6 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import java.util.Date
-
-private const val MAX_USERNAME_LENGTH = 20
 
 @Suppress("unused")
 @Controller
