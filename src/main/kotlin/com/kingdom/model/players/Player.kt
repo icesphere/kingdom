@@ -610,11 +610,7 @@ abstract class Player protected constructor(val user: User, val game: Game) : Se
 
         addInfoLogWithUsername("ending turn")
 
-        val durationCardsToDiscard = durationCards.filterNot {
-            (it is MultipleTurnDuration && it.keepAtEndOfTurn(this)
-                    || (it is CardRepeater && it.cardBeingRepeated is MultipleTurnDuration && (it.cardBeingRepeated as MultipleTurnDuration).keepAtEndOfTurn(this)))
-                    || (it is NextTurnRepeater && it.keepAtEndOfTurn(this))
-        }
+        val durationCardsToDiscard = durationCards.filterNot { it.keepsDurationAtEndOfTurn(this) }
 
         durationCardsToDiscard.forEach {
             it.durationCardCopiedByCitadel = false
@@ -629,7 +625,7 @@ abstract class Player protected constructor(val user: User, val game: Game) : Se
 
                 card.isSelected = false
                 card.isHighlighted = false
-            } else if ((card.isDuration && (card !is ConditionalDuration || card.isKeepAtEndOfTurn)) || (card is CardRepeater && card.cardBeingRepeated?.isDuration == true)) {
+            } else if (card.isKeptDurationForCleanup()) {
                 durationCards.add(card)
 
                 card.isSelected = false
@@ -1951,21 +1947,21 @@ abstract class Player protected constructor(val user: User, val game: Game) : Se
         }
 
         durationCards.toList().forEach { card ->
-            when {
-                card is StartOfTurnDurationAction -> {
+            if (card is StartOfTurnDurationAction) {
+                card.durationStartOfTurnAction(this)
+                if (card.durationCardCopiedByCitadel) {
+                    addEventLog("${Citadel().cardNameWithBackgroundColor} is repeating duration start of turn action for ${card.cardNameWithBackgroundColor}")
                     card.durationStartOfTurnAction(this)
-                    if (card.durationCardCopiedByCitadel) {
-                        addEventLog("${Citadel().cardNameWithBackgroundColor} is repeating duration start of turn action for ${card.cardNameWithBackgroundColor}")
-                        card.durationStartOfTurnAction(this)
-                    }
                 }
-                card.addedAbilityCard is StartOfTurnDurationAction -> {
-                    val durationCard = card.addedAbilityCard as StartOfTurnDurationAction
-                    durationCard.durationStartOfTurnAction(this)
-                }
-                card is CardRepeater && card.cardBeingRepeated is StartOfTurnDurationAction -> {
-                    val durationCard = card.cardBeingRepeated as StartOfTurnDurationAction
+            }
 
+            if (card.addedAbilityCard is StartOfTurnDurationAction) {
+                val durationCard = card.addedAbilityCard as StartOfTurnDurationAction
+                durationCard.durationStartOfTurnAction(this)
+            }
+
+            if (card is CardRepeater) {
+                card.cardsBeingRepeated.filterIsInstance<StartOfTurnDurationAction>().forEach { durationCard ->
                     repeat(card.timesRepeated) {
                         durationCard.durationStartOfTurnAction(this)
                     }

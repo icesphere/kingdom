@@ -4,6 +4,8 @@ import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.CardRepeater
 import com.kingdom.model.cards.actions.ChoiceActionCard
 import com.kingdom.model.cards.actions.ChooseCardActionCardOptional
+import com.kingdom.model.cards.actions.beforeCardRepeaterRepeated
+import com.kingdom.model.cards.actions.clearRepeatedCards
 import com.kingdom.model.cards.actions.handleCardToRepeatChosen
 import com.kingdom.model.cards.listeners.CardDiscardedFromPlayListener
 import com.kingdom.model.players.Player
@@ -11,6 +13,8 @@ import com.kingdom.model.players.Player
 class Disciple : AdventuresCard(NAME, CardType.ActionTraveller, 5), CardDiscardedFromPlayListener, ChoiceActionCard, ChooseCardActionCardOptional, CardRepeater {
 
     override var cardBeingRepeated: Card? = null
+
+    override val cardsBeingRepeated: MutableList<Card> = mutableListOf()
 
     override val timesRepeated: Int = 1
 
@@ -42,11 +46,14 @@ class Disciple : AdventuresCard(NAME, CardType.ActionTraveller, 5), CardDiscarde
 
     override fun removedFromPlay(player: Player) {
         super.removedFromPlay(player)
-        cardBeingRepeated = null
+        clearRepeatedCards()
+    }
+
+    override fun beforeCardRepeated(player: Player) {
+        beforeCardRepeaterRepeated()
     }
 
     companion object {
         const val NAME: String = "Disciple"
     }
 }
-

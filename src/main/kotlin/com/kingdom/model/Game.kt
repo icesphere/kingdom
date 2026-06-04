@@ -276,11 +276,12 @@ class Game(@Transient private val gameManager: GameManager,
                     ).toMutableList()
 
             currentPlayer.inPlayWithDuration
-                    .filter { it is CardRepeater && it.cardBeingRepeated is CardCostModifierForCardsInPlay }
-                    .forEach {
-                        val cardRepeater = it as CardRepeater
-                        repeat(cardRepeater.timesRepeated) {
-                            modifiers.add(cardRepeater.cardBeingRepeated as CardCostModifier)
+                    .filterIsInstance<CardRepeater>()
+                    .forEach { cardRepeater ->
+                        cardRepeater.cardsBeingRepeated.filterIsInstance<CardCostModifierForCardsInPlay>().forEach { modifier ->
+                            repeat(cardRepeater.timesRepeated) {
+                                modifiers.add(modifier)
+                            }
                         }
                     }
 

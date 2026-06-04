@@ -4,12 +4,16 @@ import com.kingdom.model.cards.Card
 import com.kingdom.model.cards.actions.CardRepeater
 import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.actions.ChooseCardActionCardOptional
+import com.kingdom.model.cards.actions.beforeCardRepeaterRepeated
+import com.kingdom.model.cards.actions.clearRepeatedCards
 import com.kingdom.model.cards.actions.handleCardToRepeatChosen
 import com.kingdom.model.players.Player
 
 class Crown : EmpiresCard(NAME, CardType.ActionTreasure, 5), ChooseCardActionCardOptional, CardRepeater {
 
     override var cardBeingRepeated: Card? = null
+
+    override val cardsBeingRepeated: MutableList<Card> = mutableListOf()
 
     override val timesRepeated: Int = 1
 
@@ -33,11 +37,14 @@ class Crown : EmpiresCard(NAME, CardType.ActionTreasure, 5), ChooseCardActionCar
 
     override fun removedFromPlay(player: Player) {
         super.removedFromPlay(player)
-        cardBeingRepeated = null
+        clearRepeatedCards()
+    }
+
+    override fun beforeCardRepeated(player: Player) {
+        beforeCardRepeaterRepeated()
     }
 
     companion object {
         const val NAME: String = "Crown"
     }
 }
-

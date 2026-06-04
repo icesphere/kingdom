@@ -3,12 +3,16 @@ package com.kingdom.model.cards.base
 import com.kingdom.model.cards.*
 import com.kingdom.model.cards.actions.CardRepeater
 import com.kingdom.model.cards.actions.ChooseCardActionCardOptional
+import com.kingdom.model.cards.actions.beforeCardRepeaterRepeated
+import com.kingdom.model.cards.actions.clearRepeatedCards
 import com.kingdom.model.cards.actions.handleCardToRepeatChosen
 import com.kingdom.model.players.Player
 
 class ThroneRoom : BaseCard(NAME, CardType.Action, 4), ChooseCardActionCardOptional, CardRepeater {
 
     override var cardBeingRepeated: Card? = null
+
+    override val cardsBeingRepeated: MutableList<Card> = mutableListOf()
 
     override val timesRepeated: Int = 1
 
@@ -27,11 +31,14 @@ class ThroneRoom : BaseCard(NAME, CardType.Action, 4), ChooseCardActionCardOptio
 
     override fun removedFromPlay(player: Player) {
         super.removedFromPlay(player)
-        cardBeingRepeated = null
+        clearRepeatedCards()
+    }
+
+    override fun beforeCardRepeated(player: Player) {
+        beforeCardRepeaterRepeated()
     }
 
     companion object {
         const val NAME: String = "Throne Room"
     }
 }
-

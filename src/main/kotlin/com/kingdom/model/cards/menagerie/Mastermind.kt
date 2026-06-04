@@ -7,13 +7,19 @@ import com.kingdom.model.cards.NextTurnRepeater
 import com.kingdom.model.cards.actions.CardRepeater
 import com.kingdom.model.cards.actions.ChooseCardActionCardOptional
 import com.kingdom.model.cards.actions.StartOfTurnDurationAction
+import com.kingdom.model.cards.actions.beforeCardRepeaterRepeated
+import com.kingdom.model.cards.actions.clearRepeatedCards
 import com.kingdom.model.cards.actions.handleCardToRepeatChosen
+import com.kingdom.model.cards.actions.hasRepeatedDurationForCleanup
+import com.kingdom.model.cards.actions.hasRepeatedMultipleTurnDurationToKeep
 import com.kingdom.model.cards.listeners.TurnEndedListenerForDurationCards
 import com.kingdom.model.players.Player
 
 class Mastermind : MenagerieCard(NAME, CardType.ActionDuration, 5), StartOfTurnDurationAction, ChooseCardActionCardOptional, CardRepeater, NextTurnRepeater, TurnEndedListenerForDurationCards {
 
     override var cardBeingRepeated: Card? = null
+
+    override val cardsBeingRepeated: MutableList<Card> = mutableListOf()
 
     override val timesRepeated: Int = 2
 
@@ -35,8 +41,12 @@ class Mastermind : MenagerieCard(NAME, CardType.ActionDuration, 5), StartOfTurnD
 
     override fun removedFromPlay(player: Player) {
         super.removedFromPlay(player)
-        cardBeingRepeated = null
+        clearRepeatedCards()
         turnsSincePlayed = 0
+    }
+
+    override fun beforeCardRepeated(player: Player) {
+        beforeCardRepeaterRepeated()
     }
 
     override fun onTurnEnded(player: Player) {
@@ -44,7 +54,7 @@ class Mastermind : MenagerieCard(NAME, CardType.ActionDuration, 5), StartOfTurnD
     }
 
     override fun keepAtEndOfTurn(player: Player): Boolean {
-        return (turnsSincePlayed == 1 && cardBeingRepeated?.isDuration == true) || (cardBeingRepeated is MultipleTurnDuration && (cardBeingRepeated as MultipleTurnDuration).keepAtEndOfTurn(player))
+        return (turnsSincePlayed == 1 && hasRepeatedDurationForCleanup()) || hasRepeatedMultipleTurnDurationToKeep(player)
     }
 
     companion object {

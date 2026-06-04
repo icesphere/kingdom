@@ -204,6 +204,7 @@ class Kintsugi : RisingSunEvent(NAME, 3), ChooseCardsActionCard {
 
 class Practice : RisingSunEvent(NAME, 3), ChooseCardActionCardOptional, CardRepeater {
     override var cardBeingRepeated: Card? = null
+    override val cardsBeingRepeated: MutableList<Card> = mutableListOf()
     override val timesRepeated: Int = 1
 
     init {

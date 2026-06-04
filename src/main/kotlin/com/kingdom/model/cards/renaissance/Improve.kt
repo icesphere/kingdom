@@ -1,9 +1,10 @@
 package com.kingdom.model.cards.renaissance
 
 import com.kingdom.model.cards.*
-import com.kingdom.model.cards.actions.CardRepeater
 import com.kingdom.model.cards.actions.FreeCardFromSupplyForBenefitActionCard
 import com.kingdom.model.cards.actions.OptionalChooseCardActionCard
+import com.kingdom.model.cards.actions.isKeptDurationForCleanup
+import com.kingdom.model.cards.actions.keepsDurationAtEndOfTurn
 import com.kingdom.model.cards.listeners.StartOfCleanupListener
 import com.kingdom.model.players.Player
 
@@ -24,14 +25,9 @@ class Improve : RenaissanceCard(NAME, CardType.Action, 3), StartOfCleanupListene
 
         usedImprove = true
 
-        val durationCardsToDiscard = player.durationCards.filterNot {
-            it is PermanentDuration
-                    || (it is CardRepeater && it.cardBeingRepeated is PermanentDuration)
-                    || (it is MultipleTurnDuration && it.keepAtEndOfTurn(player)
-                    || (it is CardRepeater && it.cardBeingRepeated is MultipleTurnDuration && (it.cardBeingRepeated as MultipleTurnDuration).keepAtEndOfTurn(player)))
-        }
+        val durationCardsToDiscard = player.durationCards.filterNot { it.keepsDurationAtEndOfTurn(player) }
 
-        val inPlayToDiscard = player.inPlay.filterNot { card -> card.isDuration || (card is CardRepeater && card.cardBeingRepeated?.isDuration == true) }
+        val inPlayToDiscard = player.inPlay.filterNot { it.isKeptDurationForCleanup() }
 
         val actionCardsToDiscard = (durationCardsToDiscard + inPlayToDiscard).filter { it.isAction }.map { it.copy(false) }
 
