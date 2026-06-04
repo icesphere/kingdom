@@ -5,7 +5,7 @@
     <tr>
         <#if !mobile>
             <td>
-                <img src="images/Supply.png" alt="Supply"/>
+                <div class="sidewaysLabel"><span>Supply</span></div>
             </td>
         </#if>
         <td>

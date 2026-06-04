@@ -4,7 +4,7 @@
             <table>
                 <tr>
                     <td style="padding-right:5px;vertical-align:top;">
-                        <img src="images/CardsPlayed.png" alt="Cards Played"/>
+                        <div class="sidewaysLabel"><span>Cards Played</span></div>
                     </td>
                     <td style="vertical-align:top;">
                         <div id="cardsPlayedDiv">
@@ -18,7 +18,7 @@
             <table>
                 <tr>
                     <td style="padding-right:5px;vertical-align:top;">
-                        <div class="label">Cards Gained</div>
+                        <div class="sidewaysLabel"><span>Cards Gained</span></div>
                     </td>
                     <td style="vertical-align:top;">
                         <div id="cardsBoughtDiv">

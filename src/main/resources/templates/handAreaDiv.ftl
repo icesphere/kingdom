@@ -90,7 +90,7 @@
             <table>
                 <tr>
                     <td style="padding-right:5px;">
-                        <img src="images/Hand.png" alt="Hand"/>
+                        <div class="sidewaysLabel"><span>Hand</span></div>
                     </td>
                     <td>
                         <div id="handDiv">
@@ -105,7 +105,7 @@
                 <table>
                     <tr>
                         <td style="padding-right:5px;">
-                            <img src="images/Duration.png" alt="Duration"/>
+                            <div class="sidewaysLabel"><span>Duration</span></div>
                         </td>
                         <td>
                             <div id="durationDiv">
@@ -120,7 +120,7 @@
             <table>
                 <tr>
                     <td>
-                        <img src="images/Discard.png" alt="Discard"/>
+                        <div class="sidewaysLabel"><span>Discard</span></div>
                     </td>
                     <td>
                         <div id="discardDiv">

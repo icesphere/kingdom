@@ -23,7 +23,7 @@
                 <table style="width:100%">
                     <tr>
                         <td style="vertical-align:top; padding-top:30px;">
-                            <img src="images/History.png" alt="History"/>
+                            <div class="sidewaysLabel"><span>History</span></div>
                         </td>
                         <td style="vertical-align: top;">
                             <div id="historyDiv">

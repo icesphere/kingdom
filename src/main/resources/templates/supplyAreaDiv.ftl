@@ -14,7 +14,7 @@
                 <table style="width:100%; text-align:right">
                     <tr>
                         <td>
-                            <img src="images/Chat.png" alt="Chat"/>
+                            <div class="sidewaysLabel"><span>Chat</span></div>
                         </td>
                         <td>
                             <table style="width:100%">

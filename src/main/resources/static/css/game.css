@@ -118,6 +118,34 @@
     margin-left: -65px;
 }
 
+.sidewaysLabel
+{
+    position: relative;
+    width: 35px;
+    height: 140px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: linear-gradient(to right, #0b5594 0%, #2e83c5 45%, #4f9ed7 100%);
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 35px;
+    text-align: center;
+    text-shadow: 1px 1px 1px #00335f;
+    box-shadow: inset 0 0 1px #d8ecff;
+    white-space: nowrap;
+}
+
+.sidewaysLabel span
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 140px;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: center;
+}
+
 .pageLoading
 {
     clear: both;
