@@ -93,6 +93,31 @@
     padding-top: 1px;
 }
 
+.cardStackList
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.cardStack
+{
+    flex: 0 0 auto;
+    display: flex;
+}
+
+.cardStackCard
+{
+    flex: 0 0 auto;
+    position: relative;
+}
+
+.cardStackCard + .cardStackCard
+{
+    margin-left: -65px;
+}
+
 .specialRow
 {
     font-size: 9px;
