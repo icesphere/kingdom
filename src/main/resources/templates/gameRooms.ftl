@@ -75,7 +75,9 @@
                     });
                 }
                 if(data.refreshChat){
+                    var chatMessage = $("#chatMessage").val();
                     $('#lobbyChatDiv').load('getLobbyChatDiv', function() {
+                        $("#chatMessage").val(chatMessage);
                         scrollChatToBottom();
                         divsToLoad--;
                         if(divsToLoad == 0){
