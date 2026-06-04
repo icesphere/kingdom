@@ -27,9 +27,12 @@
                 <#if usernameBeingUsed?? && usernameBeingUsed>
                     <span style="color: #990000; font-size: 12px;">Username being used - pick a different username</span>
                 </#if>
+                <#if invalidUsername?? && invalidUsername>
+                    <span style="color: #990000; font-size: 12px;">Username must be 1-${maxUsernameLength} characters</span>
+                </#if>
 
                 <span>Username:</span>
-                <input type="text" id="username" name="username" class="loginUsername <#if mobile>loginUsernameMobile</#if>"/>
+                <input type="text" id="username" name="username" maxlength="${maxUsernameLength}" class="loginUsername <#if mobile>loginUsernameMobile</#if>"/>
 
                 <input type="submit" value="Log in" style="margin-top:20px" class="loginButton <#if mobile>loginButtonMobile</#if>">
 

@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import java.util.Date
 
+private const val MAX_USERNAME_LENGTH = 20
+
 @Suppress("unused")
 @Controller
 class MainController(private val gameRoomManager: GameRoomManager) {
@@ -31,24 +33,28 @@ class MainController(private val gameRoomManager: GameRoomManager) {
         val username = request.getParameter("username")
         val mobile = KingdomUtil.isMobile(request)
         modelAndView.addObject("mobile", mobile)
+        modelAndView.addObject("maxUsernameLength", MAX_USERNAME_LENGTH)
         if (username != null) {
+            val trimmedUsername = username.trim()
             val usernameCookieValue = getUsernameCookie(request)
 
-            val usernameMatchesCookie = username.removeSpaces().equals(usernameCookieValue, ignoreCase = true)
+            val usernameMatchesCookie = trimmedUsername.removeSpaces().equals(usernameCookieValue, ignoreCase = true)
 
-            val existingUser = LoggedInUsers.getUserByUsername(username)
+            val existingUser = LoggedInUsers.getUserByUsername(trimmedUsername)
 
             if (existingUser?.isExpired == true) {
                 LoggedInUsers.userLoggedOut(existingUser)
             }
 
-            if (LoggedInUsers.usernameBeingUsed(username) && !usernameMatchesCookie) {
+            if (trimmedUsername.isBlank() || trimmedUsername.length > MAX_USERNAME_LENGTH) {
+                modelAndView.addObject("invalidUsername", true)
+            } else if (LoggedInUsers.usernameBeingUsed(trimmedUsername) && !usernameMatchesCookie) {
                 modelAndView.addObject("usernameBeingUsed", true)
             } else {
                 val user = usernameCookieValue?.let { existingUser } ?: User()
-                user.username = username
+                user.username = trimmedUsername
 
-                KingdomUtil.addUsernameCookieToResponse(username, response)
+                KingdomUtil.addUsernameCookieToResponse(trimmedUsername, response)
 
                 if (request.cookies?.firstOrNull { it.name.trim().lowercase() == "kingdomadmin" }?.value?.trim()?.lowercase() == "changethekingdom") {
                     user.admin = true
