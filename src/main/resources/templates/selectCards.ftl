@@ -22,6 +22,11 @@
 	<body>
         <div class="topGradient"></div>
 		<h3>${title}</h3>
+        <#if createGame>
+            <div id="createGameLoading" class="pageLoading">
+                <span class="pageLoadingSpinner"></span>Loading game setup...
+            </div>
+        </#if>
         <form action="${action}" method="POST" name="selectCardOptionsForm">
             <input type="hidden" name="createGame" value="${createGame?string}"/>
             <div style="clear:both; float:left;">

@@ -7,6 +7,10 @@ $(document).ready(function() {
     loadSelectedValuesFromLocalStorage();
 });
 
+$(window).on("load", function() {
+    $("#createGameLoading").hide();
+});
+
 function loadSelectedValuesFromLocalStorage() {
     var decks = $("input[name^='deck_']");
     $.makeArray(decks).forEach(d => {
