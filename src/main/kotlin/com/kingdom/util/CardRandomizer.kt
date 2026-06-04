@@ -10,6 +10,10 @@ import java.util.*
 @Service
 class CardRandomizer(private val cardRepository: CardRepository) {
 
+    private val numKingdomCards = 10
+    private val numKingdomCardsWithBane = 11
+    private val youngWitchName = "Young Witch"
+
     private var options: RandomizingOptions? = null
     private var rcs: RandomCardsSelected? = null
 
@@ -137,6 +141,8 @@ class CardRandomizer(private val cardRepository: CardRepository) {
             }
         }
 
+        normalizeBaneCard()
+
         game.kingdomCards = selectedCards
     }
 
@@ -220,15 +226,21 @@ class CardRandomizer(private val cardRepository: CardRepository) {
     }
 
     private fun addBaneCard(): Boolean {
-        if (selectedCards.size == 11) {
+        if (selectedCards.size >= numKingdomCardsWithBane) {
             return false
         }
-        for (card in selectedCards) {
-            if (card.name == "Young Witch") {
-                return true
-            }
+        return hasYoungWitch()
+    }
+
+    private fun normalizeBaneCard() {
+        val maxCards = if (hasYoungWitch()) numKingdomCardsWithBane else numKingdomCards
+        while (selectedCards.size > maxCards) {
+            selectedCards.removeLast()
         }
-        return false
+    }
+
+    private fun hasYoungWitch(): Boolean {
+        return selectedCards.any { it.name == youngWitchName }
     }
 
     private fun needMoreCards(): Boolean {
@@ -244,8 +256,8 @@ class CardRandomizer(private val cardRepository: CardRepository) {
             if (options!!.isSwappingCard) {
                 selectedCards[options!!.cardToReplaceIndex] = card
                 cardSwapped = true
-                if (options!!.cardToReplace!!.name == "Young Witch" && selectedCards.size > 10) {
-                    selectedCards.removeAt(10)
+                if (options!!.cardToReplace!!.name == youngWitchName && selectedCards.size > numKingdomCards) {
+                    selectedCards.removeAt(numKingdomCards)
                 }
             } else {
                 selectedCards.add(card)

@@ -2,6 +2,8 @@ package com.kingdom.util
 
 import com.kingdom.model.Game
 import com.kingdom.model.RandomizingOptions
+import com.kingdom.model.cards.Card
+import com.kingdom.model.cards.CardType
 import com.kingdom.model.cards.Deck
 import com.kingdom.model.cards.adventures.events.Alms
 import com.kingdom.model.cards.allies.Bauble
@@ -22,6 +24,41 @@ import org.mockito.Mockito.mock
 import org.springframework.messaging.simp.SimpMessagingTemplate
 
 class CardRandomizerTests {
+
+    @Test
+    fun removesBaneCardWhenYoungWitchIsNotInKingdom() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java)))
+        val repository = CardRepository()
+        game.decks = mutableListOf(Deck.Base)
+
+        val options = RandomizingOptions().apply {
+            customCardSelection = repository.baseCards.take(11)
+            numEventsAndLandmarksAndProjectsAndWays = 0
+        }
+
+        CardRandomizer(repository).setRandomKingdomCardsAndEvents(game, options)
+
+        assertEquals(10, game.kingdomCards.size)
+        assertTrue(game.kingdomCards.none { it.name == "Young Witch" })
+    }
+
+    @Test
+    fun keepsBaneCardWhenYoungWitchIsInKingdom() {
+        val game = Game(GameManager(), GameMessageService(mock(SimpMessagingTemplate::class.java)))
+        val repository = CardRepository()
+        game.decks = mutableListOf(Deck.Base)
+
+        val options = RandomizingOptions().apply {
+            customCardSelection = repository.baseCards.take(9) + TestYoungWitch()
+            numEventsAndLandmarksAndProjectsAndWays = 0
+        }
+
+        CardRandomizer(repository).setRandomKingdomCardsAndEvents(game, options)
+
+        assertEquals(11, game.kingdomCards.size)
+        assertTrue(game.kingdomCards.any { it.name == "Young Witch" })
+        assertTrue(game.kingdomCards.last().cost == 2 || game.kingdomCards.last().cost == 3)
+    }
 
     @Test
     fun excludesEventsLandmarksProjectsAndWaysWhenMarkedNone() {
@@ -175,4 +212,6 @@ class CardRandomizerTests {
         assertTrue(game.events.isEmpty())
         assertEquals(1, game.ways.size)
     }
+
+    private class TestYoungWitch : Card("Young Witch", Deck.Cornucopia, CardType.ActionAttack, 4)
 }
