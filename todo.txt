@@ -1,4 +1,3 @@
-handle throne room a throne room which then copies a duration card
 cards overflow weird when too many on desktop (use flexbox?)
 figure out why create game page takes a long time to load the bottom of the page - or at least show spinner or something until it loads
 show all cards gained - not just cards bought in the cards bought section of the page

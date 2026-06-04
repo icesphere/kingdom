@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1.7
-
 FROM eclipse-temurin:21-jdk-alpine AS build
 
 WORKDIR /workspace
@@ -9,7 +7,7 @@ COPY gradle ./gradle
 COPY src ./src
 
 RUN chmod +x gradlew
-RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon bootJar -x test
+RUN ./gradlew --no-daemon bootJar -x test
 
 FROM eclipse-temurin:21-jre-alpine
 
